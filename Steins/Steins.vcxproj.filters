@@ -9,24 +9,41 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Steins.h" />
     <ClInclude Include="Source\Steins\Core\Application.h">
       <Filter>Steins\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Steins\Core\Assert.h">
+      <Filter>Steins\Core</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Steins\Core\EntryPoint.h">
+      <Filter>Steins\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Core\Logger.h">
       <Filter>Steins\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\Core\PlatformDetection.h">
       <Filter>Steins\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\SteinsPCH.h" />
-    <ClInclude Include="Source\Steins.h" />
-    <ClInclude Include="Source\Steins\Core\Base.h" />
-    <ClInclude Include="Source\Steins\Core\Assert.h" />
+    <ClInclude Include="Source\Base\MathTypes.h" />
+    <ClInclude Include="Source\Steins\Event\Event.h" />
+    <ClInclude Include="Source\Steins\Core\GameObject.h" />
+    <ClInclude Include="Source\Steins\Event\ApplicationEvent.h" />
+    <ClInclude Include="Source\Steins\Event\KeyEvent.h" />
+    <ClInclude Include="Source\Steins\Event\MouseEvent.h" />
+    <ClInclude Include="Source\Steins\Window.h" />
+    <ClInclude Include="Source\Platform\Windows\WindowsWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Steins\Core\Application.cpp">
       <Filter>Steins\Core</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Steins\Core\Logger.cpp">
+      <Filter>Steins\Core</Filter>
+    </ClCompile>
     <ClCompile Include="Source\SteinsPCH.cpp" />
+    <ClCompile Include="Source\Steins\Core\GameObject.cpp" />
+    <ClCompile Include="Source\Platform\Windows\WindowsWindow.cpp" />
   </ItemGroup>
 </Project>

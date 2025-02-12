@@ -4,6 +4,7 @@ class Sandbox : public Steins::Application
 {
 public:
 	Sandbox()
+		:Steins::Application()
 	{
 	}
 

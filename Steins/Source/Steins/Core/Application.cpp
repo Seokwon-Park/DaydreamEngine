@@ -1,9 +1,13 @@
-#include "../../SteinsPCH.h"
+#include "SteinsPCH.h"
+
 #include "Application.h"
+#include "Logger.h"
+
+#include "Steins/Event/ApplicationEvent.h"
 
 namespace Steins
 {
-	Application::Application(const std::string_view _name)
+	Application::Application()
 	{
 		
 	}
@@ -15,10 +19,17 @@ namespace Steins
 
 	bool Application::Init()
 	{
+		Logger::Init();
+
+		isRunning = true;
+
 		return true;
 	}
 	bool Application::Run()
 	{
+		while (isRunning)
+		{
+		}
 		return true;
 	}
 	bool Application::Exit()

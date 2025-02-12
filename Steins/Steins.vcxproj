@@ -41,25 +41,24 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\Build\Bin\Steins\</OutDir>
-    <IntDir>..\Build\Intermediate\Steins\Debug\</IntDir>
+    <OutDir>..\Build\Bin\Debug\Steins\</OutDir>
+    <IntDir>..\Build\Intermediate\Debug\Steins\</IntDir>
     <TargetName>Steins</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\Build\Bin\Steins\</OutDir>
-    <IntDir>..\Build\Intermediate\Steins\Release\</IntDir>
+    <OutDir>..\Build\Bin\Release\Steins\</OutDir>
+    <IntDir>..\Build\Intermediate\Release\Steins\</IntDir>
     <TargetName>Steins</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
-  <PropertyGroup Label="Vcpkg">
-    <VcpkgEnabled>false</VcpkgEnabled>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>SteinsPCH.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>STEINS_PLATFORM_WINDOWS;STEINS_BUILD_DLL;STEINS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>Source;Vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -73,9 +72,11 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>SteinsPCH.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>STEINS_PLATFORM_WINDOWS;STEINS_BUILD_DLL;STEINS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>Source;Vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -88,17 +89,45 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Base\MathTypes.h" />
+    <ClInclude Include="Source\Platform\Windows\WindowsWindow.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Steins.h" />
     <ClInclude Include="Source\Steins\Core\Application.h" />
-    <ClInclude Include="Source\Steins\Core\Base.h" />
+    <ClInclude Include="Source\Steins\Core\Assert.h" />
     <ClInclude Include="Source\Steins\Core\EntryPoint.h" />
+    <ClInclude Include="Source\Steins\Core\GameObject.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Core\Logger.h" />
     <ClInclude Include="Source\Steins\Core\PlatformDetection.h" />
     <ClInclude Include="Source\SteinsPCH.h" />
-    <ClInclude Include="Source\Steins\Core\Assert.h" />
+    <ClInclude Include="Source\Steins\Event\ApplicationEvent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Event\Event.h" />
+    <ClInclude Include="Source\Steins\Event\KeyEvent.h" />
+    <ClInclude Include="Source\Steins\Event\MouseEvent.h" />
+    <ClInclude Include="Source\Steins\Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Platform\Windows\WindowsWindow.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Steins\Core\Application.cpp" />
-    <ClCompile Include="Source\SteinsPCH.cpp" />
+    <ClCompile Include="Source\Steins\Core\GameObject.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Source\Steins\Core\Logger.cpp" />
+    <ClCompile Include="Source\SteinsPCH.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

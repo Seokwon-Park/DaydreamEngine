@@ -1,9 +1,11 @@
+#include "Base/MathTypes.h"
+
 namespace Steins
 {
 	extern Application* CreateApplication();
 }
 
-int main(int argc, char** argv)
+int32 main(int argc, char** argv)
 {
 	Steins::Application* application = Steins::CreateApplication();
 
@@ -13,7 +15,7 @@ int main(int argc, char** argv)
 	}
 
 	application->Run();
-	
+
 	if (!application->Exit())
 	{
 		return 1;
