@@ -176,6 +176,8 @@ namespace Steins
 		virtual void SetEventCallback(const EventCallbackFn& _callbackFn) = 0;
 		virtual void SetVSync(bool _enabled) = 0;
 		virtual bool IsVSync() const = 0;
+		virtual void CreateKeyCodeTable() = 0;
+
 		void SetUserData(void* _userData) { userData = _userData; }
 		void* GetUserData() const { return userData; }
 		void InputKey(int _key, int _action);
@@ -183,6 +185,8 @@ namespace Steins
 
 		static Unique<SteinsWindow> Create(const WindowProps& _props = WindowProps());
 	protected:
+		std::map<uint16, uint16> keycodes;
+		std::map<uint16, uint16> scancodes;
 		std::map<uint16, uint16> keyStates;
 		WindowCallbacks callbacks;
 	private:

@@ -2,11 +2,10 @@
 
 #include "Application.h"
 
-
+#define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 
 namespace Steins
 {
-#define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
 
 	Application::Application()
 	{
@@ -50,7 +49,7 @@ namespace Steins
 		//여기는 이벤트가 발생할 때마다 매번 일치하는지 탐색한다.
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
 
-		STEINS_CORE_TRACE("{0}", _event.ToString());
+		STEINS_CORE_TRACE("{0}", _event);
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& _event)

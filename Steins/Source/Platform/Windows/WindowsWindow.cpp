@@ -149,7 +149,7 @@ namespace Steins
 		return true;
 	}
 
-	void WindowsWindow::CreateKeyTables()
+	void WindowsWindow::CreateKeyCodeTable()
 	{
 		int scancode;
 

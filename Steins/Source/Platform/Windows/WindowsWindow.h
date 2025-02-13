@@ -26,7 +26,7 @@ namespace Steins
 		virtual void Init(const WindowProps& _props);
 		virtual void Shutdown();
 		bool InitWindow();
-		void CreateKeyTables();
+		virtual void CreateKeyCodeTable() override;
 
 		HINSTANCE windowInstance;
 		HWND windowHandle;
@@ -40,8 +40,7 @@ namespace Steins
 		};
 		WindowData windowData;
 		
-		std::map<uint16, uint16> keycodes;
-		std::map<uint16, uint16> scancodes;
+
 	};
 }
 
