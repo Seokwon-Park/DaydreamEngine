@@ -89,7 +89,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Layer.h" />
     <ClInclude Include="Source\Base\MathTypes.h" />
+    <ClInclude Include="Source\Base\Wrappers.h" />
     <ClInclude Include="Source\Platform\Windows\WindowsWindow.h">
       <SubType>
       </SubType>
@@ -102,7 +104,10 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Source\Steins\Core\Input.h" />
+    <ClInclude Include="Source\Steins\Core\KeyCodes.h" />
     <ClInclude Include="Source\Steins\Core\Logger.h" />
+    <ClInclude Include="Source\Steins\Core\MouseCodes.h" />
     <ClInclude Include="Source\Steins\Core\PlatformDetection.h" />
     <ClInclude Include="Source\SteinsPCH.h" />
     <ClInclude Include="Source\Steins\Event\ApplicationEvent.h">
@@ -115,6 +120,8 @@
     <ClInclude Include="Source\Steins\Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Layer.cpp" />
+    <ClCompile Include="Source\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="Source\Platform\Windows\WindowsWindow.cpp">
       <SubType>
       </SubType>
@@ -124,10 +131,12 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Source\Steins\Core\Input.cpp" />
     <ClCompile Include="Source\Steins\Core\Logger.cpp" />
     <ClCompile Include="Source\SteinsPCH.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Source\Steins\Window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

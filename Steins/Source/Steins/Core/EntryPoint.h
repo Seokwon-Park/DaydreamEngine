@@ -7,6 +7,8 @@ namespace Steins
 
 int32 main(int argc, char** argv)
 {
+	Steins::Logger::Init();
+
 	Steins::Application* application = Steins::CreateApplication();
 
 	if (!application->Init())

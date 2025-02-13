@@ -4,7 +4,7 @@
 
 namespace Steins
 {
-	class WindowsWindow : public Window
+	class WindowsWindow : public SteinsWindow
 	{
 	public:
 		// constrcuter destructer
@@ -19,12 +19,14 @@ namespace Steins
 		inline void SetEventCallback(const EventCallbackFn& _callbackFn) override { windowData.eventCallbackFn = _callbackFn; }
 		void SetVSync(bool enabled) override;
 		bool IsVSync() const override;
+		
 
 		LRESULT MsgProc(HWND _hwnd, UINT _msg, WPARAM _wParam, LPARAM _lParam);
 	private:
 		virtual void Init(const WindowProps& _props);
 		virtual void Shutdown();
 		bool InitWindow();
+		void CreateKeyTables();
 
 		HINSTANCE windowInstance;
 		HWND windowHandle;
@@ -37,6 +39,9 @@ namespace Steins
 			EventCallbackFn eventCallbackFn;
 		};
 		WindowData windowData;
+		
+		std::map<uint16, uint16> keycodes;
+		std::map<uint16, uint16> scancodes;
 	};
 }
 

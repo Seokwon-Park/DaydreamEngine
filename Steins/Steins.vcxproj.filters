@@ -34,6 +34,11 @@
     <ClInclude Include="Source\Steins\Event\MouseEvent.h" />
     <ClInclude Include="Source\Steins\Window.h" />
     <ClInclude Include="Source\Platform\Windows\WindowsWindow.h" />
+    <ClInclude Include="Layer.h" />
+    <ClInclude Include="Source\Steins\Core\KeyCodes.h" />
+    <ClInclude Include="Source\Steins\Core\Input.h" />
+    <ClInclude Include="Source\Steins\Core\MouseCodes.h" />
+    <ClInclude Include="Source\Base\Wrappers.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Steins\Core\Application.cpp">
@@ -45,5 +50,9 @@
     <ClCompile Include="Source\SteinsPCH.cpp" />
     <ClCompile Include="Source\Steins\Core\GameObject.cpp" />
     <ClCompile Include="Source\Platform\Windows\WindowsWindow.cpp" />
+    <ClCompile Include="Layer.cpp" />
+    <ClCompile Include="Source\Platform\Windows\WindowsInput.cpp" />
+    <ClCompile Include="Source\Steins\Core\Input.cpp" />
+    <ClCompile Include="Source\Steins\Window.cpp" />
   </ItemGroup>
 </Project>

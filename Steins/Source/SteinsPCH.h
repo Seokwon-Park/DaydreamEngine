@@ -13,6 +13,7 @@
 #include "Steins/Core/Logger.h"
 #include "Steins/Core/Assert.h"
 #include "Base/MathTypes.h"
+#include "Base/Wrappers.h"
 
 #if defined(STEINS_PLATFORM_WINDOWS)
 	#ifndef NOMINMAX
