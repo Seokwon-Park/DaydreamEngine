@@ -51,9 +51,9 @@ namespace Steins
 		virtual int GetCategoryFlags() const = 0;
 		virtual std::string ToString() const { return GetName(); }
 		//inline virtual std::string format_as(const Event& e) const { return e.ToString(); }
-		inline bool IsInCategory(EventCategory category)
+		inline bool IsInCategory(EventCategory _category)
 		{
-			return GetCategoryFlags() & category;
+			return GetCategoryFlags() & _category;
 		}
 	protected:
 		bool handled = false;
@@ -82,9 +82,14 @@ namespace Steins
 		Event& event;
 	};
 
-	inline std::ostream& operator<<(std::ostream& os, const Event& e)
+	inline std::ostream& operator<<(std::ostream& _os, const Event& _event)
 	{
-		return os << e.ToString();
+		return _os << _event.ToString();
+	}
+
+	inline std::string format_as(const Event& _event) 
+	{
+		return _event.ToString();
 	}
 
 }
