@@ -2,14 +2,20 @@
 
 #include "Application.h"
 
+#include "Input.h"
+#include "KeyCodes.h"
+
 
 
 namespace Steins
 {
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
+	Application* Application::instance = nullptr;
 
 	Application::Application()
 	{
+		STEINS_CORE_ASSERT(!instance, "Application already exists!");
+		instance = this;
 		mainWindow = SteinsWindow::Create();
 	}
 
@@ -34,6 +40,7 @@ namespace Steins
 	{
 		while (isRunning)
 		{
+			mainWindow->ClearKeyStates();
 			mainWindow->OnUpdate();
 		}
 		return true;
@@ -49,7 +56,7 @@ namespace Steins
 		EventDispatcher dispatcher(_event);
 		//여기는 이벤트가 발생할 때마다 매번 일치하는지 탐색한다.
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
-
+		
 		STEINS_CORE_TRACE("{0}", _event.ToString());
 	}
 

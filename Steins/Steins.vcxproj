@@ -118,6 +118,7 @@
     <ClInclude Include="Source\Steins\Event\KeyEvent.h" />
     <ClInclude Include="Source\Steins\Event\MouseEvent.h" />
     <ClInclude Include="Source\Steins\Window.h" />
+    <ClInclude Include="Source\Steins\WindowDefine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Layer.cpp" />

@@ -19,6 +19,7 @@ namespace Steins
 	}
 
 	WindowsWindow::WindowsWindow(const WindowProps& _props)
+		:SteinsWindow()
 	{
 		Init(_props);
 	}
@@ -39,31 +40,68 @@ namespace Steins
 
 		CreateKeyTables();
 
-		SetKeyCallback([&](SteinsWindow* _window, int _key, int _action)
+		SetInputKeyCallback([&](SteinsWindow* _window, int _key, int _action)
 			{
 				WindowData& data = *(WindowData*)GetUserData();
 
 				switch (_action)
 				{
-				case STEINS_KEY_PRESS:
+				case STEINS_PRESS:
 				{
 					KeyPressedEvent event(_key, 0);
 					data.eventCallbackFn(event);
 					break;
 				}
-				case STEINS_KEY_RELEASE:
+				case STEINS_RELEASE:
 				{
 					KeyReleasedEvent event(_key);
 					data.eventCallbackFn(event);
 					break;
 				}
-				case STEINS_KEY_REPEAT:
+				case STEINS_REPEAT:
 				{
 					KeyPressedEvent event(_key, true);
 					data.eventCallbackFn(event);
 					break;
 				}
 				}
+			});
+
+		SetMouseButtonCallback([&](SteinsWindow* _window, int _button, int _action)
+			{
+				WindowData& data = *(WindowData*)GetUserData();
+
+				switch (_action)
+				{
+				case STEINS_PRESS:
+				{
+					MouseButtonPressedEvent event(_button);
+					data.eventCallbackFn(event);
+					break;
+				}
+				case STEINS_RELEASE:
+				{
+					MouseButtonReleasedEvent event(_button);
+					data.eventCallbackFn(event);
+					break;
+				}
+				}
+			});
+
+		SetScrollCallback([&](SteinsWindow* _window, double _xOffset, double _yOffset)
+			{
+				WindowData& data = *(WindowData*)GetUserData();
+
+				MouseScrolledEvent event((float)_xOffset, (float)_yOffset);
+				data.eventCallbackFn(event);
+			});
+
+		SetCursorPosCallback([&](SteinsWindow* _window, double _xPos, double _yPos)
+			{
+				WindowData& data = *(WindowData*)GetUserData();
+
+				MouseMovedEvent event((float)_xPos, (float)_yPos);
+				data.eventCallbackFn(event);
 			});
 
 		bool result = InitWindow();
@@ -281,7 +319,7 @@ namespace Steins
 				scancodes[keycodes[scancode]] = scancode;
 		}
 	}
-	
+
 	LRESULT WindowsWindow::MsgProc(HWND _hwnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)
 	{
 		//if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam))
@@ -327,8 +365,8 @@ namespace Steins
 		case WM_SYSKEYUP:
 		{
 			int key, scancode;
-			const int action = (HIWORD(_lParam) & KF_UP) ? STEINS_KEY_RELEASE : STEINS_KEY_PRESS;
-			
+			const int action = (HIWORD(_lParam) & KF_UP) ? STEINS_RELEASE : STEINS_PRESS;
+
 			scancode = (HIWORD(_lParam) & (KF_EXTENDED | 0xff));
 			if (!scancode)
 			{
@@ -363,25 +401,7 @@ namespace Steins
 				break;
 			}
 
-			InputKey(key, action);
-
-			//if (action == STEINS_KEY_RELEASE && _wParam == VK_SHIFT)
-			//{
-			//	// HACK: Release both Shift keys on Shift up event, as when both
-			//	//       are pressed the first release does not emit any event
-			//	// NOTE: The other half of this is in _glfwPollEventsWin32
-			//	_glfwInputKey(window, STEINS_KEY_LEFT_SHIFT, scancode, action, mods);
-			//	_glfwInputKey(window, STEINS_KEY_RIGHT_SHIFT, scancode, action, mods);
-			//}
-			//else if (wParam == VK_SNAPSHOT)
-			//{
-			//	// HACK: Key down is not reported for the Print Screen key
-			//	_glfwInputKey(window, key, scancode, STEINS_PRESS, mods);
-			//	_glfwInputKey(window, key, scancode, STEINS_RELEASE, mods);
-			//}
-			//else
-			//	_glfwInputKey(window, key, scancode, action, mods);
-
+			WindowInputKey(key, action);
 
 			break;
 		}
@@ -391,8 +411,14 @@ namespace Steins
 				return 0;
 			break;
 		case WM_MOUSEMOVE:
-			//std::cout << "Mouse " << LOWORD(lParam) << " " << HIWORD(lParam) << std::endl;
-			break;
+		{
+			const int x = GET_X_LPARAM(_lParam);
+			const int y = GET_Y_LPARAM(_lParam);
+
+			WindowCursorPos(x, y);
+
+			return 0;
+		}
 		case WM_LBUTTONDOWN:
 		case WM_RBUTTONDOWN:
 		case WM_MBUTTONDOWN:
@@ -402,9 +428,80 @@ namespace Steins
 		case WM_MBUTTONUP:
 		case WM_XBUTTONUP:
 		{
+			int i, button, action;
+
+			if (_msg == WM_LBUTTONDOWN || _msg == WM_LBUTTONUP)
+			{
+				button = STEINS_MOUSE_BUTTON_LEFT;
+			}
+			else if (_msg == WM_RBUTTONDOWN || _msg == WM_RBUTTONUP)
+			{
+				button = STEINS_MOUSE_BUTTON_RIGHT;
+			}
+			else if (_msg == WM_MBUTTONDOWN || _msg == WM_MBUTTONUP)
+			{
+				button = STEINS_MOUSE_BUTTON_MIDDLE;
+			}
+			else if (GET_XBUTTON_WPARAM(_wParam) == XBUTTON1)
+			{
+				button = STEINS_MOUSE_BUTTON_4;
+			}
+			else
+			{
+				button = STEINS_MOUSE_BUTTON_5;
+			}
+
+			if (_msg == WM_LBUTTONDOWN || _msg == WM_RBUTTONDOWN ||
+				_msg == WM_MBUTTONDOWN || _msg == WM_XBUTTONDOWN)
+			{
+				action = STEINS_PRESS;
+			}
+			else
+			{
+				action = STEINS_RELEASE;
+			}
+
+			for (i = 0; i <= STEINS_MOUSE_BUTTON_LAST; i++)
+			{
+				if (mouseStates[i] == STEINS_PRESS)
+					break;
+			}
+
+			if (i > STEINS_MOUSE_BUTTON_LAST)
+				SetCapture(_hwnd);
+
+			WindowMouseClick(button, action);
+
+			for (i = 0; i <= STEINS_MOUSE_BUTTON_LAST; i++)
+			{
+				if (mouseStates[i] == STEINS_PRESS)
+					break;
+			}
+
+			if (i > STEINS_MOUSE_BUTTON_LAST)
+				ReleaseCapture();
+
+			if (_msg == WM_XBUTTONDOWN || _msg == WM_XBUTTONUP)
+				return true;
 
 			break;
 		}
+
+		case WM_MOUSEWHEEL:
+		{
+			WindowMouseScroll(0.0, (SHORT)HIWORD(_wParam) / (double)WHEEL_DELTA);
+			return 0;
+		}
+
+		case WM_MOUSEHWHEEL:
+		{
+			// This message is only sent on Windows Vista and later
+			// NOTE: The X-axis is inverted for consistency with macOS and X11
+			WindowMouseScroll(-((SHORT)HIWORD(_wParam) / (double)WHEEL_DELTA), 0.0);
+			return 0;
+		}
+
+
 		case WM_CLOSE:
 		{
 			if (windowDataPtr != nullptr)

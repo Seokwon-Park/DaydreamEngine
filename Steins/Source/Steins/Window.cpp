@@ -11,23 +11,29 @@ namespace Steins
 	{
 #ifdef STEINS_PLATFORM_WINDOWS
 		return MakeUnique<WindowsWindow>(_props);
+#elif defined(STEINS_PLATFORM_LINUX)
+		return MakeUnique<LinuxWindow>(_props);
 #else
 		STS_CORE_ASSERT(false, "Unknown platform!");
 		return nullptr;
 #endif
 	}
 
-	void SteinsWindow::InputKey(int _key, int _action)
+	void SteinsWindow::WindowInputKey(int _key, int _action)
 	{
 		bool repeated = false;
 
 		if (_key >= 0 && _key <= STEINS_KEY_LAST)
 		{
-			if (_action == STEINS_KEY_RELEASE && keyStates[_key] == STEINS_KEY_RELEASE)
+			if (_action == STEINS_RELEASE && keyStates[_key] == STEINS_RELEASE)
+			{
 				return;
+			}
 
-			if (_action == STEINS_KEY_PRESS && keyStates[_key] == STEINS_KEY_PRESS)
+			if (_action == STEINS_PRESS && keyStates[_key] == STEINS_PRESS)
+			{
 				repeated = true;
+			}
 
 			//if (_action == STEINS_KEY_RELEASE && window->stickyKeys)
 			//	window->keys[key] = #STICK;
@@ -35,7 +41,7 @@ namespace Steins
 			keyStates[_key] = (char)_action;
 
 			if (repeated)
-				_action = STEINS_KEY_REPEAT;
+				_action = STEINS_REPEAT;
 
 			if (callbacks.inputKeyFn != nullptr)
 			{
@@ -44,5 +50,43 @@ namespace Steins
 		}
 	}
 
+	void SteinsWindow::WindowMouseClick(int _button, int _action)
+	{
+		bool repeated = false;
+
+		if (_button < 0 || _button > STEINS_MOUSE_BUTTON_LAST)
+			return;
+
+		mouseStates[_button] = (char)_action;
+
+		if (callbacks.mouseButtonFn!=nullptr)
+		{
+			callbacks.mouseButtonFn(this, _button, _action);
+		}
+	}
+
+	void SteinsWindow::WindowMouseScroll(double _xOffset, double _yOffset)
+	{
+		if (callbacks.mouseScrollFn != nullptr)
+		{
+			callbacks.mouseScrollFn(this, _xOffset, _yOffset);
+		}
+	}
+
+	void SteinsWindow::WindowCursorPos(double _xPos, double _yPos)
+	{
+		if (callbacks.cursorPosFn != nullptr)
+		{
+			callbacks.cursorPosFn(this, _xPos, _yPos);
+		}
+	}
+
+
+	SteinsWindow::SteinsWindow()
+	{
+		keyStates.resize(STEINS_KEY_LAST, 0);
+		mouseStates.resize(STEINS_MOUSE_BUTTON_LAST+1, 0);
+
+	}
 
 }

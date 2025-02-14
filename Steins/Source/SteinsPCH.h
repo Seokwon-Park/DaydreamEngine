@@ -20,6 +20,7 @@
 		#define NOMINMAX
 	#endif // !NOMINMAX
 	#include <Windows.h>
+	#include <windowsx.h>
 
 	#include <wrl.h> 
 	#include <d3d11.h>

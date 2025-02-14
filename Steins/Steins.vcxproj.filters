@@ -39,6 +39,7 @@
     <ClInclude Include="Source\Steins\Core\Input.h" />
     <ClInclude Include="Source\Steins\Core\MouseCodes.h" />
     <ClInclude Include="Source\Base\Wrappers.h" />
+    <ClInclude Include="Source\Steins\WindowDefine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Steins\Core\Application.cpp">

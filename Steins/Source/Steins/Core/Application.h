@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Steins/Window.h"
+#include "Steins/Event/KeyEvent.h"
 #include "Steins/Event/ApplicationEvent.h"
 
 
@@ -15,6 +16,8 @@ namespace Steins
 		Application();
 		virtual ~Application();
 
+		static Application& GetInstance() { return *instance; }
+		inline SteinsWindow& GetMainWindow() { return *mainWindow; }
 	protected:
 
 	private:
@@ -26,6 +29,7 @@ namespace Steins
 
 		void OnEvent(Event& _e);
 		bool OnWindowClose(WindowCloseEvent& _e);
+
 
 		Unique<SteinsWindow> mainWindow;
 		bool isRunning = false;
