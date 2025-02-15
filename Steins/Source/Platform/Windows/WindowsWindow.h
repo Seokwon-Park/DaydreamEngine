@@ -40,7 +40,8 @@ namespace Steins
 		};
 		WindowData windowData;
 		
-
+		std::map<uint16, uint16> keycodes;
+		std::map<uint16, uint16> scancodes;
 	};
 }
 

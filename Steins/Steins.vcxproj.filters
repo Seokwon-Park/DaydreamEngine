@@ -1,14 +1,36 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Base">
+      <UniqueIdentifier>{60EC827C-4C23-840D-F50F-6A10E125000F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform">
+      <UniqueIdentifier>{2AC788B4-1694-E3BF-3FAD-D1672BD9184E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\Windows">
+      <UniqueIdentifier>{64FBD71A-50F4-F66C-7926-DCF1657ED678}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Steins">
       <UniqueIdentifier>{FB7AE7D1-E71C-12A8-D0D7-25FCBC1899F8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Steins\Core">
       <UniqueIdentifier>{33B49BFC-9F69-14F2-285E-0EC994120BF6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Steins\Event">
+      <UniqueIdentifier>{8C0C3A90-786F-C934-21F5-01EB0D3795B7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Base\MathTypes.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Base\Wrappers.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Layer.h" />
+    <ClInclude Include="Source\Platform\Windows\WindowsWindow.h">
+      <Filter>Platform\Windows</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Steins.h" />
     <ClInclude Include="Source\Steins\Core\Application.h">
       <Filter>Steins\Core</Filter>
@@ -19,41 +41,69 @@
     <ClInclude Include="Source\Steins\Core\EntryPoint.h">
       <Filter>Steins\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Steins\Core\GameObject.h">
+      <Filter>Steins\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Core\Input.h">
+      <Filter>Steins\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Core\KeyCodes.h">
+      <Filter>Steins\Core</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Steins\Core\Logger.h">
+      <Filter>Steins\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Core\MouseCodes.h">
       <Filter>Steins\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\Core\PlatformDetection.h">
       <Filter>Steins\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Steins\Event\ApplicationEvent.h">
+      <Filter>Steins\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Event\Event.h">
+      <Filter>Steins\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Event\KeyEvent.h">
+      <Filter>Steins\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Event\MouseEvent.h">
+      <Filter>Steins\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Window.h">
+      <Filter>Steins</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\WindowDefine.h">
+      <Filter>Steins</Filter>
+    </ClInclude>
     <ClInclude Include="Source\SteinsPCH.h" />
-    <ClInclude Include="Source\Base\MathTypes.h" />
-    <ClInclude Include="Source\Steins\Event\Event.h" />
-    <ClInclude Include="Source\Steins\Core\GameObject.h" />
-    <ClInclude Include="Source\Steins\Event\ApplicationEvent.h" />
-    <ClInclude Include="Source\Steins\Event\KeyEvent.h" />
-    <ClInclude Include="Source\Steins\Event\MouseEvent.h" />
-    <ClInclude Include="Source\Steins\Window.h" />
-    <ClInclude Include="Source\Platform\Windows\WindowsWindow.h" />
-    <ClInclude Include="Layer.h" />
-    <ClInclude Include="Source\Steins\Core\KeyCodes.h" />
-    <ClInclude Include="Source\Steins\Core\Input.h" />
-    <ClInclude Include="Source\Steins\Core\MouseCodes.h" />
-    <ClInclude Include="Source\Base\Wrappers.h" />
-    <ClInclude Include="Source\Steins\WindowDefine.h" />
+    <ClInclude Include="Source\Steins\LayerStack.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Steins\Layer.cpp" />
+    <ClCompile Include="Source\Platform\Windows\WindowsInput.cpp">
+      <Filter>Platform\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Platform\Windows\WindowsWindow.cpp">
+      <Filter>Platform\Windows</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Steins\Core\Application.cpp">
+      <Filter>Steins\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Steins\Core\GameObject.cpp">
+      <Filter>Steins\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Steins\Core\Input.cpp">
       <Filter>Steins\Core</Filter>
     </ClCompile>
     <ClCompile Include="Source\Steins\Core\Logger.cpp">
       <Filter>Steins\Core</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Steins\Window.cpp">
+      <Filter>Steins</Filter>
+    </ClCompile>
     <ClCompile Include="Source\SteinsPCH.cpp" />
-    <ClCompile Include="Source\Steins\Core\GameObject.cpp" />
-    <ClCompile Include="Source\Platform\Windows\WindowsWindow.cpp" />
-    <ClCompile Include="Layer.cpp" />
-    <ClCompile Include="Source\Platform\Windows\WindowsInput.cpp" />
-    <ClCompile Include="Source\Steins\Core\Input.cpp" />
-    <ClCompile Include="Source\Steins\Window.cpp" />
+    <ClCompile Include="Source\Steins\LayerStack.cpp" />
   </ItemGroup>
 </Project>

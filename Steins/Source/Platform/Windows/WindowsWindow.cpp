@@ -38,7 +38,7 @@ namespace Steins
 
 		SetUserData(&windowData);
 
-		CreateKeyTables();
+		CreateKeyCodeTable();
 
 		SetInputKeyCallback([&](SteinsWindow* _window, int _key, int _action)
 			{

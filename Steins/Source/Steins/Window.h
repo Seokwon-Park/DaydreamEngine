@@ -49,6 +49,8 @@ namespace Steins
 		virtual void SetEventCallback(const EventCallbackFn& _callbackFn) = 0;
 		virtual void SetVSync(bool _enabled) = 0;
 		virtual bool IsVSync() const = 0;
+		virtual void CreateKeyCodeTable()= 0;
+
 		void SetUserData(void* _userData) { userData = _userData; }
 		void* GetUserData() const { return userData; }
 		void WindowInputKey(int _key, int _action);
@@ -61,9 +63,19 @@ namespace Steins
 		inline void SetScrollCallback(std::function<void(SteinsWindow*, double, double)> _mouseScrollFn){ callbacks.mouseScrollFn = _mouseScrollFn; }
 		inline void SetCursorPosCallback(std::function<void(SteinsWindow*, double, double)> _mouseMoveFn) { callbacks.cursorPosFn = _mouseMoveFn; }
 
+		
 		inline int GetKeyState(int _key) { return keyStates[_key]; }
 
-		inline void ClearKeyStates() { std::fill(keyStates.begin(), keyStates.end(), STEINS_IDLE); }
+		inline void ClearKeyStates() 
+		{ 
+			for (uint16& state : keyStates)
+			{
+				if (state == STEINS_RELEASE)
+				{
+					state = STEINS_IDLE;
+				}
+			}
+		}
 
 		static Unique<SteinsWindow> Create(const WindowProps& _props = WindowProps());
 	protected:

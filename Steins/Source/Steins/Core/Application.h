@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Steins/Window.h"
+#include "Steins/LayerStack.h"
 #include "Steins/Event/KeyEvent.h"
 #include "Steins/Event/ApplicationEvent.h"
 
@@ -34,6 +35,7 @@ namespace Steins
 		Unique<SteinsWindow> mainWindow;
 		bool isRunning = false;
 		static Application* instance;
+		LayerStack Layers;
 	};
 
 	// To be defined in client

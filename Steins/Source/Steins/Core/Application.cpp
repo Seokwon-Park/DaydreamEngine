@@ -54,10 +54,10 @@ namespace Steins
 	void Application::OnEvent(Event& _event)
 	{
 		EventDispatcher dispatcher(_event);
-		//여기는 이벤트가 발생할 때마다 매번 일치하는지 탐색한다.
+		//_event의 타입이 WindowCloseEvent에 해당하면 OnWindowClose를 실행시킨다.
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
 		
-		STEINS_CORE_TRACE("{0}", _event.ToString());
+		//STEINS_CORE_TRACE("{0}", _event.ToString());
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& _event)
