@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Steins/Window.h"
-#include "Steins/LayerStack.h"
+#include "Steins/Core/LayerStack.h"
 #include "Steins/Event/KeyEvent.h"
 #include "Steins/Event/ApplicationEvent.h"
 
@@ -17,8 +17,12 @@ namespace Steins
 		Application();
 		virtual ~Application();
 
-		static Application& GetInstance() { return *instance; }
+		inline static Application& GetInstance() { return *instance; }
 		inline SteinsWindow& GetMainWindow() { return *mainWindow; }
+
+		void AttachLayer(Layer* _layer);
+		void AttachOverlay(Layer* _overlay);
+
 	protected:
 
 	private:
@@ -30,12 +34,13 @@ namespace Steins
 
 		void OnEvent(Event& _e);
 		bool OnWindowClose(WindowCloseEvent& _e);
+		bool OnWindowResize(WindowResizeEvent& _e);
 
 
 		Unique<SteinsWindow> mainWindow;
 		bool isRunning = false;
 		static Application* instance;
-		LayerStack Layers;
+		LayerStack layerStack;
 	};
 
 	// To be defined in client

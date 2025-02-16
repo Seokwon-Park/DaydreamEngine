@@ -58,7 +58,7 @@
       <PrecompiledHeaderFile>SteinsPCH.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>STEINS_PLATFORM_WINDOWS;STEINS_BUILD_DLL;STEINS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>Source;Vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source;Vendor\spdlog\include;Vendor\glfw\include;Vendor\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -76,7 +76,7 @@
       <PrecompiledHeaderFile>SteinsPCH.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>STEINS_PLATFORM_WINDOWS;STEINS_BUILD_DLL;STEINS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>Source;Vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source;Vendor\spdlog\include;Vendor\glfw\include;Vendor\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -89,10 +89,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Steins\LayerStack.h" />
     <ClInclude Include="Source\Base\MathTypes.h" />
     <ClInclude Include="Source\Base\Wrappers.h" />
-    <ClInclude Include="Source\Steins\Layer.h" />
     <ClInclude Include="Source\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="Source\Steins.h" />
     <ClInclude Include="Source\Steins\Core\Application.h" />
@@ -101,6 +99,8 @@
     <ClInclude Include="Source\Steins\Core\GameObject.h" />
     <ClInclude Include="Source\Steins\Core\Input.h" />
     <ClInclude Include="Source\Steins\Core\KeyCodes.h" />
+    <ClInclude Include="Source\Steins\Core\Layer.h" />
+    <ClInclude Include="Source\Steins\Core\LayerStack.h" />
     <ClInclude Include="Source\Steins\Core\Logger.h" />
     <ClInclude Include="Source\Steins\Core\MouseCodes.h" />
     <ClInclude Include="Source\Steins\Core\PlatformDetection.h" />
@@ -108,23 +108,30 @@
     <ClInclude Include="Source\Steins\Event\Event.h" />
     <ClInclude Include="Source\Steins\Event\KeyEvent.h" />
     <ClInclude Include="Source\Steins\Event\MouseEvent.h" />
+    <ClInclude Include="Source\Steins\ImGui\ImGuiLayer.h" />
     <ClInclude Include="Source\Steins\Window.h" />
-    <ClInclude Include="Source\Steins\WindowDefine.h" />
     <ClInclude Include="Source\SteinsPCH.h" />
+    <ClInclude Include="Source\Steins\WindowDefine.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Steins\LayerStack.cpp" />
-    <ClCompile Include="Source\Steins\Layer.cpp" />
     <ClCompile Include="Source\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="Source\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="Source\Steins\Core\Application.cpp" />
     <ClCompile Include="Source\Steins\Core\GameObject.cpp" />
     <ClCompile Include="Source\Steins\Core\Input.cpp" />
+    <ClCompile Include="Source\Steins\Core\Layer.cpp" />
+    <ClCompile Include="Source\Steins\Core\LayerStack.cpp" />
     <ClCompile Include="Source\Steins\Core\Logger.cpp" />
+    <ClCompile Include="Source\Steins\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="Source\Steins\Window.cpp" />
     <ClCompile Include="Source\SteinsPCH.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Vendor\glfw\GLFW.vcxproj">
+      <Project>{154B857C-0182-860D-AA6E-6C109684020F}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -6,6 +6,14 @@ workspace "Steins"
 		"Debug",
 		"Release",
 	}
+
+	IncludeDir = {}
+	IncludeDir["GLFW"] = "Steins/Vendor/glfw/include"
+	IncludeDir["ImGui"] = "Steins/Vendor/imgui"
+
+	include "Steins/Vendor/glfw"
+	include "Steins/Vendor/imgui"
+
 project "Steins"
 	location "Steins"
 	kind "StaticLib"
@@ -25,7 +33,14 @@ project "Steins"
 	{
 		"%{prj.name}/Source",
 		"%{prj.name}/Vendor/spdlog/include",
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.ImGui}"
 	}
+	links
+	{
+		"GLFW",
+	}
+
 	filter "system:windows"
 		cppdialect "C++20"
 		staticruntime "On"

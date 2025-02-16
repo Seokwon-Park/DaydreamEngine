@@ -19,6 +19,9 @@
     <Filter Include="Steins\Event">
       <UniqueIdentifier>{8C0C3A90-786F-C934-21F5-01EB0D3795B7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Steins\ImGui">
+      <UniqueIdentifier>{65007D90-5163-0C35-FAE8-44EBE62AD8B7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Base\MathTypes.h">
@@ -27,7 +30,6 @@
     <ClInclude Include="Source\Base\Wrappers.h">
       <Filter>Base</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Layer.h" />
     <ClInclude Include="Source\Platform\Windows\WindowsWindow.h">
       <Filter>Platform\Windows</Filter>
     </ClInclude>
@@ -48,6 +50,12 @@
       <Filter>Steins\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\Core\KeyCodes.h">
+      <Filter>Steins\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Core\Layer.h">
+      <Filter>Steins\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Core\LayerStack.h">
       <Filter>Steins\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\Core\Logger.h">
@@ -71,17 +79,16 @@
     <ClInclude Include="Source\Steins\Event\MouseEvent.h">
       <Filter>Steins\Event</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Steins\ImGui\ImGuiLayer.h">
+      <Filter>Steins\ImGui</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Steins\Window.h">
       <Filter>Steins</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\WindowDefine.h">
-      <Filter>Steins</Filter>
-    </ClInclude>
     <ClInclude Include="Source\SteinsPCH.h" />
-    <ClInclude Include="Source\Steins\LayerStack.h" />
+    <ClInclude Include="Source\Steins\WindowDefine.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Steins\Layer.cpp" />
     <ClCompile Include="Source\Platform\Windows\WindowsInput.cpp">
       <Filter>Platform\Windows</Filter>
     </ClCompile>
@@ -97,13 +104,21 @@
     <ClCompile Include="Source\Steins\Core\Input.cpp">
       <Filter>Steins\Core</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Steins\Core\Layer.cpp">
+      <Filter>Steins\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Steins\Core\LayerStack.cpp">
+      <Filter>Steins\Core</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Steins\Core\Logger.cpp">
       <Filter>Steins\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Steins\ImGui\ImGuiLayer.cpp">
+      <Filter>Steins\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="Source\Steins\Window.cpp">
       <Filter>Steins</Filter>
     </ClCompile>
     <ClCompile Include="Source\SteinsPCH.cpp" />
-    <ClCompile Include="Source\Steins\LayerStack.cpp" />
   </ItemGroup>
 </Project>

@@ -5,8 +5,6 @@
 #include "Input.h"
 #include "KeyCodes.h"
 
-
-
 namespace Steins
 {
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
@@ -22,6 +20,16 @@ namespace Steins
 	Application::~Application()
 	{
 
+	}
+
+	void Application::AttachLayer(Layer* _layer)
+	{
+		layerStack.PushLayer(_layer);
+	}
+
+	void Application::AttachOverlay(Layer* _overlay)
+	{
+		layerStack.PushOverlay(_overlay);
 	}
 
 	bool Application::Init()
@@ -40,7 +48,11 @@ namespace Steins
 	{
 		while (isRunning)
 		{
-			mainWindow->ClearKeyStates();
+			for (Layer* layer : layerStack)
+			{
+				layer->OnUpdate();
+			}
+
 			mainWindow->OnUpdate();
 		}
 		return true;
@@ -56,6 +68,15 @@ namespace Steins
 		EventDispatcher dispatcher(_event);
 		//_event의 타입이 WindowCloseEvent에 해당하면 OnWindowClose를 실행시킨다.
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
+		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
+
+		for (std::vector<Layer*>::iterator itr = layerStack.end(); itr != layerStack.begin();)
+		{
+			if (_event.handled) // if Event is already handled then break;
+				break;
+			//check event for layer
+			(*--itr)->OnEvent(_event);
+		}
 		
 		//STEINS_CORE_TRACE("{0}", _event.ToString());
 	}
@@ -64,5 +85,9 @@ namespace Steins
 	{
 		isRunning = false;
 		return true;
+	}
+	bool Application::OnWindowResize(WindowResizeEvent& _e)
+	{
+		return false;
 	}
 }

@@ -1,11 +1,29 @@
 #include <Steins.h>
 
+class TestLayer : public Steins::Layer 
+{
+public :
+	TestLayer()
+		:Layer("Test") {}
+
+	void OnUpdate() override
+	{
+		STEINS_INFO("TestLayer::UPDATE");
+	}
+
+	void OnEvent(Steins::Event& _event) override
+	{
+		STEINS_TRACE("{0}", _event);
+	}
+};
+
 class Sandbox : public Steins::Application
 {
 public:
 	Sandbox()
 		:Steins::Application()
 	{
+		AttachLayer(new TestLayer());
 	}
 
 	~Sandbox()
