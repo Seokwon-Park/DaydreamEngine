@@ -57,7 +57,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>SteinsPCH.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>STEINS_PLATFORM_WINDOWS;STEINS_BUILD_DLL;STEINS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>STEINS_PLATFORM_WINDOWS;STEINS_BUILD_DLL;GLFW_INCLUDE_NONE;STEINS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>Source;Vendor\spdlog\include;Vendor\glfw\include;Vendor\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -75,7 +75,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>SteinsPCH.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>STEINS_PLATFORM_WINDOWS;STEINS_BUILD_DLL;STEINS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>STEINS_PLATFORM_WINDOWS;STEINS_BUILD_DLL;GLFW_INCLUDE_NONE;STEINS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>Source;Vendor\spdlog\include;Vendor\glfw\include;Vendor\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -89,8 +89,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\RenderSystem_DX11.h" />
+    <ClInclude Include="Source\Base\Base.h" />
+    <ClInclude Include="Source\Base\Container\Array.h" />
     <ClInclude Include="Source\Base\MathTypes.h" />
     <ClInclude Include="Source\Base\Wrappers.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\RenderSystem.h" />
     <ClInclude Include="Source\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="Source\Steins.h" />
     <ClInclude Include="Source\Steins\Core\Application.h" />
@@ -110,10 +114,13 @@
     <ClInclude Include="Source\Steins\Event\MouseEvent.h" />
     <ClInclude Include="Source\Steins\ImGui\ImGuiLayer.h" />
     <ClInclude Include="Source\Steins\Window.h" />
-    <ClInclude Include="Source\SteinsPCH.h" />
     <ClInclude Include="Source\Steins\WindowDefine.h" />
+    <ClInclude Include="Source\SteinsPCH.h" />
+    <ClInclude Include="Source\Base\Math\Vector2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\RenderSystem_DX11.cpp" />
+    <ClCompile Include="Source\Base\Container\Array.cpp" />
     <ClCompile Include="Source\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="Source\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="Source\Steins\Core\Application.cpp" />
@@ -127,8 +134,12 @@
     <ClCompile Include="Source\SteinsPCH.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Source\Base\Math\Vector2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="Vendor\imgui\ImGui.vcxproj">
+      <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
+    </ProjectReference>
     <ProjectReference Include="Vendor\glfw\GLFW.vcxproj">
       <Project>{154B857C-0182-860D-AA6E-6C109684020F}</Project>
     </ProjectReference>

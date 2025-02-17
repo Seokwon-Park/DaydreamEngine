@@ -5,6 +5,7 @@
 #include "Steins/Event/KeyEvent.h"
 #include "Steins/Event/ApplicationEvent.h"
 
+#include "Steins/ImGui/ImGuiLayer.h"
 
 int main(int argc, char** argv);
 
@@ -36,10 +37,12 @@ namespace Steins
 		bool OnWindowClose(WindowCloseEvent& _e);
 		bool OnWindowResize(WindowResizeEvent& _e);
 
-
 		Unique<SteinsWindow> mainWindow;
 		bool isRunning = false;
 		static Application* instance;
+
+		//Layers
+		ImGuiLayer* imGuiLayer;
 		LayerStack layerStack;
 	};
 

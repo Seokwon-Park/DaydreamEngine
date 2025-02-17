@@ -12,11 +12,10 @@ namespace Steins
 		static bool GetKeyPress(KeyCode _key);
 		static bool GetKeyUp(KeyCode _key);
 
-		static bool IsMouseButtonPressed(MouseCode button);
-		static std::pair<float, float> GetMousePosition();
-		static float GetMouseX();
-		static float GetMouseY();
-
-		
+		static bool GetMouseButtonPress(MouseCode button);
+		static Pair<float32, float32> GetMousePosition();
+		static float32 GetMouseX();
+		static float32 GetMouseY();
+			
 	};
 }

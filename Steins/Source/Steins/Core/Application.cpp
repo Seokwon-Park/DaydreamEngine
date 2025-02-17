@@ -4,6 +4,8 @@
 
 #include "Input.h"
 #include "KeyCodes.h"
+#include "Steins/ImGui/ImGuiLayer.h"
+
 
 namespace Steins
 {
@@ -15,6 +17,9 @@ namespace Steins
 		STEINS_CORE_ASSERT(!instance, "Application already exists!");
 		instance = this;
 		mainWindow = SteinsWindow::Create();
+
+		imGuiLayer = new ImGuiLayer();
+		AttachOverlay(imGuiLayer);
 	}
 
 	Application::~Application()
@@ -25,11 +30,13 @@ namespace Steins
 	void Application::AttachLayer(Layer* _layer)
 	{
 		layerStack.PushLayer(_layer);
+		_layer->OnAttach();
 	}
 
 	void Application::AttachOverlay(Layer* _overlay)
 	{
 		layerStack.PushOverlay(_overlay);
+		_overlay->OnAttach();
 	}
 
 	bool Application::Init()
@@ -53,6 +60,30 @@ namespace Steins
 				layer->OnUpdate();
 			}
 
+			auto [x, y] = Input::GetMousePosition();
+			STEINS_CORE_TRACE("{0}, {1}", x, y);
+
+			if (Input::GetMouseButtonPress(Mouse::ButtonLeft))
+			{
+				STEINS_CORE_TRACE("MOUSE BUTTON DOWN TEST");
+			}
+
+			if (Input::GetKeyDown(Key::A))
+			{
+				STEINS_CORE_TRACE("KEY DOWN TEST");
+			}
+
+			if (Input::GetKeyPress(Key::B))
+			{
+				STEINS_CORE_TRACE("KEY PRESS TEST");
+			}
+
+			if (Input::GetKeyUp(Key::C))
+			{
+				STEINS_CORE_TRACE("KEY UP TEST");
+			}
+
+			mainWindow->OnUpdateKeyState();
 			mainWindow->OnUpdate();
 		}
 		return true;
@@ -62,7 +93,6 @@ namespace Steins
 		return true;
 	}
 
-	//
 	void Application::OnEvent(Event& _event)
 	{
 		EventDispatcher dispatcher(_event);

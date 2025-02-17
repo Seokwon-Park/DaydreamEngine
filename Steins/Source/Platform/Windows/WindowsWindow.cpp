@@ -5,6 +5,7 @@
 #include "Steins/Event/MouseEvent.h"
 #include "Steins/Event/ApplicationEvent.h"
 
+
 namespace Steins
 {
 	namespace
@@ -24,6 +25,7 @@ namespace Steins
 
 	WindowsWindow::~WindowsWindow()
 	{
+		Shutdown();
 	}
 
 	void WindowsWindow::Init(const WindowProps& _props)
@@ -31,6 +33,9 @@ namespace Steins
 		windowData.title = _props.title;
 		windowData.width = _props.width;
 		windowData.height = _props.height;
+		windowData.keyStates.resize(GLFW_KEY_LAST + 1, 0);
+		windowData.keyDownChecker.resize(GLFW_KEY_LAST + 1, 0);
+
 		std::wstring title(windowData.title.begin(), windowData.title.end());
 
 		STEINS_CORE_INFO("Create Window {0} ({1}, {2})", _props.title, _props.width, _props.height);
@@ -47,6 +52,8 @@ namespace Steins
 		glfwMakeContextCurrent(glfwWindow);
 		glfwSetWindowUserPointer(glfwWindow, &windowData);
 		SetVSync(true);
+
+		windowHandle = glfwGetWin32Window(glfwWindow);
 
 		glfwSetWindowSizeCallback(glfwWindow, [](GLFWwindow* _window, int _width, int _height)
 			{
@@ -71,18 +78,22 @@ namespace Steins
 				{
 					KeyPressedEvent event(_key, 0);
 					data.eventCallbackFn(event);
+					data.keyStates[_key] = STEINS_PRESS;
 					break;
 				}
 				case GLFW_RELEASE:
 				{
 					KeyReleasedEvent event(_key);
 					data.eventCallbackFn(event);
+					data.keyStates[_key] = STEINS_RELEASE;
+					data.keyDownChecker[_key] = false;
 					break;
 				}
 				case GLFW_REPEAT:
 				{
 					KeyPressedEvent event(_key, 1);
 					data.eventCallbackFn(event);
+					data.keyStates[_key] = STEINS_REPEAT;
 					break;
 				}
 				}
@@ -146,5 +157,15 @@ namespace Steins
 	bool WindowsWindow::IsVSync() const
 	{
 		return windowData.isVSync;
+	}
+	void WindowsWindow::OnUpdateKeyState()
+	{
+		for (int i = 0; i < GLFW_KEY_LAST; i++)
+		{
+			if (windowData.keyStates[i] == STEINS_RELEASE)
+			{
+				windowData.keyStates[i] = STEINS_IDLE;
+			}
+		}
 	}
 }

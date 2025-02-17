@@ -4,8 +4,14 @@
     <Filter Include="Base">
       <UniqueIdentifier>{60EC827C-4C23-840D-F50F-6A10E125000F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Base\Container">
+      <UniqueIdentifier>{32AC1ED5-1E7A-12DB-070E-8301F37AEE3F}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Platform">
       <UniqueIdentifier>{2AC788B4-1694-E3BF-3FAD-D1672BD9184E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\RenderSystem">
+      <UniqueIdentifier>{BE1CD1D9-2A89-8CD4-F37C-24325FA8AE3C}</UniqueIdentifier>
     </Filter>
     <Filter Include="Platform\Windows">
       <UniqueIdentifier>{64FBD71A-50F4-F66C-7926-DCF1657ED678}</UniqueIdentifier>
@@ -24,11 +30,20 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Base\Base.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Base\Container\Array.h">
+      <Filter>Base\Container</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Base\MathTypes.h">
       <Filter>Base</Filter>
     </ClInclude>
     <ClInclude Include="Source\Base\Wrappers.h">
       <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Platform\RenderSystem\RenderSystem.h">
+      <Filter>Platform\RenderSystem</Filter>
     </ClInclude>
     <ClInclude Include="Source\Platform\Windows\WindowsWindow.h">
       <Filter>Platform\Windows</Filter>
@@ -85,10 +100,17 @@
     <ClInclude Include="Source\Steins\Window.h">
       <Filter>Steins</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Steins\WindowDefine.h">
+      <Filter>Steins</Filter>
+    </ClInclude>
     <ClInclude Include="Source\SteinsPCH.h" />
-    <ClInclude Include="Source\Steins\WindowDefine.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\RenderSystem_DX11.h" />
+    <ClInclude Include="Source\Base\Math\Vector2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Base\Container\Array.cpp">
+      <Filter>Base\Container</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Platform\Windows\WindowsInput.cpp">
       <Filter>Platform\Windows</Filter>
     </ClCompile>
@@ -120,5 +142,7 @@
       <Filter>Steins</Filter>
     </ClCompile>
     <ClCompile Include="Source\SteinsPCH.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\RenderSystem_DX11.cpp" />
+    <ClCompile Include="Source\Base\Math\Vector2.cpp" />
   </ItemGroup>
 </Project>

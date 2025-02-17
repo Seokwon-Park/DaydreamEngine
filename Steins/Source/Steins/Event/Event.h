@@ -45,7 +45,6 @@ namespace Steins
 	class Event
 	{
 		friend class EventDispatcher;
-		friend class Application;
 	public:
 		virtual EventType GetEventType() const = 0;
 		virtual const char* GetName() const = 0;
@@ -56,8 +55,8 @@ namespace Steins
 		{
 			return GetCategoryFlags() & _category;
 		}
-	protected:
 		bool handled = false;
+	protected:
 	};
 
 	class EventDispatcher

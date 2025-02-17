@@ -27,4 +27,8 @@
 	#include <d3dcompiler.h>
 	#include <DirectXMath.h>
 	#include <DirectXCollision.h>
+
+	#pragma comment(lib, "d3d11")
+	#pragma comment(lib, "d3dcompiler") 
+	#pragma comment(lib, "DXGI") 
 #endif

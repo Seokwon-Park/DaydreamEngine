@@ -11,18 +11,47 @@ namespace Steins
 	{
 		SteinsWindow& window = Application::GetInstance().GetMainWindow();
 		int state = window.GetKeyState(_key);
-		return state == STEINS_PRESS;
+		if (state == STEINS_PRESS && window.GetIsKeyDown(_key) == false)
+		{
+			window.SetKeyDown(_key);
+			return true;
+		}
+		return false;
 	}
 	bool Input::GetKeyPress(KeyCode _key)
 	{
 		SteinsWindow& window = Application::GetInstance().GetMainWindow();
 		int state = window.GetKeyState(_key);
-		return state == STEINS_REPEAT;
+		return state == STEINS_PRESS || state == STEINS_REPEAT;
 	}
 	bool Input::GetKeyUp(KeyCode _key)
 	{
 		SteinsWindow& window = Application::GetInstance().GetMainWindow();
 		int state = window.GetKeyState(_key);
-		return state == STEINS_RELEASE;
+		if (state == STEINS_RELEASE)
+		{
+			return true;
+		}
+		return false;
+	}
+	bool Input::GetMouseButtonPress(MouseCode _button)
+	{
+		SteinsWindow& window = Application::GetInstance().GetMainWindow();
+		int state = window.GetMouseState(_button);
+		return state == STEINS_PRESS;
+	}
+	Pair<float32, float32> Input::GetMousePosition()
+	{
+		SteinsWindow& window = Application::GetInstance().GetMainWindow();
+		Pair<float32, float32> mousePos = window.GetMousePos();
+		return mousePos;
+	}
+	float32 Input::GetMouseX()
+	{
+		return GetMousePosition().first;
+	}
+	float32 Input::GetMouseY()
+	{
+		return GetMousePosition().second;
 	}
 }

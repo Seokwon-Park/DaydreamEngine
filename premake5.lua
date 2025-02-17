@@ -1,5 +1,6 @@
 workspace "Steins"
 	architecture "x64"
+	startproject "Sandbox"
 	
 	configurations
 	{
@@ -18,6 +19,9 @@ project "Steins"
 	location "Steins"
 	kind "StaticLib"
 	language "C++"
+	cppdialect "C++20"
+	staticruntime "on"
+
 	targetdir ("Build/Bin/%{cfg.buildcfg}/%{prj.name}")
 	objdir ("Build/Intermediate/%{cfg.buildcfg}/%{prj.name}")
 
@@ -38,6 +42,7 @@ project "Steins"
 	}
 	links
 	{
+		"ImGui",
 		"GLFW",
 	}
 
@@ -49,6 +54,7 @@ project "Steins"
 		{
 			"STEINS_PLATFORM_WINDOWS",
 			"STEINS_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
 		}
 
 	filter "configurations:Debug"
@@ -62,6 +68,9 @@ project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
+	cppdialect "C++20"
+	staticruntime "on"
+
 	targetdir ("Build/Bin/%{cfg.buildcfg}/%{prj.name}")
 	objdir ("Build/Intermediate/%{cfg.buildcfg}/%{prj.name}")
 
@@ -73,7 +82,8 @@ project "Sandbox"
 	includedirs
 	{
 		"Steins/Vendor/spdlog/include",
-		"Steins/Source"
+		"Steins/Source",
+		"Steins/Vendor",
 	}
 	links
 	{

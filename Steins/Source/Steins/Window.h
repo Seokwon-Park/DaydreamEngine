@@ -23,6 +23,7 @@ namespace Steins
 		}
 	};
 
+	// why not glfw -> external .exe don't know about glfw3.h
 	// Interface represending a desktop system based Window
 	class SteinsWindow
 	{
@@ -43,10 +44,17 @@ namespace Steins
 		virtual bool IsVSync() const = 0;
 
 		virtual int GetKeyState(int _key) = 0;
+		virtual int GetMouseState(int _mouse) = 0;
+		virtual Pair<float32, float32> GetMousePos() = 0;
+		virtual void* GetNativeWindow() = 0;
+
+		virtual void SetKeyState(int _key, int _state) = 0;
+		virtual bool GetIsKeyDown(int _key) = 0;
+		virtual void SetKeyDown(int _key) = 0;
+		virtual void OnUpdateKeyState() = 0;
 
 		static Unique<SteinsWindow> Create(const WindowProps& _props = WindowProps());
 	protected:
-
 	private:
 	};
 
