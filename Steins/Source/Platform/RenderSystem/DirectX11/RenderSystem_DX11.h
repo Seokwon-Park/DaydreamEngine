@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Platform/RenderSystem/RenderSystem.h"
+#include "Steins/Window.h"
 
 using namespace Microsoft::WRL;
 
@@ -9,6 +10,7 @@ namespace Steins
 	class RenderSystem_DX11 : public RenderSystem
 	{
 	public:
+		RenderSystem_DX11(SteinsWindow* _Window);
 		~RenderSystem_DX11() override {};
 
 		virtual void Init() override;

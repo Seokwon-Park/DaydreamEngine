@@ -3,8 +3,13 @@
 
 namespace Steins
 {
+	RenderSystem_DX11::RenderSystem_DX11(SteinsWindow* _Window)
+	{
+		Init();
+	}
 	void RenderSystem_DX11::Init()
 	{
+
 	}
 	void RenderSystem_DX11::Shutdown()
 	{
