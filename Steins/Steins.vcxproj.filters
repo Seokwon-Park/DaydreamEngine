@@ -167,5 +167,6 @@
       <Filter>Steins</Filter>
     </ClCompile>
     <ClCompile Include="Source\SteinsPCH.cpp" />
+    <ClCompile Include="Source\Steins\ImGui\ImGuiBackends.cpp" />
   </ItemGroup>
 </Project>

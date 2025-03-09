@@ -98,6 +98,14 @@ namespace Steins
 				}
 				}
 			});
+		glfwSetCharCallback(glfwWindow, [](GLFWwindow* window, uint32 keycode)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+				KeyTypedEvent event(keycode);
+				data.eventCallbackFn(event);
+			});
+
 		glfwSetMouseButtonCallback(glfwWindow, [](GLFWwindow* _window, int _button, int _action, int _mods)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(_window);

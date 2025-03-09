@@ -1,5 +1,7 @@
 #pragma once
 
+#pragma warning(disable: 4819)
+
 #include <iostream>
 #include <memory>
 #include <algorithm>
@@ -14,6 +16,7 @@
 #include "Steins/Core/Assert.h"
 #include "Base/MathTypes.h"
 #include "Base/Wrappers.h"
+
 
 #if defined(STEINS_PLATFORM_WINDOWS)
 	#ifndef NOMINMAX

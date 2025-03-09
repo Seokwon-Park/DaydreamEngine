@@ -15,12 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Sandbox2D.h">
+    <ClInclude Include="Source\Sandbox2D.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Sandbox2D.cpp">
+    <ClCompile Include="Source\Sandbox2D.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SandboxApp.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

@@ -138,6 +138,7 @@
     <ClCompile Include="Source\Steins\Core\Layer.cpp" />
     <ClCompile Include="Source\Steins\Core\LayerStack.cpp" />
     <ClCompile Include="Source\Steins\Core\Logger.cpp" />
+    <ClCompile Include="Source\Steins\ImGui\ImGuiBackends.cpp" />
     <ClCompile Include="Source\Steins\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="Source\Steins\Window.cpp" />
     <ClCompile Include="Source\SteinsPCH.cpp">

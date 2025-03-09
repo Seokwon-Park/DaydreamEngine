@@ -17,6 +17,7 @@ namespace Steins
 	{
 		STEINS_CORE_ASSERT(!instance, "Application already exists!");
 		instance = this;
+
 		mainWindow = SteinsWindow::Create();
 
 		imGuiLayer = new ImGuiLayer();
@@ -48,6 +49,7 @@ namespace Steins
 			return false;
 		}
 		mainWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
+		ImGuiLayer::Init(mainWindow.get());
 		isRunning = true;
 
 		return true;
@@ -60,6 +62,13 @@ namespace Steins
 			{
 				layer->OnUpdate();
 			}
+
+			imGuiLayer->BeginImGui();
+			{
+				for (Layer* layer : layerStack)
+					layer->OnImGuiRender();
+			}
+			imGuiLayer->EndImGui();
 
 			auto [x, y] = Input::GetMousePosition();
 			STEINS_CORE_TRACE("{0}, {1}", x, y);

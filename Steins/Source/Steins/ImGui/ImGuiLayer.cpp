@@ -4,11 +4,12 @@
 #include <imgui.h>
 
 #include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
 #include <backends/imgui_impl_dx11.h>
 
+#include <GLFW/glfw3.h>
+
 #include "Steins/Core/Application.h"
-
-
 
 namespace Steins
 {
@@ -21,6 +22,12 @@ namespace Steins
 	{
 	}
 
+	void ImGuiLayer::Init(SteinsWindow* _window)
+	{
+		ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)_window->GetNativeWindow(), true);
+		ImGui_ImplOpenGL3_Init("#version 410");
+	}
+
 	void ImGuiLayer::OnAttach()
 	{
 		IMGUI_CHECKVERSION();
@@ -31,19 +38,18 @@ namespace Steins
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
-		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-		{
-			ImGui::UpdatePlatformWindows();
-			ImGui::RenderPlatformWindowsDefault();
-		}
+		//if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		//{
+		//	ImGui::UpdatePlatformWindows();
+		//	ImGui::RenderPlatformWindowsDefault();
+		//}
 
 		SetDarkThemeColors();
 		
 		Application& app = Application::GetInstance();
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetMainWindow().GetNativeWindow());
 
-		//ImGui_ImplGlfw_InitForOpenGL(window, true);
-		//ImGui_ImplOpenGL3_Init("#version 410");
+
 	}
 	void ImGuiLayer::OnDetach()
 	{
@@ -52,7 +58,7 @@ namespace Steins
 	}
 	void ImGuiLayer::OnEvent(Event& _event)
 	{
-		if (blockEvents)
+		if (isBlockEvents)
 		{
 			ImGuiIO& io = ImGui::GetIO();
 			_event.handled |= _event.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
@@ -61,9 +67,18 @@ namespace Steins
 	}
 	void ImGuiLayer::BeginImGui()
 	{
-		//ImGui_ImplGlfw_NewFrame();
+		ImGuiIO& io = ImGui::GetIO();
+		Application& app = Application::GetInstance();
+		io.DisplaySize = ImVec2(app.GetMainWindow().GetWidth(), app.GetMainWindow().GetHeight());
+
+		ImGui_ImplOpenGL3_NewFrame();
 		ImGui::NewFrame();
-		//ImGuizmo::BeginFrame();
+
+		static bool show = true;
+		ImGui::ShowDemoWindow(&show);
+
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		
 	}
 	void ImGuiLayer::EndImGui()
@@ -71,6 +86,14 @@ namespace Steins
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::GetInstance();
 		io.DisplaySize = ImVec2((float)app.GetMainWindow().GetWidth(), (float)app.GetMainWindow().GetHeight());
+
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			GLFWwindow* backupCurrentContext = glfwGetCurrentContext();
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+			glfwMakeContextCurrent(backupCurrentContext);
+		}
 	}
 	void ImGuiLayer::SetDarkThemeColors()
 	{

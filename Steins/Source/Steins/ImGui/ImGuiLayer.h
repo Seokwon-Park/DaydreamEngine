@@ -2,6 +2,9 @@
 
 #include "Steins/Core/Layer.h"
 
+#include "Steins/Event/KeyEvent.h"
+#include "Steins/Event/MouseEvent.h"
+#include "Steins/Event/ApplicationEvent.h"
 
 
 namespace Steins
@@ -12,6 +15,9 @@ namespace Steins
 		ImGuiLayer();
 		~ImGuiLayer();
 
+		//Init ImGui For _window
+		static void Init(class SteinsWindow* _window);
+
 		void OnAttach() override;
 		void OnDetach() override;
 		void OnEvent(Event& _event) override;
@@ -19,12 +25,12 @@ namespace Steins
 		void BeginImGui();
 		void EndImGui();
 
-		void BlockEvents(bool _isBlock) { blockEvents = _isBlock; }
+		void BlockEvents(bool _isBlockEvents) { isBlockEvents = _isBlockEvents; }
 	protected:
 
 	private:
 		void SetDarkThemeColors();
 
-		bool blockEvents = true;
+		bool isBlockEvents = true;
 	};
 }
