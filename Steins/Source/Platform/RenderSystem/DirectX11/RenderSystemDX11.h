@@ -7,11 +7,11 @@ using namespace Microsoft::WRL;
 
 namespace Steins
 {
-	class RenderSystem_DX11 : public RenderSystem
+	class RenderSystemDX11 : public RenderSystem
 	{
 	public:
-		RenderSystem_DX11(SteinsWindow* _Window);
-		~RenderSystem_DX11() override {};
+		RenderSystemDX11(SteinsWindow* _Window);
+		~RenderSystemDX11() override {};
 
 		virtual void Init() override;
 		virtual void Shutdown() override;

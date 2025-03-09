@@ -1,6 +1,5 @@
 #include <Steins.h>
 
-#include <imgui/imgui.h>
 
 class TestLayer : public Steins::Layer 
 {

@@ -10,9 +10,11 @@ workspace "Steins"
 
 	IncludeDir = {}
 	IncludeDir["GLFW"] = "Steins/Vendor/glfw/include"
+	IncludeDir["glad"] = "Steins/Vendor/glad/include"
 	IncludeDir["ImGui"] = "Steins/Vendor/imgui"
 
 	include "Steins/Vendor/glfw"
+	include "Steins/Vendor/glad"
 	include "Steins/Vendor/imgui"
 
 project "Steins"
@@ -38,12 +40,15 @@ project "Steins"
 		"%{prj.name}/Source",
 		"%{prj.name}/Vendor/spdlog/include",
 		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.glad}",
 		"%{IncludeDir.ImGui}"
 	}
 	links
 	{
-		"ImGui",
 		"GLFW",
+		"glad",
+		"ImGui",
+		"opengl32.lib"
 	}
 
 	filter "system:windows"
