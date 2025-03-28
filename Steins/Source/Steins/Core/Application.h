@@ -7,6 +7,8 @@
 
 #include "Steins/ImGui/ImGuiLayer.h"
 
+#include "Steins/Enum/RendererAPI.h"
+
 int main(int argc, char** argv);
 
 namespace Steins
@@ -19,6 +21,7 @@ namespace Steins
 		virtual ~Application();
 
 		inline static Application& GetInstance() { return *instance; }
+		inline static RendererAPI GetRendererAPI() { return instance->rendererAPI; }
 		inline SteinsWindow& GetMainWindow() { return *mainWindow; }
 
 		void AttachLayer(Layer* _layer);
@@ -44,6 +47,10 @@ namespace Steins
 		//Layers
 		ImGuiLayer* imGuiLayer;
 		LayerStack layerStack;
+
+		//RenderOptions
+		RendererAPI rendererAPI;
+		
 	};
 
 	// To be defined in client

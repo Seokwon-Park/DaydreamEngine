@@ -95,6 +95,8 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Steins\Enum\RendererAPI.h" />
+    <ClInclude Include="Source\Steins\ImGui\ImGuiHelper.h" />
     <ClInclude Include="Source\Base\Base.h" />
     <ClInclude Include="Source\Base\Container\Array.h" />
     <ClInclude Include="Source\Base\Math\Vector2.h" />
@@ -126,6 +128,7 @@
     <ClInclude Include="Source\SteinsPCH.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Steins\ImGui\ImGuiHelper.cpp" />
     <ClCompile Include="Source\Base\Container\Array.cpp" />
     <ClCompile Include="Source\Base\Math\Vector2.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\RenderSystemDX11.cpp" />
