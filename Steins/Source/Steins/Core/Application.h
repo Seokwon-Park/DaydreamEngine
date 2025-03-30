@@ -27,6 +27,7 @@ namespace Steins
 		void AttachLayer(Layer* _layer);
 		void AttachOverlay(Layer* _overlay);
 
+		void ReadConfig(std::string_view _fileName);
 	protected:
 
 	private:

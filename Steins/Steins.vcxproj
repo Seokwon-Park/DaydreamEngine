@@ -52,6 +52,9 @@
     <TargetName>Steins</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -95,16 +98,14 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Steins\Enum\RendererAPI.h" />
-    <ClInclude Include="Source\Steins\ImGui\ImGuiHelper.h" />
     <ClInclude Include="Source\Base\Base.h" />
     <ClInclude Include="Source\Base\Container\Array.h" />
     <ClInclude Include="Source\Base\Math\Vector2.h" />
     <ClInclude Include="Source\Base\MathTypes.h" />
     <ClInclude Include="Source\Base\Wrappers.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\RenderSystemDX11.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\RenderSystemGL.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\RenderSystem.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11GraphicsDevice.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\GraphicsDevice.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLGraphicsDevice.h" />
     <ClInclude Include="Source\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="Source\Steins.h" />
     <ClInclude Include="Source\Steins\Core\Application.h" />
@@ -118,21 +119,22 @@
     <ClInclude Include="Source\Steins\Core\Logger.h" />
     <ClInclude Include="Source\Steins\Core\MouseCodes.h" />
     <ClInclude Include="Source\Steins\Core\PlatformDetection.h" />
+    <ClInclude Include="Source\Steins\Enum\RendererAPI.h" />
     <ClInclude Include="Source\Steins\Event\ApplicationEvent.h" />
     <ClInclude Include="Source\Steins\Event\Event.h" />
     <ClInclude Include="Source\Steins\Event\KeyEvent.h" />
     <ClInclude Include="Source\Steins\Event\MouseEvent.h" />
+    <ClInclude Include="Source\Steins\ImGui\ImGuiHelper.h" />
     <ClInclude Include="Source\Steins\ImGui\ImGuiLayer.h" />
     <ClInclude Include="Source\Steins\Window.h" />
     <ClInclude Include="Source\Steins\WindowDefine.h" />
     <ClInclude Include="Source\SteinsPCH.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Steins\ImGui\ImGuiHelper.cpp" />
     <ClCompile Include="Source\Base\Container\Array.cpp" />
     <ClCompile Include="Source\Base\Math\Vector2.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\RenderSystemDX11.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\RenderSystemGL.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11GraphicsDevice.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLGraphicsDevice.cpp" />
     <ClCompile Include="Source\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="Source\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="Source\Steins\Core\Application.cpp" />
@@ -142,6 +144,7 @@
     <ClCompile Include="Source\Steins\Core\LayerStack.cpp" />
     <ClCompile Include="Source\Steins\Core\Logger.cpp" />
     <ClCompile Include="Source\Steins\ImGui\ImGuiBackends.cpp" />
+    <ClCompile Include="Source\Steins\ImGui\ImGuiHelper.cpp" />
     <ClCompile Include="Source\Steins\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="Source\Steins\Window.cpp" />
     <ClCompile Include="Source\SteinsPCH.cpp">

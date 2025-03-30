@@ -41,6 +41,21 @@ namespace Steins
 		_overlay->OnAttach();
 	}
 
+	void Application::ReadConfig(std::string_view _fileName)
+	{
+		std::ifstream file(_fileName.data());
+		STEINS_CORE_ASSERT(!file.is_open(), "Cannot Open Configuration File!")
+
+		std::string line;
+
+		/*while (std::getline(file, line)) {
+			if (line.find("API=") != std::string::npos) {
+				api = line.substr(line.find("=") + 1);
+				break;
+			}
+		}*/
+	}
+
 	bool Application::Init()
 	{
 		if (mainWindow == nullptr)

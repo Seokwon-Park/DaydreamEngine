@@ -31,6 +31,9 @@
     <Filter Include="Steins\Core">
       <UniqueIdentifier>{33B49BFC-9F69-14F2-285E-0EC994120BF6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Steins\Enum">
+      <UniqueIdentifier>{1FC99CFC-8B7E-15F2-1473-0FC980270CF6}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Steins\Event">
       <UniqueIdentifier>{8C0C3A90-786F-C934-21F5-01EB0D3795B7}</UniqueIdentifier>
     </Filter>
@@ -54,14 +57,14 @@
     <ClInclude Include="Source\Base\Wrappers.h">
       <Filter>Base</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\RenderSystemDX11.h">
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11GraphicsDevice.h">
       <Filter>Platform\RenderSystem\DirectX11</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\RenderSystemGL.h">
-      <Filter>Platform\RenderSystem\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\RenderSystem.h">
+    <ClInclude Include="Source\Platform\RenderSystem\GraphicsDevice.h">
       <Filter>Platform\RenderSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLGraphicsDevice.h">
+      <Filter>Platform\RenderSystem\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="Source\Platform\Windows\WindowsWindow.h">
       <Filter>Platform\Windows</Filter>
@@ -100,6 +103,9 @@
     <ClInclude Include="Source\Steins\Core\PlatformDetection.h">
       <Filter>Steins\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Steins\Enum\RendererAPI.h">
+      <Filter>Steins\Enum</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Steins\Event\ApplicationEvent.h">
       <Filter>Steins\Event</Filter>
     </ClInclude>
@@ -111,6 +117,9 @@
     </ClInclude>
     <ClInclude Include="Source\Steins\Event\MouseEvent.h">
       <Filter>Steins\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\ImGui\ImGuiHelper.h">
+      <Filter>Steins\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\ImGui\ImGuiLayer.h">
       <Filter>Steins\ImGui</Filter>
@@ -130,10 +139,10 @@
     <ClCompile Include="Source\Base\Math\Vector2.cpp">
       <Filter>Base\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\RenderSystemDX11.cpp">
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11GraphicsDevice.cpp">
       <Filter>Platform\RenderSystem\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\RenderSystemGL.cpp">
+    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLGraphicsDevice.cpp">
       <Filter>Platform\RenderSystem\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="Source\Platform\Windows\WindowsInput.cpp">
@@ -160,6 +169,12 @@
     <ClCompile Include="Source\Steins\Core\Logger.cpp">
       <Filter>Steins\Core</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Steins\ImGui\ImGuiBackends.cpp">
+      <Filter>Steins\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Steins\ImGui\ImGuiHelper.cpp">
+      <Filter>Steins\ImGui</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Steins\ImGui\ImGuiLayer.cpp">
       <Filter>Steins\ImGui</Filter>
     </ClCompile>
@@ -167,6 +182,5 @@
       <Filter>Steins</Filter>
     </ClCompile>
     <ClCompile Include="Source\SteinsPCH.cpp" />
-    <ClCompile Include="Source\Steins\ImGui\ImGuiBackends.cpp" />
   </ItemGroup>
 </Project>

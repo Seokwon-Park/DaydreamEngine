@@ -1,16 +1,16 @@
 #pragma once
-#include "Platform/RenderSystem/RenderSystem.h"
+#include "Platform/RenderSystem/GraphicsDevice.h"
 #include "Steins/Window.h"
 #include "GLFW/glfw3.h"
 //#include "glad/glad.h"
 
 namespace Steins
 {
-	class RenderSystemGL : public RenderSystem
+	class OpenGLGraphicsDevice: public GraphicsDevice
 	{
 	public:
-		RenderSystemGL(SteinsWindow* Window);
-		~RenderSystemGL() override;
+		OpenGLGraphicsDevice(SteinsWindow* Window);
+		~OpenGLGraphicsDevice() override;
 
 		virtual void Init() override;
 		virtual void Shutdown() override;
