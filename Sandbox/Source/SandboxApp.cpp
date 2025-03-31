@@ -1,6 +1,5 @@
 #include <Steins.h>
 
-
 class TestLayer : public Steins::Layer 
 {
 public :

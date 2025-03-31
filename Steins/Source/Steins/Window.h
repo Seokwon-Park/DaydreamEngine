@@ -43,13 +43,13 @@ namespace Steins
 		virtual void SetVSync(bool _enabled) = 0;
 		virtual bool IsVSync() const = 0;
 
-		virtual int GetKeyState(int _key) = 0;
-		virtual int GetMouseState(int _mouse) = 0;
-		virtual Pair<float32, float32> GetMousePos() = 0;
-		virtual void* GetNativeWindow() = 0;
+		virtual int GetKeyState(int _key) const = 0;
+		virtual int GetMouseState(int _mouse) const = 0;
+		virtual Pair<float32, float32> GetMousePos() const = 0;
+		virtual void* GetNativeWindow() const = 0;
 
 		virtual void SetKeyState(int _key, int _state) = 0;
-		virtual bool GetIsKeyDown(int _key) = 0;
+		virtual bool GetIsKeyDown(int _key) const = 0;
 		virtual void SetKeyDown(int _key) = 0;
 		virtual void OnUpdateKeyState() = 0;
 

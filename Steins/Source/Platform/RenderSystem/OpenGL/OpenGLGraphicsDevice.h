@@ -1,6 +1,5 @@
 #pragma once
-#include "Platform/RenderSystem/GraphicsDevice.h"
-#include "Steins/Window.h"
+#include "Steins/Render/GraphicsDevice.h"
 #include "GLFW/glfw3.h"
 //#include "glad/glad.h"
 
@@ -9,7 +8,7 @@ namespace Steins
 	class OpenGLGraphicsDevice: public GraphicsDevice
 	{
 	public:
-		OpenGLGraphicsDevice(SteinsWindow* Window);
+		OpenGLGraphicsDevice(SteinsWindow* _window);
 		~OpenGLGraphicsDevice() override;
 
 		virtual void Init() override;
@@ -19,6 +18,6 @@ namespace Steins
 	protected:
 
 	private:
-
+		GLFWwindow* nativeWindow;
 	};
 }

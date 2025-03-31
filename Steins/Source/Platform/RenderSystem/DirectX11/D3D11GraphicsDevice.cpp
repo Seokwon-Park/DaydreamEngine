@@ -5,9 +5,9 @@ namespace Steins
 {
 	namespace
 	{
-		std::string GetVendor(int vendorCode)
+		std::string GetVendor(int _vendorCode)
 		{
-			switch (vendorCode)
+			switch (_vendorCode)
 			{
 			case 0x10DE: return "NVIDIA Corporation";
 			case 0x1002: return "AMD Inc.";
@@ -19,9 +19,12 @@ namespace Steins
 		}
 	} //anonymous namespace
 
-	D3D11GraphicsDevice::D3D11GraphicsDevice(SteinsWindow* _Window)
-	{
+	D3D11GraphicsDevice::D3D11GraphicsDevice(SteinsWindow* _window)
+		:GraphicsDevice(_window)
+	{ 
+		Init();
 	}
+
 	void D3D11GraphicsDevice::Init()
 	{
 		D3D_DRIVER_TYPE driverType = D3D_DRIVER_TYPE_UNKNOWN;
@@ -69,9 +72,9 @@ namespace Steins
 		std::string version;
 		version = major + "." + minor + "." + release + "." + build;
 
-		dxgiFactory->Release();
-		dxgiAdapter->Release();
-		dxgiDevice->Release();
+		//dxgiFactory->Release();
+		//dxgiAdapter->Release();
+		//dxgiDevice->Release();
 
 		//Set DX11 DebugMode
 		if (debugLayerEnabled)
@@ -92,13 +95,31 @@ namespace Steins
 		STEINS_CORE_INFO("  Vendor: {0}", GetVendor(adapterDescription.VendorId));
 		STEINS_CORE_INFO("  Renderer: {0}", videoCardDescription);
 		STEINS_CORE_INFO("  Version: {0}", version);
+
+		//DXGI_SWAP_CHAIN_DESC swapDesc = {};
+		//swapDesc.BufferCount = 1;
+		//swapDesc.BufferDesc.Width = 800;
+		//swapDesc.BufferDesc.Height = 600;
+		//swapDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		//swapDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+		//swapDesc.OutputWindow = hwnd;
+		//swapDesc.SampleDesc.Count = 1;
+		//swapDesc.Windowed = TRUE;
+
+		//D3D11CreateDeviceAndSwapChain(
+		//	nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0,
+		//	nullptr, 0, D3D11_SDK_VERSION,
+		//	&swapDesc, &swapChain, &device, nullptr, &context);
 	}
+
 	void D3D11GraphicsDevice::Shutdown()
 	{
 	}
+
 	void D3D11GraphicsDevice::Render()
 	{
 	}
+
 	void D3D11GraphicsDevice::SwapBuffers()
 	{
 	}

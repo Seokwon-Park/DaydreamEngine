@@ -5,6 +5,8 @@
 #include "Steins/Core/Layer.h"
 
 #include "Steins/Core/Input.h"
+#include "Steins/Core/KeyCodes.h"
+#include "Steins/Core/MouseCodes.h"
 
 #include "Steins/ImGui/ImGuiLayer.h"
 

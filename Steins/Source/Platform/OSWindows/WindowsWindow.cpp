@@ -5,6 +5,7 @@
 #include "Steins/Event/MouseEvent.h"
 #include "Steins/Event/ApplicationEvent.h"
 
+#include "Platform/RenderSystem/OpenGL/OpenGLGraphicsDevice.h"
 
 namespace Steins
 {
@@ -12,9 +13,9 @@ namespace Steins
 	{
 		static bool isGLFWInitialized = false;
 
-		static void GLFWErrorCallback(int error, const char* description)
+		static void GLFWErrorCallback(int _error, const char* _description)
 		{
-			STEINS_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
+			STEINS_CORE_ERROR("GLFW Error ({0}): {1}", _error, _description);
 		}
 	}
 
@@ -36,23 +37,26 @@ namespace Steins
 		windowData.keyStates.resize(GLFW_KEY_LAST + 1, 0);
 		windowData.keyDownChecker.resize(GLFW_KEY_LAST + 1, 0);
 
-		std::wstring title(windowData.title.begin(), windowData.title.end());
+		//std::wstring title(windowData.title.begin(), windowData.title.end());
 
 		STEINS_CORE_INFO("Create Window {0} ({1}, {2})", _props.title, _props.width, _props.height);
 
 		if (false == isGLFWInitialized)
 		{
-			int success = glfwInit();
+			int32 success = glfwInit();
 			STEINS_CORE_ASSERT(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
 			isGLFWInitialized = true;
 		}
 
-		glfwWindow = glfwCreateWindow((int)_props.width, (int)_props.height, _props.title.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(glfwWindow);
+		glfwWindow = glfwCreateWindow((int32)_props.width, (int32)_props.height, _props.title.c_str(), nullptr, nullptr);
+
+		graphicsDevice = new OpenGLGraphicsDevice(this);
+		graphicsDevice->Init();
+
 		glfwSetWindowUserPointer(glfwWindow, &windowData);
 		SetVSync(true);
-
+		
 		windowHandle = glfwGetWin32Window(glfwWindow);
 
 		glfwSetWindowSizeCallback(glfwWindow, [](GLFWwindow* _window, int _width, int _height)
@@ -98,11 +102,11 @@ namespace Steins
 				}
 				}
 			});
-		glfwSetCharCallback(glfwWindow, [](GLFWwindow* window, uint32 keycode)
+		glfwSetCharCallback(glfwWindow, [](GLFWwindow* _window, uint32 _keycode)
 			{
-				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(_window);
 
-				KeyTypedEvent event(keycode);
+				KeyTypedEvent event(_keycode);
 				data.eventCallbackFn(event);
 			});
 
@@ -150,17 +154,10 @@ namespace Steins
 		glfwSwapBuffers(glfwWindow);
 	}
 
-	void WindowsWindow::SetVSync(bool enabled)
+	void WindowsWindow::SetVSync(bool _enabled)
 	{
-		if (enabled)
-		{
-			glfwSwapInterval(1);
-		}
-		else
-		{
-			glfwSwapInterval(0);
-		}
-		windowData.isVSync = enabled;
+		glfwSwapInterval((int32)_enabled);
+		windowData.isVSync = _enabled;
 	}
 	bool WindowsWindow::IsVSync() const
 	{

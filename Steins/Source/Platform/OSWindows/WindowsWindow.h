@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Steins/Window.h"
+#include "Steins/Render/GraphicsDevice.h"
 
 #define GLFW_EXPOSE_NATIVE_WIN32
 
@@ -22,30 +23,31 @@ namespace Steins
 		inline uint32 GetHeight() const override { return windowData.height; }
 
 		inline void SetEventCallback(const EventCallbackFn& _callbackFn) override { windowData.eventCallbackFn = _callbackFn; }
-		void SetVSync(bool enabled) override;
+		void SetVSync(bool _enabled) override;
 		bool IsVSync() const override;
 
-		inline int GetKeyState(int _key) override { return windowData.keyStates[_key]; }
-		inline int GetMouseState(int _mousebutton) override { return glfwGetMouseButton(glfwWindow, _mousebutton); }
-		inline Pair<float32, float32> GetMousePos() override
+		inline int GetKeyState(int _key) const override { return windowData.keyStates[_key]; }
+		inline int GetMouseState(int _mousebutton) const override { return glfwGetMouseButton(glfwWindow, _mousebutton); }
+
+		inline Pair<float32, float32> GetMousePos() const override
 		{
 			double xpos, ypos;
 			glfwGetCursorPos(glfwWindow, &xpos, &ypos);
 			return MakePair<float32, float32>(static_cast<float32>(xpos), static_cast<float32>(ypos));
 		}
-		inline void* GetNativeWindow() override { return glfwWindow; }
+		void* GetNativeWindow() const override { return glfwWindow; }
 
 		inline void SetKeyState(int _key, int _state)override { windowData.keyStates[_key] = _state; }
-		inline bool GetIsKeyDown(int _key)override { return windowData.keyDownChecker[_key]; }
+		inline bool GetIsKeyDown(int _key) const override { return windowData.keyDownChecker[_key]; }
 		inline void SetKeyDown(int _key) override { windowData.keyDownChecker[_key] = true; }
 		void OnUpdateKeyState() override;
 
-		HWND& GetWindowHandle() { return windowHandle; }
 	private:
 		virtual void Init(const WindowProps& _props);
 		virtual void Shutdown();
 
 		GLFWwindow* glfwWindow;
+		GraphicsDevice* graphicsDevice;
 
 		HWND windowHandle;
 
@@ -59,7 +61,6 @@ namespace Steins
 			std::vector<bool> keyDownChecker;
 		};
 		WindowData windowData;
-
 	};
 }
 

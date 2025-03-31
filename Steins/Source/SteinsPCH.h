@@ -27,11 +27,14 @@
 
 	#include <wrl.h> 
 	#include <d3d11.h>
+	#include <d3d12.h>
+	#include <dxgi1_6.h>
 	#include <d3dcompiler.h>
 	#include <DirectXMath.h>
 	#include <DirectXCollision.h>
 
 	#pragma comment(lib, "d3d11")
+	#pragma comment(lib, "d3d12")
 	#pragma comment(lib, "d3dcompiler") 
 	#pragma comment(lib, "DXGI") 
 #endif

@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Platform/RenderSystem/GraphicsDevice.h"
-#include "Steins/Window.h"
+#include "Steins/Render/GraphicsDevice.h"
+
 
 namespace Steins
 {
 	class D3D11GraphicsDevice : public GraphicsDevice
 	{
 	public:
-		D3D11GraphicsDevice(SteinsWindow* _Window);
+		D3D11GraphicsDevice(SteinsWindow* _window);
 		~D3D11GraphicsDevice() override {};
 
 		virtual void Init() override;

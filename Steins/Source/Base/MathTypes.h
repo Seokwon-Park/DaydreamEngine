@@ -1,12 +1,13 @@
 #pragma once
 
 #include <numbers>
+#include <Base/Math/Vector2.h>
 
 // unsigned integers
 using uint64 = uint64_t;
 using uint32 = uint32_t;
 using uint16 = uint16_t;
-using uint8 = uint8_t; //0-254 0000 0001
+using uint8 = uint8_t;
 
 // signed integers
 using int64 = int64_t;
@@ -22,4 +23,9 @@ namespace Steins
 	constexpr float32 halfPI = PI * 0.5f;
 	constexpr float32 two = PI * 2.0f;
 	constexpr float32 epsilon = 1e-5f;
+
+	using Vector2I = Vector2<int>;
+	using Vector2F = Vector2<float>;
+	using Vector2D = Vector2<double>;
+
 }

@@ -2,7 +2,7 @@
 #include "Window.h"
 
 #ifdef STEINS_PLATFORM_WINDOWS
-#include "Platform/Windows/WindowsWindow.h"
+#include "Platform/OSWindows/WindowsWindow.h"
 #endif
 
 namespace Steins
