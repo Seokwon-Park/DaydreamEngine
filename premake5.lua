@@ -41,14 +41,20 @@ project "Steins"
 		"%{prj.name}/Vendor/spdlog/include",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.glad}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"$(VULKAN_SDK)/Include"
 	}
+	libdirs 
+	{
+        "$(VULKAN_SDK)/Lib"
+    }
 	links
 	{
 		"GLFW",
 		"glad",
 		"ImGui",
-		"opengl32.lib"
+		"opengl32.lib",
+		"vulkan-1.lib"
 	}
 
 	filter "system:windows"
