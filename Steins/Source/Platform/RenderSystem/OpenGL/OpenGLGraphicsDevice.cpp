@@ -12,13 +12,19 @@ namespace Steins
 
 	OpenGLGraphicsDevice::~OpenGLGraphicsDevice()
 	{
-		glfwMakeContextCurrent(nativeWindow);
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		STEINS_CORE_ASSERT(status, "Failed to initialize Glad!");
+
 	}
 	void OpenGLGraphicsDevice::Init()
 	{
 		//int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		glfwMakeContextCurrent(nativeWindow);
+		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		STEINS_CORE_ASSERT(status, "Failed to initialize Glad!");
+
+		//STEINS_CORE_INFO("OpenGL Info:");
+		//STEINS_CORE_INFO("  Vendor: {0}", glGetString(GL_VENDOR));
+		//STEINS_CORE_INFO("  Renderer: {0}", glGetString(GL_RENDERER));
+		//STEINS_CORE_INFO("  Version: {0}", glGetString(GL_VERSION));
 	}
 	void OpenGLGraphicsDevice::Shutdown()
 	{

@@ -97,8 +97,10 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Base\Math\Color.h" />
     <ClInclude Include="Source\Base\Base.h" />
     <ClInclude Include="Source\Base\Container\Array.h" />
+    <ClInclude Include="Source\Base\Math\TypeTraits.h" />
     <ClInclude Include="Source\Base\Math\Vector2.h" />
     <ClInclude Include="Source\Base\Math\Vector3.h" />
     <ClInclude Include="Source\Base\MathTypes.h" />
@@ -124,7 +126,7 @@
     <ClInclude Include="Source\Steins\Core\Logger.h" />
     <ClInclude Include="Source\Steins\Core\MouseCodes.h" />
     <ClInclude Include="Source\Steins\Core\PlatformDetection.h" />
-    <ClInclude Include="Source\Steins\Enum\RendererAPI.h" />
+    <ClInclude Include="Source\Steins\Render\RendererAPI.h" />
     <ClInclude Include="Source\Steins\Event\ApplicationEvent.h" />
     <ClInclude Include="Source\Steins\Event\Event.h" />
     <ClInclude Include="Source\Steins\Event\KeyEvent.h" />
@@ -138,8 +140,10 @@
     <ClInclude Include="Source\Steins\Window.h" />
     <ClInclude Include="Source\Steins\WindowDefine.h" />
     <ClInclude Include="Source\SteinsPCH.h" />
+    <ClInclude Include="Source\Base\Math\Vector4.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Base\Math\Color.cpp" />
     <ClCompile Include="Source\Base\Container\Array.cpp" />
     <ClCompile Include="Source\Base\Math\Vector2.cpp" />
     <ClCompile Include="Source\Base\Math\Vector3.cpp" />
@@ -163,12 +167,14 @@
     <ClCompile Include="Source\Steins\ImGui\ImGuiHelper.cpp" />
     <ClCompile Include="Source\Steins\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="Source\Steins\Render\Buffer.cpp" />
+    <ClCompile Include="Source\Steins\Render\RendererAPI.cpp" />
     <ClCompile Include="Source\Steins\Render\Renderer.cpp" />
     <ClCompile Include="Source\Steins\Render\Shader.cpp" />
     <ClCompile Include="Source\Steins\Window.cpp" />
     <ClCompile Include="Source\SteinsPCH.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Source\Base\Math\Vector4.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Vendor\glfw\GLFW.vcxproj">

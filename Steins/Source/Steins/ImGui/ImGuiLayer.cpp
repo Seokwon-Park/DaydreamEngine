@@ -49,11 +49,13 @@ namespace Steins
 		Application& app = Application::GetInstance();
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetMainWindow().GetNativeWindow());
 
-
+		//ImGui_ImplGlfw_InitForOpenGL(window, true);
+		//ImGui_ImplOpenGL3_Init("#version 410");
 	}
 	void ImGuiLayer::OnDetach()
 	{
-		//ImGui_ImplGlfw_Shutdown();
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
 	}
 	void ImGuiLayer::OnEvent(Event& _event)
@@ -67,25 +69,21 @@ namespace Steins
 	}
 	void ImGuiLayer::BeginImGui()
 	{
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+	}
+	void ImGuiLayer::EndImGui()
+	{
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::GetInstance();
-		io.DisplaySize = ImVec2(app.GetMainWindow().GetWidth(), app.GetMainWindow().GetHeight());
-
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui::NewFrame();
+		io.DisplaySize = ImVec2(static_cast<float32>(app.GetMainWindow().GetWidth()), static_cast<float32>(app.GetMainWindow().GetHeight()));
 
 		static bool show = true;
 		ImGui::ShowDemoWindow(&show);
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		
-	}
-	void ImGuiLayer::EndImGui()
-	{
-		ImGuiIO& io = ImGui::GetIO();
-		Application& app = Application::GetInstance();
-		io.DisplaySize = ImVec2((float)app.GetMainWindow().GetWidth(), (float)app.GetMainWindow().GetHeight());
 
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{

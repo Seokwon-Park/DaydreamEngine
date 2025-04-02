@@ -6,14 +6,14 @@ namespace Steins
 {
 	void ImGuiHelper::InitImGuiLayer(SteinsWindow* _window)
 	{
-		switch (Application::GetRendererAPI())
-		{
-		case RendererAPI::OpenGL:
+		//switch (Application::GetRendererAPI().GetAPI())
+		//{
+		//case RendererAPI::API::OpenGL:
 
-		case RendererAPI::DirectX11:
+		//case RendererAPI::API::DirectX11:
 
-		default:
-			break;
-		} 
+		//default:
+		//	break;
+		//} 
 	}
 }

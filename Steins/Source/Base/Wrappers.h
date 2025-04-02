@@ -1,4 +1,7 @@
 #pragma once
+#include <Base/Math/Vector2.h>
+#include <Base/Math/Vector4.h>
+#include <Base/Math/Color.h>
 
 namespace Steins
 {
@@ -28,4 +31,12 @@ namespace Steins
 	{
 		return std::make_pair<T1, T2>(std::forward<T1>(_first), std::forward<T2>(_second));
 	}
+
+	using Vector2i = Vector2<int>;
+	using Vector2f = Vector2<float>;
+	using Vector2d = Vector2<double>;
+
+	using Vector4i = Vector4<int>;
+	using Vector4f = Vector4<float>;
+	using Vector4d = Vector4<double>;
 }

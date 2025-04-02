@@ -1,15 +1,10 @@
 #pragma once
 
 #include <DirectXMath.h>
+#include "TypeTraits.h"
 
 namespace Steins
 {
-	template<typename T>
-	concept IsValid = std::is_arithmetic_v<T> && std::is_signed_v<T>;
-
-	template<typename From, typename To>
-	concept IsCastable = std::is_convertible_v<From, To>;
-
 	template<typename T>
 		requires IsValid<T>
 	class Vector2
@@ -27,11 +22,11 @@ namespace Steins
 			DirectX::XMFLOAT2 XMFloat;
 		};
 		Vector2() :x(0), y(0) {}
-		Vector2(T _x, T _y) : x(static_cast<T>(_x)), y(static_cast<T>(_y)) {}
+		Vector2(T _x, T _y) : x(_x), y(_y) {}
 
-		template<typename U>
-			requires IsCastable<U, T>
-		Vector2(U _x, U _y) : x(static_cast<T>(_x)), y(static_cast<T>(_y)) {}
+		//template<typename U>
+		//	requires IsCastable<U, T>
+		//Vector2(U _x, U _y) : x(static_cast<T>(_x)), y(static_cast<T>(_y)) {}
 
 		template<typename X, typename Y>
 			requires IsCastable<X, T> && IsCastable<Y, T>

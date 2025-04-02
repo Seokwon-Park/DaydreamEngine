@@ -1,14 +1,12 @@
 #pragma once
-#include "Steins/Enum/RendererAPI.h"
+#include "Steins/Render/RendererAPI.h"
 
 namespace Steins
 {
 	class Renderer
 	{
 	public:
-		inline static RendererAPI GetAPI() { return rendererAPI; }
-	private:
-		static RendererAPI rendererAPI;
+		inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 	};
 }
 
