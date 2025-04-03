@@ -11,7 +11,7 @@ namespace Steins
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
-		static VertexBuffer* Create(float32* _vertices, uint32 _size);
+		static VertexBuffer* Create(Float32* _vertices, UInt32 _size);
 	};
 
 	class IndexBuffer
@@ -22,7 +22,7 @@ namespace Steins
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
-		static IndexBuffer* Create(uint32* _vertices, uint32 _size);
+		static IndexBuffer* Create(UInt32* _vertices, UInt32 _size);
 	};
 }
 

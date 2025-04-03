@@ -8,10 +8,13 @@ namespace Steins
 	class VulkanGraphicsDevice :public GraphicsDevice
 	{
 	public:
-		void Init() override;
-		void Shutdown() override;
-		void Render() override;
-		void SwapBuffers() override;
+		virtual void Init() override;
+		virtual void Shutdown() override;
+		virtual void Render() override;
+		virtual void SwapBuffers() override;
+
+		virtual void SetPrimitiveTopology(PrimitiveTopology _primitiveTopology) override;
+
 	};
 }
 

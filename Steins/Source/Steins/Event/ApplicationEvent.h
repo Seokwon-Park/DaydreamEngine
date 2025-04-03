@@ -7,10 +7,10 @@ namespace Steins
 	class WindowResizeEvent : public Event
 	{
 	public:
-		WindowResizeEvent(uint32 _width, uint32 _height)
+		WindowResizeEvent(UInt32 _width, UInt32 _height)
 			: width(_width), height(_height) {}
-		inline uint32 GetWidth() const { return width; }
-		inline uint32 GetHeight() const { return height; }
+		inline UInt32 GetWidth() const { return width; }
+		inline UInt32 GetHeight() const { return height; }
 		std::string ToString() const override
 		{
 			std::stringstream ss;
@@ -20,7 +20,7 @@ namespace Steins
 		EVENT_CLASS_TYPE(WindowResize)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	private:
-		uint32 width, height;
+		UInt32 width, height;
 	};
 	class WindowCloseEvent : public Event
 	{

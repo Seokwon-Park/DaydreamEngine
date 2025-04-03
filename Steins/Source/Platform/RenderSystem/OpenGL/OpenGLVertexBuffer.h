@@ -7,27 +7,27 @@ namespace Steins
 	class OpenGLVertexBuffer : public VertexBuffer
 	{
 	public:
-		OpenGLVertexBuffer(float* vertices, uint32_t size);
+		OpenGLVertexBuffer(Float32* _vertices, UInt32 _size);
 		virtual ~OpenGLVertexBuffer();
 
 		virtual void Bind() const;
 		virtual void Unbind() const;
 	private:
-		uint32_t m_RendererID;
+		uint32_t rendererID;
 	};
 
 	class OpenGLIndexBuffer : public IndexBuffer
 	{
 	public:
-		OpenGLIndexBuffer(uint32_t* indices, uint32_t count);
+		OpenGLIndexBuffer(UInt32* _indices, UInt32 _IndexCount);
 		virtual ~OpenGLIndexBuffer();
 
 		virtual void Bind() const;
 		virtual void Unbind() const;
 
-		virtual uint32_t GetCount() const { return m_Count; }
+		virtual UInt32 GetCount() const { return indexCount; }
 	private:
-		uint32_t m_RendererID;
-		uint32_t m_Count;
+		UInt32 rendererID;
+		UInt32 indexCount;
 	};
 }

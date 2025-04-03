@@ -16,12 +16,26 @@ namespace Steins
 		virtual void Render() override;
 		virtual void SwapBuffers() override;
 
+		virtual void SetPrimitiveTopology(PrimitiveTopology _primitiveTopology) override;
 	private:
-		Microsoft::WRL::ComPtr<ID3D12Device> device;
-		Microsoft::WRL::ComPtr<ID3D12CommandQueue> commandQueue;
+		ComPtr<IDXGISwapChain3> swapChain;
 
-		Microsoft::WRL::ComPtr<IDXGIFactory7> dxgiFactory;
-		Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain;
+		ComPtr<ID3D12Device> device;
+		ComPtr<ID3D12CommandQueue> commandQueue;
+		ComPtr<ID3D12CommandAllocator> commandAllocator;
+
+		ComPtr<ID3D12Resource> m_renderTargets;
+		ComPtr<ID3D12RootSignature> m_rootSignature;
+		ComPtr<ID3D12DescriptorHeap> m_rtvHeap;
+		ComPtr<ID3D12PipelineState> m_pipelineState;
+		ComPtr<ID3D12GraphicsCommandList> m_commandList;
+
+		ComPtr<IDXGIFactory7> dxgiFactory;
+		ComPtr<IDXGISwapChain> swapChain;
+
+		ComPtr<ID3D12Debug> debugLayer;
+
+		ComPtr<ID3D12Fence> m_fence;
 	};
 }
 

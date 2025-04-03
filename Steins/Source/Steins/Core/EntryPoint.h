@@ -5,7 +5,7 @@ namespace Steins
 	extern Application* CreateApplication();
 }
 
-int32 main(int argc, char** argv)
+Int32 main(int argc, char** argv)
 {
 	Steins::Logger::Init();
 

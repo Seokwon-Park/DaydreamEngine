@@ -2,7 +2,7 @@
 
 namespace Steins
 {
-	using KeyCode = uint16;
+	using KeyCode = UInt16;
 	namespace Key
 	{
 		enum : KeyCode

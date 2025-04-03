@@ -11,12 +11,12 @@ namespace Steins
 	struct WindowProps
 	{
 		std::string title;
-		uint32 width;
-		uint32 height;
+		UInt32 width;
+		UInt32 height;
 
 		WindowProps(const std::string& _title = "Steins; Engine",
-			uint32 _width = 1280,
-			uint32 _height = 720)
+			UInt32 _width = 1280,
+			UInt32 _height = 720)
 			:title(_title), width(_width), height(_height)
 		{
 
@@ -35,8 +35,8 @@ namespace Steins
 
 		virtual void OnUpdate() = 0;
 
-		virtual uint32 GetWidth() const = 0;
-		virtual uint32 GetHeight() const = 0;
+		virtual UInt32 GetWidth() const = 0;
+		virtual UInt32 GetHeight() const = 0;
 
 		// Window attributes
 		virtual void SetEventCallback(const EventCallbackFn& _callbackFn) = 0;
@@ -45,7 +45,7 @@ namespace Steins
 
 		virtual int GetKeyState(int _key) const = 0;
 		virtual int GetMouseState(int _mouse) const = 0;
-		virtual Pair<float32, float32> GetMousePos() const = 0;
+		virtual Pair<Float32, Float32> GetMousePos() const = 0;
 		virtual void* GetNativeWindow() const = 0;
 
 		virtual void SetKeyState(int _key, int _state) = 0;

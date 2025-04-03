@@ -1,6 +1,8 @@
 #include "SteinsPCH.h"
 #include "D3D11GraphicsDevice.h"
 
+#include "GLFW/glfw3.h"
+
 namespace Steins
 {
 	namespace
@@ -22,19 +24,33 @@ namespace Steins
 	D3D11GraphicsDevice::D3D11GraphicsDevice(SteinsWindow* _window)
 		:GraphicsDevice(_window)
 	{ 
-		Init();
 	}
 
 	void D3D11GraphicsDevice::Init()
 	{
-		D3D_DRIVER_TYPE driverType = D3D_DRIVER_TYPE_UNKNOWN;
+		UInt32 creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+
+#if defined(_DEBUG)
+		// If the project is in a debug build, enable debugging via SDK Layers.
+		creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+		
+		D3D_FEATURE_LEVEL featureLevels[] =
+		{
+			D3D_FEATURE_LEVEL_11_1,
+			D3D_FEATURE_LEVEL_11_0,
+			D3D_FEATURE_LEVEL_9_1
+		};
+
+		glfwMakeContextCurrent((GLFWwindow*)windowHandle->GetNativeWindow());
+		D3D_DRIVER_TYPE driverType = D3D_DRIVER_TYPE_HARDWARE;
 		HRESULT hr = D3D11CreateDevice(
-			NULL,
+			nullptr,
 			driverType,
-			NULL,
-			debugLayerEnabled ? D3D11_CREATE_DEVICE_DEBUG : D3D11_CREATE_DEVICE_SINGLETHREADED,
-			NULL,
-			NULL,
+			nullptr,
+			creationFlags,
+			featureLevels,
+			ARRAYSIZE(featureLevels),
 			D3D11_SDK_VERSION,
 			device.GetAddressOf(),
 			&featureLevel,
@@ -121,6 +137,9 @@ namespace Steins
 	}
 
 	void D3D11GraphicsDevice::SwapBuffers()
+	{
+	}
+	void D3D11GraphicsDevice::SetPrimitiveTopology(PrimitiveTopology _primitiveTopology)
 	{
 	}
 }

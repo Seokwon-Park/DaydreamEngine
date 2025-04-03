@@ -139,9 +139,6 @@
     <ClInclude Include="Source\Steins\Core\PlatformDetection.h">
       <Filter>Steins\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Enum\RendererAPI.h">
-      <Filter>Steins\Enum</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Steins\Event\ApplicationEvent.h">
       <Filter>Steins\Event</Filter>
     </ClInclude>
@@ -179,6 +176,14 @@
       <Filter>Steins</Filter>
     </ClInclude>
     <ClInclude Include="Source\SteinsPCH.h" />
+    <ClInclude Include="Source\Base\Math\Color.h" />
+    <ClInclude Include="Source\Base\Math\TypeTraits.h" />
+    <ClInclude Include="Source\Steins\Render\RendererAPI.h" />
+    <ClInclude Include="Source\Base\Math\Vector4.h" />
+    <ClInclude Include="Source\Base\Container\String.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLRendererAPI.h" />
+    <ClInclude Include="Source\Steins\Render\RenderCommand.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11RendererAPI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\Container\Array.cpp">
@@ -260,5 +265,12 @@
       <Filter>Steins</Filter>
     </ClCompile>
     <ClCompile Include="Source\SteinsPCH.cpp" />
+    <ClCompile Include="Source\Base\Math\Color.cpp" />
+    <ClCompile Include="Source\Steins\Render\RendererAPI.cpp" />
+    <ClCompile Include="Source\Base\Math\Vector4.cpp" />
+    <ClCompile Include="Source\Base\Container\String.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLRendererAPI.cpp" />
+    <ClCompile Include="Source\Steins\Render\RenderCommand.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11RendererAPI.cpp" />
   </ItemGroup>
 </Project>

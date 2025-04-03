@@ -13,9 +13,9 @@ namespace Steins
 		static bool GetKeyUp(KeyCode _key);
 
 		static bool GetMouseButtonPress(MouseCode button);
-		static Pair<float32, float32> GetMousePosition();
-		static float32 GetMouseX();
-		static float32 GetMouseY();
+		static Pair<Float32, Float32> GetMousePosition();
+		static Float32 GetMouseX();
+		static Float32 GetMouseY();
 			
 	};
 }

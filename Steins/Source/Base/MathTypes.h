@@ -2,25 +2,26 @@
 
 #include <numbers>
 
-
 // unsigned integers
-using uint64 = uint64_t;
-using uint32 = uint32_t;
-using uint16 = uint16_t;
-using uint8 = uint8_t;
+using UInt64 = uint64_t;
+using UInt32 = uint32_t;
+using UInt16 = uint16_t;
+using UInt8 = uint8_t;
 
 // signed integers
-using int64 = int64_t;
-using int32 = int32_t;
-using int16 = int16_t;
-using int8 = int8_t;
+using Int64 = int64_t;
+using Int32 = int32_t;
+using Int16 = int16_t;
+using Int8 = int8_t;
 
-using float32 = float;
+using Bool = bool;
+
+using Float32 = float;
 
 namespace Steins
 {
-	constexpr float32 PI = static_cast<float32>(std::numbers::pi);
-	constexpr float32 halfPI = PI * 0.5f;
-	constexpr float32 two = PI * 2.0f;
-	constexpr float32 epsilon = 1e-5f;
+	constexpr Float32 PI = static_cast<Float32>(std::numbers::pi);
+	constexpr Float32 halfPI = PI * 0.5f;
+	constexpr Float32 two = PI * 2.0f;
+	constexpr Float32 epsilon = 1e-5f;
 }

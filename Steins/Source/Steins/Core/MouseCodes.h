@@ -2,7 +2,7 @@
 
 namespace Steins
 {
-	using MouseCode = uint16;
+	using MouseCode = UInt16;
 
 	namespace Mouse
 	{

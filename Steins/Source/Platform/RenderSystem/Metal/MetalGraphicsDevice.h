@@ -5,6 +5,12 @@ namespace Steins
 {
     class MetalGraphicsDevice : public GraphicsDevice
     {
+        // Inherited via GraphicsDevice
+        void Init() override;
+        void Shutdown() override;
+        void Render() override;
+        void SwapBuffers() override;
+        void SetPrimitiveTopology(PrimitiveTopology _primitiveTopology) override;
     };
 }
 

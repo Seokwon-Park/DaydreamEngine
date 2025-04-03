@@ -19,8 +19,8 @@ namespace Steins
 
 		void OnUpdate() override;
 
-		inline uint32 GetWidth() const override { return windowData.width; }
-		inline uint32 GetHeight() const override { return windowData.height; }
+		inline UInt32 GetWidth() const override { return windowData.width; }
+		inline UInt32 GetHeight() const override { return windowData.height; }
 
 		inline void SetEventCallback(const EventCallbackFn& _callbackFn) override { windowData.eventCallbackFn = _callbackFn; }
 		void SetVSync(bool _enabled) override;
@@ -29,11 +29,11 @@ namespace Steins
 		inline int GetKeyState(int _key) const override { return windowData.keyStates[_key]; }
 		inline int GetMouseState(int _mousebutton) const override { return glfwGetMouseButton(glfwWindow, _mousebutton); }
 
-		inline Pair<float32, float32> GetMousePos() const override
+		inline Pair<Float32, Float32> GetMousePos() const override
 		{
 			double xpos, ypos;
 			glfwGetCursorPos(glfwWindow, &xpos, &ypos);
-			return MakePair<float32, float32>(static_cast<float32>(xpos), static_cast<float32>(ypos));
+			return MakePair<Float32, Float32>(static_cast<Float32>(xpos), static_cast<Float32>(ypos));
 		}
 		void* GetNativeWindow() const override { return glfwWindow; }
 
@@ -46,18 +46,19 @@ namespace Steins
 		virtual void Init(const WindowProps& _props);
 		virtual void Shutdown();
 
-		GLFWwindow* glfwWindow;
-		GraphicsDevice* graphicsDevice;
+		GLFWwindow* glfwWindow = nullptr;
+		GraphicsDevice* graphicsDevice = nullptr;
 
-		HWND windowHandle;
+		HWND windowHandle = nullptr;
 
 		struct WindowData
 		{
 			std::string title;
-			uint32 width, height;
+			UInt32 width = 0;
+			UInt32 height = 0;
 			bool isVSync;
 			EventCallbackFn eventCallbackFn;
-			std::vector<uint16> keyStates;
+			std::vector<UInt16> keyStates;
 			std::vector<bool> keyDownChecker;
 		};
 		WindowData windowData;

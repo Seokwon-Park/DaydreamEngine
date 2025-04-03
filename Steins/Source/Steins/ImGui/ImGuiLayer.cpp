@@ -77,7 +77,7 @@ namespace Steins
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::GetInstance();
-		io.DisplaySize = ImVec2(static_cast<float32>(app.GetMainWindow().GetWidth()), static_cast<float32>(app.GetMainWindow().GetHeight()));
+		io.DisplaySize = ImVec2(static_cast<Float32>(app.GetMainWindow().GetWidth()), static_cast<Float32>(app.GetMainWindow().GetHeight()));
 
 		static bool show = true;
 		ImGui::ShowDemoWindow(&show);

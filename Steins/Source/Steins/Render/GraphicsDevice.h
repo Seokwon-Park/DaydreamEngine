@@ -7,6 +7,15 @@ namespace Steins
 	class GraphicsDevice
 	{
 	public:
+		enum class PrimitiveTopology
+		{
+			PointList,
+			LineList,
+			LineStrip,
+			TriangleList,
+			TriangleStrip
+		};
+
 		GraphicsDevice(SteinsWindow* _window) : windowHandle(_window) {}
 		virtual ~GraphicsDevice() {};
 
@@ -14,6 +23,8 @@ namespace Steins
 		virtual void Shutdown() = 0;
 		virtual void Render() = 0;
 		virtual void SwapBuffers() = 0;
+
+		virtual void SetPrimitiveTopology(PrimitiveTopology _primitiveTopology) = 0;
 
 	protected:
 		SteinsWindow* windowHandle;

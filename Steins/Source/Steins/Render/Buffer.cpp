@@ -8,7 +8,7 @@
 
 namespace Steins
 {
-	VertexBuffer* VertexBuffer::Create(float32* _vertices, uint32 _size)
+	VertexBuffer* VertexBuffer::Create(Float32* _vertices, UInt32 _size)
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -19,7 +19,7 @@ namespace Steins
 		STEINS_CORE_ASSERT(false, "Unknown RendererAPI!");
 		return nullptr;
 	}
-	IndexBuffer* IndexBuffer::Create(uint32* _vertices, uint32 _size)
+	IndexBuffer* IndexBuffer::Create(UInt32* _vertices, UInt32 _size)
 	{
 		switch (Renderer::GetAPI())
 		{

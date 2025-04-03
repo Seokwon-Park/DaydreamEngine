@@ -40,17 +40,17 @@ namespace Steins
 		int state = window.GetMouseState(_button);
 		return state == STEINS_PRESS;
 	}
-	Pair<float32, float32> Input::GetMousePosition()
+	Pair<Float32, Float32> Input::GetMousePosition()
 	{
 		SteinsWindow& window = Application::GetInstance().GetMainWindow();
-		Pair<float32, float32> mousePos = window.GetMousePos();
+		Pair<Float32, Float32> mousePos = window.GetMousePos();
 		return mousePos;
 	}
-	float32 Input::GetMouseX()
+	Float32 Input::GetMouseX()
 	{
 		return GetMousePosition().first;
 	}
-	float32 Input::GetMouseY()
+	Float32 Input::GetMouseY()
 	{
 		return GetMousePosition().second;
 	}

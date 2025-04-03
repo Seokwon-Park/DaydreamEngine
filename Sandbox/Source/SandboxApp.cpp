@@ -11,8 +11,6 @@ public :
 
 		Steins::Color c;
 		c.x = 10;
-		STEINS_TRACE("{0}", c.r);
-		STEINS_TRACE("{0}", c.x);
 
 		//STEINS_INFO("TestLayer::UPDATE");
 		/*if(Steins::Input::GetKeyDown(Steins::Key::Up))

@@ -6,7 +6,7 @@ namespace Steins
 	class KeyEvent : public Event
 	{
 	public:
-		inline int32 GetKeyCode() const { return keyCode; }
+		inline Int32 GetKeyCode() const { return keyCode; }
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 	protected:
 		KeyEvent(int _keyCode)
@@ -19,7 +19,7 @@ namespace Steins
 	public:
 		KeyPressedEvent(int _keyCode, int _reapeatCount)
 			: KeyEvent(_keyCode), repeatCount(_reapeatCount) {}
-		inline int32 GetRepeatCount() const { return repeatCount; }
+		inline Int32 GetRepeatCount() const { return repeatCount; }
 		std::string ToString() const override
 		{
 			std::stringstream ss;
@@ -28,7 +28,7 @@ namespace Steins
 		}
 		EVENT_CLASS_TYPE(KeyPressed)
 	private:
-		int32 repeatCount;
+		Int32 repeatCount;
 	};
 
 	class KeyReleasedEvent : public KeyEvent

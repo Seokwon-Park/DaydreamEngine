@@ -6,6 +6,7 @@
 #include "Steins/Event/ApplicationEvent.h"
 
 #include "Platform/RenderSystem/OpenGL/OpenGLGraphicsDevice.h"
+#include "Platform/RenderSystem/DirectX11/D3D11GraphicsDevice.h"
 
 namespace Steins
 {
@@ -43,15 +44,15 @@ namespace Steins
 
 		if (false == isGLFWInitialized)
 		{
-			int32 success = glfwInit();
+			Int32 success = glfwInit();
 			STEINS_CORE_ASSERT(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
 			isGLFWInitialized = true;
 		}
 
-		glfwWindow = glfwCreateWindow((int32)_props.width, (int32)_props.height, _props.title.c_str(), nullptr, nullptr);
+		glfwWindow = glfwCreateWindow((Int32)_props.width, (Int32)_props.height, _props.title.c_str(), nullptr, nullptr);
 
-		graphicsDevice = new OpenGLGraphicsDevice(this);
+		graphicsDevice = new D3D11GraphicsDevice(this);
 		graphicsDevice->Init();
 
 		glfwSetWindowUserPointer(glfwWindow, &windowData);
@@ -102,7 +103,7 @@ namespace Steins
 				}
 				}
 			});
-		glfwSetCharCallback(glfwWindow, [](GLFWwindow* _window, uint32 _keycode)
+		glfwSetCharCallback(glfwWindow, [](GLFWwindow* _window, UInt32 _keycode)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(_window);
 
@@ -156,7 +157,7 @@ namespace Steins
 
 	void WindowsWindow::SetVSync(bool _enabled)
 	{
-		glfwSwapInterval((int32)_enabled);
+		glfwSwapInterval((Int32)_enabled);
 		windowData.isVSync = _enabled;
 	}
 	bool WindowsWindow::IsVSync() const

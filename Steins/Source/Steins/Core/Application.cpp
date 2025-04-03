@@ -5,6 +5,7 @@
 #include "Input.h"
 #include "KeyCodes.h"
 #include "Steins/ImGui/ImGuiLayer.h"
+#include "Steins/Render/Renderer.h"
 
 #include "glad/glad.h"
 
@@ -25,7 +26,7 @@ namespace Steins
 		imGuiLayer = new ImGuiLayer();
 		AttachOverlay(imGuiLayer);
 
-		glGenVertexArrays(1, &m_VertexArray);
+	/*	glGenVertexArrays(1, &m_VertexArray);
 		glBindVertexArray(m_VertexArray);
 
 		glGenBuffers(1, &m_VertexBuffer);
@@ -46,7 +47,7 @@ namespace Steins
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer);
 
 		unsigned int indices[3] = { 0, 1, 2 };
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);*/
 	}
 
 	Application::~Application()
@@ -90,6 +91,7 @@ namespace Steins
 		}
 		mainWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
 		ImGuiLayer::Init(mainWindow.get());
+
 		isRunning = true;
 
 		return true;
@@ -98,9 +100,8 @@ namespace Steins
 	{
 		while (isRunning)
 		{
-
-			glClearColor(0.1f, 0.1f, 0.1f, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
+			RenderCommand::SetClearColor(Color::Red);
+			RenderCommand::Clear();
 
 			glBindVertexArray(m_VertexArray);
 			glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);

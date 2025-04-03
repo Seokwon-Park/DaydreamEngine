@@ -11,31 +11,35 @@ namespace Steins
 		{
 			struct
 			{
-				float32 x;
-				float32 y;
-				float32 z;
-				float32 w;
+				Float32 x;
+				Float32 y;
+				Float32 z;
+				Float32 w;
 			};
 
 			struct
 			{
-				float32 r;
-				float32 g;
-				float32 b;
-				float32 a;
+				Float32 r;
+				Float32 g;
+				Float32 b;
+				Float32 a;
 			};
 
-			float32 color[4];
+			Float32 color[4];
 			DirectX::XMFLOAT4 XMFloat;
 		};
 		Color() :x(0.0f), y(0.0f), z(0.0f), w(0.0f) {}
-		Color(float32 _x, float32 _y, float32 _z, float32 _w) : x(_x), y(_y), z(_z), w(_w) {}
+		Color(Float32 _x, Float32 _y, Float32 _z, Float32 _w) : x(_x), y(_y), z(_z), w(_w) {}
 
 		template<typename U>
-			requires IsCastable<U, float32>
+			requires IsCastable<U, Float32>
 		Color(U _x, U _y, U _z, U _w)
-			: r(static_cast<float32>(_x)), g(static_cast<float32>(_y)), b(static_cast<float32>(_z)), a(static_cast<float32>(_w)) {}
+			: r(static_cast<Float32>(_x)), g(static_cast<Float32>(_y)), b(static_cast<Float32>(_z)), a(static_cast<Float32>(_w)) {}
 
+		static const Color Red;
+		static const Color Green;
+		static const Color Blue;
+		static const Color White;
 		//template<typename X, typename Y, typename Z>
 		//	requires IsCastable<X, T>&& IsCastable<Y, T>&& IsCastable<Z, T>
 		//Color(X _x, Y _y, Z _z)

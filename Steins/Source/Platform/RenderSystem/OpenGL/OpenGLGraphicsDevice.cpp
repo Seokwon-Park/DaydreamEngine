@@ -21,10 +21,10 @@ namespace Steins
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		STEINS_CORE_ASSERT(status, "Failed to initialize Glad!");
 
-		//STEINS_CORE_INFO("OpenGL Info:");
-		//STEINS_CORE_INFO("  Vendor: {0}", glGetString(GL_VENDOR));
-		//STEINS_CORE_INFO("  Renderer: {0}", glGetString(GL_RENDERER));
-		//STEINS_CORE_INFO("  Version: {0}", glGetString(GL_VERSION));
+		STEINS_CORE_INFO("OpenGL Info:");
+		STEINS_CORE_INFO("  Vendor: {0}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
+		STEINS_CORE_INFO("  Renderer: {0}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
+		STEINS_CORE_INFO("  Version: {0}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
 	}
 	void OpenGLGraphicsDevice::Shutdown()
 	{
@@ -35,5 +35,8 @@ namespace Steins
 	void OpenGLGraphicsDevice::SwapBuffers()
 	{
 		glfwSwapBuffers(nativeWindow);
+	}
+	void OpenGLGraphicsDevice::SetPrimitiveTopology(PrimitiveTopology _primitiveTopology)
+	{
 	}
 }

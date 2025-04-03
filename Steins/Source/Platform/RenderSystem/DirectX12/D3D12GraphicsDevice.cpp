@@ -14,13 +14,32 @@ namespace Steins
 
 	void D3D12GraphicsDevice::Init()
 	{
+#if defined(_DEBUG)
+		// Enable the D3D12 debug layer.
+		{
+			
+			if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
+			{
+				debugController->EnableDebugLayer();
+			}
+		}
+#endif
+
 		// DXGI 팩토리 생성
 		CreateDXGIFactory1(IID_PPV_ARGS(&dxgiFactory));
 
 		// 디바이스 생성
 		Microsoft::WRL::ComPtr<IDXGIAdapter1> adapter;
 		dxgiFactory->EnumAdapters1(0, &adapter);
-		D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&device));
+		HRESULT hr = D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&device));
+
+		if (FAILED(hr)) // 하드웨어 장치를 생성할 수 없다면 
+		{
+			Microsoft::WRL::ComPtr<IDXGIAdapter> warpAdapter;
+			dxgiFactory->EnumWarpAdapter(IID_PPV_ARGS(&warpAdapter));
+			D3D12CreateDevice(warpAdapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&device)
+		);
+	}
 
 		// 커맨드 큐 생성
 		D3D12_COMMAND_QUEUE_DESC queueDesc = {};
@@ -50,6 +69,9 @@ namespace Steins
 	}
 
 	void D3D12GraphicsDevice::SwapBuffers()
+	{
+	}
+	void D3D12GraphicsDevice::SetPrimitiveTopology(PrimitiveTopology _primitiveTopology)
 	{
 	}
 }
