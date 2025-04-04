@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Steins/Window.h"
+#include "Base/MathTypes.h"
+#include "Steins/Enum/RendererAPIType.h"
 
 namespace Steins
 {
@@ -16,7 +17,7 @@ namespace Steins
 			TriangleStrip
 		};
 
-		GraphicsDevice(SteinsWindow* _window) : windowHandle(_window) {}
+		GraphicsDevice(class SteinsWindow* _window);
 		virtual ~GraphicsDevice() {};
 
 		virtual void Init() = 0;
@@ -25,8 +26,10 @@ namespace Steins
 		virtual void SwapBuffers() = 0;
 
 		virtual void SetPrimitiveTopology(PrimitiveTopology _primitiveTopology) = 0;
+		virtual void DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex) = 0;
 
+		static GraphicsDevice* Create(class SteinsWindow* _window);
 	protected:
-		SteinsWindow* windowHandle;
+		class SteinsWindow* windowHandle;
 	};
 }

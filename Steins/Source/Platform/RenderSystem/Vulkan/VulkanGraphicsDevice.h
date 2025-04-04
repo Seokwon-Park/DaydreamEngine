@@ -15,6 +15,13 @@ namespace Steins
 
 		virtual void SetPrimitiveTopology(PrimitiveTopology _primitiveTopology) override;
 
+	private:
+		VkInstance instance; // Vulkan library handle
+		VkDebugUtilsMessengerEXT debugMessenger; // Vulkan debug output handle
+		VkPhysicalDevice chosenGPU; // GPU chosen as the default device
+		VkDevice device; // Vulkan device for commands
+		VkSurfaceKHR surface; // Vulkan window surface
+
 	};
 }
 

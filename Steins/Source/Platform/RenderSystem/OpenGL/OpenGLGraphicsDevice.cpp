@@ -1,5 +1,7 @@
 #include "SteinsPCH.h"
 #include "OpenGLGraphicsDevice.h"
+#include "Steins/Core/Window.h"
+
 #include "glad/glad.h"
 
 namespace Steins
@@ -37,6 +39,11 @@ namespace Steins
 		glfwSwapBuffers(nativeWindow);
 	}
 	void OpenGLGraphicsDevice::SetPrimitiveTopology(PrimitiveTopology _primitiveTopology)
+	{
+
+	}
+
+	void OpenGLGraphicsDevice::DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex)
 	{
 	}
 }

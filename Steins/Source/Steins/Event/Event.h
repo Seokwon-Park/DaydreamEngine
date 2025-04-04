@@ -1,5 +1,7 @@
 #pragma once
 
+#include "SteinsPCH.h"
+
 #include "Base/MathTypes.h"
 
 #define BIT(x) 1 << x

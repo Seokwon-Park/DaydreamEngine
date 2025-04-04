@@ -1,5 +1,5 @@
 #include "SteinsPCH.h"
-#include "OpenGLVertexBuffer.h"
+#include "OpenGLBuffer.h"
 
 #include "glad/glad.h"
 
@@ -24,6 +24,9 @@ namespace Steins {
 	void OpenGLVertexBuffer::Bind() const
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, rendererID);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
 	}
 
 	void OpenGLVertexBuffer::Unbind() const

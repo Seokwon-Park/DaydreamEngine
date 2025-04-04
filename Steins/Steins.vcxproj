@@ -97,7 +97,11 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexArray.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Buffer.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11RendererAPI.h" />
+    <ClInclude Include="Source\Steins\Core\Timestep.h" />
+    <ClInclude Include="Source\Steins\Enum\RendererAPIType.h" />
     <ClInclude Include="Source\Steins\Render\RenderCommand.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLRendererAPI.h" />
     <ClInclude Include="Source\Base\Container\String.h" />
@@ -116,7 +120,7 @@
     <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12GraphicsDevice.h" />
     <ClInclude Include="Source\Platform\RenderSystem\Metal\MetalGraphicsDevice.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLGraphicsDevice.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexBuffer.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanGraphicsDevice.h" />
     <ClInclude Include="Source\Steins.h" />
     <ClInclude Include="Source\Steins\Core\Application.h" />
@@ -141,12 +145,15 @@
     <ClInclude Include="Source\Steins\Render\GraphicsDevice.h" />
     <ClInclude Include="Source\Steins\Render\Renderer.h" />
     <ClInclude Include="Source\Steins\Render\Shader.h" />
-    <ClInclude Include="Source\Steins\Window.h" />
-    <ClInclude Include="Source\Steins\WindowDefine.h" />
+    <ClInclude Include="Source\Steins\Core\Window.h" />
+    <ClInclude Include="Source\Steins\Core\WindowDefine.h" />
     <ClInclude Include="Source\SteinsPCH.h" />
     <ClInclude Include="Source\Base\Math\Vector4.h" />
+    <ClInclude Include="Source\Steins\Render\VertexArray.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexArray.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Buffer.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11RendererAPI.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLRendererAPI.cpp" />
     <ClCompile Include="Source\Base\Container\String.cpp" />
@@ -162,7 +169,7 @@
     <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12GraphicsDevice.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\Metal\MetalGraphicsDevice.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLGraphicsDevice.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexBuffer.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanGraphicsDevice.cpp" />
     <ClCompile Include="Source\Steins\Core\Application.cpp" />
     <ClCompile Include="Source\Steins\Core\GameObject.cpp" />
@@ -174,15 +181,17 @@
     <ClCompile Include="Source\Steins\ImGui\ImGuiHelper.cpp" />
     <ClCompile Include="Source\Steins\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="Source\Steins\Render\Buffer.cpp" />
+    <ClCompile Include="Source\Steins\Render\GraphicsDevice.cpp" />
     <ClCompile Include="Source\Steins\Render\RenderCommand.cpp" />
     <ClCompile Include="Source\Steins\Render\RendererAPI.cpp" />
     <ClCompile Include="Source\Steins\Render\Renderer.cpp" />
     <ClCompile Include="Source\Steins\Render\Shader.cpp" />
-    <ClCompile Include="Source\Steins\Window.cpp" />
+    <ClCompile Include="Source\Steins\Core\Window.cpp" />
     <ClCompile Include="Source\SteinsPCH.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Source\Base\Math\Vector4.cpp" />
+    <ClCompile Include="Source\Steins\Render\VertexArray.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Vendor\glfw\GLFW.vcxproj">

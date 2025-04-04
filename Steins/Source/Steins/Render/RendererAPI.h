@@ -1,24 +1,21 @@
 #pragma once
+#include "GraphicsDevice.h"
+#include "Steins/Enum/RendererAPIType.h"
 
 namespace Steins
 {
 	class RendererAPI
 	{
 	public:
-		enum class API
-		{
-			None,
-			OpenGL,
-			DirectX11,
-		};
-
+		virtual void Init(GraphicsDevice* _device);
 		virtual void SetClearColor(const Color& _color) = 0;
 		virtual void Clear() = 0;
-		//virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) = 0;
-
-		static API GetAPI() { return graphicsAPI; }
-		std::string GetAPIName() const;
+		virtual void DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex) = 0;
+		inline static void SetRendererAPI(RendererAPIType _Type) { API = _Type; }
+		inline static RendererAPIType GetRendererAPI() { return API; }
 	protected:
-		inline static API graphicsAPI = API::None;
+		GraphicsDevice* device;
+	private:
+		static RendererAPIType API;
 	};
 }

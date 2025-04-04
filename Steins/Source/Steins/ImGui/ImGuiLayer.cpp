@@ -1,11 +1,8 @@
 #include "SteinsPCH.h"
 #include "ImGuiLayer.h"
+#include "ImGuiHelper.h"
 
 #include <imgui.h>
-
-#include <backends/imgui_impl_glfw.h>
-#include <backends/imgui_impl_opengl3.h>
-#include <backends/imgui_impl_dx11.h>
 
 #include <GLFW/glfw3.h>
 
@@ -22,10 +19,9 @@ namespace Steins
 	{
 	}
 
-	void ImGuiLayer::Init(SteinsWindow* _window)
+	void ImGuiLayer::Init()
 	{
-		ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)_window->GetNativeWindow(), true);
-		ImGui_ImplOpenGL3_Init("#version 410");
+		ImGuiHelper::Init();
 	}
 
 	void ImGuiLayer::OnAttach()
@@ -46,8 +42,7 @@ namespace Steins
 
 		SetDarkThemeColors();
 		
-		Application& app = Application::GetInstance();
-		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetMainWindow().GetNativeWindow());
+
 
 		//ImGui_ImplGlfw_InitForOpenGL(window, true);
 		//ImGui_ImplOpenGL3_Init("#version 410");

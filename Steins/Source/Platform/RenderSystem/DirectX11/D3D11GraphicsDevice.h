@@ -17,13 +17,14 @@ namespace Steins
 		virtual void SwapBuffers() override;
 
 		virtual void SetPrimitiveTopology(PrimitiveTopology _primitiveTopology) override;
+		virtual void DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex) override;
 	private:
 		bool debugLayerEnabled = true;
 		D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_1;
 
 		ComPtr<ID3D11Debug> debugLayer = nullptr;
 		ComPtr<ID3D11Device> device = nullptr;
-		ComPtr<ID3D11DeviceContext> commandList = nullptr;
+		ComPtr<ID3D11DeviceContext> deviceContext = nullptr;
 
 		ComPtr<IDXGIDevice> dxgiDevice = nullptr;
 		ComPtr<IDXGIAdapter> dxgiAdapter = nullptr;

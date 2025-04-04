@@ -16,7 +16,7 @@ namespace Steins
 		~ImGuiLayer();
 
 		//Init ImGui For _window
-		static void Init(class SteinsWindow* _window);
+		static void Init();
 
 		void OnAttach() override;
 		void OnDetach() override;

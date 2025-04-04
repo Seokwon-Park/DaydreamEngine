@@ -2,7 +2,7 @@
 #include "Input.h"
 
 #include "Application.h"
-#include "Steins/Window.h"
+#include "Steins/Core/Window.h"
 #include "Steins/Event/KeyEvent.h"
 
 namespace Steins

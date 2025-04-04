@@ -1,7 +1,6 @@
 #pragma once
 
-#include "SteinsPCH.h"
-
+#include "Steins/Render/GraphicsDevice.h"
 #include "Steins/Event/Event.h"
 #include "WindowDefine.h"
 
@@ -30,7 +29,7 @@ namespace Steins
 	public:
 		using EventCallbackFn = std::function<void(Event&)>;
 
-		SteinsWindow();
+		SteinsWindow() {};
 		virtual ~SteinsWindow() {}
 
 		virtual void OnUpdate() = 0;
@@ -54,7 +53,10 @@ namespace Steins
 		virtual void OnUpdateKeyState() = 0;
 
 		static Unique<SteinsWindow> Create(const WindowProps& _props = WindowProps());
+
+		inline GraphicsDevice* GetGraphicsDevice() const { return graphicsDevice; }
 	protected:
+		GraphicsDevice* graphicsDevice = nullptr;
 	private:
 	};
 

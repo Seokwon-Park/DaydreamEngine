@@ -12,7 +12,7 @@ namespace Steins
 {
 	namespace
 	{
-		static bool isGLFWInitialized = false;
+		static bool sIsGLFWInitialized = false;
 
 		static void GLFWErrorCallback(int _error, const char* _description)
 		{
@@ -42,17 +42,17 @@ namespace Steins
 
 		STEINS_CORE_INFO("Create Window {0} ({1}, {2})", _props.title, _props.width, _props.height);
 
-		if (false == isGLFWInitialized)
+		if (false == sIsGLFWInitialized)
 		{
 			Int32 success = glfwInit();
 			STEINS_CORE_ASSERT(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
-			isGLFWInitialized = true;
+			sIsGLFWInitialized = true;
 		}
 
 		glfwWindow = glfwCreateWindow((Int32)_props.width, (Int32)_props.height, _props.title.c_str(), nullptr, nullptr);
 
-		graphicsDevice = new D3D11GraphicsDevice(this);
+		graphicsDevice = GraphicsDevice::Create(this);
 		graphicsDevice->Init();
 
 		glfwSetWindowUserPointer(glfwWindow, &windowData);

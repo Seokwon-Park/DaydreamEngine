@@ -17,8 +17,6 @@ public :
 		{
 			STEINS_INFO("GOOD");
 		}*/
-
-		
 	}
 
 	void OnEvent(Steins::Event& _event) override

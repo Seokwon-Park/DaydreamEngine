@@ -24,18 +24,16 @@ namespace Steins
 		ComPtr<ID3D12CommandQueue> commandQueue;
 		ComPtr<ID3D12CommandAllocator> commandAllocator;
 
-		ComPtr<ID3D12Resource> m_renderTargets;
-		ComPtr<ID3D12RootSignature> m_rootSignature;
-		ComPtr<ID3D12DescriptorHeap> m_rtvHeap;
-		ComPtr<ID3D12PipelineState> m_pipelineState;
-		ComPtr<ID3D12GraphicsCommandList> m_commandList;
+		ComPtr<ID3D12Resource> renderTargets;
+		ComPtr<ID3D12RootSignature> rootSignature;
+		ComPtr<ID3D12DescriptorHeap> rtvHeap;
+		ComPtr<ID3D12PipelineState> pipelineState;
+		ComPtr<ID3D12GraphicsCommandList> commandList;
 
 		ComPtr<IDXGIFactory7> dxgiFactory;
-		ComPtr<IDXGISwapChain> swapChain;
-
 		ComPtr<ID3D12Debug> debugLayer;
 
-		ComPtr<ID3D12Fence> m_fence;
+		ComPtr<ID3D12Fence> fence;
 	};
 }
 

@@ -5,6 +5,7 @@ namespace Steins
 {
 	void VulkanGraphicsDevice::Init()
 	{
+		
 	}
 
 	void VulkanGraphicsDevice::Shutdown()

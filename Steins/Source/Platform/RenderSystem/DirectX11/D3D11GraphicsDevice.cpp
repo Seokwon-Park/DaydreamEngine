@@ -1,5 +1,6 @@
 #include "SteinsPCH.h"
 #include "D3D11GraphicsDevice.h"
+#include "Steins/Core/Window.h"
 
 #include "GLFW/glfw3.h"
 
@@ -54,7 +55,7 @@ namespace Steins
 			D3D11_SDK_VERSION,
 			device.GetAddressOf(),
 			&featureLevel,
-			commandList.GetAddressOf());
+			deviceContext.GetAddressOf());
 
 		if (FAILED(hr))
 		{
@@ -139,7 +140,13 @@ namespace Steins
 	void D3D11GraphicsDevice::SwapBuffers()
 	{
 	}
+
 	void D3D11GraphicsDevice::SetPrimitiveTopology(PrimitiveTopology _primitiveTopology)
 	{
+
+	}
+	void D3D11GraphicsDevice::DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex)
+	{
+		deviceContext->DrawIndexed(_indexCount, _startIndex, _baseVertex);
 	}
 }

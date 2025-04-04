@@ -99,7 +99,7 @@
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLGraphicsDevice.h">
       <Filter>Platform\RenderSystem\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexBuffer.h">
+    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLBuffer.h">
       <Filter>Platform\RenderSystem\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanGraphicsDevice.h">
@@ -169,10 +169,10 @@
     <ClInclude Include="Source\Steins\Render\Shader.h">
       <Filter>Steins\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Window.h">
+    <ClInclude Include="Source\Steins\Core\Window.h">
       <Filter>Steins</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\WindowDefine.h">
+    <ClInclude Include="Source\Steins\Core\WindowDefine.h">
       <Filter>Steins</Filter>
     </ClInclude>
     <ClInclude Include="Source\SteinsPCH.h" />
@@ -184,6 +184,11 @@
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLRendererAPI.h" />
     <ClInclude Include="Source\Steins\Render\RenderCommand.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11RendererAPI.h" />
+    <ClInclude Include="Source\Steins\Enum\RendererAPIType.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Buffer.h" />
+    <ClInclude Include="Source\Steins\Core\Timestep.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexArray.h" />
+    <ClInclude Include="Source\Steins\Render\VertexArray.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\Container\Array.cpp">
@@ -219,7 +224,7 @@
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLGraphicsDevice.cpp">
       <Filter>Platform\RenderSystem\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexBuffer.cpp">
+    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLBuffer.cpp">
       <Filter>Platform\RenderSystem\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanGraphicsDevice.cpp">
@@ -261,7 +266,7 @@
     <ClCompile Include="Source\Steins\Render\Shader.cpp">
       <Filter>Steins\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Window.cpp">
+    <ClCompile Include="Source\Steins\Core\Window.cpp">
       <Filter>Steins</Filter>
     </ClCompile>
     <ClCompile Include="Source\SteinsPCH.cpp" />
@@ -272,5 +277,9 @@
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLRendererAPI.cpp" />
     <ClCompile Include="Source\Steins\Render\RenderCommand.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11RendererAPI.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Buffer.cpp" />
+    <ClCompile Include="Source\Steins\Render\GraphicsDevice.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexArray.cpp" />
+    <ClCompile Include="Source\Steins\Render\VertexArray.cpp" />
   </ItemGroup>
 </Project>

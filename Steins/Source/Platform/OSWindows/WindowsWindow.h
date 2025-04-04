@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Steins/Window.h"
+#include "Steins/Core/Window.h"
 #include "Steins/Render/GraphicsDevice.h"
 
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -47,7 +47,6 @@ namespace Steins
 		virtual void Shutdown();
 
 		GLFWwindow* glfwWindow = nullptr;
-		GraphicsDevice* graphicsDevice = nullptr;
 
 		HWND windowHandle = nullptr;
 

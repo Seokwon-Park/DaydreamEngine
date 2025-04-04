@@ -1,9 +1,18 @@
 #include "SteinsPCH.h"
 #include "RendererAPI.h"
 
+
+
 namespace Steins
 {
-	std::string RendererAPI::GetAPIName() const
+	RendererAPIType RendererAPI::API = RendererAPIType::None;
+
+	void RendererAPI::Init(GraphicsDevice* _device)
+	{
+		device = _device;
+	}
+
+	/*std::string RendererAPI::GetAPIName() const
 	{
 		switch (graphicsAPI)
 		{
@@ -15,5 +24,5 @@ namespace Steins
 		}
 		STEINS_CORE_ERROR("Wrong API");
 		return "Error";
-	}
+	}*/
 }

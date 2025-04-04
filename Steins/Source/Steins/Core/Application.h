@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Steins/Window.h"
+#include "Steins/Core/Window.h"
 #include "Steins/Core/LayerStack.h"
 #include "Steins/Event/KeyEvent.h"
 #include "Steins/Event/ApplicationEvent.h"
@@ -50,8 +50,7 @@ namespace Steins
 
 		unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
 
-
-		
+		RendererAPIType API = RendererAPIType::OpenGL;
 	};
 
 	// To be defined in client

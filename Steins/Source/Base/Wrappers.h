@@ -2,6 +2,7 @@
 #include <Base/Math/Vector2.h>
 #include <Base/Math/Vector4.h>
 #include <Base/Math/Color.h>
+#include <Base/Container/Array.h>
 
 namespace Steins
 {

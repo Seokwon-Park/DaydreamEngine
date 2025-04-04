@@ -4,7 +4,8 @@
 #include "Steins/Render/Renderer.h"
 #include "Steins/Render/RendererAPI.h"
 
-#include "Platform/RenderSystem/OpenGL/OpenGLVertexBuffer.h"
+#include "Platform/RenderSystem/OpenGL/OpenGLBuffer.h"
+#include "Platform/RenderSystem/DirectX11/D3D11Buffer.h"
 
 namespace Steins
 {
@@ -12,8 +13,12 @@ namespace Steins
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::API::None:    STEINS_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::API::OpenGL:  return new OpenGLVertexBuffer(_vertices, _size);
+		case RendererAPIType::None:    STEINS_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+		case RendererAPIType::OpenGL:  return new OpenGLVertexBuffer(_vertices, _size);
+		case RendererAPIType::DirectX11:  return new D3D11VertexBuffer(_vertices, _size);
+		//case RendererAPIType::DirectX12:  return new OpenGLVertexBuffer(_vertices, _size);
+		//case RendererAPIType::Vulkan:  return new OpenGLVertexBuffer(_vertices, _size);
+		//case RendererAPIType::Metal:  return new OpenGLVertexBuffer(_vertices, _size);
 		}
 
 		STEINS_CORE_ASSERT(false, "Unknown RendererAPI!");
@@ -23,8 +28,12 @@ namespace Steins
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::API::None:    STEINS_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::API::OpenGL:  return new OpenGLIndexBuffer(_vertices, _size);
+		case RendererAPIType::None:    STEINS_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+		case RendererAPIType::OpenGL:  return new OpenGLIndexBuffer(_vertices, _size);
+		//case RendererAPIType::DirectX11:  return new OpenGLIndexBuffer(_vertices, _size);
+		//case RendererAPIType::DirectX12:  return new OpenGLIndexBuffer(_vertices, _size);
+		//case RendererAPIType::Vulkan:  return new OpenGLIndexBuffer(_vertices, _size);
+		//case RendererAPIType::Metal:  return new OpenGLIndexBuffer(_vertices, _size);
 		}
 
 		STEINS_CORE_ASSERT(false, "Unknown RendererAPI!");

@@ -18,9 +18,9 @@ namespace Steins
 		// Enable the D3D12 debug layer.
 		{
 			
-			if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
+			if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugLayer))))
 			{
-				debugController->EnableDebugLayer();
+				debugLayer->EnableDebugLayer();
 			}
 		}
 #endif

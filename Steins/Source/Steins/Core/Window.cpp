@@ -7,10 +7,6 @@
 
 namespace Steins
 {
-	SteinsWindow::SteinsWindow()
-	{
-	}
-
 	Unique<SteinsWindow> SteinsWindow::Create(const WindowProps& _props)
 	{
 #ifdef STEINS_PLATFORM_WINDOWS

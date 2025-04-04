@@ -22,6 +22,12 @@ namespace Steins
 	private:
 		GLFWwindow* nativeWindow;
 
+		//temp
+		unsigned int VAO;
+
+		// Inherited via GraphicsDevice
+		void DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex) override;
+
 		// Inherited via GraphicsDevice
 	};
 }

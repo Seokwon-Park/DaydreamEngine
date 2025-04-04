@@ -1,6 +1,7 @@
 #pragma once
 
 #pragma warning(disable: 4819)
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <iostream>
 #include <memory>
@@ -16,7 +17,6 @@
 #include "Steins/Core/Assert.h"
 #include "Base/MathTypes.h"
 #include "Base/Wrappers.h"
-
 
 #if defined(STEINS_PLATFORM_WINDOWS)
 	#ifndef NOMINMAX
