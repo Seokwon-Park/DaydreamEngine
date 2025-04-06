@@ -64,8 +64,7 @@ namespace Steins
 	}
 	void ImGuiLayer::BeginImGui()
 	{
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
+		ImGuiHelper::NewFrame();
 		ImGui::NewFrame();
 	}
 	void ImGuiLayer::EndImGui()
@@ -78,7 +77,9 @@ namespace Steins
 		ImGui::ShowDemoWindow(&show);
 
 		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		ImGuiHelper::RenderRawData();
+
+
 
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{

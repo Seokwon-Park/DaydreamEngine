@@ -2,14 +2,17 @@
 
 namespace Steins
 {
-	class String
+	class String : public std::string
 	{
 	public:
-		String() {};
+		String()
+			:std::string() {};
+		String(std::string _data)
+			:std::string(_data) {};
+		String(const char* _data)
+			:std::string(_data) {};
 		~String() {};
 
 	private:
-		char* data = nullptr;
-		UInt64 size = 0;
 	};
 }

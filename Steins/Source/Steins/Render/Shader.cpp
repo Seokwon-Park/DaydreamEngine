@@ -3,7 +3,8 @@
 
 namespace Steins
 {
-	Shader::Shader(const std::string_view& _vertexSrc, const std::string& _pixelSrc)
+	Shared<Shader> Shader::Create(const std::string_view& _vertexSrc, const std::string& _pixelSrc)
 	{
+		return Shared<Shader>();
 	}
 }

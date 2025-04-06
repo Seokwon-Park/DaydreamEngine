@@ -5,13 +5,12 @@ namespace Steins {
 	class Shader
 	{
 	public:
-		Shader(const std::string_view& _vertexSrc, const std::string& _pixelSrc);
-		~Shader();
+		virtual ~Shader() = default;
 
-		void Bind() const;
-		void Unbind() const;
-	private:
-		uint64_t rendererID;
+		virtual void Bind() const = 0;
+		virtual void Unbind() const = 0;
+
+		static Shared<Shader> Create(const std::string_view& _vertexSrc, const std::string& _pixelSrc);
 	};
 
 }

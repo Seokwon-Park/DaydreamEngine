@@ -16,10 +16,10 @@ namespace Steins
 		void PopLayer(Layer* _layer);
 		void PopOverlay(Layer* _overlay);
 
-		std::vector<Layer*>::iterator begin() { return Layers.begin(); }
-		std::vector<Layer*>::iterator end() { return Layers.end(); }
+		std::vector<Layer*>::iterator begin() { return layers.begin(); }
+		std::vector<Layer*>::iterator end() { return layers.end(); }
 	private:
-		std::vector<Layer*> Layers;
-		UInt32 LayerInsertIndex;
+		std::vector<Layer*> layers;
+		UInt32 layerInsertIndex;
 	};
 }

@@ -3,6 +3,7 @@
 #include <Base/Math/Vector4.h>
 #include <Base/Math/Color.h>
 #include <Base/Container/Array.h>
+#include <Base/Container/String.h>
 
 namespace Steins
 {
@@ -26,22 +27,30 @@ namespace Steins
 
 	//Type to Type
 	template <typename To, typename From>
-	To Cast(From from)
+	To StaticCast(From from)
 	{
 		return static_cast<To>(from);
 	}
 
 	//Pointer To Pointer
 	template <typename To, typename From>
-	To* Cast(From* from)
+	To* StaticCast(From* from)
 	{
 		return static_cast<To*>(from);
 	}
 
+	//Type to Type
 	template <typename To, typename From>
 	To DynamicCast(From from)
 	{
 		return dynamic_cast<To>(from);
+	}
+
+	//Pointer To Pointer
+	template <typename To, typename From>
+	To* DynamicCast(From* from)
+	{
+		return dynamic_cast<To*>(from);
 	}
 
 	template <typename To, typename From>

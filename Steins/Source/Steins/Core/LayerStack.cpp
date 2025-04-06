@@ -5,12 +5,12 @@ namespace Steins
 {
 	LayerStack::LayerStack()
 	{
-		LayerInsertIndex = 0;
+		layerInsertIndex = 0;
 		//Layers.reserve(512);
 	}
 	LayerStack::~LayerStack()
 	{
-		for (Layer* layer : Layers)
+		for (Layer* layer : layers)
 		{
 			layer->OnDetach();
 			delete layer;
@@ -18,21 +18,24 @@ namespace Steins
 	}
 	void LayerStack::PushLayer(Layer* _layer)
 	{
-		Layers.emplace(Layers.begin() + LayerInsertIndex, _layer);
-		LayerInsertIndex++;
+		layers.emplace(layers.begin() + layerInsertIndex, _layer);
+		layerInsertIndex++;
+		_layer->OnAttach();
 	}
 	void LayerStack::PushOverlay(Layer* _overlay)
 	{
-		Layers.emplace_back(_overlay);
+		layers.emplace_back(_overlay);
+		_overlay->OnAttach();
 	}
 	void LayerStack::PopLayer(Layer* _layer)
 	{
-		std::vector<Layer*>::iterator itr = std::find(Layers.begin(), Layers.begin() + LayerInsertIndex + 1, _layer);
-		if (itr != Layers.end())
+		std::vector<Layer*>::iterator itr = std::find(layers.begin(), layers.begin() + layerInsertIndex + 1, _layer);
+		if (itr != layers.end())
 		{
+			(*itr)->OnDetach();
 			delete* itr;
-			Layers.erase(itr);
-			LayerInsertIndex--;
+			layers.erase(itr);
+			layerInsertIndex--;
 		}
 		else
 		{
@@ -41,10 +44,12 @@ namespace Steins
 	}
 	void LayerStack::PopOverlay(Layer* _overlay)
 	{
-		std::vector<Layer*>::iterator itr = std::find(Layers.begin()+LayerInsertIndex, Layers.end(), _overlay);
-		if (itr != Layers.end())
+		std::vector<Layer*>::iterator itr = std::find(layers.begin()+ layerInsertIndex, layers.end(), _overlay);
+		if (itr != layers.end())
 		{
-			Layers.erase(itr);
+			(*itr)->OnDetach();
+			delete* itr;
+			layers.erase(itr);
 		}
 		else
 		{

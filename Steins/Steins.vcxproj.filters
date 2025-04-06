@@ -189,6 +189,8 @@
     <ClInclude Include="Source\Steins\Core\Timestep.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexArray.h" />
     <ClInclude Include="Source\Steins\Render\VertexArray.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11VertexArray.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\Container\Array.cpp">
@@ -281,5 +283,7 @@
     <ClCompile Include="Source\Steins\Render\GraphicsDevice.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexArray.cpp" />
     <ClCompile Include="Source\Steins\Render\VertexArray.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11VertexArray.cpp" />
   </ItemGroup>
 </Project>

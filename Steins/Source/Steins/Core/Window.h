@@ -55,6 +55,9 @@ namespace Steins
 		static Unique<SteinsWindow> Create(const WindowProps& _props = WindowProps());
 
 		inline GraphicsDevice* GetGraphicsDevice() const { return graphicsDevice; }
+
+		template <typename DeviceType>
+		DeviceType* GetNativeDevice() const { return DynamicCast<DeviceType>(graphicsDevice); }
 	protected:
 		GraphicsDevice* graphicsDevice = nullptr;
 	private:

@@ -97,6 +97,8 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11VertexArray.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexArray.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Buffer.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11RendererAPI.h" />
@@ -152,6 +154,8 @@
     <ClInclude Include="Source\Steins\Render\VertexArray.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11VertexArray.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexArray.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Buffer.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11RendererAPI.cpp" />

@@ -18,6 +18,9 @@ namespace Steins
 
 		virtual void SetPrimitiveTopology(PrimitiveTopology _primitiveTopology) override;
 		virtual void DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex) override;
+
+		ID3D11Device* GetDevice() const { return device.Get(); }
+		ID3D11DeviceContext* GetContext() const { return deviceContext.Get(); }
 	private:
 		bool debugLayerEnabled = true;
 		D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_1;
