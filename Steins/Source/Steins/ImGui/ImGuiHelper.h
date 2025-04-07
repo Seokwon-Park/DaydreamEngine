@@ -17,7 +17,6 @@ namespace Steins
 		static void Shutdown();
 		static void NewFrame();
 		static void RenderRawData();
-
 	};
 }
 

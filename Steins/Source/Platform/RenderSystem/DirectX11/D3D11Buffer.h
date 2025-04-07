@@ -13,10 +13,22 @@ namespace Steins
 		virtual void Bind() const;
 		virtual void Unbind() const;
 	private:
-		uint32_t rendererID;
-	private:
 		ComPtr<ID3D11Buffer> vertexBuffer;
 			
+	};
+
+	class D3D11IndexBuffer : public IndexBuffer
+	{
+	public:
+		D3D11IndexBuffer(Int32* _vertices, UInt32 _size);
+		virtual ~D3D11IndexBuffer();
+
+		virtual void Bind() const;
+		virtual void Unbind() const;
+
+	private:
+		ComPtr<ID3D11Buffer> indexBuffer;
+
 	};
 }
 

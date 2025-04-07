@@ -50,8 +50,5 @@ namespace Steins
 		//Color(X _x, Y _y, Z _z, W _w)
 		//	: x(static_cast<T>(_x)), y(static_cast<T>(_y)), z(static_cast<T>(_z)), w(static_cast<T>(_w)) {}
 	};
-
-
-
 }
 

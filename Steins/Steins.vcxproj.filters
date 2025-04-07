@@ -7,6 +7,9 @@
     <Filter Include="Base\Container">
       <UniqueIdentifier>{32AC1ED5-1E7A-12DB-070E-8301F37AEE3F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Base\IO">
+      <UniqueIdentifier>{07E2E0C6-73C1-5F62-7CD9-EA38E837C6C3}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Base\Math">
       <UniqueIdentifier>{390DA402-A577-5879-EEB5-091F5A5F36CE}</UniqueIdentifier>
     </Filter>
@@ -66,13 +69,37 @@
     <ClInclude Include="Source\Base\Container\Array.h">
       <Filter>Base\Container</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Base\Container\SmartPointer.h">
+      <Filter>Base\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Base\Container\String.h">
+      <Filter>Base\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Base\IO\File.h">
+      <Filter>Base\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Base\IO\FilePath.h">
+      <Filter>Base\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Base\Math\Color.h">
+      <Filter>Base\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Base\Math\TypeTraits.h">
+      <Filter>Base\Math</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Base\Math\Vector2.h">
       <Filter>Base\Math</Filter>
     </ClInclude>
     <ClInclude Include="Source\Base\Math\Vector3.h">
       <Filter>Base\Math</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Base\Math\Vector4.h">
+      <Filter>Base\Math</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Base\MathTypes.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Base\TypeCast.h">
       <Filter>Base</Filter>
     </ClInclude>
     <ClInclude Include="Source\Base\Wrappers.h">
@@ -87,7 +114,16 @@
     <ClInclude Include="Source\Platform\OSWindows\WindowsWindow.h">
       <Filter>Platform\OSWindows</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Buffer.h">
+      <Filter>Platform\RenderSystem\DirectX11</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11GraphicsDevice.h">
+      <Filter>Platform\RenderSystem\DirectX11</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11RendererAPI.h">
+      <Filter>Platform\RenderSystem\DirectX11</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11VertexArray.h">
       <Filter>Platform\RenderSystem\DirectX11</Filter>
     </ClInclude>
     <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12GraphicsDevice.h">
@@ -96,10 +132,19 @@
     <ClInclude Include="Source\Platform\RenderSystem\Metal\MetalGraphicsDevice.h">
       <Filter>Platform\RenderSystem\Metal</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLBuffer.h">
+      <Filter>Platform\RenderSystem\OpenGL</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLGraphicsDevice.h">
       <Filter>Platform\RenderSystem\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLBuffer.h">
+    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLRendererAPI.h">
+      <Filter>Platform\RenderSystem\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.h">
+      <Filter>Platform\RenderSystem\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexArray.h">
       <Filter>Platform\RenderSystem\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanGraphicsDevice.h">
@@ -139,6 +184,18 @@
     <ClInclude Include="Source\Steins\Core\PlatformDetection.h">
       <Filter>Steins\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Steins\Core\Timestep.h">
+      <Filter>Steins\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Core\Window.h">
+      <Filter>Steins\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Core\WindowDefine.h">
+      <Filter>Steins\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Enum\RendererAPIType.h">
+      <Filter>Steins\Enum</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Steins\Event\ApplicationEvent.h">
       <Filter>Steins\Event</Filter>
     </ClInclude>
@@ -163,43 +220,46 @@
     <ClInclude Include="Source\Steins\Render\GraphicsDevice.h">
       <Filter>Steins\Render</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Steins\Render\RenderCommand.h">
+      <Filter>Steins\Render</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Steins\Render\Renderer.h">
+      <Filter>Steins\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Render\RendererAPI.h">
       <Filter>Steins\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\Render\Shader.h">
       <Filter>Steins\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Core\Window.h">
-      <Filter>Steins</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Steins\Core\WindowDefine.h">
-      <Filter>Steins</Filter>
+    <ClInclude Include="Source\Steins\Render\VertexArray.h">
+      <Filter>Steins\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\SteinsPCH.h" />
-    <ClInclude Include="Source\Base\Math\Color.h" />
-    <ClInclude Include="Source\Base\Math\TypeTraits.h" />
-    <ClInclude Include="Source\Steins\Render\RendererAPI.h" />
-    <ClInclude Include="Source\Base\Math\Vector4.h" />
-    <ClInclude Include="Source\Base\Container\String.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLRendererAPI.h" />
-    <ClInclude Include="Source\Steins\Render\RenderCommand.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11RendererAPI.h" />
-    <ClInclude Include="Source\Steins\Enum\RendererAPIType.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Buffer.h" />
-    <ClInclude Include="Source\Steins\Core\Timestep.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexArray.h" />
-    <ClInclude Include="Source\Steins\Render\VertexArray.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11VertexArray.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\Container\Array.cpp">
       <Filter>Base\Container</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Base\Container\String.cpp">
+      <Filter>Base\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Base\IO\File.cpp">
+      <Filter>Base\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Base\IO\FilePath.cpp">
+      <Filter>Base\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Base\Math\Color.cpp">
+      <Filter>Base\Math</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Base\Math\Vector2.cpp">
       <Filter>Base\Math</Filter>
     </ClCompile>
     <ClCompile Include="Source\Base\Math\Vector3.cpp">
+      <Filter>Base\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Base\Math\Vector4.cpp">
       <Filter>Base\Math</Filter>
     </ClCompile>
     <ClCompile Include="Source\Platform\OSLinux\LinuxWindow.cpp">
@@ -214,7 +274,16 @@
     <ClCompile Include="Source\Platform\OSWindows\WindowsWindow.cpp">
       <Filter>Platform\OSWindows</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Buffer.cpp">
+      <Filter>Platform\RenderSystem\DirectX11</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11GraphicsDevice.cpp">
+      <Filter>Platform\RenderSystem\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11RendererAPI.cpp">
+      <Filter>Platform\RenderSystem\DirectX11</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11VertexArray.cpp">
       <Filter>Platform\RenderSystem\DirectX11</Filter>
     </ClCompile>
     <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12GraphicsDevice.cpp">
@@ -223,10 +292,19 @@
     <ClCompile Include="Source\Platform\RenderSystem\Metal\MetalGraphicsDevice.cpp">
       <Filter>Platform\RenderSystem\Metal</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLBuffer.cpp">
+      <Filter>Platform\RenderSystem\OpenGL</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLGraphicsDevice.cpp">
       <Filter>Platform\RenderSystem\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLBuffer.cpp">
+    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLRendererAPI.cpp">
+      <Filter>Platform\RenderSystem\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.cpp">
+      <Filter>Platform\RenderSystem\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexArray.cpp">
       <Filter>Platform\RenderSystem\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanGraphicsDevice.cpp">
@@ -250,6 +328,9 @@
     <ClCompile Include="Source\Steins\Core\Logger.cpp">
       <Filter>Steins\Core</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Steins\Core\Window.cpp">
+      <Filter>Steins\Core</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Steins\ImGui\ImGuiBackends.cpp">
       <Filter>Steins\ImGui</Filter>
     </ClCompile>
@@ -262,28 +343,24 @@
     <ClCompile Include="Source\Steins\Render\Buffer.cpp">
       <Filter>Steins\Render</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Steins\Render\GraphicsDevice.cpp">
+      <Filter>Steins\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Steins\Render\RenderCommand.cpp">
+      <Filter>Steins\Render</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Steins\Render\Renderer.cpp">
+      <Filter>Steins\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Steins\Render\RendererAPI.cpp">
       <Filter>Steins\Render</Filter>
     </ClCompile>
     <ClCompile Include="Source\Steins\Render\Shader.cpp">
       <Filter>Steins\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Core\Window.cpp">
-      <Filter>Steins</Filter>
+    <ClCompile Include="Source\Steins\Render\VertexArray.cpp">
+      <Filter>Steins\Render</Filter>
     </ClCompile>
     <ClCompile Include="Source\SteinsPCH.cpp" />
-    <ClCompile Include="Source\Base\Math\Color.cpp" />
-    <ClCompile Include="Source\Steins\Render\RendererAPI.cpp" />
-    <ClCompile Include="Source\Base\Math\Vector4.cpp" />
-    <ClCompile Include="Source\Base\Container\String.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLRendererAPI.cpp" />
-    <ClCompile Include="Source\Steins\Render\RenderCommand.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11RendererAPI.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Buffer.cpp" />
-    <ClCompile Include="Source\Steins\Render\GraphicsDevice.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexArray.cpp" />
-    <ClCompile Include="Source\Steins\Render\VertexArray.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11VertexArray.cpp" />
   </ItemGroup>
 </Project>

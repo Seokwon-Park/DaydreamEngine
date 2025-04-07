@@ -30,7 +30,7 @@ namespace Steins
 		{
 		case RendererAPIType::None:    STEINS_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
 		case RendererAPIType::OpenGL:  return new OpenGLIndexBuffer(_vertices, _size);
-		//case RendererAPIType::DirectX11:  return new OpenGLIndexBuffer(_vertices, _size);
+		case RendererAPIType::DirectX11:  return new OpenGLIndexBuffer(_vertices, _size);
 		//case RendererAPIType::DirectX12:  return new OpenGLIndexBuffer(_vertices, _size);
 		//case RendererAPIType::Vulkan:  return new OpenGLIndexBuffer(_vertices, _size);
 		//case RendererAPIType::Metal:  return new OpenGLIndexBuffer(_vertices, _size);

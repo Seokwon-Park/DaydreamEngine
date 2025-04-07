@@ -97,7 +97,7 @@ namespace Steins
 	private:
 		void CalculateOffsetsAndStride()
 		{
-			uint32_t offset = 0;
+			UInt32 offset = 0;
 			stride = 0;
 			for (auto& element : elements)
 			{

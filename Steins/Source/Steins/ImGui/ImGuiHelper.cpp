@@ -43,11 +43,44 @@ namespace Steins
 		//}
 		default:
 			break;
-		} 
+		}
 	}
 	void ImGuiHelper::Shutdown()
 	{
+		switch (Renderer::GetAPI())
+		{
+		case RendererAPIType::OpenGL:
+		{
+			ImGui_ImplOpenGL3_Shutdown();
+			break;
+		}
+		case RendererAPIType::DirectX11:
+		{
+			ImGui_ImplDX11_Shutdown();
+			break;
+		}
+		case RendererAPIType::DirectX12:
+		{
+			ImGui_ImplDX12_Shutdown();
+			break;
+		}
+		case RendererAPIType::Vulkan:
+		{
+			ImGui_ImplVulkan_Shutdown();
+			break;
+		}
+		case RendererAPIType::Metal:
+		{
+			//ImGui_ImplMetal_Shutdown();
+			break;
+		}
+		default: 
+			break;
+		}
+		ImGui_ImplGlfw_Shutdown();
+
 	}
+
 	void ImGuiHelper::NewFrame()
 	{
 		switch (Renderer::GetAPI())
@@ -81,6 +114,7 @@ namespace Steins
 		}
 		ImGui_ImplGlfw_NewFrame();
 	}
+
 	void ImGuiHelper::RenderRawData()
 	{
 		switch (Renderer::GetAPI())

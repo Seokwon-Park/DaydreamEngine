@@ -49,8 +49,7 @@ namespace Steins
 	}
 	void ImGuiLayer::OnDetach()
 	{
-		ImGui_ImplOpenGL3_Shutdown();
-		ImGui_ImplGlfw_Shutdown();
+		ImGuiHelper::Shutdown();
 		ImGui::DestroyContext();
 	}
 	void ImGuiLayer::OnEvent(Event& _event)

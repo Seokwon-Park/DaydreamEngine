@@ -6,27 +6,34 @@
 namespace Steins
 {
 	// 이 부분은 고민을 좀 해봐야 할듯.
-	template <typename T>
-	class Array : public std::vector<T>
+	template <typename T, class Alloc = std::allocator<T>>
+	class Array
 	{
 	public:
-		using Iterator = std::vector<T>::iterator;
-		using ConstIterator = std::vector<T>::const_iterator;
+		using Iterator = typename std::vector<T, Alloc>::iterator;
+		using ConstIterator = typename std::vector<T, Alloc>::const_iterator;
 
 		Array()
-			: std::vector<T>() {}
-		Array(Array<T>&& Other)
-			: std::vector<T>(std::move(Other)) {}
-		Array(const Array<T>& Other)
-			: std::vector<T>(Other) {}
-		Array(std::initializer_list<T> l)
-			: std::vector<T>(l) {}
+			: data(std::vector<T>()) {}
+		Array(Array<T>&& _other)
+			: data(std::move(_other.data)) {}
+		Array(const Array<T>& _other)
+			: data(_other.data) {}
+		Array(std::initializer_list<T> _initList)
+			: data(_initList) {}
 
-		Int32 Size() const { return StaticCast<Int32>(std::vector<T>::size()); }
-		bool IsEmpty() const { return std::vector<T>::empty(); }
-		void Pushback(const T& _element) { std::vector<T>::push_back(_element); }
-		void Sort() { std::sort(std::vector<T>::begin(), std::vector<T>::end()); }
+		inline Int32 Size() const { return StaticCast<Int32>(data.size()); }
+		inline bool IsEmpty() const { return data.empty(); }
+		inline void Pushback(const T& _element) { data.push_back(_element); }
+		inline void Sort() { std::sort(data.begin(), data.end()); }
+		inline Iterator begin() { return data.begin(); }
+		inline Iterator end() { return data.end(); }
+		inline ConstIterator begin() const { return data.begin(); }
+		inline ConstIterator end() const { return data.end(); }
+		inline T& operator[](Int32 _index) { return data[_index]; }
+		inline const T& operator[](Int32 _index) const { return data[_index]; }
 	private:
+		std::vector<T, Alloc> data;
 	};
 }
 
