@@ -21,10 +21,20 @@ namespace Steins
 			: data(_other.data) {}
 		Array(std::initializer_list<T> _initList)
 			: data(_initList) {}
+		Array<T>& operator=(const Array<T>& _other)
+		{
+			data = _other.data;
+			return *this;
+		};
+		Array<T>& operator=(Array<T>&& _other) noexcept
+		{
+			data = std::move(_other.data);
+			return *this;
+		}
 
 		inline Int32 Size() const { return StaticCast<Int32>(data.size()); }
 		inline bool IsEmpty() const { return data.empty(); }
-		inline void Pushback(const T& _element) { data.push_back(_element); }
+		inline void PushBack(const T& _element) { data.push_back(_element); }
 		inline void Sort() { std::sort(data.begin(), data.end()); }
 		inline Iterator begin() { return data.begin(); }
 		inline Iterator end() { return data.end(); }

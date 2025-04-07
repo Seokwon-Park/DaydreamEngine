@@ -15,7 +15,7 @@ namespace Steins
 	void D3D11VertexBuffer::Unbind() const
 	{
 	}
-	D3D11IndexBuffer::D3D11IndexBuffer(Int32* _vertices, UInt32 _size)
+	D3D11IndexBuffer::D3D11IndexBuffer(UInt32* _vertices, UInt32 _size)
 	{
 	}
 	D3D11IndexBuffer::~D3D11IndexBuffer()

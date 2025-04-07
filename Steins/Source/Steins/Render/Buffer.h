@@ -5,12 +5,12 @@ namespace Steins
 {
 	enum class ShaderDataType
 	{
-		None = 0, 
+		None = 0,
 		Float,
 		Float2,
-		Float3, 
-		Float4, 
-		Int, 
+		Float3,
+		Float4,
+		Int,
 		Int2,
 		Int3,
 		Int4,
@@ -52,7 +52,8 @@ namespace Steins
 
 		BufferElement(ShaderDataType _type, const String& _name, Bool _normalized = false)
 			: name(_name), type(_type), size(ShaderDataTypeSize(_type)), offset(0), normalized(_normalized)
-		{}
+		{
+		}
 
 		UInt32 GetComponentCount() const
 		{
@@ -79,7 +80,9 @@ namespace Steins
 	class BufferLayout
 	{
 	public:
-		BufferLayout() {}
+		BufferLayout() = default;
+		BufferLayout(const BufferLayout&) = default;
+		BufferLayout& operator=(const BufferLayout&) = default;
 
 		BufferLayout(const std::initializer_list<BufferElement>& _elements)
 			: elements(_elements)
@@ -110,6 +113,7 @@ namespace Steins
 		Array<BufferElement> elements;
 		UInt32 stride = 0;
 	};
+
 	class VertexBuffer
 	{
 	public:
@@ -118,7 +122,12 @@ namespace Steins
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
-		static VertexBuffer* Create(Float32* _vertices, UInt32 _size);
+		const BufferLayout& GetLayout() const { return layout; }
+		void SetLayout(const BufferLayout& _layout) { layout = _layout; }
+
+		static Shared<VertexBuffer> Create(Float32* _vertices, UInt32 _size);
+	protected:
+		BufferLayout layout;
 	};
 
 	class IndexBuffer
@@ -129,7 +138,9 @@ namespace Steins
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
-		static IndexBuffer* Create(UInt32* _vertices, UInt32 _size);
+		virtual UInt32 GetCount() const = 0;
+
+		static Shared<IndexBuffer> Create(UInt32* _vertices, UInt32 _size);
 	};
 }
 

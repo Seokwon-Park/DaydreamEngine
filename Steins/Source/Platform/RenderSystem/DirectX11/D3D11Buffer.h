@@ -12,6 +12,7 @@ namespace Steins
 
 		virtual void Bind() const;
 		virtual void Unbind() const;
+
 	private:
 		ComPtr<ID3D11Buffer> vertexBuffer;
 			
@@ -20,15 +21,16 @@ namespace Steins
 	class D3D11IndexBuffer : public IndexBuffer
 	{
 	public:
-		D3D11IndexBuffer(Int32* _vertices, UInt32 _size);
+		D3D11IndexBuffer(UInt32* _indices, UInt32 _IndexCount);
 		virtual ~D3D11IndexBuffer();
 
 		virtual void Bind() const;
 		virtual void Unbind() const;
 
+		virtual UInt32 GetCount() const { return indexCount; }
 	private:
 		ComPtr<ID3D11Buffer> indexBuffer;
-
+		UInt32 indexCount;
 	};
 }
 

@@ -10,7 +10,7 @@ namespace Steins
 
 	void D3D11RendererAPI::Clear()
 	{
-
+		device->Clear();
 	}
 
 	void D3D11RendererAPI::DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex)

@@ -9,13 +9,13 @@
 
 namespace Steins
 {
-	VertexBuffer* VertexBuffer::Create(Float32* _vertices, UInt32 _size)
+	Shared<VertexBuffer> VertexBuffer::Create(Float32* _vertices, UInt32 _size)
 	{
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPIType::None:    STEINS_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPIType::OpenGL:  return new OpenGLVertexBuffer(_vertices, _size);
-		case RendererAPIType::DirectX11:  return new D3D11VertexBuffer(_vertices, _size);
+		case RendererAPIType::OpenGL:  return MakeShared<OpenGLVertexBuffer>(_vertices, _size);
+		case RendererAPIType::DirectX11:  return MakeShared<D3D11VertexBuffer>(_vertices, _size);
 		//case RendererAPIType::DirectX12:  return new OpenGLVertexBuffer(_vertices, _size);
 		//case RendererAPIType::Vulkan:  return new OpenGLVertexBuffer(_vertices, _size);
 		//case RendererAPIType::Metal:  return new OpenGLVertexBuffer(_vertices, _size);
@@ -24,13 +24,13 @@ namespace Steins
 		STEINS_CORE_ASSERT(false, "Unknown RendererAPI!");
 		return nullptr;
 	}
-	IndexBuffer* IndexBuffer::Create(UInt32* _vertices, UInt32 _size)
+	Shared<IndexBuffer> IndexBuffer::Create(UInt32* _vertices, UInt32 _size)
 	{
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPIType::None:    STEINS_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPIType::OpenGL:  return new OpenGLIndexBuffer(_vertices, _size);
-		case RendererAPIType::DirectX11:  return new OpenGLIndexBuffer(_vertices, _size);
+		case RendererAPIType::OpenGL:  return MakeShared<OpenGLIndexBuffer>(_vertices, _size);
+		case RendererAPIType::DirectX11:  return MakeShared<D3D11IndexBuffer>(_vertices, _size);
 		//case RendererAPIType::DirectX12:  return new OpenGLIndexBuffer(_vertices, _size);
 		//case RendererAPIType::Vulkan:  return new OpenGLIndexBuffer(_vertices, _size);
 		//case RendererAPIType::Metal:  return new OpenGLIndexBuffer(_vertices, _size);

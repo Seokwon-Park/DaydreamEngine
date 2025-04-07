@@ -5,6 +5,27 @@
 
 namespace Steins
 {
+	static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
+	{
+		switch (type)
+		{
+		case Steins::ShaderDataType::Float:    return GL_FLOAT;
+		case Steins::ShaderDataType::Float2:   return GL_FLOAT;
+		case Steins::ShaderDataType::Float3:   return GL_FLOAT;
+		case Steins::ShaderDataType::Float4:   return GL_FLOAT;
+		case Steins::ShaderDataType::Int:      return GL_INT;
+		case Steins::ShaderDataType::Int2:     return GL_INT;
+		case Steins::ShaderDataType::Int3:     return GL_INT;
+		case Steins::ShaderDataType::Int4:     return GL_INT;
+		case Steins::ShaderDataType::Mat3x3:     return GL_FLOAT;
+		case Steins::ShaderDataType::Mat4x4:     return GL_FLOAT;
+		case Steins::ShaderDataType::Bool:     return GL_BOOL;
+		}
+
+		STEINS_CORE_ASSERT(false, "Unknown ShaderDataType!");
+		return 0;
+	}
+
 	OpenGLVertexArray::OpenGLVertexArray()
 	{
 		glCreateVertexArrays(1, &rendererID);
@@ -23,7 +44,26 @@ namespace Steins
 	}
 	void OpenGLVertexArray::AddVertexBuffer(const Shared<VertexBuffer>& _vertexBuffer)
 	{
+		STEINS_CORE_ASSERT(_vertexBuffer->GetLayout().GetElements().Size(), "Vertex Buffer has no layout!");
 
+		glBindVertexArray(rendererID);
+		_vertexBuffer->Bind();
+
+		uint32_t index = 0;
+		const auto& layout = _vertexBuffer->GetLayout();
+		for (const auto& element : layout)
+		{
+			glEnableVertexAttribArray(index);
+			glVertexAttribPointer(index,
+				element.GetComponentCount(),
+				ShaderDataTypeToOpenGLBaseType(element.type),
+				element.normalized ? GL_TRUE : GL_FALSE,
+				layout.GetStride(),
+				(const void*)element.offset);
+			index++;
+		}
+
+		vertexBuffers.PushBack(_vertexBuffer);
 	}
 	void OpenGLVertexArray::SetIndexBuffer(const Shared<IndexBuffer>& _indexBuffer)
 	{

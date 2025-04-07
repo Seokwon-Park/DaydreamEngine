@@ -12,6 +12,7 @@ namespace Steins
 
 		virtual void Bind() const;
 		virtual void Unbind() const;
+
 	private:
 		uint32_t rendererID;
 	};

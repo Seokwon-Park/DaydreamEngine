@@ -9,7 +9,7 @@
 
 #include "glad/glad.h"
 
-#include "Steins/Render/Buffer.h"
+
 
 
 namespace Steins
@@ -46,7 +46,7 @@ namespace Steins
 		std::ifstream file(_fileName.data());
 		STEINS_CORE_ASSERT(!file.is_open(), "Cannot Open Configuration File!")
 
-		std::string line;
+			std::string line;
 
 		/*while (std::getline(file, line)) {
 			if (line.find("API=") != std::string::npos) {
@@ -74,29 +74,62 @@ namespace Steins
 		AttachOverlay(imGuiLayer);
 		ImGuiLayer::Init();
 
-
-		
-
-
-		//glGenBuffers(1, &m_VertexBuffer);
-		//glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);
-
-
-
-		//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-		//glEnableVertexAttribArray(0);
-		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-
-		//glGenBuffers(1, &m_IndexBuffer);
-		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer);
-
-		//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-
-
-
 		isRunning = true;
+
+		float vertices[3 * 3] =
+		{
+			-.5f, -.5f, 0.f,
+			 .5f, -.5f, 0.f,
+			 0.f,  .5f, 0.f,
+		};
+
+		va = VertexArray::Create();
+
+		vb = VertexBuffer::Create(vertices, 4 * 9);
+		BufferLayout layout = {
+			{ ShaderDataType::Float3, "a_Position" },
+		};
+		vb->SetLayout(layout);
+		va->AddVertexBuffer(vb);
+
+		unsigned int indices[3] = { 0, 1, 2 };
+		ib = IndexBuffer::Create(indices, 3);
+		va->SetIndexBuffer(ib);
+
+		//std::string vertexSrc = R"(
+		//	#version 330 core
+		//	
+		//	layout(location = 0) in vec3 a_Position;
+		//	layout(location = 1) in vec4 a_Color;
+
+		//	out vec3 v_Position;
+		//	out vec4 v_Color;
+
+		//	void main()
+		//	{
+		//		v_Position = a_Position;
+		//		v_Color = a_Color;
+		//		gl_Position = vec4(a_Position, 1.0);	
+		//	}
+		//)";
+
+		//std::string fragmentSrc = R"(
+		//	#version 330 core
+		//	
+		//	layout(location = 0) out vec4 color;
+
+		//	in vec3 v_Position;
+		//	in vec4 v_Color;
+
+		//	void main()
+		//	{
+		//		color = vec4(v_Position * 0.5 + 0.5, 1.0);
+		//		color = v_Color;
+		//	}
+		//)";
+
+		//shader = Shader::Create(vertexSrc,fragmentSrc);
+
 
 		return true;
 	}
@@ -106,20 +139,12 @@ namespace Steins
 		{
 			RenderCommand::SetClearColor(Color::Red);
 			RenderCommand::Clear();
-			float vertices[3 * 3] = {
-	-0.5f, -0.5f, 0.0f,
-	 0.5f, -0.5f, 0.0f,
-	 0.0f,  0.5f, 0.0f
-			};
+			
+			//shader->Bind();
+			va->Bind();
 
-			VertexBuffer* vb = VertexBuffer::Create(vertices, 4 * 9);
-			vb->Bind();
-
-			unsigned int indices[3] = { 0, 1, 2 };
-			IndexBuffer* ib = IndexBuffer::Create(indices, 3);
-			ib->Bind();
-
-			RenderCommand::DrawIndexed(3);
+			glDrawElements(GL_TRIANGLES, va->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+			//RenderCommand::DrawIndexed(3);
 
 			for (Layer* layer : layerStack)
 			{
@@ -180,7 +205,7 @@ namespace Steins
 			//check event for layer
 			(*--itr)->OnEvent(_event);
 		}
-		
+
 		//STEINS_CORE_TRACE("{0}", _event.ToString());
 	}
 

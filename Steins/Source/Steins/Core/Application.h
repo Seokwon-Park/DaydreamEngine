@@ -9,6 +9,10 @@
 
 #include "Steins/Render/RendererAPI.h"
 
+#include "Steins/Render/Shader.h"
+#include "Steins/Render/Buffer.h"
+#include "Steins/Render/VertexArray.h"
+
 int main(int argc, char** argv);
 
 namespace Steins
@@ -52,7 +56,10 @@ namespace Steins
 
 		RendererAPIType API = RendererAPIType::OpenGL;
 
-
+		Shared<VertexArray> va;
+		Shared<VertexBuffer> vb;
+		Shared<IndexBuffer> ib;
+		Shared<Shader> shader;
 	};
 
 	// To be defined in client

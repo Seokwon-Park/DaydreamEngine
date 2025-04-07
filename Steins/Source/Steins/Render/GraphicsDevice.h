@@ -25,6 +25,7 @@ namespace Steins
 		virtual void Render() = 0;
 		virtual void SwapBuffers() = 0;
 
+		virtual void Clear() = 0;
 		virtual void SetPrimitiveTopology(PrimitiveTopology _primitiveTopology) = 0;
 		virtual void DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex) = 0;
 

@@ -38,6 +38,9 @@ namespace Steins
 	{
 		glfwSwapBuffers(nativeWindow);
 	}
+	void OpenGLGraphicsDevice::Clear()
+	{
+	}
 	void OpenGLGraphicsDevice::SetPrimitiveTopology(PrimitiveTopology _primitiveTopology)
 	{
 

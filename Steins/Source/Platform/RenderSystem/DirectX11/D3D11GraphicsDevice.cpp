@@ -141,9 +141,14 @@ namespace Steins
 	{
 	}
 
+	void D3D11GraphicsDevice::Clear()
+	{
+		//deviceContext->ClearRenderTargetView();
+	}
+
 	void D3D11GraphicsDevice::SetPrimitiveTopology(PrimitiveTopology _primitiveTopology)
 	{
-
+		//deviceContext->IASetPrimitiveTopology()
 	}
 	void D3D11GraphicsDevice::DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex)
 	{
