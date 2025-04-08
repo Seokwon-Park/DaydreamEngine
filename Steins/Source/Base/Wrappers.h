@@ -1,9 +1,7 @@
 #pragma once
-#include <Base/Math/Vector2.h>
-#include <Base/Math/Vector4.h>
-#include <Base/Math/Color.h>
+
+#include "MathTypes.h"
 #include <Base/TypeCast.h>
-#include <Base/Container/Array.h>
 #include <Base/Container/String.h>
 #include <Base/Container/SmartPointer.h>
 #include <Base/IO/FilePath.h>
@@ -23,8 +21,7 @@ namespace Steins
 	using Vector2f = Vector2<float>;
 	using Vector2d = Vector2<double>;
 
-	using Vector4i = Vector4<int>;
-	using Vector4f = Vector4<float>;
-	using Vector4d = Vector4<double>;
-
+	using Vector3i = Vector2<int>;
+	using Vector3f = Vector2<float>;
+	using Vector3d = Vector2<double>;
 }

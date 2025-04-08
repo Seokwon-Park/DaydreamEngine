@@ -15,6 +15,9 @@ namespace Steins
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
 
+		virtual void SetMat4(const std::string& _name, const Matrix4x4& _value) override;
+
+		void UploadUniformMat4(const std::string& name, const Matrix4x4& matrix);
 	private:
 		std::string ReadFile(const FilePath _filepath);
 		void Compile(std::unordered_map<GLenum, std::string>& shaderSources);

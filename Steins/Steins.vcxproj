@@ -100,13 +100,18 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Shader.h" />
     <ClInclude Include="Source\Base\Base.h" />
-    <ClInclude Include="Source\Base\Container\Array.h" />
     <ClInclude Include="Source\Base\Container\SmartPointer.h" />
     <ClInclude Include="Source\Base\Container\String.h" />
     <ClInclude Include="Source\Base\IO\File.h" />
     <ClInclude Include="Source\Base\IO\FilePath.h" />
     <ClInclude Include="Source\Base\Math\Color.h" />
+    <ClInclude Include="Source\Base\Math.h" />
+    <ClInclude Include="Source\Base\Math\Matrix4x4.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Base\Math\TypeTraits.h" />
     <ClInclude Include="Source\Base\Math\Vector2.h" />
     <ClInclude Include="Source\Base\Math\Vector3.h" />
@@ -153,6 +158,10 @@
     <ClInclude Include="Source\Steins\ImGui\ImGuiLayer.h" />
     <ClInclude Include="Source\Steins\Render\Buffer.h" />
     <ClInclude Include="Source\Steins\Render\GraphicsDevice.h" />
+    <ClInclude Include="Source\Steins\Render\OrthographicCamera.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Steins\Render\RenderCommand.h" />
     <ClInclude Include="Source\Steins\Render\Renderer.h" />
     <ClInclude Include="Source\Steins\Render\RendererAPI.h" />
@@ -161,11 +170,15 @@
     <ClInclude Include="Source\SteinsPCH.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Base\Container\Array.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Shader.cpp" />
     <ClCompile Include="Source\Base\Container\String.cpp" />
     <ClCompile Include="Source\Base\IO\File.cpp" />
     <ClCompile Include="Source\Base\IO\FilePath.cpp" />
     <ClCompile Include="Source\Base\Math\Color.cpp" />
+    <ClCompile Include="Source\Base\Math\Matrix4x4.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Base\Math\Vector2.cpp" />
     <ClCompile Include="Source\Base\Math\Vector3.cpp" />
     <ClCompile Include="Source\Base\Math\Vector4.cpp" />
@@ -197,6 +210,10 @@
     <ClCompile Include="Source\Steins\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="Source\Steins\Render\Buffer.cpp" />
     <ClCompile Include="Source\Steins\Render\GraphicsDevice.cpp" />
+    <ClCompile Include="Source\Steins\Render\OrthographicCamera.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Steins\Render\RenderCommand.cpp" />
     <ClCompile Include="Source\Steins\Render\Renderer.cpp" />
     <ClCompile Include="Source\Steins\Render\RendererAPI.cpp" />

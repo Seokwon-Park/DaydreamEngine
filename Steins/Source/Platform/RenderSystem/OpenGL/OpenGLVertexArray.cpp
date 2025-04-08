@@ -44,14 +44,14 @@ namespace Steins
 	}
 	void OpenGLVertexArray::AddVertexBuffer(const Shared<VertexBuffer>& _vertexBuffer)
 	{
-		STEINS_CORE_ASSERT(_vertexBuffer->GetLayout().GetElements().Size(), "Vertex Buffer has no layout!");
+		STEINS_CORE_ASSERT(_vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
 		glBindVertexArray(rendererID);
 		_vertexBuffer->Bind();
-
+		
 		uint32_t index = 0;
-		const auto& layout = _vertexBuffer->GetLayout();
-		for (const auto& element : layout)
+		const BufferLayout& layout = _vertexBuffer->GetLayout();
+		for (const BufferElement& element : layout)
 		{
 			glEnableVertexAttribArray(index);
 			glVertexAttribPointer(index,
@@ -63,7 +63,7 @@ namespace Steins
 			index++;
 		}
 
-		vertexBuffers.PushBack(_vertexBuffer);
+		vertexBuffers.push_back(_vertexBuffer);
 	}
 	void OpenGLVertexArray::SetIndexBuffer(const Shared<IndexBuffer>& _indexBuffer)
 	{

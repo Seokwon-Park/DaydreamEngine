@@ -130,4 +130,13 @@ namespace Steins
 	{
 		glUseProgram(0);
 	}
+	void OpenGLShader::SetMat4(const std::string& _name, const Matrix4x4& _value)
+	{
+		UploadUniformMat4(_name, _value);
+	}
+	void OpenGLShader::UploadUniformMat4(const std::string& name, const Matrix4x4& matrix)
+	{
+		GLint location = glGetUniformLocation(rendererID, name.c_str());
+		glUniformMatrix4fv(location, 1, GL_FALSE, &matrix.matrix[0][0]);
+	}
 }

@@ -5,8 +5,6 @@
 
 namespace Steins
 {
-	template<typename T>
-		requires IsValid<T>
 	class Vector4
 	{
 
@@ -15,31 +13,31 @@ namespace Steins
 		{
 			struct
 			{
-				T x;
-				T y;
-				T z;
-				T w;
+				Float32 x;
+				Float32 y;
+				Float32 z;
+				Float32 w;
 			};
-			T v[4];
-			DirectX::XMFLOAT4 XMFloat;
+			Float32 v[4];
+			DirectX::XMFLOAT4A XMFloat;
 		};
 		Vector4() :x(0), y(0), z(0), w(0) {}
-		Vector4(T _x, T _y, T _z, T _w) : x(_x), y(_y), z(_z), w(_w) {}
+		Vector4(Float32 _x, Float32 _y, Float32 _z, Float32 _w) : x(_x), y(_y), z(_z), w(_w) {}
 
 		//template<typename U>
-		//	requires IsCastable<U, T>
+		//	requires IsCastable<U, Float32>
 		//Vector4(U _x, U _y, U _z, U _w)
-		//	: x(static_cast<T>(_x)), y(static_cast<T>(_y)), z(static_cast<T>(_z)), w(static_cast<T>(_w)) {}
+		//	: x(static_cast<Float32>(_x)), y(static_cast<Float32>(_y)), z(static_cast<Float32>(_z)), w(static_cast<Float32>(_w)) {}
 
 		template<typename X, typename Y, typename Z>
-			requires IsCastable<X, T>&& IsCastable<Y, T>&& IsCastable<Z, T>
+			requires IsCastable<X, Float32>&& IsCastable<Y, Float32>&& IsCastable<Z, Float32>
 		Vector4(X _x, Y _y, Z _z)
-			: x(static_cast<T>(_x)), y(static_cast<T>(_y)), z(static_cast<T>(_z)), w(static_cast<T>(1)) {}
+			: x(static_cast<Float32>(_x)), y(static_cast<Float32>(_y)), z(static_cast<Float32>(_z)), w(static_cast<Float32>(1)) {}
 
 		template<typename X, typename Y, typename Z, typename W>
-			requires IsCastable<X, T>&& IsCastable<Y, T>&& IsCastable<Z, T>&& IsCastable<W, T>
+			requires IsCastable<X, Float32>&& IsCastable<Y, Float32>&& IsCastable<Z, Float32>&& IsCastable<W, Float32>
 		Vector4(X _x, Y _y, Z _z, W _w)
-			: x(static_cast<T>(_x)), y(static_cast<T>(_y)), z(static_cast<T>(_z)), w(static_cast<T>(_w)) {}
+			: x(static_cast<Float32>(_x)), y(static_cast<Float32>(_y)), z(static_cast<Float32>(_z)), w(static_cast<Float32>(_w)) {}
 
 		static const Vector4 ZERO;
 		static const Vector4 LEFT;
@@ -53,27 +51,27 @@ namespace Steins
 			return _ostream;
 		}
 
-		Vector4 operator-() const { return Vector4(-x, -y); }
-		Vector4 operator+(const Vector4& _other) const { return Vector4(x + _other.x, y + _other.y); }
+		Vector4 operator-() const { return Vector4(-x, -y, -z, w); }
+		Vector4 operator+(const Vector4& _other) const { return Vector4(x + _other.x, y + _other.y, z + _other.z); }
 		Vector4 operator-(const Vector4& _other) const;
 		Vector4 operator/(const Vector4& _other) const;
-		Vector4 operator*(const float& _value) const;
-		Vector4 operator/(const float& _value) const;
+		Vector4 operator*(const Float32& _value) const;
+		Vector4 operator/(const Float32& _value) const;
 
 		//operator FIntPoint();
 
 		void operator+=(const Vector4& _other);
 		void operator-=(const Vector4& _other);
-		void operator*=(const float& _value);
+		void operator*=(const Float32& _value);
 		void operator*=(const Vector4& _other);
-		void operator/=(const float& _value);
+		void operator/=(const Float32& _value);
 	};
 
-	template <typename T> requires IsValid<T> const Vector4<T> Vector4<T>::ZERO = Vector4(0, 0);
-	template <typename T> requires IsValid<T> const Vector4<T> Vector4<T>::LEFT = Vector4(-1, 0);
-	template <typename T> requires IsValid<T> const Vector4<T> Vector4<T>::RIGHT = Vector4(1, 0);
-	template <typename T> requires IsValid<T> const Vector4<T> Vector4<T>::UP = Vector4(0, 1);
-	template <typename T> requires IsValid<T> const Vector4<T> Vector4<T>::DOWN = Vector4(0, -1);
+	/*const Vector4 Vector4::ZERO = Vector4(0, 0, 0, 0);
+	const Vector4 Vector4::LEFT = Vector4(-1, 0, 0, 0);
+	const Vector4 Vector4::RIGHT = Vector4(1, 0);
+	const Vector4 Vector4::UP = Vector4(0, 1);
+	const Vector4 Vector4::DOWN = Vector4(0, -1);*/
 }
 
 

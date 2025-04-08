@@ -19,6 +19,7 @@ namespace Steins
 	Application* Application::instance = nullptr;
 
 	Application::Application()
+		:m_Camera(-1.6f, 1.6f, -0.9f, 0.9f)
 	{
 		STEINS_CORE_ASSERT(!instance, "Application already exists!");
 		instance = this;
@@ -76,18 +77,18 @@ namespace Steins
 
 		isRunning = true;
 
-		float vertices[3 * 3] =
-		{
-			-.5f, -.5f, 0.f,
-			 .5f, -.5f, 0.f,
-			 0.f,  .5f, 0.f,
+		float vertices[3 * 7] = {
+					-0.5f, -0.5f, 0.0f, 1.0f, 0.0, 0.0f, 1.0f,
+					 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+					 0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f
 		};
 
 		va = VertexArray::Create();
 
-		vb = VertexBuffer::Create(vertices, 4 * 9);
+		vb = VertexBuffer::Create(vertices, sizeof(vertices));
 		BufferLayout layout = {
 			{ ShaderDataType::Float3, "a_Position" },
+			{ ShaderDataType::Float4, "a_Color" }
 		};
 		vb->SetLayout(layout);
 		va->AddVertexBuffer(vb);
@@ -96,39 +97,41 @@ namespace Steins
 		ib = IndexBuffer::Create(indices, 3);
 		va->SetIndexBuffer(ib);
 
-		//std::string vertexSrc = R"(
-		//	#version 330 core
-		//	
-		//	layout(location = 0) in vec3 a_Position;
-		//	layout(location = 1) in vec4 a_Color;
+		std::string vertexSrc = R"(
+			#version 330 core
+			
+			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec4 a_Color;
 
-		//	out vec3 v_Position;
-		//	out vec4 v_Color;
+			uniform mat4 u_ViewProjection;
 
-		//	void main()
-		//	{
-		//		v_Position = a_Position;
-		//		v_Color = a_Color;
-		//		gl_Position = vec4(a_Position, 1.0);	
-		//	}
-		//)";
+			out vec3 v_Position;
+			out vec4 v_Color;
 
-		//std::string fragmentSrc = R"(
-		//	#version 330 core
-		//	
-		//	layout(location = 0) out vec4 color;
+			void main()
+			{
+				v_Position = a_Position;
+				v_Color = a_Color;
+				gl_Position = u_ViewProjection * vec4(a_Position, 1.0);	
+			}
+		)";
 
-		//	in vec3 v_Position;
-		//	in vec4 v_Color;
+		std::string fragmentSrc = R"(
+			#version 330 core
+			
+			layout(location = 0) out vec4 color;
 
-		//	void main()
-		//	{
-		//		color = vec4(v_Position * 0.5 + 0.5, 1.0);
-		//		color = v_Color;
-		//	}
-		//)";
+			in vec3 v_Position;
+			in vec4 v_Color;
 
-		//shader = Shader::Create(vertexSrc,fragmentSrc);
+			void main()
+			{
+				color = vec4(v_Position * 0.5 + 0.5, 1.0);
+				color = v_Color;
+			}
+		)";
+
+		shader = Shader::Create(vertexSrc,fragmentSrc);
 
 
 		return true;
@@ -137,15 +140,15 @@ namespace Steins
 	{
 		while (isRunning)
 		{
-			RenderCommand::SetClearColor(Color::Red);
+			RenderCommand::SetClearColor(Color::White);
 			RenderCommand::Clear();
+
+			m_Camera.SetRotation({ 0.5f, 0.5f, 0.0f });
+
+			Renderer::BeginScene(m_Camera);
+
+			Renderer::Submit(shader, va);
 			
-			//shader->Bind();
-			va->Bind();
-
-			glDrawElements(GL_TRIANGLES, va->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
-			//RenderCommand::DrawIndexed(3);
-
 			for (Layer* layer : layerStack)
 			{
 				layer->OnUpdate();

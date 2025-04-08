@@ -13,6 +13,8 @@
 #include "Steins/Render/Buffer.h"
 #include "Steins/Render/VertexArray.h"
 
+#include "Steins/Render/OrthographicCamera.h"
+
 int main(int argc, char** argv);
 
 namespace Steins
@@ -60,6 +62,8 @@ namespace Steins
 		Shared<VertexBuffer> vb;
 		Shared<IndexBuffer> ib;
 		Shared<Shader> shader;
+
+		OrthographicCamera m_Camera;
 	};
 
 	// To be defined in client

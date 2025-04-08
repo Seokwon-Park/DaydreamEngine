@@ -66,9 +66,6 @@
     <ClInclude Include="Source\Base\Base.h">
       <Filter>Base</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Base\Container\Array.h">
-      <Filter>Base\Container</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Base\Container\SmartPointer.h">
       <Filter>Base\Container</Filter>
     </ClInclude>
@@ -236,11 +233,12 @@
       <Filter>Steins\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\SteinsPCH.h" />
+    <ClInclude Include="Source\Base\Math\Matrix4x4.h" />
+    <ClInclude Include="Source\Steins\Render\OrthographicCamera.h" />
+    <ClInclude Include="Source\Base\Math.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Shader.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Base\Container\Array.cpp">
-      <Filter>Base\Container</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Base\Container\String.cpp">
       <Filter>Base\Container</Filter>
     </ClCompile>
@@ -362,5 +360,8 @@
       <Filter>Steins\Render</Filter>
     </ClCompile>
     <ClCompile Include="Source\SteinsPCH.cpp" />
+    <ClCompile Include="Source\Base\Math\Matrix4x4.cpp" />
+    <ClCompile Include="Source\Steins\Render\OrthographicCamera.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Shader.cpp" />
   </ItemGroup>
 </Project>
