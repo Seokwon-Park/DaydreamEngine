@@ -5,6 +5,20 @@ namespace Steins
 {
 	OpenGLShader::OpenGLShader(const FilePath& _filepath)
 	{
+
+		enum class ShaderType
+		{
+			Vertex = GL_VERTEX_SHADER,
+			Fragment = GL_FRAGMENT_SHADER,
+			Geometry = GL_GEOMETRY_SHADER,
+			// 확장 가능
+		};
+
+		std::unordered_map<std::string, ShaderType> ShaderTypeFromString = {
+			{"vertex", ShaderType::Vertex},
+			{"fragment", ShaderType::Fragment},
+			{"geometry", ShaderType::Geometry}
+		};
 		//std::string source = ReadFile(_filepath);
 		//auto shaderSources = PreProcess(source);
 		//Compile(shaderSources);

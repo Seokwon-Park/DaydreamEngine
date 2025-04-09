@@ -103,7 +103,6 @@
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Shader.h" />
     <ClInclude Include="Source\Base\Base.h" />
     <ClInclude Include="Source\Base\Container\SmartPointer.h" />
-    <ClInclude Include="Source\Base\Container\String.h" />
     <ClInclude Include="Source\Base\IO\File.h" />
     <ClInclude Include="Source\Base\IO\FilePath.h" />
     <ClInclude Include="Source\Base\Math\Color.h" />
@@ -171,7 +170,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Shader.cpp" />
-    <ClCompile Include="Source\Base\Container\String.cpp" />
     <ClCompile Include="Source\Base\IO\File.cpp" />
     <ClCompile Include="Source\Base\IO\FilePath.cpp" />
     <ClCompile Include="Source\Base\Math\Color.cpp" />

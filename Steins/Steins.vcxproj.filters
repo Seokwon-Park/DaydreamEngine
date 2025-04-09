@@ -69,9 +69,6 @@
     <ClInclude Include="Source\Base\Container\SmartPointer.h">
       <Filter>Base\Container</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Base\Container\String.h">
-      <Filter>Base\Container</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Base\IO\File.h">
       <Filter>Base\IO</Filter>
     </ClInclude>
@@ -239,9 +236,6 @@
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Shader.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Base\Container\String.cpp">
-      <Filter>Base\Container</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Base\IO\File.cpp">
       <Filter>Base\IO</Filter>
     </ClCompile>
