@@ -11,4 +11,12 @@ namespace Steins
 		Vulkan,
 		Metal
 	};
+
+	enum class ShaderType
+	{
+		None,
+		Vertex,
+		Geometry,
+		Pixel,
+	};
 }

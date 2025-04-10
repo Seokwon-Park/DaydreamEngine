@@ -1,6 +1,6 @@
 #pragma once
 #include "GraphicsDevice.h"
-#include "Steins/Enum/RendererAPIType.h"
+#include "Steins/Enum/RendererEnums.h"
 
 namespace Steins
 {

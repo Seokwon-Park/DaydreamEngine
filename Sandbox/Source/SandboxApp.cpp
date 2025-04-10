@@ -1,9 +1,9 @@
 #include <Steins.h>
 
-class TestLayer : public Steins::Layer 
+class ExampleLayer : public Steins::Layer 
 {
 public :
-	TestLayer()
+	ExampleLayer()
 		:Layer("Test") {}
 
 	void OnUpdate() override
@@ -31,7 +31,7 @@ public:
 	Sandbox()
 		:Steins::Application()
 	{
-		AttachLayer(new TestLayer());
+		AttachLayer(new ExampleLayer());
 		//AttachOverlay(new Steins::ImGuiLayer());
 	}
 

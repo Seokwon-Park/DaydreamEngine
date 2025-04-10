@@ -10,10 +10,13 @@ namespace Steins
 		FilePath(std::string _path) 
 			:path(_path) {}
 
-		FilePath(String _path)
-			:path(std::string(_path)) {}
-
-		inline String ToString() const { return path.string(); }
+		inline std::string ToString() const { return path.string(); }
+		inline std::string GetNameFromPath() const { return path.filename().string(); }
+		inline std::string GetFileName() const;
+		inline std::string GetFileNameWithoutExtension() const { return path.stem().string(); }
+		inline bool IsDirectory () const { return std::filesystem::is_directory(path); }
+		inline bool IsFile() const { return std::filesystem::is_regular_file(path); }
+		inline bool IsExist() const { return std::filesystem::exists(path); }
     private:
         std::filesystem::path path;
 	};

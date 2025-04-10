@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Base/MathTypes.h"
-#include "Steins/Enum/RendererAPIType.h"
+#include "Steins/Enum/RendererEnums.h"
 
 namespace Steins
 {

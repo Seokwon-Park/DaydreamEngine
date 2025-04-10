@@ -9,7 +9,7 @@ namespace Steins
 	{
 	public:
 		OpenGLShader(const FilePath& _filepath);
-		OpenGLShader(const std::string& name, const std::string& Src);
+		OpenGLShader(const std::string& _vertexSrc, const std::string& _pixelSrc);
 		virtual ~OpenGLShader();
 
 		virtual void Bind() const override;
@@ -17,11 +17,12 @@ namespace Steins
 
 		virtual void SetMat4(const std::string& _name, const Matrix4x4& _value) override;
 
-		void UploadUniformMat4(const std::string& name, const Matrix4x4& matrix);
+		void UploadUniformMat4(const std::string& name, const Matrix4x4& _matrix);
 	private:
-		std::string ReadFile(const FilePath _filepath);
-		void Compile(std::unordered_map<GLenum, std::string>& shaderSources);
+		std::string ParseGLSLFile(const FilePath& _filepath);
+		void Compile();
 	private:
+		std::unordered_map<ShaderType, std::string> shaderSources;
 		UInt32 rendererID;
 	};
 }

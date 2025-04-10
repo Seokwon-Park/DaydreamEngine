@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Steins/Enum/RendererEnums.h"
+
 namespace Steins {
 
 	class Shader

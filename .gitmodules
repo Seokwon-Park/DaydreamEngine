@@ -7,3 +7,6 @@
 [submodule "Steins/Vendor/glfw"]
 	path = Steins/Vendor/glfw
 	url = https://github.com/Seokwon-Park/glfw
+[submodule "Steins/Vendor/glm"]
+	path = Steins/Vendor/glm
+	url = https://github.com/g-truc/glm

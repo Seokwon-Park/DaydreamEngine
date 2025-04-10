@@ -12,6 +12,7 @@ workspace "Steins"
 	IncludeDir["GLFW"] = "Steins/Vendor/glfw/include"
 	IncludeDir["glad"] = "Steins/Vendor/glad/include"
 	IncludeDir["ImGui"] = "Steins/Vendor/imgui"
+	IncludeDir["glm"] = "Steins/Vendor/glm"
 
 	include "Steins/Vendor/glfw"
 	include "Steins/Vendor/glad"
@@ -33,7 +34,9 @@ project "Steins"
 	files
 	{
 		"%{prj.name}/Source/**.h",
-		"%{prj.name}/Source/**.cpp"
+		"%{prj.name}/Source/**.cpp",
+		"%{prj.name}/Vendor/glm/glm/**.hpp",
+ 		"%{prj.name}/Vendor/glm/glm/**.inl"
 	}
 	includedirs
 	{
@@ -42,6 +45,7 @@ project "Steins"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.glad}",
 		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.glm}",
 		"$(VULKAN_SDK)/Include"
 	}
 	libdirs 
@@ -95,6 +99,7 @@ project "Sandbox"
 		"Steins/Vendor/spdlog/include",
 		"Steins/Source",
 		"Steins/Vendor",
+		"%{IncludeDir.glm}"
 	}
 	links
 	{

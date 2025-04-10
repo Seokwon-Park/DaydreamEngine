@@ -2,7 +2,6 @@
 
 #include "MathTypes.h"
 #include <Base/TypeCast.h>
-#include <Base/Container/String.h>
 #include <Base/Container/SmartPointer.h>
 #include <Base/IO/FilePath.h>
 
