@@ -27,6 +27,7 @@ namespace Steins
 
 	WindowsWindow::~WindowsWindow()
 	{
+		delete graphicsDevice;
 		Shutdown();
 	}
 

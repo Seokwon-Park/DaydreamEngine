@@ -34,7 +34,7 @@ namespace Steins
 		}
 	}
 
-	OpenGLShader::OpenGLShader(const FilePath& _filepath)
+	OpenGLShader::OpenGLShader(const FilePath& _filepath, const ShaderType& _type)
 	{
 		std::ifstream file(_filepath.ToString());
 		std::string readline;
@@ -75,10 +75,9 @@ namespace Steins
 		//auto count = lastDot == std::string::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
 		//m_Name = filepath.substr(lastSlash, count);
 	}
-	OpenGLShader::OpenGLShader(const std::string& _vertexSrc, const std::string& _pixelSrc)
+	OpenGLShader::OpenGLShader(const std::string& _src, const ShaderType& _type)
 	{
-		shaderSources[ShaderType::Vertex] = _vertexSrc;
-		shaderSources[ShaderType::Pixel] = _pixelSrc;
+		shaderSources[_type] = _src;
 
 		Compile();
 	}
@@ -97,6 +96,7 @@ namespace Steins
 	{
 		UploadUniformMat4(_name, _value);
 	}
+
 	void OpenGLShader::UploadUniformMat4(const std::string& name, const Matrix4x4& matrix)
 	{
 		GLint location = glGetUniformLocation(rendererID, name.c_str());

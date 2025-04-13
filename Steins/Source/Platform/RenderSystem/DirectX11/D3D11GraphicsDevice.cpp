@@ -6,6 +6,9 @@
 
 namespace Steins
 {
+	ID3D11Device* D3D11GraphicsDevice::deviceInstance = nullptr;
+	ID3D11DeviceContext* D3D11GraphicsDevice::contextInstance = nullptr;
+
 	namespace
 	{
 		std::string GetVendor(int _vendorCode)
@@ -24,7 +27,19 @@ namespace Steins
 
 	D3D11GraphicsDevice::D3D11GraphicsDevice(SteinsWindow* _window)
 		:GraphicsDevice(_window)
-	{ 
+	{
+	}
+
+	D3D11GraphicsDevice::~D3D11GraphicsDevice()
+	{
+		deviceInstance = nullptr;
+		dxgiAdapter->Release();
+		dxgiAdapter = nullptr;
+		dxgiDevice->Release();
+		dxgiDevice = nullptr;
+		dxgiFactory->Release();
+		dxgiFactory = nullptr;
+		device.Reset();
 	}
 
 	void D3D11GraphicsDevice::Init()
@@ -35,15 +50,20 @@ namespace Steins
 		// If the project is in a debug build, enable debugging via SDK Layers.
 		creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
-		
+
 		D3D_FEATURE_LEVEL featureLevels[] =
 		{
 			D3D_FEATURE_LEVEL_11_1,
 			D3D_FEATURE_LEVEL_11_0,
-			D3D_FEATURE_LEVEL_9_1
+			D3D_FEATURE_LEVEL_10_1,
+			D3D_FEATURE_LEVEL_11_0,
+			D3D_FEATURE_LEVEL_9_3,
+			D3D_FEATURE_LEVEL_9_2,
+			D3D_FEATURE_LEVEL_9_1,
 		};
 
 		glfwMakeContextCurrent((GLFWwindow*)windowHandle->GetNativeWindow());
+
 		D3D_DRIVER_TYPE driverType = D3D_DRIVER_TYPE_HARDWARE;
 		HRESULT hr = D3D11CreateDevice(
 			nullptr,
@@ -61,6 +81,9 @@ namespace Steins
 		{
 			STEINS_CORE_ERROR("Failed to Create m_D3DDevice!");
 		}
+
+		deviceInstance = device.Get();
+		contextInstance = deviceContext.Get();
 
 		device->QueryInterface(IID_PPV_ARGS(&dxgiDevice));
 		dxgiDevice->GetParent(IID_PPV_ARGS(&dxgiAdapter));

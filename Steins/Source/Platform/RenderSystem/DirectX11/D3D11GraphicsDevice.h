@@ -9,7 +9,7 @@ namespace Steins
 	{
 	public:
 		D3D11GraphicsDevice(SteinsWindow* _window);
-		~D3D11GraphicsDevice() override {};
+		virtual ~D3D11GraphicsDevice() override;
 
 		virtual void Init() override;
 		virtual void Shutdown() override;
@@ -20,8 +20,11 @@ namespace Steins
 		virtual void SetPrimitiveTopology(PrimitiveTopology _primitiveTopology) override;
 		virtual void DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex) override;
 
-		ID3D11Device* GetDevice() const { return device.Get(); }
-		ID3D11DeviceContext* GetContext() const { return deviceContext.Get(); }
+		/*ID3D11Device* GetDevice() const { return deviceInstance; }
+		ID3D11DeviceContext* GetContext() const { return contextInstance; }*/
+
+		static ID3D11Device* GetDevice() { return deviceInstance; }
+		static ID3D11DeviceContext* GetContext() { return contextInstance; }
 	private:
 		bool debugLayerEnabled = true;
 		D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_1;
@@ -33,6 +36,9 @@ namespace Steins
 		ComPtr<IDXGIDevice> dxgiDevice = nullptr;
 		ComPtr<IDXGIAdapter> dxgiAdapter = nullptr;
 		ComPtr<IDXGIFactory> dxgiFactory = nullptr;
+
+		static ID3D11Device* deviceInstance;
+		static ID3D11DeviceContext* contextInstance;
 	};
 }
 

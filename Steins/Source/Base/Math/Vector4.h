@@ -1,7 +1,9 @@
 #pragma once
 
+#include <iostream>
 #include <DirectXMath.h>
 #include "TypeTraits.h"
+#include <glm/glm.hpp>
 
 namespace Steins
 {
@@ -20,6 +22,7 @@ namespace Steins
 			};
 			Float32 v[4];
 			DirectX::XMFLOAT4A XMFloat;
+			glm::vec4 glmVec;
 		};
 		Vector4() :x(0), y(0), z(0), w(0) {}
 		Vector4(Float32 _x, Float32 _y, Float32 _z, Float32 _w) : x(_x), y(_y), z(_z), w(_w) {}

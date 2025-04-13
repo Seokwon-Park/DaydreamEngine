@@ -15,7 +15,7 @@ namespace Steins
 	public:
 		// constrcuter destructer
 		WindowsWindow(const WindowProps& _props);
-		virtual ~WindowsWindow();
+		virtual ~WindowsWindow() override;
 
 		void OnUpdate() override;
 

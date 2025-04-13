@@ -12,10 +12,13 @@
 #include <vector>
 #include <string_view>
 #include <unordered_map>
+#include <glm/glm.hpp>
+#include <DirectXMath.h>
 
 #include "Steins/Core/Logger.h"
 #include "Steins/Core/Assert.h"
 #include "Base/Base.h"
+
 
 #if defined(STEINS_PLATFORM_WINDOWS)
 	#ifndef NOMINMAX
@@ -29,7 +32,6 @@
 	#include <d3d12.h>
 	#include <dxgi1_6.h>
 	#include <d3dcompiler.h>
-	#include <DirectXMath.h>
 	#include <DirectXCollision.h>
 
 	#pragma comment(lib, "d3d11")

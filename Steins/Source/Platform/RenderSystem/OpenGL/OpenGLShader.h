@@ -8,8 +8,8 @@ namespace Steins
 	class OpenGLShader :public Shader
 	{
 	public:
-		OpenGLShader(const FilePath& _filepath);
-		OpenGLShader(const std::string& _vertexSrc, const std::string& _pixelSrc);
+		OpenGLShader(const FilePath& _filepath, const ShaderType& _type);
+		OpenGLShader(const std::string& _src, const ShaderType& _type);
 		virtual ~OpenGLShader();
 
 		virtual void Bind() const override;
@@ -19,7 +19,6 @@ namespace Steins
 
 		void UploadUniformMat4(const std::string& name, const Matrix4x4& _matrix);
 	private:
-		std::string ParseGLSLFile(const FilePath& _filepath);
 		void Compile();
 	private:
 		std::unordered_map<ShaderType, std::string> shaderSources;

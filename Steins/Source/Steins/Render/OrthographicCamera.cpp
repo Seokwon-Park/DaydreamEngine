@@ -1,11 +1,11 @@
 #include "SteinsPCH.h"
 #include "OrthographicCamera.h"
-#include "Base/Math.h"
+
 
 namespace Steins
 {
 	OrthographicCamera::OrthographicCamera(float _left, float _right, float _bottom, float _top)
-		: projectionMatrix(Math::Ortho(_left, _right, _bottom, _top)), viewMatrix()
+		: projectionMatrix(Math::Orthographic(_left, _right, _bottom, _top)), viewMatrix()
 	{
 		viewProjectionMatrix = projectionMatrix * viewMatrix;
 

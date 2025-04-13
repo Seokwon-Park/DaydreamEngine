@@ -54,16 +54,7 @@ namespace Steins
 		ImGuiLayer* imGuiLayer;
 		LayerStack layerStack;
 
-		unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
-
-		RendererAPIType API = RendererAPIType::OpenGL;
-
-		Shared<VertexArray> va;
-		Shared<VertexBuffer> vb;
-		Shared<IndexBuffer> ib;
-		Shared<Shader> shader;
-
-		OrthographicCamera m_Camera;
+		RendererAPIType API = RendererAPIType::DirectX11;	
 	};
 
 	// To be defined in client

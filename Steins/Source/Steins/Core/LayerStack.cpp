@@ -10,11 +10,7 @@ namespace Steins
 	}
 	LayerStack::~LayerStack()
 	{
-		for (Layer* layer : layers)
-		{
-			layer->OnDetach();
-			delete layer;
-		}
+
 	}
 	void LayerStack::PushLayer(Layer* _layer)
 	{
@@ -54,6 +50,14 @@ namespace Steins
 		else
 		{
 			STEINS_CORE_WARN("{0} is Not Found In Overlays", _overlay->GetName());
+		}
+	}
+	void LayerStack::Release()
+	{
+		for (Layer* layer : layers)
+		{
+			layer->OnDetach();
+			delete layer;
 		}
 	}
 }

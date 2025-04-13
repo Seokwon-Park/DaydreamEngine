@@ -19,14 +19,16 @@ namespace Steins
 	{
 	}
 
-	void Renderer::Submit(const Shared<Shader>& _shader, const Shared<VertexArray>& _vertexArray)
+	void Renderer::Submit(const Shared<Shader>& _shader, const Shared<VertexArray>& _vertexArray, const Matrix4x4 _transform)
 	{
 		_shader->Bind();
 		_shader->SetMat4("u_ViewProjection", m_SceneData->ViewProjectionMatrix);
+		_shader->SetMat4("u_Transform", _transform);
 
 		_vertexArray->Bind();
 		RenderCommand::DrawIndexed(_vertexArray->GetIndexBuffer()->GetCount());
 	}
+
 
 
 

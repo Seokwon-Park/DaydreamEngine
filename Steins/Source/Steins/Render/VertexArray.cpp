@@ -3,6 +3,7 @@
 
 #include "Steins/Render/Renderer.h"
 #include "Platform/RenderSystem/OpenGL/OpenGLVertexArray.h"
+#include "Platform/RenderSystem/DirectX11/D3D11VertexArray.h"
 
 namespace Steins {
 
@@ -12,7 +13,7 @@ namespace Steins {
 		{
 		case RendererAPIType::None:    STEINS_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
 		case RendererAPIType::OpenGL:  return MakeShared<OpenGLVertexArray>();
-		case RendererAPIType::DirectX11:  return MakeShared<OpenGLVertexArray>();
+		case RendererAPIType::DirectX11:  return MakeShared<D3D11VertexArray>();
 		//case RendererAPIType::DirectX12:  return MakeShared<OpenGLVertexArray>();
 		//case RendererAPIType::Vulkan:  return MakeShared<OpenGLVertexArray>();
 		//case RendererAPIType::Metal:  return MakeShared<OpenGLVertexArray>();

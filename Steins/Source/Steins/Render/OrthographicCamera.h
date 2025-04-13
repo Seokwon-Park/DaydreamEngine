@@ -8,7 +8,7 @@ namespace Steins
 		OrthographicCamera(float _left, float _right, float _bottom, float _top);
 
 		inline const Vector4 GetPosition() { return position;  }
-		inline void SetRotation(const Vector4& _position) { position = _position; }
+		inline void SetPosition(const Vector4& _position) { position = _position; }
 
 		inline const Matrix4x4& GetProjectionMatrix() const { return projectionMatrix; }
 		inline const Matrix4x4& GetViewMatrix() const { return viewMatrix; }

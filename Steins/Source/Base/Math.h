@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Base/MathTypes.h"
+#include "Base/Math/Matrix4x4.h"
 
 namespace Steins
 {
@@ -21,7 +22,7 @@ namespace Steins
 			return mat;
 		}
 
-		inline static Matrix4x4 Ortho(float _left, float _right, float _bottom, float _top)
+		inline static Matrix4x4 Orthographic(float _left, float _right, float _bottom, float _top)
 		{
 			Matrix4x4 mat;
 			mat.dxMatrix = DirectX::XMMatrixOrthographicOffCenterLH(_left, _right, _bottom, _top, 0.0f, 1.0f);

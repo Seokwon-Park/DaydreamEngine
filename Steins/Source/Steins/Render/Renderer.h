@@ -17,7 +17,7 @@ namespace Steins
 		static void BeginScene(OrthographicCamera& camera);
 		static void EndScene();
 
-		static void Submit(const Shared<Shader>& _shader, const Shared<VertexArray>& _vertexArray);
+		static void Submit(const Shared<Shader>& _shader, const Shared<VertexArray>& _vertexArray, const Matrix4x4 _transform = Matrix4x4());
 
 		inline static RendererAPIType GetAPI() { return RendererAPI::GetRendererAPI(); }
 	private:

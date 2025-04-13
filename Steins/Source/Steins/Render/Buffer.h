@@ -43,6 +43,7 @@ namespace Steins
 	struct BufferElement
 	{
 		std::string name = "";
+		std::string semantic = "";
 		ShaderDataType type = ShaderDataType::None;
 		UInt32 size = 0;
 		UInt32 offset = 0;
@@ -50,8 +51,8 @@ namespace Steins
 
 		BufferElement() {}
 
-		BufferElement(ShaderDataType _type, const std::string& _name, Bool _normalized = false)
-			: name(_name), type(_type), size(ShaderDataTypeSize(_type)), offset(0), normalized(_normalized)
+		BufferElement(ShaderDataType _type, const std::string& _name, std::string _semantic, Bool _normalized = false)
+			: name(_name), semantic(_semantic), type(_type), size(ShaderDataTypeSize(_type)), offset(0), normalized(_normalized)
 		{
 		}
 

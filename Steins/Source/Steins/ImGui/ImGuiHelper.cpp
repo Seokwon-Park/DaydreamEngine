@@ -25,9 +25,8 @@ namespace Steins
 		}
 		case RendererAPIType::DirectX11:
 		{
-			D3D11GraphicsDevice* device = app.GetMainWindow().GetNativeDevice<D3D11GraphicsDevice>();
 			ImGui_ImplGlfw_InitForOther(window, true);
-			ImGui_ImplDX11_Init(device->GetDevice(), device->GetContext());
+			ImGui_ImplDX11_Init(D3D11GraphicsDevice::GetDevice(), D3D11GraphicsDevice::GetContext());
 			break;
 		}
 		//case RendererAPIType::DirectX12:
@@ -78,7 +77,6 @@ namespace Steins
 			break;
 		}
 		ImGui_ImplGlfw_Shutdown();
-
 	}
 
 	void ImGuiHelper::NewFrame()

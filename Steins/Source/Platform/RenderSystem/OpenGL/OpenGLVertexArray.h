@@ -16,8 +16,6 @@ namespace Steins
 		virtual void AddVertexBuffer(const Shared<VertexBuffer>& _vertexBuffer) override;
 		virtual void SetIndexBuffer(const Shared<IndexBuffer>& _indexBuffer) override;
 
-		virtual const std::vector<Shared<VertexBuffer>>& GetVertexBuffers() const override { return vertexBuffers; }
-		virtual const Shared<IndexBuffer>& GetIndexBuffer() const override { return indexBuffer; };
 	private:
 		UInt32 rendererID;
 	};

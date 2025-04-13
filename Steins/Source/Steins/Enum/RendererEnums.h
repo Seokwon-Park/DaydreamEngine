@@ -16,7 +16,10 @@ namespace Steins
 	{
 		None,
 		Vertex,
+		Hull,
+		Domain,
 		Geometry,
 		Pixel,
+		Compute,
 	};
 }

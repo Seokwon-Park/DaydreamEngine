@@ -16,6 +16,8 @@ namespace Steins
 		void PopLayer(Layer* _layer);
 		void PopOverlay(Layer* _overlay);
 
+		void Release();
+
 		std::vector<Layer*>::iterator begin() { return layers.begin(); }
 		std::vector<Layer*>::iterator end() { return layers.end(); }
 	private:

@@ -19,15 +19,30 @@ namespace Steins
 	Application* Application::instance = nullptr;
 
 	Application::Application()
-		:m_Camera(-1.6f, 1.6f, -0.9f, 0.9f)
 	{
 		STEINS_CORE_ASSERT(!instance, "Application already exists!");
 		instance = this;
+
+		RendererAPI::SetRendererAPI(API);
+
+		mainWindow = SteinsWindow::Create();
+		if (mainWindow == nullptr)
+		{
+			STEINS_CORE_ASSERT(false, "No Main Window")
+		}
+		mainWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
+
+		Renderer::Init(mainWindow->GetGraphicsDevice());
+
+		imGuiLayer = new ImGuiLayer();
+		AttachOverlay(imGuiLayer);
+		ImGuiLayer::Init();
 	}
 
 	Application::~Application()
 	{
-
+		layerStack.Release();
+		mainWindow = nullptr;
 	}
 
 	void Application::AttachLayer(Layer* _layer)
@@ -59,79 +74,11 @@ namespace Steins
 
 	bool Application::Init()
 	{
-		RendererAPI::SetRendererAPI(API);
-
-		mainWindow = SteinsWindow::Create();
-		if (mainWindow == nullptr)
-		{
-			STEINS_CORE_ASSERT(false, "No Main Window")
-				return false;
-		}
-		mainWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
-
-		Renderer::Init(mainWindow->GetGraphicsDevice());
-
-		imGuiLayer = new ImGuiLayer();
-		AttachOverlay(imGuiLayer);
-		ImGuiLayer::Init();
+		
 
 		isRunning = true;
 
-		float vertices[3 * 7] = {
-					-0.5f, -0.5f, 0.0f, 1.0f, 0.0, 0.0f, 1.0f,
-					 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-					 0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f
-		};
-
-		va = VertexArray::Create();
-
-		vb = VertexBuffer::Create(vertices, sizeof(vertices));
-		BufferLayout layout = {
-			{ ShaderDataType::Float3, "a_Position" },
-			{ ShaderDataType::Float4, "a_Color" }
-		};
-		vb->SetLayout(layout);
-		va->AddVertexBuffer(vb);
-
-		unsigned int indices[3] = { 0, 1, 2 };
-		ib = IndexBuffer::Create(indices, 3);
-		va->SetIndexBuffer(ib);
-
-		std::string vertexSrc = R"(
-			#version 330 core
-			
-			layout(location = 0) in vec3 a_Position;
-			layout(location = 1) in vec4 a_Color;
-
-			uniform mat4 u_ViewProjection;
-
-			out vec3 v_Position;
-			out vec4 v_Color;
-
-			void main()
-			{
-				v_Position = a_Position;
-				v_Color = a_Color;
-				gl_Position = u_ViewProjection * vec4(a_Position, 1.0);	
-			}
-		)";
-
-		std::string fragmentSrc = R"(
-			#version 330 core
-			
-			layout(location = 0) out vec4 color;
-
-			in vec3 v_Position;
-			in vec4 v_Color;
-
-			void main()
-			{
-				color = vec4(v_Position * 0.5 + 0.5, 1.0);
-				color = v_Color;
-			}
-		)";
-
-		shader = Shader::Create(vertexSrc,fragmentSrc);
+		
 
 
 		return true;
@@ -140,14 +87,7 @@ namespace Steins
 	{
 		while (isRunning)
 		{
-			RenderCommand::SetClearColor(Color::White);
-			RenderCommand::Clear();
-
-			m_Camera.SetRotation({ 0.5f, 0.5f, 0.0f });
-
-			Renderer::BeginScene(m_Camera);
-
-			Renderer::Submit(shader, va);
+			
 			
 			for (Layer* layer : layerStack)
 			{
