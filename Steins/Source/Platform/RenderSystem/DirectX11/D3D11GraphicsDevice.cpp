@@ -167,7 +167,6 @@ namespace Steins
 
 	void D3D11GraphicsDevice::SwapBuffers()
 	{
-		swapChain->Present(1, 0);
 	}
 
 	void D3D11GraphicsDevice::Clear()

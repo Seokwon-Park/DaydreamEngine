@@ -56,6 +56,16 @@ namespace Steins
 		
 		windowHandle = glfwGetWin32Window(glfwWindow);
 
+		SwapchainDesc desc;
+		desc.width = windowData.width;
+		desc.height= windowData.height;
+		desc.bufferCount = 2;
+		desc.format = RenderFormat::R8G8B8A8_UNORM;
+		desc.isFullscreen = false;
+		desc.isVSync = windowData.isVSync;
+
+		swapchain = Swapchain::Create(&desc, this);
+
 		glfwSetWindowSizeCallback(glfwWindow, [](GLFWwindow* _window, int _width, int _height)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(_window);
@@ -148,6 +158,7 @@ namespace Steins
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
+		swapchain->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool _enabled)

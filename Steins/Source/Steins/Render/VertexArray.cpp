@@ -1,5 +1,6 @@
 #include "SteinsPCH.h"
 #include "VertexArray.h"
+#include "GraphicsDevice.h"
 
 #include "Steins/Core/Application.h"
 
@@ -15,25 +16,11 @@ namespace Steins {
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPIType::None:    STEINS_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPIType::OpenGL:
-		{
-			newVertexArray = MakeShared<OpenGLVertexArray>();
-			break;
-		}
-		case RendererAPIType::DirectX11:
-		{
-			newVertexArray = MakeShared<D3D11VertexArray>();
-			break;
-		}
+		case RendererAPIType::OpenGL:	return MakeShared<OpenGLVertexArray>();
+		case RendererAPIType::DirectX11:return  MakeShared<D3D11VertexArray>(Application::GetGraphicsDevice());
 		//case RendererAPIType::DirectX12:  return MakeShared<OpenGLVertexArray>();
 		//case RendererAPIType::Vulkan:  return MakeShared<OpenGLVertexArray>();
 		//case RendererAPIType::Metal:  return MakeShared<OpenGLVertexArray>();
-		}
-
-		if (newVertexArray != nullptr)
-		{
-			newVertexArray->device = Application::GetGraphicsDevice();
-			return newVertexArray;
 		}
 
 		STEINS_CORE_ASSERT(false, "Unknown RendererAPI!");

@@ -50,6 +50,8 @@ namespace Steins
 
 		HWND windowHandle = nullptr;
 
+		Shared<Swapchain> swapchain = nullptr;
+
 		struct WindowData
 		{
 			std::string title;

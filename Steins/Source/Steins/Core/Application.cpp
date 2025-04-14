@@ -33,8 +33,8 @@ namespace Steins
 		}
 		mainWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
-		TestWindow = SteinsWindow::Create();
-
+		//testWindow = SteinsWindow::Create();
+		//testWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
 		graphicsDevice = GraphicsDevice::Create(mainWindow.get());
 		graphicsDevice->Init();
@@ -82,12 +82,7 @@ namespace Steins
 
 	bool Application::Init()
 	{
-		
-
 		isRunning = true;
-
-		
-
 
 		return true;
 	}
@@ -132,7 +127,7 @@ namespace Steins
 
 			mainWindow->OnUpdateKeyState();
 			mainWindow->OnUpdate();
-			TestWindow->OnUpdate();
+			//testWindow->OnUpdate();
 			graphicsDevice->SwapBuffers();
 		}
 		return true;

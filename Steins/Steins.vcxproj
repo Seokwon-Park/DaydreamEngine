@@ -125,6 +125,7 @@
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLGraphicsDevice.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLRendererAPI.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLSwapchain.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexArray.h" />
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanGraphicsDevice.h" />
     <ClInclude Include="Source\Steins.h" />
@@ -186,6 +187,7 @@
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLGraphicsDevice.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLRendererAPI.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLSwapchain.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexArray.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanGraphicsDevice.cpp" />
     <ClCompile Include="Source\Steins\Core\Application.cpp" />
@@ -205,6 +207,7 @@
     <ClCompile Include="Source\Steins\Render\Renderer.cpp" />
     <ClCompile Include="Source\Steins\Render\RendererAPI.cpp" />
     <ClCompile Include="Source\Steins\Render\Shader.cpp" />
+    <ClCompile Include="Source\Steins\Render\Swapchain.cpp" />
     <ClCompile Include="Source\Steins\Render\Texture.cpp" />
     <ClCompile Include="Source\Steins\Render\VertexArray.cpp" />
     <ClCompile Include="Source\SteinsPCH.cpp">

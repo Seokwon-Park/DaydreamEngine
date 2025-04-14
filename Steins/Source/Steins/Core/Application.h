@@ -51,7 +51,7 @@ namespace Steins
 		bool OnWindowResize(WindowResizeEvent& _e);
 
 		Unique<SteinsWindow> mainWindow;
-		Unique<SteinsWindow> TestWindow;
+		Unique<SteinsWindow> testWindow;
 		GraphicsDevice* graphicsDevice = nullptr;
 
 		bool isRunning = false;

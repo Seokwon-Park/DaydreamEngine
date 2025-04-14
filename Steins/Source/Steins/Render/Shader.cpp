@@ -24,7 +24,6 @@ namespace Steins
 	}
 
 	Shared<Shader> Shader::Create(const std::string& _src, const ShaderType& _type)
-
 	{
 		switch (Renderer::GetAPI())
 		{

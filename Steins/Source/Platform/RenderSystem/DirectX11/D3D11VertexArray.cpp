@@ -26,15 +26,16 @@ namespace Steins
 		STEINS_CORE_ASSERT(false, "Unknown ShaderDataType!");
 		return DXGI_FORMAT_UNKNOWN;
 	}
-	D3D11VertexArray::D3D11VertexArray()
+	D3D11VertexArray::D3D11VertexArray(GraphicsDevice* _device)
 	{
+		device = _device;
 	}
 	D3D11VertexArray::~D3D11VertexArray()
 	{
 	}
 	void D3D11VertexArray::Bind() const
 	{
-		D3D11GraphicsDevice::GetContext()->IASetInputLayout(inputLayout.Get());
+		//GetContext()->IASetInputLayout(inputLayout.Get());
 		for (auto vertexBuffer : vertexBuffers)
 		{
 			vertexBuffer->Bind();
@@ -43,7 +44,7 @@ namespace Steins
 	}
 	void D3D11VertexArray::Unbind() const
 	{
-		D3D11GraphicsDevice::GetContext()->IASetInputLayout(nullptr);
+		//D3D11GraphicsDevice::GetContext()->IASetInputLayout(nullptr);
 		for (auto vertexBuffer : vertexBuffers)
 		{
 			vertexBuffer->Unbind();
@@ -77,6 +78,6 @@ namespace Steins
 	}
 	void D3D11VertexArray::CreateInputLayout(ID3DBlob* _vsBlob)
 	{
-		D3D11GraphicsDevice::GetDevice()->CreateInputLayout(layoutDescs.data(), (UINT)layoutDescs.size(), _vsBlob->GetBufferPointer(), _vsBlob->GetBufferSize(), inputLayout.GetAddressOf());
+		//D3D11GraphicsDevice::GetDevice()->CreateInputLayout(layoutDescs.data(), (UINT)layoutDescs.size(), _vsBlob->GetBufferPointer(), _vsBlob->GetBufferSize(), inputLayout.GetAddressOf());
 	}
 }

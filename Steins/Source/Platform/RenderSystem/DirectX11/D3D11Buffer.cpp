@@ -5,8 +5,9 @@
 
 namespace Steins
 {
-	D3D11VertexBuffer::D3D11VertexBuffer(Float32* _vertices, UInt32 _size)
+	D3D11VertexBuffer::D3D11VertexBuffer(GraphicsDevice* _device, Float32* _vertices, UInt32 _size)
 	{
+		device = _device;
 		D3D11_BUFFER_DESC desc;
 		ZeroMemory(&desc, sizeof(desc));
 		desc.ByteWidth = _size;
@@ -21,8 +22,8 @@ namespace Steins
 		data.pSysMem = _vertices;
 		data.SysMemPitch = 0;
 		data.SysMemSlicePitch = 0;
-
-		D3D11GraphicsDevice::GetDevice()->CreateBuffer(&desc, &data, vertexBuffer.GetAddressOf());
+		
+		StaticCast<D3D11GraphicsDevice>(device)->GetDevice()->CreateBuffer(&desc, &data, vertexBuffer.GetAddressOf());
 	}
 	D3D11VertexBuffer::~D3D11VertexBuffer()
 	{
@@ -33,7 +34,7 @@ namespace Steins
 	void D3D11VertexBuffer::Unbind() const
 	{
 	}
-	D3D11IndexBuffer::D3D11IndexBuffer(UInt32* _indices, UInt32 _indexCount)
+	D3D11IndexBuffer::D3D11IndexBuffer(GraphicsDevice* _device, UInt32* _indices, UInt32 _indexCount)
 	{
 		indexCount = _indexCount;
 
@@ -52,7 +53,7 @@ namespace Steins
 		data.SysMemPitch = 0;
 		data.SysMemSlicePitch = 0;
 
-		D3D11GraphicsDevice::GetDevice()->CreateBuffer(&desc, &data, indexBuffer.GetAddressOf());
+		StaticCast<D3D11GraphicsDevice>(device)->GetDevice()->CreateBuffer(&desc, &data, indexBuffer.GetAddressOf());
 	}
 	D3D11IndexBuffer::~D3D11IndexBuffer()
 	{
