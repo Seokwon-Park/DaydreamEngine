@@ -15,8 +15,6 @@ namespace Steins
 		virtual void Shutdown() override;
 		virtual void Render() override;
 		virtual void SwapBuffers() override;
-
-		virtual void SetPrimitiveTopology(PrimitiveTopology _primitiveTopology) override;
 	private:
 		ComPtr<IDXGISwapChain3> swapChain;
 

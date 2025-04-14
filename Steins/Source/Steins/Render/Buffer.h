@@ -128,6 +128,7 @@ namespace Steins
 
 		static Shared<VertexBuffer> Create(Float32* _vertices, UInt32 _size);
 	protected:
+		GraphicsDevice* device;
 		BufferLayout layout;
 	};
 

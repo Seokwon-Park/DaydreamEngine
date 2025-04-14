@@ -4,6 +4,8 @@
 #include "Steins/Render/Renderer.h"
 #include "Steins/Render/RendererAPI.h"
 
+#include "Steins/Core/Application.h"
+
 #include "Platform/RenderSystem/OpenGL/OpenGLBuffer.h"
 #include "Platform/RenderSystem/DirectX11/D3D11Buffer.h"
 
@@ -11,6 +13,7 @@ namespace Steins
 {
 	Shared<VertexBuffer> VertexBuffer::Create(Float32* _vertices, UInt32 _size)
 	{
+		Shared<VertexBuffer> newVertexBuffer;
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPIType::None:    STEINS_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
@@ -21,6 +24,11 @@ namespace Steins
 		//case RendererAPIType::Metal:  return new OpenGLVertexBuffer(_vertices, _size);
 		}
 
+		if (newVertexBuffer != nullptr)
+		{
+			newVertexBuffer->device = Application::GetGraphicsDevice();
+			return newVertexBuffer;
+		}
 		STEINS_CORE_ASSERT(false, "Unknown RendererAPI!");
 		return nullptr;
 	}

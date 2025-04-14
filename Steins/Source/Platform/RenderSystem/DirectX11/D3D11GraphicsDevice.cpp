@@ -3,12 +3,12 @@
 #include "Steins/Core/Window.h"
 
 #include "GLFW/glfw3.h"
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include "GLFW/glfw3native.h"
+
 
 namespace Steins
 {
-	ID3D11Device* D3D11GraphicsDevice::deviceInstance = nullptr;
-	ID3D11DeviceContext* D3D11GraphicsDevice::contextInstance = nullptr;
-
 	namespace
 	{
 		std::string GetVendor(int _vendorCode)
@@ -32,14 +32,13 @@ namespace Steins
 
 	D3D11GraphicsDevice::~D3D11GraphicsDevice()
 	{
-		deviceInstance = nullptr;
-		dxgiAdapter->Release();
-		dxgiAdapter = nullptr;
-		dxgiDevice->Release();
-		dxgiDevice = nullptr;
-		dxgiFactory->Release();
-		dxgiFactory = nullptr;
-		device.Reset();
+		//dxgiAdapter->Release();
+		//dxgiAdapter = nullptr;
+		//dxgiDevice->Release();
+		//dxgiDevice = nullptr;
+		//dxgiFactory->Release();
+		//dxgiFactory = nullptr;
+		//device.Reset();
 	}
 
 	void D3D11GraphicsDevice::Init()
@@ -62,7 +61,6 @@ namespace Steins
 			D3D_FEATURE_LEVEL_9_1,
 		};
 
-		glfwMakeContextCurrent((GLFWwindow*)windowHandle->GetNativeWindow());
 
 		D3D_DRIVER_TYPE driverType = D3D_DRIVER_TYPE_HARDWARE;
 		HRESULT hr = D3D11CreateDevice(
@@ -82,12 +80,9 @@ namespace Steins
 			STEINS_CORE_ERROR("Failed to Create m_D3DDevice!");
 		}
 
-		deviceInstance = device.Get();
-		contextInstance = deviceContext.Get();
-
-		device->QueryInterface(IID_PPV_ARGS(&dxgiDevice));
-		dxgiDevice->GetParent(IID_PPV_ARGS(&dxgiAdapter));
-		dxgiAdapter->GetParent(IID_PPV_ARGS(&dxgiFactory));
+		device->QueryInterface(IID_PPV_ARGS(dxgiDevice.GetAddressOf()));
+		dxgiDevice->GetParent(IID_PPV_ARGS(dxgiAdapter.GetAddressOf()));
+		dxgiAdapter->GetParent(IID_PPV_ARGS(dxgiFactory.GetAddressOf()));
 
 		//Here is For Get DX11 Version
 		DXGI_ADAPTER_DESC adapterDescription; // Vendor
@@ -119,7 +114,7 @@ namespace Steins
 		//Set DX11 DebugMode
 		if (debugLayerEnabled)
 		{
-			device->QueryInterface(IID_PPV_ARGS(&debugLayer));
+			device->QueryInterface(IID_PPV_ARGS(debugLayer.GetAddressOf()));
 			debugLayer->ReportLiveDeviceObjects(D3D11_RLDO_IGNORE_INTERNAL);
 			ID3D11InfoQueue* infoQueue;
 			device->QueryInterface(IID_PPV_ARGS(&infoQueue));
@@ -136,16 +131,26 @@ namespace Steins
 		STEINS_CORE_INFO("  Renderer: {0}", videoCardDescription);
 		STEINS_CORE_INFO("  Version: {0}", version);
 
-		//DXGI_SWAP_CHAIN_DESC swapDesc = {};
-		//swapDesc.BufferCount = 1;
-		//swapDesc.BufferDesc.Width = 800;
-		//swapDesc.BufferDesc.Height = 600;
-		//swapDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		//swapDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		//swapDesc.OutputWindow = hwnd;
-		//swapDesc.SampleDesc.Count = 1;
-		//swapDesc.Windowed = TRUE;
+		DXGI_SWAP_CHAIN_DESC swapDesc;
+		ZeroMemory(&swapDesc, sizeof(swapDesc));
+		swapDesc.BufferCount = 2;
+		swapDesc.BufferDesc.Width = windowHandle->GetWidth();
+		swapDesc.BufferDesc.Height = windowHandle->GetHeight();
+		swapDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		swapDesc.BufferDesc.RefreshRate.Numerator = 60;
+		swapDesc.BufferDesc.RefreshRate.Denominator = 1;
+		swapDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+		swapDesc.OutputWindow = glfwGetWin32Window((GLFWwindow*)windowHandle->GetNativeWindow());
+		swapDesc.SampleDesc.Count = 1;
+		swapDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+		swapDesc.Windowed = TRUE;
 
+		dxgiFactory->CreateSwapChain(device.Get(), &swapDesc, swapChain.GetAddressOf());
+
+		ComPtr<ID3D11Texture2D> backBuffer;
+		swapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
+
+		device->CreateRenderTargetView(backBuffer.Get(), nullptr, rtv.GetAddressOf());
 		//D3D11CreateDeviceAndSwapChain(
 		//	nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0,
 		//	nullptr, 0, D3D11_SDK_VERSION,
@@ -162,6 +167,7 @@ namespace Steins
 
 	void D3D11GraphicsDevice::SwapBuffers()
 	{
+		swapChain->Present(1, 0);
 	}
 
 	void D3D11GraphicsDevice::Clear()
@@ -169,12 +175,17 @@ namespace Steins
 		//deviceContext->ClearRenderTargetView();
 	}
 
-	void D3D11GraphicsDevice::SetPrimitiveTopology(PrimitiveTopology _primitiveTopology)
-	{
-		//deviceContext->IASetPrimitiveTopology()
-	}
 	void D3D11GraphicsDevice::DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex)
 	{
 		deviceContext->DrawIndexed(_indexCount, _startIndex, _baseVertex);
+	}
+	void D3D11GraphicsDevice::ClearRenderTargetViews(Color _clearColor)
+	{
+		deviceContext->ClearRenderTargetView(rtv.Get(), _clearColor.color);
+		BindRenderTargets();
+	}
+	void D3D11GraphicsDevice::BindRenderTargets()
+	{
+		deviceContext->OMSetRenderTargets(1, rtv.GetAddressOf(), nullptr);
 	}
 }

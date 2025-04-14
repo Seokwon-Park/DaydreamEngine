@@ -25,6 +25,7 @@ namespace Steins
 
 		RendererAPI::SetRendererAPI(API);
 
+
 		mainWindow = SteinsWindow::Create();
 		if (mainWindow == nullptr)
 		{
@@ -32,7 +33,14 @@ namespace Steins
 		}
 		mainWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
-		Renderer::Init(mainWindow->GetGraphicsDevice());
+		TestWindow = SteinsWindow::Create();
+
+
+		graphicsDevice = GraphicsDevice::Create(mainWindow.get());
+		graphicsDevice->Init();
+
+		mainWindow->SetVSync(true);
+		Renderer::Init(graphicsDevice);
 
 		imGuiLayer = new ImGuiLayer();
 		AttachOverlay(imGuiLayer);
@@ -87,8 +95,6 @@ namespace Steins
 	{
 		while (isRunning)
 		{
-			
-			
 			for (Layer* layer : layerStack)
 			{
 				layer->OnUpdate();
@@ -126,6 +132,8 @@ namespace Steins
 
 			mainWindow->OnUpdateKeyState();
 			mainWindow->OnUpdate();
+			TestWindow->OnUpdate();
+			graphicsDevice->SwapBuffers();
 		}
 		return true;
 	}

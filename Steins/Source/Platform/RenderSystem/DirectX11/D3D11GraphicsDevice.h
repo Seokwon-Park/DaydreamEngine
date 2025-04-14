@@ -17,17 +17,22 @@ namespace Steins
 		virtual void SwapBuffers() override;
 
 		virtual void Clear() override;
-		virtual void SetPrimitiveTopology(PrimitiveTopology _primitiveTopology) override;
 		virtual void DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex) override;
+
+		//temp;
+		void ClearRenderTargetViews(Color _clearColor);
+		void BindRenderTargets();
 
 		/*ID3D11Device* GetDevice() const { return deviceInstance; }
 		ID3D11DeviceContext* GetContext() const { return contextInstance; }*/
 
-		static ID3D11Device* GetDevice() { return deviceInstance; }
-		static ID3D11DeviceContext* GetContext() { return contextInstance; }
+		 ID3D11Device* GetDevice() { return device.Get(); }
+		 ID3D11DeviceContext* GetContext() { return deviceContext.Get(); }
 	private:
 		bool debugLayerEnabled = true;
 		D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_1;
+
+		ComPtr<IDXGISwapChain> swapChain = nullptr;
 
 		ComPtr<ID3D11Debug> debugLayer = nullptr;
 		ComPtr<ID3D11Device> device = nullptr;
@@ -35,10 +40,9 @@ namespace Steins
 
 		ComPtr<IDXGIDevice> dxgiDevice = nullptr;
 		ComPtr<IDXGIAdapter> dxgiAdapter = nullptr;
-		ComPtr<IDXGIFactory> dxgiFactory = nullptr;
+		ComPtr<IDXGIFactory7> dxgiFactory = nullptr;
 
-		static ID3D11Device* deviceInstance;
-		static ID3D11DeviceContext* contextInstance;
+		ComPtr<ID3D11RenderTargetView> rtv;
 	};
 }
 

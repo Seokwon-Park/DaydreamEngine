@@ -27,7 +27,6 @@ namespace Steins
 
 	WindowsWindow::~WindowsWindow()
 	{
-		delete graphicsDevice;
 		Shutdown();
 	}
 
@@ -53,11 +52,7 @@ namespace Steins
 
 		glfwWindow = glfwCreateWindow((Int32)_props.width, (Int32)_props.height, _props.title.c_str(), nullptr, nullptr);
 
-		graphicsDevice = GraphicsDevice::Create(this);
-		graphicsDevice->Init();
-
 		glfwSetWindowUserPointer(glfwWindow, &windowData);
-		SetVSync(true);
 		
 		windowHandle = glfwGetWin32Window(glfwWindow);
 
@@ -153,7 +148,6 @@ namespace Steins
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(glfwWindow);
 	}
 
 	void WindowsWindow::SetVSync(bool _enabled)

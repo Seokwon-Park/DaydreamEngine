@@ -13,9 +13,9 @@ namespace Steins
 		virtual void Render() override;
 		virtual void SwapBuffers() override;
 
-		virtual void SetPrimitiveTopology(PrimitiveTopology _primitiveTopology) override;
 
 	private:
+
 		VkInstance instance; // Vulkan library handle
 		VkDebugUtilsMessengerEXT debugMessenger; // Vulkan debug output handle
 		VkPhysicalDevice chosenGPU; // GPU chosen as the default device

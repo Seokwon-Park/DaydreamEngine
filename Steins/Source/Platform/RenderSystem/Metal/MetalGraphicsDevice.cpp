@@ -19,7 +19,4 @@ namespace Steins
 	{
 	}
 
-	void MetalGraphicsDevice::SetPrimitiveTopology(PrimitiveTopology _primitiveTopology)
-	{
-	}
 }

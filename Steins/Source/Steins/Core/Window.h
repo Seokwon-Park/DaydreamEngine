@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Steins/Render/GraphicsDevice.h"
-#include "Steins/Event/Event.h"
 #include "WindowDefine.h"
+#include "Steins/Event/Event.h"
+#include "Steins/Render/Swapchain.h"
 
 
 namespace Steins
@@ -53,13 +53,8 @@ namespace Steins
 		virtual void OnUpdateKeyState() = 0;
 
 		static Unique<SteinsWindow> Create(const WindowProps& _props = WindowProps());
-
-		inline GraphicsDevice* GetGraphicsDevice() const { return graphicsDevice; }
-
-		template <typename DeviceType>
-		DeviceType* GetNativeDevice() const { return DynamicCast<DeviceType>(graphicsDevice); }
 	protected:
-		GraphicsDevice* graphicsDevice = nullptr;
+		Unique<Swapchain> swapchain = nullptr;
 	private:
 	};
 

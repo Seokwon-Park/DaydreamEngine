@@ -71,7 +71,4 @@ namespace Steins
 	void D3D12GraphicsDevice::SwapBuffers()
 	{
 	}
-	void D3D12GraphicsDevice::SetPrimitiveTopology(PrimitiveTopology _primitiveTopology)
-	{
-	}
 }

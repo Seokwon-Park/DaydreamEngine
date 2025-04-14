@@ -18,15 +18,16 @@ namespace Steins
 		{
 		case RendererAPIType::OpenGL:
 		{
-			OpenGLGraphicsDevice* device = app.GetMainWindow().GetNativeDevice<OpenGLGraphicsDevice>();
+			OpenGLGraphicsDevice* device = app.GetNativeDevice<OpenGLGraphicsDevice>();
 			ImGui_ImplGlfw_InitForOpenGL(window, true);
 			ImGui_ImplOpenGL3_Init(device->GetVersion().data());
 			break;
 		}
 		case RendererAPIType::DirectX11:
 		{
+			D3D11GraphicsDevice* device = app.GetNativeDevice<D3D11GraphicsDevice>();
 			ImGui_ImplGlfw_InitForOther(window, true);
-			ImGui_ImplDX11_Init(D3D11GraphicsDevice::GetDevice(), D3D11GraphicsDevice::GetContext());
+			ImGui_ImplDX11_Init(device->GetDevice(), device->GetContext());
 			break;
 		}
 		//case RendererAPIType::DirectX12:

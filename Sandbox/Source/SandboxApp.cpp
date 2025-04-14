@@ -94,6 +94,7 @@ public :
 
 	void OnUpdate() override
 	{
+		Sandbox::GetGraphicsDevice()->CreateBuffer()
 
 		Steins::RenderCommand::SetClearColor(Steins::Color::White);
 		Steins::RenderCommand::Clear();

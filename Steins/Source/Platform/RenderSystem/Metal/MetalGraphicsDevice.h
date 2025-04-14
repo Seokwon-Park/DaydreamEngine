@@ -10,7 +10,6 @@ namespace Steins
         void Shutdown() override;
         void Render() override;
         void SwapBuffers() override;
-        void SetPrimitiveTopology(PrimitiveTopology _primitiveTopology) override;
     };
 }
 

@@ -117,6 +117,7 @@
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11GraphicsDevice.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11RendererAPI.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Shader.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Swapchain.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11VertexArray.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12GraphicsDevice.h" />
     <ClInclude Include="Source\Platform\RenderSystem\Metal\MetalGraphicsDevice.h" />
@@ -156,6 +157,7 @@
     <ClInclude Include="Source\Steins\Render\Renderer.h" />
     <ClInclude Include="Source\Steins\Render\RendererAPI.h" />
     <ClInclude Include="Source\Steins\Render\Shader.h" />
+    <ClInclude Include="Source\Steins\Render\Swapchain.h" />
     <ClInclude Include="Source\Steins\Render\Texture.h" />
     <ClInclude Include="Source\Steins\Render\VertexArray.h" />
     <ClInclude Include="Source\SteinsPCH.h" />
@@ -176,6 +178,7 @@
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11GraphicsDevice.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11RendererAPI.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Shader.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Swapchain.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11VertexArray.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12GraphicsDevice.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\Metal\MetalGraphicsDevice.cpp" />

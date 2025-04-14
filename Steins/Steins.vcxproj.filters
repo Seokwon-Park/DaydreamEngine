@@ -243,6 +243,8 @@
     </ClInclude>
     <ClInclude Include="Source\SteinsPCH.h" />
     <ClInclude Include="Source\Steins\Render\PipelineState.h" />
+    <ClInclude Include="Source\Steins\Render\Swapchain.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Swapchain.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -375,5 +377,6 @@
       <Filter>Steins\Render</Filter>
     </ClCompile>
     <ClCompile Include="Source\SteinsPCH.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Swapchain.cpp" />
   </ItemGroup>
 </Project>

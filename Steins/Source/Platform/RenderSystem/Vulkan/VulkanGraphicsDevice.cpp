@@ -19,7 +19,4 @@ namespace Steins
 	void VulkanGraphicsDevice::SwapBuffers()
 	{
 	}
-	void VulkanGraphicsDevice::SetPrimitiveTopology(PrimitiveTopology _primitiveTopology)
-	{
-	}
 }
