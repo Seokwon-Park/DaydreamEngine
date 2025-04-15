@@ -10,12 +10,16 @@ namespace Steins
 		virtual ~PipelineState() = 0;
 
 		virtual void Bind() const = 0;
+
+		void SetShaders(std::vector<Pair<Shared<Shader>, ShaderType>>& _shaders);
+		void SetShader(Shared<Shader> _shader, ShaderType _type);
+
 	private:
-		Shader* vertexShader;
-		Shader* hullShader;
-		Shader* domainShader;
-		Shader* geometryShader;
-		Shader* pixelShader;
+		Shared<Shader> vertexShader;
+		Shared<Shader> hullShader;
+		Shared<Shader> domainShader;
+		Shared<Shader> geometryShader;
+		Shared<Shader> pixelShader;
 
 		//root signature??
 

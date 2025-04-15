@@ -178,14 +178,17 @@
     <ClCompile Include="Source\Platform\OSWindows\WindowsWindow.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Buffer.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11GraphicsDevice.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11PixelShader.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11RendererAPI.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Shader.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Swapchain.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11VertexArray.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11VertexShader.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12GraphicsDevice.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\Metal\MetalGraphicsDevice.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLGraphicsDevice.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLPipelineState.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLRendererAPI.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLSwapchain.cpp" />

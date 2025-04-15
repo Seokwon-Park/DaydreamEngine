@@ -383,5 +383,8 @@
     <ClCompile Include="Source\Steins\Render\Swapchain.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLSwapchain.cpp" />
     <ClCompile Include="Source\Steins\Render\PipelineState.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11VertexShader.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11PixelShader.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLPipelineState.cpp" />
   </ItemGroup>
 </Project>

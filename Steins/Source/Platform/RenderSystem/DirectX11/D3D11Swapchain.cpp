@@ -132,9 +132,7 @@ namespace Steins
 		case Steins::RenderFormat::V208:                                return DXGI_FORMAT_V208;
 		case Steins::RenderFormat::V408:                                return DXGI_FORMAT_V408;
 		case Steins::RenderFormat::SAMPLER_FEEDBACK_MIN_MIP_OPAQUE:    return DXGI_FORMAT_SAMPLER_FEEDBACK_MIN_MIP_OPAQUE;
-		case Steins::RenderFormat::SAMPLER_FEEDBACK_MIP_REGION_USED_OPAQUE:
-			return DXGI_FORMAT_SAMPLER_FEEDBACK_MIP_REGION_USED_OPAQUE;
-		case Steins::RenderFormat::A4B4G4R4_UNORM:                      return DXGI_FORMAT_A4B4G4R4_UNORM;
+		case Steins::RenderFormat::SAMPLER_FEEDBACK_MIP_REGION_USED_OPAQUE: return DXGI_FORMAT_SAMPLER_FEEDBACK_MIP_REGION_USED_OPAQUE;
 		default:                                                        return DXGI_FORMAT_UNKNOWN;
 		}
 	}

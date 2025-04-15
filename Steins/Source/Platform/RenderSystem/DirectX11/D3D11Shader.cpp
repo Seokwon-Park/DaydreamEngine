@@ -7,7 +7,6 @@ namespace Steins
 {
 	D3D11Shader::D3D11Shader(const FilePath& _filepath, const ShaderType& _type)
 	{
-		Compile(_filepath.ToString(), true);
 	}
 	D3D11Shader::D3D11Shader(const std::string& _src, const ShaderType& _type)
 	{
@@ -49,31 +48,54 @@ namespace Steins
 	{
 	}
 
-	void D3D11Shader::Compile(const std::string& _src, bool _isFile)
-	{
-		HRESULT hr = D3DCompile(
-			_src.c_str(),
-			_src.length(),
-			nullptr,
-			nullptr,
-			nullptr,
-			"vs_main", "vs_5_0",
-			0, 0,
-			shaderBlob.GetAddressOf(),
-			nullptr);
+	//HRESULT hr = D3DCompile(
+		//	_src.c_str(),
+		//	_src.length(),
+		//	nullptr,
+		//	nullptr,
+		//	nullptr,
+		//	"vs_main", "vs_5_0",
+		//	0, 0,
+		//	shaderBlob.GetAddressOf(),
+		//	nullptr);
 
 		//hr = D3D11GraphicsDevice::GetDevice()->CreateVertexShader(
 		//	shaderBlob->GetBufferPointer(),
 		//	shaderBlob->GetBufferSize(),
 		//	nullptr,
 		//	&vs);
-	}
 	Shared<Shader> D3D11Shader::CreateShader(const std::string& _src, const ShaderType& _type)
 	{
-		return nullptr;
+		switch (_type)
+		{
+		case Steins::ShaderType::None:
+			break;
+		case Steins::ShaderType::Vertex:return MakeShared<D3D11VertexShader>(_src);
+		//case Steins::ShaderType::Hull: return MakeShared<
+		//case Steins::ShaderType::Domain:;
+		//case Steins::ShaderType::Geometry:;
+		case Steins::ShaderType::Pixel:return MakeShared<D3D11PixelShader>(_src);
+		//case Steins::ShaderType::Compute:;
+		default:
+			break;
+		}
 	}
 	Shared<Shader> D3D11Shader::CreateShader(const FilePath& _filepath, const ShaderType& _type)
 	{
-		return Shared<Shader>();
+		switch (_type)
+		{
+		case Steins::ShaderType::None:
+			break;
+		case Steins::ShaderType::Vertex:return MakeShared<D3D11VertexShader>(_filepath);
+			//case Steins::ShaderType::Hull: return MakeShared<
+			//case Steins::ShaderType::Domain:;
+			//case Steins::ShaderType::Geometry:;
+		case Steins::ShaderType::Pixel:return MakeShared<D3D11PixelShader>(_filepath);
+			//case Steins::ShaderType::Compute:;
+		default:
+			break;
+		}
 	}
+
+
 }
