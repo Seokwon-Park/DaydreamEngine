@@ -16,5 +16,13 @@ namespace Steins
 		Shader* domainShader;
 		Shader* geometryShader;
 		Shader* pixelShader;
+
+		//root signature??
+
+		VertexArray* vertexArray;//input layout
+
+		//rtv, dsv;
+		//blend, rast, ds;
+
 	};
 }

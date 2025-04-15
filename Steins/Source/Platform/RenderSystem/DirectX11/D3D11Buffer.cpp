@@ -7,7 +7,7 @@ namespace Steins
 {
 	D3D11VertexBuffer::D3D11VertexBuffer(GraphicsDevice* _device, Float32* _vertices, UInt32 _size)
 	{
-		device = _device;
+		device = Cast<D3D11GraphicsDevice>(_device);
 		D3D11_BUFFER_DESC desc;
 		ZeroMemory(&desc, sizeof(desc));
 		desc.ByteWidth = _size;
@@ -23,7 +23,7 @@ namespace Steins
 		data.SysMemPitch = 0;
 		data.SysMemSlicePitch = 0;
 		
-		StaticCast<D3D11GraphicsDevice>(device)->GetDevice()->CreateBuffer(&desc, &data, vertexBuffer.GetAddressOf());
+		device->GetDevice()->CreateBuffer(&desc, &data, vertexBuffer.GetAddressOf());
 	}
 	D3D11VertexBuffer::~D3D11VertexBuffer()
 	{
@@ -36,6 +36,7 @@ namespace Steins
 	}
 	D3D11IndexBuffer::D3D11IndexBuffer(GraphicsDevice* _device, UInt32* _indices, UInt32 _indexCount)
 	{
+		device = Cast<D3D11GraphicsDevice>(_device);
 		indexCount = _indexCount;
 
 		D3D11_BUFFER_DESC desc;
@@ -53,7 +54,7 @@ namespace Steins
 		data.SysMemPitch = 0;
 		data.SysMemSlicePitch = 0;
 
-		StaticCast<D3D11GraphicsDevice>(device)->GetDevice()->CreateBuffer(&desc, &data, indexBuffer.GetAddressOf());
+		device->GetDevice()->CreateBuffer(&desc, &data, indexBuffer.GetAddressOf());
 	}
 	D3D11IndexBuffer::~D3D11IndexBuffer()
 	{

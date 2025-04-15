@@ -28,7 +28,7 @@ namespace Steins
 	}
 	D3D11VertexArray::D3D11VertexArray(GraphicsDevice* _device)
 	{
-		device = _device;
+		device = Cast<D3D11GraphicsDevice>(_device);
 	}
 	D3D11VertexArray::~D3D11VertexArray()
 	{
@@ -78,6 +78,6 @@ namespace Steins
 	}
 	void D3D11VertexArray::CreateInputLayout(ID3DBlob* _vsBlob)
 	{
-		//D3D11GraphicsDevice::GetDevice()->CreateInputLayout(layoutDescs.data(), (UINT)layoutDescs.size(), _vsBlob->GetBufferPointer(), _vsBlob->GetBufferSize(), inputLayout.GetAddressOf());
+		device->GetDevice()->CreateInputLayout(layoutDescs.data(), (UINT)layoutDescs.size(), _vsBlob->GetBufferPointer(), _vsBlob->GetBufferSize(), inputLayout.GetAddressOf());
 	}
 }

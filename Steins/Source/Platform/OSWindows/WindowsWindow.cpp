@@ -55,16 +55,7 @@ namespace Steins
 		glfwSetWindowUserPointer(glfwWindow, &windowData);
 		
 		windowHandle = glfwGetWin32Window(glfwWindow);
-
-		SwapchainDesc desc;
-		desc.width = windowData.width;
-		desc.height= windowData.height;
-		desc.bufferCount = 2;
-		desc.format = RenderFormat::R8G8B8A8_UNORM;
-		desc.isFullscreen = false;
-		desc.isVSync = windowData.isVSync;
-
-		swapchain = Swapchain::Create(&desc, this);
+		glfwMakeContextCurrent(glfwWindow);
 
 		glfwSetWindowSizeCallback(glfwWindow, [](GLFWwindow* _window, int _width, int _height)
 			{
@@ -163,7 +154,7 @@ namespace Steins
 
 	void WindowsWindow::SetVSync(bool _enabled)
 	{
-		glfwSwapInterval((Int32)_enabled);
+		//glfwSwapInterval((Int32)_enabled);
 		windowData.isVSync = _enabled;
 	}
 	bool WindowsWindow::IsVSync() const

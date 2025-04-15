@@ -2,6 +2,8 @@
 
 #include "Steins/Render/Swapchain.h"
 
+#include "GLFW/glfw3.h"
+
 namespace Steins
 {
 	class OpenGLSwapchain : public Swapchain
@@ -9,10 +11,11 @@ namespace Steins
 	public:
 		OpenGLSwapchain(SwapchainDesc* _desc, SteinsWindow* _window);
 		virtual ~OpenGLSwapchain() override;
-	private:
 
-		// Inherited via Swapchain
-		void SetVSync(bool _enabled) override;
-		void SwapBuffers() override;
+		virtual void SetVSync(bool _enabled) override;
+		virtual void SwapBuffers() override;
+	private:
+		GLFWwindow* window;
+		
 	};
 }

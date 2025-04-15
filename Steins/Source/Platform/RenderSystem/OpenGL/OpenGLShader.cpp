@@ -36,9 +36,12 @@ namespace Steins
 
 	OpenGLShader::OpenGLShader(const FilePath& _filepath, const ShaderType& _type)
 	{
+		type = _type;
 		std::ifstream file(_filepath.ToString());
 		std::string readline;
 		std::stringstream stringStream;
+
+		std::string src = "";
 
 		ShaderType currentType = ShaderType::None;
 
@@ -51,35 +54,21 @@ namespace Steins
 				std::string typeStr = readline.substr(pos);
 
 				currentType = StringToShaderType(typeStr);
-
-				shaderSources[currentType] = "";
 			}
 			else
 			{
-				if (currentType != ShaderType::None)
+				if (currentType == type)
 				{
-					shaderSources[currentType] += readline + "\n";
+					src += readline + "\n";
 				}
 			}
 		}
-		Compile();
-
-		//std::string source = ReadFile(_filepath);
-		//auto shaderSources = PreProcess(source);
-		//Compile(shaderSources);
-
-		//// Extract name from filepath
-		//auto lastSlash = _filepath.find_last_of("/\\");
-		//lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
-		//auto lastDot = filepath.rfind('.');
-		//auto count = lastDot == std::string::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
-		//m_Name = filepath.substr(lastSlash, count);
+		Compile(src);
 	}
 	OpenGLShader::OpenGLShader(const std::string& _src, const ShaderType& _type)
 	{
-		shaderSources[_type] = _src;
-
-		Compile();
+		type = _type;
+		Compile(_src);
 	}
 	OpenGLShader::~OpenGLShader()
 	{
@@ -102,73 +91,98 @@ namespace Steins
 		GLint location = glGetUniformLocation(rendererID, name.c_str());
 		glUniformMatrix4fv(location, 1, GL_FALSE, &matrix.matrix[0][0]);
 	}
-	void OpenGLShader::Compile()
+	void OpenGLShader::Compile(const std::string& _src)
 	{
-		rendererID = glCreateProgram();
-		std::vector<GLuint> glShaderIDs;
+		shaderID = glCreateShader(ShaderTypeToGLShader(type));
+		const GLchar* source = _src.c_str();
 
-		for (auto [type, shaderSource] : shaderSources)
-		{
-			GLuint shader = glCreateShader(ShaderTypeToGLShader(type));
-			const GLchar* source = shaderSource.c_str();
+		glShaderSource(shaderID, 1, &source, 0);
+		glCompileShader(shaderID);
 
-			glShaderSource(shader, 1, &source, 0);
-			glCompileShader(shader);
-			
-			GLint isCompiled = 0;
-			glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
-			if (isCompiled == GL_FALSE)
-			{
-				GLint maxLength = 0;
-				glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
-
-				// The maxLength includes the NULL character
-				std::vector<GLchar> infoLog(maxLength);
-				glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
-
-				// We don't need the shader anymore.
-				glDeleteShader(shader);
-
-				STEINS_CORE_ERROR("{0}", infoLog.data());
-				STEINS_CORE_ASSERT(false, "Shader compilation failure!");
-				return;
-			}
-			glAttachShader(rendererID, shader);
-			glShaderIDs.push_back(shader);
-
-		}
-
-		GLuint program = rendererID;
-		glLinkProgram(program);
-
-		GLint isLinked = 0;
-		glGetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
-		if (isLinked == GL_FALSE)
+		GLint isCompiled = 0;
+		glGetShaderiv(shaderID, GL_COMPILE_STATUS, &isCompiled);
+		if (isCompiled == GL_FALSE)
 		{
 			GLint maxLength = 0;
-			glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
+			glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &maxLength);
 
-			// The maxLength includes the NULL character
 			std::vector<GLchar> infoLog(maxLength);
-			glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
-
-			// We don't need the program anymore.
-			glDeleteProgram(program);
-			// Don't leak shaders either.
-			for (GLuint id : glShaderIDs)
-			{
-				glDeleteShader(id);
-			}
+			glGetShaderInfoLog(shaderID, maxLength, &maxLength, &infoLog[0]);
+			glDeleteShader(shaderID);
 
 			STEINS_CORE_ERROR("{0}", infoLog.data());
-			STEINS_CORE_ASSERT(false, "Shader link failure!");
+			STEINS_CORE_ASSERT(false, "Shader compilation failure!");
 			return;
 		}
 
-		for (GLuint id : glShaderIDs)
-		{
-			glDetachShader(program, id);
 
-		}
+		//	glAttachShader(rendererID, shader);
+		//	glShaderIDs.push_back(shader);
+			//rendererID = glCreateProgram();
+			//std::vector<GLuint> glShaderIDs;
+
+			//for (auto [type, shaderSource] : shaderSources)
+			//{
+			//	GLuint shader = glCreateShader(ShaderTypeToGLShader(type));
+			//	const GLchar* source = shaderSource.c_str();
+
+			//	glShaderSource(shader, 1, &source, 0);
+			//	glCompileShader(shader);
+			//	
+			//	GLint isCompiled = 0;
+			//	glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
+			//	if (isCompiled == GL_FALSE)
+			//	{
+			//		GLint maxLength = 0;
+			//		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
+
+			//		// The maxLength includes the NULL character
+			//		std::vector<GLchar> infoLog(maxLength);
+			//		glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
+
+			//		// We don't need the shader anymore.
+			//		glDeleteShader(shader);
+
+			//		STEINS_CORE_ERROR("{0}", infoLog.data());
+			//		STEINS_CORE_ASSERT(false, "Shader compilation failure!");
+			//		return;
+			//	}
+			//	glAttachShader(rendererID, shader);
+			//	glShaderIDs.push_back(shader);
+
+			//}
+
+			//GLuint program = rendererID;
+			//glLinkProgram(program);
+
+			//GLint isLinked = 0;
+			//glGetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
+			//if (isLinked == GL_FALSE)
+			//{
+			//	GLint maxLength = 0;
+			//	glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
+
+			//	// The maxLength includes the NULL character
+			//	std::vector<GLchar> infoLog(maxLength);
+			//	glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
+
+			//	// We don't need the program anymore.
+			//	glDeleteProgram(program);
+			//	// Don't leak shaders either.
+			//	for (GLuint id : glShaderIDs)
+			//	{
+			//		glDeleteShader(id);
+			//	}
+
+			//	STEINS_CORE_ERROR("{0}", infoLog.data());
+			//	STEINS_CORE_ASSERT(false, "Shader link failure!");
+			//	return;
+			//}
+
+			//for (GLuint id : glShaderIDs)
+			//{
+			//	glDetachShader(program, id);
+
+			//}
 	}
 }

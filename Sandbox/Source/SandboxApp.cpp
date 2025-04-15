@@ -105,7 +105,7 @@ public :
 		Steins::Matrix4x4 transform = Steins::Math::Translate(Steins::Matrix4x4(), Steins::Vector4(1.0f, 1.0f, 0.0f));
 		//transform.Transpose();
 
-		Steins::Renderer::Submit(shader, va, transform);
+		//Steins::Renderer::Submit(shader, va, transform);
 
 		//STEINS_INFO("TestLayer::UPDATE");
 		/*if(Steins::Input::GetKeyDown(Steins::Key::Up))

@@ -123,6 +123,7 @@
     <ClInclude Include="Source\Platform\RenderSystem\Metal\MetalGraphicsDevice.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLGraphicsDevice.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLPipelineState.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLRendererAPI.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLSwapchain.h" />
@@ -203,6 +204,7 @@
     <ClCompile Include="Source\Steins\Render\Buffer.cpp" />
     <ClCompile Include="Source\Steins\Render\GraphicsDevice.cpp" />
     <ClCompile Include="Source\Steins\Render\OrthographicCamera.cpp" />
+    <ClCompile Include="Source\Steins\Render\PipelineState.cpp" />
     <ClCompile Include="Source\Steins\Render\RenderCommand.cpp" />
     <ClCompile Include="Source\Steins\Render\Renderer.cpp" />
     <ClCompile Include="Source\Steins\Render\RendererAPI.cpp" />

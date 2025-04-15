@@ -36,7 +36,7 @@ namespace Steins
 		void ReadConfig(std::string_view _fileName);
 
 		template <typename DeviceType>
-		DeviceType* GetNativeDevice() const { return DynamicCast<DeviceType>(graphicsDevice); }
+		DeviceType* GetNativeDevice() const { return SafeCast<DeviceType>(graphicsDevice); }
 	protected:
 
 	private:
@@ -61,7 +61,7 @@ namespace Steins
 		ImGuiLayer* imGuiLayer;
 		LayerStack layerStack;
 
-		RendererAPIType API = RendererAPIType::OpenGL;	
+		RendererAPIType API = RendererAPIType::DirectX11;	
 	};
 
 	// To be defined in client

@@ -8,16 +8,6 @@ namespace Steins
 	class GraphicsDevice
 	{
 	public:
-		enum class PrimitiveTopology
-		{
-			PointList,
-			LineList,
-			LineStrip,
-			TriangleList,
-			TriangleStrip
-		};
-
-		GraphicsDevice(class SteinsWindow* _window);
 		virtual ~GraphicsDevice() {};
 
 		virtual void Init() = 0;
@@ -28,7 +18,7 @@ namespace Steins
 		virtual void Clear() = 0;
 		virtual void DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex) = 0;
 
-		static GraphicsDevice* Create(class SteinsWindow* _window);
+		static GraphicsDevice* Create();
 	protected:
 		class SteinsWindow* windowHandle;
 	};

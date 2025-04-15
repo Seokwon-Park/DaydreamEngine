@@ -19,9 +19,9 @@ namespace Steins
 
 		void UploadUniformMat4(const std::string& name, const Matrix4x4& _matrix);
 	private:
-		void Compile();
+		void Compile(const std::string& _src);
 	private:
-		std::unordered_map<ShaderType, std::string> shaderSources;
+		GLuint shaderID;
 		UInt32 rendererID;
 	};
 }

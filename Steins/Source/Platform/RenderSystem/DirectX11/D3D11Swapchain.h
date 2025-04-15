@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Steins/Render/Swapchain.h"
-#include "Steins/Render/GraphicsDevice.h"
+#include "D3D11GraphicsDevice.h"
 
 namespace Steins
 {
@@ -14,6 +14,7 @@ namespace Steins
 		virtual void SetVSync(bool _enabled);
 		virtual void SwapBuffers() override;
 	private:
+		D3D11GraphicsDevice* device;
 		ComPtr<IDXGISwapChain> swapchain;
 	};
 }

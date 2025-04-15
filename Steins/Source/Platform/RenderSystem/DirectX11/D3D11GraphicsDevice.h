@@ -8,7 +8,7 @@ namespace Steins
 	class D3D11GraphicsDevice : public GraphicsDevice
 	{
 	public:
-		D3D11GraphicsDevice(SteinsWindow* _window);
+		D3D11GraphicsDevice();
 		virtual ~D3D11GraphicsDevice() override;
 
 		virtual void Init() override;
@@ -28,6 +28,8 @@ namespace Steins
 
 		 ID3D11Device* GetDevice() { return device.Get(); }
 		 ID3D11DeviceContext* GetContext() { return deviceContext.Get(); }
+
+		 IDXGIFactory7* GetFactory() { return dxgiFactory.Get(); }
 	private:
 		bool debugLayerEnabled = true;
 		D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_1;

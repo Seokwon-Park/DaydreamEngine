@@ -9,17 +9,13 @@
 
 namespace Steins
 {
-    GraphicsDevice::GraphicsDevice(SteinsWindow* _window)
-        :windowHandle(_window)
-    {
-    }
-    GraphicsDevice* GraphicsDevice::Create(SteinsWindow* _window)
+    GraphicsDevice* GraphicsDevice::Create()
 	{
         switch (RendererAPI::GetRendererAPI())
         {
         case RendererAPIType::None: return nullptr;
-        case RendererAPIType::OpenGL: return new OpenGLGraphicsDevice(_window);
-        case RendererAPIType::DirectX11: return new D3D11GraphicsDevice(_window);
+        case RendererAPIType::OpenGL: return new OpenGLGraphicsDevice();
+        case RendererAPIType::DirectX11: return new D3D11GraphicsDevice();
         //case RendererAPIType::Vulkan:    return new D3D11GraphicsDevice(_window);
         default: return nullptr;
         }

@@ -6,10 +6,8 @@
 
 namespace Steins
 {
-	OpenGLGraphicsDevice::OpenGLGraphicsDevice(SteinsWindow* _window)
-		:GraphicsDevice(_window)
+	OpenGLGraphicsDevice::OpenGLGraphicsDevice()
 	{
-		nativeWindow = (GLFWwindow*)_window->GetNativeWindow();
 	}
 
 	OpenGLGraphicsDevice::~OpenGLGraphicsDevice()
@@ -19,7 +17,6 @@ namespace Steins
 	void OpenGLGraphicsDevice::Init()
 	{
 		//int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		glfwMakeContextCurrent(nativeWindow);
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		STEINS_CORE_ASSERT(status, "Failed to initialize Glad!");
 
@@ -36,7 +33,7 @@ namespace Steins
 	}
 	void OpenGLGraphicsDevice::SwapBuffers()
 	{
-		glfwSwapBuffers(nativeWindow);
+
 	}
 	void OpenGLGraphicsDevice::Clear()
 	{

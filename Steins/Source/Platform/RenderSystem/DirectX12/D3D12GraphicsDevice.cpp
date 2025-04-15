@@ -3,8 +3,7 @@
 
 namespace Steins
 {
-	D3D12GraphicsDevice::D3D12GraphicsDevice(SteinsWindow* _window)
-		:GraphicsDevice(_window)
+	D3D12GraphicsDevice::D3D12GraphicsDevice()
 	{
 	}
 

@@ -20,6 +20,7 @@ namespace Steins {
 		static Shared<Shader> Create(const FilePath& _filepath, const ShaderType& _type);
 		static Shared<Shader> Create(const std::string& _src, const ShaderType& _type);
 	protected:
+		ShaderType type;
 		VertexArray* vertexArray;
 	};
 

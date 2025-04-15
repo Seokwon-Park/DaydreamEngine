@@ -25,8 +25,7 @@ namespace Steins
 		}
 	} //anonymous namespace
 
-	D3D11GraphicsDevice::D3D11GraphicsDevice(SteinsWindow* _window)
-		:GraphicsDevice(_window)
+	D3D11GraphicsDevice::D3D11GraphicsDevice()
 	{
 	}
 
@@ -131,30 +130,7 @@ namespace Steins
 		STEINS_CORE_INFO("  Renderer: {0}", videoCardDescription);
 		STEINS_CORE_INFO("  Version: {0}", version);
 
-		DXGI_SWAP_CHAIN_DESC swapDesc;
-		ZeroMemory(&swapDesc, sizeof(swapDesc));
-		swapDesc.BufferCount = 2;
-		swapDesc.BufferDesc.Width = windowHandle->GetWidth();
-		swapDesc.BufferDesc.Height = windowHandle->GetHeight();
-		swapDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		swapDesc.BufferDesc.RefreshRate.Numerator = 60;
-		swapDesc.BufferDesc.RefreshRate.Denominator = 1;
-		swapDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		swapDesc.OutputWindow = glfwGetWin32Window((GLFWwindow*)windowHandle->GetNativeWindow());
-		swapDesc.SampleDesc.Count = 1;
-		swapDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-		swapDesc.Windowed = TRUE;
 
-		dxgiFactory->CreateSwapChain(device.Get(), &swapDesc, swapChain.GetAddressOf());
-
-		ComPtr<ID3D11Texture2D> backBuffer;
-		swapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
-
-		device->CreateRenderTargetView(backBuffer.Get(), nullptr, rtv.GetAddressOf());
-		//D3D11CreateDeviceAndSwapChain(
-		//	nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0,
-		//	nullptr, 0, D3D11_SDK_VERSION,
-		//	&swapDesc, &swapChain, &device, nullptr, &context);
 	}
 
 	void D3D11GraphicsDevice::Shutdown()
@@ -180,8 +156,8 @@ namespace Steins
 	}
 	void D3D11GraphicsDevice::ClearRenderTargetViews(Color _clearColor)
 	{
-		deviceContext->ClearRenderTargetView(rtv.Get(), _clearColor.color);
-		BindRenderTargets();
+		//deviceContext->ClearRenderTargetView(rtv.Get(), _clearColor.color);
+		//BindRenderTargets();
 	}
 	void D3D11GraphicsDevice::BindRenderTargets()
 	{

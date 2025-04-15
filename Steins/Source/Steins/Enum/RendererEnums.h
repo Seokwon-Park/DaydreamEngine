@@ -155,4 +155,13 @@ namespace Steins
 
         //FORCE_UINT = 0xffffffff
 	};
+
+    enum class PrimitiveTopology
+    {
+        PointList,
+        LineList,
+        LineStrip,
+        TriangleList,
+        TriangleStrip
+    };
 }

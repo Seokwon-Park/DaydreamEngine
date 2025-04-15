@@ -25,21 +25,32 @@ namespace Steins
 
 		RendererAPI::SetRendererAPI(API);
 
-
 		mainWindow = SteinsWindow::Create();
 		if (mainWindow == nullptr)
 		{
 			STEINS_CORE_ASSERT(false, "No Main Window")
 		}
 		mainWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
+		mainWindow->SetVSync(true);
+
+		graphicsDevice = GraphicsDevice::Create();
+		graphicsDevice->Init();
+
+		//TODO : 더 좋은 방법?
+		SwapchainDesc desc;
+		desc.width = mainWindow->GetWidth();
+		desc.height = mainWindow->GetHeight();
+		desc.bufferCount = 2;
+		desc.format = RenderFormat::R8G8B8A8_UNORM;
+		desc.isFullscreen = false;
+		desc.isVSync = mainWindow->IsVSync();
+
+		Shared<Swapchain> swapchain = Swapchain::Create(&desc, mainWindow.get());
+		mainWindow->SetSwapchain(swapchain);
 
 		//testWindow = SteinsWindow::Create();
 		//testWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
-		graphicsDevice = GraphicsDevice::Create(mainWindow.get());
-		graphicsDevice->Init();
-
-		mainWindow->SetVSync(true);
 		Renderer::Init(graphicsDevice);
 
 		imGuiLayer = new ImGuiLayer();
@@ -128,7 +139,6 @@ namespace Steins
 			mainWindow->OnUpdateKeyState();
 			mainWindow->OnUpdate();
 			//testWindow->OnUpdate();
-			graphicsDevice->SwapBuffers();
 		}
 		return true;
 	}

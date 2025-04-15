@@ -8,7 +8,7 @@ namespace Steins
 	class OpenGLGraphicsDevice: public GraphicsDevice
 	{
 	public:
-		OpenGLGraphicsDevice(SteinsWindow* _window);
+		OpenGLGraphicsDevice();
 		~OpenGLGraphicsDevice() override;
 
 		virtual void Init() override;
@@ -26,13 +26,5 @@ namespace Steins
 		GLFWwindow* nativeWindow;
 
 		std::string version = "#version 410";
-
-
-		//temp
-		unsigned int VAO;
-
-		// Inherited via GraphicsDevice
-
-		// Inherited via GraphicsDevice
 	};
 }

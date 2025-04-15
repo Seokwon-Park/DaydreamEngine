@@ -8,7 +8,7 @@ namespace Steins
 	{
 	public:
 
-		D3D12GraphicsDevice(SteinsWindow* _window);
+		D3D12GraphicsDevice();
 		virtual ~D3D12GraphicsDevice();
 
 		virtual void Init() override;

@@ -16,9 +16,9 @@ namespace Steins
 		case Steins::RendererAPIType::None:break;
 		case Steins::RendererAPIType::OpenGL:return MakeShared<OpenGLSwapchain>(_desc, _window);
 		case Steins::RendererAPIType::DirectX11: return MakeShared<D3D11Swapchain>(Application::GetGraphicsDevice(), _desc, _window);
-		case Steins::RendererAPIType::DirectX12:break;
-		case Steins::RendererAPIType::Vulkan:break;
-		case Steins::RendererAPIType::Metal:break;
+		//case Steins::RendererAPIType::DirectX12:break;
+		//case Steins::RendererAPIType::Vulkan:break;
+		//case Steins::RendererAPIType::Metal:break;
 		default:
 			break;
 		}
