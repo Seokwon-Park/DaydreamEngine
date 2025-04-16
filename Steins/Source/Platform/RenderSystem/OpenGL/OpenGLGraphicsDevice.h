@@ -16,9 +16,6 @@ namespace Steins
 		virtual void Render() override;
 		virtual void SwapBuffers() override;
 
-		virtual void Clear() override;
-		void DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex) override;
-
 		std::string GetVersion() const { return version; }
 	protected:
 

@@ -13,12 +13,13 @@ namespace Steins
 			break;
 		case RendererAPIType::OpenGL: rendererAPI = new OpenGLRendererAPI();
 			break;
-		case RendererAPIType::DirectX11: rendererAPI = new D3D11RendererAPI();
+		case RendererAPIType::DirectX11: rendererAPI = new D3D11RendererAPI(_device);
+			break;
+		case RendererAPIType::DirectX12: rendererAPI = new D3D12RendererAPI(_device);
 			break;
 			//case RendererAPIType::Vulkan:    return new D3D11GraphicsDevice(_window);
 		default:
 			break;;
 		}
-		rendererAPI->Init(_device);
 	}
 }

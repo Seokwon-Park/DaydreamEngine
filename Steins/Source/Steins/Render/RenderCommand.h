@@ -4,6 +4,7 @@
 
 #include "Platform/RenderSystem/OpenGL/OpenGLRendererAPI.h"
 #include "Platform/RenderSystem/DirectX11/D3D11RendererAPI.h"
+#include "Platform/RenderSystem/DirectX12/D3D12RendererAPI.h"
 
 namespace Steins
 {

@@ -16,9 +16,6 @@ namespace Steins
 		virtual void Render() override;
 		virtual void SwapBuffers() override;
 
-		virtual void Clear() override;
-		virtual void DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex) override;
-
 		//temp;
 		void ClearRenderTargetViews(Color _clearColor);
 		void BindRenderTargets();
@@ -34,8 +31,6 @@ namespace Steins
 		bool debugLayerEnabled = true;
 		D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_1;
 
-		ComPtr<IDXGISwapChain> swapChain = nullptr;
-
 		ComPtr<ID3D11Debug> debugLayer = nullptr;
 		ComPtr<ID3D11Device> device = nullptr;
 		ComPtr<ID3D11DeviceContext> deviceContext = nullptr;
@@ -45,6 +40,7 @@ namespace Steins
 		ComPtr<IDXGIFactory7> dxgiFactory = nullptr;
 
 		ComPtr<ID3D11RenderTargetView> rtv;
+
 	};
 }
 

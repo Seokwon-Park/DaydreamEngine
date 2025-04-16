@@ -6,7 +6,7 @@
 
 namespace Steins
 {
-	class OpenGLSwapchain : public Swapchain
+	class OpenGLSwapchain : public SwapChain
 	{
 	public:
 		OpenGLSwapchain(SwapchainDesc* _desc, SteinsWindow* _window);

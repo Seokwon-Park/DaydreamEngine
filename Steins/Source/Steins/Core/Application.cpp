@@ -45,13 +45,13 @@ namespace Steins
 		desc.isFullscreen = false;
 		desc.isVSync = mainWindow->IsVSync();
 
-		Shared<Swapchain> swapchain = Swapchain::Create(&desc, mainWindow.get());
+		Shared<SwapChain> swapchain = SwapChain::Create(&desc, mainWindow.get());
 		mainWindow->SetSwapchain(swapchain);
 
 		//testWindow = SteinsWindow::Create();
 		//testWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
-		Renderer::Init(graphicsDevice);
+		Renderer::Init(graphicsDevice.get());
 
 		imGuiLayer = new ImGuiLayer();
 		AttachOverlay(imGuiLayer);

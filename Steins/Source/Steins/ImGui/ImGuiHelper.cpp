@@ -30,12 +30,30 @@ namespace Steins
 			ImGui_ImplDX11_Init(device->GetDevice(), device->GetContext());
 			break;
 		}
-		//case RendererAPIType::DirectX12:
-		//{
-		//	ImGui_ImplGlfw_InitForOther(window, true);
-		//	ImGui_ImplDX12_Init();
-		//	break;
-		//}
+		case RendererAPIType::DirectX12:
+		{
+			D3D12GraphicsDevice* device = app.GetNativeDevice<D3D12GraphicsDevice>();
+			ImGui_ImplDX12_InitInfo info;
+			info.Device = device->GetDevice();
+			info.CommandQueue = device->GetCommandQueue();     // Command queue used for queuing texture uploads.
+			info.NumFramesInFlight = 2;
+			info.RTVFormat = DXGI_FORMAT_R8G8B8A8_UNORM;          // RenderTarget format.
+			info.DSVFormat = DXGI_FORMAT_UNKNOWN;          // DepthStencilView format.
+			info.UserData = device;
+			info.SrvDescriptorHeap = device->GetSRVHeap();
+			info.SrvDescriptorAllocFn = [](ImGui_ImplDX12_InitInfo* _info, D3D12_CPU_DESCRIPTOR_HANDLE* _outCpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE* _outGpuHandle)
+				{
+					((D3D12GraphicsDevice*)_info->UserData)->GetSRVHeapAlloc().Alloc(_outCpuHandle, _outGpuHandle);
+				};
+			info.SrvDescriptorFreeFn = [](ImGui_ImplDX12_InitInfo* _info, D3D12_CPU_DESCRIPTOR_HANDLE _outCpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE _outGpuHandle)
+				{
+					((D3D12GraphicsDevice*)_info->UserData)->GetSRVHeapAlloc().Free(_outCpuHandle, _outGpuHandle);
+				};
+
+			ImGui_ImplGlfw_InitForOther(window, true);
+			ImGui_ImplDX12_Init(&info);
+			break;
+		}
 		//case RendererAPIType::Vulkan:
 		//{
 		//	ImGui_ImplGlfw_InitForVulkan(window, true);
@@ -130,7 +148,9 @@ namespace Steins
 		}
 		case RendererAPIType::DirectX12:
 		{
-			//ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData());
+			Application& app = Application::GetInstance();
+			D3D12GraphicsDevice* device = app.GetNativeDevice<D3D12GraphicsDevice>();
+			ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), device->GetCommandList());
 			break;
 		}
 		case RendererAPIType::Vulkan:

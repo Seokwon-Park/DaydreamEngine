@@ -31,12 +31,18 @@ namespace Steins
 
 	D3D11GraphicsDevice::~D3D11GraphicsDevice()
 	{
-		//dxgiAdapter->Release();
-		//dxgiAdapter = nullptr;
-		//dxgiDevice->Release();
-		//dxgiDevice = nullptr;
-		//dxgiFactory->Release();
-		//dxgiFactory = nullptr;
+#if defined(DEBUG) || defined(_DEBUG)
+		Microsoft::WRL::ComPtr<ID3D11Debug> DXGIDebug;
+
+		if (SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&DXGIDebug))))
+		{
+			DXGIDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
+			DXGIDebug = nullptr;
+		}
+#endif
+		/*dxgiAdapter->Release();
+		dxgiDevice->Release();
+		dxgiFactory->Release();*/
 		//device.Reset();
 	}
 
@@ -110,20 +116,20 @@ namespace Steins
 		//dxgiAdapter->Release();
 		//dxgiDevice->Release();
 
-		//Set DX11 DebugMode
-		if (debugLayerEnabled)
-		{
-			device->QueryInterface(IID_PPV_ARGS(debugLayer.GetAddressOf()));
-			debugLayer->ReportLiveDeviceObjects(D3D11_RLDO_IGNORE_INTERNAL);
-			ID3D11InfoQueue* infoQueue;
-			device->QueryInterface(IID_PPV_ARGS(&infoQueue));
-			D3D11_MESSAGE_ID hide[] = { D3D11_MESSAGE_ID_DEVICE_DRAW_SAMPLER_NOT_SET };
-			D3D11_INFO_QUEUE_FILTER filter;
-			memset(&filter, 0, sizeof(filter));
-			filter.DenyList.NumIDs = 1;
-			filter.DenyList.pIDList = hide;
-			infoQueue->AddStorageFilterEntries(&filter);
-		}
+		////Set DX11 DebugMode
+		//if (debugLayerEnabled)
+		//{
+		//	device->QueryInterface(IID_PPV_ARGS(debugLayer.GetAddressOf()));
+		//	debugLayer->ReportLiveDeviceObjects(D3D11_RLDO_IGNORE_INTERNAL);
+		//	ID3D11InfoQueue* infoQueue;
+		//	device->QueryInterface(IID_PPV_ARGS(&infoQueue));
+		//	D3D11_MESSAGE_ID hide[] = { D3D11_MESSAGE_ID_DEVICE_DRAW_SAMPLER_NOT_SET };
+		//	D3D11_INFO_QUEUE_FILTER filter;
+		//	memset(&filter, 0, sizeof(filter));
+		//	filter.DenyList.NumIDs = 1;
+		//	filter.DenyList.pIDList = hide;
+		//	infoQueue->AddStorageFilterEntries(&filter);
+		//}
 
 		STEINS_CORE_INFO("DirectX11 Info:");
 		STEINS_CORE_INFO("  Vendor: {0}", GetVendor(adapterDescription.VendorId));
@@ -145,15 +151,6 @@ namespace Steins
 	{
 	}
 
-	void D3D11GraphicsDevice::Clear()
-	{
-		//deviceContext->ClearRenderTargetView();
-	}
-
-	void D3D11GraphicsDevice::DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex)
-	{
-		deviceContext->DrawIndexed(_indexCount, _startIndex, _baseVertex);
-	}
 	void D3D11GraphicsDevice::ClearRenderTargetViews(Color _clearColor)
 	{
 		//deviceContext->ClearRenderTargetView(rtv.Get(), _clearColor.color);

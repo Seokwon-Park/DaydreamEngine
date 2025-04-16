@@ -4,6 +4,10 @@
 
 namespace Steins
 {
+	D3D11RendererAPI::D3D11RendererAPI(GraphicsDevice* _device)
+	{
+		device = Cast<D3D11GraphicsDevice>(_device);
+	}
 	void D3D11RendererAPI::SetClearColor(const Color& _color)
 	{
 		clearColor = _color;
@@ -17,6 +21,6 @@ namespace Steins
 	void D3D11RendererAPI::DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex)
 	{
 		((D3D11GraphicsDevice*)device)->BindRenderTargets();
-		device->DrawIndexed(_indexCount, _startIndex, _baseVertex);
+		device->GetContext()->DrawIndexed(_indexCount, _startIndex, _baseVertex);
 	}
 }

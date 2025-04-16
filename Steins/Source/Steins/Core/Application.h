@@ -27,7 +27,7 @@ namespace Steins
 		virtual ~Application();
 
 		inline static Application& GetInstance() { return *instance; }
-		inline static GraphicsDevice* GetGraphicsDevice() { return instance->graphicsDevice; }
+		inline static GraphicsDevice* GetGraphicsDevice() { return instance->graphicsDevice.get(); }
 		inline SteinsWindow& GetMainWindow() { return *mainWindow; }
 
 		void AttachLayer(Layer* _layer);
@@ -36,7 +36,7 @@ namespace Steins
 		void ReadConfig(std::string_view _fileName);
 
 		template <typename DeviceType>
-		DeviceType* GetNativeDevice() const { return SafeCast<DeviceType>(graphicsDevice); }
+		DeviceType* GetNativeDevice() const { return SafeCast<DeviceType>(graphicsDevice.get()); }
 	protected:
 
 	private:
@@ -52,7 +52,7 @@ namespace Steins
 
 		Unique<SteinsWindow> mainWindow;
 		Unique<SteinsWindow> testWindow;
-		GraphicsDevice* graphicsDevice = nullptr;
+		Unique<GraphicsDevice> graphicsDevice = nullptr;
 
 		bool isRunning = false;
 		static Application* instance;
@@ -61,7 +61,7 @@ namespace Steins
 		ImGuiLayer* imGuiLayer;
 		LayerStack layerStack;
 
-		RendererAPIType API = RendererAPIType::OpenGL;	
+		RendererAPIType API = RendererAPIType::DirectX12;	
 	};
 
 	// To be defined in client

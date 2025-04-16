@@ -31,6 +31,7 @@
 	#include <d3d11.h>
 	#include <d3d12.h>
 	#include <dxgi1_6.h>
+	#include <dxgidebug.h>
 	#include <d3dcompiler.h>
 	#include <DirectXCollision.h>
 
@@ -38,6 +39,7 @@
 	#pragma comment(lib, "d3d12")
 	#pragma comment(lib, "d3dcompiler") 
 	#pragma comment(lib, "DXGI") 
+	#pragma comment(lib, "dxguid") 
 
 	using namespace Microsoft::WRL;
 #endif

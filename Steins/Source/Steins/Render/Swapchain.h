@@ -13,17 +13,17 @@ namespace Steins
 		bool isVSync = false;
 	};
 
-	class Swapchain
+	class SwapChain
 	{
 	public:
-		virtual ~Swapchain() = default;
+		virtual ~SwapChain() = default;
 
 		bool GetVSync() const { return desc.isVSync; }
 		virtual void SetVSync(bool _enabled) = 0;
 
 		virtual void SwapBuffers() = 0;
 
-		static Shared<Swapchain> Create(SwapchainDesc* _desc, class SteinsWindow* _window);
+		static Shared<SwapChain> Create(SwapchainDesc* _desc, class SteinsWindow* _window);
 	protected:
 		SwapchainDesc desc;
 	};

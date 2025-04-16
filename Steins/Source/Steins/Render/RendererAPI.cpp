@@ -7,11 +7,6 @@ namespace Steins
 {
 	RendererAPIType RendererAPI::API = RendererAPIType::None;
 
-	void RendererAPI::Init(GraphicsDevice* _device)
-	{
-		device = _device;
-	}
-
 	/*std::string RendererAPI::GetAPIName() const
 	{
 		switch (graphicsAPI)
