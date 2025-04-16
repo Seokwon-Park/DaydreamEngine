@@ -8,6 +8,9 @@ namespace Steins
 	{
 	public:
 		static DXGI_FORMAT RenderFormatToDXGIFormat(RenderFormat _format);
+
+		static std::string GetVendor(int _vendorCode);
+
 	};
 	
 

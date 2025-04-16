@@ -130,4 +130,16 @@ namespace Steins
 		default:                                                        return DXGI_FORMAT_UNKNOWN;
 		}
 	}
+	std::string DXHelper::GetVendor(int _vendorCode)
+	{
+		switch (_vendorCode)
+		{
+		case 0x10DE: return "NVIDIA Corporation";
+		case 0x1002: return "AMD Inc.";
+		case 0x8086: return "Intel";
+		case 0x1414: return "Microsoft";
+		}
+		STEINS_CORE_ERROR("Not a valid VendorID");
+		return "";
+	}
 }

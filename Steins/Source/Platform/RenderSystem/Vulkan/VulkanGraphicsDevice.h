@@ -8,14 +8,14 @@ namespace Steins
 	class VulkanGraphicsDevice :public GraphicsDevice
 	{
 	public:
+		virtual ~VulkanGraphicsDevice() override;
+
 		virtual void Init() override;
 		virtual void Shutdown() override;
 		virtual void Render() override;
 		virtual void SwapBuffers() override;
 
-
 	private:
-
 		VkInstance instance; // Vulkan library handle
 		VkDebugUtilsMessengerEXT debugMessenger; // Vulkan debug output handle
 		VkPhysicalDevice chosenGPU; // GPU chosen as the default device

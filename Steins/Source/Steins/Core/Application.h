@@ -61,7 +61,7 @@ namespace Steins
 		ImGuiLayer* imGuiLayer;
 		LayerStack layerStack;
 
-		RendererAPIType API = RendererAPIType::DirectX12;	
+		RendererAPIType API = RendererAPIType::Vulkan;	
 	};
 
 	// To be defined in client

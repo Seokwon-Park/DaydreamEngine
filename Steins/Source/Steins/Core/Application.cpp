@@ -37,7 +37,7 @@ namespace Steins
 		graphicsDevice->Init();
 
 		//TODO : 더 좋은 방법?
-		SwapchainDesc desc;
+		SwapChainDesc desc;
 		desc.width = mainWindow->GetWidth();
 		desc.height = mainWindow->GetHeight();
 		desc.bufferCount = 2;

@@ -1,6 +1,6 @@
 #include "SteinsPCH.h"
 #include "D3D11GraphicsDevice.h"
-#include "Steins/Core/Window.h"
+#include "Platform/RenderSystem/DXHelper.h"
 
 #include "GLFW/glfw3.h"
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -9,22 +9,6 @@
 
 namespace Steins
 {
-	namespace
-	{
-		std::string GetVendor(int _vendorCode)
-		{
-			switch (_vendorCode)
-			{
-			case 0x10DE: return "NVIDIA Corporation";
-			case 0x1002: return "AMD Inc.";
-			case 0x8086: return "Intel";
-			case 0x1414: return "Microsoft";
-			}
-			STEINS_CORE_ERROR("Not a valid VendorID");
-			return "";
-		}
-	} //anonymous namespace
-
 	D3D11GraphicsDevice::D3D11GraphicsDevice()
 	{
 	}
@@ -132,7 +116,7 @@ namespace Steins
 		//}
 
 		STEINS_CORE_INFO("DirectX11 Info:");
-		STEINS_CORE_INFO("  Vendor: {0}", GetVendor(adapterDescription.VendorId));
+		STEINS_CORE_INFO("  Vendor: {0}", DXHelper::GetVendor(adapterDescription.VendorId));
 		STEINS_CORE_INFO("  Renderer: {0}", videoCardDescription);
 		STEINS_CORE_INFO("  Version: {0}", version);
 

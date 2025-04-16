@@ -20,6 +20,16 @@ namespace Steins
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		STEINS_CORE_ASSERT(status, "Failed to initialize Glad!");
 
+		//GLint count;
+		//glGetIntegerv(GL_NUM_EXTENSIONS, &count);
+
+		//for (GLint i = 0; i < count; ++i)
+		//{
+		//	const char* extension = (const char*)glGetStringi(GL_EXTENSIONS, i);
+		//	if (!strcmp(extension, "GL_NVX_gpu_memory_info"))
+		//		printf("%d: %s\n", i, extension);
+		//}
+		
 		STEINS_CORE_INFO("OpenGL Info:");
 		STEINS_CORE_INFO("  Vendor: {0}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
 		STEINS_CORE_INFO("  Renderer: {0}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));

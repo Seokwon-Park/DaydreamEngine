@@ -147,7 +147,7 @@
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Shader.h">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11SwapChain.h">
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Swapchain.h">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClInclude>
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11VertexArray.h">
@@ -285,7 +285,7 @@
     <ClInclude Include="Source\Steins\Render\Shader.h">
       <Filter>Source\Steins\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Render\Swapchain.h">
+    <ClInclude Include="Source\Steins\Render\SwapChain.h">
       <Filter>Source\Steins\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\Render\Texture.h">
@@ -1551,6 +1551,7 @@
     <ClInclude Include="Vendor\glm\glm\vector_relational.hpp">
       <Filter>Vendor\glm\glm</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapChain.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -1604,7 +1605,7 @@
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Shader.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11SwapChain.cpp">
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Swapchain.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClCompile>
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11VertexArray.cpp">
@@ -1709,7 +1710,7 @@
     <ClCompile Include="Source\Steins\Render\Shader.cpp">
       <Filter>Source\Steins\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Render\Swapchain.cpp">
+    <ClCompile Include="Source\Steins\Render\SwapChain.cpp">
       <Filter>Source\Steins\Render</Filter>
     </ClCompile>
     <ClCompile Include="Source\Steins\Render\Texture.cpp">

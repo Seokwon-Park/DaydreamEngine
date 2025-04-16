@@ -10,7 +10,7 @@
 
 namespace Steins
 {
-	D3D12SwapChain::D3D12SwapChain(GraphicsDevice* _device, SwapchainDesc* _desc, SteinsWindow* _window)
+	D3D12SwapChain::D3D12SwapChain(GraphicsDevice* _device, SwapChainDesc* _desc, SteinsWindow* _window)
 	{
 		device = Cast<D3D12GraphicsDevice>(_device);
 		desc = *_desc;
@@ -41,21 +41,29 @@ namespace Steins
 			swapChain1.GetAddressOf()
 		);
 
+		hr = device->GetDevice()->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fence.GetAddressOf()));
 		for (UINT i = 0; i < swapchainDesc.BufferCount; i++)
 		{
-			HRESULT hr = device->GetDevice()->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fences[i].GetAddressOf()));
 			fenceValues[i] = 0; // set the initial fence value to 0
 		}
 
 		swapChain1->QueryInterface(swapChain.GetAddressOf());
+		frameIndex = swapChain->GetCurrentBackBufferIndex();
 
-		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create swapchain!");
+		fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+		if (fenceEvent == nullptr)
+		{
+			STEINS_CORE_ERROR("Failed to Create FenceEvent!");
+		}
+
+		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create swapChain!");
 
 
 
 	}
 	D3D12SwapChain::~D3D12SwapChain()
 	{
+		WaitForGPU();
 		device = nullptr;
 	}
 	void D3D12SwapChain::SetVSync(bool _enabled)
@@ -66,16 +74,35 @@ namespace Steins
 	{
 		swapChain->Present(desc.isVSync, 0);
 
-		int frameIndex = swapChain->GetCurrentBackBufferIndex();
+		MoveToNextFrame();
+	}
+	void D3D12SwapChain::WaitForGPU()
+	{
+		// Schedule a Signal command in the queue.
+		device->GetCommandQueue()->Signal(fence.Get(), fenceValues[frameIndex]);
 
-		// GPU가 이전 프레임 작업을 끝낼 때까지 기다림
-		if (fences[frameIndex]->GetCompletedValue() < fenceValues[frameIndex])
+		// Wait until the fence has been processed.
+		fence->SetEventOnCompletion(fenceValues[frameIndex], fenceEvent);
+		WaitForSingleObjectEx(fenceEvent, INFINITE, FALSE);
+
+		// Increment the fence value for the current frame.
+		fenceValues[frameIndex]++;
+	}
+
+	// GPU가 이전 프레임 작업을 끝낼 때까지 기다림
+	void D3D12SwapChain::MoveToNextFrame()
+	{
+		const UINT64 currentFenceValue = fenceValues[frameIndex];
+		device->GetCommandQueue()->Signal(fence.Get(), fenceValues[frameIndex]);
+
+		frameIndex = swapChain->GetCurrentBackBufferIndex();
+
+		if (fence->GetCompletedValue() < fenceValues[frameIndex])
 		{
-			fences[frameIndex]->SetEventOnCompletion(fenceValues[frameIndex], device->GetFenceEvent());
-			WaitForSingleObject(device->GetFenceEvent(), INFINITE);
+			fence->SetEventOnCompletion(fenceValues[frameIndex], fenceEvent);
+			WaitForSingleObject(fenceEvent, INFINITE);
 		}
 
-		fenceValues[frameIndex]++;
-		device->SignalFence(fences[frameIndex].Get(), fenceValues[frameIndex]);
+		fenceValues[frameIndex] = currentFenceValue + 1;
 	}
 }

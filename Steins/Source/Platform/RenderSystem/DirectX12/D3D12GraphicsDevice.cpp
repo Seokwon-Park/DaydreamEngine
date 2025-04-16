@@ -1,5 +1,6 @@
 #include "SteinsPCH.h"
 #include "D3D12GraphicsDevice.h"
+#include "Platform/RenderSystem/DXHelper.h"
 
 namespace Steins
 {
@@ -9,6 +10,25 @@ namespace Steins
 
 	D3D12GraphicsDevice::~D3D12GraphicsDevice()
 	{
+#if defined(DEBUG) || defined(_DEBUG)
+		Microsoft::WRL::ComPtr<ID3D12InfoQueue> infoQueue;
+		if (SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&infoQueue))))
+		{
+			infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE);
+			infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
+			infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, FALSE); // 원하면 TRUE로
+
+			// 필요 없는 메시지는 필터링도 가능
+			D3D12_MESSAGE_ID denyIds[] = {
+				D3D12_MESSAGE_ID_MAP_INVALID_NULLRANGE,
+				D3D12_MESSAGE_ID_UNMAP_INVALID_NULLRANGE
+			};
+			D3D12_INFO_QUEUE_FILTER filter = {};
+			filter.DenyList.NumIDs = _countof(denyIds);
+			filter.DenyList.pIDList = denyIds;
+			infoQueue->AddStorageFilterEntries(&filter);
+		}
+#endif
 	}
 
 	void D3D12GraphicsDevice::Init()
@@ -91,13 +111,34 @@ namespace Steins
 
 			commandList->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
 		}
+	
 
-		fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-		if (fenceEvent == nullptr)
-		{
-			STEINS_CORE_ERROR("WTF? fence Event");
-		}
-		
+		DXGI_ADAPTER_DESC3 adapterDescription; // Vendor
+		SecureZeroMemory(&adapterDescription, sizeof(DXGI_ADAPTER_DESC));
+		char videoCardDescription[128]; // Renderer
+		LARGE_INTEGER driverVersion; // Version
+
+		dxgiAdapter->GetDesc3(&adapterDescription);
+		dxgiAdapter->CheckInterfaceSupport(__uuidof(IDXGIDevice), &driverVersion);
+
+		// Renderer
+		wcstombs_s(NULL, videoCardDescription, 128, adapterDescription.Description, 128);
+
+		// Version
+		std::string major, minor, release, build;
+		major = std::to_string(HIWORD(driverVersion.HighPart));
+		minor = std::to_string(LOWORD(driverVersion.HighPart));
+		release = std::to_string(HIWORD(driverVersion.LowPart));
+		build = std::to_string(LOWORD(driverVersion.LowPart));
+
+		std::string version;
+		version = major + "." + minor + "." + release + "." + build;
+
+		STEINS_CORE_INFO("DirectX11 Info:");
+		STEINS_CORE_INFO("  Vendor: {0}", DXHelper::GetVendor(adapterDescription.VendorId));
+		STEINS_CORE_INFO("  Renderer: {0} {1} GB", videoCardDescription, std::round((double)adapterDescription.DedicatedVideoMemory/ (1<<30)));
+		STEINS_CORE_INFO("  Version: {0}", version);
+
 		//device->CreateDescriptorHeap()
 		//// 스왑 체인 생성
 		//DXGI_SWAP_CHAIN_DESC swapDesc = {};
@@ -145,10 +186,6 @@ namespace Steins
 	//	fenceValue[frameIndex]++;
 	//}
 
-	void D3D12GraphicsDevice::SignalFence(ID3D12Fence* _fence, UINT _value)
-	{
-		commandQueue->Signal(_fence, _value);
-	}
 
 
 }

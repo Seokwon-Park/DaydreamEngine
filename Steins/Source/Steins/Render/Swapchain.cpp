@@ -1,5 +1,5 @@
 #include "SteinsPCH.h"
-#include "Swapchain.h"
+#include "SwapChain.h"
 
 #include "Renderer.h"
 #include "Steins/Core/Window.h"
@@ -10,7 +10,7 @@
 
 namespace Steins
 {
-    Shared<SwapChain> SwapChain::Create(SwapchainDesc* _desc, SteinsWindow* _window)
+    Shared<SwapChain> SwapChain::Create(SwapChainDesc* _desc, SteinsWindow* _window)
     {
 		switch (Renderer::GetAPI())
 		{

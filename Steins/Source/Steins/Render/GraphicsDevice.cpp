@@ -7,6 +7,7 @@
 #include "Platform/RenderSystem/OpenGL/OpenGLGraphicsDevice.h"
 #include "Platform/RenderSystem/DirectX11/D3D11GraphicsDevice.h"
 #include "Platform/RenderSystem/DirectX12/D3D12GraphicsDevice.h"
+#include "Platform/RenderSystem/Vulkan/VulkanGraphicsDevice.h"
 
 namespace Steins
 {
@@ -16,9 +17,9 @@ namespace Steins
 		{
 		case RendererAPIType::None: return nullptr;
 		case RendererAPIType::OpenGL: return MakeUnique<OpenGLGraphicsDevice>();
-		case RendererAPIType::DirectX11: return MakeUnique <D3D11GraphicsDevice>();
-		case RendererAPIType::DirectX12: return MakeUnique <D3D12GraphicsDevice>();
-			//case RendererAPIType::Vulkan:    return new D3D11GraphicsDevice(_window);
+		case RendererAPIType::DirectX11: return MakeUnique<D3D11GraphicsDevice>();
+		case RendererAPIType::DirectX12: return MakeUnique<D3D12GraphicsDevice>();
+		case RendererAPIType::Vulkan:    return MakeUnique<VulkanGraphicsDevice>();
 		default: return nullptr;
 		}
 	}

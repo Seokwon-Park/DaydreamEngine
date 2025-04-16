@@ -67,8 +67,6 @@ namespace Steins
 		IDXGIFactory7* GetFactory() const { return dxgiFactory.Get(); }
 
 		//void WaitForGPU(IDXGISwapChain3* _swapChain);
-		void SignalFence(ID3D12Fence* _fence, UINT _value);
-		HANDLE GetFenceEvent() const { return fenceEvent; }
 
 	private:
 		ComPtr<ID3D12Device> device;
@@ -88,7 +86,7 @@ namespace Steins
 		ComPtr<IDXGIAdapter4> dxgiAdapter;
 		ComPtr<ID3D12Debug> debugLayer;
 
-		HANDLE fenceEvent; // a handle to an event when our fence is unlocked by the gpu
+		
 
 	};
 }
