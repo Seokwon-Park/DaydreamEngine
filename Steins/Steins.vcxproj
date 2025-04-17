@@ -626,6 +626,7 @@
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLSwapchain.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexArray.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanGraphicsDevice.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapChain.cpp" />
     <ClCompile Include="Source\Steins\Core\Application.cpp" />
     <ClCompile Include="Source\Steins\Core\GameObject.cpp" />
     <ClCompile Include="Source\Steins\Core\Input.cpp" />

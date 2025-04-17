@@ -1722,5 +1722,6 @@
     <ClCompile Include="Source\SteinsPCH.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapChain.cpp" />
   </ItemGroup>
 </Project>

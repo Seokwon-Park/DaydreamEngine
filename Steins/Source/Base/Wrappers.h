@@ -2,7 +2,6 @@
 
 #include "Math.h"
 #include "MathTypes.h"
-#include <Base/TypeCast.h>
 #include <Base/IO/FilePath.h>
 #include <Base/Math/Vector2.h>
 #include <Base/Math/Vector3.h>

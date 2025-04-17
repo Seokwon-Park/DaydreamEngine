@@ -21,6 +21,8 @@
 
 
 #if defined(STEINS_PLATFORM_WINDOWS)
+	#define GLFW_EXPOSE_NATIVE_WIN32
+	#define VK_USE_PLATFORM_WIN32_KHR
 	#ifndef NOMINMAX
 		#define NOMINMAX
 	#endif // !NOMINMAX
