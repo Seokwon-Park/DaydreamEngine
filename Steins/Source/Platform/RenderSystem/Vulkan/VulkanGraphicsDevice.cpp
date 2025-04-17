@@ -69,13 +69,6 @@ namespace Steins
 	{
 		CreateInstance();
 		SetupDebugMessenger();
-#if defined(STEINS_PLATFORM_WINDOWS)
-		VkWin32SurfaceCreateInfoKHR createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-		//createInfo.hwnd = glfwGetWin32Window(window);
-		createInfo.hinstance = GetModuleHandle(nullptr);
-#endif
-
 		PickPhysicalDevice();
 		CreateLogicalDevice();
 
@@ -264,6 +257,9 @@ namespace Steins
 		vkGetPhysicalDeviceProperties(_device, &deviceProperties);
 		vkGetPhysicalDeviceFeatures(_device, &deviceFeatures);
 
+		//이 GPU가 swapchain을 지원할 수 있는지 확인?
+		bool extensionSupported = CheckDeviceExtensionSupport(device);
+
 		QueueFamilyIndices indices = FindQueueFamilies(_device);
 		//return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU &&
 		//	deviceFeatures.geometryShader;
@@ -293,6 +289,14 @@ namespace Steins
 		}
 
 		return indices;
+	}
+
+	bool VulkanGraphicsDevice::checkDeviceExtensionSupport(VkPhysicalDevice _device)
+	{
+		UInt32 extensionCount = 0;
+		vkEnumerateDeviceExtensionProperties(_device, nullptr, &extensionCount, nullptr);
+			
+		return false;
 	}
 
 }
