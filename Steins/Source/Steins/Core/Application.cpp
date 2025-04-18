@@ -7,7 +7,6 @@
 #include "Steins/ImGui/ImGuiLayer.h"
 #include "Steins/Render/Renderer.h"
 
-#include "glad/glad.h"
 
 
 
@@ -18,14 +17,19 @@ namespace Steins
 
 	Application* Application::instance = nullptr;
 
-	Application::Application()
+	Application::Application(ApplicationSpecification _appSpecification)
 	{
 		STEINS_CORE_ASSERT(!instance, "Application already exists!");
 		instance = this;
 
 		RendererAPI::SetRendererAPI(API);
+		
+		WindowProps prop;
+		prop.width = 1280;
+		prop.height = 720;
+		prop.title = "Steins Engine";
 
-		mainWindow = SteinsWindow::Create();
+		mainWindow = SteinsWindow::Create(prop);
 		if (mainWindow == nullptr)
 		{
 			STEINS_CORE_ASSERT(false, "No Main Window")
@@ -33,7 +37,7 @@ namespace Steins
 		mainWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
 		mainWindow->SetVSync(true);
 
-		graphicsDevice = GraphicsDevice::Create();
+		graphicsDevice = GraphicsDevice::Create(_appSpecification.API);
 		graphicsDevice->Init();
 
 		//TODO : 더 좋은 방법?

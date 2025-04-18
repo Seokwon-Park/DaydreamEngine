@@ -1,6 +1,6 @@
 #include "SteinsPCH.h"
 #include "D3D12GraphicsDevice.h"
-#include "Platform/RenderSystem/DXHelper.h"
+#include "Platform/RenderSystem/GraphicsUtil.h"
 
 namespace Steins
 {
@@ -46,7 +46,7 @@ namespace Steins
 		{
 			STEINS_CORE_ERROR("Failed to create dxgiFactory!");
 		}
-
+		
 		// 디바이스 생성
 		int adapterIndex = 0; // we'll start looking for directx 12  compatible graphics devices starting at index 0
 		bool isAdapterFound = false; // set this to true when a good one was found
@@ -135,7 +135,7 @@ namespace Steins
 		version = major + "." + minor + "." + release + "." + build;
 
 		STEINS_CORE_INFO("DirectX11 Info:");
-		STEINS_CORE_INFO("  Vendor: {0}", DXHelper::GetVendor(adapterDescription.VendorId));
+		STEINS_CORE_INFO("  Vendor: {0}", GraphicsUtil::GetVendor(adapterDescription.VendorId));
 		STEINS_CORE_INFO("  Renderer: {0} {1} GB", videoCardDescription, std::round((double)adapterDescription.DedicatedVideoMemory/ (1<<30)));
 		STEINS_CORE_INFO("  Version: {0}", version);
 

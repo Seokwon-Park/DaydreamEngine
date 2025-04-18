@@ -116,7 +116,7 @@
     <ClInclude Include="Source\Platform\OSLinux\LinuxWindow.h" />
     <ClInclude Include="Source\Platform\OSMac\MacOSWindow.h" />
     <ClInclude Include="Source\Platform\OSWindows\WindowsWindow.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DXHelper.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\GraphicsUtil.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Buffer.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11GraphicsDevice.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11RendererAPI.h" />
@@ -603,7 +603,7 @@
     <ClCompile Include="Source\Platform\OSMac\MacOSWindow.cpp" />
     <ClCompile Include="Source\Platform\OSWindows\WindowsInput.cpp" />
     <ClCompile Include="Source\Platform\OSWindows\WindowsWindow.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DXHelper.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\GraphicsUtil.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Buffer.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11GraphicsDevice.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11PixelShader.cpp" />

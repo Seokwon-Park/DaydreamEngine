@@ -12,6 +12,7 @@ namespace Steins
 		std::string title;
 		UInt32 width;
 		UInt32 height;
+		RendererAPIType API;
 
 		WindowProps(const std::string& _title = "Steins; Engine",
 			UInt32 _width = 1280,

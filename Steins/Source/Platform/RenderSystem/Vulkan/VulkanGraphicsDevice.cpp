@@ -4,6 +4,7 @@
 #include "GLFW/glfw3.h"
 #include "GLFW/glfw3native.h"
 
+//Ref - https://vulkan-tutorial.com/
 namespace Steins
 {
 	namespace
@@ -74,7 +75,6 @@ namespace Steins
 
 	}
 
-	
 	void VulkanGraphicsDevice::Shutdown()
 	{
 	}
@@ -86,6 +86,33 @@ namespace Steins
 	void VulkanGraphicsDevice::SwapBuffers()
 	{
 	}
+
+	SwapChainSupportDetails VulkanGraphicsDevice::QuerySwapChainSupport(VkSurfaceKHR _surface)
+	{
+		SwapChainSupportDetails details;
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, _surface, &details.capabilities);
+
+		UInt32 formatCount = 0;
+		vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, _surface, &formatCount, nullptr);
+
+		if (formatCount != 0)
+		{
+			details.formats.resize(formatCount);
+			vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, _surface, &formatCount, details.formats.data());
+		}
+
+		UInt32 presentModeCount = 0;
+		vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, _surface, &formatCount, nullptr);
+
+		if (presentModeCount != 0)
+		{
+			details.presentModes.resize(presentModeCount);
+			vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, _surface, &presentModeCount, details.presentModes.data());
+		}
+
+		return details;
+	}
+
 
 	void VulkanGraphicsDevice::CreateInstance()
 	{
@@ -184,7 +211,8 @@ namespace Steins
 		createInfo.pQueueCreateInfos = &queueCreateInfo;
 		createInfo.queueCreateInfoCount = 1;
 		createInfo.pEnabledFeatures = &deviceFeatures;
-		createInfo.enabledExtensionCount = 0;
+		createInfo.enabledExtensionCount = Cast<UInt32>(deviceExtensions.size());
+		createInfo.ppEnabledExtensionNames= deviceExtensions.data();
 
 		if (enableValidationLayers)
 		{
@@ -250,29 +278,29 @@ namespace Steins
 		_createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
 		_createInfo.pfnUserCallback = DebugCallback;
 	}
-	bool VulkanGraphicsDevice::IsDeviceSuitable(VkPhysicalDevice _device)
+	bool VulkanGraphicsDevice::IsDeviceSuitable(VkPhysicalDevice _physicalDevice)
 	{
 		VkPhysicalDeviceProperties deviceProperties;
 		VkPhysicalDeviceFeatures deviceFeatures;
-		vkGetPhysicalDeviceProperties(_device, &deviceProperties);
-		vkGetPhysicalDeviceFeatures(_device, &deviceFeatures);
+		vkGetPhysicalDeviceProperties(_physicalDevice, &deviceProperties);
+		vkGetPhysicalDeviceFeatures(_physicalDevice, &deviceFeatures);
 
 		//이 GPU가 swapchain을 지원할 수 있는지 확인?
-		bool extensionSupported = CheckDeviceExtensionSupport(device);
+		bool extensionSupported = CheckDeviceExtensionSupport(_physicalDevice);
 
-		QueueFamilyIndices indices = FindQueueFamilies(_device);
+		QueueFamilyIndices indices = FindQueueFamilies(_physicalDevice);
 		//return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU &&
 		//	deviceFeatures.geometryShader;
-		return indices.IsComplete();
+		return indices.IsComplete() && extensionSupported;
 	}
-	QueueFamilyIndices VulkanGraphicsDevice::FindQueueFamilies(VkPhysicalDevice _device)
+	QueueFamilyIndices VulkanGraphicsDevice::FindQueueFamilies(VkPhysicalDevice _physicalDevice)
 	{
 		QueueFamilyIndices indices;
 
 		UInt32 queueFamilyCount = 0;
-		vkGetPhysicalDeviceQueueFamilyProperties(_device, &queueFamilyCount, nullptr);
+		vkGetPhysicalDeviceQueueFamilyProperties(_physicalDevice, &queueFamilyCount, nullptr);
 		std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-		vkGetPhysicalDeviceQueueFamilyProperties(_device, &queueFamilyCount, queueFamilies.data());
+		vkGetPhysicalDeviceQueueFamilyProperties(_physicalDevice, &queueFamilyCount, queueFamilies.data());
 
 		int i = 0;
 		for (const auto& queueFamily : queueFamilies) 
@@ -291,12 +319,23 @@ namespace Steins
 		return indices;
 	}
 
-	bool VulkanGraphicsDevice::checkDeviceExtensionSupport(VkPhysicalDevice _device)
+	bool VulkanGraphicsDevice::CheckDeviceExtensionSupport(VkPhysicalDevice _physicalDevice)
 	{
 		UInt32 extensionCount = 0;
-		vkEnumerateDeviceExtensionProperties(_device, nullptr, &extensionCount, nullptr);
+		vkEnumerateDeviceExtensionProperties(_physicalDevice, nullptr, &extensionCount, nullptr);
+		std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+		vkEnumerateDeviceExtensionProperties(_physicalDevice, nullptr, &extensionCount, availableExtensions.data());
+
+		std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
+
+		for (const VkExtensionProperties& extension : availableExtensions)
+		{
+			requiredExtensions.erase(extension.extensionName);
+		}
 			
-		return false;
+		return requiredExtensions.empty();
 	}
+
+
 
 }

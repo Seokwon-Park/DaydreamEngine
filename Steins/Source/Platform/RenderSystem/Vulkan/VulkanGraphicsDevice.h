@@ -6,13 +6,24 @@
 
 namespace Steins
 {
-	struct QueueFamilyIndices {
+	struct QueueFamilyIndices
+	{
 		std::optional<UInt32> graphicsFamily;
 		//std::optional<UInt32> presentFamily; // 지금은 필요없는듯.
 
 		bool IsComplete() {
 			return graphicsFamily.has_value();
 		}
+	};
+
+	struct SwapChainSupportDetails
+	{
+		//gpu와 surface 조합에서 지원되는 최소/최대 이미지 크기정보
+		VkSurfaceCapabilitiesKHR capabilities;
+		//색상 format
+		std::vector<VkSurfaceFormatKHR> formats;
+		//present 방식
+		std::vector<VkPresentModeKHR> presentModes;
 	};
 
 	class VulkanGraphicsDevice :public GraphicsDevice
@@ -23,12 +34,15 @@ namespace Steins
 		virtual ~VulkanGraphicsDevice() override;
 
 		virtual void Init() override;
-		
+
 		virtual void Shutdown() override;
 		virtual void Render() override;
 		virtual void SwapBuffers() override;
 
 		VkInstance GetInstance() const { return instance; }
+		VkDevice GetLogicalDevice() const { return device; }
+		SwapChainSupportDetails QuerySwapChainSupport(VkSurfaceKHR _surface);
+		//SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice _physicalDevice, VkSurfaceKHR _surface);
 
 	private:
 		void CreateInstance();
@@ -39,9 +53,9 @@ namespace Steins
 		bool CheckValidationLayerSupport();
 		std::vector<const char*> GetRequiredExtensions();
 		void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& _createInfo);
-		bool IsDeviceSuitable(VkPhysicalDevice _device);
-		QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice _device);
-		bool checkDeviceExtensionSupport(VkPhysicalDevice _device);
+		bool IsDeviceSuitable(VkPhysicalDevice _physicalDevice);
+		QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice _physicalDevice);
+		bool CheckDeviceExtensionSupport(VkPhysicalDevice _physicalDevice);
 
 #if defined(STEINS_DEBUG) || defined(_DEBUG)
 		const bool enableValidationLayers = true;

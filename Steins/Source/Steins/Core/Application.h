@@ -19,11 +19,18 @@ int main(int argc, char** argv);
 
 namespace Steins
 {
+	struct ApplicationSpecification
+	{
+		std::string Name = "Hazel Application";
+		std::string WorkingDirectory;
+		RendererAPIType API;
+	};
+
 	class Application
 	{
 	public:
 		// constrcuter destructer
-		Application();
+		Application(ApplicationSpecification _appSpecification);
 		virtual ~Application();
 
 		inline static Application& GetInstance() { return *instance; }
@@ -35,8 +42,6 @@ namespace Steins
 
 		void ReadConfig(std::string_view _fileName);
 
-		template <typename DeviceType>
-		DeviceType* GetNativeDevice() const { return SafeCast<DeviceType>(graphicsDevice.get()); }
 	protected:
 
 	private:

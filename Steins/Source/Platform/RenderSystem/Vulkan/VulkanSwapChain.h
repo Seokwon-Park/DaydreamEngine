@@ -21,9 +21,22 @@ namespace Steins
 	public:
 		VulkanSwapChain(GraphicsDevice* _device, SwapChainDesc* _desc, SteinsWindow* _window);
 		virtual ~VulkanSwapChain() override;
+
+		virtual void SetVSync(bool _enabled) override;
+		virtual void SwapBuffers() override;
 	private:
+		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats, RenderFormat _desiredFormat);
+		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+
+
 		VulkanGraphicsDevice* device;
 		VkSurfaceKHR surface; // Vulkan window surface
 		VkSwapchainKHR swapChain;
+		VkFormat format;
+		VkExtent2D extent;
+		std::vector<VkImage> swapChainImages;
+		
+
 	};
 }

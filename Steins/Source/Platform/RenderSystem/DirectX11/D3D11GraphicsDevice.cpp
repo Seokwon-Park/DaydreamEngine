@@ -1,6 +1,6 @@
 #include "SteinsPCH.h"
 #include "D3D11GraphicsDevice.h"
-#include "Platform/RenderSystem/DXHelper.h"
+#include "Platform/RenderSystem/GraphicsUtil.h"
 
 #include "GLFW/glfw3.h"
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -116,7 +116,7 @@ namespace Steins
 		//}
 
 		STEINS_CORE_INFO("DirectX11 Info:");
-		STEINS_CORE_INFO("  Vendor: {0}", DXHelper::GetVendor(adapterDescription.VendorId));
+		STEINS_CORE_INFO("  Vendor: {0}", GraphicsUtil::GetVendor(adapterDescription.VendorId));
 		STEINS_CORE_INFO("  Renderer: {0}", videoCardDescription);
 		STEINS_CORE_INFO("  Version: {0}", version);
 

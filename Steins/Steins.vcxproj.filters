@@ -132,7 +132,7 @@
     <ClInclude Include="Source\Platform\OSWindows\WindowsWindow.h">
       <Filter>Source\Platform\OSWindows</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\DXHelper.h">
+    <ClInclude Include="Source\Platform\RenderSystem\GraphicsUtil.h">
       <Filter>Source\Platform\RenderSystem</Filter>
     </ClInclude>
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Buffer.h">
@@ -1587,7 +1587,7 @@
     <ClCompile Include="Source\Platform\OSWindows\WindowsWindow.cpp">
       <Filter>Source\Platform\OSWindows</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DXHelper.cpp">
+    <ClCompile Include="Source\Platform\RenderSystem\GraphicsUtil.cpp">
       <Filter>Source\Platform\RenderSystem</Filter>
     </ClCompile>
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Buffer.cpp">

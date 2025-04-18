@@ -15,7 +15,10 @@ namespace Steins
 		virtual void Render() = 0;
 		virtual void SwapBuffers() = 0;
 
-		static Unique<GraphicsDevice> Create();
+		template <typename DeviceType>
+		DeviceType* Get() { return SafeCast<DeviceType>(this); }
+
+		static Unique<GraphicsDevice> Create(RendererAPIType _type);
 	protected:
 		class SteinsWindow* windowHandle;
 	};

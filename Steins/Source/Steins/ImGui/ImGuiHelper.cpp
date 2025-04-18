@@ -4,6 +4,7 @@
 
 #include "Steins/Render/Renderer.h"
 #include "Platform/RenderSystem/OpenGL/OpenGLGraphicsDevice.h"
+#include "Platform/RenderSystem/Vulkan/VulkanGraphicsDevice.h"
 #include "Platform/RenderSystem/DirectX11/D3D11GraphicsDevice.h"
 
 #include "GLFW/glfw3.h"
@@ -18,22 +19,22 @@ namespace Steins
 		{
 		case RendererAPIType::OpenGL:
 		{
-			OpenGLGraphicsDevice* device = app.GetNativeDevice<OpenGLGraphicsDevice>();
+			OpenGLGraphicsDevice* device = app.GetGraphicsDevice()->Get<OpenGLGraphicsDevice>();
 			ImGui_ImplGlfw_InitForOpenGL(window, true);
 			ImGui_ImplOpenGL3_Init(device->GetVersion().data());
 			break;
 		}
 		case RendererAPIType::DirectX11:
 		{
-			D3D11GraphicsDevice* device = app.GetNativeDevice<D3D11GraphicsDevice>();
+			D3D11GraphicsDevice* device = app.GetGraphicsDevice()->Get<D3D11GraphicsDevice>();
 			ImGui_ImplGlfw_InitForOther(window, true);
 			ImGui_ImplDX11_Init(device->GetDevice(), device->GetContext());
 			break;
 		}
 		case RendererAPIType::DirectX12:
 		{
-			D3D12GraphicsDevice* device = app.GetNativeDevice<D3D12GraphicsDevice>();
-			ImGui_ImplDX12_InitInfo info;
+			D3D12GraphicsDevice* device = app.GetGraphicsDevice()->Get<D3D12GraphicsDevice>();
+			ImGui_ImplDX12_InitInfo info{};
 			info.Device = device->GetDevice();
 			info.CommandQueue = device->GetCommandQueue();     // Command queue used for queuing texture uploads.
 			info.NumFramesInFlight = 2;
@@ -54,11 +55,14 @@ namespace Steins
 			ImGui_ImplDX12_Init(&info);
 			break;
 		}
-		//case RendererAPIType::Vulkan:
-		//{
-		//	ImGui_ImplGlfw_InitForVulkan(window, true);
-		//	ImGui_ImplVulkan_Init();
-		//}
+		case RendererAPIType::Vulkan:
+		{
+			VulkanGraphicsDevice* device = app.GetGraphicsDevice()->Get<VulkanGraphicsDevice>();
+			ImGui_ImplVulkan_InitInfo info{};
+
+			ImGui_ImplGlfw_InitForVulkan(window, true);
+			//ImGui_ImplVulkan_Init();
+		}
 		default:
 			break;
 		}
@@ -149,7 +153,7 @@ namespace Steins
 		case RendererAPIType::DirectX12:
 		{
 			Application& app = Application::GetInstance();
-			D3D12GraphicsDevice* device = app.GetNativeDevice<D3D12GraphicsDevice>();
+			D3D12GraphicsDevice* device = app.GetGraphicsDevice()->Get<D3D12GraphicsDevice>();
 			ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), device->GetCommandList());
 			break;
 		}

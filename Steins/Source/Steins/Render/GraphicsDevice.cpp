@@ -11,9 +11,9 @@
 
 namespace Steins
 {
-	Unique<GraphicsDevice> GraphicsDevice::Create()
+	Unique<GraphicsDevice> GraphicsDevice::Create(RendererAPIType _type)
 	{
-		switch (RendererAPI::GetRendererAPI())
+		switch (_type)
 		{
 		case RendererAPIType::None: return nullptr;
 		case RendererAPIType::OpenGL: return MakeUnique<OpenGLGraphicsDevice>();

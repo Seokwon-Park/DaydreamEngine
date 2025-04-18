@@ -131,8 +131,8 @@ private:
 class Sandbox : public Steins::Application
 {
 public:
-	Sandbox()
-		:Steins::Application()
+	Sandbox(const Steins::ApplicationSpecification& _specification)
+		:Steins::Application(_specification)
 	{
 		AttachLayer(new ExampleLayer());
 		//AttachOverlay(new Steins::ImGuiLayer());
@@ -146,5 +146,9 @@ public:
 
 Steins::Application* Steins::CreateApplication()
 {
-	return new Sandbox();
+	ApplicationSpecification spec;
+	spec.Name = "Sandbox";
+	spec.WorkingDirectory = "../Hazelnut";
+
+	return new Sandbox(spec);
 }

@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <string_view>
+#include <set>
 #include <unordered_map>
 #include <glm/glm.hpp>
 #include <DirectXMath.h>

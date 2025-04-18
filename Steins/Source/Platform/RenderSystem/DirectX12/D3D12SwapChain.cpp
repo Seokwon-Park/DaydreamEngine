@@ -1,7 +1,7 @@
 #include "SteinsPCH.h"
 #include "D3D12SwapChain.h"
 
-#include "Platform/RenderSystem/DXHelper.h"
+#include "Platform/RenderSystem/GraphicsUtil.h"
 
 #include "Steins/Core/Window.h"
 #include "GLFW/glfw3.h"
@@ -21,7 +21,7 @@ namespace Steins
 		ZeroMemory(&swapchainDesc, sizeof(swapchainDesc));
 		swapchainDesc.Width = _desc->width;
 		swapchainDesc.Height = _desc->height;
-		swapchainDesc.Format = DXHelper::RenderFormatToDXGIFormat(_desc->format);
+		swapchainDesc.Format = GraphicsUtil::RenderFormatToDXGIFormat(_desc->format);
 		swapchainDesc.Stereo = 0;
 		swapchainDesc.SampleDesc = sampleDesc;
 		swapchainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
