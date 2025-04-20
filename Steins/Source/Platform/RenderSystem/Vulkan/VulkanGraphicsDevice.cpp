@@ -212,10 +212,10 @@ namespace Steins
 	}
 	void VulkanGraphicsDevice::CreateLogicalDevice()
 	{
-		QueueFamilyIndices indices = FindQueueFamilies(physicalDevice);
+		queueFamilyIndices = FindQueueFamilies(physicalDevice);
 		VkDeviceQueueCreateInfo queueCreateInfo{};
 		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-		queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
+		queueCreateInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
 		queueCreateInfo.queueCount = 1;
 		Float32 queuePriority = 1.0f;
 		queueCreateInfo.pQueuePriorities = &queuePriority;
@@ -228,7 +228,6 @@ namespace Steins
 		createInfo.pEnabledFeatures = &deviceFeatures;
 		createInfo.enabledExtensionCount = Cast<UInt32>(deviceExtensions.size());
 		createInfo.ppEnabledExtensionNames= deviceExtensions.data();
-
 		if (enableValidationLayers)
 		{
 			createInfo.enabledLayerCount = Cast<UInt32>(validationLayers.size());
@@ -244,7 +243,7 @@ namespace Steins
 		{
 			STEINS_CORE_ERROR("Failed to create logical device!");
 		}
-		vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
+		vkGetDeviceQueue(device, queueFamilyIndices.graphicsFamily.value(), 0, &graphicsQueue);
 	}
 
 	bool VulkanGraphicsDevice::CheckValidationLayerSupport()

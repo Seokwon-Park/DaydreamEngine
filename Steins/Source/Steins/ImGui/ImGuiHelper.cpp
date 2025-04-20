@@ -63,16 +63,17 @@ namespace Steins
 			info.Instance = device->GetInstance();
 			info.PhysicalDevice = device->GetPhysicalDevice();
 			info.Device = device->GetLogicalDevice();
-			//info.QueueFamily;
-			//info.Queue;
+			info.QueueFamily = device->GetQueueFamily();
+			info.Queue = device->GetQueue();
 			//info.DescriptorPool;
 			//info.RenderPass;
-			//info.MinImageCount;
+			info.MinImageCount = 2;
 			//info.ImageCount;
 			//info.MSAASamples;
 
 			ImGui_ImplGlfw_InitForVulkan(window, true);
 			ImGui_ImplVulkan_Init(&info);
+			break;
 		}
 		default:
 			break;

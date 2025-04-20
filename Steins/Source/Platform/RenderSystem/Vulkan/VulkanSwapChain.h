@@ -36,7 +36,7 @@ namespace Steins
 		VkFormat format;
 		VkExtent2D extent;
 		std::vector<VkImage> swapChainImages;
-		
+		std::vector<VkImageView> swapChainImageViews;
 
 	};
 }

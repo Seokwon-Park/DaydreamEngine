@@ -42,6 +42,8 @@ namespace Steins
 		VkInstance GetInstance() const { return instance; }
 		VkPhysicalDevice GetPhysicalDevice() const { return physicalDevice; }
 		VkDevice GetLogicalDevice() const { return device; }
+		UInt32 GetQueueFamily() const { return queueFamilyIndices.graphicsFamily.value(); }
+		VkQueue GetQueue() const { return graphicsQueue; }
 		SwapChainSupportDetails QuerySwapChainSupport(VkSurfaceKHR _surface);
 		//SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice _physicalDevice, VkSurfaceKHR _surface);
 
@@ -73,8 +75,8 @@ namespace Steins
 		VkDebugUtilsMessengerEXT debugMessenger;
 		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE; // GPU chosen as the default device
 		VkDevice device; // Vulkan device for commands
+		QueueFamilyIndices queueFamilyIndices;
 		VkQueue graphicsQueue; // vulkan graphics Queue
-
 	};
 }
 

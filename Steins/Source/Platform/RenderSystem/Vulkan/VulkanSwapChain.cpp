@@ -80,10 +80,15 @@ namespace Steins
 			swapChainImages.resize(swapChainImageCount);
 			vkGetSwapchainImagesKHR(device->GetLogicalDevice(), swapChain, &swapChainImageCount, swapChainImages.data());
 		}
-
+		swapChainImageViews.resize(swapChainImages.size());
+		//for()
 	}
 	VulkanSwapChain::~VulkanSwapChain()
 	{
+		for (auto imageView : swapChainImageViews)
+		{
+			vkDestroyImageView(device->GetLogicalDevice(), imageView, nullptr);
+		}
 		vkDestroySwapchainKHR(device->GetLogicalDevice(), swapChain, nullptr);
 		vkDestroySurfaceKHR(device->GetInstance(), surface, nullptr);
 	}
