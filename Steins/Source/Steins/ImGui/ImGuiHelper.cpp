@@ -59,17 +59,17 @@ namespace Steins
 		{
 			VulkanGraphicsDevice* device = app.GetGraphicsDevice()->Get<VulkanGraphicsDevice>();
 			ImGui_ImplVulkan_InitInfo info{};
-			info.ApiVersion;
-			info.Instance;
-			info.PhysicalDevice;
-			info.Device;
-			info.QueueFamily;
-			info.Queue;
-			info.DescriptorPool;
-			info.RenderPass;
-			info.MinImageCount;
-			info.ImageCount;
-			info.MSAASamples;
+			//info.ApiVersion =;
+			info.Instance = device->GetInstance();
+			info.PhysicalDevice = device->GetPhysicalDevice();
+			info.Device = device->GetLogicalDevice();
+			//info.QueueFamily;
+			//info.Queue;
+			//info.DescriptorPool;
+			//info.RenderPass;
+			//info.MinImageCount;
+			//info.ImageCount;
+			//info.MSAASamples;
 
 			ImGui_ImplGlfw_InitForVulkan(window, true);
 			ImGui_ImplVulkan_Init(&info);

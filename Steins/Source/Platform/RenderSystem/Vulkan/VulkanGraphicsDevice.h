@@ -40,6 +40,7 @@ namespace Steins
 		virtual void SwapBuffers() override;
 
 		VkInstance GetInstance() const { return instance; }
+		VkPhysicalDevice GetPhysicalDevice() const { return physicalDevice; }
 		VkDevice GetLogicalDevice() const { return device; }
 		SwapChainSupportDetails QuerySwapChainSupport(VkSurfaceKHR _surface);
 		//SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice _physicalDevice, VkSurfaceKHR _surface);
