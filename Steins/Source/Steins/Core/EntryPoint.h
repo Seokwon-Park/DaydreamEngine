@@ -11,7 +11,7 @@ Int32 main(int argc, char** argv)
 
 	Steins::Application* application = Steins::CreateApplication();
 
-	if (application->Init()== false)
+	if (application->Init() == false)
 	{
 		return 1;
 	}

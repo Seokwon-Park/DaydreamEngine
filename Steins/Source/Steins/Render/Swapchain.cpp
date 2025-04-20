@@ -11,9 +11,9 @@
 
 namespace Steins
 {
-    Shared<SwapChain> SwapChain::Create(SwapChainDesc* _desc, SteinsWindow* _window)
+    Shared<SwapChain> SwapChain::Create(SwapChainDesc* _desc, SteinsWindow* _window, RendererAPIType _type)
     {
-		switch (Renderer::GetAPI())
+		switch (_type)
 		{
 		case Steins::RendererAPIType::None:break;
 		case Steins::RendererAPIType::OpenGL:return MakeShared<OpenGLSwapchain>(_desc, _window);

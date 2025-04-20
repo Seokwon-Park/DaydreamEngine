@@ -19,8 +19,10 @@ namespace Steins
 
 		static void Submit(const Shared<Shader>& _shader, const Shared<VertexArray>& _vertexArray, const Matrix4x4 _transform = Matrix4x4());
 
-		inline static RendererAPIType GetAPI() { return RendererAPI::GetRendererAPI(); }
+		inline static RendererAPIType GetAPI() { return API; }
 	private:
+		static RendererAPIType API;
+
 		struct SceneData
 		{
 			Matrix4x4 ViewProjectionMatrix;

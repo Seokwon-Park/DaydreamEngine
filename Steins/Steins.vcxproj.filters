@@ -1552,6 +1552,7 @@
       <Filter>Vendor\glm\glm</Filter>
     </ClInclude>
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapChain.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanRendererAPI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -1723,5 +1724,6 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapChain.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanRendererAPI.cpp" />
   </ItemGroup>
 </Project>

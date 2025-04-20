@@ -1,11 +1,13 @@
 #include "SteinsPCH.h"
 #include "D3D12GraphicsDevice.h"
 #include "Platform/RenderSystem/GraphicsUtil.h"
+#include "D3D12RendererAPI.h"
 
 namespace Steins
 {
 	D3D12GraphicsDevice::D3D12GraphicsDevice()
 	{
+		API = RendererAPIType::DirectX12;
 	}
 
 	D3D12GraphicsDevice::~D3D12GraphicsDevice()

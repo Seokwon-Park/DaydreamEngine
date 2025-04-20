@@ -3,6 +3,7 @@
 
 namespace Steins
 {
+	class SteinsWindow;
 	struct SwapChainDesc
 	{
 		UInt32 width = 0;
@@ -23,7 +24,7 @@ namespace Steins
 
 		virtual void SwapBuffers() = 0;
 
-		static Shared<SwapChain> Create(SwapChainDesc* _desc, class SteinsWindow* _window);
+		static Shared<SwapChain> Create(SwapChainDesc* _desc, SteinsWindow* _window, RendererAPIType _type);
 	protected:
 		SwapChainDesc desc;
 	};

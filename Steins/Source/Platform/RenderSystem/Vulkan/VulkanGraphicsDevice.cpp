@@ -1,5 +1,6 @@
 #include "SteinsPCH.h"
 #include "VulkanGraphicsDevice.h"
+#include "Platform/RenderSystem/GraphicsUtil.h"
 
 #include "GLFW/glfw3.h"
 #include "GLFW/glfw3native.h"
@@ -57,6 +58,11 @@ namespace Steins
 		}
 	}
 
+	VulkanGraphicsDevice::VulkanGraphicsDevice()
+	{
+		API = RendererAPIType::Vulkan;
+	}
+
 	VulkanGraphicsDevice::~VulkanGraphicsDevice()
 	{
 		if (enableValidationLayers == true) 
@@ -73,6 +79,15 @@ namespace Steins
 		PickPhysicalDevice();
 		CreateLogicalDevice();
 
+		VkPhysicalDeviceProperties deviceProperties;
+		vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
+		STEINS_CORE_INFO("Vulkan Info:");
+		STEINS_CORE_INFO("  Vendor: {0}", GraphicsUtil::GetVendor(deviceProperties.vendorID));
+		STEINS_CORE_INFO("  Renderer: {0}", deviceProperties.deviceName);
+		STEINS_CORE_INFO("  Version: {0}.{1}.{2}",
+			VK_API_VERSION_MAJOR(deviceProperties.apiVersion),
+			VK_API_VERSION_MINOR(deviceProperties.apiVersion),
+			VK_API_VERSION_PATCH(deviceProperties.apiVersion));
 	}
 
 	void VulkanGraphicsDevice::Shutdown()
@@ -102,7 +117,7 @@ namespace Steins
 		}
 
 		UInt32 presentModeCount = 0;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, _surface, &formatCount, nullptr);
+		vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, _surface, &presentModeCount, nullptr);
 
 		if (presentModeCount != 0)
 		{

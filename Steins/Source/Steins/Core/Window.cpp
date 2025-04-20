@@ -9,6 +9,8 @@ namespace Steins
 {
 	Unique<SteinsWindow> SteinsWindow::Create(const WindowProps& _props)
 	{
+
+
 #ifdef STEINS_PLATFORM_WINDOWS
 		return MakeUnique<WindowsWindow>(_props);
 #elif defined(STEINS_PLATFORM_LINUX)

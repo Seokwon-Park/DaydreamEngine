@@ -1,6 +1,7 @@
 #include "SteinsPCH.h"
 #include "D3D11GraphicsDevice.h"
 #include "Platform/RenderSystem/GraphicsUtil.h"
+#include "D3D11RendererAPI.h"
 
 #include "GLFW/glfw3.h"
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -11,6 +12,7 @@ namespace Steins
 {
 	D3D11GraphicsDevice::D3D11GraphicsDevice()
 	{
+		API = RendererAPIType::DirectX11;
 	}
 
 	D3D11GraphicsDevice::~D3D11GraphicsDevice()

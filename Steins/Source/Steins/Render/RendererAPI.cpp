@@ -1,23 +1,26 @@
 #include "SteinsPCH.h"
 #include "RendererAPI.h"
 
-
+#include "Platform/RenderSystem/DirectX11/D3D11RendererAPI.h"
+#include "Platform/RenderSystem/DirectX12/D3D12RendererAPI.h"
+#include "Platform/RenderSystem/OpenGL/OpenGLRendererAPI.h"
+#include "Platform/RenderSystem/Vulkan/VulkanRendererAPI.h"
 
 namespace Steins
 {
-	RendererAPIType RendererAPI::API = RendererAPIType::None;
-
-	/*std::string RendererAPI::GetAPIName() const
+	RendererAPI* RendererAPI::Create(GraphicsDevice* _device)
 	{
-		switch (graphicsAPI)
+		switch (_device->GetAPI())
 		{
-		case Steins::RendererAPI::API::None: return "No API";
-		case Steins::RendererAPI::API::OpenGL: return "OpenGL";
-		case Steins::RendererAPI::API::DirectX11: return "DirectX11";
-		default:
-			break;
+		case Steins::RendererAPIType::None:break;
+		case Steins::RendererAPIType::OpenGL: return new OpenGLRendererAPI();
+		case Steins::RendererAPIType::DirectX11:return new D3D11RendererAPI(_device);
+		case Steins::RendererAPIType::DirectX12:return new D3D12RendererAPI(_device);
+		case Steins::RendererAPIType::Vulkan: return new VulkanRendererAPI(_device);
+		case Steins::RendererAPIType::Metal:
+		default:return nullptr;
 		}
-		STEINS_CORE_ERROR("Wrong API");
-		return "Error";
-	}*/
+		return nullptr;
+
+	}
 }

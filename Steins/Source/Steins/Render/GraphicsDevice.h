@@ -2,9 +2,14 @@
 
 #include "Base/MathTypes.h"
 #include "Steins/Enum/RendererEnums.h"
+#include "RendererAPI.h"
 
 namespace Steins
 {
+	struct SwapChainDesc; 
+	class SwapChain;
+	class SteinsWindow;
+
 	class GraphicsDevice
 	{
 	public:
@@ -16,10 +21,17 @@ namespace Steins
 		virtual void SwapBuffers() = 0;
 
 		template <typename DeviceType>
-		DeviceType* Get() { return SafeCast<DeviceType>(this); }
+		DeviceType* Get() 
+		{ 
+			return SafeCast<DeviceType>(this);
+		}
 
-		static Unique<GraphicsDevice> Create(RendererAPIType _type);
+		RendererAPIType GetAPI() const { return API; }
+
+		static Unique<GraphicsDevice> Create(RendererAPIType _API);
+		Shared<SwapChain> CreateSwapChain(SwapChainDesc* _desc, SteinsWindow* _window);
 	protected:
-		class SteinsWindow* windowHandle;
+		std::vector<Shared<SwapChain>> swapChains;
+		RendererAPIType API = RendererAPIType::None;
 	};
 }

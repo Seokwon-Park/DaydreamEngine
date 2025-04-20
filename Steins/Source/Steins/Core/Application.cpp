@@ -17,17 +17,16 @@ namespace Steins
 
 	Application* Application::instance = nullptr;
 
-	Application::Application(ApplicationSpecification _appSpecification)
+	Application::Application(ApplicationSpecification _specification)
 	{
 		STEINS_CORE_ASSERT(!instance, "Application already exists!");
 		instance = this;
 
-		RendererAPI::SetRendererAPI(API);
-		
 		WindowProps prop;
 		prop.width = 1280;
 		prop.height = 720;
-		prop.title = "Steins Engine";
+		prop.title = _specification.Name;
+		prop.rendererAPI = _specification.rendererAPI;
 
 		mainWindow = SteinsWindow::Create(prop);
 		if (mainWindow == nullptr)
@@ -37,7 +36,7 @@ namespace Steins
 		mainWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
 		mainWindow->SetVSync(true);
 
-		graphicsDevice = GraphicsDevice::Create(_appSpecification.API);
+		graphicsDevice = GraphicsDevice::Create(_specification.rendererAPI);
 		graphicsDevice->Init();
 
 		//TODO : 더 좋은 방법?
@@ -49,7 +48,7 @@ namespace Steins
 		desc.isFullscreen = false;
 		desc.isVSync = mainWindow->IsVSync();
 
-		Shared<SwapChain> swapchain = SwapChain::Create(&desc, mainWindow.get());
+		Shared<SwapChain> swapchain = graphicsDevice->CreateSwapChain(&desc, mainWindow.get());
 		mainWindow->SetSwapchain(swapchain);
 
 		//testWindow = SteinsWindow::Create();

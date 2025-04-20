@@ -4,9 +4,11 @@
 namespace Steins
 {
 	Renderer::SceneData* Renderer::m_SceneData = new Renderer::SceneData;
+	RendererAPIType Renderer::API = RendererAPIType::None;
 
 	void Renderer::Init(GraphicsDevice* _device)
 	{
+		API = _device->GetAPI();
 		RenderCommand::Init(_device);
 	}
 

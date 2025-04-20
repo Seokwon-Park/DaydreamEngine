@@ -79,6 +79,7 @@ namespace Steins
 		default:
 			break;
 		}
+		return nullptr;
 	}
 	Shared<Shader> D3D11Shader::CreateShader(const FilePath& _filepath, const ShaderType& _type)
 	{
@@ -95,6 +96,7 @@ namespace Steins
 		default:
 			break;
 		}
+		return nullptr;
 	}
 
 

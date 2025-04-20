@@ -1,6 +1,7 @@
 #include "SteinsPCH.h"
 #include "OpenGLGraphicsDevice.h"
 #include "Steins/Core/Window.h"
+#include "OpenGLRendererAPI.h"
 
 #include "glad/glad.h"
 
@@ -8,6 +9,7 @@ namespace Steins
 {
 	OpenGLGraphicsDevice::OpenGLGraphicsDevice()
 	{
+		API = RendererAPIType::OpenGL;
 	}
 
 	OpenGLGraphicsDevice::~OpenGLGraphicsDevice()

@@ -30,7 +30,7 @@ namespace Steins
 	{
 	public:
 
-
+		VulkanGraphicsDevice();
 		virtual ~VulkanGraphicsDevice() override;
 
 		virtual void Init() override;

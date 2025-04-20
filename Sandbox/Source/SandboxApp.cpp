@@ -148,7 +148,8 @@ Steins::Application* Steins::CreateApplication()
 {
 	ApplicationSpecification spec;
 	spec.Name = "Sandbox";
-	spec.WorkingDirectory = "../Hazelnut";
+	spec.WorkingDirectory = "../Lab";
+	spec.rendererAPI = RendererAPIType::Vulkan;
 
 	return new Sandbox(spec);
 }

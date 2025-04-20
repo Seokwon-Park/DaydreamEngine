@@ -49,13 +49,23 @@ namespace Steins
 			glfwSetErrorCallback(GLFWErrorCallback);
 			sIsGLFWInitialized = true;
 		}
+		if (_props.rendererAPI == RendererAPIType::Vulkan || 
+			_props.rendererAPI == RendererAPIType::DirectX11 ||
+			_props.rendererAPI == RendererAPIType::DirectX12)
+		{
+			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+		}
 
 		glfwWindow = glfwCreateWindow((Int32)_props.width, (Int32)_props.height, _props.title.c_str(), nullptr, nullptr);
+
+		if (_props.rendererAPI == RendererAPIType::OpenGL)
+		{
+			glfwMakeContextCurrent(glfwWindow);
+		}
 
 		glfwSetWindowUserPointer(glfwWindow, &windowData);
 		
 		windowHandle = glfwGetWin32Window(glfwWindow);
-		glfwMakeContextCurrent(glfwWindow);
 
 		glfwSetWindowSizeCallback(glfwWindow, [](GLFWwindow* _window, int _width, int _height)
 			{

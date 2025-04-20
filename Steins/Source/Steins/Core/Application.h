@@ -4,33 +4,40 @@
 #include "Steins/Core/LayerStack.h"
 #include "Steins/Event/KeyEvent.h"
 #include "Steins/Event/ApplicationEvent.h"
+#include "Steins/Render/GraphicsDevice.h"
 
 #include "Steins/ImGui/ImGuiLayer.h"
-
-#include "Steins/Render/RendererAPI.h"
-
-#include "Steins/Render/Shader.h"
-#include "Steins/Render/Buffer.h"
-#include "Steins/Render/VertexArray.h"
-
-#include "Steins/Render/OrthographicCamera.h"
 
 int main(int argc, char** argv);
 
 namespace Steins
 {
+	struct ApplicationCommandLineArgs
+	{
+		int count = 0;
+		char** args = nullptr;
+
+		const char* operator[](int _index) const
+		{
+			STEINS_CORE_ASSERT(_index < count, "Out of index");
+			return args[_index];
+		}
+	};
+
 	struct ApplicationSpecification
 	{
-		std::string Name = "Hazel Application";
-		std::string WorkingDirectory;
-		RendererAPIType API;
+		std::string Name = "Steins Application";
+		std::string WorkingDirectory = "";
+		UInt32 width = 1280;
+		UInt32 height = 720;
+		RendererAPIType rendererAPI = RendererAPIType::OpenGL;
 	};
 
 	class Application
 	{
 	public:
 		// constrcuter destructer
-		Application(ApplicationSpecification _appSpecification);
+		Application(ApplicationSpecification _specification);
 		virtual ~Application();
 
 		inline static Application& GetInstance() { return *instance; }
@@ -66,7 +73,6 @@ namespace Steins
 		ImGuiLayer* imGuiLayer;
 		LayerStack layerStack;
 
-		RendererAPIType API = RendererAPIType::Vulkan;	
 	};
 
 	// To be defined in client

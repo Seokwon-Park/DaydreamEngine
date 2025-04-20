@@ -1,9 +1,10 @@
 #pragma once
-#include "GraphicsDevice.h"
 #include "Steins/Enum/RendererEnums.h"
 
 namespace Steins
 {
+	class GraphicsDevice;
+
 	class RendererAPI
 	{
 	public:
@@ -11,13 +12,8 @@ namespace Steins
 		virtual void Clear() = 0;
 		virtual void DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex) = 0;
 
-		inline static void SetRendererAPI(RendererAPIType _Type) { API = _Type; }
-		inline static RendererAPIType GetRendererAPI() { return API; }
-
-		static RendererAPI Create();
+		static RendererAPI* Create(GraphicsDevice* _device);
 	protected:
-		GraphicsDevice* device;
 	private:
-		static RendererAPIType API;
 	};
 }

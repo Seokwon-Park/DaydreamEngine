@@ -59,9 +59,20 @@ namespace Steins
 		{
 			VulkanGraphicsDevice* device = app.GetGraphicsDevice()->Get<VulkanGraphicsDevice>();
 			ImGui_ImplVulkan_InitInfo info{};
+			info.ApiVersion;
+			info.Instance;
+			info.PhysicalDevice;
+			info.Device;
+			info.QueueFamily;
+			info.Queue;
+			info.DescriptorPool;
+			info.RenderPass;
+			info.MinImageCount;
+			info.ImageCount;
+			info.MSAASamples;
 
 			ImGui_ImplGlfw_InitForVulkan(window, true);
-			//ImGui_ImplVulkan_Init();
+			ImGui_ImplVulkan_Init(&info);
 		}
 		default:
 			break;
@@ -159,7 +170,7 @@ namespace Steins
 		}
 		case RendererAPIType::Vulkan:
 		{
-			//ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData());
+			//ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),);
 			break;
 		}
 		case RendererAPIType::Metal:

@@ -18,7 +18,8 @@ namespace Steins
 		inline static Matrix4x4 Inverse(Matrix4x4 _matrix)
 		{
 			Matrix4x4 mat;
-			mat.dxMatrix = DirectX::XMMatrixInverse(nullptr, _matrix.dxMatrix);
+			//mat.dxMatrix = DirectX::XMMatrixInverse(nullptr, _matrix.dxMatrix);
+			mat.glmMatrix = glm::inverse(mat.glmMatrix);
 			return mat;
 		}
 
@@ -26,6 +27,8 @@ namespace Steins
 		{
 			Matrix4x4 mat;
 			mat.dxMatrix = DirectX::XMMatrixOrthographicOffCenterLH(_left, _right, _bottom, _top, 0.0f, 1.0f);
+			//mat.glmMatrix = glm::m(mat.glmMatrix);
+
 			return mat;
 		}
 	}
