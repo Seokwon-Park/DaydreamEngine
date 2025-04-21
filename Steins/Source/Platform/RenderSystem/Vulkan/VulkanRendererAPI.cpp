@@ -6,6 +6,9 @@ namespace Steins
 	VulkanRendererAPI::VulkanRendererAPI(GraphicsDevice* _device)
 	{
 	}
+	void VulkanRendererAPI::Init()
+	{
+	}
 	void VulkanRendererAPI::SetClearColor(const Color& _color)
 	{
 	}

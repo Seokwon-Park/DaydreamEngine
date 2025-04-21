@@ -9,7 +9,7 @@ namespace Steins
 	class OpenGLSwapchain : public SwapChain
 	{
 	public:
-		OpenGLSwapchain(SwapChainDesc* _desc, SteinsWindow* _window);
+		OpenGLSwapchain(SwapChainSpecification* _desc, SteinsWindow* _window);
 		virtual ~OpenGLSwapchain() override;
 
 		virtual void SetVSync(bool _enabled) override;

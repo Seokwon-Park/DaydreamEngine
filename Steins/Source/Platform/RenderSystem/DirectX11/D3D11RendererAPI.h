@@ -8,6 +8,8 @@ namespace Steins
 	{
 	public:
 		D3D11RendererAPI(class GraphicsDevice* _device);
+
+		virtual void Init() override;
 		virtual void SetClearColor(const Color& _color) override;
 		virtual void Clear() override;
 		virtual void DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex) override;

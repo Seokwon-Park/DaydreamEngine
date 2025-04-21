@@ -82,6 +82,9 @@
     <Filter Include="Vendor\glm\glm\gtx">
       <UniqueIdentifier>{9362E3A8-7F46-A4FE-E8A6-9E51D4A98E80}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Vendor\stb">
+      <UniqueIdentifier>{6BAF7327-5767-B574-C06E-8ED0AC455065}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Base\Base.h">
@@ -132,9 +135,6 @@
     <ClInclude Include="Source\Platform\OSWindows\WindowsWindow.h">
       <Filter>Source\Platform\OSWindows</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\GraphicsUtil.h">
-      <Filter>Source\Platform\RenderSystem</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Buffer.h">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClInclude>
@@ -168,6 +168,9 @@
     <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12VertexArray.h">
       <Filter>Source\Platform\RenderSystem\DirectX12</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Platform\RenderSystem\GraphicsUtil.h">
+      <Filter>Source\Platform\RenderSystem</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Platform\RenderSystem\Metal\MetalGraphicsDevice.h">
       <Filter>Source\Platform\RenderSystem\Metal</Filter>
     </ClInclude>
@@ -189,10 +192,19 @@
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLSwapchain.h">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLTexture.h">
+      <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexArray.h">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanGraphicsDevice.h">
+      <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanRendererAPI.h">
+      <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapChain.h">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins.h">
@@ -285,7 +297,7 @@
     <ClInclude Include="Source\Steins\Render\Shader.h">
       <Filter>Source\Steins\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Render\SwapChain.h">
+    <ClInclude Include="Source\Steins\Render\Swapchain.h">
       <Filter>Source\Steins\Render</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\Render\Texture.h">
@@ -1551,8 +1563,15 @@
     <ClInclude Include="Vendor\glm\glm\vector_relational.hpp">
       <Filter>Vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapChain.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanRendererAPI.h" />
+    <ClInclude Include="Vendor\stb\stb_image.h">
+      <Filter>Vendor\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Render\Framebuffer.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Framebuffer.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLFramebuffer.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanFramebuffer.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12Framebuffer.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -1587,9 +1606,6 @@
     </ClCompile>
     <ClCompile Include="Source\Platform\OSWindows\WindowsWindow.cpp">
       <Filter>Source\Platform\OSWindows</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\GraphicsUtil.cpp">
-      <Filter>Source\Platform\RenderSystem</Filter>
     </ClCompile>
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Buffer.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
@@ -1630,6 +1646,9 @@
     <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12VertexArray.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX12</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Platform\RenderSystem\GraphicsUtil.cpp">
+      <Filter>Source\Platform\RenderSystem</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Platform\RenderSystem\Metal\MetalGraphicsDevice.cpp">
       <Filter>Source\Platform\RenderSystem\Metal</Filter>
     </ClCompile>
@@ -1655,6 +1674,12 @@
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanGraphicsDevice.cpp">
+      <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanRendererAPI.cpp">
+      <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapChain.cpp">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="Source\Steins\Core\Application.cpp">
@@ -1711,7 +1736,7 @@
     <ClCompile Include="Source\Steins\Render\Shader.cpp">
       <Filter>Source\Steins\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Render\SwapChain.cpp">
+    <ClCompile Include="Source\Steins\Render\Swapchain.cpp">
       <Filter>Source\Steins\Render</Filter>
     </ClCompile>
     <ClCompile Include="Source\Steins\Render\Texture.cpp">
@@ -1723,7 +1748,13 @@
     <ClCompile Include="Source\SteinsPCH.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapChain.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanRendererAPI.cpp" />
+    <ClCompile Include="Vendor\stb\stb_image.cpp">
+      <Filter>Vendor\stb</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLTexture.cpp" />
+    <ClCompile Include="Source\Steins\Render\Framebuffer.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12Framebuffer.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Framebuffer.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Texture.cpp" />
   </ItemGroup>
 </Project>

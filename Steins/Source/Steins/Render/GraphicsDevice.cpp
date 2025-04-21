@@ -25,10 +25,8 @@ namespace Steins
 		default: return nullptr;
 		}
 	}
-	Shared<SwapChain> GraphicsDevice::CreateSwapChain(SwapChainDesc* _desc, SteinsWindow* _window)
+	Shared<SwapChain> GraphicsDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
 	{
-		Shared<SwapChain> newSwapChain = SwapChain::Create(_desc, _window, API);
-		swapChains.push_back(newSwapChain);
-		return newSwapChain;
+		return SwapChain::Create(_desc, _window, API);
 	}
 }

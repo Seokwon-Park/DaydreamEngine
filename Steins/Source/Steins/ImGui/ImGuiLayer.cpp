@@ -75,8 +75,7 @@ namespace Steins
 		static bool show = true;
 		ImGui::ShowDemoWindow(&show);
 
-		ImGui::Render();
-		ImGuiHelper::RenderRawData();
+		ImGuiHelper::Render();
 
 
 

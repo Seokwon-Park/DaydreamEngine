@@ -5,6 +5,9 @@
 
 namespace Steins
 {
+	void OpenGLRendererAPI::Init()
+	{
+	}
 	void OpenGLRendererAPI::SetClearColor(const Color& _color)
 	{
 		glClearColor(_color.r, _color.g, _color.b, _color.a);

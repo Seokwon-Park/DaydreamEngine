@@ -11,7 +11,7 @@
 
 namespace Steins
 {
-    Shared<SwapChain> SwapChain::Create(SwapChainDesc* _desc, SteinsWindow* _window, RendererAPIType _type)
+    Shared<SwapChain> SwapChain::Create(SwapChainSpecification* _desc, SteinsWindow* _window, RendererAPIType _type)
     {
 		switch (_type)
 		{

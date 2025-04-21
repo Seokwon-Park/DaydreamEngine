@@ -8,5 +8,6 @@ namespace Steins
 	void RenderCommand::Init(GraphicsDevice* _device)
 	{
 		rendererAPI = RendererAPI::Create(_device);
+		rendererAPI->Init();
 	}
 }

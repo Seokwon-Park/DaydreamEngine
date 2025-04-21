@@ -6,6 +6,9 @@ namespace Steins
 	D3D12RendererAPI::D3D12RendererAPI(GraphicsDevice* _device)
 	{
 	}
+	void D3D12RendererAPI::Init()
+	{
+	}
 	void D3D12RendererAPI::SetClearColor(const Color& _color)
 	{
 	}

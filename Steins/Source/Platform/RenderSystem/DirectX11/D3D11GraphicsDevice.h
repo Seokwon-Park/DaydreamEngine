@@ -39,7 +39,6 @@ namespace Steins
 		ComPtr<IDXGIAdapter> dxgiAdapter = nullptr;
 		ComPtr<IDXGIFactory7> dxgiFactory = nullptr;
 
-		ComPtr<ID3D11RenderTargetView> rtv;
 
 	};
 }

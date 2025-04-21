@@ -144,6 +144,6 @@ namespace Steins
 	}
 	void D3D11GraphicsDevice::BindRenderTargets()
 	{
-		deviceContext->OMSetRenderTargets(1, rtv.GetAddressOf(), nullptr);
+		//deviceContext->OMSetRenderTargets(1, rtv.GetAddressOf(), nullptr);
 	}
 }

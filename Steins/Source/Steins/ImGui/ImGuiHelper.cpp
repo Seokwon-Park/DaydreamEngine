@@ -148,8 +148,9 @@ namespace Steins
 		ImGui_ImplGlfw_NewFrame();
 	}
 
-	void ImGuiHelper::RenderRawData()
+	void ImGuiHelper::Render()
 	{
+		ImGui::Render();
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPIType::OpenGL:
@@ -159,6 +160,10 @@ namespace Steins
 		}
 		case RendererAPIType::DirectX11:
 		{
+			D3D11GraphicsDevice* device = Application::GetGraphicsDevice()->Get<D3D11GraphicsDevice>();
+			device->GetSwapChain(0)->GetBackFramebuffer();
+			//auto rtvs = device->
+			//device->GetContext()->OMSetRenderTargets(1, , nullptr);
 			ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 			break;
 		}

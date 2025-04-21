@@ -8,6 +8,9 @@ namespace Steins
 	{
 		device = Cast<D3D11GraphicsDevice>(_device);
 	}
+	void D3D11RendererAPI::Init()
+	{
+	}
 	void D3D11RendererAPI::SetClearColor(const Color& _color)
 	{
 		clearColor = _color;

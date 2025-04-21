@@ -12,7 +12,7 @@
 namespace Steins
 {
 	
-	D3D11SwapChain::D3D11SwapChain(GraphicsDevice* _device, SwapChainDesc* _desc, SteinsWindow* _window)
+	D3D11SwapChain::D3D11SwapChain(GraphicsDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window)
 	{
 		device = Cast<D3D11GraphicsDevice>(_device);
 		desc = *_desc;
@@ -40,8 +40,13 @@ namespace Steins
 		desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 		desc.Flags = 0;
 
-		HRESULT hr =  device->GetFactory()->CreateSwapChain(device->GetDevice(), &desc, swapChain.GetAddressOf());
+		HRESULT hr = device->GetFactory()->CreateSwapChain(device->GetDevice(), &desc, swapChain.GetAddressOf());
 		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed To Create Swapchain!");
+		device->AddSwapChain(this);
+
+		FramebufferSpecification spec;
+		spec.swapChainTarget = true;
+		backFramebuffer = Framebuffer::Create(spec);
 
 	}
 	D3D11SwapChain::~D3D11SwapChain()

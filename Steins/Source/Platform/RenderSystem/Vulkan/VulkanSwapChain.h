@@ -19,7 +19,7 @@ namespace Steins
 	class VulkanSwapChain : public SwapChain
 	{
 	public:
-		VulkanSwapChain(GraphicsDevice* _device, SwapChainDesc* _desc, SteinsWindow* _window);
+		VulkanSwapChain(GraphicsDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window);
 		virtual ~VulkanSwapChain() override;
 
 		virtual void SetVSync(bool _enabled) override;

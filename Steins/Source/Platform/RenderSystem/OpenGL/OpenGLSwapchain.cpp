@@ -9,7 +9,7 @@
 
 namespace Steins
 {
-	OpenGLSwapchain::OpenGLSwapchain(SwapChainDesc* _desc, SteinsWindow* _window)
+	OpenGLSwapchain::OpenGLSwapchain(SwapChainSpecification* _desc, SteinsWindow* _window)
 	{
 		desc = *_desc;
 		window = (GLFWwindow*)_window->GetNativeWindow();

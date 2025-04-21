@@ -9,7 +9,7 @@
 
 namespace Steins
 {
-	D3D12SwapChain::D3D12SwapChain(GraphicsDevice* _device, SwapChainDesc* _desc, SteinsWindow* _window)
+	D3D12SwapChain::D3D12SwapChain(GraphicsDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window)
 	{
 		device = Cast<D3D12GraphicsDevice>(_device);
 		desc = *_desc;

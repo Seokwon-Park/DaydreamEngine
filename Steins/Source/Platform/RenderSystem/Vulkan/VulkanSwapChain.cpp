@@ -5,7 +5,7 @@
 
 namespace Steins
 {
-	VulkanSwapChain::VulkanSwapChain(GraphicsDevice* _device, SwapChainDesc* _desc, SteinsWindow* _window)
+	VulkanSwapChain::VulkanSwapChain(GraphicsDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window)
 	{
 		device = _device->Get<VulkanGraphicsDevice>();
 		desc = *_desc;
@@ -81,7 +81,13 @@ namespace Steins
 			vkGetSwapchainImagesKHR(device->GetLogicalDevice(), swapChain, &swapChainImageCount, swapChainImages.data());
 		}
 		swapChainImageViews.resize(swapChainImages.size());
-		//for()
+		for (int i = 0; i < swapChainImages.size(); i++) 
+		{
+			VkImageViewCreateInfo info{};
+			info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+			info.image = swapChainImages[i];
+			info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		}
 	}
 	VulkanSwapChain::~VulkanSwapChain()
 	{

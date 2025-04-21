@@ -6,7 +6,7 @@
 
 namespace Steins
 {
-	struct SwapChainDesc; 
+	struct SwapChainSpecification; 
 	class SwapChain;
 	class SteinsWindow;
 
@@ -21,17 +21,23 @@ namespace Steins
 		virtual void SwapBuffers() = 0;
 
 		template <typename DeviceType>
-		DeviceType* Get() 
-		{ 
+		DeviceType* Get()
+		{
 			return SafeCast<DeviceType>(this);
 		}
 
-		RendererAPIType GetAPI() const { return API; }
+		inline RendererAPIType GetAPI() const { return API; }
+		inline SwapChain* GetSwapChain(UInt32 _index)
+		{
+			STEINS_CORE_ASSERT(swapChains.size() > _index, "Not valid index!");
+			return swapChains[_index];
+		};
+		inline void AddSwapChain(SwapChain* _swapChain) { swapChains.push_back(_swapChain); }
 
 		static Unique<GraphicsDevice> Create(RendererAPIType _API);
-		Shared<SwapChain> CreateSwapChain(SwapChainDesc* _desc, SteinsWindow* _window);
+		Shared<SwapChain> CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window);
 	protected:
-		std::vector<Shared<SwapChain>> swapChains;
+		std::vector<SwapChain*> swapChains;
 		RendererAPIType API = RendererAPIType::None;
 	};
 }

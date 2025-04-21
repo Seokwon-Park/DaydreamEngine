@@ -16,7 +16,7 @@ namespace Steins
 		static void Init();
 		static void Shutdown();
 		static void NewFrame();
-		static void RenderRawData();
+		static void Render();
 	};
 }
 

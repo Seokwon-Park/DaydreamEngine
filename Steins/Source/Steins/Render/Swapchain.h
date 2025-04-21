@@ -1,10 +1,11 @@
 #pragma once
 #include "Steins/Enum/RendererEnums.h"
+#include "Framebuffer.h"
 
 namespace Steins
 {
 	class SteinsWindow;
-	struct SwapChainDesc
+	struct SwapChainSpecification
 	{
 		UInt32 width = 0;
 		UInt32 height = 0;
@@ -24,8 +25,10 @@ namespace Steins
 
 		virtual void SwapBuffers() = 0;
 
-		static Shared<SwapChain> Create(SwapChainDesc* _desc, SteinsWindow* _window, RendererAPIType _type);
+		inline Framebuffer* GetBackFramebuffer() { return backFramebuffer.get(); };
+		static Shared<SwapChain> Create(SwapChainSpecification* _desc, SteinsWindow* _window, RendererAPIType _type);
 	protected:
-		SwapChainDesc desc;
+		SwapChainSpecification desc;
+		Shared<Framebuffer> backFramebuffer;
 	};
 }

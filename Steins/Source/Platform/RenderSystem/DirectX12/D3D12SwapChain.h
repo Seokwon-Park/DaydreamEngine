@@ -8,7 +8,7 @@ namespace Steins
 	class D3D12SwapChain : public SwapChain
 	{
 	public:
-		D3D12SwapChain(GraphicsDevice* _device, SwapChainDesc* _desc, SteinsWindow* _window);
+		D3D12SwapChain(GraphicsDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window);
 		virtual ~D3D12SwapChain() override;
 
 		// Inherited via Swapchain
