@@ -1759,5 +1759,6 @@
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Framebuffer.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Texture.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanFramebuffer.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanShader.cpp" />
   </ItemGroup>
 </Project>

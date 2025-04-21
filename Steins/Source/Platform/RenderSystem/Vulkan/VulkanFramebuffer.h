@@ -9,6 +9,8 @@ namespace Steins
 	class VulkanFramebuffer : public Framebuffer
 	{
 	public:
+		VulkanFramebuffer(GraphicsDevice* _device, const FramebufferSpecification& _spec);
+		virtual ~VulkanFramebuffer() override;
 	private:
 		VkFramebuffer framebuffer;
 		VkRenderPass renderpass;

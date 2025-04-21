@@ -3,5 +3,8 @@
 
 namespace Steins
 {
-
+    VulkanFramebuffer::VulkanFramebuffer(GraphicsDevice* _device, const FramebufferSpecification& _spec)
+    {
+        
+    }
 }

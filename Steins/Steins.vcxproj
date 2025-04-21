@@ -646,6 +646,7 @@
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanFramebuffer.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanGraphicsDevice.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanRendererAPI.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanShader.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapChain.cpp" />
     <ClCompile Include="Source\Steins\Core\Application.cpp" />
     <ClCompile Include="Source\Steins\Core\GameObject.cpp" />
