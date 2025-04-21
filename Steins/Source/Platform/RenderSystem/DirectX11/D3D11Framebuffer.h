@@ -10,15 +10,14 @@ namespace Steins
 	{
 	public:
 		D3D11Framebuffer(GraphicsDevice* _device, const FramebufferSpecification& _spec);
-
+		virtual ~D3D11Framebuffer() override;
 		virtual void Bind() override;
 
-		std::vector<ComPtr<ID3D11RenderTargetView>>& GetRTVs() { return renderTargetViews; }
 	private:
 		D3D11GraphicsDevice* device;
-		std::vector<ComPtr<ID3D11RenderTargetView>> renderTargetViews; 
+		std::vector<ID3D11RenderTargetView*> renderTargetViews;
 		ComPtr<ID3D11DepthStencilView> depthStencilView;
-		std::vector<ComPtr<ID3D11Texture2D>> colorAttachments; 
+		std::vector<ComPtr<ID3D11Texture2D>> colorAttachments;
 		ComPtr<ID3D11Texture2D> depthAttachment;
 	};
 }

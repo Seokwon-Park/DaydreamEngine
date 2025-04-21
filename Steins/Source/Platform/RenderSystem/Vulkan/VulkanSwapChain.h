@@ -33,7 +33,7 @@ namespace Steins
 		VulkanGraphicsDevice* device;
 		VkSurfaceKHR surface; // Vulkan window surface
 		VkSwapchainKHR swapChain;
-		VkFormat format;
+		VkFormat format; // swapchain image format
 		VkExtent2D extent;
 		std::vector<VkImage> swapChainImages;
 		std::vector<VkImageView> swapChainImageViews;

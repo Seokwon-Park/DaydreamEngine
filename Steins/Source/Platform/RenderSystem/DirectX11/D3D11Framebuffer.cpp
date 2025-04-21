@@ -21,8 +21,8 @@ namespace Steins
 			textureDesc.SampleDesc.Count = 1;
 			textureDesc.SampleDesc.Quality = 0;
 			textureDesc.Usage = D3D11_USAGE_DEFAULT;
-			ComPtr<ID3D11RenderTargetView> rtv;
-			device->GetDevice()->CreateRenderTargetView(backBuffer.Get(), nullptr, rtv.GetAddressOf());
+			ID3D11RenderTargetView* rtv;
+			device->GetDevice()->CreateRenderTargetView(backBuffer.Get(), nullptr, &rtv);
 			renderTargetViews.push_back(rtv);
 		}
 		for (const FramebufferAttachmentSpecification& colorAttachment : _spec.colorAttachments)
@@ -30,7 +30,15 @@ namespace Steins
 
 		}
 	}
+	D3D11Framebuffer::~D3D11Framebuffer()
+	{
+		for (auto rtv : renderTargetViews)
+		{
+			rtv->Release();
+		}
+	}
 	void D3D11Framebuffer::Bind()
 	{
+		device->GetContext()->OMSetRenderTargets(renderTargetViews.size(), renderTargetViews.data(), depthStencilView.Get());
 	}
 }

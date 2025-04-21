@@ -1572,6 +1572,8 @@
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanFramebuffer.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12Framebuffer.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Texture.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanShader.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanPipelineState.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -1756,5 +1758,6 @@
     <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12Framebuffer.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Framebuffer.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Texture.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanFramebuffer.cpp" />
   </ItemGroup>
 </Project>

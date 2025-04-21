@@ -53,11 +53,12 @@ namespace Steins
 		virtual void SetKeyDown(int _key) = 0;
 		virtual void OnUpdateKeyState() = 0;
 
-		void SetSwapchain(Shared<SwapChain> _swapchain) { swapchain = _swapchain; }
+		void SetSwapchain(Shared<SwapChain> _swapchain) { swapChain = _swapchain; }
+		SwapChain* GetSwapchain() const { return swapChain.get(); }
 
 		static Unique<SteinsWindow> Create(const WindowProps& _props = WindowProps());
 	protected:
-		Shared<SwapChain> swapchain = nullptr;
+		Shared<SwapChain> swapChain = nullptr;
 	private:
 	};
 

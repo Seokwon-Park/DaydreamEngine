@@ -159,7 +159,7 @@ namespace Steins
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
-		swapchain->SwapBuffers();
+		swapChain->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool _enabled)
