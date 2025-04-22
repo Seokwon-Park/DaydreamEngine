@@ -42,7 +42,7 @@ namespace Steins
 		void Free(D3D12_CPU_DESCRIPTOR_HANDLE _outCpuDescriptorHandle, D3D12_GPU_DESCRIPTOR_HANDLE _outGpuDescriptorHandle)
 		{
 			int cpuIndex = (int)((_outCpuDescriptorHandle.ptr - heapStartCpu.ptr) / heapHandleIncrement);
-			int gpuIndex= (int)((_outGpuDescriptorHandle.ptr - heapStartGpu.ptr) / heapHandleIncrement);
+			int gpuIndex = (int)((_outGpuDescriptorHandle.ptr - heapStartGpu.ptr) / heapHandleIncrement);
 			STEINS_CORE_ASSERT(cpuIndex == gpuIndex, "");
 			freeIndices.push_back(cpuIndex);
 		}
@@ -57,7 +57,15 @@ namespace Steins
 		virtual void Init() override;
 		virtual void Shutdown() override;
 		virtual void Render() override;
-		virtual void SwapBuffers() override;
+
+		virtual Shared<VertexBuffer> CreateVertexBuffer(Float32* _vertices, UInt32 _size) override;
+		virtual Shared<IndexBuffer> CreateIndexBuffer(UInt32* _indices, UInt32 _count) override;
+		virtual Shared<Framebuffer> CreateFramebuffer(FramebufferSpecification _spec)override;
+		virtual Shared<PipelineState> CreatePipelineState(PipelineStateDesc _desc)override;
+		virtual Shared<Shader> CreateShader(const FilePath& _filepath, const ShaderType& _type)override;
+		virtual Shared<Shader> CreateShader(const std::string& _src, const ShaderType& _type)override;
+		virtual Shared<SwapChain> CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)override;
+		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path)override;
 
 		ID3D12Device* GetDevice() const { return device.Get(); }
 		ID3D12CommandQueue* GetCommandQueue() const { return commandQueue.Get(); }
@@ -86,7 +94,7 @@ namespace Steins
 		ComPtr<IDXGIAdapter4> dxgiAdapter;
 		ComPtr<ID3D12Debug> debugLayer;
 
-		
+
 
 	};
 }

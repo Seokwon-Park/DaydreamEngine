@@ -8,7 +8,7 @@ namespace Steins
 	class D3D11VertexBuffer : public VertexBuffer
 	{
 	public:
-		D3D11VertexBuffer(GraphicsDevice* _device, Float32* _vertices, UInt32 _size);
+		D3D11VertexBuffer(D3D11GraphicsDevice* _device, Float32* _vertices, UInt32 _size);
 		virtual ~D3D11VertexBuffer();
 
 		virtual void Bind() const;
@@ -24,7 +24,7 @@ namespace Steins
 	class D3D11IndexBuffer : public IndexBuffer
 	{
 	public:
-		D3D11IndexBuffer(GraphicsDevice* _device, UInt32* _indices, UInt32 _indexCount);
+		D3D11IndexBuffer(D3D11GraphicsDevice* _device, UInt32* _indices, UInt32 _indexCount);
 		virtual ~D3D11IndexBuffer();
 
 		virtual void Bind() const;

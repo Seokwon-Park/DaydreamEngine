@@ -1,8 +1,9 @@
 #include "SteinsPCH.h"
 #include "OpenGLGraphicsDevice.h"
-#include "Steins/Core/Window.h"
 #include "OpenGLRendererAPI.h"
+#include "OpenGLPipelineState.h"
 
+#include "Steins/Core/Window.h"
 #include "glad/glad.h"
 
 namespace Steins
@@ -43,9 +44,45 @@ namespace Steins
 	void OpenGLGraphicsDevice::Render()
 	{
 	}
-	void OpenGLGraphicsDevice::SwapBuffers()
-	{
 
+	Shared<VertexBuffer> OpenGLGraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size)
+	{
+		return Shared<VertexBuffer>();
+	}
+
+	Shared<IndexBuffer> OpenGLGraphicsDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
+	{
+		return Shared<IndexBuffer>();
+	}
+
+	Shared<Framebuffer> OpenGLGraphicsDevice::CreateFramebuffer(FramebufferSpecification _spec)
+	{
+		return Shared<Framebuffer>();
+	}
+
+	Shared<PipelineState> OpenGLGraphicsDevice::CreatePipelineState(PipelineStateDesc _desc)
+	{
+		return Shared<PipelineState>();
+	}
+
+	Shared<Shader> OpenGLGraphicsDevice::CreateShader(const FilePath& _filepath, const ShaderType& _type)
+	{
+		return Shared<Shader>();
+	}
+
+	Shared<Shader> OpenGLGraphicsDevice::CreateShader(const std::string& _src, const ShaderType& _type)
+	{
+		return Shared<Shader>();
+	}
+
+	Shared<SwapChain> OpenGLGraphicsDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
+	{
+		return Shared<SwapChain>();
+	}
+
+	Shared<Texture2D> OpenGLGraphicsDevice::CreateTexture2D(const FilePath& _path)
+	{
+		return Shared<Texture2D>();
 	}
 
 }

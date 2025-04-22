@@ -1,12 +1,12 @@
 #include "SteinsPCH.h"
 #include "D3D11GraphicsDevice.h"
-#include "Platform/RenderSystem/GraphicsUtil.h"
 #include "D3D11RendererAPI.h"
+#include "D3D11Buffer.h"
+#include "D3D11Swapchain.h"
+#include "D3D11Framebuffer.h"
+#include "D3D11PipelineState.h"
 
-#include "GLFW/glfw3.h"
-#define GLFW_EXPOSE_NATIVE_WIN32
-#include "GLFW/glfw3native.h"
-
+#include "Platform/RenderSystem/GraphicsUtil.h"
 
 namespace Steins
 {
@@ -137,8 +137,44 @@ namespace Steins
 	{
 	}
 
-	void D3D11GraphicsDevice::SwapBuffers()
+	Shared<VertexBuffer> D3D11GraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size)
 	{
+		return MakeShared<D3D11VertexBuffer>(this, _vertices, _size);
+	}
+
+	Shared<IndexBuffer> D3D11GraphicsDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
+	{
+		return MakeShared<D3D11IndexBuffer>(this, _indices, _count);
+	}
+
+	Shared<Framebuffer> D3D11GraphicsDevice::CreateFramebuffer(FramebufferSpecification _spec)
+	{
+		return Shared<Framebuffer>();
+	}
+
+	Shared<PipelineState> D3D11GraphicsDevice::CreatePipelineState(PipelineStateDesc _desc)
+	{
+		return Shared<PipelineState>();
+	}
+
+	Shared<Shader> D3D11GraphicsDevice::CreateShader(const FilePath& _filepath, const ShaderType& _type)
+	{
+		return Shared<Shader>();
+	}
+
+	Shared<Shader> D3D11GraphicsDevice::CreateShader(const std::string& _src, const ShaderType& _type)
+	{
+		return Shared<Shader>();
+	}
+
+	Shared<SwapChain> D3D11GraphicsDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
+	{
+		return MakeShared<D3D11SwapChain>(this, _desc,_window);
+	}
+
+	Shared<Texture2D> D3D11GraphicsDevice::CreateTexture2D(const FilePath& _path)
+	{
+		return Shared<Texture2D>();
 	}
 
 

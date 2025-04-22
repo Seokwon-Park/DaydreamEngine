@@ -1,7 +1,9 @@
 #include "SteinsPCH.h"
 #include "D3D12GraphicsDevice.h"
-#include "Platform/RenderSystem/GraphicsUtil.h"
 #include "D3D12RendererAPI.h"
+#include "D3D12Framebuffer.h"
+#include "D3D12PipelineState.h"
+#include "Platform/RenderSystem/GraphicsUtil.h"
 
 namespace Steins
 {
@@ -163,9 +165,46 @@ namespace Steins
 	{
 	}
 
-	void D3D12GraphicsDevice::SwapBuffers()
+	Shared<VertexBuffer> D3D12GraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size)
 	{
+		return Shared<VertexBuffer>();
 	}
+
+	Shared<IndexBuffer> D3D12GraphicsDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
+	{
+		return Shared<IndexBuffer>();
+	}
+
+	Shared<Framebuffer> D3D12GraphicsDevice::CreateFramebuffer(FramebufferSpecification _spec)
+	{
+		return Shared<Framebuffer>();
+	}
+
+	Shared<PipelineState> D3D12GraphicsDevice::CreatePipelineState(PipelineStateDesc _desc)
+	{
+		return Shared<PipelineState>();
+	}
+
+	Shared<Shader> D3D12GraphicsDevice::CreateShader(const FilePath& _filepath, const ShaderType& _type)
+	{
+		return Shared<Shader>();
+	}
+
+	Shared<Shader> D3D12GraphicsDevice::CreateShader(const std::string& _src, const ShaderType& _type)
+	{
+		return Shared<Shader>();
+	}
+
+	Shared<SwapChain> D3D12GraphicsDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
+	{
+		return Shared<SwapChain>();
+	}
+
+	Shared<Texture2D> D3D12GraphicsDevice::CreateTexture2D(const FilePath& _path)
+	{
+		return Shared<Texture2D>();
+	}
+
 	//void D3D12GraphicsDevice::WaitForGPU(IDXGISwapChain3* _swapChain)
 	//{
 	//	HRESULT hr;

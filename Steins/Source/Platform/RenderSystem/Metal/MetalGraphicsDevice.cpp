@@ -15,8 +15,5 @@ namespace Steins
 	{
 	}
 
-	void MetalGraphicsDevice::SwapBuffers()
-	{
-	}
 
 }

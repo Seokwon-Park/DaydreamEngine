@@ -141,7 +141,7 @@ namespace Steins
 
 		virtual UInt32 GetCount() const = 0;
 
-		static Shared<IndexBuffer> Create(UInt32* _vertices, UInt32 _size);
+		static Shared<IndexBuffer> Create(UInt32* _indices, UInt32 _count);
 	protected:
 	};
 }

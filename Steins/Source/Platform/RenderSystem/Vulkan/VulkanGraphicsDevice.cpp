@@ -1,5 +1,7 @@
 #include "SteinsPCH.h"
 #include "VulkanGraphicsDevice.h"
+#include "VulkanFramebuffer.h"
+#include "VulkanPipelineState.h"
 #include "Platform/RenderSystem/GraphicsUtil.h"
 
 #include "GLFW/glfw3.h"
@@ -98,9 +100,46 @@ namespace Steins
 	{
 	}
 
-	void VulkanGraphicsDevice::SwapBuffers()
+	Shared<VertexBuffer> VulkanGraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size)
 	{
+		return Shared<VertexBuffer>();
 	}
+
+	Shared<IndexBuffer> VulkanGraphicsDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
+	{
+		return Shared<IndexBuffer>();
+	}
+
+	Shared<Framebuffer> VulkanGraphicsDevice::CreateFramebuffer(FramebufferSpecification _spec)
+	{
+		return Shared<Framebuffer>();
+	}
+
+	Shared<PipelineState> VulkanGraphicsDevice::CreatePipelineState(PipelineStateDesc _desc)
+	{
+		return Shared<PipelineState>();
+	}
+
+	Shared<Shader> VulkanGraphicsDevice::CreateShader(const FilePath& _filepath, const ShaderType& _type)
+	{
+		return Shared<Shader>();
+	}
+
+	Shared<Shader> VulkanGraphicsDevice::CreateShader(const std::string& _src, const ShaderType& _type)
+	{
+		return Shared<Shader>();
+	}
+
+	Shared<SwapChain> VulkanGraphicsDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
+	{
+		return Shared<SwapChain>();
+	}
+
+	Shared<Texture2D> VulkanGraphicsDevice::CreateTexture2D(const FilePath& _path)
+	{
+		return Shared<Texture2D>();
+	}
+
 
 	SwapChainSupportDetails VulkanGraphicsDevice::QuerySwapChainSupport(VkSurfaceKHR _surface)
 	{

@@ -9,10 +9,10 @@ namespace Steins
 	class D3D11SwapChain : public SwapChain
 	{
 	public:
-		D3D11SwapChain(GraphicsDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window);
+		D3D11SwapChain(D3D11GraphicsDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window);
 		virtual ~D3D11SwapChain();
 
-		virtual void SetVSync(bool _enabled);
+		virtual void SetVSync(bool _enabled) override;
 		virtual void SwapBuffers() override;
 
 		inline IDXGISwapChain* GetDXGISwapChain() { return swapChain.Get(); }

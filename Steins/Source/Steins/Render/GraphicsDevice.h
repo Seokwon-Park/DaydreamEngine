@@ -7,8 +7,16 @@
 namespace Steins
 {
 	struct SwapChainSpecification; 
-	class SwapChain;
+	struct FramebufferSpecification;
+	struct PipelineStateDesc;
 	class SteinsWindow;
+	class VertexBuffer;
+	class IndexBuffer;
+	class Framebuffer;
+	class PipelineState;
+	class Shader;
+	class SwapChain;
+	class Texture2D;
 
 	class GraphicsDevice
 	{
@@ -18,7 +26,15 @@ namespace Steins
 		virtual void Init() = 0;
 		virtual void Shutdown() = 0;
 		virtual void Render() = 0;
-		virtual void SwapBuffers() = 0;
+
+		virtual Shared<VertexBuffer> CreateVertexBuffer(Float32* _vertices, UInt32 _size) = 0;
+		virtual Shared<IndexBuffer> CreateIndexBuffer(UInt32* _indices, UInt32 _count) = 0;
+		virtual Shared<Framebuffer> CreateFramebuffer(FramebufferSpecification _spec) = 0;
+		virtual Shared<PipelineState> CreatePipelineState(PipelineStateDesc _desc)= 0;
+		virtual Shared<Shader> CreateShader(const FilePath& _filepath, const ShaderType& _type) = 0;
+		virtual Shared<Shader> CreateShader(const std::string& _src, const ShaderType& _type) = 0;
+		virtual Shared<SwapChain> CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window) = 0;
+		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path) = 0;
 
 		template <typename DeviceType>
 		DeviceType* Get()
@@ -35,7 +51,6 @@ namespace Steins
 		inline void AddSwapChain(SwapChain* _swapChain) { swapChains.push_back(_swapChain); }
 
 		static Unique<GraphicsDevice> Create(RendererAPIType _API);
-		Shared<SwapChain> CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window);
 	protected:
 		std::vector<SwapChain*> swapChains;
 		RendererAPIType API = RendererAPIType::None;

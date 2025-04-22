@@ -26,7 +26,7 @@ namespace Steins
 		virtual void SwapBuffers() = 0;
 
 		inline Framebuffer* GetBackFramebuffer() { return backFramebuffer.get(); };
-		static Shared<SwapChain> Create(SwapChainSpecification* _desc, SteinsWindow* _window, RendererAPIType _type);
+		static Shared<SwapChain> Create(SwapChainSpecification* _desc, SteinsWindow* _window);
 	protected:
 		SwapChainSpecification desc;
 		Shared<Framebuffer> backFramebuffer;
