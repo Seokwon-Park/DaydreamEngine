@@ -122,7 +122,11 @@ namespace Steins
 		STEINS_CORE_INFO("  Renderer: {0}", videoCardDescription);
 		STEINS_CORE_INFO("  Version: {0}", version);
 
+		{
+			ID3D11RasterizerState* rs;
+			D3D11_RASTERIZER_DESC desc{};
 
+		}
 	}
 
 	void D3D11GraphicsDevice::Shutdown()
@@ -137,13 +141,6 @@ namespace Steins
 	{
 	}
 
-	void D3D11GraphicsDevice::ClearRenderTargetViews(Color _clearColor)
-	{
-		//deviceContext->ClearRenderTargetView(rtv.Get(), _clearColor.color);
-		//BindRenderTargets();
-	}
-	void D3D11GraphicsDevice::BindRenderTargets()
-	{
-		//deviceContext->OMSetRenderTargets(1, rtv.GetAddressOf(), nullptr);
-	}
+
+
 }

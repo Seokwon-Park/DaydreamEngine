@@ -160,8 +160,8 @@ namespace Steins
 		}
 		case RendererAPIType::DirectX11:
 		{
-			D3D11GraphicsDevice* device = Application::GetGraphicsDevice()->Get<D3D11GraphicsDevice>();
-			Application::GetInstance().GetMainWindow().GetSwapchain()->GetBackFramebuffer()->Bind();
+			//D3D11GraphicsDevice* device = Application::GetGraphicsDevice()->Get<D3D11GraphicsDevice>();
+			//Application::GetInstance().GetMainWindow().GetSwapchain()->GetBackFramebuffer()->Bind();
 			//auto rtvs = device->
 			//device->GetContext()->OMSetRenderTargets(1, , nullptr);
 			ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());

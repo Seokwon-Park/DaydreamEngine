@@ -16,16 +16,11 @@ namespace Steins
 		virtual void Render() override;
 		virtual void SwapBuffers() override;
 
-		//temp;
-		void ClearRenderTargetViews(Color _clearColor);
-		void BindRenderTargets();
-
 		/*ID3D11Device* GetDevice() const { return deviceInstance; }
 		ID3D11DeviceContext* GetContext() const { return contextInstance; }*/
 
 		 ID3D11Device* GetDevice() { return device.Get(); }
 		 ID3D11DeviceContext* GetContext() { return deviceContext.Get(); }
-
 		 IDXGIFactory7* GetFactory() { return dxgiFactory.Get(); }
 	private:
 		bool debugLayerEnabled = true;

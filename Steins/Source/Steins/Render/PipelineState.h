@@ -4,6 +4,20 @@
 
 namespace Steins
 {
+	struct PipelineStateDesc
+	{
+		std::vector<Pair<Shared<Shader>, ShaderType>> shaders;
+		//InputLayoutDesc inputLayout;
+		//Shared<ResourceBindingLayout> resourceBindingLayout; // RootSignature/PipelineLayout
+		//RasterizerDesc rasterizerState;
+		//BlendDesc blendState;
+		//DepthStencilDesc depthStencilState;
+		//std::vector<GraphicsFormat> renderTargetFormats; // RTV 포맷들
+		//GraphicsFormat depthStencilFormat = GraphicsFormat::Unknown; // DSV 포맷
+		uint32_t sampleCount = 1;
+		//PrimitiveTopologyType topologyType = PrimitiveTopologyType::TriangleList;
+	};
+
 	class PipelineState
 	{
 	public:
@@ -11,9 +25,7 @@ namespace Steins
 
 		virtual void Bind() const = 0;
 
-		void SetShaders(std::vector<Pair<Shared<Shader>, ShaderType>>& _shaders);
-		void SetShader(Shared<Shader> _shader, ShaderType _type);
-
+		static Shared<PipelineState> Create(PipelineStateDesc _desc);
 	private:
 		Shared<Shader> vertexShader;
 		Shared<Shader> hullShader;

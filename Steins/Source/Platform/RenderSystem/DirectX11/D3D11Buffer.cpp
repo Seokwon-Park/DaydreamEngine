@@ -22,7 +22,7 @@ namespace Steins
 		data.pSysMem = _vertices;
 		data.SysMemPitch = 0;
 		data.SysMemSlicePitch = 0;
-		
+
 		device->GetDevice()->CreateBuffer(&desc, &data, vertexBuffer.GetAddressOf());
 	}
 	D3D11VertexBuffer::~D3D11VertexBuffer()
@@ -30,6 +30,10 @@ namespace Steins
 	}
 	void D3D11VertexBuffer::Bind() const
 	{
+		//TODO : VertexArray를 쓰는 방향이 맞나?
+		UINT stride = layout.GetStride();
+		UINT offset = 0;
+		device->GetContext()->IASetVertexBuffers(slotNum, 1, vertexBuffer.GetAddressOf(), &stride, &offset);
 	}
 	void D3D11VertexBuffer::Unbind() const
 	{
@@ -61,6 +65,7 @@ namespace Steins
 	}
 	void D3D11IndexBuffer::Bind() const
 	{
+		device->GetContext()->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 	}
 	void D3D11IndexBuffer::Unbind() const
 	{

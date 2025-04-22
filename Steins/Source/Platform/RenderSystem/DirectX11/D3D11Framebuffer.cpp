@@ -9,25 +9,29 @@ namespace Steins
 		device = Cast<D3D11GraphicsDevice>(_device);
 		if (_spec.swapChainTarget == true)
 		{
+			//0 is MainWindow SwapChain
 			IDXGISwapChain* sc = Cast<D3D11SwapChain>(device->GetSwapChain(0))->GetDXGISwapChain();
 			ComPtr<ID3D11Texture2D> backBuffer;
 			sc->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
 			STEINS_CORE_ASSERT(backBuffer, "Backbuffer is nullptr!");
 
-			D3D11_TEXTURE2D_DESC textureDesc;
-			backBuffer->GetDesc(&textureDesc);
+			//D3D11_TEXTURE2D_DESC textureDesc;
+			//backBuffer->GetDesc(&textureDesc);
 
-			// 텍스처의 너비와 높이 변경
-			textureDesc.SampleDesc.Count = 1;
-			textureDesc.SampleDesc.Quality = 0;
-			textureDesc.Usage = D3D11_USAGE_DEFAULT;
+			//// 텍스처의 너비와 높이 변경
+			//textureDesc.SampleDesc.Count = 1;
+			//textureDesc.SampleDesc.Quality = 0;
+			//textureDesc.Usage = D3D11_USAGE_DEFAULT;
 			ID3D11RenderTargetView* rtv;
 			device->GetDevice()->CreateRenderTargetView(backBuffer.Get(), nullptr, &rtv);
 			renderTargetViews.push_back(rtv);
 		}
-		for (const FramebufferAttachmentSpecification& colorAttachment : _spec.colorAttachments)
+		else
 		{
+			for (const FramebufferAttachmentSpecification& colorAttachment : _spec.colorAttachments)
+			{
 
+			}
 		}
 	}
 	D3D11Framebuffer::~D3D11Framebuffer()
@@ -39,6 +43,13 @@ namespace Steins
 	}
 	void D3D11Framebuffer::Bind()
 	{
-		device->GetContext()->OMSetRenderTargets(renderTargetViews.size(), renderTargetViews.data(), depthStencilView.Get());
+		device->GetContext()->OMSetRenderTargets(renderTargetViews.size(), renderTargetViews.data(),nullptr);
+	}
+	void D3D11Framebuffer::Clear(Color _color)
+	{
+		for (auto rtv : renderTargetViews)
+		{
+			device->GetContext()->ClearRenderTargetView(rtv, _color.color);
+		}
 	}
 }

@@ -12,6 +12,7 @@ namespace Steins
 		D3D11Framebuffer(GraphicsDevice* _device, const FramebufferSpecification& _spec);
 		virtual ~D3D11Framebuffer() override;
 		virtual void Bind() override;
+		virtual void Clear(Color _color) override;
 
 	private:
 		D3D11GraphicsDevice* device;

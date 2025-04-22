@@ -2,6 +2,8 @@
 #include "D3D11RendererAPI.h"
 #include "D3D11GraphicsDevice.h"
 
+#include "Steins/Render/Swapchain.h"
+
 namespace Steins
 {
 	D3D11RendererAPI::D3D11RendererAPI(GraphicsDevice* _device)
@@ -18,12 +20,14 @@ namespace Steins
 
 	void D3D11RendererAPI::Clear()
 	{
-		((D3D11GraphicsDevice*)device)->ClearRenderTargetViews(clearColor);
+		device->GetSwapChain(0)->GetBackFramebuffer()->Clear(clearColor);
+		device->GetSwapChain(0)->GetBackFramebuffer()->Bind();
+
 	}
 
 	void D3D11RendererAPI::DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex)
 	{
-		((D3D11GraphicsDevice*)device)->BindRenderTargets();
+		device->GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		device->GetContext()->DrawIndexed(_indexCount, _startIndex, _baseVertex);
 	}
 }

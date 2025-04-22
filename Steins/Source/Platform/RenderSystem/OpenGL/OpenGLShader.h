@@ -15,7 +15,7 @@ namespace Steins
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
 
-		virtual void SetMat4(const std::string& _name, const Matrix4x4& _value) override;
+		//virtual void SetMat4(const std::string& _name, const Matrix4x4& _value) override;
 
 		void UploadUniformMat4(const std::string& name, const Matrix4x4& _matrix);
 	private:

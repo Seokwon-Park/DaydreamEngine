@@ -22,18 +22,6 @@ namespace Steins
 		}
 	}
 
-	ShaderType StringToShaderType(std::string _typeString)
-	{
-		if (_typeString == "vertex") return ShaderType::Vertex;
-		else if (_typeString == "geometry") return ShaderType::Geometry;
-		else if (_typeString == "pixel" || _typeString == "fragment") return ShaderType::Pixel;
-		else
-		{
-			STEINS_CORE_ERROR("Invalid Shader Type String!");
-			return ShaderType::None;
-		}
-	}
-
 	OpenGLShader::OpenGLShader(const FilePath& _filepath, const ShaderType& _type)
 	{
 		type = _type;
@@ -43,25 +31,11 @@ namespace Steins
 
 		std::string src = "";
 
-		ShaderType currentType = ShaderType::None;
+		ShaderType currentType = _type;
 
 		while (std::getline(file, readline))
 		{
-			//#type이라는 문자열을 줄에서 발견한 경우
-			if (readline.find("#type") != std::string::npos)
-			{
-				size_t pos = readline.find("#type") + 6;
-				std::string typeStr = readline.substr(pos);
-
-				currentType = StringToShaderType(typeStr);
-			}
-			else
-			{
-				if (currentType == type)
-				{
-					src += readline + "\n";
-				}
-			}
+			src += readline + "\n";
 		}
 		Compile(src);
 	}
@@ -81,10 +55,10 @@ namespace Steins
 	{
 		glUseProgram(0);
 	}
-	void OpenGLShader::SetMat4(const std::string& _name, const Matrix4x4& _value)
+	/*void OpenGLShader::SetMat4(const std::string& _name, const Matrix4x4& _value)
 	{
 		UploadUniformMat4(_name, _value);
-	}
+	}*/
 
 	void OpenGLShader::UploadUniformMat4(const std::string& name, const Matrix4x4& matrix)
 	{

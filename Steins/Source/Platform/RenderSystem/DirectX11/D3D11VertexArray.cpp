@@ -35,7 +35,7 @@ namespace Steins
 	}
 	void D3D11VertexArray::Bind() const
 	{
-		//GetContext()->IASetInputLayout(inputLayout.Get());
+		//device->GetContext()->IASetInputLayout(inputLayout.Get());
 		for (auto vertexBuffer : vertexBuffers)
 		{
 			vertexBuffer->Bind();

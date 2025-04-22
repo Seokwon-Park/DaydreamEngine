@@ -1,6 +1,7 @@
 #include "SteinsPCH.h"
 #include "Shader.h"
 
+#include "Steins/Core/Application.h"
 #include "Steins/Render/Renderer.h"
 
 #include "Platform/RenderSystem/OpenGL/OpenGLShader.h"
@@ -15,7 +16,7 @@ namespace Steins
 		{
 		case RendererAPIType::None:    STEINS_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
 		case RendererAPIType::OpenGL:  return MakeShared<OpenGLShader>(_filepath, _type);
-		case RendererAPIType::DirectX11:  return D3D11Shader::CreateShader(_filepath, _type);
+		case RendererAPIType::DirectX11:  return D3D11Shader::CreateShader(Application::GetGraphicsDevice(), _filepath, _type);
 			//case RendererAPIType::DirectX12:  return new OpenGLVertexBuffer(_vertices, _size);
 			//case RendererAPIType::Vulkan:  return new OpenGLVertexBuffer(_vertices, _size);
 			//case RendererAPIType::Metal:  return new OpenGLVertexBuffer(_vertices, _size);
@@ -31,7 +32,7 @@ namespace Steins
 		{
 		case RendererAPIType::None:		STEINS_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
 		case RendererAPIType::OpenGL:  return MakeShared<OpenGLShader>(_src, _type);
-		case RendererAPIType::DirectX11:  return D3D11Shader::CreateShader(_src, _type);
+		case RendererAPIType::DirectX11:  return D3D11Shader::CreateShader(Application::GetGraphicsDevice(), _src, _type);
 				//case RendererAPIType::DirectX12:  return new OpenGLVertexBuffer(_vertices, _size);
 				//case RendererAPIType::Vulkan:  return new OpenGLVertexBuffer(_vertices, _size);
 				//case RendererAPIType::Metal:  return new OpenGLVertexBuffer(_vertices, _size);

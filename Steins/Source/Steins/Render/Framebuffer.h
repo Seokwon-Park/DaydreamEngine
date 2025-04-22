@@ -32,6 +32,7 @@ namespace Steins
 		virtual ~Framebuffer() = default;
 
 		virtual void Bind() = 0;
+		virtual void Clear(Color _color) = 0;
 
 		static Shared<Framebuffer> Create(const FramebufferSpecification& _spec);
 	private:

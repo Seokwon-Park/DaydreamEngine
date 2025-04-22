@@ -23,7 +23,7 @@ namespace Steins
 		template <typename DeviceType>
 		DeviceType* Get()
 		{
-			return SafeCast<DeviceType>(this);
+			return Cast<DeviceType>(this);
 		}
 
 		inline RendererAPIType GetAPI() const { return API; }

@@ -48,6 +48,16 @@ namespace Steins
 		spec.swapChainTarget = true;
 		backFramebuffer = Framebuffer::Create(spec);
 
+		D3D11_VIEWPORT viewport;
+		viewport.TopLeftX = 0;
+		viewport.TopLeftY = 0;
+		viewport.Width = _desc->width;
+		viewport.Height = _desc->height;
+		viewport.MinDepth = 0.0f;
+		viewport.MaxDepth = 1.0f;
+
+		device->GetContext()->RSSetViewports(1, &viewport);
+
 	}
 	D3D11SwapChain::~D3D11SwapChain()
 	{

@@ -13,15 +13,17 @@ namespace Steins {
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
-		virtual void SetVertexArray(Shared<VertexArray> _vertexArray) { vertexArray = _vertexArray.get(); };
+		//virtual void SetVertexArray(Shared<VertexArray> _vertexArray) { vertexArray = _vertexArray.get(); };
 
-		virtual void SetMat4(const std::string& _name, const Matrix4x4& _value) = 0;
+		//virtual void SetMat4(const std::string& _name, const Matrix4x4& _value) = 0;
+
+		ShaderType GetType() const { return type; }
 
 		static Shared<Shader> Create(const FilePath& _filepath, const ShaderType& _type);
 		static Shared<Shader> Create(const std::string& _src, const ShaderType& _type);
 	protected:
 		ShaderType type;
-		VertexArray* vertexArray;
+		//VertexArray* vertexArray;
 	};
 
 }

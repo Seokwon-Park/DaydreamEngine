@@ -97,6 +97,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11PipelineState.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Texture.h">
       <SubType>
       </SubType>
@@ -604,6 +605,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Framebuffer.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11PipelineState.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Texture.cpp">
       <SubType>
       </SubType>
