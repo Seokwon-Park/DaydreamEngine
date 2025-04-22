@@ -43,7 +43,7 @@ namespace Steins
 	}
 	void D3D11Framebuffer::Bind()
 	{
-		device->GetContext()->OMSetRenderTargets(renderTargetViews.size(), renderTargetViews.data(),nullptr);
+		device->GetContext()->OMSetRenderTargets(Cast<UINT>(renderTargetViews.size()), renderTargetViews.data(),nullptr);
 	}
 	void D3D11Framebuffer::Clear(Color _color)
 	{

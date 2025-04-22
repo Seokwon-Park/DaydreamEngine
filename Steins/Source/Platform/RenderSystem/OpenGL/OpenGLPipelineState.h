@@ -8,6 +8,7 @@ namespace Steins
 	class OpenGLPipelineState : public PipelineState
 	{
 	public:
+		OpenGLPipelineState(PipelineStateDesc _desc);
 		virtual ~OpenGLPipelineState();
 
 		virtual void Bind() const;

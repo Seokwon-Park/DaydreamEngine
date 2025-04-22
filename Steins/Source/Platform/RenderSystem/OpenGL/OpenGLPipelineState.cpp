@@ -3,9 +3,10 @@
 
 namespace Steins
 {
-	OpenGLPipelineState::~OpenGLPipelineState()
+	OpenGLPipelineState::OpenGLPipelineState(PipelineStateDesc _desc)
 	{
 		GLuint program = glCreateProgram();
+
 		//	glAttachShader(rendererID, shader);
 				//	glShaderIDs.push_back(shader);
 					//rendererID = glCreateProgram();
@@ -74,6 +75,10 @@ namespace Steins
 					//	glDetachShader(program, id);
 
 					//}
+	}
+	OpenGLPipelineState::~OpenGLPipelineState()
+	{
+		
 	}
 	void OpenGLPipelineState::Bind() const
 	{

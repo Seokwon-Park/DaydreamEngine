@@ -51,8 +51,8 @@ namespace Steins
 		D3D11_VIEWPORT viewport;
 		viewport.TopLeftX = 0;
 		viewport.TopLeftY = 0;
-		viewport.Width = _desc->width;
-		viewport.Height = _desc->height;
+		viewport.Width = Cast<FLOAT>(_desc->width);
+		viewport.Height= Cast<FLOAT>(_desc->height);
 		viewport.MinDepth = 0.0f;
 		viewport.MaxDepth = 1.0f;
 
