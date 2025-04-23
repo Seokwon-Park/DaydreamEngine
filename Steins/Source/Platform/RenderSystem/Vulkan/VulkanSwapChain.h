@@ -1,9 +1,9 @@
 #pragma once
 
+#include "Steins/Render/SwapChain.h"
 #if defined(STEINS_PLATFORM_WINDOWS)
 #define VK_USE_PLATFORM_WIN32_KHR
 #endif
-#include "Steins/Render/SwapChain.h"
 #include "Steins/Render/GraphicsDevice.h"
 #include "Steins/Core/Window.h"
 

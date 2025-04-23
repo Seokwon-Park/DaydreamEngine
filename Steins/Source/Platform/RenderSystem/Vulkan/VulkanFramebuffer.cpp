@@ -19,7 +19,7 @@ namespace Steins
         vkGetSwapchainImagesKHR(device->GetLogicalDevice(), _swapChain->GetVKSwapChain(), &swapChainImageCount, colorImages.data());
 
         colorImageViews.resize(swapChainImageCount);
-
+        framebuffers.resize(swapChainImageCount);
         for (UInt32 i = 0; i < swapChainImageCount; i++)
         {
             VkImageViewCreateInfo info{};
@@ -40,6 +40,7 @@ namespace Steins
             VkResult result = vkCreateImageView(device->GetLogicalDevice(), &info, nullptr, &colorImageViews[i]);
             STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create image view!");
         }
+
 
         for (size_t i = 0; i < colorImageViews.size(); i++) {
             VkImageView attachments[] = {
@@ -68,6 +69,9 @@ namespace Steins
         }
     }
     void VulkanFramebuffer::Bind() const
+    {
+    }
+    void VulkanFramebuffer::Clear(Color _color)
     {
     }
 }

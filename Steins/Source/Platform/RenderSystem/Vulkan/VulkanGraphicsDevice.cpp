@@ -2,6 +2,7 @@
 #include "VulkanGraphicsDevice.h"
 #include "VulkanFramebuffer.h"
 #include "VulkanPipelineState.h"
+#include "VulkanSwapChain.h"
 #include "VulkanImGuiRenderer.h"
 #include "Platform/RenderSystem/GraphicsUtil.h"
 

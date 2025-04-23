@@ -67,6 +67,11 @@ namespace Steins
 	{
 	}
 
+	void* D3D11Shader::GetNativeHandle() const
+	{
+		return nullptr;
+	}
+
 	Pair<std::string, std::string> D3D11Shader::GetCompileParam()
 	{
 		switch (type)
