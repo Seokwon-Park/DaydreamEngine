@@ -65,15 +65,11 @@ namespace Steins
 		return Shared<PipelineState>();
 	}
 
-	Shared<Shader> OpenGLGraphicsDevice::CreateShader(const FilePath& _filepath, const ShaderType& _type)
+	Shared<Shader> OpenGLGraphicsDevice::CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode)
 	{
 		return Shared<Shader>();
 	}
 
-	Shared<Shader> OpenGLGraphicsDevice::CreateShader(const std::string& _src, const ShaderType& _type)
-	{
-		return Shared<Shader>();
-	}
 
 	Shared<SwapChain> OpenGLGraphicsDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
 	{
@@ -83,6 +79,11 @@ namespace Steins
 	Shared<Texture2D> OpenGLGraphicsDevice::CreateTexture2D(const FilePath& _path)
 	{
 		return Shared<Texture2D>();
+	}
+
+	Unique<ImGuiRenderer> OpenGLGraphicsDevice::CreateImGuiRenderer()
+	{
+		return Unique<ImGuiRenderer>();
 	}
 
 }

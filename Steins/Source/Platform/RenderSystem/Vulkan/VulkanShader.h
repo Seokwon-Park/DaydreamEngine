@@ -10,8 +10,8 @@ namespace Steins
 	class VulkanShader : public Shader
 	{
 	public:
-		VulkanShader(GraphicsDevice* _device, const FilePath& _filepath, const ShaderType& _type);
-		VulkanShader(GraphicsDevice* _device, const std::string& _src, const ShaderType& _type);
+		VulkanShader(VulkanGraphicsDevice* _device, const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode);
+		virtual ~VulkanShader() override;
 	private:
 		VulkanGraphicsDevice* device;
 		VkShaderModule shader;

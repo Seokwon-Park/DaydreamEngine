@@ -3,15 +3,8 @@
 
 namespace Steins
 {
-	D3D11VertexShader::D3D11VertexShader(GraphicsDevice* _device, const FilePath& _filepath)
-		:D3D11Shader(_device, _filepath, ShaderType::Vertex)
-	{
-		device->GetDevice()->CreateVertexShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), nullptr, vertexShader.GetAddressOf());
-		shaderBlob.Reset();
-		errorBlob.Reset();
-	}
-	D3D11VertexShader::D3D11VertexShader(GraphicsDevice* _device, const std::string& _src)
-		:D3D11Shader(_device, _src, ShaderType::Vertex)
+	D3D11VertexShader::D3D11VertexShader(D3D11GraphicsDevice* _device, const std::string& _src, const ShaderLoadMode& _mode)
+		:D3D11Shader(_device, _src, ShaderType::Vertex, _mode)
 	{
 		device->GetDevice()->CreateVertexShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), nullptr, vertexShader.GetAddressOf());
 
@@ -85,6 +78,7 @@ namespace Steins
 		shaderBlob.Reset();
 		errorBlob.Reset();
 	}
+
 	void D3D11VertexShader::Bind() const
 	{
 		device->GetContext()->IASetInputLayout(inputLayout.Get());

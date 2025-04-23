@@ -6,14 +6,26 @@
 
 namespace Steins
 {
+	class VulkanSwapChain;
+
 	class VulkanFramebuffer : public Framebuffer
 	{
 	public:
-		VulkanFramebuffer(GraphicsDevice* _device, const FramebufferSpecification& _spec);
+		VulkanFramebuffer(VulkanGraphicsDevice* _device, const FramebufferSpecification& _spec);
+		VulkanFramebuffer(VulkanGraphicsDevice* _device, VulkanSwapChain* _swapChain);
+
 		virtual ~VulkanFramebuffer() override;
+
+		virtual void Bind() const override;
+		virtual void Clear(Color _color) override;
+
 	private:
-		VkFramebuffer framebuffer;
+		VulkanGraphicsDevice* device;
+		std::vector<VkFramebuffer> framebuffers;
 		VkRenderPass renderpass;
+		std::vector<VkImage> colorImages;
+		VkImage dpethImage;
 		std::vector<VkImageView> colorImageViews;
+		VkImageView depthStencilViews;
 	};
 }

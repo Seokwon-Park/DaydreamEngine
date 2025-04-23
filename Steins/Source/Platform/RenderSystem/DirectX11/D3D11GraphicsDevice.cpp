@@ -3,8 +3,10 @@
 #include "D3D11RendererAPI.h"
 #include "D3D11Buffer.h"
 #include "D3D11Swapchain.h"
+#include "D3D11Shader.h"
 #include "D3D11Framebuffer.h"
 #include "D3D11PipelineState.h"
+#include "D3D11ImGuiRenderer.h"
 
 #include "Platform/RenderSystem/GraphicsUtil.h"
 
@@ -121,12 +123,6 @@ namespace Steins
 		STEINS_CORE_INFO("  Vendor: {0}", GraphicsUtil::GetVendor(adapterDescription.VendorId));
 		STEINS_CORE_INFO("  Renderer: {0}", videoCardDescription);
 		STEINS_CORE_INFO("  Version: {0}", version);
-
-		{
-			ID3D11RasterizerState* rs;
-			D3D11_RASTERIZER_DESC desc{};
-
-		}
 	}
 
 	void D3D11GraphicsDevice::Shutdown()
@@ -149,7 +145,7 @@ namespace Steins
 
 	Shared<Framebuffer> D3D11GraphicsDevice::CreateFramebuffer(FramebufferSpecification _spec)
 	{
-		return Shared<Framebuffer>();
+		return MakeShared<D3D11Framebuffer>(this, _spec);
 	}
 
 	Shared<PipelineState> D3D11GraphicsDevice::CreatePipelineState(PipelineStateDesc _desc)
@@ -157,24 +153,36 @@ namespace Steins
 		return Shared<PipelineState>();
 	}
 
-	Shared<Shader> D3D11GraphicsDevice::CreateShader(const FilePath& _filepath, const ShaderType& _type)
+	Shared<Shader> D3D11GraphicsDevice::CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode)
 	{
-		return Shared<Shader>();
-	}
-
-	Shared<Shader> D3D11GraphicsDevice::CreateShader(const std::string& _src, const ShaderType& _type)
-	{
+		switch (_type)
+		{
+		case Steins::ShaderType::None:  return nullptr;
+		case Steins::ShaderType::Vertex: return MakeShared<D3D11VertexShader>(this, _src, _mode);
+		case Steins::ShaderType::Hull: return nullptr;
+		case Steins::ShaderType::Domain: return nullptr;
+		case Steins::ShaderType::Geometry: return nullptr;
+		case Steins::ShaderType::Pixel: return MakeShared<D3D11PixelShader>(this, _src, _mode);
+		case Steins::ShaderType::Compute: return nullptr;
+		default:
+			break;
+		}
 		return Shared<Shader>();
 	}
 
 	Shared<SwapChain> D3D11GraphicsDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
 	{
-		return MakeShared<D3D11SwapChain>(this, _desc,_window);
+		return MakeShared<D3D11SwapChain>(this, _desc, _window);
 	}
 
 	Shared<Texture2D> D3D11GraphicsDevice::CreateTexture2D(const FilePath& _path)
 	{
 		return Shared<Texture2D>();
+	}
+
+	Unique<ImGuiRenderer> D3D11GraphicsDevice::CreateImGuiRenderer()
+	{
+		return MakeUnique<D3D11ImGuiRenderer>(this);
 	}
 
 

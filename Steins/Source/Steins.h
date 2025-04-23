@@ -11,6 +11,7 @@
 #include "Steins/Core/MouseCodes.h"
 
 #include "Steins/ImGui/ImGuiLayer.h"
+#include "Steins/ImGui/ImGuiRenderer.h"
 
 // ---Renderer------------------------------------
 #include "Steins/Render/Renderer.h"
@@ -18,6 +19,8 @@
 
 #include "Steins/Render/Buffer.h"
 #include "Steins/Render/Shader.h"
+#include "Steins/Render/Framebuffer.h"
+#include "Steins/Render/PipelineState.h"
 #include "Steins/Render/VertexArray.h"
 
 #include "Steins/Render/OrthographicCamera.h"

@@ -23,7 +23,6 @@ namespace Steins
 		std::vector<FramebufferAttachmentSpecification> colorAttachments;
 		FramebufferAttachmentSpecification depthAttachment;
 		UInt32 samples = 1;
-		bool swapChainTarget = false;
 	};
 
 	class Framebuffer
@@ -31,7 +30,7 @@ namespace Steins
 	public:
 		virtual ~Framebuffer() = default;
 
-		virtual void Bind() = 0;
+		virtual void Bind() const = 0;
 		virtual void Clear(Color _color) = 0;
 
 		static Shared<Framebuffer> Create(const FramebufferSpecification& _spec);

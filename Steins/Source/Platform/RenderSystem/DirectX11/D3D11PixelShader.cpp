@@ -3,13 +3,8 @@
 
 namespace Steins
 {
-	D3D11PixelShader::D3D11PixelShader(GraphicsDevice* _device, const FilePath& _filepath)
-		:D3D11Shader(_device, _filepath, ShaderType::Pixel)
-	{
-		device->GetDevice()->CreatePixelShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), nullptr, pixelShader.GetAddressOf());
-	}
-	D3D11PixelShader::D3D11PixelShader(GraphicsDevice* _device, const std::string& _src)
-		:D3D11Shader(_device, _src, ShaderType::Pixel)
+	D3D11PixelShader::D3D11PixelShader(D3D11GraphicsDevice* _device, const std::string& _src, const ShaderLoadMode& _mode)
+		:D3D11Shader(_device, _src, ShaderType::Pixel, _mode)
 	{
 		device->GetDevice()->CreatePixelShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), nullptr, pixelShader.GetAddressOf());
 	}

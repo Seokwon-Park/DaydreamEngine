@@ -29,31 +29,34 @@ namespace Steins
 
 	//vsBlob->Release();
 	//psBlob->Release();*/
-	D3D11Shader::D3D11Shader(GraphicsDevice* _device, const FilePath& _filepath, const ShaderType& _type)
+	D3D11Shader::D3D11Shader(D3D11GraphicsDevice* _device, const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode)
 	{
 		device = _device->Get<D3D11GraphicsDevice>();
 		type = _type;
+		Pair<std::string, std::string> targetEntryPair = GetCompileParam();
+		HRESULT hr;
+		switch (_mode)
+		{
+		case ShaderLoadMode::Source:
+		{
+			hr = D3DCompile(_src.c_str(), _src.size(), nullptr, nullptr, nullptr, targetEntryPair.second.c_str(), targetEntryPair.first.c_str(), 0, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
+			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
+			break;
+		}
+		case ShaderLoadMode::File:
+		{
+			FilePath path = FilePath(_src);
+			STEINS_CORE_INFO(path.GetCurrentPath());
+			hr = D3DCompileFromFile(path.ToCStr(), nullptr, nullptr, targetEntryPair.second.c_str(), targetEntryPair.first.c_str(), 0, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
+			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
+			break;
+		}
+		default:
+			break;
+		}
+	
 
-		STEINS_CORE_INFO(_filepath.GetCurrentPath());
-
-		std::string target = chooseTarget();
-		std::string entryPoint = chooseEntryPoint();
-
-		HRESULT hr = D3DCompileFromFile(_filepath.ToCStr(), nullptr, nullptr, entryPoint.c_str(), target.c_str(), 0, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
-		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
-
-	}
-	D3D11Shader::D3D11Shader(GraphicsDevice* _device, const std::string& _src, const ShaderType& _type)
-	{
-		device = _device->Get<D3D11GraphicsDevice>();
-		type = _type;
-
-		std::string target = chooseTarget();
-		std::string entryPoint = chooseEntryPoint();
-		
-		HRESULT hr = D3DCompile(_src.c_str(), _src.size(), nullptr, nullptr, nullptr, entryPoint.c_str(), target.c_str(), 0, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
-		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
-
+	
 
 	}
 	void D3D11Shader::Bind() const
@@ -64,85 +67,28 @@ namespace Steins
 	{
 	}
 
-	std::string D3D11Shader::chooseTarget()
+	Pair<std::string, std::string> D3D11Shader::GetCompileParam()
 	{
-		switch (type)
-		{
-		case ShaderType::None: STEINS_CORE_ASSERT(false, "Invalid type") break;
-		case ShaderType::Vertex: return "vs_5_0";;
-		case ShaderType::Hull: return "hs_5_0";
-		case ShaderType::Domain: return "ds_5_0";
-		case ShaderType::Geometry: return "gs_5_0";
-		case ShaderType::Pixel: return "ps_5_0";
-		case ShaderType::Compute: return "cs_5_0";
-		default:
-			break;
-		}
-		return "";
-	}
-
-	std::string D3D11Shader::chooseEntryPoint()
-	{
-		std::string result = "Main";
 		switch (type)
 		{
 		case ShaderType::None:
 		{
 			STEINS_CORE_ASSERT(false, "Invalid type");
-			return result;
-			break;
+			return Pair<std::string, std::string>();
 		}
-		case ShaderType::Vertex: return "VS" + result;
-		case ShaderType::Hull: return "HS" + result;
-		case ShaderType::Domain: return "DS" + result;
-		case ShaderType::Geometry: return "GS" + result;
-		case ShaderType::Pixel: return "PS" + result;
-		case ShaderType::Compute: return "CS" + result;
+		case ShaderType::Vertex:return MakePair<std::string, std::string>("vs_5_0", "VSMain");
+		case ShaderType::Hull:return MakePair<std::string, std::string>("hs_5_0", "HSMain");
+		case ShaderType::Domain:return MakePair<std::string, std::string>("ds_5_0", "DSMain");
+		case ShaderType::Geometry:return MakePair<std::string, std::string>("gs_5_0", "GSMain");
+		case ShaderType::Pixel:return MakePair<std::string, std::string>("ps_5_0", "PSMain");
+		case ShaderType::Compute:return MakePair<std::string, std::string>("cs_5_0", "CSMain");
 		default:
 			break;
 		}
-		return "";
+		return Pair<std::string, std::string>();
 	}
 
-
-
-	Shared<Shader> D3D11Shader::CreateShader(GraphicsDevice* _device, const std::string& _src, const ShaderType& _type)
-	{
-		switch (_type)
-		{
-		case Steins::ShaderType::None:
-			break;
-		case Steins::ShaderType::Vertex:return MakeShared<D3D11VertexShader>(_device, _src);
-			//case Steins::ShaderType::Hull: return MakeShared<
-			//case Steins::ShaderType::Domain:;
-			//case Steins::ShaderType::Geometry:;
-		case Steins::ShaderType::Pixel:return MakeShared<D3D11PixelShader>(_device, _src);
-			//case Steins::ShaderType::Compute:;
-		default:
-			break;
-		}
-		return nullptr;
-	}
-
-	Shared<Shader> D3D11Shader::CreateShader(GraphicsDevice* _device, const FilePath& _filepath, const ShaderType& _type)
-	{
-		switch (_type)
-		{
-		case Steins::ShaderType::None:
-			break;
-		case Steins::ShaderType::Vertex:return MakeShared<D3D11VertexShader>(_device, _filepath);
-			//case Steins::ShaderType::Hull: return MakeShared<
-			//case Steins::ShaderType::Domain:;
-			//case Steins::ShaderType::Geometry:;
-		case Steins::ShaderType::Pixel:return MakeShared<D3D11PixelShader>(_device, _filepath);
-			//case Steins::ShaderType::Compute:;
-		default:
-			break;
-		}
-		return nullptr;
-	}
-
-	//HRESULT hr = D3DCompile(
+		//HRESULT hr = D3DCompile(
 		//	_src.c_str(),
 		//	_src.length(),
 		//	nullptr,

@@ -41,16 +41,21 @@ namespace Steins
 		virtual Shared<IndexBuffer> CreateIndexBuffer(UInt32* _indices, UInt32 _count) override;
 		virtual Shared<Framebuffer> CreateFramebuffer(FramebufferSpecification _spec)override;
 		virtual Shared<PipelineState> CreatePipelineState(PipelineStateDesc _desc)override;
-		virtual Shared<Shader> CreateShader(const FilePath& _filepath, const ShaderType& _type)override;
-		virtual Shared<Shader> CreateShader(const std::string& _src, const ShaderType& _type)override;
+		virtual Shared<Shader> CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode) override;
 		virtual Shared<SwapChain> CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)override;
 		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path)override;
+		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() override;
+
 
 		VkInstance GetInstance() const { return instance; }
 		VkPhysicalDevice GetPhysicalDevice() const { return physicalDevice; }
 		VkDevice GetLogicalDevice() const { return device; }
 		UInt32 GetQueueFamily() const { return queueFamilyIndices.graphicsFamily.value(); }
 		VkQueue GetQueue() const { return graphicsQueue; }
+		VkRenderPass GetRenderPass() const { return renderPass; }
+		VkDescriptorPool GetDescriptorPool() const { return descriptorPool; }
+		VkCommandBuffer GetCommandBuffer() const { return commandBuffer; }
+
 		SwapChainSupportDetails QuerySwapChainSupport(VkSurfaceKHR _surface);
 		//SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice _physicalDevice, VkSurfaceKHR _surface);
 
@@ -70,7 +75,6 @@ namespace Steins
 #if defined(STEINS_DEBUG) || defined(_DEBUG)
 		const bool enableValidationLayers = true;
 		const std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
-
 #else
 		const bool enableValidationLayers = false;
 		const std::vector<const char*> validationLayers = {};
@@ -84,6 +88,10 @@ namespace Steins
 		VkDevice device; // Vulkan device for commands
 		QueueFamilyIndices queueFamilyIndices;
 		VkQueue graphicsQueue; // vulkan graphics Queue
+		VkRenderPass renderPass;
+		VkCommandPool commandPool;
+		VkCommandBuffer commandBuffer;
+		VkDescriptorPool descriptorPool;
 	};
 }
 

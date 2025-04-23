@@ -2,10 +2,13 @@
 #include "VulkanGraphicsDevice.h"
 #include "VulkanFramebuffer.h"
 #include "VulkanPipelineState.h"
+#include "VulkanImGuiRenderer.h"
 #include "Platform/RenderSystem/GraphicsUtil.h"
 
 #include "GLFW/glfw3.h"
 #include "GLFW/glfw3native.h"
+
+#include "backends/imgui_impl_vulkan.h"
 
 //Ref - https://vulkan-tutorial.com/
 namespace Steins
@@ -67,6 +70,8 @@ namespace Steins
 
 	VulkanGraphicsDevice::~VulkanGraphicsDevice()
 	{
+		vkDestroyCommandPool(device, commandPool, nullptr);
+		vkDestroyRenderPass(device, renderPass, nullptr);
 		if (enableValidationLayers == true) 
 		{
 			DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
@@ -80,6 +85,76 @@ namespace Steins
 		SetupDebugMessenger();
 		PickPhysicalDevice();
 		CreateLogicalDevice();
+
+		{
+			//CreataRenderPass
+			VkAttachmentDescription colorAttachment{};
+			colorAttachment.format = VK_FORMAT_R8G8B8A8_UNORM;
+			colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+			colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+			colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+			colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+			colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+			colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+			VkAttachmentReference colorAttachmentRef{};
+			colorAttachmentRef.attachment = 0;
+			colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+			VkSubpassDescription subpass{};
+			subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+			subpass.colorAttachmentCount = 1;
+			subpass.pColorAttachments = &colorAttachmentRef;
+
+			VkRenderPassCreateInfo renderPassInfo{};
+			renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+			renderPassInfo.attachmentCount = 1;
+			renderPassInfo.pAttachments = &colorAttachment;
+			renderPassInfo.subpassCount = 1;
+			renderPassInfo.pSubpasses = &subpass;
+
+			VkResult result = vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass);
+			STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create renderpass!");
+		}
+
+		VkCommandPoolCreateInfo poolInfo{};
+		poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+		poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+		poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+
+		if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
+			throw std::runtime_error("failed to create command pool!");
+		}
+
+		VkCommandBufferAllocateInfo allocInfo{};
+		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+		allocInfo.commandPool = commandPool;
+		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+		allocInfo.commandBufferCount = 1;
+
+		if (vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer) != VK_SUCCESS) {
+			throw std::runtime_error("failed to allocate command buffers!");
+		}
+
+		{
+			std::vector<VkDescriptorPoolSize> poolSizes =
+			{
+				{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER , IMGUI_IMPL_VULKAN_MINIMUM_IMAGE_SAMPLER_POOL_SIZE },
+			};
+
+
+			VkDescriptorPoolCreateInfo poolInfo = {};
+			poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+			poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+			poolInfo.maxSets = 0;
+			for (VkDescriptorPoolSize& poolSize : poolSizes)
+				poolInfo.maxSets += poolSize.descriptorCount;
+			poolInfo.poolSizeCount = (uint32_t)poolSizes.size();
+			poolInfo.pPoolSizes = poolSizes.data();
+			VkResult result = vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool);
+			STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create descriptor heap")
+		}
 
 		VkPhysicalDeviceProperties deviceProperties;
 		vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
@@ -117,27 +192,27 @@ namespace Steins
 
 	Shared<PipelineState> VulkanGraphicsDevice::CreatePipelineState(PipelineStateDesc _desc)
 	{
-		return Shared<PipelineState>();
+		return MakeShared<VulkanPipelineState>(this, _desc);
 	}
 
-	Shared<Shader> VulkanGraphicsDevice::CreateShader(const FilePath& _filepath, const ShaderType& _type)
-	{
-		return Shared<Shader>();
-	}
-
-	Shared<Shader> VulkanGraphicsDevice::CreateShader(const std::string& _src, const ShaderType& _type)
+	Shared<Shader> VulkanGraphicsDevice::CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode)
 	{
 		return Shared<Shader>();
 	}
 
 	Shared<SwapChain> VulkanGraphicsDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
 	{
-		return Shared<SwapChain>();
+		return MakeShared<VulkanSwapChain>(this, _desc, _window);
 	}
 
 	Shared<Texture2D> VulkanGraphicsDevice::CreateTexture2D(const FilePath& _path)
 	{
 		return Shared<Texture2D>();
+	}
+
+	Unique<ImGuiRenderer> VulkanGraphicsDevice::CreateImGuiRenderer()
+	{
+		return MakeUnique<VulkanImGuiRenderer>(this);
 	}
 
 

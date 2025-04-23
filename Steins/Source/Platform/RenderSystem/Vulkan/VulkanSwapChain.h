@@ -1,13 +1,14 @@
 #pragma once
 
 #if defined(STEINS_PLATFORM_WINDOWS)
-	#define VK_USE_PLATFORM_WIN32_KHR
+#define VK_USE_PLATFORM_WIN32_KHR
 #endif
 #include "Steins/Render/SwapChain.h"
 #include "Steins/Render/GraphicsDevice.h"
 #include "Steins/Core/Window.h"
 
-#include "Platform/RenderSystem/Vulkan/VulkanGraphicsDevice.h"
+#include "VulkanFrameBuffer.h"
+#include "VulkanGraphicsDevice.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -19,11 +20,16 @@ namespace Steins
 	class VulkanSwapChain : public SwapChain
 	{
 	public:
-		VulkanSwapChain(GraphicsDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window);
+		VulkanSwapChain(VulkanGraphicsDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window);
 		virtual ~VulkanSwapChain() override;
 
 		virtual void SetVSync(bool _enabled) override;
 		virtual void SwapBuffers() override;
+
+		VkFormat GetFormat() const { return format; }
+		VkSwapchainKHR GetVKSwapChain() const { return swapChain; }
+		VkExtent2D GetExtent() const { return extent; }
+
 	private:
 		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats, RenderFormat _desiredFormat);
 		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
@@ -35,8 +41,6 @@ namespace Steins
 		VkSwapchainKHR swapChain;
 		VkFormat format; // swapchain image format
 		VkExtent2D extent;
-		std::vector<VkImage> swapChainImages;
-		std::vector<VkImageView> swapChainImageViews;
 
 	};
 }

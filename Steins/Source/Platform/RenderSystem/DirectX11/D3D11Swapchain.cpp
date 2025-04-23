@@ -16,7 +16,7 @@ namespace Steins
 	{
 		device = _device;
 		desc = *_desc;
-		STEINS_CORE_ASSERT(device, "Device is not D3D11GraphicsDevice!");
+		STEINS_CORE_ASSERT(device, "Device is nullptr");
 
 		DXGI_SAMPLE_DESC sampleDesc = {};
 		sampleDesc.Count = 1;    // 샘플 수 (1이면 MSAA 비활성화)
@@ -44,9 +44,7 @@ namespace Steins
 		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed To Create Swapchain!");
 		device->AddSwapChain(this);
 
-		FramebufferSpecification spec;
-		spec.swapChainTarget = true;
-		backFramebuffer = Framebuffer::Create(spec);
+		backFramebuffer = MakeShared<D3D11Framebuffer>(device, this);
 
 		D3D11_VIEWPORT viewport;
 		viewport.TopLeftX = 0;
@@ -70,4 +68,5 @@ namespace Steins
 	{
 		swapChain->Present(desc.isVSync, 0);
 	}
+
 }

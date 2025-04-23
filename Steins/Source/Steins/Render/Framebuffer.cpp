@@ -17,17 +17,6 @@ namespace Steins
 {
 	Shared<Framebuffer> Framebuffer::Create(const FramebufferSpecification& _spec)
 	{
-		switch (Application::GetGraphicsDevice()->GetAPI())
-		{
-		case RendererAPIType::None: return nullptr;
-		case RendererAPIType::OpenGL: return nullptr;
-		case RendererAPIType::DirectX11: return MakeShared<D3D11Framebuffer>(Application::GetGraphicsDevice(), _spec) ;
-		case RendererAPIType::DirectX12: return nullptr;
-		case RendererAPIType::Vulkan: return nullptr;
-		case RendererAPIType::Metal: return nullptr;
-		default:
-			break;
-		}
-		return Shared<Framebuffer>();
+		return Application::GetGraphicsDevice()->CreateFramebuffer(_spec);
 	}
 }

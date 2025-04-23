@@ -8,19 +8,13 @@ namespace Steins
 	class D3D11Shader : public Shader
 	{
 	public:
-		D3D11Shader(GraphicsDevice* _device, const FilePath& _filepath, const ShaderType& _type);
-		D3D11Shader(GraphicsDevice* _device, const std::string& _src, const ShaderType& _type);
+		D3D11Shader(D3D11GraphicsDevice* _device, const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode);
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
 
-		std::string chooseTarget();
-		std::string chooseEntryPoint();
-
+		Pair<std::string, std::string> GetCompileParam();
 		//virtual void SetMat4(const std::string& _name, const Matrix4x4& _value) override;
-
-		static Shared<Shader> CreateShader(GraphicsDevice* _device, const std::string& _src, const ShaderType& _type);
-		static Shared<Shader> CreateShader(GraphicsDevice* _device, const FilePath& _filepath, const ShaderType& _type);
 	protected:
 		D3D11GraphicsDevice* device;
 		ComPtr<ID3DBlob> shaderBlob;
@@ -31,8 +25,7 @@ namespace Steins
 	class D3D11VertexShader : public D3D11Shader
 	{
 	public:
-		D3D11VertexShader(GraphicsDevice* _device, const FilePath& _filepath);
-		D3D11VertexShader(GraphicsDevice* _device, const std::string& _src);
+		D3D11VertexShader(D3D11GraphicsDevice* _device, const std::string& _src, const ShaderLoadMode& _mode);
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
@@ -47,8 +40,7 @@ namespace Steins
 	class D3D11PixelShader : public D3D11Shader
 	{
 	public:
-		D3D11PixelShader(GraphicsDevice* _device, const FilePath& _filepath);
-		D3D11PixelShader(GraphicsDevice* _device, const std::string& _src);
+		D3D11PixelShader(D3D11GraphicsDevice* _device, const std::string& _src, const ShaderLoadMode& _mode);
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;

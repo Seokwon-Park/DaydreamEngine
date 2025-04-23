@@ -164,4 +164,10 @@ namespace Steins
         TriangleList,
         TriangleStrip
     };
+
+    enum class ShaderLoadMode
+    {
+        Source,
+        File,
+    };
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ImGuiRenderer.h"
+
 #include "Steins/Core/Layer.h"
 
 #include "Steins/Event/KeyEvent.h"
@@ -16,7 +18,7 @@ namespace Steins
 		~ImGuiLayer();
 
 		//Init ImGui For _window
-		static void Init();
+		void Init();
 
 		void OnAttach() override;
 		void OnDetach() override;
@@ -31,6 +33,8 @@ namespace Steins
 	private:
 		void SetDarkThemeColors();
 
+		Unique<ImGuiRenderer> renderer;
+		
 		bool isBlockEvents = true;
 	};
 }

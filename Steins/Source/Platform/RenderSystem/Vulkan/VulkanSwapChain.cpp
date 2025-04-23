@@ -5,9 +5,9 @@
 
 namespace Steins
 {
-	VulkanSwapChain::VulkanSwapChain(GraphicsDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window)
+	VulkanSwapChain::VulkanSwapChain(VulkanGraphicsDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window)
 	{
-		device = _device->Get<VulkanGraphicsDevice>();
+		device = _device;
 		desc = *_desc;
 		GLFWwindow* window = Cast<GLFWwindow>(_window->GetNativeWindow());
 		//#if defined(STEINS_PLATFORM_WINDOWS)
@@ -74,40 +74,14 @@ namespace Steins
 			{
 				STEINS_CORE_ERROR("Failed to create swapchain");
 			}
-
-			UInt32 swapChainImageCount = 0;
-			vkGetSwapchainImagesKHR(device->GetLogicalDevice(), swapChain, &swapChainImageCount, nullptr);
-			swapChainImages.resize(swapChainImageCount);
-			vkGetSwapchainImagesKHR(device->GetLogicalDevice(), swapChain, &swapChainImageCount, swapChainImages.data());
 		}
-		swapChainImageViews.resize(swapChainImages.size());
-		for (int i = 0; i < swapChainImages.size(); i++) 
-		{
-			VkImageViewCreateInfo info{};
-			info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-			info.image = swapChainImages[i];
-			info.viewType = VK_IMAGE_VIEW_TYPE_2D;
-			info.format = format;
-			info.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
-			info.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
-			info.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
-			info.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
-			info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-			info.subresourceRange.baseMipLevel = 0;
-			info.subresourceRange.levelCount = 1;
-			info.subresourceRange.baseArrayLayer = 0;
-			info.subresourceRange.layerCount = 1;
 
-			VkResult result = vkCreateImageView(device->GetLogicalDevice(), &info, nullptr, &swapChainImageViews[i]);
-			STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create image view!");
-		}
+		backFramebuffer = MakeShared<VulkanFramebuffer>(device, this);
+
 	}
 	VulkanSwapChain::~VulkanSwapChain()
 	{
-		for (auto imageView : swapChainImageViews)
-		{
-			vkDestroyImageView(device->GetLogicalDevice(), imageView, nullptr);
-		}
+
 		vkDestroySwapchainKHR(device->GetLogicalDevice(), swapChain, nullptr);
 		vkDestroySurfaceKHR(device->GetInstance(), surface, nullptr);
 	}

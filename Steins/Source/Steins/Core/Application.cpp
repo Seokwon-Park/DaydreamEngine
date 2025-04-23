@@ -58,7 +58,6 @@ namespace Steins
 
 		imGuiLayer = new ImGuiLayer();
 		AttachOverlay(imGuiLayer);
-		ImGuiLayer::Init();
 	}
 
 	Application::~Application()
@@ -70,13 +69,11 @@ namespace Steins
 	void Application::AttachLayer(Layer* _layer)
 	{
 		layerStack.PushLayer(_layer);
-		_layer->OnAttach();
 	}
 
 	void Application::AttachOverlay(Layer* _overlay)
 	{
 		layerStack.PushOverlay(_overlay);
-		_overlay->OnAttach();
 	}
 
 	void Application::ReadConfig(std::string_view _fileName)

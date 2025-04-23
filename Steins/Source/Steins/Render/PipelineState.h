@@ -21,7 +21,7 @@ namespace Steins
 	class PipelineState
 	{
 	public:
-		virtual ~PipelineState() = 0;
+		virtual ~PipelineState() = default;
 
 		virtual void Bind() const = 0;
 

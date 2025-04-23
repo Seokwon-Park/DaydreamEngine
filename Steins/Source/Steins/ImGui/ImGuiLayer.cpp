@@ -1,6 +1,5 @@
 #include "SteinsPCH.h"
 #include "ImGuiLayer.h"
-#include "ImGuiHelper.h"
 
 #include <imgui.h>
 
@@ -17,11 +16,6 @@ namespace Steins
 
 	ImGuiLayer::~ImGuiLayer()
 	{
-	}
-
-	void ImGuiLayer::Init()
-	{
-		ImGuiHelper::Init();
 	}
 
 	void ImGuiLayer::OnAttach()
@@ -42,14 +36,15 @@ namespace Steins
 
 		SetDarkThemeColors();
 		
-
+		renderer = Application::GetGraphicsDevice()->CreateImGuiRenderer();
+		renderer->Init(&Application::GetInstance().GetMainWindow());
 
 		//ImGui_ImplGlfw_InitForOpenGL(window, true);
 		//ImGui_ImplOpenGL3_Init("#version 410");
 	}
 	void ImGuiLayer::OnDetach()
 	{
-		ImGuiHelper::Shutdown();
+		renderer->Shutdown();
 		ImGui::DestroyContext();
 	}
 	void ImGuiLayer::OnEvent(Event& _event)
@@ -63,7 +58,7 @@ namespace Steins
 	}
 	void ImGuiLayer::BeginImGui()
 	{
-		ImGuiHelper::NewFrame();
+		renderer->NewFrame();
 		ImGui::NewFrame();
 	}
 	void ImGuiLayer::EndImGui()
@@ -75,7 +70,7 @@ namespace Steins
 		static bool show = true;
 		ImGui::ShowDemoWindow(&show);
 
-		ImGuiHelper::Render();
+		renderer->Render();
 
 
 

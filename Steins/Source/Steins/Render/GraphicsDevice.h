@@ -3,6 +3,8 @@
 #include "Base/MathTypes.h"
 #include "Steins/Enum/RendererEnums.h"
 #include "RendererAPI.h"
+#include "Steins/ImGui/ImGuiRenderer.h"
+
 
 namespace Steins
 {
@@ -17,6 +19,7 @@ namespace Steins
 	class Shader;
 	class SwapChain;
 	class Texture2D;
+	class ImGuiRenderer;
 
 	class GraphicsDevice
 	{
@@ -31,10 +34,10 @@ namespace Steins
 		virtual Shared<IndexBuffer> CreateIndexBuffer(UInt32* _indices, UInt32 _count) = 0;
 		virtual Shared<Framebuffer> CreateFramebuffer(FramebufferSpecification _spec) = 0;
 		virtual Shared<PipelineState> CreatePipelineState(PipelineStateDesc _desc)= 0;
-		virtual Shared<Shader> CreateShader(const FilePath& _filepath, const ShaderType& _type) = 0;
-		virtual Shared<Shader> CreateShader(const std::string& _src, const ShaderType& _type) = 0;
+		virtual Shared<Shader> CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode) = 0;
 		virtual Shared<SwapChain> CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window) = 0;
 		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path) = 0;
+		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() = 0;
 
 		template <typename DeviceType>
 		DeviceType* Get()

@@ -267,7 +267,7 @@
     <ClInclude Include="Source\Steins\Event\MouseEvent.h">
       <Filter>Source\Steins\Event</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\ImGui\ImGuiHelper.h">
+    <ClInclude Include="Source\Steins\ImGui\ImGuiRenderer.h">
       <Filter>Source\Steins\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\ImGui\ImGuiLayer.h">
@@ -1576,6 +1576,8 @@
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanPipelineState.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11PipelineState.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12PipelineState.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11ImGuiRenderer.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanImGuiRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -1710,7 +1712,7 @@
     <ClCompile Include="Source\Steins\ImGui\ImGuiBackends.cpp">
       <Filter>Source\Steins\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\ImGui\ImGuiHelper.cpp">
+    <ClCompile Include="Source\Steins\ImGui\ImGuiRenderer.cpp">
       <Filter>Source\Steins\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="Source\Steins\ImGui\ImGuiLayer.cpp">
@@ -1765,5 +1767,8 @@
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11PipelineState.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLFramebuffer.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12PipelineState.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanPipelineState.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11ImGuiRenderer.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanImGuiRenderer.cpp" />
   </ItemGroup>
 </Project>

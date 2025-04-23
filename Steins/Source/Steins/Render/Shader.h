@@ -3,8 +3,8 @@
 #include "Steins/Enum/RendererEnums.h"
 #include "VertexArray.h"
 
-namespace Steins {
-
+namespace Steins 
+{
 	class Shader
 	{
 	public:
@@ -19,8 +19,7 @@ namespace Steins {
 
 		ShaderType GetType() const { return type; }
 
-		static Shared<Shader> Create(const FilePath& _filepath, const ShaderType& _type);
-		static Shared<Shader> Create(const std::string& _src, const ShaderType& _type);
+		static Shared<Shader> Create(const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode);
 	protected:
 		ShaderType type;
 		//VertexArray* vertexArray;
