@@ -13,19 +13,7 @@ namespace Steins {
 
 	Shared<VertexArray> VertexArray::Create()
 	{
-		Shared<VertexArray> newVertexArray;
-		switch (Renderer::GetAPI())
-		{
-		case RendererAPIType::None:    STEINS_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPIType::OpenGL:	return MakeShared<OpenGLVertexArray>();
-		case RendererAPIType::DirectX11:return  MakeShared<D3D11VertexArray>(Application::GetGraphicsDevice());
-		case RendererAPIType::DirectX12:  return MakeShared<D3D12VertexArray>();
-		//case RendererAPIType::Vulkan:  return MakeShared<OpenGLVertexArray>();
-		//case RendererAPIType::Metal:  return MakeShared<OpenGLVertexArray>();
-		}
-
-		STEINS_CORE_ASSERT(false, "Unknown RendererAPI!");
-		return nullptr;
+		return Application::GetGraphicsDevice()->CreateVertexArray();
 	}
 
 }

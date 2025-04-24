@@ -20,6 +20,7 @@ namespace Steins
 	class SwapChain;
 	class Texture2D;
 	class ImGuiRenderer;
+	class VertexArray;
 
 	class GraphicsDevice
 	{
@@ -38,6 +39,7 @@ namespace Steins
 		virtual Shared<SwapChain> CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window) = 0;
 		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path) = 0;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() = 0;
+		virtual Shared<VertexArray> CreateVertexArray() = 0;
 
 		template <typename DeviceType>
 		DeviceType* Get()

@@ -20,6 +20,7 @@ namespace Steins {
 
 		static Shared<VertexArray> Create();
 	protected:
+
 		std::vector<Shared<VertexBuffer>> vertexBuffers;
 		Shared<IndexBuffer> indexBuffer;
 	};

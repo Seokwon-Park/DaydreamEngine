@@ -205,6 +205,11 @@ namespace Steins
 		return Unique<ImGuiRenderer>();
 	}
 
+	Shared<VertexArray> D3D12GraphicsDevice::CreateVertexArray()
+	{
+		return Shared<VertexArray>();
+	}
+
 	//void D3D12GraphicsDevice::WaitForGPU(IDXGISwapChain3* _swapChain)
 	//{
 	//	HRESULT hr;

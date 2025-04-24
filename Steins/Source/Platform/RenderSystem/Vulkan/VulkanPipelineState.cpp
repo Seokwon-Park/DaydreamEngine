@@ -23,23 +23,24 @@ namespace Steins
 			//pipelineInfo.pColorBlendState = &colorBlending;
 			//pipelineInfo.pDynamicState = &dynamicState;
 			pipelineInfo.layout = pipelineLayout;
-			pipelineInfo.renderPass = device->GetRenderPass();
+			pipelineInfo.renderPass = 0;
 			pipelineInfo.subpass = 0;
 			pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
 			pipelineInfo.basePipelineIndex = -1; // Optional
 
-			VkResult result = vkCreateGraphicsPipelines(device->GetLogicalDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline);
+			VkResult result = vkCreateGraphicsPipelines(device->GetDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline);
 			STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create pipeline!");
 		}
 
 	}
 	VulkanPipelineState::~VulkanPipelineState()
 	{
-		vkDestroyPipeline(device->GetLogicalDevice(), pipeline, nullptr);
-		vkDestroyPipelineLayout(device->GetLogicalDevice(), pipelineLayout, nullptr);
+		vkDestroyPipeline(device->GetDevice(), pipeline, nullptr);
+		vkDestroyPipelineLayout(device->GetDevice(), pipelineLayout, nullptr);
 		
 	}
 	void VulkanPipelineState::Bind() const
 	{
+		vkCmdBindPipeline(device->GetCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 	}
 }

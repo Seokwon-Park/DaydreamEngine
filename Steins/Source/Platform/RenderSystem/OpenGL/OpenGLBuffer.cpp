@@ -36,8 +36,8 @@ namespace Steins {
 	/////////////////////////////////////////////////////////////////////////////
 
 	OpenGLIndexBuffer::OpenGLIndexBuffer(UInt32* _indices, UInt32 _indexCount)
-		: indexCount(_indexCount)
 	{
+		indexCount = _indexCount;
 		glCreateBuffers(1, &rendererID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendererID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indexCount * sizeof(UInt32), _indices, GL_STATIC_DRAW);

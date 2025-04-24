@@ -14,9 +14,9 @@ namespace Steins
         device = _device;
 
         UInt32 swapChainImageCount = 0;
-        vkGetSwapchainImagesKHR(device->GetLogicalDevice(), _swapChain->GetVKSwapChain(), &swapChainImageCount, nullptr);
+        vkGetSwapchainImagesKHR(device->GetDevice(), _swapChain->GetVKSwapChain(), &swapChainImageCount, nullptr);
         colorImages.resize(swapChainImageCount);
-        vkGetSwapchainImagesKHR(device->GetLogicalDevice(), _swapChain->GetVKSwapChain(), &swapChainImageCount, colorImages.data());
+        vkGetSwapchainImagesKHR(device->GetDevice(), _swapChain->GetVKSwapChain(), &swapChainImageCount, colorImages.data());
 
         colorImageViews.resize(swapChainImageCount);
         framebuffers.resize(swapChainImageCount);
@@ -37,7 +37,7 @@ namespace Steins
             info.subresourceRange.baseArrayLayer = 0;
             info.subresourceRange.layerCount = 1;
 
-            VkResult result = vkCreateImageView(device->GetLogicalDevice(), &info, nullptr, &colorImageViews[i]);
+            VkResult result = vkCreateImageView(device->GetDevice(), &info, nullptr, &colorImageViews[i]);
             STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create image view!");
         }
 
@@ -49,14 +49,14 @@ namespace Steins
 
             VkFramebufferCreateInfo framebufferInfo{};
             framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-            framebufferInfo.renderPass = device->GetRenderPass();
+            framebufferInfo.renderPass = _swapChain->GetRenderPass();
             framebufferInfo.attachmentCount = 1;
             framebufferInfo.pAttachments = attachments;
             framebufferInfo.width = _swapChain->GetExtent().width;
             framebufferInfo.height = _swapChain->GetExtent().height;
             framebufferInfo.layers = 1;
 
-            VkResult result = vkCreateFramebuffer(device->GetLogicalDevice(), &framebufferInfo, nullptr, &framebuffers[i]);
+            VkResult result = vkCreateFramebuffer(device->GetDevice(), &framebufferInfo, nullptr, &framebuffers[i]);
             STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create framebuffer!");
         }
 
@@ -65,11 +65,16 @@ namespace Steins
     {
         for (auto imageView : colorImageViews)
         {
-            vkDestroyImageView(device->GetLogicalDevice(), imageView, nullptr);
+            vkDestroyImageView(device->GetDevice(), imageView, nullptr);
+        }
+        for (auto framebuffer : framebuffers)
+        {
+            vkDestroyFramebuffer(device->GetDevice(), framebuffer, nullptr);
         }
     }
     void VulkanFramebuffer::Bind() const
     {
+        //vkCmdBeginRenderPass();
     }
     void VulkanFramebuffer::Clear(Color _color)
     {

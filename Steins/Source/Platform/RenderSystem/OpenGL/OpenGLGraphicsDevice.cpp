@@ -86,4 +86,9 @@ namespace Steins
 		return Unique<ImGuiRenderer>();
 	}
 
+	Shared<VertexArray> OpenGLGraphicsDevice::CreateVertexArray()
+	{
+		return Shared<VertexArray>();
+	}
+
 }

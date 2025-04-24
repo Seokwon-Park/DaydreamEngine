@@ -62,6 +62,7 @@ namespace Steins
 
 	Application::~Application()
 	{
+		mainWindow->SetSwapchain(nullptr);
 		layerStack.Release();
 		mainWindow = nullptr;
 	}

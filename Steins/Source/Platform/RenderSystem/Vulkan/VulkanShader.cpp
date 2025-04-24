@@ -17,10 +17,7 @@ namespace Steins
 		{
 			std::ifstream file(_src, std::ios::ate | std::ios::binary);
 
-			if (file.is_open() == false)
-			{
-				STEINS_CORE_ERROR("Failed to open file!");
-			}
+			STEINS_CORE_ASSERT(file.is_open() == true, "Failed to open file! Check directory");
 
 			//tellg->파일의 입력위치 지정자를 리턴(사실상 size?)
 			UInt64 fileSize = (UInt64)file.tellg();
@@ -35,7 +32,7 @@ namespace Steins
 			createInfo.codeSize = buffer.size();
 			createInfo.pCode = reinterpret_cast<const uint32_t*>(buffer.data());
 
-			VkResult result = vkCreateShaderModule(device->GetLogicalDevice(), &createInfo, nullptr, &shader);
+			VkResult result = vkCreateShaderModule(device->GetDevice(), &createInfo, nullptr, &shader);
 			STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create shader module!");
 			break;
 		}
@@ -46,6 +43,16 @@ namespace Steins
 	}
 	VulkanShader::~VulkanShader()
 	{
-		vkDestroyShaderModule(device->GetLogicalDevice(), shader, nullptr);
+		vkDestroyShaderModule(device->GetDevice(), shader, nullptr);
+	}
+	void VulkanShader::Bind() const
+	{
+	}
+	void VulkanShader::Unbind() const
+	{
+	}
+	void* VulkanShader::GetNativeHandle() const
+	{
+		return shader;
 	}
 }

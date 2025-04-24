@@ -45,16 +45,17 @@ namespace Steins
 		virtual Shared<SwapChain> CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)override;
 		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path)override;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() override;
+		virtual Shared<VertexArray> CreateVertexArray() override;
 
 
 		VkInstance GetInstance() const { return instance; }
-		VkPhysicalDevice GetPhysicalDevice() const { return physicalDevice; }
-		VkDevice GetLogicalDevice() const { return device; }
+		VkPhysicalDevice GetGPU() const { return physicalDevice; }
+		VkDevice GetDevice() const { return device; }
 		UInt32 GetQueueFamily() const { return queueFamilyIndices.graphicsFamily.value(); }
 		VkQueue GetQueue() const { return graphicsQueue; }
-		VkRenderPass GetRenderPass() const { return renderPass; }
 		VkDescriptorPool GetDescriptorPool() const { return descriptorPool; }
 		VkCommandBuffer GetCommandBuffer() const { return commandBuffer; }
+		VkCommandPool GetCommandPool() const { return commandPool; }
 
 		SwapChainSupportDetails QuerySwapChainSupport(VkSurfaceKHR _surface);
 		//SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice _physicalDevice, VkSurfaceKHR _surface);
@@ -88,7 +89,6 @@ namespace Steins
 		VkDevice device; // Vulkan device for commands
 		QueueFamilyIndices queueFamilyIndices;
 		VkQueue graphicsQueue; // vulkan graphics Queue
-		VkRenderPass renderPass;
 		VkCommandPool commandPool;
 		VkCommandBuffer commandBuffer;
 		VkDescriptorPool descriptorPool;

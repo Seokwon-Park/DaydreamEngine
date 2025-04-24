@@ -1,9 +1,12 @@
 #include "SteinsPCH.h"
 #include "VulkanGraphicsDevice.h"
+#include "VulkanBuffer.h"
 #include "VulkanFramebuffer.h"
 #include "VulkanPipelineState.h"
+#include "VulkanShader.h"
 #include "VulkanSwapChain.h"
 #include "VulkanImGuiRenderer.h"
+#include "VulkanVertexArray.h"
 #include "Platform/RenderSystem/GraphicsUtil.h"
 
 #include "GLFW/glfw3.h"
@@ -71,8 +74,8 @@ namespace Steins
 
 	VulkanGraphicsDevice::~VulkanGraphicsDevice()
 	{
+		vkDestroyDescriptorPool(device, descriptorPool, nullptr);
 		vkDestroyCommandPool(device, commandPool, nullptr);
-		vkDestroyRenderPass(device, renderPass, nullptr);
 		if (enableValidationLayers == true) 
 		{
 			DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
@@ -86,38 +89,6 @@ namespace Steins
 		SetupDebugMessenger();
 		PickPhysicalDevice();
 		CreateLogicalDevice();
-
-		{
-			//CreataRenderPass
-			VkAttachmentDescription colorAttachment{};
-			colorAttachment.format = VK_FORMAT_R8G8B8A8_UNORM;
-			colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-			colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-			colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-			colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-			colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-			colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-			colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-
-			VkAttachmentReference colorAttachmentRef{};
-			colorAttachmentRef.attachment = 0;
-			colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-			VkSubpassDescription subpass{};
-			subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-			subpass.colorAttachmentCount = 1;
-			subpass.pColorAttachments = &colorAttachmentRef;
-
-			VkRenderPassCreateInfo renderPassInfo{};
-			renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-			renderPassInfo.attachmentCount = 1;
-			renderPassInfo.pAttachments = &colorAttachment;
-			renderPassInfo.subpassCount = 1;
-			renderPassInfo.pSubpasses = &subpass;
-
-			VkResult result = vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass);
-			STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create renderpass!");
-		}
 
 		VkCommandPoolCreateInfo poolInfo{};
 		poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -157,6 +128,7 @@ namespace Steins
 			STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create descriptor heap")
 		}
 
+
 		VkPhysicalDeviceProperties deviceProperties;
 		vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
 		STEINS_CORE_INFO("Vulkan Info:");
@@ -178,12 +150,12 @@ namespace Steins
 
 	Shared<VertexBuffer> VulkanGraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size)
 	{
-		return Shared<VertexBuffer>();
+		return MakeShared<VulkanVertexBuffer>(this, _vertices, _size);
 	}
 
 	Shared<IndexBuffer> VulkanGraphicsDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
 	{
-		return Shared<IndexBuffer>();
+		return MakeShared<VulkanIndexBuffer>(this, _indices, _count);
 	}
 
 	Shared<Framebuffer> VulkanGraphicsDevice::CreateFramebuffer(FramebufferSpecification _spec)
@@ -198,7 +170,7 @@ namespace Steins
 
 	Shared<Shader> VulkanGraphicsDevice::CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode)
 	{
-		return Shared<Shader>();
+		return MakeShared<VulkanShader>(this, _src, _type, _mode);
 	}
 
 	Shared<SwapChain> VulkanGraphicsDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
@@ -214,6 +186,11 @@ namespace Steins
 	Unique<ImGuiRenderer> VulkanGraphicsDevice::CreateImGuiRenderer()
 	{
 		return MakeUnique<VulkanImGuiRenderer>(this);
+	}
+
+	Shared<VertexArray> VulkanGraphicsDevice::CreateVertexArray()
+	{
+		return MakeShared<VulkanVertexArray>();
 	}
 
 

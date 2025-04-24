@@ -26,9 +26,7 @@ namespace Steins
 		virtual void Bind() const;
 		virtual void Unbind() const;
 
-		virtual UInt32 GetCount() const { return indexCount; }
 	private:
 		UInt32 rendererID;
-		UInt32 indexCount;
 	};
 }

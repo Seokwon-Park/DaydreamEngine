@@ -12,12 +12,12 @@ namespace Steins
 	{
 		switch (_device->GetAPI())
 		{
-		case Steins::RendererAPIType::None:break;
-		case Steins::RendererAPIType::OpenGL: return new OpenGLRendererAPI();
-		case Steins::RendererAPIType::DirectX11:return new D3D11RendererAPI(_device);
-		case Steins::RendererAPIType::DirectX12:return new D3D12RendererAPI(_device);
-		case Steins::RendererAPIType::Vulkan: return new VulkanRendererAPI(_device);
-		case Steins::RendererAPIType::Metal:
+		case RendererAPIType::None:break;
+		case RendererAPIType::OpenGL: return new OpenGLRendererAPI();
+		case RendererAPIType::DirectX11:return new D3D11RendererAPI(_device);
+		case RendererAPIType::DirectX12:return new D3D12RendererAPI(_device);
+		case RendererAPIType::Vulkan: return new VulkanRendererAPI(_device);
+		case RendererAPIType::Metal:
 		default:return nullptr;
 		}
 		return nullptr;

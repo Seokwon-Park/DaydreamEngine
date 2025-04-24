@@ -69,7 +69,7 @@ namespace Steins
 
 	void* D3D11Shader::GetNativeHandle() const
 	{
-		return nullptr;
+		return shaderBlob.Get();
 	}
 
 	Pair<std::string, std::string> D3D11Shader::GetCompileParam()

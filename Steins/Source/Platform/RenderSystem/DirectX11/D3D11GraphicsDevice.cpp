@@ -185,6 +185,11 @@ namespace Steins
 		return MakeUnique<D3D11ImGuiRenderer>(this);
 	}
 
+	Shared<VertexArray> D3D11GraphicsDevice::CreateVertexArray()
+	{
+		return Shared<VertexArray>();
+	}
+
 
 
 }

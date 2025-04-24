@@ -29,18 +29,29 @@ namespace Steins
 		VkFormat GetFormat() const { return format; }
 		VkSwapchainKHR GetVKSwapChain() const { return swapChain; }
 		VkExtent2D GetExtent() const { return extent; }
+		VkRenderPass GetRenderPass() const { return renderPass; }
+		void recordCommandBuffer(VkCommandBuffer _commandBuffer, UInt32 _imageIndex);
+		void FrameRender();
+		void EndRender();
 
 	private:
-		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats, RenderFormat _desiredFormat);
-		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
-		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
-
+		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat);
+		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& _availablePresentModes);
+		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& _capabilities);
 
 		VulkanGraphicsDevice* device;
 		VkSurfaceKHR surface; // Vulkan window surface
 		VkSwapchainKHR swapChain;
 		VkFormat format; // swapchain image format
 		VkExtent2D extent;
+		VkRenderPass renderPass;
 
+
+		VkSemaphore imageAvailableSemaphore;
+		VkSemaphore renderFinishedSemaphore;
+		VkFence inFlightFence;
+
+		//temp
+		UInt32 imageIndex = 0;
 	};
 }

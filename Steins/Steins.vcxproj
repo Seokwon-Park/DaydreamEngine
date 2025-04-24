@@ -150,6 +150,10 @@
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLSwapchain.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLTexture.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexArray.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanBuffer.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanFramebuffer.h" />
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanGraphicsDevice.h" />
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanImGuiRenderer.h">
@@ -160,6 +164,10 @@
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanRendererAPI.h" />
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanShader.h" />
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapChain.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanVertexArray.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Steins.h" />
     <ClInclude Include="Source\Steins\Core\Application.h" />
     <ClInclude Include="Source\Steins\Core\Assert.h" />
@@ -666,6 +674,10 @@
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLSwapchain.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLTexture.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexArray.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanBuffer.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanFramebuffer.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanGraphicsDevice.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanImGuiRenderer.cpp">
@@ -676,6 +688,10 @@
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanRendererAPI.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanShader.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapChain.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanVertexArray.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Steins\Core\Application.cpp" />
     <ClCompile Include="Source\Steins\Core\GameObject.cpp" />
     <ClCompile Include="Source\Steins\Core\Input.cpp" />

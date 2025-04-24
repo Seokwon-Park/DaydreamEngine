@@ -123,11 +123,14 @@ namespace Steins
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
+		virtual void SetSlot(UInt32 _slot = 0) = 0;
+
 		const BufferLayout& GetLayout() const { return layout; }
 		void SetLayout(const BufferLayout& _layout) { layout = _layout; }
 
 		static Shared<VertexBuffer> Create(Float32* _vertices, UInt32 _size);
 	protected:
+		UInt32 slot;
 		BufferLayout layout;
 	};
 
@@ -139,10 +142,12 @@ namespace Steins
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
-		virtual UInt32 GetCount() const = 0;
+		UInt32 GetCount() const { return indexCount; }
 
 		static Shared<IndexBuffer> Create(UInt32* _indices, UInt32 _count);
 	protected:
+		UInt32 indexCount;
+
 	};
 }
 

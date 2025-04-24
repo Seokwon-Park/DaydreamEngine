@@ -7,8 +7,8 @@ public :
 		:Layer("Test"), camera(-1.6f, 1.6f, -0.9f, 0.9f)
 	{
 
-//		//栏捞备 港没酒.
-//		//dx11 default(cw), gl default(ccw)
+		//栏捞备 港没酒.
+		//dx11 default(cw), gl default(ccw)
 //		float vertices[3 * 7] = {
 //					 0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
 //					 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
@@ -107,9 +107,11 @@ public :
 //		//	}
 //		//)";
 //
-//		vs = Steins::Shader::Create(vertexSrc, Steins::ShaderType::Vertex, Steins::ShaderLoadMode::Source);
-//		ps = Steins::Shader::Create(pixelSrc, Steins::ShaderType::Pixel, Steins::ShaderLoadMode::Source);
-		//vs->SetVertexArray(va);
+//		//vs = Steins::Shader::Create(vertexSrc, Steins::ShaderType::Vertex, Steins::ShaderLoadMode::Source);
+//		//ps = Steins::Shader::Create(pixelSrc, Steins::ShaderType::Pixel, Steins::ShaderLoadMode::Source);
+//
+//		vs = Steins::Shader::Create("Asset/Shader/QuadVS.spv", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
+//		ps = Steins::Shader::Create("Asset/Shader/QuadPS.spv", Steins::ShaderType::Pixel, Steins::ShaderLoadMode::File);
 	}
 
 	void OnUpdate() override
@@ -117,15 +119,15 @@ public :
 		Steins::RenderCommand::SetClearColor(Steins::Color::White);
 		Steins::RenderCommand::Clear();
 
-		camera.SetPosition({ 0.5f, 0.5f, 0.0f });
+		//camera.SetPosition({ 0.5f, 0.5f, 0.0f });
 
-		Steins::Renderer::BeginScene(camera);
+		//Steins::Renderer::BeginScene(camera);
 
 		//va->Bind();
 		//vs->Bind();
 		//ps->Bind();
-		//Steins::Matrix4x4 transform = Steins::Math::Translate(Steins::Matrix4x4(), Steins::Vector4(1.0f, 1.0f, 0.0f));
-		//transform.Transpose();
+		////Steins::Matrix4x4 transform = Steins::Math::Translate(Steins::Matrix4x4(), Steins::Vector4(1.0f, 1.0f, 0.0f));
+		////transform.Transpose();
 
 		//Steins::Renderer::Submit(va);
 

@@ -8,16 +8,15 @@ namespace Steins
 	class D3D11VertexBuffer : public VertexBuffer
 	{
 	public:
-		D3D11VertexBuffer(D3D11GraphicsDevice* _device, Float32* _vertices, UInt32 _size);
+		D3D11VertexBuffer(D3D11GraphicsDevice* _device, void* _vertices, UInt32 _size);
 		virtual ~D3D11VertexBuffer();
 
 		virtual void Bind() const;
 		virtual void Unbind() const;
 
-		void SetSlotNum(UInt32 _slotNum) { slotNum = _slotNum; }
+		void SetSlot(UInt32 _slot) { slot = _slot; }
 	private:
 		D3D11GraphicsDevice* device;
-		UInt32 slotNum = 0;
 		ComPtr<ID3D11Buffer> vertexBuffer;
 	};
 
@@ -30,11 +29,9 @@ namespace Steins
 		virtual void Bind() const;
 		virtual void Unbind() const;
 
-		virtual UInt32 GetCount() const { return indexCount; }
 	private:
 		D3D11GraphicsDevice* device;
 		ComPtr<ID3D11Buffer> indexBuffer;
-		UInt32 indexCount;
 	};
 }
 

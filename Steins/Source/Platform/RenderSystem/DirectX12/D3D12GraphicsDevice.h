@@ -66,6 +66,7 @@ namespace Steins
 		virtual Shared<SwapChain> CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)override;
 		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path)override;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() override;
+		virtual Shared<VertexArray> CreateVertexArray() override;
 
 
 		ID3D12Device* GetDevice() const { return device.Get(); }

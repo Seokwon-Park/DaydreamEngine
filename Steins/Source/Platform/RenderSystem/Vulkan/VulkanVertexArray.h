@@ -4,11 +4,12 @@
 
 namespace Steins
 {
-	class OpenGLVertexArray : public VertexArray
+	class VulkanVertexArray : public VertexArray
 	{
 	public:
-		OpenGLVertexArray();
-		virtual ~OpenGLVertexArray();
+		// constrcuter destructer
+		VulkanVertexArray();
+		virtual ~VulkanVertexArray() override;
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
@@ -17,8 +18,7 @@ namespace Steins
 		virtual void SetIndexBuffer(const Shared<IndexBuffer>& _indexBuffer) override;
 
 	private:
-		UInt32 rendererID;
-		UInt32 inputDataIndex;
+
 	};
 }
 

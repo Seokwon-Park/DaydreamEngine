@@ -69,7 +69,7 @@ namespace Steins
 			layoutDescs.push_back(desc);
 		}
 		
-		static_cast<D3D11VertexBuffer*>(_vertexBuffer.get())->SetSlotNum((UInt32)vertexBuffers.size());
+		_vertexBuffer->SetSlot((UInt32)vertexBuffers.size());
 		vertexBuffers.push_back(_vertexBuffer);
 	}
 	void D3D11VertexArray::SetIndexBuffer(const Shared<IndexBuffer>& _indexBuffer)
