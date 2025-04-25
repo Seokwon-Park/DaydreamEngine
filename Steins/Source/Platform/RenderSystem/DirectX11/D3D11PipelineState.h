@@ -9,6 +9,8 @@ namespace Steins
 	{
 	public:
 		D3D11PipelineState(GraphicsDevice* _device);
+
+		virtual void Bind() const override;
 	private:
 		D3D11GraphicsDevice* device;
 	};

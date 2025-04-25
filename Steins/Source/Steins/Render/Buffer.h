@@ -123,7 +123,7 @@ namespace Steins
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
-		virtual void SetSlot(UInt32 _slot = 0) = 0;
+		void SetSlot(UInt32 _slot = 0) { slot = _slot; }
 
 		const BufferLayout& GetLayout() const { return layout; }
 		void SetLayout(const BufferLayout& _layout) { layout = _layout; }

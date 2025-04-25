@@ -6,7 +6,7 @@ namespace Steins
 {
 	struct PipelineStateDesc
 	{
-		std::vector<Pair<Shared<Shader>, ShaderType>> shaders;
+		std::vector<Shared<Shader>> shaders;
 		//InputLayoutDesc inputLayout;
 		//Shared<ResourceBindingLayout> resourceBindingLayout; // RootSignature/PipelineLayout
 		//RasterizerDesc rasterizerState;

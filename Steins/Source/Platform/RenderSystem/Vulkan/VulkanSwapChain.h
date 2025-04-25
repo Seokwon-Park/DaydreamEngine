@@ -40,12 +40,12 @@ namespace Steins
 		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& _capabilities);
 
 		VulkanGraphicsDevice* device;
+		Shared<VulkanFramebuffer> internalFramebuffer;
 		VkSurfaceKHR surface; // Vulkan window surface
 		VkSwapchainKHR swapChain;
 		VkFormat format; // swapchain image format
 		VkExtent2D extent;
 		VkRenderPass renderPass;
-
 
 		VkSemaphore imageAvailableSemaphore;
 		VkSemaphore renderFinishedSemaphore;

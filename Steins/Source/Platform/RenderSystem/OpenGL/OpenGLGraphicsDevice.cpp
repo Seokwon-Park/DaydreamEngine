@@ -1,7 +1,11 @@
 #include "SteinsPCH.h"
 #include "OpenGLGraphicsDevice.h"
+#include "OpenGLBuffer.h"
+#include "OpenGLShader.h"
 #include "OpenGLRendererAPI.h"
 #include "OpenGLPipelineState.h"
+#include "OpenGLVertexArray.h"
+#include "OpenGLImGuiRenderer.h"
 
 #include "Steins/Core/Window.h"
 #include "glad/glad.h"
@@ -47,12 +51,12 @@ namespace Steins
 
 	Shared<VertexBuffer> OpenGLGraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size)
 	{
-		return Shared<VertexBuffer>();
+		return MakeShared<OpenGLVertexBuffer>(_vertices, _size);
 	}
 
 	Shared<IndexBuffer> OpenGLGraphicsDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
 	{
-		return Shared<IndexBuffer>();
+		return MakeShared<OpenGLIndexBuffer>(_indices, _count);
 	}
 
 	Shared<Framebuffer> OpenGLGraphicsDevice::CreateFramebuffer(FramebufferSpecification _spec)
@@ -62,12 +66,12 @@ namespace Steins
 
 	Shared<PipelineState> OpenGLGraphicsDevice::CreatePipelineState(PipelineStateDesc _desc)
 	{
-		return Shared<PipelineState>();
+		return MakeShared<OpenGLPipelineState>(_desc);
 	}
 
 	Shared<Shader> OpenGLGraphicsDevice::CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode)
 	{
-		return Shared<Shader>();
+		return MakeShared<OpenGLShader>(_src, _type, _mode);
 	}
 
 
@@ -83,12 +87,12 @@ namespace Steins
 
 	Unique<ImGuiRenderer> OpenGLGraphicsDevice::CreateImGuiRenderer()
 	{
-		return Unique<ImGuiRenderer>();
+		return MakeUnique<OpenGLImGuiRenderer>(this);
 	}
 
 	Shared<VertexArray> OpenGLGraphicsDevice::CreateVertexArray()
 	{
-		return Shared<VertexArray>();
+		return MakeShared<OpenGLVertexArray>();
 	}
 
 }

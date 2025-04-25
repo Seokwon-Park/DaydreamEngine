@@ -113,6 +113,7 @@ namespace Steins
 			std::vector<VkDescriptorPoolSize> poolSizes =
 			{
 				{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER , IMGUI_IMPL_VULKAN_MINIMUM_IMAGE_SAMPLER_POOL_SIZE },
+				{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER , 2 },
 			};
 
 
@@ -218,6 +219,20 @@ namespace Steins
 		}
 
 		return details;
+	}
+
+	UInt32 VulkanGraphicsDevice::FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
+	{
+		VkPhysicalDeviceMemoryProperties memProperties;
+		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
+
+		for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+			if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) 
+			{
+				return i;
+			}
+		}
+		return 0;
 	}
 
 

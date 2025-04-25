@@ -19,16 +19,17 @@ namespace Steins
 		virtual void Bind() const override;
 		virtual void Clear(Color _color) override;
 
+		VkRenderPass GetRenderPass()const { return renderPass; }
+
 		std::vector<VkFramebuffer>& GetFrameBuffers() { return framebuffers; }
 
 	private:
 		VulkanGraphicsDevice* device;
 		std::vector<VkFramebuffer> framebuffers;
-		VkRenderPass swapChainRenderPass;
-		VkRenderPass framebufferRenderPass;
 		std::vector<VkImage> colorImages;
-		VkImage dpethImage;
 		std::vector<VkImageView> colorImageViews;
+		VkImage dpethImage;
 		VkImageView depthStencilViews;
+		VkRenderPass renderPass;
 	};
 }

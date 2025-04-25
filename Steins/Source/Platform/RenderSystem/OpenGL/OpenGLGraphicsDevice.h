@@ -30,7 +30,6 @@ namespace Steins
 	protected:
 
 	private:
-		GLFWwindow* nativeWindow;
 
 		std::string version = "#version 410";
 	};

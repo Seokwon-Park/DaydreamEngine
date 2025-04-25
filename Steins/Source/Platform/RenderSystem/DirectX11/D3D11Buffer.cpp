@@ -61,6 +61,8 @@ namespace Steins
 
 		device->GetDevice()->CreateBuffer(&bufferDesc, &data, indexBuffer.GetAddressOf());
 	}
+
+
 	D3D11IndexBuffer::~D3D11IndexBuffer()
 	{
 	}

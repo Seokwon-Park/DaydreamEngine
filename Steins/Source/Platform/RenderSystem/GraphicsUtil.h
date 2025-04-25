@@ -12,7 +12,7 @@ namespace Steins
 		static VkFormat RenderFormatToVkFormat(RenderFormat _format);
 
 		static std::string GetVendor(int _vendorCode);
-
+		
 	};
 	
 

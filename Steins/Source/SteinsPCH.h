@@ -13,6 +13,7 @@
 #include <string_view>
 #include <set>
 #include <unordered_map>
+#include <variant>
 #include <glm/glm.hpp>
 #include <DirectXMath.h>
 

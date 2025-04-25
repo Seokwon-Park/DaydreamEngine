@@ -7,6 +7,7 @@
 #include "D3D11Framebuffer.h"
 #include "D3D11PipelineState.h"
 #include "D3D11ImGuiRenderer.h"
+#include "D3D11VertexArray.h"
 
 #include "Platform/RenderSystem/GraphicsUtil.h"
 
@@ -187,7 +188,7 @@ namespace Steins
 
 	Shared<VertexArray> D3D11GraphicsDevice::CreateVertexArray()
 	{
-		return Shared<VertexArray>();
+		return MakeShared<D3D11VertexArray>(this);
 	}
 
 

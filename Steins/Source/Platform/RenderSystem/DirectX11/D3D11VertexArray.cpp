@@ -26,9 +26,9 @@ namespace Steins
 		STEINS_CORE_ASSERT(false, "Unknown ShaderDataType!");
 		return DXGI_FORMAT_UNKNOWN;
 	}
-	D3D11VertexArray::D3D11VertexArray(GraphicsDevice* _device)
+	D3D11VertexArray::D3D11VertexArray(D3D11GraphicsDevice* _device)
 	{
-		device = Cast<D3D11GraphicsDevice>(_device);
+		device = _device;
 	}
 	D3D11VertexArray::~D3D11VertexArray()
 	{

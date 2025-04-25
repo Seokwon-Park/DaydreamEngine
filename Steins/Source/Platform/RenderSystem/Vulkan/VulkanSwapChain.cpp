@@ -72,38 +72,7 @@ namespace Steins
 				STEINS_CORE_ERROR("Failed to create swapchain");
 			}
 		}
-
-		{
-			//CreataRenderPass
-			VkAttachmentDescription colorAttachment{};
-			colorAttachment.format = format;
-			colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-			colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-			colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-			colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-			colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-			colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-			colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-
-			VkAttachmentReference colorAttachmentRef{};
-			colorAttachmentRef.attachment = 0;
-			colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-			VkSubpassDescription subpass{};
-			subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-			subpass.colorAttachmentCount = 1;
-			subpass.pColorAttachments = &colorAttachmentRef;
-
-			VkRenderPassCreateInfo renderPassInfo{};
-			renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-			renderPassInfo.attachmentCount = 1;
-			renderPassInfo.pAttachments = &colorAttachment;
-			renderPassInfo.subpassCount = 1;
-			renderPassInfo.pSubpasses = &subpass;
-
-			VkResult result = vkCreateRenderPass(device->GetDevice(), &renderPassInfo, nullptr, &renderPass);
-			STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create renderpass!");
-		}
+		device->AddSwapChain(this);
 
 		VkSemaphoreCreateInfo semaphoreInfo{};
 		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -118,12 +87,37 @@ namespace Steins
 			throw std::runtime_error("failed to create semaphores!");
 		}
 
+		internalFramebuffer = MakeShared<VulkanFramebuffer>(device, this);
+		backFramebuffer = internalFramebuffer;
+
+		renderPass = internalFramebuffer->GetRenderPass();
+
 		vkWaitForFences(device->GetDevice(), 1, &inFlightFence, VK_TRUE, UINT64_MAX);
 		vkResetFences(device->GetDevice(), 1, &inFlightFence);
 		vkAcquireNextImageKHR(device->GetDevice(), swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+		vkResetCommandBuffer(device->GetCommandBuffer() , 0);
+		//fb->Bind();
 
-		backFramebuffer = MakeShared<VulkanFramebuffer>(device, this);
+		VkCommandBufferBeginInfo beginInfo{};
+		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
+		VkResult result = vkBeginCommandBuffer(device->GetCommandBuffer(), &beginInfo);
+		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to begin recording command buffer!");
+
+		VkFramebuffer buf = ((VulkanFramebuffer*)backFramebuffer.get())->GetFrameBuffers()[imageIndex];
+
+		VkRenderPassBeginInfo renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassInfo.renderPass = internalFramebuffer->GetRenderPass();
+		renderPassInfo.framebuffer = buf;
+		renderPassInfo.renderArea.offset = { 0, 0 };
+		renderPassInfo.renderArea.extent = extent;
+
+		VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
+		renderPassInfo.clearValueCount = 1;
+		renderPassInfo.pClearValues = &clearColor;
+
+		vkCmdBeginRenderPass(device->GetCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 	}
 	VulkanSwapChain::~VulkanSwapChain()
 	{
@@ -141,12 +135,11 @@ namespace Steins
 	void VulkanSwapChain::SwapBuffers()
 	{
 		VkCommandBuffer cmdbuf = device->GetCommandBuffer();
-		//vkWaitForFences(device->GetDevice(), 1, &inFlightFence, VK_TRUE, UINT64_MAX);
-		//vkResetFences(device->GetDevice(), 1, &inFlightFence);
-		//vkAcquireNextImageKHR(device->GetDevice(), swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
-		//vkResetCommandBuffer(cmdbuf, 0);
-		recordCommandBuffer(cmdbuf, imageIndex);
 
+		vkCmdEndRenderPass(cmdbuf);
+		if (vkEndCommandBuffer(cmdbuf) != VK_SUCCESS) {
+			throw std::runtime_error("failed to record command buffer!");
+		}
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
@@ -178,6 +171,13 @@ namespace Steins
 		presentInfo.pImageIndices = &imageIndex;
 
 		vkQueuePresentKHR(device->GetQueue(), &presentInfo);
+		vkWaitForFences(device->GetDevice(), 1, &inFlightFence, VK_TRUE, UINT64_MAX);
+		vkResetFences(device->GetDevice(), 1, &inFlightFence);
+		vkAcquireNextImageKHR(device->GetDevice(), swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+		vkResetCommandBuffer(cmdbuf, 0);
+		recordCommandBuffer(cmdbuf, imageIndex);
+
+
 	}
 
 	VkSurfaceFormatKHR VulkanSwapChain::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat)
@@ -224,26 +224,26 @@ namespace Steins
 	}
 	void VulkanSwapChain::recordCommandBuffer(VkCommandBuffer _commandBuffer, UInt32 _imageIndex)
 	{
-		/*VkCommandBufferBeginInfo beginInfo{};
+		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
 		VkResult result = vkBeginCommandBuffer(_commandBuffer, &beginInfo);
-		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to begin recording command buffer!");*/
+		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to begin recording command buffer!");
 
-		//VkFramebuffer buf = ((VulkanFramebuffer*)backFramebuffer.get())->GetFrameBuffers()[_imageIndex];
+		VkFramebuffer buf = ((VulkanFramebuffer*)backFramebuffer.get())->GetFrameBuffers()[_imageIndex];
 
-		//VkRenderPassBeginInfo renderPassInfo{};
-		//renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		//renderPassInfo.renderPass = renderPass;
-		//renderPassInfo.framebuffer = buf;
-		//renderPassInfo.renderArea.offset = { 0, 0 };
-		//renderPassInfo.renderArea.extent = extent;
+		VkRenderPassBeginInfo renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassInfo.renderPass = internalFramebuffer->GetRenderPass();
+		renderPassInfo.framebuffer = buf;
+		renderPassInfo.renderArea.offset = { 0, 0 };
+		renderPassInfo.renderArea.extent = extent;
 
-		//VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
-		//renderPassInfo.clearValueCount = 1;
-		//renderPassInfo.pClearValues = &clearColor;
+		VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
+		renderPassInfo.clearValueCount = 1;
+		renderPassInfo.pClearValues = &clearColor;
 
-		//vkCmdBeginRenderPass(_commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+		vkCmdBeginRenderPass(_commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 
 		VkViewport viewport{};
@@ -262,11 +262,7 @@ namespace Steins
 
 //		vkCmdDraw(_commandBuffer, 3, 1, 0, 0);
 
-		vkCmdEndRenderPass(_commandBuffer);
 
-		if (vkEndCommandBuffer(_commandBuffer) != VK_SUCCESS) {
-			throw std::runtime_error("failed to record command buffer!");
-		}
 	}
 	void VulkanSwapChain::FrameRender()
 	{

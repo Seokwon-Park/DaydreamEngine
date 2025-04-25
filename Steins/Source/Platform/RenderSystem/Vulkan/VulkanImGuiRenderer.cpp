@@ -43,7 +43,7 @@ namespace Steins
 	void VulkanImGuiRenderer::Render()
 	{
 		ImGuiRenderer::Render();
-		swapChain->FrameRender();
+		//swapChain->FrameRender();
 		ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), device->GetCommandBuffer());
 
 	}

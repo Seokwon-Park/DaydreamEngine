@@ -22,27 +22,27 @@ namespace Steins
 		}
 	}
 
-	OpenGLShader::OpenGLShader(const FilePath& _filepath, const ShaderType& _type)
+	OpenGLShader::OpenGLShader(const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode)
 	{
 		type = _type;
-		std::ifstream file(_filepath.ToString());
-		std::string readline;
-		std::stringstream stringStream;
-
-		std::string src = "";
-
-		ShaderType currentType = _type;
-
-		while (std::getline(file, readline))
+		std::string src = _src;
+		if (_mode == ShaderLoadMode::File)
 		{
-			src += readline + "\n";
+			src = "";
+			std::ifstream file(_src);
+			STEINS_CORE_ASSERT(file.is_open() == true, "Failed to open file!");
+			std::string readline;
+			std::stringstream stringStream;
+
+
+			ShaderType currentType = _type;
+
+			while (std::getline(file, readline))
+			{
+				src += readline + "\n";
+			}
 		}
 		Compile(src);
-	}
-	OpenGLShader::OpenGLShader(const std::string& _src, const ShaderType& _type)
-	{
-		type = _type;
-		Compile(_src);
 	}
 	OpenGLShader::~OpenGLShader()
 	{

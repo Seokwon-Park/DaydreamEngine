@@ -14,7 +14,6 @@ namespace Steins
 		virtual void Bind() const;
 		virtual void Unbind() const;
 
-		void SetSlot(UInt32 _slot) { slot = _slot; }
 	private:
 		D3D11GraphicsDevice* device;
 		ComPtr<ID3D11Buffer> vertexBuffer;

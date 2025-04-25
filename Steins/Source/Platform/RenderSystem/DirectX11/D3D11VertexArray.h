@@ -7,7 +7,7 @@ namespace Steins
 	class D3D11VertexArray : public VertexArray
 	{
 	public:
-		D3D11VertexArray(GraphicsDevice* _device);
+		D3D11VertexArray(D3D11GraphicsDevice* _device);
 		virtual ~D3D11VertexArray();
 
 		virtual void Bind() const override;

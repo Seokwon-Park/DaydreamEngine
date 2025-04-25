@@ -15,10 +15,10 @@ namespace Steins
 		virtual void Bind() const;
 		virtual void Unbind() const;
 
-		virtual void SetSlot(UInt32 _slot) override {};
 	private:
 		VulkanGraphicsDevice* device;
 		VkBuffer vertexBuffer;
+		VkDeviceMemory vertexBufferMemory;
 
 	};
 
@@ -34,7 +34,7 @@ namespace Steins
 	private:
 		VulkanGraphicsDevice* device;
 		VkBuffer indexBuffer;
-		VkDeviceMemory vertexBufferMemory;
+		VkDeviceMemory indexBufferMemory;
 
 	};
 }

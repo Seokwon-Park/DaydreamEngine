@@ -187,7 +187,6 @@ void ImGuiRenderer::NewFrame()
 void ImGuiRenderer::Render()
 	{
 		ImGui::Render();
-		Application::GetInstance().GetMainWindow().GetSwapchain()->GetBackFramebuffer()->Bind();
 	}
 
 	//void ImGuiRenderer::Render()

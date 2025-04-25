@@ -1580,6 +1580,7 @@
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanImGuiRenderer.h" />
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanBuffer.h" />
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanVertexArray.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLImGuiRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -1774,5 +1775,6 @@
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanImGuiRenderer.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanBuffer.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanVertexArray.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLImGuiRenderer.cpp" />
   </ItemGroup>
 </Project>

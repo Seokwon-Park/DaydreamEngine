@@ -58,6 +58,7 @@ namespace Steins
 		VkCommandPool GetCommandPool() const { return commandPool; }
 
 		SwapChainSupportDetails QuerySwapChainSupport(VkSurfaceKHR _surface);
+		UInt32 FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 		//SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice _physicalDevice, VkSurfaceKHR _surface);
 
 	private:

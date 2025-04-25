@@ -144,6 +144,10 @@
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLFramebuffer.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLGraphicsDevice.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLImGuiRenderer.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLPipelineState.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLRendererAPI.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.h" />
@@ -668,6 +672,10 @@
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLFramebuffer.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLGraphicsDevice.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLImGuiRenderer.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLPipelineState.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLRendererAPI.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.cpp" />
