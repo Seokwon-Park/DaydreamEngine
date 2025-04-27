@@ -136,7 +136,7 @@ namespace Steins
 			pipelineInfo.pColorBlendState = &colorBlending;
 			pipelineInfo.pDynamicState = &dynamicState;
 			pipelineInfo.layout = pipelineLayout;
-			pipelineInfo.renderPass = ((VulkanFramebuffer*)_device->GetSwapChain(0)->GetBackFramebuffer())->GetRenderPass();
+			pipelineInfo.renderPass = device->GetMainRenderPass();
 			pipelineInfo.subpass = 0;
 			pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
 			pipelineInfo.basePipelineIndex = -1; // Optional

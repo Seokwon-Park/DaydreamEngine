@@ -20,10 +20,10 @@ namespace Steins
 		info.Instance = device->GetInstance();
 		info.PhysicalDevice = device->GetGPU();
 		info.Device = device->GetDevice();
-		info.QueueFamily = device->GetQueueFamily();
+		info.QueueFamily = device->GetGraphicsQueueFamily();
 		info.Queue = device->GetQueue();
 		info.DescriptorPool = device->GetDescriptorPool();
-		info.RenderPass = swapChain->GetRenderPass();
+		info.RenderPass = device->GetMainRenderPass();
 		info.MinImageCount = 2;
 		info.ImageCount = 2;
 		info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;

@@ -29,7 +29,6 @@ namespace Steins
 		VkFormat GetFormat() const { return format; }
 		VkSwapchainKHR GetVKSwapChain() const { return swapChain; }
 		VkExtent2D GetExtent() const { return extent; }
-		VkRenderPass GetRenderPass() const { return renderPass; }
 		void recordCommandBuffer(VkCommandBuffer _commandBuffer, UInt32 _imageIndex);
 		void FrameRender();
 		void EndRender();
@@ -45,7 +44,6 @@ namespace Steins
 		VkSwapchainKHR swapChain;
 		VkFormat format; // swapchain image format
 		VkExtent2D extent;
-		VkRenderPass renderPass;
 
 		VkSemaphore imageAvailableSemaphore;
 		VkSemaphore renderFinishedSemaphore;

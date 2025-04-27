@@ -5,6 +5,7 @@
 
 namespace Steins
 {
+#define VK_SUCCEEDED(x) x == VK_SUCCESS
 	class GraphicsUtil
 	{
 	public:

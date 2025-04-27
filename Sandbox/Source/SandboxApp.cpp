@@ -118,8 +118,8 @@ PSOutput PSMain(PSInput input)
 
 		if (Steins::Renderer::GetAPI() == Steins::RendererAPIType::Vulkan)
 		{
-			vs = Steins::Shader::Create("Asset/Shader/Quad.vert", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
-			ps = Steins::Shader::Create("Asset/Shader/Quad.frag", Steins::ShaderType::Pixel, Steins::ShaderLoadMode::File);
+			vs = Steins::Shader::Create("Asset/Shader/QuadEasyVS.spv", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
+			ps = Steins::Shader::Create("Asset/Shader/QuadPS.spv", Steins::ShaderType::Pixel, Steins::ShaderLoadMode::File);
 		}
 		Steins::PipelineStateDesc desc;
 		desc.shaders = { vs, ps };
@@ -135,7 +135,7 @@ PSOutput PSMain(PSInput input)
 
 		Steins::Renderer::BeginScene(camera);
 
-		//pso->Bind();
+		pso->Bind();
 
 		va->Bind();
 		vs->Bind();
@@ -188,7 +188,7 @@ Steins::Application* Steins::CreateApplication()
 	ApplicationSpecification spec;
 	spec.Name = "Sandbox";
 	spec.WorkingDirectory = "../Lab";
-	spec.rendererAPI = RendererAPIType::DirectX11;
+	spec.rendererAPI = RendererAPIType::Vulkan;
 
 	return new Sandbox(spec);
 }

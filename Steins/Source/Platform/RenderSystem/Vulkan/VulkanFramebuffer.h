@@ -19,8 +19,6 @@ namespace Steins
 		virtual void Bind() const override;
 		virtual void Clear(Color _color) override;
 
-		VkRenderPass GetRenderPass()const { return renderPass; }
-
 		std::vector<VkFramebuffer>& GetFrameBuffers() { return framebuffers; }
 
 	private:
@@ -30,6 +28,5 @@ namespace Steins
 		std::vector<VkImageView> colorImageViews;
 		VkImage dpethImage;
 		VkImageView depthStencilViews;
-		VkRenderPass renderPass;
 	};
 }

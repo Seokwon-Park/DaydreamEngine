@@ -90,8 +90,6 @@ namespace Steins
 		internalFramebuffer = MakeShared<VulkanFramebuffer>(device, this);
 		backFramebuffer = internalFramebuffer;
 
-		renderPass = internalFramebuffer->GetRenderPass();
-
 		vkWaitForFences(device->GetDevice(), 1, &inFlightFence, VK_TRUE, UINT64_MAX);
 		vkResetFences(device->GetDevice(), 1, &inFlightFence);
 		vkAcquireNextImageKHR(device->GetDevice(), swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
@@ -108,7 +106,7 @@ namespace Steins
 
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = internalFramebuffer->GetRenderPass();
+		renderPassInfo.renderPass = device->GetMainRenderPass();
 		renderPassInfo.framebuffer = buf;
 		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = extent;
@@ -125,7 +123,6 @@ namespace Steins
 		vkDestroySemaphore(device->GetDevice(), imageAvailableSemaphore, nullptr);
 		vkDestroySemaphore(device->GetDevice(), renderFinishedSemaphore, nullptr);
 		vkDestroyFence(device->GetDevice(), inFlightFence, nullptr);
-		vkDestroyRenderPass(device->GetDevice(), renderPass, nullptr);
 		vkDestroySwapchainKHR(device->GetDevice(), swapChain, nullptr);
 		vkDestroySurfaceKHR(device->GetInstance(), surface, nullptr);
 	}
@@ -234,7 +231,7 @@ namespace Steins
 
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = internalFramebuffer->GetRenderPass();
+		renderPassInfo.renderPass = device->GetMainRenderPass();
 		renderPassInfo.framebuffer = buf;
 		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = extent;
@@ -280,7 +277,7 @@ namespace Steins
 		{
 			VkRenderPassBeginInfo info = {};
 			info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-			info.renderPass = renderPass;
+			info.renderPass = device->GetMainRenderPass();
 			info.framebuffer = ((VulkanFramebuffer*)backFramebuffer.get())->GetFrameBuffers()[imageIndex];
 			info.renderArea.extent.width = extent.width;
 			info.renderArea.extent.height = extent.height;

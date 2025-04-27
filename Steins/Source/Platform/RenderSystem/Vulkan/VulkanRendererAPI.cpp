@@ -1,6 +1,7 @@
 #include "SteinsPCH.h"
 #include "VulkanRendererAPI.h"
 
+
 namespace Steins
 {
 	VulkanRendererAPI::VulkanRendererAPI(GraphicsDevice* _device)

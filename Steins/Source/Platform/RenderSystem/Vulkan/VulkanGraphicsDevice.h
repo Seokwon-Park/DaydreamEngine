@@ -51,16 +51,18 @@ namespace Steins
 		VkInstance GetInstance() const { return instance; }
 		VkPhysicalDevice GetGPU() const { return physicalDevice; }
 		VkDevice GetDevice() const { return device; }
-		UInt32 GetQueueFamily() const { return queueFamilyIndices.graphicsFamily.value(); }
+		UInt32 GetGraphicsQueueFamily() const { return queueFamilyIndices.graphicsFamily.value(); }
 		VkQueue GetQueue() const { return graphicsQueue; }
 		VkDescriptorPool GetDescriptorPool() const { return descriptorPool; }
 		VkCommandBuffer GetCommandBuffer() const { return commandBuffer; }
 		VkCommandPool GetCommandPool() const { return commandPool; }
+		VkRenderPass GetMainRenderPass() const { return mainRenderPass; }
 
 		SwapChainSupportDetails QuerySwapChainSupport(VkSurfaceKHR _surface);
 		UInt32 FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+		//Create a VkBuffer
+		void CreateBuffer(VkDeviceSize _size, VkBufferUsageFlags _usage, VkMemoryPropertyFlags _properties, VkBuffer& _buffer, VkDeviceMemory& _bufferMemory);
 		//SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice _physicalDevice, VkSurfaceKHR _surface);
-
 	private:
 		void CreateInstance();
 		void SetupDebugMessenger();
@@ -93,6 +95,7 @@ namespace Steins
 		VkCommandPool commandPool;
 		VkCommandBuffer commandBuffer;
 		VkDescriptorPool descriptorPool;
+		VkRenderPass mainRenderPass;
 	};
 }
 
