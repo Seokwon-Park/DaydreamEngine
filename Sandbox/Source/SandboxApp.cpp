@@ -9,11 +9,11 @@ public :
 
 		//으이구 멍청아.
 		//dx11 default(cw), gl default(ccw)
-		//float vertices[3 * 7] = {
-		//			 0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-		//			 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-		//			-0.5f, -0.5f, 0.0f, 1.0f, 0.0, 0.0f, 1.0f,
-		//};
+		float vertices[3 * 7] = {
+			-0.5f, -0.5f, 0.0f, 1.0f,0.0f,0.0f,1.0f,
+			 0.5f, -0.5f, 0.0f,0.0f,1.0f,0.0f,1.0f,
+			 0.0f,  0.5f, 0.0f,0.0f,0.0f,1.0f,1.0f
+		};
 		// 
 		// 
 //		float vertices[3 * 3] = {
@@ -22,19 +22,19 @@ public :
 //			 0.0f,  0.5f, 0.0f
 //		};
 ////
-//		va = Steins::VertexArray::Create();
+		va = Steins::VertexArray::Create();
+
+		vb = Steins::VertexBuffer::Create(vertices, sizeof(vertices));
+		Steins::BufferLayout layout = {
+			{ Steins::ShaderDataType::Float3, "a_Position", "POSITION"},
+			{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"}
+		};
+		vb->SetLayout(layout);
+		va->AddVertexBuffer(vb);
 //
-//		vb = Steins::VertexBuffer::Create(vertices, sizeof(vertices));
-//		Steins::BufferLayout layout = {
-//			{ Steins::ShaderDataType::Float3, "a_Position", "POSITION"},
-//			//{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"}
-//		};
-//		vb->SetLayout(layout);
-//		va->AddVertexBuffer(vb);
-//
-//		unsigned int indices[3] = { 0, 1, 2 };
-//		ib = Steins::IndexBuffer::Create(indices, 3);
-//		va->SetIndexBuffer(ib);
+		unsigned int indices[3] = { 2, 1, 0 };
+		ib = Steins::IndexBuffer::Create(indices, 3);
+		va->SetIndexBuffer(ib);
 
 		if (Steins::Renderer::GetAPI() == Steins::RendererAPIType::DirectX11)
 		{
@@ -146,7 +146,7 @@ PSOutput PSMain(PSInput input)
 
 		//Steins::Renderer::BeginScene(camera);
 
-		//pso->Bind();
+		pso->Bind();
 
 		//va->Bind();
 		//vs->Bind();
@@ -154,7 +154,7 @@ PSOutput PSMain(PSInput input)
 		////Steins::Matrix4x4 transform = Steins::Math::Translate(Steins::Matrix4x4(), Steins::Vector4(1.0f, 1.0f, 0.0f));
 		////transform.Transpose();
 
-		//Steins::Renderer::Submit(va);
+		Steins::Renderer::Submit(va);
 
 		//STEINS_INFO("TestLayer::UPDATE");
 		/*if(Steins::Input::GetKeyDown(Steins::Key::Up))
@@ -199,7 +199,7 @@ Steins::Application* Steins::CreateApplication()
 	ApplicationSpecification spec;
 	spec.Name = "Sandbox";
 	spec.WorkingDirectory = "../Lab";
-	spec.rendererAPI = RendererAPIType::OpenGL;
+	spec.rendererAPI = RendererAPIType::Vulkan;
 
 	return new Sandbox(spec);
 }

@@ -116,6 +116,21 @@ namespace Steins
 		renderPassInfo.pClearValues = &clearColor;
 
 		vkCmdBeginRenderPass(device->GetCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		VkViewport viewport{};
+		viewport.x = 0.0f;
+		viewport.y = (float)extent.height;
+		viewport.width = (float)extent.width;
+		viewport.height = -(float)extent.height;
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		vkCmdSetViewport(device->GetCommandBuffer(), 0, 1, &viewport);
+
+		VkRect2D scissor{};
+		scissor.offset = { 0, 0 };
+		scissor.extent = extent;
+		vkCmdSetScissor(device->GetCommandBuffer(), 0, 1, &scissor);
+
 	}
 	VulkanSwapChain::~VulkanSwapChain()
 	{
@@ -242,12 +257,11 @@ namespace Steins
 
 		vkCmdBeginRenderPass(_commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-
 		VkViewport viewport{};
 		viewport.x = 0.0f;
-		viewport.y = 0.0f;
+		viewport.y = (float)extent.height;
 		viewport.width = (float)extent.width;
-		viewport.height = (float)extent.height;
+		viewport.height = -(float)extent.height;
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 		vkCmdSetViewport(_commandBuffer, 0, 1, &viewport);

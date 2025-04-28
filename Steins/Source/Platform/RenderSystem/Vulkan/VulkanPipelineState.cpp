@@ -67,7 +67,7 @@ namespace Steins
 			rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
 			rasterizer.lineWidth = 1.0f;
 			rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-			rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+			rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
 			rasterizer.depthBiasEnable = VK_FALSE;
 			rasterizer.depthBiasConstantFactor = 0.0f; // Optional
 			rasterizer.depthBiasClamp = 0.0f; // Optional
@@ -131,7 +131,7 @@ namespace Steins
 
 			VkGraphicsPipelineCreateInfo pipelineInfo{};
 			pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-			pipelineInfo.stageCount = shaderStages.size();
+			pipelineInfo.stageCount = (UInt64)shaderStages.size();
 			pipelineInfo.pStages = shaderStages.data();
 			pipelineInfo.pVertexInputState = &vertexInputInfo;
 			pipelineInfo.pInputAssemblyState = &inputAssembly;
@@ -200,21 +200,8 @@ namespace Steins
 
 		VkDeviceSize bufferSize = sizeof(glm::mat4);
 
-		//memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
 
-		VkViewport viewport{};
-		viewport.x = 0.0f;
-		viewport.y = 0.0f;
-		viewport.width = (float)1280;
-		viewport.height = (float)720;
-		viewport.minDepth = 0.0f;
-		viewport.maxDepth = 1.0f;
-		vkCmdSetViewport(device->GetCommandBuffer(), 0, 1, &viewport);
 
-		VkRect2D scissor{};
-		scissor.offset = { 0, 0 };
-		scissor.extent = VkExtent2D({ 1280,720 });
-		vkCmdSetScissor(device->GetCommandBuffer(), 0, 1, &scissor);
 	}
 
 	void VulkanPipelineState::CreateShaderStageInfo(const Shared<Shader>& _shader)

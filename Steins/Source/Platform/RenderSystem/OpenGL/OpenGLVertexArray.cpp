@@ -49,18 +49,18 @@ namespace Steins
 		glBindVertexArray(rendererID);
 		_vertexBuffer->Bind();
 		
-		uint32_t index = 0;
+		//uint32_t index = 0;
 		const BufferLayout& layout = _vertexBuffer->GetLayout();
 		for (const BufferElement& element : layout)
 		{
-			glEnableVertexAttribArray(index);
-			glVertexAttribPointer(index,
+			glEnableVertexAttribArray(inputDataIndex);
+			glVertexAttribPointer(inputDataIndex,
 				element.GetComponentCount(),
 				ShaderDataTypeToOpenGLBaseType(element.type),
 				element.normalized ? GL_TRUE : GL_FALSE,
 				layout.GetStride(),
-				&element.offset);
-			index++;
+				(void*)element.offset);
+			inputDataIndex++;
 		}
 
 		vertexBuffers.push_back(_vertexBuffer);

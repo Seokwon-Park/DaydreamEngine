@@ -27,7 +27,7 @@ namespace Steins
 		/*_shader->SetMat4("u_ViewProjection", m_SceneData->ViewProjectionMatrix);
 		_shader->SetMat4("u_Transform", _transform);*/
 
-		//_vertexArray->Bind();
+		_vertexArray->Bind();
 		RenderCommand::DrawIndexed(_vertexArray->GetIndexBuffer()->GetCount());
 	}
 
