@@ -2,14 +2,20 @@
 #include "VulkanPipelineState.h"
 
 #include "VulkanSwapChain.h"
+#include "Platform/RenderSystem/GraphicsUtil.h"
 
 namespace Steins
 {
 	VulkanPipelineState::VulkanPipelineState(VulkanGraphicsDevice* _device, PipelineStateDesc _desc)
+		:PipelineState(_desc)
 	{
 		device = _device;
+		
+		for (Shared<Shader> shader : shaders)
+		{
+			CreateShaderStageInfo(shader);
+		}
 
-		CreateShaderStageInfo(_desc.shaders);
 		{
 			std::vector<VkDynamicState> dynamicStates = {
 				VK_DYNAMIC_STATE_VIEWPORT,
@@ -25,7 +31,7 @@ namespace Steins
 			viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 			viewportState.viewportCount = 1;
 			viewportState.scissorCount = 1;
-			
+
 			VkVertexInputBindingDescription desc;
 			desc.binding = 0;
 			desc.stride = 28;
@@ -97,20 +103,20 @@ namespace Steins
 			colorBlending.blendConstants[2] = 0.0f; // Optional
 			colorBlending.blendConstants[3] = 0.0f; // Optional
 
-	/*		VkDescriptorSetLayoutBinding uboLayoutBinding{};
-			uboLayoutBinding.binding = 0;
-			uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			uboLayoutBinding.descriptorCount = 1;
-			uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+			/*		VkDescriptorSetLayoutBinding uboLayoutBinding{};
+					uboLayoutBinding.binding = 0;
+					uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+					uboLayoutBinding.descriptorCount = 1;
+					uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
-			VkDescriptorSetLayoutCreateInfo layoutInfo{};
-			layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-			layoutInfo.bindingCount = 1;
-			layoutInfo.pBindings = &uboLayoutBinding;
+					VkDescriptorSetLayoutCreateInfo layoutInfo{};
+					layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+					layoutInfo.bindingCount = 1;
+					layoutInfo.pBindings = &uboLayoutBinding;
 
-			if (vkCreateDescriptorSetLayout(device->GetDevice(), &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
-				throw std::runtime_error("failed to create descriptor set layout!");
-			}*/
+					if (vkCreateDescriptorSetLayout(device->GetDevice(), &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
+						throw std::runtime_error("failed to create descriptor set layout!");
+					}*/
 
 			VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 			pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -211,52 +217,14 @@ namespace Steins
 		vkCmdSetScissor(device->GetCommandBuffer(), 0, 1, &scissor);
 	}
 
-	void VulkanPipelineState::CreateShaderStageInfo(std::vector<Shared<Shader>>& _shaders)
+	void VulkanPipelineState::CreateShaderStageInfo(const Shared<Shader>& _shader)
 	{
-		for (auto shader : _shaders)
-		{
-			VkPipelineShaderStageCreateInfo shaderStageInfo{};
-			shaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-			shaderStageInfo.module = (VkShaderModule)shader->GetNativeHandle();
-			shaderStageInfo.pName = "main";
+		VkPipelineShaderStageCreateInfo shaderStageInfo{};
+		shaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+		shaderStageInfo.module = (VkShaderModule)_shader->GetNativeHandle();
+		shaderStageInfo.pName = "main";
+		shaderStageInfo.stage = GraphicsUtil::vulkanShaderStageMap[_shader->GetType()];
 
-			switch (shader->GetType())
-			{
-			case ShaderType::None:
-				break;
-			case ShaderType::Vertex:
-			{
-				shaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
-				break;
-			}
-			case ShaderType::Hull:
-			{
-				shaderStageInfo.stage = VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
-				break;
-			}
-			case ShaderType::Domain:
-			{
-				shaderStageInfo.stage = VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
-				break;
-			}
-			case ShaderType::Geometry:
-			{
-				shaderStageInfo.stage = VK_SHADER_STAGE_GEOMETRY_BIT;
-				break;
-			}
-			case ShaderType::Pixel:
-			{
-				shaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-				break;
-			}
-			case ShaderType::Compute:
-				break;
-			default:
-				break;
-			}
-			shaderStages.push_back(shaderStageInfo);
-		}
-		
-
+		shaderStages.push_back(shaderStageInfo);
 	}
 }

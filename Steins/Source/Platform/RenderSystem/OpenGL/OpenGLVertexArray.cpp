@@ -53,14 +53,14 @@ namespace Steins
 		const BufferLayout& layout = _vertexBuffer->GetLayout();
 		for (const BufferElement& element : layout)
 		{
-			glEnableVertexAttribArray(inputDataIndex);
-			glVertexAttribPointer(inputDataIndex,
+			glEnableVertexAttribArray(index);
+			glVertexAttribPointer(index,
 				element.GetComponentCount(),
 				ShaderDataTypeToOpenGLBaseType(element.type),
 				element.normalized ? GL_TRUE : GL_FALSE,
 				layout.GetStride(),
 				&element.offset);
-			inputDataIndex++;
+			index++;
 		}
 
 		vertexBuffers.push_back(_vertexBuffer);

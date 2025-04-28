@@ -9,27 +9,36 @@ public :
 
 		//으이구 멍청아.
 		//dx11 default(cw), gl default(ccw)
-		float vertices[3 * 7] = {
-					 0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-					 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-					-0.5f, -0.5f, 0.0f, 1.0f, 0.0, 0.0f, 1.0f,
-		};
+		//float vertices[3 * 7] = {
+		//			 0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+		//			 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+		//			-0.5f, -0.5f, 0.0f, 1.0f, 0.0, 0.0f, 1.0f,
+		//};
+		// 
+		// 
+//		float vertices[3 * 3] = {
+//			-0.5f, -0.5f, 0.0f,
+//			 0.5f, -0.5f, 0.0f,
+//			 0.0f,  0.5f, 0.0f
+//		};
+////
+//		va = Steins::VertexArray::Create();
 //
-		va = Steins::VertexArray::Create();
+//		vb = Steins::VertexBuffer::Create(vertices, sizeof(vertices));
+//		Steins::BufferLayout layout = {
+//			{ Steins::ShaderDataType::Float3, "a_Position", "POSITION"},
+//			//{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"}
+//		};
+//		vb->SetLayout(layout);
+//		va->AddVertexBuffer(vb);
+//
+//		unsigned int indices[3] = { 0, 1, 2 };
+//		ib = Steins::IndexBuffer::Create(indices, 3);
+//		va->SetIndexBuffer(ib);
 
-		vb = Steins::VertexBuffer::Create(vertices, sizeof(vertices));
-		Steins::BufferLayout layout = {
-			{ Steins::ShaderDataType::Float3, "a_Position", "POSITION"},
-			{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"}
-		};
-		vb->SetLayout(layout);
-		va->AddVertexBuffer(vb);
-
-		unsigned int indices[3] = { 0, 1, 2 };
-		ib = Steins::IndexBuffer::Create(indices, 3);
-		va->SetIndexBuffer(ib);
-
-		std::string vertexSrc = R"(
+		if (Steins::Renderer::GetAPI() == Steins::RendererAPIType::DirectX11)
+		{
+			std::string vertexSrc = R"(
 struct VSInput
 {
     float3 position : POSITION;
@@ -51,7 +60,7 @@ VSOutput VSMain(VSInput input)
 }
 		)";
 
-		std::string pixelSrc = R"(
+			std::string pixelSrc = R"(
 struct PSInput
 {
     float4 position: SV_Position;
@@ -70,59 +79,61 @@ PSOutput PSMain(PSInput input)
     return output;
 }
 		)";
-//
-//
-//
-//		//std::string vertexSrc = R"(
-//		//	#version 330 core
-//		//	
-//		//	layout(location = 0) in vec3 a_Position;
-//		//	layout(location = 1) in vec4 a_Color;
-//
-//		//	uniform mat4 u_ViewProjection;
-//		//	uniform mat4 u_Transform;
-//
-//		//	out vec3 v_Position;
-//		//	out vec4 v_Color;
-//
-//		//	void main()
-//		//	{
-//		//		v_Position = a_Position;
-//		//		v_Color = a_Color;
-//		//		gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);	
-//		//	}
-//		//)";
-//		//std::string pixelSrc = R"(
-//		//	#version 330 core
-//		//	
-//		//	layout(location = 0) out vec4 color;
-//
-//		//	in vec3 v_Position;
-//		//	in vec4 v_Color;
-//
-//		//	void main()
-//		//	{
-//		//		color = vec4(v_Position * 0.5 + 0.5, 1.0);
-//		//		color = v_Color;
-//		//	}
-//		//)";
-//		
-		if (Steins::Renderer::GetAPI() == Steins::RendererAPIType::DirectX11)
-		{
 			vs = Steins::Shader::Create(vertexSrc, Steins::ShaderType::Vertex, Steins::ShaderLoadMode::Source);
 			ps = Steins::Shader::Create(pixelSrc, Steins::ShaderType::Pixel, Steins::ShaderLoadMode::Source);
 		}
-//
-		//vs = Steins::Shader::Create("Asset/Shader/QuadEasyVS.spv", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
-		//ps = Steins::Shader::Create("Asset/Shader/QuadPS.spv", Steins::ShaderType::Pixel, Steins::ShaderLoadMode::File);
+		if (Steins::Renderer::GetAPI() == Steins::RendererAPIType::OpenGL)
+		{
 
+		std::string vertexSrc = R"(
+			#version 450 core
+			
+			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec4 a_Color;
+
+			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
+
+			out gl_PerVertex {
+				vec4 gl_Position;
+			};
+    
+			layout(location = 0) out vec3 v_Position;
+			layout(location = 1) out vec4 v_Color;
+
+			void main()
+			{
+				v_Position = a_Position;
+				v_Color = a_Color;
+				gl_Position = vec4(v_Position, 1.0f);
+			}
+		)";
+		std::string pixelSrc = R"(
+			#version 450 core
+			
+			layout(location = 0) out vec4 color;
+
+			layout(location = 0) in vec3 v_Position;
+			layout(location = 1) in vec4 v_Color;
+
+			void main()
+			{
+				color = vec4(v_Position * 0.5 + 0.5, 1.0);
+				color = v_Color;
+			}
+		)";
+		
+			vs = Steins::Shader::Create(vertexSrc, Steins::ShaderType::Vertex, Steins::ShaderLoadMode::Source);
+			ps = Steins::Shader::Create(pixelSrc, Steins::ShaderType::Pixel, Steins::ShaderLoadMode::Source);
+		}
 		if (Steins::Renderer::GetAPI() == Steins::RendererAPIType::Vulkan)
 		{
 			vs = Steins::Shader::Create("Asset/Shader/QuadEasyVS.spv", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
 			ps = Steins::Shader::Create("Asset/Shader/QuadPS.spv", Steins::ShaderType::Pixel, Steins::ShaderLoadMode::File);
 		}
 		Steins::PipelineStateDesc desc;
-		desc.shaders = { vs, ps };
+		desc.vertexShader = vs;
+		desc.pixelShader = ps;
 		pso = Steins::PipelineState::Create(desc);
 	}
 
@@ -131,19 +142,19 @@ PSOutput PSMain(PSInput input)
 		Steins::RenderCommand::SetClearColor(Steins::Color::White);
 		Steins::RenderCommand::Clear();
 
-		camera.SetPosition({ 0.5f, 0.5f, 0.0f });
+		////camera.SetPosition({ 0.5f, 0.5f, 0.0f });
 
-		Steins::Renderer::BeginScene(camera);
+		//Steins::Renderer::BeginScene(camera);
 
-		pso->Bind();
+		//pso->Bind();
 
-		va->Bind();
-		vs->Bind();
-		ps->Bind();
-		//Steins::Matrix4x4 transform = Steins::Math::Translate(Steins::Matrix4x4(), Steins::Vector4(1.0f, 1.0f, 0.0f));
-		//transform.Transpose();
+		//va->Bind();
+		//vs->Bind();
+		//ps->Bind();
+		////Steins::Matrix4x4 transform = Steins::Math::Translate(Steins::Matrix4x4(), Steins::Vector4(1.0f, 1.0f, 0.0f));
+		////transform.Transpose();
 
-		Steins::Renderer::Submit(va);
+		//Steins::Renderer::Submit(va);
 
 		//STEINS_INFO("TestLayer::UPDATE");
 		/*if(Steins::Input::GetKeyDown(Steins::Key::Up))
@@ -188,7 +199,7 @@ Steins::Application* Steins::CreateApplication()
 	ApplicationSpecification spec;
 	spec.Name = "Sandbox";
 	spec.WorkingDirectory = "../Lab";
-	spec.rendererAPI = RendererAPIType::Vulkan;
+	spec.rendererAPI = RendererAPIType::OpenGL;
 
 	return new Sandbox(spec);
 }

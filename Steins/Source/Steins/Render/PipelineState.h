@@ -6,7 +6,13 @@ namespace Steins
 {
 	struct PipelineStateDesc
 	{
-		std::vector<Shared<Shader>> shaders;
+		Shared<Shader> vertexShader = nullptr;
+		Shared<Shader> hullShader = nullptr;
+		Shared<Shader> domainShader = nullptr;
+		Shared<Shader> geometryShader = nullptr;
+		Shared<Shader> pixelShader = nullptr;
+		//Shared<Shader> computeShader; //??
+
 		//InputLayoutDesc inputLayout;
 		//Shared<ResourceBindingLayout> resourceBindingLayout; // RootSignature/PipelineLayout
 		//RasterizerDesc rasterizerState;
@@ -21,17 +27,22 @@ namespace Steins
 	class PipelineState
 	{
 	public:
+		PipelineState(PipelineStateDesc _desc);
 		virtual ~PipelineState() = default;
 
 		virtual void Bind() const = 0;
 
 		static Shared<PipelineState> Create(PipelineStateDesc _desc);
-	private:
+	protected:
+		bool ValidateShaders();
+
 		Shared<Shader> vertexShader;
 		Shared<Shader> hullShader;
 		Shared<Shader> domainShader;
 		Shared<Shader> geometryShader;
 		Shared<Shader> pixelShader;
+
+		std::vector<Shared<Shader>> shaders;
 
 		//root signature??
 

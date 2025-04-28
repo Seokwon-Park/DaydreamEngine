@@ -1,86 +1,106 @@
 #include "SteinsPCH.h"
 #include "OpenGLPipelineState.h"
+#include "Platform/RenderSystem/GraphicsUtil.h"
 
 namespace Steins
 {
 	OpenGLPipelineState::OpenGLPipelineState(PipelineStateDesc _desc)
+		:PipelineState(_desc)
 	{
-		GLuint program = glCreateProgram();
+		glCreateProgramPipelines(1, &pipeline);
+		glBindProgramPipeline(pipeline);
 
-		//	glAttachShader(rendererID, shader);
-				//	glShaderIDs.push_back(shader);
-					//rendererID = glCreateProgram();
-					//std::vector<GLuint> glShaderIDs;
+		for (auto shader : shaders)
+		{
+			GLenum type = GraphicsUtil::openGLShaderStageMap[shader->GetType()];
+			GLuint shaderID = static_cast<GLuint>(reinterpret_cast<uintptr_t>(shader->GetNativeHandle()));
+			glUseProgramStages(pipeline, type, shaderID);
+		}
 
-					//for (auto [type, shaderSource] : shaderSources)
-					//{
-					//	GLuint shader = glCreateShader(ShaderTypeToGLShader(type));
-					//	const GLchar* source = shaderSource.c_str();
+		glValidateProgramPipeline(pipeline);
+		GLint success;
+		char infoLog[512];
+		glGetProgramPipelineiv(pipeline, GL_VALIDATE_STATUS, &success);
+		if (!success) {
+			glGetProgramPipelineInfoLog(pipeline, 512, NULL, infoLog);
+			STEINS_CORE_ERROR("pipeline validation failed!\n {0}", infoLog);
+		}
 
-					//	glShaderSource(shader, 1, &source, 0);
-					//	glCompileShader(shader);
-					//	
-					//	GLint isCompiled = 0;
-					//	glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
-					//	if (isCompiled == GL_FALSE)
-					//	{
-					//		GLint maxLength = 0;
-					//		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
+		//GLuint shaderID = static_cast<GLuint>(reinterpret_cast<uintptr_t>(shader->GetNativeHandle()));
+		//	glShaderIDs.push_back(shader);
+			//rendererID = glCreateProgram();
+			//std::vector<GLuint> glShaderIDs;
 
-					//		// The maxLength includes the NULL character
-					//		std::vector<GLchar> infoLog(maxLength);
-					//		glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
+			//for (auto [type, shaderSource] : shaderSources)
+			//{
+			//	GLuint shader = glCreateShader(ShaderTypeToGLShader(type));
+			//	const GLchar* source = shaderSource.c_str();
 
-					//		// We don't need the shader anymore.
-					//		glDeleteShader(shader);
+			//	glShaderSource(shader, 1, &source, 0);
+			//	glCompileShader(shader);
+			//	
+			//	GLint isCompiled = 0;
+			//	glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
+			//	if (isCompiled == GL_FALSE)
+			//	{
+			//		GLint maxLength = 0;
+			//		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
 
-					//		STEINS_CORE_ERROR("{0}", infoLog.data());
-					//		STEINS_CORE_ASSERT(false, "Shader compilation failure!");
-					//		return;
-					//	}
-					//	glAttachShader(rendererID, shader);
-					//	glShaderIDs.push_back(shader);
+			//		// The maxLength includes the NULL character
+			//		std::vector<GLchar> infoLog(maxLength);
+			//		glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
 
-					//}
+			//		// We don't need the shader anymore.
+			//		glDeleteShader(shader);
 
-					//GLuint program = rendererID;
-					//glLinkProgram(program);
+			//		STEINS_CORE_ERROR("{0}", infoLog.data());
+			//		STEINS_CORE_ASSERT(false, "Shader compilation failure!");
+			//		return;
+			//	}
+			//	glAttachShader(rendererID, shader);
+			//	glShaderIDs.push_back(shader);
 
-					//GLint isLinked = 0;
-					//glGetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
-					//if (isLinked == GL_FALSE)
-					//{
-					//	GLint maxLength = 0;
-					//	glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
+			//}
 
-					//	// The maxLength includes the NULL character
-					//	std::vector<GLchar> infoLog(maxLength);
-					//	glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
+			//GLuint program = rendererID;
+			//glLinkProgram(program);
 
-					//	// We don't need the program anymore.
-					//	glDeleteProgram(program);
-					//	// Don't leak shaders either.
-					//	for (GLuint id : glShaderIDs)
-					//	{
-					//		glDeleteShader(id);
-					//	}
+			//GLint isLinked = 0;
+			//glGetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
+			//if (isLinked == GL_FALSE)
+			//{
+			//	GLint maxLength = 0;
+			//	glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
 
-					//	STEINS_CORE_ERROR("{0}", infoLog.data());
-					//	STEINS_CORE_ASSERT(false, "Shader link failure!");
-					//	return;
-					//}
+			//	// The maxLength includes the NULL character
+			//	std::vector<GLchar> infoLog(maxLength);
+			//	glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
 
-					//for (GLuint id : glShaderIDs)
-					//{
-					//	glDetachShader(program, id);
+			//	// We don't need the program anymore.
+			//	glDeleteProgram(program);
+			//	// Don't leak shaders either.
+			//	for (GLuint id : glShaderIDs)
+			//	{
+			//		glDeleteShader(id);
+			//	}
 
-					//}
+			//	STEINS_CORE_ERROR("{0}", infoLog.data());
+			//	STEINS_CORE_ASSERT(false, "Shader link failure!");
+			//	return;
+			//}
+
+			//for (GLuint id : glShaderIDs)
+			//{
+			//	glDetachShader(program, id);
+
+			//}
 	}
 	OpenGLPipelineState::~OpenGLPipelineState()
 	{
-		
+
 	}
 	void OpenGLPipelineState::Bind() const
 	{
+		glBindProgramPipeline(pipeline);
 	}
 }

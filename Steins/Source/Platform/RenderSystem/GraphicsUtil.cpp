@@ -257,83 +257,109 @@ namespace Steins
 		default: return VK_FORMAT_UNDEFINED;
 		}
 	}
+	std::map<ShaderType, VkShaderStageFlagBits> GraphicsUtil::vulkanShaderStageMap =
+	{
+		{ ShaderType::Vertex, VK_SHADER_STAGE_VERTEX_BIT },
+		{ ShaderType::Hull,VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT},
+		{ ShaderType::Domain,VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT},
+		{ ShaderType::Geometry,VK_SHADER_STAGE_GEOMETRY_BIT},
+		{ ShaderType::Pixel,VK_SHADER_STAGE_FRAGMENT_BIT}
+	};
 
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+	std::map<ShaderType, GLenum> GraphicsUtil::openGLShaderTypeMap = 
+	{
+		{ ShaderType::Vertex, GL_VERTEX_SHADER },
+		{ ShaderType::Hull, GL_TESS_CONTROL_SHADER },
+		{ ShaderType::Domain, GL_TESS_EVALUATION_SHADER },
+		{ ShaderType::Geometry, GL_GEOMETRY_SHADER },
+		{ ShaderType::Pixel, GL_FRAGMENT_SHADER }
+	};
+
+
+	std::map<ShaderType, GLenum> GraphicsUtil::openGLShaderStageMap =
+	{
+		{ ShaderType::Vertex, GL_VERTEX_SHADER_BIT },
+		{ ShaderType::Hull, GL_TESS_CONTROL_SHADER_BIT },
+		{ ShaderType::Domain, GL_TESS_EVALUATION_SHADER_BIT },
+		{ ShaderType::Geometry, GL_GEOMETRY_SHADER_BIT },
+		{ ShaderType::Pixel, GL_FRAGMENT_SHADER_BIT }
+	};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	std::string GraphicsUtil::GetVendor(int _vendorCode)
 	{
 		switch (_vendorCode)

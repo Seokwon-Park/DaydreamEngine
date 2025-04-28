@@ -3,7 +3,8 @@
 
 namespace Steins
 {
-	D3D12PipelineState::D3D12PipelineState()
+	D3D12PipelineState::D3D12PipelineState(D3D12GraphicsDevice* _device, PipelineStateDesc _desc)
+		:PipelineState(_desc)
 	{
 	}
 

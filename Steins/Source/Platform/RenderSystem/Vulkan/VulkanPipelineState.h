@@ -13,8 +13,11 @@ namespace Steins
 
 		virtual void Bind() const override;
 
-		void CreateShaderStageInfo(std::vector<Shared<Shader>>& _shaders);
+		void CreateShaderStageInfo(const Shared<Shader>& _shader);
 	private:
+
+
+
 		VulkanGraphicsDevice* device;
 		std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 

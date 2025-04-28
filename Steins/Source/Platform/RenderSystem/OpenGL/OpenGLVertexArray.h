@@ -18,7 +18,7 @@ namespace Steins
 
 	private:
 		UInt32 rendererID;
-		UInt32 inputDataIndex;
+		UInt32 inputDataIndex = 0;
 	};
 }
 

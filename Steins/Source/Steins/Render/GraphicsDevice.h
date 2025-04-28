@@ -41,12 +41,6 @@ namespace Steins
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() = 0;
 		virtual Shared<VertexArray> CreateVertexArray() = 0;
 
-		template <typename DeviceType>
-		DeviceType* Get()
-		{
-			return Cast<DeviceType>(this);
-		}
-
 		inline RendererAPIType GetAPI() const { return API; }
 		inline SwapChain* GetSwapChain(UInt32 _index)
 		{

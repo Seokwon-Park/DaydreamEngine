@@ -8,7 +8,7 @@ namespace Steins
 	class D3D11PipelineState : public PipelineState
 	{
 	public:
-		D3D11PipelineState(GraphicsDevice* _device);
+		D3D11PipelineState(GraphicsDevice* _device, PipelineStateDesc _desc);
 
 		virtual void Bind() const override;
 	private:

@@ -2,6 +2,7 @@
 #include "OpenGLGraphicsDevice.h"
 #include "OpenGLBuffer.h"
 #include "OpenGLShader.h"
+#include "OpenGLSwapchain.h"
 #include "OpenGLRendererAPI.h"
 #include "OpenGLPipelineState.h"
 #include "OpenGLVertexArray.h"
@@ -77,7 +78,7 @@ namespace Steins
 
 	Shared<SwapChain> OpenGLGraphicsDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
 	{
-		return Shared<SwapChain>();
+		return MakeShared<OpenGLSwapChain>(_desc, _window);
 	}
 
 	Shared<Texture2D> OpenGLGraphicsDevice::CreateTexture2D(const FilePath& _path)

@@ -189,7 +189,7 @@
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.h">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLSwapchain.h">
+    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLSwapChain.h">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLTexture.h">
@@ -1676,7 +1676,7 @@
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.cpp">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLSwapchain.cpp">
+    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLSwapChain.cpp">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexArray.cpp">

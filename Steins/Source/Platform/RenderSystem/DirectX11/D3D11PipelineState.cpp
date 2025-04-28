@@ -3,7 +3,8 @@
 
 namespace Steins
 {
-	D3D11PipelineState::D3D11PipelineState(GraphicsDevice* _device)
+	D3D11PipelineState::D3D11PipelineState(GraphicsDevice* _device, PipelineStateDesc _desc)
+		:PipelineState(_desc)
 	{
 	}
 

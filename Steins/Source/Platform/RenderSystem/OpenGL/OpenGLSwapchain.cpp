@@ -1,5 +1,5 @@
 #include "SteinsPCH.h"
-#include "OpenGLSwapchain.h"
+#include "OpenGLSwapChain.h"
 
 #include "Steins/Core/Window.h"
 #include "GLFW/glfw3.h"
@@ -9,21 +9,21 @@
 
 namespace Steins
 {
-	OpenGLSwapchain::OpenGLSwapchain(SwapChainSpecification* _desc, SteinsWindow* _window)
+	OpenGLSwapChain::OpenGLSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
 	{
 		desc = *_desc;
 		window = (GLFWwindow*)_window->GetNativeWindow();
 		glfwMakeContextCurrent(window);
 	}
-	OpenGLSwapchain::~OpenGLSwapchain()
+	OpenGLSwapChain::~OpenGLSwapChain()
 	{
 	}
-	void OpenGLSwapchain::SetVSync(bool _enabled)
+	void OpenGLSwapChain::SetVSync(bool _enabled)
 	{
 		glfwSwapInterval(desc.isVSync);
 	}
 
-	void OpenGLSwapchain::SwapBuffers()
+	void OpenGLSwapChain::SwapBuffers()
 	{
 		glfwSwapBuffers(window);
 	}

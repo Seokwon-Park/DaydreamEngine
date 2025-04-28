@@ -151,7 +151,7 @@
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLPipelineState.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLRendererAPI.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLSwapchain.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLSwapChain.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLTexture.h" />
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexArray.h" />
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanBuffer.h">
@@ -679,7 +679,7 @@
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLPipelineState.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLRendererAPI.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLSwapchain.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLSwapChain.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLTexture.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLVertexArray.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanBuffer.cpp">

@@ -31,7 +31,7 @@ namespace Steins
 	//psBlob->Release();*/
 	D3D11Shader::D3D11Shader(D3D11GraphicsDevice* _device, const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode)
 	{
-		device = _device->Get<D3D11GraphicsDevice>();
+		device = _device;
 		type = _type;
 		Pair<std::string, std::string> targetEntryPair = GetCompileParam();
 		HRESULT hr;

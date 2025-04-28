@@ -151,7 +151,7 @@ namespace Steins
 
 	Shared<PipelineState> D3D11GraphicsDevice::CreatePipelineState(PipelineStateDesc _desc)
 	{
-		return Shared<PipelineState>();
+		return MakeShared<D3D11PipelineState>(this, _desc);
 	}
 
 	Shared<Shader> D3D11GraphicsDevice::CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode)

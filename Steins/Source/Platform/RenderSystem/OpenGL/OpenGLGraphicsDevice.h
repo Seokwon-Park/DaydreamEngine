@@ -31,6 +31,6 @@ namespace Steins
 
 	private:
 
-		std::string version = "#version 410";
+		std::string version = "#version 450";
 	};
 }

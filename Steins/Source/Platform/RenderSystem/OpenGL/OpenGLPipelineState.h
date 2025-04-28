@@ -13,6 +13,6 @@ namespace Steins
 
 		virtual void Bind() const;
 	private:
-		GLuint shaderProgramID;
+		GLuint pipeline;
 	};
 }
