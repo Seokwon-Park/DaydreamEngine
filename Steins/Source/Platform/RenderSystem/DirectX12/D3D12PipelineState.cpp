@@ -20,15 +20,23 @@ namespace Steins
 			throw std::runtime_error("Failed to create root signature");
 		}
 
+		D3D12_RASTERIZER_DESC rasterizerDesc{};
+		rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+		rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+		
+		DXGI_SAMPLE_DESC sampleDesc{};
+		sampleDesc.Count = 1;
+		sampleDesc.Quality= 0;
+
 
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC desc{};
 		desc.pRootSignature = rootSignature.Get();
 		desc.VS = *(D3D12_SHADER_BYTECODE*)_desc.vertexShader->GetNativeHandle();
 		desc.PS = *(D3D12_SHADER_BYTECODE*)_desc.pixelShader->GetNativeHandle();
-		desc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
-		desc.RasterizerState.CullMode= D3D12_CULL_MODE_BACK;
+		desc.RasterizerState = rasterizerDesc;
 		desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 		desc.NumRenderTargets = 1;
+		desc.SampleDesc = sampleDesc;
 		desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		device->GetDevice()->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(pipeline.GetAddressOf()));
 	}

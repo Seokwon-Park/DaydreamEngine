@@ -74,6 +74,9 @@ namespace Steins
 
 	void D3D12SwapChain::SwapBuffers()
 	{
+		//device->GetCommandList()->Close();
+		//ID3D12CommandList* commandLists[] = { device->GetCommandList() };
+		//device->GetCommandQueue()->ExecuteCommandLists(1, commandLists);
 		swapChain->Present(desc.isVSync, 0);
 		MoveToNextFrame();
 
