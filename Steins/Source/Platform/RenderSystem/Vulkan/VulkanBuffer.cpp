@@ -3,9 +3,10 @@
 
 namespace Steins
 {
-	VulkanVertexBuffer::VulkanVertexBuffer(VulkanGraphicsDevice* _device, void* _vertices, UInt32 _size)
+	VulkanVertexBuffer::VulkanVertexBuffer(VulkanGraphicsDevice* _device, void* _vertices, UInt32 _size, const BufferLayout& _layout)
 	{
 		device = _device;
+		layout = _layout;
 
 		VkBufferCreateInfo bufferInfo{};
 		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;

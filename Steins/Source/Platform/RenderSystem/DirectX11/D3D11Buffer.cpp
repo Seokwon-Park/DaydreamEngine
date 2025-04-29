@@ -5,9 +5,10 @@
 
 namespace Steins
 {
-	D3D11VertexBuffer::D3D11VertexBuffer(D3D11GraphicsDevice* _device, void* _vertices, UInt32 _size)
+	D3D11VertexBuffer::D3D11VertexBuffer(D3D11GraphicsDevice* _device, void* _vertices, UInt32 _size, const BufferLayout& _layout)
 	{
 		device = _device;
+		layout = _layout;
 
 		D3D11_BUFFER_DESC bufferDesc;
 		ZeroMemory(&bufferDesc, sizeof(bufferDesc));
@@ -26,6 +27,8 @@ namespace Steins
 
 		device->GetDevice()->CreateBuffer(&bufferDesc, &data, vertexBuffer.GetAddressOf());
 	}
+
+
 	D3D11VertexBuffer::~D3D11VertexBuffer()
 	{
 	}

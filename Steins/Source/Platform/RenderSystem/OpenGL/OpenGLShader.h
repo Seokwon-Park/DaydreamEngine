@@ -15,7 +15,7 @@ namespace Steins
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
 
-		virtual void* GetNativeHandle() const override { return reinterpret_cast<void*>(static_cast<uintptr_t>(shaderProgramID)); }
+		virtual void* GetNativeHandle() override { return reinterpret_cast<void*>(static_cast<uintptr_t>(shaderProgramID)); }
 
 		//virtual void SetMat4(const std::string& _name, const Matrix4x4& _value) override;
 	private:

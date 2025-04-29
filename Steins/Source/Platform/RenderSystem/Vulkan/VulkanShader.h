@@ -15,11 +15,12 @@ namespace Steins
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
+
+		virtual void* GetNativeHandle() override { return shader; }
 	private:
 		VulkanGraphicsDevice* device;
 		VkShaderModule shader;
 
 		// Inherited via Shader
-		void* GetNativeHandle() const override;
 	};
 }

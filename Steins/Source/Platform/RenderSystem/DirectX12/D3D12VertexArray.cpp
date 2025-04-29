@@ -3,6 +3,10 @@
 
 namespace Steins
 {
+	D3D12VertexArray::D3D12VertexArray(D3D12GraphicsDevice* _device)
+	{
+		device = _device;
+	}
 	D3D12VertexArray::~D3D12VertexArray()
 	{
 	}
@@ -17,5 +21,6 @@ namespace Steins
 	}
 	void D3D12VertexArray::SetIndexBuffer(const Shared<IndexBuffer>& _indexBuffer)
 	{
+		indexBuffer = _indexBuffer;
 	}
 }

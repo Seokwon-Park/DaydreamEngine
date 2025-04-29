@@ -21,6 +21,7 @@ namespace Steins
 	class Texture2D;
 	class ImGuiRenderer;
 	class VertexArray;
+	class BufferLayout;
 
 	class GraphicsDevice
 	{
@@ -31,7 +32,7 @@ namespace Steins
 		virtual void Shutdown() = 0;
 		virtual void Render() = 0;
 
-		virtual Shared<VertexBuffer> CreateVertexBuffer(Float32* _vertices, UInt32 _size) = 0;
+		virtual Shared<VertexBuffer> CreateVertexBuffer(Float32* _vertices, UInt32 _size, const BufferLayout& _layout) = 0;
 		virtual Shared<IndexBuffer> CreateIndexBuffer(UInt32* _indices, UInt32 _count) = 0;
 		virtual Shared<Framebuffer> CreateFramebuffer(FramebufferSpecification _spec) = 0;
 		virtual Shared<PipelineState> CreatePipelineState(PipelineStateDesc _desc)= 0;

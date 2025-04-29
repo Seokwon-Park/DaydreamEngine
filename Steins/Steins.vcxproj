@@ -132,11 +132,13 @@
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11VertexArray.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12Buffer.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12GraphicsDevice.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12ImGuiRenderer.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12PipelineState.h">
       <SubType>
       </SubType>
     </ClInclude>
     <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12RendererAPI.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12Shader.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12SwapChain.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12VertexArray.h" />
     <ClInclude Include="Source\Platform\RenderSystem\GraphicsUtil.h" />
@@ -660,11 +662,13 @@
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11VertexShader.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12Buffer.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12GraphicsDevice.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12ImGuiRenderer.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12PipelineState.cpp">
       <SubType>
       </SubType>
     </ClCompile>
     <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12RendererAPI.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12Shader.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12SwapChain.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12VertexArray.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\GraphicsUtil.cpp" />

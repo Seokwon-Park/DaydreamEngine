@@ -13,8 +13,7 @@ namespace Steins
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
 
-		virtual void* GetNativeHandle() const final;
-		Pair<std::string, std::string> GetCompileParam();
+		virtual void* GetNativeHandle() { return shaderBlob.Get(); }
 		//virtual void SetMat4(const std::string& _name, const Matrix4x4& _value) override;
 	protected:
 		D3D11GraphicsDevice* device;

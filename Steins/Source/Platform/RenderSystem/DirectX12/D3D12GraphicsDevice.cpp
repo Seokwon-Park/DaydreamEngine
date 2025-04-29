@@ -1,8 +1,13 @@
 #include "SteinsPCH.h"
 #include "D3D12GraphicsDevice.h"
+#include "D3D12Buffer.h"
 #include "D3D12RendererAPI.h"
 #include "D3D12Framebuffer.h"
+#include "D3D12Shader.h"
+#include "D3D12SwapChain.h"
 #include "D3D12PipelineState.h"
+#include "D3D12ImGuiRenderer.h"
+#include "D3D12VertexArray.h"
 #include "Platform/RenderSystem/GraphicsUtil.h"
 
 namespace Steins
@@ -70,9 +75,11 @@ namespace Steins
 				continue;
 			}
 
+			//이 어댑터로 Device를 만들 수 있는지 테스트한다.
 			hr = D3D12CreateDevice(dxgiAdapter.Get(), D3D_FEATURE_LEVEL_11_0, _uuidof(ID3D12Device), nullptr);
 			if (SUCCEEDED(hr))
 			{
+				//성공하면 빠져나온다.
 				isAdapterFound = true;
 				break;
 			}
@@ -105,6 +112,17 @@ namespace Steins
 
 		{
 			D3D12_DESCRIPTOR_HEAP_DESC desc;
+			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+			desc.NumDescriptors = 2;
+			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+			desc.NodeMask = 0;
+			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(rtvHeap.GetAddressOf()));
+			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create RTV descriptor heap");
+		}
+
+
+		{
+			D3D12_DESCRIPTOR_HEAP_DESC desc;
 			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 			desc.NumDescriptors = 64;
 			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
@@ -115,6 +133,8 @@ namespace Steins
 
 			commandList->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
 		}
+
+
 	
 
 		DXGI_ADAPTER_DESC3 adapterDescription; // Vendor
@@ -138,7 +158,7 @@ namespace Steins
 		std::string version;
 		version = major + "." + minor + "." + release + "." + build;
 
-		STEINS_CORE_INFO("DirectX11 Info:");
+		STEINS_CORE_INFO("DirectX12 Info:");
 		STEINS_CORE_INFO("  Vendor: {0}", GraphicsUtil::GetVendor(adapterDescription.VendorId));
 		STEINS_CORE_INFO("  Renderer: {0} {1} GB", videoCardDescription, std::round((double)adapterDescription.DedicatedVideoMemory/ (1<<30)));
 		STEINS_CORE_INFO("  Version: {0}", version);
@@ -165,34 +185,35 @@ namespace Steins
 	{
 	}
 
-	Shared<VertexBuffer> D3D12GraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size)
+	Shared<VertexBuffer> D3D12GraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, const BufferLayout& _layout)
 	{
-		return Shared<VertexBuffer>();
+		return MakeShared<D3D12VertexBuffer>(this, _vertices, _size, _layout);
+
 	}
 
 	Shared<IndexBuffer> D3D12GraphicsDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
 	{
-		return Shared<IndexBuffer>();
+		return MakeShared<D3D12IndexBuffer>(this, _indices, _count);
 	}
 
 	Shared<Framebuffer> D3D12GraphicsDevice::CreateFramebuffer(FramebufferSpecification _spec)
 	{
-		return Shared<Framebuffer>();
+		return MakeShared<D3D12Framebuffer>(this, _spec);
 	}
 
 	Shared<PipelineState> D3D12GraphicsDevice::CreatePipelineState(PipelineStateDesc _desc)
 	{
-		return Shared<PipelineState>();
+		return MakeShared<D3D12PipelineState>(this, _desc);
 	}
 
 	Shared<Shader> D3D12GraphicsDevice::CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode)
 	{
-		return Shared<Shader>();
+		return MakeShared<D3D12Shader>(this, _src, _type, _mode);
 	}
 
 	Shared<SwapChain> D3D12GraphicsDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
 	{
-		return Shared<SwapChain>();
+		return MakeShared<D3D12SwapChain>(this, _desc, _window);
 	}
 
 	Shared<Texture2D> D3D12GraphicsDevice::CreateTexture2D(const FilePath& _path)
@@ -202,12 +223,12 @@ namespace Steins
 
 	Unique<ImGuiRenderer> D3D12GraphicsDevice::CreateImGuiRenderer()
 	{
-		return Unique<ImGuiRenderer>();
+		return MakeUnique<D3D12ImGuiRenderer>(this);
 	}
 
 	Shared<VertexArray> D3D12GraphicsDevice::CreateVertexArray()
 	{
-		return Shared<VertexArray>();
+		return MakeShared<D3D12VertexArray>(this);
 	}
 
 	//void D3D12GraphicsDevice::WaitForGPU(IDXGISwapChain3* _swapChain)

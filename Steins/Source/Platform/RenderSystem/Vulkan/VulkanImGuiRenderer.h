@@ -1,7 +1,6 @@
 #pragma once
 
 #include "VulkanGraphicsDevice.h"
-#include "VulkanSwapChain.h"
 #include "Steins/ImGui/ImGuiRenderer.h"
 
 namespace Steins
@@ -17,7 +16,6 @@ namespace Steins
 		virtual void Render()override;
 	private:
 		VulkanGraphicsDevice* device;
-		VulkanSwapChain* swapChain;
 	};
 }
 

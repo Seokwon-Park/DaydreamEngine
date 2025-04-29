@@ -13,7 +13,6 @@ namespace Steins
 
 	void VulkanImGuiRenderer::Init(SteinsWindow* _window)
 	{
-		swapChain = (VulkanSwapChain*)_window->GetSwapchain();
 		ImGuiRenderer::Init(_window);
 		ImGui_ImplVulkan_InitInfo info{};
 		//info.ApiVersion =;

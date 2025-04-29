@@ -13,9 +13,14 @@ namespace Steins
 		D3D12PipelineState(D3D12GraphicsDevice* _device, PipelineStateDesc _desc);
 		virtual ~D3D12PipelineState();
 
+		virtual void Bind() const override;
 	protected:
 
 	private:
+		D3D12GraphicsDevice* device;
+		ComPtr<ID3D12RootSignature> rootSignature;
+		ComPtr<ID3D12PipelineState> pipeline;
+
 
 	};
 }

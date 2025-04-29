@@ -257,6 +257,27 @@ namespace Steins
 		default: return VK_FORMAT_UNDEFINED;
 		}
 	}
+	DXShaderCompileParam GraphicsUtil::GetDXShaderCompileParam(ShaderType _type)
+	{
+		switch (_type)
+		{
+		case ShaderType::None:
+		{
+			STEINS_CORE_ASSERT(false, "Invalid type");
+			return DXShaderCompileParam();
+		}
+		case ShaderType::Vertex:return { "VSMain","vs_5_0" };
+		case ShaderType::Hull:return { "HSMain","hs_5_0" };
+		case ShaderType::Domain:return { "DSMain","ds_5_0" };
+		case ShaderType::Geometry:return { "GSMain","gs_5_0" };
+		case ShaderType::Pixel:return { "PSMain","ps_5_0" };
+		case ShaderType::Compute:return { "CSMain","cs_5_0" };
+		default:
+			break;
+		}
+		STEINS_CORE_ASSERT(false, "Invalid type");
+		return DXShaderCompileParam();
+	}
 	std::map<ShaderType, VkShaderStageFlagBits> GraphicsUtil::vulkanShaderStageMap =
 	{
 		{ ShaderType::Vertex, VK_SHADER_STAGE_VERTEX_BIT },
@@ -266,7 +287,7 @@ namespace Steins
 		{ ShaderType::Pixel,VK_SHADER_STAGE_FRAGMENT_BIT}
 	};
 
-	std::map<ShaderType, GLenum> GraphicsUtil::openGLShaderTypeMap = 
+	std::map<ShaderType, GLenum> GraphicsUtil::openGLShaderTypeMap =
 	{
 		{ ShaderType::Vertex, GL_VERTEX_SHADER },
 		{ ShaderType::Hull, GL_TESS_CONTROL_SHADER },

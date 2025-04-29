@@ -2,6 +2,8 @@
 
 #include "Steins/Render/Swapchain.h"
 #include "D3D12GraphicsDevice.h"
+#include "D3D12Framebuffer.h"
+
 
 namespace Steins
 {
@@ -17,6 +19,8 @@ namespace Steins
 
 		void WaitForGPU();
 		void MoveToNextFrame();
+
+		inline IDXGISwapChain3* GetDXGISwapChain() { return swapChain.Get(); }
 	private:
 		D3D12GraphicsDevice* device;
 		ComPtr<IDXGISwapChain3> swapChain;

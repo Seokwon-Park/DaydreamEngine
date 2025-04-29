@@ -50,9 +50,10 @@ namespace Steins
 	{
 	}
 
-	Shared<VertexBuffer> OpenGLGraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size)
+
+	Shared<VertexBuffer> OpenGLGraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, const BufferLayout& _layout)
 	{
-		return MakeShared<OpenGLVertexBuffer>(_vertices, _size);
+		return MakeShared<OpenGLVertexBuffer>(_vertices, _size, _layout);
 	}
 
 	Shared<IndexBuffer> OpenGLGraphicsDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)

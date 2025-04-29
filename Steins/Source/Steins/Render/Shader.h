@@ -13,7 +13,7 @@ namespace Steins
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
-		virtual void* GetNativeHandle() const = 0;
+		virtual void* GetNativeHandle() = 0;
 		//virtual void SetVertexArray(Shared<VertexArray> _vertexArray) { vertexArray = _vertexArray.get(); };
 
 		//virtual void SetMat4(const std::string& _name, const Matrix4x4& _value) = 0;

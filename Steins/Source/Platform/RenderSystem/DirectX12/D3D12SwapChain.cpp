@@ -47,6 +47,9 @@ namespace Steins
 		}
 
 		swapChain1->QueryInterface(swapChain.GetAddressOf());
+
+		backFramebuffer = MakeShared<D3D12Framebuffer>(device, this);
+
 		frameIndex = swapChain->GetCurrentBackBufferIndex();
 
 		fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
@@ -72,8 +75,8 @@ namespace Steins
 	void D3D12SwapChain::SwapBuffers()
 	{
 		swapChain->Present(desc.isVSync, 0);
-
 		MoveToNextFrame();
+
 	}
 	void D3D12SwapChain::WaitForGPU()
 	{

@@ -134,9 +134,10 @@ namespace Steins
 	{
 	}
 
-	Shared<VertexBuffer> D3D11GraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size)
+
+	Shared<VertexBuffer> D3D11GraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, const BufferLayout& _layout)
 	{
-		return MakeShared<D3D11VertexBuffer>(this, _vertices, _size);
+		return MakeShared<D3D11VertexBuffer>(this, _vertices, _size, _layout);
 	}
 
 	Shared<IndexBuffer> D3D11GraphicsDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)

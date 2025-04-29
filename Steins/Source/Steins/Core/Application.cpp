@@ -37,6 +37,7 @@ namespace Steins
 		mainWindow->SetVSync(true);
 
 		graphicsDevice = GraphicsDevice::Create(_specification.rendererAPI);
+		STEINS_CORE_ASSERT(graphicsDevice, "Failed to create graphics device!");
 		graphicsDevice->Init();
 
 		//TODO : 더 좋은 방법?

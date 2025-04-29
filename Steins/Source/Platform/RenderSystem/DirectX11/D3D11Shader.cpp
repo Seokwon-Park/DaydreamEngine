@@ -2,6 +2,7 @@
 #include "D3D11Shader.h"
 
 #include "D3D11GraphicsDevice.h"
+#include "Platform/RenderSystem/GraphicsUtil.h"
 
 namespace Steins
 {
@@ -33,13 +34,13 @@ namespace Steins
 	{
 		device = _device;
 		type = _type;
-		Pair<std::string, std::string> targetEntryPair = GetCompileParam();
+		DXShaderCompileParam param = GraphicsUtil::GetDXShaderCompileParam(type);
 		HRESULT hr;
 		switch (_mode)
 		{
 		case ShaderLoadMode::Source:
 		{
-			hr = D3DCompile(_src.c_str(), _src.size(), nullptr, nullptr, nullptr, targetEntryPair.second.c_str(), targetEntryPair.first.c_str(), 0, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
+			hr = D3DCompile(_src.c_str(), _src.size(), nullptr, nullptr, nullptr, param.entryPoint.c_str(), param.target.c_str(), 0, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
 			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
 			break;
 		}
@@ -47,7 +48,7 @@ namespace Steins
 		{
 			FilePath path = FilePath(_src);
 			STEINS_CORE_INFO(path.GetCurrentPath());
-			hr = D3DCompileFromFile(path.ToCStr(), nullptr, nullptr, targetEntryPair.second.c_str(), targetEntryPair.first.c_str(), 0, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
+			hr = D3DCompileFromFile(path.ToCStr(), nullptr, nullptr, param.entryPoint.c_str(), param.target.c_str(), 0, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
 			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
 			break;
 		}
@@ -67,31 +68,8 @@ namespace Steins
 	{
 	}
 
-	void* D3D11Shader::GetNativeHandle() const
-	{
-		return shaderBlob.Get();
-	}
 
-	Pair<std::string, std::string> D3D11Shader::GetCompileParam()
-	{
-		switch (type)
-		{
-		case ShaderType::None:
-		{
-			STEINS_CORE_ASSERT(false, "Invalid type");
-			return Pair<std::string, std::string>();
-		}
-		case ShaderType::Vertex:return MakePair<std::string, std::string>("vs_5_0", "VSMain");
-		case ShaderType::Hull:return MakePair<std::string, std::string>("hs_5_0", "HSMain");
-		case ShaderType::Domain:return MakePair<std::string, std::string>("ds_5_0", "DSMain");
-		case ShaderType::Geometry:return MakePair<std::string, std::string>("gs_5_0", "GSMain");
-		case ShaderType::Pixel:return MakePair<std::string, std::string>("ps_5_0", "PSMain");
-		case ShaderType::Compute:return MakePair<std::string, std::string>("cs_5_0", "CSMain");
-		default:
-			break;
-		}
-		return Pair<std::string, std::string>();
-	}
+
 
 		//HRESULT hr = D3DCompile(
 		//	_src.c_str(),

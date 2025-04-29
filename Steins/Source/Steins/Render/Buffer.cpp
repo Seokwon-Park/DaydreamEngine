@@ -12,9 +12,13 @@
 
 namespace Steins
 {
-	Shared<VertexBuffer> VertexBuffer::Create(Float32* _vertices, UInt32 _size)
+	/*Shared<VertexBuffer> VertexBuffer::Create(Float32* _vertices, UInt32 _size)
 	{
 		return Application::GetGraphicsDevice()->CreateVertexBuffer(_vertices, _size);
+	}*/
+	Shared<VertexBuffer> VertexBuffer::Create(Float32* _vertices, UInt32 _size, const BufferLayout& _layout)
+	{
+		return Application::GetGraphicsDevice()->CreateVertexBuffer(_vertices, _size, _layout);
 	}
 	Shared<IndexBuffer> IndexBuffer::Create(UInt32* _indices, UInt32 _size)
 	{

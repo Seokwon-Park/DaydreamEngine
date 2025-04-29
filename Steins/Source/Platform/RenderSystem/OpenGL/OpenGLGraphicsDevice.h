@@ -15,7 +15,7 @@ namespace Steins
 		virtual void Shutdown() override;
 		virtual void Render() override;
 
-		virtual Shared<VertexBuffer> CreateVertexBuffer(Float32* _vertices, UInt32 _size) override;
+		virtual Shared<VertexBuffer> CreateVertexBuffer(Float32* _vertices, UInt32 _size, const BufferLayout& _layout) override;
 		virtual Shared<IndexBuffer> CreateIndexBuffer(UInt32* _indices, UInt32 _count) override;
 		virtual Shared<Framebuffer> CreateFramebuffer(FramebufferSpecification _spec)override;
 		virtual Shared<PipelineState> CreatePipelineState(PipelineStateDesc _desc)override;

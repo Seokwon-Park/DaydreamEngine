@@ -9,12 +9,14 @@ namespace Steins {
 	// VertexBuffer /////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////
 
-	OpenGLVertexBuffer::OpenGLVertexBuffer(Float32* _vertices, UInt32 _size)
+	OpenGLVertexBuffer::OpenGLVertexBuffer(Float32* _vertices, UInt32 _size, const BufferLayout& _layout)
 	{
+		layout = _layout;
 		glCreateBuffers(1, &rendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, rendererID);
 		glBufferData(GL_ARRAY_BUFFER, _size, _vertices, GL_STATIC_DRAW);
 	}
+
 
 	OpenGLVertexBuffer::~OpenGLVertexBuffer()
 	{

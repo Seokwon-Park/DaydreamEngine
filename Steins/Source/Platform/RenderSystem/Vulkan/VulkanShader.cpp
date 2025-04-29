@@ -52,8 +52,5 @@ namespace Steins
 	void VulkanShader::Unbind() const
 	{
 	}
-	void* VulkanShader::GetNativeHandle() const
-	{
-		return shader;
-	}
+
 }

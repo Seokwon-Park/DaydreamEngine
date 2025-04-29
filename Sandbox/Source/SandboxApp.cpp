@@ -11,8 +11,8 @@ public :
 		//dx11 default(cw), gl default(ccw)
 		float vertices[3 * 7] = {
 			-0.5f, -0.5f, 0.0f, 1.0f,0.0f,0.0f,1.0f,
+			 0.0f,  0.5f, 0.0f,0.0f,0.0f,1.0f,1.0f,
 			 0.5f, -0.5f, 0.0f,0.0f,1.0f,0.0f,1.0f,
-			 0.0f,  0.5f, 0.0f,0.0f,0.0f,1.0f,1.0f
 		};
 		// 
 		// 
@@ -24,19 +24,21 @@ public :
 ////
 		va = Steins::VertexArray::Create();
 
-		vb = Steins::VertexBuffer::Create(vertices, sizeof(vertices));
 		Steins::BufferLayout layout = {
 			{ Steins::ShaderDataType::Float3, "a_Position", "POSITION"},
 			{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"}
 		};
+		vb = Steins::VertexBuffer::Create(vertices, sizeof(vertices), layout);
+
 		vb->SetLayout(layout);
 		va->AddVertexBuffer(vb);
 //
-		unsigned int indices[3] = { 2, 1, 0 };
+		unsigned int indices[3] = { 0, 1, 2 };
 		ib = Steins::IndexBuffer::Create(indices, 3);
 		va->SetIndexBuffer(ib);
 
-		if (Steins::Renderer::GetAPI() == Steins::RendererAPIType::DirectX11)
+		if (Steins::Renderer::GetAPI() == Steins::RendererAPIType::DirectX11 || 
+			Steins::Renderer::GetAPI() == Steins::RendererAPIType::DirectX12)
 		{
 			std::string vertexSrc = R"(
 struct VSInput
@@ -199,7 +201,7 @@ Steins::Application* Steins::CreateApplication()
 	ApplicationSpecification spec;
 	spec.Name = "Sandbox";
 	spec.WorkingDirectory = "../Lab";
-	spec.rendererAPI = RendererAPIType::Vulkan;
+	spec.rendererAPI = RendererAPIType::DirectX12;
 
 	return new Sandbox(spec);
 }

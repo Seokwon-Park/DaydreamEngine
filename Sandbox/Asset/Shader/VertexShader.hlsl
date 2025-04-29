@@ -1,20 +1,17 @@
-struct VSInput
-{
-    float3 position : POSITION;
-    float4 color : COLOR0;
-};
-
-struct VSOutput
+struct PSInput
 {
     float4 position : SV_Position;
     float4 color : COLOR0;
 };
 
-VSOutput VSMain(VSInput input)
+struct PSOutput
 {
-    VSOutput output = (VSOutput) 0;
-    output.position = float4(input.position, 1.0); // 월드 변환 생략
+    float4 color : SV_Target0;
+};
+
+PSOutput PSMain(PSInput input)
+{
+    PSOutput output = (PSOutput) 0;
     output.color = input.color;
     return output;
 }
-		)";
