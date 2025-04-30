@@ -133,9 +133,17 @@ PSOutput PSMain(PSInput input)
 			vs = Steins::Shader::Create("Asset/Shader/QuadEasyVS.spv", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
 			ps = Steins::Shader::Create("Asset/Shader/QuadPS.spv", Steins::ShaderType::Pixel, Steins::ShaderLoadMode::File);
 		}
+
+		Steins::BufferLayout inputlayout = {
+			{ Steins::ShaderDataType::Float3, "a_Position", "POSITION"},
+			{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"}
+		};
+
 		Steins::PipelineStateDesc desc;
 		desc.vertexShader = vs;
 		desc.pixelShader = ps;
+		desc.inputLayout = inputlayout;
+	
 		pso = Steins::PipelineState::Create(desc);
 	}
 

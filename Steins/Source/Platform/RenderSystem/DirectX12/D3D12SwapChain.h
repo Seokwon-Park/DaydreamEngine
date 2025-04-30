@@ -20,14 +20,17 @@ namespace Steins
 		void WaitForGPU();
 		void MoveToNextFrame();
 
+		UInt32 GetBackbufferIndex() { return frameIndex; }
+
 		inline IDXGISwapChain3* GetDXGISwapChain() { return swapChain.Get(); }
 	private:
 		D3D12GraphicsDevice* device;
 		ComPtr<IDXGISwapChain3> swapChain;
 
+		Shared<D3D12Framebuffer> internalBuffer;
 		Int32 frameIndex = 0;
 		ComPtr<ID3D12Fence> fence;
-		UINT64 fenceValues[2];
+		std::vector<UINT64> fenceValues;
 		HANDLE fenceEvent; // a handle to an event when our fence is unlocked by the gpu
 	};
 }

@@ -17,6 +17,9 @@ namespace Steins
 	class GraphicsUtil
 	{
 	public:
+		static DXGI_FORMAT ShaderDataTypeToDXGIFormat(ShaderDataType type);
+
+
 		static DXGI_FORMAT RenderFormatToDXGIFormat(RenderFormat _format);
 		static VkFormat RenderFormatToVkFormat(RenderFormat _format);
 

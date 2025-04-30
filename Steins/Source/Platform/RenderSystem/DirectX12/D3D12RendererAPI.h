@@ -9,7 +9,7 @@ namespace Steins
 	class D3D12RendererAPI : public RendererAPI
 	{
 	public:
-		D3D12RendererAPI(GraphicsDevice* _device);
+		D3D12RendererAPI(D3D12GraphicsDevice* _device);
 
 		virtual void Init() override;
 		virtual void SetClearColor(const Color& _color) override;

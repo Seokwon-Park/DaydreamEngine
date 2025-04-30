@@ -31,6 +31,8 @@ namespace Steins
 		swapchainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
 		swapchainDesc.Flags = 0;
 
+		fenceValues.resize(_desc->bufferCount);
+
 		ComPtr<IDXGISwapChain1> swapChain1;
 		HRESULT hr = device->GetFactory()->CreateSwapChainForHwnd(
 			device->GetCommandQueue(),
@@ -40,18 +42,14 @@ namespace Steins
 			swapChain1.GetAddressOf()
 		);
 
-		hr = device->GetDevice()->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fence.GetAddressOf()));
-		for (UINT i = 0; i < swapchainDesc.BufferCount; i++)
-		{
-			fenceValues[i] = 0; // set the initial fence value to 0
-		}
-
 		swapChain1->QueryInterface(swapChain.GetAddressOf());
-
-		backFramebuffer = MakeShared<D3D12Framebuffer>(device, this);
-
 		frameIndex = swapChain->GetCurrentBackBufferIndex();
 
+		internalBuffer = MakeShared<D3D12Framebuffer>(device, this);
+		backFramebuffer = internalBuffer;
+
+		hr = device->GetDevice()->CreateFence(fenceValues[frameIndex], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fence.GetAddressOf()));
+		fenceValues[frameIndex]++; // 초기 값 증가
 		fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
 		if (fenceEvent == nullptr)
 		{
@@ -60,8 +58,20 @@ namespace Steins
 
 		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create swapChain!");
 
+		device->GetCommandAllocator(frameIndex)->Reset();
+		device->GetCommandList()->Reset(device->GetCommandAllocator(frameIndex), nullptr);
+		ID3D12DescriptorHeap* srvheap[] = { device->GetSRVHeap() };
+		device->GetCommandList()->SetDescriptorHeaps(1, &srvheap[0]);
 
+		D3D12_RESOURCE_BARRIER barr{};
 
+		barr.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barr.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barr.Transition.pResource = internalBuffer->GetRenderTargets()[frameIndex].Get();
+		barr.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+		barr.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		device->GetCommandList()->ResourceBarrier(1, &barr);
 	}
 	D3D12SwapChain::~D3D12SwapChain()
 	{
@@ -74,11 +84,56 @@ namespace Steins
 
 	void D3D12SwapChain::SwapBuffers()
 	{
-		//device->GetCommandList()->Close();
-		//ID3D12CommandList* commandLists[] = { device->GetCommandList() };
-		//device->GetCommandQueue()->ExecuteCommandLists(1, commandLists);
+
+		D3D12_VIEWPORT viewport = {};
+		viewport.Width = static_cast<float>(desc.width);
+		viewport.Height = static_cast<float>(desc.height);
+		viewport.MinDepth = 0.0f;
+		viewport.MaxDepth = 1.0f;
+		viewport.TopLeftX = 0;
+		viewport.TopLeftY = 0;
+		device->GetCommandList()->RSSetViewports(1, &viewport);
+
+		D3D12_RECT scissorRect = {};
+		scissorRect.left = 0;
+		scissorRect.top = 0;
+		scissorRect.right = static_cast<LONG>(desc.width);
+		scissorRect.bottom = static_cast<LONG>(desc.height);
+		device->GetCommandList()->RSSetScissorRects(1, &scissorRect);
+
+		D3D12_RESOURCE_BARRIER barr{};
+
+		barr.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barr.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barr.Transition.pResource = internalBuffer->GetRenderTargets()[frameIndex].Get();
+		barr.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+		barr.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		device->GetCommandList()->ResourceBarrier(1, &barr);
+
+		device->GetCommandList()->Close();
+		ID3D12CommandList* commandLists[] = { device->GetCommandList() };
+
+		device->GetCommandQueue()->ExecuteCommandLists(1, commandLists);
 		swapChain->Present(desc.isVSync, 0);
+
 		MoveToNextFrame();
+
+		device->GetCommandAllocator(frameIndex)->Reset();
+		device->GetCommandList()->Reset(device->GetCommandAllocator(frameIndex), nullptr);
+		ID3D12DescriptorHeap* srvHeap = device->GetSRVHeap();
+		device->GetCommandList()->SetDescriptorHeaps(1, &srvHeap);
+
+		barr.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barr.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barr.Transition.pResource = internalBuffer->GetRenderTargets()[frameIndex].Get();
+		barr.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+		barr.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		device->GetCommandList()->ResourceBarrier(1, &barr);
+
+		backFramebuffer->Clear(Color(1.0f, 0.3f, 0.0f, 1.0f));
+		backFramebuffer->Bind();
 
 	}
 	void D3D12SwapChain::WaitForGPU()
@@ -98,16 +153,17 @@ namespace Steins
 	void D3D12SwapChain::MoveToNextFrame()
 	{
 		const UINT64 currentFenceValue = fenceValues[frameIndex];
-		device->GetCommandQueue()->Signal(fence.Get(), fenceValues[frameIndex]);
+		HRESULT hr = device->GetCommandQueue()->Signal(fence.Get(), currentFenceValue);
+		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to signal!");
 
 		frameIndex = swapChain->GetCurrentBackBufferIndex();
+		internalBuffer->UpdateFrameIndex(frameIndex);
 
 		if (fence->GetCompletedValue() < fenceValues[frameIndex])
 		{
 			fence->SetEventOnCompletion(fenceValues[frameIndex], fenceEvent);
-			WaitForSingleObject(fenceEvent, INFINITE);
+			WaitForSingleObjectEx(fenceEvent, INFINITE, FALSE);
 		}
-
 		fenceValues[frameIndex] = currentFenceValue + 1;
 	}
 }

@@ -32,6 +32,20 @@ namespace Steins
 		default:
 			break;
 		}
+		//std::ifstream fin(file, std::ios::binary);
+
+		//fin.seekg(0, std::ios_base::end);
+		//std::ifstream::pos_type size = (int)fin.tellg();
+		//fin.seekg(0, std::ios_base::beg);
+
+		//ComPtr<ID3DBlob> blob;
+		//ThrowIfFailed(D3DCreateBlob(size, blob.GetAddressOf()));
+
+		//fin.read((char*)blob->GetBufferPointer(), size);
+		//fin.close();
+
+		//return blob;
+
 		shaderByteCode.pShaderBytecode = shaderBlob->GetBufferPointer();
 		shaderByteCode.BytecodeLength = shaderBlob->GetBufferSize();
 

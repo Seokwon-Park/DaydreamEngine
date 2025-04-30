@@ -11,6 +11,8 @@ namespace Steins
 		virtual void Shutdown();
 		virtual void NewFrame();
 		virtual void Render();
+	private:
+		SteinsWindow* mainWindow;
 	};
 }
 

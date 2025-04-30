@@ -3,6 +3,26 @@
 
 namespace Steins
 {
+	DXGI_FORMAT GraphicsUtil::ShaderDataTypeToDXGIFormat(ShaderDataType type)
+	{
+		switch (type)
+		{
+		case ShaderDataType::Float:    return DXGI_FORMAT_R32_FLOAT;
+		case ShaderDataType::Float2:   return DXGI_FORMAT_R32G32_FLOAT;
+		case ShaderDataType::Float3:   return DXGI_FORMAT_R32G32B32_FLOAT;
+		case ShaderDataType::Float4:   return DXGI_FORMAT_R32G32B32A32_FLOAT;
+		case ShaderDataType::Int:      return DXGI_FORMAT_R32_SINT;
+		case ShaderDataType::Int2:     return DXGI_FORMAT_R32G32_SINT;
+		case ShaderDataType::Int3:     return DXGI_FORMAT_R32G32B32_SINT;
+		case ShaderDataType::Int4:     return DXGI_FORMAT_R32G32B32A32_SINT;
+		case ShaderDataType::Mat3x3:     return DXGI_FORMAT_UNKNOWN;
+		case ShaderDataType::Mat4x4:     return DXGI_FORMAT_UNKNOWN;
+		case ShaderDataType::Bool:     return DXGI_FORMAT_UNKNOWN;
+		}
+
+		STEINS_CORE_ASSERT(false, "Unknown ShaderDataType!");
+		return DXGI_FORMAT_UNKNOWN;
+	}
 	DXGI_FORMAT GraphicsUtil::RenderFormatToDXGIFormat(RenderFormat _format)
 	{
 		switch (_format)

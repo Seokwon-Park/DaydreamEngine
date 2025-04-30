@@ -1,24 +1,9 @@
 #pragma once
 
+#include "Steins/Enum/RendererEnums.h"
 
 namespace Steins
 {
-	enum class ShaderDataType
-	{
-		None = 0,
-		Float,
-		Float2,
-		Float3,
-		Float4,
-		Int,
-		Int2,
-		Int3,
-		Int4,
-		Mat3x3,
-		Mat4x4,
-		Bool
-	};
-
 	static UInt32 ShaderDataTypeSize(ShaderDataType type)
 	{
 		switch (type)

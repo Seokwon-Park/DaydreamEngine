@@ -9,6 +9,7 @@ namespace Steins
 		layout = _layout;
 		D3D12_HEAP_PROPERTIES props{};
 		props.Type = D3D12_HEAP_TYPE_UPLOAD;
+
 		D3D12_RESOURCE_DESC desc{};
 		desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 		desc.Alignment = 0;
@@ -35,7 +36,7 @@ namespace Steins
 		device->GetDevice()->CreateCommittedResource(&props,
 			D3D12_HEAP_FLAG_NONE,
 			&desc,
-			D3D12_RESOURCE_STATE_COPY_DEST,
+			D3D12_RESOURCE_STATE_COMMON,
 			nullptr,
 			IID_PPV_ARGS(vertexBuffer.GetAddressOf())
 		);
@@ -45,7 +46,7 @@ namespace Steins
 		memcpy(data, _vertices, _size);
 		uploadBuffer.Get()->Unmap(0, nullptr);
 
-		device->GetCommandList()->CopyResource(vertexBuffer.Get(), uploadBuffer.Get());
+		device->GetCommandList()->CopyBufferRegion(vertexBuffer.Get(), 0, uploadBuffer.Get(), 0, _size);
 
 		D3D12_RESOURCE_BARRIER barrier;
 		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -60,7 +61,6 @@ namespace Steins
 		vertexBufferView.BufferLocation = vertexBuffer->GetGPUVirtualAddress();
 		vertexBufferView.SizeInBytes = (UINT)_size;
 		vertexBufferView.StrideInBytes = layout.GetStride();
-
 	}
 	void D3D12VertexBuffer::Bind() const
 	{
@@ -103,7 +103,7 @@ namespace Steins
 		device->GetDevice()->CreateCommittedResource(&props,
 			D3D12_HEAP_FLAG_NONE,
 			&desc,
-			D3D12_RESOURCE_STATE_COPY_DEST,
+			D3D12_RESOURCE_STATE_COMMON,
 			nullptr,
 			IID_PPV_ARGS(indexBuffer.GetAddressOf())
 		);
@@ -113,7 +113,7 @@ namespace Steins
 		memcpy(data, _indices, sizeof(UInt32) * _indexCount);
 		uploadBuffer.Get()->Unmap(0, nullptr);
 
-		device->GetCommandList()->CopyResource(indexBuffer.Get(), uploadBuffer.Get());
+		device->GetCommandList()->CopyBufferRegion(indexBuffer.Get(),0, uploadBuffer.Get(), 0, sizeof(UInt32) * _indexCount);
 
 		D3D12_RESOURCE_BARRIER barrier;
 		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -131,6 +131,8 @@ namespace Steins
 	}
 	void D3D12IndexBuffer::Bind() const
 	{
+		device->GetCommandList()->IASetIndexBuffer(&indexBufferView);
+
 	}
 	void D3D12IndexBuffer::Unbind() const
 	{

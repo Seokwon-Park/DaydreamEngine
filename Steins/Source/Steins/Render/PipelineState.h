@@ -13,6 +13,7 @@ namespace Steins
 		Shared<Shader> pixelShader = nullptr;
 		//Shared<Shader> computeShader; //??
 
+		BufferLayout inputLayout;
 		//InputLayoutDesc inputLayout;
 		//Shared<ResourceBindingLayout> resourceBindingLayout; // RootSignature/PipelineLayout
 		//RasterizerDesc rasterizerState;

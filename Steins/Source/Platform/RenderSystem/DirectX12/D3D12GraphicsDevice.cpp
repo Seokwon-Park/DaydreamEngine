@@ -96,33 +96,32 @@ namespace Steins
 			ZeroMemory(&desc, sizeof(desc));
 			desc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
 			desc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-			device->CreateCommandQueue(&desc, IID_PPV_ARGS(&commandQueue));
+			device->CreateCommandQueue(&desc, IID_PPV_ARGS(commandQueue.GetAddressOf()));
 
 			for (int i = 0; i < 2; i++)
 			{
-				HRESULT hr = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(commandAllocator[i].GetAddressOf()));
+				HRESULT hr = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(commandAllocators[i].GetAddressOf()));
 				STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create command allocator {0}", i);
 			}
 			
 
-			device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator[0].Get(), nullptr, IID_PPV_ARGS(commandList.GetAddressOf()));
+			device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocators[0].Get(), nullptr, IID_PPV_ARGS(commandList.GetAddressOf()));
 
-			//commandList->Close();
+			commandList->Close();
 		}
 
 		{
-			D3D12_DESCRIPTOR_HEAP_DESC desc;
-			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+			D3D12_DESCRIPTOR_HEAP_DESC desc{};
 			desc.NumDescriptors = 2;
+			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-			desc.NodeMask = 0;
 			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(rtvHeap.GetAddressOf()));
 			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create RTV descriptor heap");
 		}
 
 
 		{
-			D3D12_DESCRIPTOR_HEAP_DESC desc;
+			D3D12_DESCRIPTOR_HEAP_DESC desc{};
 			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 			desc.NumDescriptors = 64;
 			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
@@ -130,8 +129,6 @@ namespace Steins
 			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(srvHeap.GetAddressOf()));
 			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create SRV descriptor heap");
 			srvHeapAlloc.Create(device.Get(), srvHeap.Get());
-
-			commandList->SetDescriptorHeaps(1, srvHeap.GetAddressOf());
 		}
 
 

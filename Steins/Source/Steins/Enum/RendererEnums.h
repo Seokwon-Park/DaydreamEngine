@@ -165,6 +165,22 @@ namespace Steins
         TriangleStrip
     };
 
+    enum class ShaderDataType
+    {
+        None = 0,
+        Float,
+        Float2,
+        Float3,
+        Float4,
+        Int,
+        Int2,
+        Int3,
+        Int4,
+        Mat3x3,
+        Mat4x4,
+        Bool
+    };
+
     enum class ShaderLoadMode
     {
         Source,

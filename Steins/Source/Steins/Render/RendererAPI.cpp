@@ -15,7 +15,7 @@ namespace Steins
 		case RendererAPIType::None:break;
 		case RendererAPIType::OpenGL: return new OpenGLRendererAPI();
 		case RendererAPIType::DirectX11:return new D3D11RendererAPI(_device);
-		case RendererAPIType::DirectX12:return new D3D12RendererAPI(_device);
+		case RendererAPIType::DirectX12:return new D3D12RendererAPI(Cast<D3D12GraphicsDevice>(_device));
 		case RendererAPIType::Vulkan: return new VulkanRendererAPI(_device);
 		case RendererAPIType::Metal:
 		default:return nullptr;

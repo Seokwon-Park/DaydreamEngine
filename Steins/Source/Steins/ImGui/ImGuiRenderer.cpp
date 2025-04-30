@@ -145,88 +145,49 @@ namespace Steins
 
 
 
-void ImGuiRenderer::Init(SteinsWindow* _window)
-{
-	GLFWwindow* window = (GLFWwindow*)_window->GetNativeWindow();
-	switch (Application::GetGraphicsDevice()->GetAPI())
+	void ImGuiRenderer::Init(SteinsWindow* _window)
 	{
-	case RendererAPIType::None:
-		STEINS_CORE_ERROR("None API is not supported");
-		break;
-	case RendererAPIType::OpenGL:
-		ImGui_ImplGlfw_InitForOpenGL(window,true);
-		break;
-	case RendererAPIType::DirectX11:
-		ImGui_ImplGlfw_InitForOther(window, true);
-		break;
-	case RendererAPIType::DirectX12:
-		ImGui_ImplGlfw_InitForOther(window, true);
-		break;
-	case RendererAPIType::Vulkan:
-		ImGui_ImplGlfw_InitForVulkan(window, true);
-		break;
-	case RendererAPIType::Metal:
-		ImGui_ImplGlfw_InitForOther(window, true);
-		break;
-	default:
-		break;
+		mainWindow = _window;
+		GLFWwindow* window = (GLFWwindow*)_window->GetNativeWindow();
+		switch (Application::GetGraphicsDevice()->GetAPI())
+		{
+		case RendererAPIType::None:
+			STEINS_CORE_ERROR("None API is not supported");
+			break;
+		case RendererAPIType::OpenGL:
+			ImGui_ImplGlfw_InitForOpenGL(window, true);
+			break;
+		case RendererAPIType::DirectX11:
+			ImGui_ImplGlfw_InitForOther(window, true);
+			break;
+		case RendererAPIType::DirectX12:
+			ImGui_ImplGlfw_InitForOther(window, true);
+			break;
+		case RendererAPIType::Vulkan:
+			ImGui_ImplGlfw_InitForVulkan(window, true);
+			break;
+		case RendererAPIType::Metal:
+			ImGui_ImplGlfw_InitForOther(window, true);
+			break;
+		default:
+			break;
+		}
 	}
-}
 
-void ImGuiRenderer::Shutdown()
-{
-	ImGui_ImplGlfw_Shutdown();
+	void ImGuiRenderer::Shutdown()
+	{
+		ImGui_ImplGlfw_Shutdown();
 
-}
+	}
 
-void ImGuiRenderer::NewFrame()
-{
-	ImGui_ImplGlfw_NewFrame();
-}
+	void ImGuiRenderer::NewFrame()
+	{
+		ImGui_ImplGlfw_NewFrame();
+	}
 
-void ImGuiRenderer::Render()
+	void ImGuiRenderer::Render()
 	{
 		ImGui::Render();
-	}
-
-	//void ImGuiRenderer::Render()
-			//{
-			//	ImGui::Render();
-			//	switch (Renderer::GetAPI())
-			//	{
-			//	case RendererAPIType::OpenGL:
-			//	{
-			//		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-			//		break;
-			//	}
-			//	case RendererAPIType::DirectX11:
-			//	{
-			//		//D3D11GraphicsDevice* device = Application::GetGraphicsDevice()->Get<D3D11GraphicsDevice>();
-			//		//Application::GetInstance().GetMainWindow().GetSwapchain()->GetBackFramebuffer()->Bind();
-			//		//auto rtvs = device->
-			//		//device->GetContext()->OMSetRenderTargets(1, , nullptr);
-			//		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-			//		break;
-			//	}
-			//	case RendererAPIType::DirectX12:
-			//	{
-			//		Application& app = Application::GetInstance();
-			//		D3D12GraphicsDevice* device = app.GetGraphicsDevice()->Get<D3D12GraphicsDevice>();
-			//		ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), device->GetCommandList());
-			//		break;
-			//	}
-			//	case RendererAPIType::Vulkan:
-			//	{
-			//		//ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(),);
-			//		break;
-			//	}
-			//	case RendererAPIType::Metal:
-			//	{
-			//		//ImGui_ImplMetal_
-			//		break;
-			//	}
-			//	default:
-			//		break;
-			//	}
-			//}
+		mainWindow->GetSwapchain()->GetBackFramebuffer()->Bind();
+	}		
 }

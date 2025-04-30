@@ -3,29 +3,11 @@
 #include "D3D11Buffer.h"
 
 #include "D3D11GraphicsDevice.h"
+#include "Platform/RenderSystem/GraphicsUtil.h"
 
 namespace Steins
 {
-	static DXGI_FORMAT ShaderDataTypeToDXGIFormat(ShaderDataType type)
-	{
-		switch (type)
-		{
-		case Steins::ShaderDataType::Float:    return DXGI_FORMAT_R32_FLOAT;
-		case Steins::ShaderDataType::Float2:   return DXGI_FORMAT_R32G32_FLOAT;
-		case Steins::ShaderDataType::Float3:   return DXGI_FORMAT_R32G32B32_FLOAT;
-		case Steins::ShaderDataType::Float4:   return DXGI_FORMAT_R32G32B32A32_FLOAT;
-		case Steins::ShaderDataType::Int:      return DXGI_FORMAT_R32_SINT;
-		case Steins::ShaderDataType::Int2:     return DXGI_FORMAT_R32G32_SINT;
-		case Steins::ShaderDataType::Int3:     return DXGI_FORMAT_R32G32B32_SINT;
-		case Steins::ShaderDataType::Int4:     return DXGI_FORMAT_R32G32B32A32_SINT;
-		case Steins::ShaderDataType::Mat3x3:     return DXGI_FORMAT_UNKNOWN;
-		case Steins::ShaderDataType::Mat4x4:     return DXGI_FORMAT_UNKNOWN;
-		case Steins::ShaderDataType::Bool:     return DXGI_FORMAT_UNKNOWN;
-		}
 
-		STEINS_CORE_ASSERT(false, "Unknown ShaderDataType!");
-		return DXGI_FORMAT_UNKNOWN;
-	}
 	D3D11VertexArray::D3D11VertexArray(D3D11GraphicsDevice* _device)
 	{
 		device = _device;
@@ -61,7 +43,7 @@ namespace Steins
 			ZeroMemory(&desc, sizeof(desc));
 			desc.SemanticName = elem.semantic.c_str();
 			desc.SemanticIndex = semanticIndices[elem.semantic];
-			desc.Format = ShaderDataTypeToDXGIFormat(elem.type);
+			desc.Format = GraphicsUtil::ShaderDataTypeToDXGIFormat(elem.type);
 			desc.InputSlot = (UINT)vertexBuffers.size();
 			desc.AlignedByteOffset = elem.offset;
 			desc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
