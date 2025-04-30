@@ -132,8 +132,8 @@ namespace Steins
 		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 		device->GetCommandList()->ResourceBarrier(1, &barr);
 
-		backFramebuffer->Clear(Color(1.0f, 0.3f, 0.0f, 1.0f));
 		backFramebuffer->Bind();
+		backFramebuffer->Clear(Color(1.0f, 1.0f, 1.0f, 1.0f));
 
 	}
 	void D3D12SwapChain::WaitForGPU()

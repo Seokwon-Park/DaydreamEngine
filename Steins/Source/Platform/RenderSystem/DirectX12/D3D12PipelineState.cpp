@@ -40,7 +40,7 @@ namespace Steins
 
 		D3D12_INPUT_ELEMENT_DESC inputElementDescs[] = {
 	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-	{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 } // 위치(float3) 다음이므로 12바이트 오프셋
+	{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 } // 위치(float3) 다음이므로 12바이트 오프셋
 		};
 
 
@@ -76,6 +76,7 @@ namespace Steins
 		desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_NEVER;
 
 		hr = device->GetDevice()->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(pipeline.GetAddressOf()));
+		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create pipeline!");
 	}
 
 	D3D12PipelineState::~D3D12PipelineState()

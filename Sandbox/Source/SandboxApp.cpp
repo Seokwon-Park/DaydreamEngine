@@ -209,7 +209,7 @@ Steins::Application* Steins::CreateApplication()
 	ApplicationSpecification spec;
 	spec.Name = "Sandbox";
 	spec.WorkingDirectory = "../Lab";
-	spec.rendererAPI = RendererAPIType::DirectX12;
+	spec.rendererAPI = RendererAPIType::DirectX11;
 
 	return new Sandbox(spec);
 }

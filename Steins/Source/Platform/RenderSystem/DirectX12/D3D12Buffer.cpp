@@ -42,9 +42,9 @@ namespace Steins
 		);
 
 		void* data;
-		uploadBuffer.Get()->Map(0, nullptr, &data);
+		uploadBuffer->Map(0, nullptr, &data);
 		memcpy(data, _vertices, _size);
-		uploadBuffer.Get()->Unmap(0, nullptr);
+		uploadBuffer->Unmap(0, nullptr);
 
 		device->GetCommandList()->CopyBufferRegion(vertexBuffer.Get(), 0, uploadBuffer.Get(), 0, _size);
 
