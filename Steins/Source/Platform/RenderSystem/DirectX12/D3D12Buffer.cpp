@@ -36,13 +36,14 @@ namespace Steins
 		device->GetDevice()->CreateCommittedResource(&props,
 			D3D12_HEAP_FLAG_NONE,
 			&desc,
-			D3D12_RESOURCE_STATE_COMMON,
+			D3D12_RESOURCE_STATE_COPY_DEST,
 			nullptr,
 			IID_PPV_ARGS(vertexBuffer.GetAddressOf())
 		);
 
 		void* data;
-		uploadBuffer->Map(0, nullptr, &data);
+		HRESULT hr =uploadBuffer->Map(0, nullptr, &data);
+		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to map uploadBuffer");
 		memcpy(data, _vertices, _size);
 		uploadBuffer->Unmap(0, nullptr);
 
@@ -64,7 +65,7 @@ namespace Steins
 	}
 	void D3D12VertexBuffer::Bind() const
 	{
-		device->GetCommandList()->IASetVertexBuffers(slot, 1, &vertexBufferView);
+		device->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);
 	}
 	void D3D12VertexBuffer::Unbind() const
 	{
@@ -103,7 +104,7 @@ namespace Steins
 		device->GetDevice()->CreateCommittedResource(&props,
 			D3D12_HEAP_FLAG_NONE,
 			&desc,
-			D3D12_RESOURCE_STATE_COMMON,
+			D3D12_RESOURCE_STATE_COPY_DEST,
 			nullptr,
 			IID_PPV_ARGS(indexBuffer.GetAddressOf())
 		);

@@ -85,21 +85,7 @@ namespace Steins
 	void D3D12SwapChain::SwapBuffers()
 	{
 
-		D3D12_VIEWPORT viewport = {};
-		viewport.Width = static_cast<float>(desc.width);
-		viewport.Height = static_cast<float>(desc.height);
-		viewport.MinDepth = 0.0f;
-		viewport.MaxDepth = 1.0f;
-		viewport.TopLeftX = 0;
-		viewport.TopLeftY = 0;
-		device->GetCommandList()->RSSetViewports(1, &viewport);
 
-		D3D12_RECT scissorRect = {};
-		scissorRect.left = 0;
-		scissorRect.top = 0;
-		scissorRect.right = static_cast<LONG>(desc.width);
-		scissorRect.bottom = static_cast<LONG>(desc.height);
-		device->GetCommandList()->RSSetScissorRects(1, &scissorRect);
 
 		D3D12_RESOURCE_BARRIER barr{};
 
@@ -121,6 +107,23 @@ namespace Steins
 
 		device->GetCommandAllocator(frameIndex)->Reset();
 		device->GetCommandList()->Reset(device->GetCommandAllocator(frameIndex), nullptr);
+
+		D3D12_VIEWPORT viewport = {};
+		viewport.Width = static_cast<float>(desc.width);
+		viewport.Height = static_cast<float>(desc.height);
+		viewport.MinDepth = 0.0f;
+		viewport.MaxDepth = 1.0f;
+		viewport.TopLeftX = 0;
+		viewport.TopLeftY = 0;
+		device->GetCommandList()->RSSetViewports(1, &viewport);
+
+		D3D12_RECT scissorRect = {};
+		scissorRect.left = 0;
+		scissorRect.top = 0;
+		scissorRect.right = static_cast<LONG>(desc.width);
+		scissorRect.bottom = static_cast<LONG>(desc.height);
+		device->GetCommandList()->RSSetScissorRects(1, &scissorRect);
+
 		ID3D12DescriptorHeap* srvHeap = device->GetSRVHeap();
 		device->GetCommandList()->SetDescriptorHeaps(1, &srvHeap);
 

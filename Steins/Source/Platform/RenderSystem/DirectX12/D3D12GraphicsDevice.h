@@ -96,7 +96,7 @@ namespace Steins
 
 		ComPtr<IDXGIFactory7> dxgiFactory;
 		ComPtr<IDXGIAdapter4> dxgiAdapter;
-		ComPtr<ID3D12Debug> debugLayer;
+		ComPtr<ID3D12Debug5> debugLayer;
 
 
 

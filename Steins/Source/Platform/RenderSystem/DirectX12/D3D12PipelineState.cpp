@@ -24,7 +24,7 @@ namespace Steins
 		D3D12_RASTERIZER_DESC rasterizerDesc{};
 		rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 		rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
-		rasterizerDesc.FrontCounterClockwise = FALSE;
+		rasterizerDesc.FrontCounterClockwise = false;
 		rasterizerDesc.DepthBias = D3D12_DEFAULT_DEPTH_BIAS;
 		rasterizerDesc.DepthBiasClamp = D3D12_DEFAULT_DEPTH_BIAS_CLAMP;
 		rasterizerDesc.SlopeScaledDepthBias = D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
@@ -39,15 +39,17 @@ namespace Steins
 		sampleDesc.Quality = 0;
 
 		D3D12_INPUT_ELEMENT_DESC inputElementDescs[] = {
-	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-	{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 } // 위치(float3) 다음이므로 12바이트 오프셋
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 } // 위치(float3) 다음이므로 12바이트 오프셋
 		};
 
 
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC desc{};
 		desc.pRootSignature = rootSignature.Get();
-		desc.VS = *(D3D12_SHADER_BYTECODE*)_desc.vertexShader->GetNativeHandle();
-		desc.PS = *(D3D12_SHADER_BYTECODE*)_desc.pixelShader->GetNativeHandle();
+		desc.VS.pShaderBytecode = ((ID3DBlob*)_desc.vertexShader->GetNativeHandle())->GetBufferPointer();
+		desc.VS.BytecodeLength = ((ID3DBlob*)_desc.vertexShader->GetNativeHandle())->GetBufferSize();
+		desc.PS.pShaderBytecode = ((ID3DBlob*)_desc.pixelShader->GetNativeHandle())->GetBufferPointer();
+		desc.PS.BytecodeLength = ((ID3DBlob*)_desc.pixelShader->GetNativeHandle())->GetBufferSize();
 		desc.RasterizerState = rasterizerDesc;
 		desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 		desc.NumRenderTargets = 1;
@@ -71,9 +73,9 @@ namespace Steins
 		// 깊이/스텐실 상태 설정 (d3dx12 없이 직접 - 깊이 테스트 비활성화)
 		desc.DepthStencilState.DepthEnable = FALSE; // 깊이 테스트 끔
 		desc.DepthStencilState.StencilEnable = FALSE; // 스텐실 테스트 끔
-		// 아래 값들은 DepthEnable=FALSE 이므로 무시됨
-		desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
-		desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_NEVER;
+		//// 아래 값들은 DepthEnable=FALSE 이므로 무시됨
+		//desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+		//desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_NEVER;
 
 		hr = device->GetDevice()->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(pipeline.GetAddressOf()));
 		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create pipeline!");
