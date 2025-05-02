@@ -22,6 +22,11 @@ namespace Steins
 		if (domainShader != nullptr)shaders.push_back(domainShader);
 		if (geometryShader != nullptr)shaders.push_back(geometryShader);
 	}
+	void PipelineState::AddConstantBuffer(Shared<ConstantBuffer> _buffer)
+	{
+		cbfs.push_back(_buffer.get());
+	}
+
 	Shared<PipelineState> PipelineState::Create(PipelineStateDesc _desc)
 	{
 		return Application::GetGraphicsDevice()->CreatePipelineState(_desc);

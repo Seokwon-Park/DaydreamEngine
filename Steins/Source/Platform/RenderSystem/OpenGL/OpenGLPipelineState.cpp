@@ -101,6 +101,18 @@ namespace Steins
 	}
 	void OpenGLPipelineState::Bind() const
 	{
+		GLuint vsid = static_cast<GLuint>(reinterpret_cast<uintptr_t>(vertexShader->GetNativeHandle()));
+		GLuint blockIndex = glGetUniformBlockIndex(vsid, "Camera");
+		if (blockIndex == GL_INVALID_INDEX) {
+			// "Matrices" 블록을 찾지 못했거나 사용되지 않음
+			std::cerr << "Error: Uniform block 'Matrices' not found or inactive." << std::endl;
+		}
+		glUniformBlockBinding(vsid, blockIndex, 0);
 		glBindProgramPipeline(pipeline);
+	}
+	void OpenGLPipelineState::AddConstantBuffer(Shared<ConstantBuffer> _buffer)
+	{	
+		PipelineState::AddConstantBuffer(_buffer);
+		
 	}
 }

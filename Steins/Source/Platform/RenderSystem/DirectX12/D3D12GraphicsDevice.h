@@ -67,6 +67,8 @@ namespace Steins
 		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path)override;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() override;
 		virtual Shared<VertexArray> CreateVertexArray() override;
+		virtual Shared<ConstantBuffer> CreateConstantBuffer(const void* _data, UInt32 _size) override { return nullptr; };
+
 
 
 		ID3D12Device* GetDevice() const { return device.Get(); }

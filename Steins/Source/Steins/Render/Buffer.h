@@ -135,5 +135,18 @@ namespace Steins
 		UInt32 indexCount;
 
 	};
+
+	class ConstantBuffer
+	{
+	public:
+		virtual ~ConstantBuffer() {}
+
+		virtual void Bind(UInt32 _slot) const = 0;
+
+		static Shared<ConstantBuffer> Create(const void* _data, UInt32 _size);
+	protected:
+		void* data;
+
+	};
 }
 

@@ -60,4 +60,25 @@ namespace Steins {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
+	/////////////////////////////////////////////////////////////////////////////
+// ConstantBuffer //////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+	OpenGLConstantBuffer::OpenGLConstantBuffer(const void* _data, UInt32 _size)
+	{
+		glCreateBuffers(1, &bufferID);
+		glBindBuffer(GL_UNIFORM_BUFFER, bufferID);
+		glBufferData(bufferID, _size, _data, GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	}
+
+	OpenGLConstantBuffer::~OpenGLConstantBuffer()
+	{
+		glDeleteBuffers(1, &bufferID);
+	}
+
+	void OpenGLConstantBuffer::Bind(UInt32 _slot) const
+	{
+		glBindBufferBase(GL_UNIFORM_BUFFER, _slot, bufferID);
+	}
 }

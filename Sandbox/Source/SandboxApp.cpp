@@ -145,6 +145,9 @@ PSOutput PSMain(PSInput input)
 		desc.inputLayout = inputlayout;
 	
 		pso = Steins::PipelineState::Create(desc);
+	
+		camera.SetPosition({ 0.5f,0.5f,0.0f,1.0f });
+		viewProjMat = Steins::ConstantBuffer::Create(&camera.GetViewProjectionMatrix(), sizeof(Steins::Matrix4x4));
 	}
 
 	void OnUpdate() override
@@ -156,6 +159,7 @@ PSOutput PSMain(PSInput input)
 
 		//Steins::Renderer::BeginScene(camera);
 
+		viewProjMat->Bind(0);
 		pso->Bind();
 
 		//va->Bind();
@@ -163,7 +167,7 @@ PSOutput PSMain(PSInput input)
 		//ps->Bind();
 		////Steins::Matrix4x4 transform = Steins::Math::Translate(Steins::Matrix4x4(), Steins::Vector4(1.0f, 1.0f, 0.0f));
 		////transform.Transpose();
-
+		 
 		Steins::Renderer::Submit(va);
 
 		//STEINS_INFO("TestLayer::UPDATE");
@@ -184,8 +188,10 @@ private:
 	Steins::Shared<Steins::Shader> vs;
 	Steins::Shared<Steins::Shader> ps;
 	Steins::Shared<Steins::PipelineState> pso;
+	Steins::Shared<Steins::ConstantBuffer> viewProjMat;
 
 	Steins::OrthographicCamera camera;
+	glm::vec3 cameraPosition;
 };
 
 class Sandbox : public Steins::Application
@@ -209,7 +215,7 @@ Steins::Application* Steins::CreateApplication()
 	ApplicationSpecification spec;
 	spec.Name = "Sandbox";
 	spec.WorkingDirectory = "../Lab";
-	spec.rendererAPI = RendererAPIType::DirectX12;
+	spec.rendererAPI = RendererAPIType::OpenGL;
 
 	return new Sandbox(spec);
 }

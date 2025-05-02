@@ -19,7 +19,7 @@ namespace Steins
 		{
 			Matrix4x4 mat;
 			//mat.dxMatrix = DirectX::XMMatrixInverse(nullptr, _matrix.dxMatrix);
-			mat.glmMatrix = glm::inverse(mat.glmMatrix);
+			mat.glmMatrix = glm::inverse(_matrix.glmMatrix);
 			return mat;
 		}
 

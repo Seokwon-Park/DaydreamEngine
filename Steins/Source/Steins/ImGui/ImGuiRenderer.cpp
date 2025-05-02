@@ -188,6 +188,6 @@ namespace Steins
 	void ImGuiRenderer::Render()
 	{
 		ImGui::Render();
-		mainWindow->GetSwapchain()->GetBackFramebuffer()->Bind();
+		//mainWindow->GetSwapchain()->GetBackFramebuffer()->Bind();
 	}		
 }

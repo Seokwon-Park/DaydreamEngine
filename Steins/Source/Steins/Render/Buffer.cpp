@@ -24,4 +24,8 @@ namespace Steins
 	{
 		return Application::GetGraphicsDevice()->CreateIndexBuffer(_indices, _size);
 	}
+	Shared<ConstantBuffer> ConstantBuffer::Create(const void* _data, UInt32 _size)
+	{
+		return Application::GetGraphicsDevice()->CreateConstantBuffer(_data, _size);
+	}
 }

@@ -29,4 +29,17 @@ namespace Steins
 	private:
 		UInt32 rendererID;
 	};
+
+	class OpenGLConstantBuffer: public ConstantBuffer
+	{
+	public:
+		OpenGLConstantBuffer(const void* _data, UInt32 _size);
+		virtual ~OpenGLConstantBuffer();
+
+		virtual void Bind(UInt32 _slot) const override;
+
+
+	private:
+		UInt32 bufferID;
+	};
 }
