@@ -70,12 +70,7 @@ namespace Steins
 			return;
 		}
 
-		shaderProgramID = glCreateProgram();
-		glProgramParameteri(shaderProgramID, GL_PROGRAM_SEPARABLE, GL_TRUE);
-
-		glAttachShader(shaderProgramID, shaderID);
-		glLinkProgram(shaderProgramID);
-
+		shaderProgramID = glCreateShaderProgramv(GraphicsUtil::openGLShaderTypeMap[type], 1, &source);
 
 		GLint isLinked = 0;
 		glGetProgramiv(shaderProgramID, GL_LINK_STATUS, &isLinked);
@@ -98,7 +93,6 @@ namespace Steins
 			return;
 		}
 
-		glDetachShader(shaderProgramID, shaderID);
 		glDeleteShader(shaderID);
 	}
 }

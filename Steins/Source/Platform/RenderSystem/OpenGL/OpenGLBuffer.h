@@ -38,7 +38,7 @@ namespace Steins
 
 		virtual void Bind(UInt32 _slot) const override;
 
-
+		virtual void Update(const void* _data, UInt32 _size) override;
 	private:
 		UInt32 bufferID;
 	};

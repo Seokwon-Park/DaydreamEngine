@@ -76,4 +76,10 @@ namespace Steins
 	void D3D11IndexBuffer::Unbind() const
 	{
 	}
+	D3D11ConstantBuffer::D3D11ConstantBuffer(D3D11GraphicsDevice* _device, UInt32* _indices, UInt32 _indexCount)
+	{
+	}
+	D3D11ConstantBuffer::~D3D11ConstantBuffer()
+	{
+	}
 }

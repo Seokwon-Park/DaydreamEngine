@@ -2,6 +2,8 @@
 #include "OpenGLPipelineState.h"
 #include "Platform/RenderSystem/GraphicsUtil.h"
 
+#include "glm/gtc/type_ptr.hpp"
+
 namespace Steins
 {
 	OpenGLPipelineState::OpenGLPipelineState(PipelineStateDesc _desc)
@@ -102,17 +104,27 @@ namespace Steins
 	void OpenGLPipelineState::Bind() const
 	{
 		GLuint vsid = static_cast<GLuint>(reinterpret_cast<uintptr_t>(vertexShader->GetNativeHandle()));
-		GLuint blockIndex = glGetUniformBlockIndex(vsid, "Camera");
-		if (blockIndex == GL_INVALID_INDEX) {
-			// "Matrices" 블록을 찾지 못했거나 사용되지 않음
-			std::cerr << "Error: Uniform block 'Matrices' not found or inactive." << std::endl;
-		}
-		glUniformBlockBinding(vsid, blockIndex, 0);
+
+
+		//GLuint blockIndex = glGetUniformBlockIndex(vsid, "Camera");
+		//if (blockIndex == GL_INVALID_INDEX) {
+		//	// "Matrices" 블록을 찾지 못했거나 사용되지 않음
+		//	std::cerr << "Error: Uniform block 'Camera' not found or inactive." << std::endl;
+		//}
+		//glUniformBlockBinding(vsid, blockIndex, 0);
+
+		GLuint blockIdx = glGetUniformBlockIndex(vsid, "Camera");
+		glUniformBlockBinding(vsid, blockIdx, 0);
+
 		glBindProgramPipeline(pipeline);
+
+		//glUseProgram(vsid);
+		//GLint location = glGetUniformLocation(vsid, "u_ViewProjection");
+		//glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(test));
+
 	}
 	void OpenGLPipelineState::AddConstantBuffer(Shared<ConstantBuffer> _buffer)
 	{	
 		PipelineState::AddConstantBuffer(_buffer);
-		
 	}
 }

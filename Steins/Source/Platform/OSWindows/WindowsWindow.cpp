@@ -55,7 +55,6 @@ namespace Steins
 		{
 			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		}
-
 		glfwWindow = glfwCreateWindow((Int32)_props.width, (Int32)_props.height, _props.title.c_str(), nullptr, nullptr);
 
 		if (_props.rendererAPI == RendererAPIType::OpenGL)

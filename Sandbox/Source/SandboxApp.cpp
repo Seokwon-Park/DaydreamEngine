@@ -93,10 +93,19 @@ PSOutput PSMain(PSInput input)
 			layout(location = 0) in vec3 a_Position;
 			layout(location = 1) in vec4 a_Color;
 
-			uniform mat4 u_ViewProjection;
-			uniform mat4 u_Transform;
+			layout(std140, binding = 0) uniform Camera
+			{
+				mat4 u_ViewProjection;
+			};
 
-			out gl_PerVertex {
+
+			layout(std140, binding = 1) uniform Transform
+			{
+				mat4 u_Model;
+			};
+
+			out gl_PerVertex 
+			{
 				vec4 gl_Position;
 			};
     
@@ -107,7 +116,7 @@ PSOutput PSMain(PSInput input)
 			{
 				v_Position = a_Position;
 				v_Color = a_Color;
-				gl_Position = vec4(v_Position, 1.0f);
+				gl_Position = u_ViewProjection * vec4(v_Position, 1.0f);
 			}
 		)";
 		std::string pixelSrc = R"(
@@ -146,8 +155,10 @@ PSOutput PSMain(PSInput input)
 	
 		pso = Steins::PipelineState::Create(desc);
 	
-		camera.SetPosition({ 0.5f,0.5f,0.0f,1.0f });
-		viewProjMat = Steins::ConstantBuffer::Create(&camera.GetViewProjectionMatrix(), sizeof(Steins::Matrix4x4));
+		camera.SetPosition({ 0.0f,0.0f,0.0f,1.0f });
+		cameraPos = camera.GetViewProjectionMatrix(); 
+		viewProjMat = Steins::ConstantBuffer::Create(&cameraPos, sizeof(Steins::Matrix4x4));
+		viewProjMat->Update(&cameraPos.glmMatrix[0], sizeof(Steins::Matrix4x4));
 	}
 
 	void OnUpdate() override
@@ -158,9 +169,10 @@ PSOutput PSMain(PSInput input)
 		////camera.SetPosition({ 0.5f, 0.5f, 0.0f });
 
 		//Steins::Renderer::BeginScene(camera);
-
 		viewProjMat->Bind(0);
 		pso->Bind();
+		
+
 
 		//va->Bind();
 		//vs->Bind();
@@ -191,7 +203,7 @@ private:
 	Steins::Shared<Steins::ConstantBuffer> viewProjMat;
 
 	Steins::OrthographicCamera camera;
-	glm::vec3 cameraPosition;
+	Steins::Matrix4x4 cameraPos;
 };
 
 class Sandbox : public Steins::Application

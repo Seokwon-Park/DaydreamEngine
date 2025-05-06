@@ -3,6 +3,8 @@
 
 #include "glad/glad.h"
 
+#include "glm/gtc/type_ptr.hpp"
+
 namespace Steins {
 
 	/////////////////////////////////////////////////////////////////////////////
@@ -68,7 +70,7 @@ namespace Steins {
 	{
 		glCreateBuffers(1, &bufferID);
 		glBindBuffer(GL_UNIFORM_BUFFER, bufferID);
-		glBufferData(bufferID, _size, _data, GL_DYNAMIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, _size, nullptr, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 
@@ -79,6 +81,13 @@ namespace Steins {
 
 	void OpenGLConstantBuffer::Bind(UInt32 _slot) const
 	{
-		glBindBufferBase(GL_UNIFORM_BUFFER, _slot, bufferID);
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, bufferID);
+	}
+	void OpenGLConstantBuffer::Update(const void* _data, UInt32 _size)
+	{
+		glBindBuffer(GL_UNIFORM_BUFFER, bufferID);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, _size, _data);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
 	}
 }

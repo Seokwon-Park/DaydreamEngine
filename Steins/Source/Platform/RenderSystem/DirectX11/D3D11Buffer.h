@@ -32,5 +32,19 @@ namespace Steins
 		D3D11GraphicsDevice* device;
 		ComPtr<ID3D11Buffer> indexBuffer;
 	};
+
+
+	//class D3D11ConstantBuffer : public ConstantBuffer
+	//{
+	//public:
+	//	D3D11ConstantBuffer(D3D11GraphicsDevice* _device, UInt32* _indices, UInt32 _indexCount);
+	//	virtual ~D3D11ConstantBuffer();
+
+	//	virtual void Bind() const;
+
+	//private:
+	//	D3D11GraphicsDevice* device;
+	//	ComPtr<ID3D11Buffer> indexBuffer;
+	//};
 }
 

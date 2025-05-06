@@ -143,6 +143,8 @@ namespace Steins
 
 		virtual void Bind(UInt32 _slot) const = 0;
 
+		virtual void Update(const void* _data, UInt32 _size) = 0;
+
 		static Shared<ConstantBuffer> Create(const void* _data, UInt32 _size);
 	protected:
 		void* data;
