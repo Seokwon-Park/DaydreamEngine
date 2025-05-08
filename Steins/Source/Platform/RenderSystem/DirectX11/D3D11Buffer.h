@@ -34,17 +34,18 @@ namespace Steins
 	};
 
 
-	//class D3D11ConstantBuffer : public ConstantBuffer
-	//{
-	//public:
-	//	D3D11ConstantBuffer(D3D11GraphicsDevice* _device, UInt32* _indices, UInt32 _indexCount);
-	//	virtual ~D3D11ConstantBuffer();
+	class D3D11ConstantBuffer : public ConstantBuffer
+	{
+	public:
+		D3D11ConstantBuffer(D3D11GraphicsDevice* _device, UInt32 _size);
+		virtual ~D3D11ConstantBuffer();
 
-	//	virtual void Bind() const;
+		virtual void Bind(UInt32 _slot, ShaderStage _flags) const override;
 
-	//private:
-	//	D3D11GraphicsDevice* device;
-	//	ComPtr<ID3D11Buffer> indexBuffer;
-	//};
+		virtual void Update(const void* _data, UInt32 _size) override;
+	private:
+		D3D11GraphicsDevice* device;
+		ComPtr<ID3D11Buffer> constantBuffer;
+	};
 }
 

@@ -12,8 +12,6 @@ namespace Steins
 		virtual ~OpenGLPipelineState();
 
 		virtual void Bind() const;
-
-		virtual void AddConstantBuffer(Shared<ConstantBuffer> _buffer);
 	private:
 		GLuint pipeline;
 	};

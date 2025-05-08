@@ -1,17 +1,24 @@
-struct PSInput
+struct VSInput
+{
+    float3 position : POSITION;
+    float4 color : COLOR0;
+};
+
+cbuffer VS_Cbuffer : register(b0)
+{
+    matrix viewProjection;
+}
+
+struct VSOutput
 {
     float4 position : SV_Position;
     float4 color : COLOR0;
 };
 
-struct PSOutput
+VSOutput VSMain(VSInput input)
 {
-    float4 color : SV_Target0;
-};
-
-PSOutput PSMain(PSInput input)
-{
-    PSOutput output = (PSOutput) 0;
+    VSOutput output = (VSOutput) 0;
+    output.position = mul(float4(input.position, 1.0), viewProjection); // 월드 변환 생략
     output.color = input.color;
     return output;
 }

@@ -23,6 +23,5 @@ namespace Steins
 			shader->Bind();
 		}
 		device->GetContext()->RSSetState(rasterizer.Get());
-
 	}
 }

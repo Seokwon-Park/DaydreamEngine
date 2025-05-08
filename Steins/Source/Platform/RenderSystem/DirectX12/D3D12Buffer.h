@@ -33,4 +33,18 @@ namespace Steins
 		ComPtr<ID3D12Resource> uploadBuffer;
 		D3D12_INDEX_BUFFER_VIEW indexBufferView;
 	};
+
+	class D3D12ConstantBuffer : public ConstantBuffer
+	{
+	public:
+		D3D12ConstantBuffer(D3D12GraphicsDevice* _device, UInt32 _size);
+
+		virtual void Bind(UInt32 _slot, ShaderStage _flags) const override;
+
+		virtual void Update(const void* _data, UInt32 _size) override;
+	private:
+		D3D12GraphicsDevice* device;
+		ComPtr<ID3D12Resource> constantBuffer;
+		D3D12_CONSTANT_BUFFER_VIEW_DESC constantBufferView;
+	};
 }

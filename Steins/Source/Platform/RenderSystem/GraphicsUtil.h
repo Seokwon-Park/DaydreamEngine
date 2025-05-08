@@ -19,15 +19,17 @@ namespace Steins
 	public:
 		static DXGI_FORMAT ShaderDataTypeToDXGIFormat(ShaderDataType type);
 
-
+		//RenderFormat
 		static DXGI_FORMAT RenderFormatToDXGIFormat(RenderFormat _format);
 		static VkFormat RenderFormatToVkFormat(RenderFormat _format);
 
+		//ShaderCompile
 		static DXShaderCompileParam GetDXShaderCompileParam(ShaderType _type);
 
-		static std::map<ShaderType, GLenum> openGLShaderStageMap;
-		static std::map<ShaderType, GLenum> openGLShaderTypeMap;
-		static std::map<ShaderType, VkShaderStageFlagBits> vulkanShaderStageMap;
+		//ShaderType, ShaderStage
+		static GLenum GetGLShaderStage(ShaderType _type);
+		static GLenum GetGLShaderType(ShaderType _type);
+		static VkShaderStageFlagBits GetVKShaderStage(ShaderType _type);
 
 		static std::string GetVendor(int _vendorCode);
 	};

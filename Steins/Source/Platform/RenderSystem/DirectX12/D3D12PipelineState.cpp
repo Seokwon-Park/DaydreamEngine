@@ -10,7 +10,21 @@ namespace Steins
 	{
 		device = _device;
 
+		D3D12_ROOT_DESCRIPTOR rootDescriptor;
+		rootDescriptor.ShaderRegister = 0;    // HLSL의 b0 레지스터
+		rootDescriptor.RegisterSpace = 0;     // 기본 레지스터 공간
+
+		// 2. 루트 파라미터(Root Parameter) 정의
+		D3D12_ROOT_PARAMETER rootParameters[1];
+		rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; // 루트 CBV 타입
+		rootParameters[0].Descriptor = rootDescriptor;
+		rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX; // 예: 정점 셰이더에서만 사용
+
 		D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
+		rootSignatureDesc.NumParameters = 1;
+		rootSignatureDesc.pParameters = &rootParameters[0];
+		rootSignatureDesc.NumStaticSamplers = 0;
+		rootSignatureDesc.pStaticSamplers = nullptr;
 		rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 		ComPtr<ID3DBlob> signature;

@@ -97,9 +97,9 @@ namespace Steins
 		return MakeShared<OpenGLVertexArray>();
 	}
 
-	Shared<ConstantBuffer> OpenGLGraphicsDevice::CreateConstantBuffer(const void* _data, UInt32 _size)
+	Shared<ConstantBuffer> OpenGLGraphicsDevice::CreateConstantBuffer(UInt32 _size)
 	{
-		return MakeShared<OpenGLConstantBuffer>(_data, _size);
+		return MakeShared<OpenGLConstantBuffer>(_size);
 	}
 
 }

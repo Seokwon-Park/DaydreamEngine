@@ -14,7 +14,7 @@ namespace Steins
 
 		for (auto shader : shaders)
 		{
-			GLenum type = GraphicsUtil::openGLShaderStageMap[shader->GetType()];
+			GLenum type = GraphicsUtil::GetGLShaderStage(shader->GetType());
 			GLuint shaderID = static_cast<GLuint>(reinterpret_cast<uintptr_t>(shader->GetNativeHandle()));
 			glUseProgramStages(pipeline, type, shaderID);
 		}
@@ -122,9 +122,5 @@ namespace Steins
 		//GLint location = glGetUniformLocation(vsid, "u_ViewProjection");
 		//glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(test));
 
-	}
-	void OpenGLPipelineState::AddConstantBuffer(Shared<ConstantBuffer> _buffer)
-	{	
-		PipelineState::AddConstantBuffer(_buffer);
 	}
 }

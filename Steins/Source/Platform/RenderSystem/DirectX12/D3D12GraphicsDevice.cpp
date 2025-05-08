@@ -117,8 +117,18 @@ namespace Steins
 			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(rtvHeap.GetAddressOf()));
 			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create RTV descriptor heap");
+			rtvHeapAlloc.Create(device.Get(), rtvHeap.Get());
 		}
 
+		{
+			D3D12_DESCRIPTOR_HEAP_DESC desc{};
+			desc.NumDescriptors = 64;
+			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(cbvHeap.GetAddressOf()));
+			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create RTV descriptor heap");
+			cbvHeapAlloc.Create(device.Get(), cbvHeap.Get());
+		}
 
 		{
 			D3D12_DESCRIPTOR_HEAP_DESC desc{};
@@ -226,6 +236,11 @@ namespace Steins
 	Shared<VertexArray> D3D12GraphicsDevice::CreateVertexArray()
 	{
 		return MakeShared<D3D12VertexArray>(this);
+	}
+
+	Shared<ConstantBuffer> D3D12GraphicsDevice::CreateConstantBuffer(UInt32 _size)
+	{
+		return MakeShared<D3D12ConstantBuffer>(this, _size);
 	}
 
 	//void D3D12GraphicsDevice::WaitForGPU(IDXGISwapChain3* _swapChain)

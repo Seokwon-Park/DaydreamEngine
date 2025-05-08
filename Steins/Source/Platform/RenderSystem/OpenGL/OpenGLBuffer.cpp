@@ -66,7 +66,7 @@ namespace Steins {
 // ConstantBuffer //////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-	OpenGLConstantBuffer::OpenGLConstantBuffer(const void* _data, UInt32 _size)
+	OpenGLConstantBuffer::OpenGLConstantBuffer(UInt32 _size)
 	{
 		glCreateBuffers(1, &bufferID);
 		glBindBuffer(GL_UNIFORM_BUFFER, bufferID);
@@ -79,7 +79,7 @@ namespace Steins {
 		glDeleteBuffers(1, &bufferID);
 	}
 
-	void OpenGLConstantBuffer::Bind(UInt32 _slot) const
+	void OpenGLConstantBuffer::Bind(UInt32 _slot, ShaderStage _flags) const
 	{
 		glBindBufferBase(GL_UNIFORM_BUFFER, 0, bufferID);
 	}

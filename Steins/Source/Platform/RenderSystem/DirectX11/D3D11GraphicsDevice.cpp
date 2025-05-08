@@ -192,6 +192,11 @@ namespace Steins
 		return MakeShared<D3D11VertexArray>(this);
 	}
 
+	Shared<ConstantBuffer> D3D11GraphicsDevice::CreateConstantBuffer(UInt32 _size)
+	{
+		return MakeShared<D3D11ConstantBuffer>(this, _size);
+	}
+
 
 
 }

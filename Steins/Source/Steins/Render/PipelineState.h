@@ -33,8 +33,6 @@ namespace Steins
 
 		virtual void Bind() const = 0;
 
-		virtual void AddConstantBuffer(Shared<ConstantBuffer> _buffer);
-
 		static Shared<PipelineState> Create(PipelineStateDesc _desc);
 	protected:
 		bool ValidateShaders();

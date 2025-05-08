@@ -20,7 +20,11 @@ namespace Steins
 			D3D12_DESCRIPTOR_HEAP_DESC desc = heap->GetDesc();
 			heapType = desc.Type;
 			heapStartCpu = heap->GetCPUDescriptorHandleForHeapStart();
-			heapStartGpu = heap->GetGPUDescriptorHandleForHeapStart();
+			if (heapType != D3D12_DESCRIPTOR_HEAP_TYPE_RTV &&
+				heapType != D3D12_DESCRIPTOR_HEAP_TYPE_DSV)
+			{
+				heapStartGpu = heap->GetGPUDescriptorHandleForHeapStart();
+			}
 			heapHandleIncrement = _device->GetDescriptorHandleIncrementSize(heapType);
 			freeIndices.reserve((int)desc.NumDescriptors);
 			for (int n = desc.NumDescriptors; n > 0; n--)
@@ -31,9 +35,19 @@ namespace Steins
 			heap = nullptr;
 			freeIndices.clear();
 		}
+
+		void AllocCPU(D3D12_CPU_DESCRIPTOR_HANDLE* _outCpuDescriptorHandle)
+		{
+			STEINS_CORE_ASSERT(freeIndices.size() > 0, "");
+			int idx = freeIndices.back();
+			freeIndices.pop_back();
+			_outCpuDescriptorHandle->ptr = heapStartCpu.ptr + (idx * heapHandleIncrement);
+		}
+
 		void Alloc(D3D12_CPU_DESCRIPTOR_HANDLE* _outCpuDescriptorHandle, D3D12_GPU_DESCRIPTOR_HANDLE* _outGpuDescriptorHandle)
 		{
 			STEINS_CORE_ASSERT(freeIndices.size() > 0, "");
+			STEINS_CORE_ASSERT(heapType != D3D12_DESCRIPTOR_HEAP_TYPE_RTV, "");
 			int idx = freeIndices.back();
 			freeIndices.pop_back();
 			_outCpuDescriptorHandle->ptr = heapStartCpu.ptr + (idx * heapHandleIncrement);
@@ -67,9 +81,7 @@ namespace Steins
 		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path)override;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() override;
 		virtual Shared<VertexArray> CreateVertexArray() override;
-		virtual Shared<ConstantBuffer> CreateConstantBuffer(const void* _data, UInt32 _size) override { return nullptr; };
-
-
+		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) override;
 
 		ID3D12Device* GetDevice() const { return device.Get(); }
 		ID3D12CommandQueue* GetCommandQueue() const { return commandQueue.Get(); }
@@ -77,7 +89,9 @@ namespace Steins
 		ID3D12CommandAllocator* GetCommandAllocator(UInt32 _index) const { return commandAllocators[_index].Get(); }
 		ID3D12DescriptorHeap* GetRTVHeap() const { return rtvHeap.Get(); }
 		ID3D12DescriptorHeap* GetSRVHeap() const { return srvHeap.Get(); }
+		DescriptorHeapAllocator& GetRTVHeapAlloc() { return rtvHeapAlloc; }
 		DescriptorHeapAllocator& GetSRVHeapAlloc() { return srvHeapAlloc; }
+		DescriptorHeapAllocator& GetCBVHeapAlloc() { return cbvHeapAlloc; }
 		IDXGIFactory7* GetFactory() const { return dxgiFactory.Get(); }
 
 		//void WaitForGPU(IDXGISwapChain3* _swapChain);
@@ -90,10 +104,13 @@ namespace Steins
 		// ComPtr<ID3D12Resource> renderTargets;
 		ComPtr<ID3D12RootSignature> rootSignature;
 		ComPtr<ID3D12DescriptorHeap> rtvHeap;
+		ComPtr<ID3D12DescriptorHeap> cbvHeap;
 		ComPtr<ID3D12DescriptorHeap> srvHeap;
 		ComPtr<ID3D12PipelineState> pipelineState;
 		ComPtr<ID3D12GraphicsCommandList> commandList;
 
+		DescriptorHeapAllocator rtvHeapAlloc;
+		DescriptorHeapAllocator cbvHeapAlloc;
 		DescriptorHeapAllocator srvHeapAlloc;
 
 		ComPtr<IDXGIFactory7> dxgiFactory;

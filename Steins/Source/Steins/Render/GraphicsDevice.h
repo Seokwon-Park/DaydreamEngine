@@ -42,7 +42,7 @@ namespace Steins
 		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path) = 0;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() = 0;
 		virtual Shared<VertexArray> CreateVertexArray() = 0;
-		virtual Shared<ConstantBuffer> CreateConstantBuffer(const void* _data, UInt32 _size) = 0;
+		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) = 0;
 
 		inline RendererAPIType GetAPI() const { return API; }
 		inline SwapChain* GetSwapChain(UInt32 _index)

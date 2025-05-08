@@ -298,32 +298,85 @@ namespace Steins
 		STEINS_CORE_ASSERT(false, "Invalid type");
 		return DXShaderCompileParam();
 	}
-	std::map<ShaderType, VkShaderStageFlagBits> GraphicsUtil::vulkanShaderStageMap =
+	VkShaderStageFlagBits GraphicsUtil::GetVKShaderStage(ShaderType _type)
 	{
-		{ ShaderType::Vertex, VK_SHADER_STAGE_VERTEX_BIT },
-		{ ShaderType::Hull,VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT},
-		{ ShaderType::Domain,VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT},
-		{ ShaderType::Geometry,VK_SHADER_STAGE_GEOMETRY_BIT},
-		{ ShaderType::Pixel,VK_SHADER_STAGE_FRAGMENT_BIT}
+		switch (_type)
+		{
+		case ShaderType::Vertex:
+			return  VK_SHADER_STAGE_VERTEX_BIT;
+			break;
+		case ShaderType::Hull:
+			return VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
+			break;
+		case ShaderType::Domain:
+			return VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
+			break;
+		case ShaderType::Geometry:
+			return VK_SHADER_STAGE_GEOMETRY_BIT;
+			break;
+		case ShaderType::Pixel:
+			return VK_SHADER_STAGE_FRAGMENT_BIT;
+			break;
+		case ShaderType::Compute:
+			return VK_SHADER_STAGE_COMPUTE_BIT;
+			break;
+		}
+		return VK_SHADER_STAGE_ALL;
 	};
 
-	std::map<ShaderType, GLenum> GraphicsUtil::openGLShaderTypeMap =
+	GLenum GraphicsUtil::GetGLShaderType(ShaderType _type)
 	{
-		{ ShaderType::Vertex, GL_VERTEX_SHADER },
-		{ ShaderType::Hull, GL_TESS_CONTROL_SHADER },
-		{ ShaderType::Domain, GL_TESS_EVALUATION_SHADER },
-		{ ShaderType::Geometry, GL_GEOMETRY_SHADER },
-		{ ShaderType::Pixel, GL_FRAGMENT_SHADER }
-	};
+		switch (_type)
+		{
+
+		case ShaderType::Vertex:
+			return GL_VERTEX_SHADER;
+			break;
+		case ShaderType::Hull:
+			return GL_TESS_CONTROL_SHADER;
+			break;
+		case ShaderType::Domain:
+			return GL_TESS_EVALUATION_SHADER;
+			break;
+		case ShaderType::Geometry:
+			return GL_GEOMETRY_SHADER;
+			break;
+		case ShaderType::Pixel:
+			return GL_FRAGMENT_SHADER;
+			break;
+		};
+		return GL_NONE;
+	}
 
 
-	std::map<ShaderType, GLenum> GraphicsUtil::openGLShaderStageMap =
+	GLenum GraphicsUtil::GetGLShaderStage(ShaderType _type)
 	{
-		{ ShaderType::Vertex, GL_VERTEX_SHADER_BIT },
-		{ ShaderType::Hull, GL_TESS_CONTROL_SHADER_BIT },
-		{ ShaderType::Domain, GL_TESS_EVALUATION_SHADER_BIT },
-		{ ShaderType::Geometry, GL_GEOMETRY_SHADER_BIT },
-		{ ShaderType::Pixel, GL_FRAGMENT_SHADER_BIT }
+		switch (_type)
+		{
+		case Steins::ShaderType::None:
+			break;
+		case Steins::ShaderType::Vertex:
+			return GL_VERTEX_SHADER_BIT;
+			break;
+		case Steins::ShaderType::Hull:
+			return GL_TESS_CONTROL_SHADER_BIT;
+			break;
+		case Steins::ShaderType::Domain:
+			return GL_TESS_EVALUATION_SHADER_BIT;
+			break;
+		case Steins::ShaderType::Geometry:
+			return GL_GEOMETRY_SHADER_BIT;
+			break;
+		case Steins::ShaderType::Pixel:
+			return GL_FRAGMENT_SHADER_BIT;
+			break;
+		case Steins::ShaderType::Compute:
+			return GL_COMPUTE_SHADER_BIT;
+			break;
+		default:
+			break;
+		}
+		return GL_NONE;
 	};
 
 

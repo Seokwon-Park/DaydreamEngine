@@ -78,6 +78,7 @@ namespace Steins
 		device = _device;
 		D3D12_HEAP_PROPERTIES props{};
 		props.Type = D3D12_HEAP_TYPE_UPLOAD;
+
 		D3D12_RESOURCE_DESC desc{};
 		desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 		desc.Alignment = 0;
@@ -136,6 +137,49 @@ namespace Steins
 
 	}
 	void D3D12IndexBuffer::Unbind() const
+	{
+	}
+	D3D12ConstantBuffer::D3D12ConstantBuffer(D3D12GraphicsDevice* _device, UInt32 _size)
+	{
+		device = _device;
+		D3D12_HEAP_PROPERTIES props{};
+		props.Type = D3D12_HEAP_TYPE_UPLOAD;
+
+		D3D12_RESOURCE_DESC desc{};
+		desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+		desc.Alignment = 0;
+		desc.Width = _size;
+		desc.Height = 1;
+		desc.DepthOrArraySize = 1;
+		desc.MipLevels = 1;
+		desc.Format = DXGI_FORMAT_UNKNOWN;
+		desc.SampleDesc.Count = 1;
+		desc.SampleDesc.Quality = 0;
+		desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+		desc.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+		device->GetDevice()->CreateCommittedResource(
+			&props,
+			D3D12_HEAP_FLAG_NONE,
+			&desc,
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(constantBuffer.GetAddressOf())
+		);
+
+		constantBufferView.BufferLocation = constantBuffer->GetGPUVirtualAddress();
+		constantBufferView.SizeInBytes = static_cast<UINT>(_size);
+
+		D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle;
+		D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle;
+		device->GetCBVHeapAlloc().Alloc(&cpuHandle, &gpuHandle);
+		device->GetDevice()->CreateConstantBufferView(&constantBufferView, cpuHandle);
+	}
+	void D3D12ConstantBuffer::Bind(UInt32 _slot, ShaderStage _stages) const
+	{
+		//device->GetCommandList()->SetGraphicsRootConstantBufferView(_slot, constantBuffer->GetGPUVirtualAddress());
+	}
+	void D3D12ConstantBuffer::Update(const void* _data, UInt32 _size)
 	{
 	}
 }

@@ -33,10 +33,10 @@ namespace Steins
 	class OpenGLConstantBuffer: public ConstantBuffer
 	{
 	public:
-		OpenGLConstantBuffer(const void* _data, UInt32 _size);
+		OpenGLConstantBuffer(UInt32 _size);
 		virtual ~OpenGLConstantBuffer();
 
-		virtual void Bind(UInt32 _slot) const override;
+		virtual void Bind(UInt32 _slot, ShaderStage _flags) const override;
 
 		virtual void Update(const void* _data, UInt32 _size) override;
 	private:

@@ -23,6 +23,17 @@ namespace Steins
 		Compute,
 	};
 
+    enum ShaderStage
+    {
+        VertexBit   = 1 << 0,
+        HullBit     = 1 << 1,
+        DomainBit   = 1 << 2,
+        GeometryBit = 1 << 3,
+        PixelBit    = 1 << 4,
+        ComputeBit  = 1 << 5,
+        ShaderAllBit = VertexBit | HullBit | DomainBit | GeometryBit | PixelBit | ComputeBit
+    };
+
     //Ref - https://learn.microsoft.com/ko-kr/windows/win32/api/dxgiformat/ne-dxgiformat-dxgi_format
 	enum class RenderFormat
 	{

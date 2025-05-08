@@ -48,7 +48,7 @@ namespace Steins
 	//}
 	void OpenGLShader::Compile(const std::string& _src)
 	{
-		GLuint shaderID = glCreateShader(GraphicsUtil::openGLShaderTypeMap[type]);
+		GLuint shaderID = glCreateShader(GraphicsUtil::GetGLShaderType(type));
 		const GLchar* source = _src.c_str();
 
 		glShaderSource(shaderID, 1, &source, nullptr);
@@ -70,7 +70,7 @@ namespace Steins
 			return;
 		}
 
-		shaderProgramID = glCreateShaderProgramv(GraphicsUtil::openGLShaderTypeMap[type], 1, &source);
+		shaderProgramID = glCreateShaderProgramv(GraphicsUtil::GetGLShaderType(type), 1, &source);
 
 		GLint isLinked = 0;
 		glGetProgramiv(shaderProgramID, GL_LINK_STATUS, &isLinked);

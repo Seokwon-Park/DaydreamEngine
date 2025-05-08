@@ -14,15 +14,15 @@ namespace Steins
 
 		renderTargets.resize(2);
 		IDXGISwapChain* dxgiSwapChain = _swapChain->GetDXGISwapChain();
-		UINT rtvDescriptorSize = device->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = device->GetRTVHeap()->GetCPUDescriptorHandleForHeapStart();
 		for (int i = 0; i < 2; i++)
 		{
+			D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle;
+			device->GetRTVHeapAlloc().AllocCPU(&cpuHandle);
+
 			dxgiSwapChain->GetBuffer(i, IID_PPV_ARGS(renderTargets[i].GetAddressOf()));
 			STEINS_CORE_ASSERT(renderTargets[i].Get(), "Backbuffer is nullptr!");
-			device->GetDevice()->CreateRenderTargetView(renderTargets[i].Get(), nullptr, rtvHandle);
-			renderTargetHandles.push_back(rtvHandle);
-			rtvHandle.ptr += rtvDescriptorSize;
+			device->GetDevice()->CreateRenderTargetView(renderTargets[i].Get(), nullptr, cpuHandle);
+			renderTargetHandles.push_back(cpuHandle);
 		}
 	}
 	void D3D12Framebuffer::Bind() const

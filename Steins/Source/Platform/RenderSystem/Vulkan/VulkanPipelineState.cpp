@@ -131,7 +131,7 @@ namespace Steins
 
 			VkGraphicsPipelineCreateInfo pipelineInfo{};
 			pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-			pipelineInfo.stageCount = (UInt64)shaderStages.size();
+			pipelineInfo.stageCount = (UInt32)shaderStages.size();
 			pipelineInfo.pStages = shaderStages.data();
 			pipelineInfo.pVertexInputState = &vertexInputInfo;
 			pipelineInfo.pInputAssemblyState = &inputAssembly;
@@ -210,7 +210,7 @@ namespace Steins
 		shaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		shaderStageInfo.module = (VkShaderModule)_shader->GetNativeHandle();
 		shaderStageInfo.pName = "main";
-		shaderStageInfo.stage = GraphicsUtil::vulkanShaderStageMap[_shader->GetType()];
+		shaderStageInfo.stage = GraphicsUtil::GetVKShaderStage(_shader->GetType());
 
 		shaderStages.push_back(shaderStageInfo);
 	}

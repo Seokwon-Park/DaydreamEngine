@@ -47,7 +47,7 @@ namespace Steins
 		case ShaderLoadMode::File:
 		{
 			FilePath path = FilePath(_src);
-			STEINS_CORE_INFO(path.GetCurrentPath());
+			//STEINS_CORE_INFO(path.GetCurrentPath());
 			hr = D3DCompileFromFile(path.ToCStr(), nullptr, nullptr, param.entryPoint.c_str(), param.target.c_str(), 0, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
 			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
 			break;
