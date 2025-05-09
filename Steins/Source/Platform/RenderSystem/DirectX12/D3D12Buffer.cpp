@@ -168,18 +168,23 @@ namespace Steins
 		);
 
 		constantBufferView.BufferLocation = constantBuffer->GetGPUVirtualAddress();
-		constantBufferView.SizeInBytes = static_cast<UINT>(_size);
+		constantBufferView.SizeInBytes = 256;//static_cast<UINT>(_size);
 
 		D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle;
 		D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle;
-		device->GetCBVHeapAlloc().Alloc(&cpuHandle, &gpuHandle);
+		device->GetCBVSRVUAVHeapAlloc().Alloc(&cpuHandle, &gpuHandle);
 		device->GetDevice()->CreateConstantBufferView(&constantBufferView, cpuHandle);
 	}
 	void D3D12ConstantBuffer::Bind(UInt32 _slot, ShaderStage _stages) const
 	{
-		//device->GetCommandList()->SetGraphicsRootConstantBufferView(_slot, constantBuffer->GetGPUVirtualAddress());
+		device->GetCommandList()->SetGraphicsRootConstantBufferView(_slot, constantBuffer->GetGPUVirtualAddress());
 	}
 	void D3D12ConstantBuffer::Update(const void* _data, UInt32 _size)
 	{
+		void* data;
+		constantBuffer->Map(0, nullptr, &data);
+		memcpy(data, _data, _size);
+		constantBuffer->Unmap(0, nullptr);
+
 	}
 }

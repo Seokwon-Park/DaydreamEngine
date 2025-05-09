@@ -22,11 +22,11 @@ namespace Steins
 		info.SrvDescriptorHeap = device->GetSRVHeap();
 		info.SrvDescriptorAllocFn = [](ImGui_ImplDX12_InitInfo* _info, D3D12_CPU_DESCRIPTOR_HANDLE* _outCpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE* _outGpuHandle)
 			{
-				((D3D12GraphicsDevice*)_info->UserData)->GetSRVHeapAlloc().Alloc(_outCpuHandle, _outGpuHandle);
+				((D3D12GraphicsDevice*)_info->UserData)->GetCBVSRVUAVHeapAlloc().Alloc(_outCpuHandle, _outGpuHandle);
 			};
 		info.SrvDescriptorFreeFn = [](ImGui_ImplDX12_InitInfo* _info, D3D12_CPU_DESCRIPTOR_HANDLE _outCpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE _outGpuHandle)
 			{
-				((D3D12GraphicsDevice*)_info->UserData)->GetSRVHeapAlloc().Free(_outCpuHandle, _outGpuHandle);
+				((D3D12GraphicsDevice*)_info->UserData)->GetCBVSRVUAVHeapAlloc().Free(_outCpuHandle, _outGpuHandle);
 			};
 
 		ImGui_ImplDX12_Init(&info);

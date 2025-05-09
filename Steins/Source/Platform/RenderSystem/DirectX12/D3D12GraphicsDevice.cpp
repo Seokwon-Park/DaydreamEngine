@@ -125,24 +125,11 @@ namespace Steins
 			desc.NumDescriptors = 64;
 			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(cbvHeap.GetAddressOf()));
+			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(cbvSrvUavHeap.GetAddressOf()));
 			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create RTV descriptor heap");
-			cbvHeapAlloc.Create(device.Get(), cbvHeap.Get());
+			cbvSrvUavHeapAlloc.Create(device.Get(), cbvSrvUavHeap.Get());
+
 		}
-
-		{
-			D3D12_DESCRIPTOR_HEAP_DESC desc{};
-			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-			desc.NumDescriptors = 64;
-			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-			desc.NodeMask = 0;
-			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(srvHeap.GetAddressOf()));
-			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create SRV descriptor heap");
-			srvHeapAlloc.Create(device.Get(), srvHeap.Get());
-		}
-
-
-	
 
 		DXGI_ADAPTER_DESC3 adapterDescription; // Vendor
 		SecureZeroMemory(&adapterDescription, sizeof(DXGI_ADAPTER_DESC));

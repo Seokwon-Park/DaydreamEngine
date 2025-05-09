@@ -60,8 +60,8 @@ namespace Steins
 
 		device->GetCommandAllocator(frameIndex)->Reset();
 		device->GetCommandList()->Reset(device->GetCommandAllocator(frameIndex), nullptr);
-		ID3D12DescriptorHeap* srvheap[] = { device->GetSRVHeap() };
-		device->GetCommandList()->SetDescriptorHeaps(1, &srvheap[0]);
+		ID3D12DescriptorHeap* heaps[] = { device->GetSRVHeap() };
+		device->GetCommandList()->SetDescriptorHeaps(1, heaps);
 
 		D3D12_RESOURCE_BARRIER barr{};
 

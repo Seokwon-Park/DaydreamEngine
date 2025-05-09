@@ -87,11 +87,9 @@ namespace Steins
 		ID3D12CommandQueue* GetCommandQueue() const { return commandQueue.Get(); }
 		ID3D12GraphicsCommandList* GetCommandList() const { return commandList.Get(); }
 		ID3D12CommandAllocator* GetCommandAllocator(UInt32 _index) const { return commandAllocators[_index].Get(); }
-		ID3D12DescriptorHeap* GetRTVHeap() const { return rtvHeap.Get(); }
-		ID3D12DescriptorHeap* GetSRVHeap() const { return srvHeap.Get(); }
+		ID3D12DescriptorHeap* GetSRVHeap() const { return cbvSrvUavHeap.Get(); }
 		DescriptorHeapAllocator& GetRTVHeapAlloc() { return rtvHeapAlloc; }
-		DescriptorHeapAllocator& GetSRVHeapAlloc() { return srvHeapAlloc; }
-		DescriptorHeapAllocator& GetCBVHeapAlloc() { return cbvHeapAlloc; }
+		DescriptorHeapAllocator& GetCBVSRVUAVHeapAlloc() { return cbvSrvUavHeapAlloc; }
 		IDXGIFactory7* GetFactory() const { return dxgiFactory.Get(); }
 
 		//void WaitForGPU(IDXGISwapChain3* _swapChain);
@@ -104,14 +102,12 @@ namespace Steins
 		// ComPtr<ID3D12Resource> renderTargets;
 		ComPtr<ID3D12RootSignature> rootSignature;
 		ComPtr<ID3D12DescriptorHeap> rtvHeap;
-		ComPtr<ID3D12DescriptorHeap> cbvHeap;
-		ComPtr<ID3D12DescriptorHeap> srvHeap;
+		ComPtr<ID3D12DescriptorHeap> cbvSrvUavHeap;
 		ComPtr<ID3D12PipelineState> pipelineState;
 		ComPtr<ID3D12GraphicsCommandList> commandList;
 
 		DescriptorHeapAllocator rtvHeapAlloc;
-		DescriptorHeapAllocator cbvHeapAlloc;
-		DescriptorHeapAllocator srvHeapAlloc;
+		DescriptorHeapAllocator cbvSrvUavHeapAlloc;
 
 		ComPtr<IDXGIFactory7> dxgiFactory;
 		ComPtr<IDXGIAdapter4> dxgiAdapter;
