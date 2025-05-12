@@ -16,8 +16,6 @@ namespace Steins
 		void CreateShaderStageInfo(const Shared<Shader>& _shader);
 	private:
 
-
-
 		VulkanGraphicsDevice* device;
 		std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 
@@ -25,5 +23,7 @@ namespace Steins
 		VkPipelineLayout pipelineLayout; // root signature
 		VkDescriptorSetLayout descriptorSetLayout;
 
+		std::vector<VkDescriptorSet> descriptorSets;
+		VkWriteDescriptorSet descriptorWrite{};
 	};
 }

@@ -4,6 +4,12 @@
 
 namespace Steins
 {
+	struct ConstantBufferInfo
+	{
+		UInt32 bindingSlot;
+		Shared<ConstantBuffer> constantBuffer;
+	};
+
 	struct PipelineStateDesc
 	{
 		Shared<Shader> vertexShader = nullptr;
@@ -12,6 +18,8 @@ namespace Steins
 		Shared<Shader> geometryShader = nullptr;
 		Shared<Shader> pixelShader = nullptr;
 		//Shared<Shader> computeShader; //??
+
+		std::vector<ConstantBufferInfo> constantBuffers;
 
 		BufferLayout inputLayout;
 		//InputLayoutDesc inputLayout;

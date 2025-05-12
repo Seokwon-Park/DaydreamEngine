@@ -26,7 +26,6 @@ namespace Steins
 		virtual Shared<VertexArray> CreateVertexArray() override;
 		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) override;
 
-
 		std::string GetVersion() const { return version; }
 	protected:
 

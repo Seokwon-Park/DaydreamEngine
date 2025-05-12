@@ -56,13 +56,13 @@ namespace Steins
 		bufferDesc.MiscFlags = 0;
 		bufferDesc.StructureByteStride = 0;
 
-		D3D11_SUBRESOURCE_DATA data;
-		ZeroMemory(&data, sizeof(data));
-		data.pSysMem = _indices;
-		data.SysMemPitch = 0;
-		data.SysMemSlicePitch = 0;
+		D3D11_SUBRESOURCE_DATA indexData;
+		ZeroMemory(&indexData, sizeof(indexData));
+		indexData.pSysMem = _indices;
+		indexData.SysMemPitch = 0;
+		indexData.SysMemSlicePitch = 0;
 
-		device->GetDevice()->CreateBuffer(&bufferDesc, &data, indexBuffer.GetAddressOf());
+		device->GetDevice()->CreateBuffer(&bufferDesc, &indexData, indexBuffer.GetAddressOf());
 	}
 
 

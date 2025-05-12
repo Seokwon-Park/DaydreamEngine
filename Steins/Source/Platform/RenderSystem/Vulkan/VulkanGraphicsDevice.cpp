@@ -230,6 +230,11 @@ namespace Steins
 		return MakeShared<VulkanVertexArray>();
 	}
 
+	Shared<ConstantBuffer> VulkanGraphicsDevice::CreateConstantBuffer(UInt32 _size)
+	{
+		return MakeShared<VulkanConstantBuffer>(this, _size);
+	}
+
 
 	SwapChainSupportDetails VulkanGraphicsDevice::QuerySwapChainSupport(VkSurfaceKHR _surface)
 	{
@@ -281,7 +286,58 @@ namespace Steins
 
 		VkResult vr = vkCreateBuffer(device, &bufferInfo, nullptr, &_buffer);
 		STEINS_CORE_ASSERT(VK_SUCCEEDED(vr), "failed to create buffer!");
+
+		VkMemoryRequirements memRequirements;
+		vkGetBufferMemoryRequirements(device, _buffer, &memRequirements);
+
+		VkMemoryAllocateInfo allocInfo{};
+		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+		allocInfo.allocationSize = memRequirements.size;
+		allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, _properties);
+
+		vr = vkAllocateMemory(device, &allocInfo, nullptr, &_bufferMemory);
+		STEINS_CORE_ASSERT(VK_SUCCEEDED(vr), "Failed to allocate buffer memory!");
+
+		vkBindBufferMemory(device, _buffer, _bufferMemory, 0);
 	}
+
+	void VulkanGraphicsDevice::CopyBuffer(VkBuffer _src, VkBuffer _dst, VkDeviceSize _size)
+	{
+		VkCommandBufferAllocateInfo allocInfo{};
+		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+		allocInfo.commandPool = commandPool;
+		allocInfo.commandBufferCount = 1;
+
+		VkCommandBuffer commandBuffer;
+		vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
+
+		VkCommandBufferBeginInfo beginInfo{};
+		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+		vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+		VkBufferCopy copyRegion{};
+		copyRegion.srcOffset = 0; // Optional
+		copyRegion.dstOffset = 0; // Optional
+		copyRegion.size = _size;
+
+		vkCmdCopyBuffer(commandBuffer, _src, _dst, 1, &copyRegion);
+
+		vkEndCommandBuffer(commandBuffer);
+
+		VkSubmitInfo submitInfo{};
+		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+		submitInfo.commandBufferCount = 1;
+		submitInfo.pCommandBuffers = &commandBuffer;
+
+		vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+		vkQueueWaitIdle(graphicsQueue);
+
+		vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
+	}
+
 
 	void VulkanGraphicsDevice::CreateInstance()
 	{

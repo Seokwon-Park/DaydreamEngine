@@ -10,7 +10,7 @@ namespace Steins
 		:PipelineState(_desc)
 	{
 		device = _device;
-		
+
 		for (Shared<Shader> shader : shaders)
 		{
 			CreateShaderStageInfo(shader);
@@ -103,25 +103,52 @@ namespace Steins
 			colorBlending.blendConstants[2] = 0.0f; // Optional
 			colorBlending.blendConstants[3] = 0.0f; // Optional
 
-			/*		VkDescriptorSetLayoutBinding uboLayoutBinding{};
-					uboLayoutBinding.binding = 0;
-					uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-					uboLayoutBinding.descriptorCount = 1;
-					uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+			VkDescriptorSetLayoutBinding uboLayoutBinding{};
+			uboLayoutBinding.binding = 0;
+			uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			uboLayoutBinding.descriptorCount = 1;
+			uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
-					VkDescriptorSetLayoutCreateInfo layoutInfo{};
-					layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-					layoutInfo.bindingCount = 1;
-					layoutInfo.pBindings = &uboLayoutBinding;
+			VkDescriptorSetLayoutCreateInfo layoutInfo{};
+			layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+			layoutInfo.bindingCount = 1;
+			layoutInfo.pBindings = &uboLayoutBinding;
 
-					if (vkCreateDescriptorSetLayout(device->GetDevice(), &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
-						throw std::runtime_error("failed to create descriptor set layout!");
-					}*/
+			if (vkCreateDescriptorSetLayout(device->GetDevice(), &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
+				throw std::runtime_error("failed to create descriptor set layout!");
+			}
+
+			std::vector<VkDescriptorSetLayout> layouts(1, descriptorSetLayout);
+			VkDescriptorSetAllocateInfo allocInfo{};
+			allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+			allocInfo.descriptorPool = device->GetDescriptorPool();
+			allocInfo.descriptorSetCount = static_cast<uint32_t>(1);
+			allocInfo.pSetLayouts = layouts.data();
+
+			descriptorSets.resize(1);
+			if (vkAllocateDescriptorSets(device->GetDevice(), &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
+				throw std::runtime_error("failed to allocate descriptor sets!");
+			}
+
+			VkDescriptorBufferInfo bufferInfo{};
+			bufferInfo.buffer = (VkBuffer)_desc.constantBuffers[0].constantBuffer->GetNativeHandle();
+			bufferInfo.offset = 0;
+			bufferInfo.range = sizeof(Matrix4x4);
+
+			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrite.dstSet = descriptorSets[0];
+			descriptorWrite.dstBinding = 0;
+			descriptorWrite.dstArrayElement = 0;
+			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			descriptorWrite.descriptorCount = 1;
+			descriptorWrite.pBufferInfo = &bufferInfo;
+			descriptorWrite.pImageInfo = nullptr; // Optional
+			descriptorWrite.pTexelBufferView = nullptr; // Optional
 
 			VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 			pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-			pipelineLayoutInfo.setLayoutCount = 0; // Optional
-			pipelineLayoutInfo.pSetLayouts = nullptr; // Optional
+			pipelineLayoutInfo.setLayoutCount = 1; // Optional
+			pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout; // Optional
 			pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
 			pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
 
@@ -184,19 +211,22 @@ namespace Steins
 		//vkUnmapMemory(device->GetDevice(), uniformBufferMemory);
 
 
+		//vkUpdateDescriptorSets(device->GetDevice(), 1, &descriptorWrite, 0, nullptr);
 
 	}
 
 
 	VulkanPipelineState::~VulkanPipelineState()
 	{
-		//vkDestroyDescriptorSetLayout(device->GetDevice(), descriptorSetLayout, nullptr);
+		vkDestroyDescriptorSetLayout(device->GetDevice(), descriptorSetLayout, nullptr);
 		vkDestroyPipeline(device->GetDevice(), pipeline, nullptr);
 		vkDestroyPipelineLayout(device->GetDevice(), pipelineLayout, nullptr);
 	}
 	void VulkanPipelineState::Bind() const
 	{
+		vkCmdBindDescriptorSets(device->GetCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[0], 0, nullptr);
 		vkCmdBindPipeline(device->GetCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+
 
 		VkDeviceSize bufferSize = sizeof(glm::mat4);
 

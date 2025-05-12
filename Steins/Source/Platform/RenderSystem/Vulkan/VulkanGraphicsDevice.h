@@ -46,7 +46,7 @@ namespace Steins
 		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path)override;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() override;
 		virtual Shared<VertexArray> CreateVertexArray() override;
-		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) override { return nullptr; };
+		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) override;
 
 		VkInstance GetInstance() const { return instance; }
 		VkPhysicalDevice GetGPU() const { return physicalDevice; }
@@ -62,6 +62,8 @@ namespace Steins
 		UInt32 FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 		//Create a VkBuffer
 		void CreateBuffer(VkDeviceSize _size, VkBufferUsageFlags _usage, VkMemoryPropertyFlags _properties, VkBuffer& _buffer, VkDeviceMemory& _bufferMemory);
+		void CopyBuffer(VkBuffer _src, VkBuffer _dst, VkDeviceSize _size);
+
 		//SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice _physicalDevice, VkSurfaceKHR _surface);
 	private:
 		void CreateInstance();

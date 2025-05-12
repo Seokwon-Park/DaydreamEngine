@@ -42,6 +42,9 @@ namespace Steins
 		virtual void Bind(UInt32 _slot, ShaderStage _flags) const override;
 
 		virtual void Update(const void* _data, UInt32 _size) override;
+
+		virtual void* GetNativeHandle() override { return constantBuffer.Get(); }
+
 	private:
 		D3D12GraphicsDevice* device;
 		ComPtr<ID3D12Resource> constantBuffer;

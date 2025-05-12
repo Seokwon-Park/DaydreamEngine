@@ -26,7 +26,7 @@ namespace Steins
 		std::vector<VkFramebuffer> framebuffers;
 		std::vector<VkImage> colorImages;
 		std::vector<VkImageView> colorImageViews;
-		VkImage dpethImage;
+		VkImage depthImage;
 		VkImageView depthStencilViews;
 	};
 }

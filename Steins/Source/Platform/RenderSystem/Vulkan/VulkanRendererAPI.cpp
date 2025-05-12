@@ -17,6 +17,7 @@ namespace Steins
 
 	void VulkanRendererAPI::Clear()
 	{
+		//vkCmdClearAttachments
 	}
 
 	void VulkanRendererAPI::DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex)

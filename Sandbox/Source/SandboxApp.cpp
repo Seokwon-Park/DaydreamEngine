@@ -148,17 +148,18 @@ public :
 			{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"}
 		};
 
+		camera.SetPosition({ 0.0f,0.0f,0.0f,1.0f });
+		cameraPos = camera.GetViewProjectionMatrix();
+		viewProjMat = Steins::ConstantBuffer::Create(sizeof(Steins::Matrix4x4));
+		viewProjMat->Update(&cameraPos.glmMatrix[0], sizeof(Steins::Matrix4x4));
+
 		Steins::PipelineStateDesc desc;
 		desc.vertexShader = vs;
 		desc.pixelShader = ps;
 		desc.inputLayout = inputlayout;
+		desc.constantBuffers = { { 0,viewProjMat} };
 	
 		pso = Steins::PipelineState::Create(desc);
-	
-		camera.SetPosition({ 0.0f,0.0f,0.0f,1.0f });
-		cameraPos = camera.GetViewProjectionMatrix(); 
-		viewProjMat = Steins::ConstantBuffer::Create(sizeof(Steins::Matrix4x4));
-		viewProjMat->Update(&cameraPos.glmMatrix[0], sizeof(Steins::Matrix4x4));
 	}
 
 	void OnUpdate() override
@@ -227,7 +228,7 @@ Steins::Application* Steins::CreateApplication()
 	ApplicationSpecification spec;
 	spec.Name = "Sandbox";
 	spec.WorkingDirectory = "../Lab";
-	spec.rendererAPI = RendererAPIType::DirectX12;
+	spec.rendererAPI = RendererAPIType::Vulkan;
 
 	return new Sandbox(spec);
 }

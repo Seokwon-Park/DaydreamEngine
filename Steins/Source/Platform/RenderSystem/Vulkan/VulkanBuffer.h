@@ -17,6 +17,8 @@ namespace Steins
 
 	private:
 		VulkanGraphicsDevice* device;
+		VkBuffer uploadBuffer;
+		VkDeviceMemory uploadBufferMemory;
 		VkBuffer vertexBuffer;
 		VkDeviceMemory vertexBufferMemory;
 
@@ -33,8 +35,27 @@ namespace Steins
 
 	private:
 		VulkanGraphicsDevice* device;
+		VkBuffer uploadBuffer;
+		VkDeviceMemory uploadBufferMemory;
 		VkBuffer indexBuffer;
 		VkDeviceMemory indexBufferMemory;
+
+	};
+
+	class VulkanConstantBuffer : public ConstantBuffer
+	{
+	public:
+		VulkanConstantBuffer(VulkanGraphicsDevice* _device, UInt32 _size);
+		virtual ~VulkanConstantBuffer() override;
+
+		virtual void Bind(UInt32 _slot, ShaderStage _flags) const override;
+		virtual void Update(const void* _data, UInt32 _size);
+
+		virtual void* GetNativeHandle() override { return constantBuffer; }
+	private:
+		VulkanGraphicsDevice* device;
+		VkBuffer constantBuffer;
+		VkDeviceMemory constantBufferMemory;
 
 	};
 }
