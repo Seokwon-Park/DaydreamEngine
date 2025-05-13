@@ -5,6 +5,7 @@
 #include "OpenGLSwapchain.h"
 #include "OpenGLRendererAPI.h"
 #include "OpenGLPipelineState.h"
+#include "OpenGLTexture.h"
 #include "OpenGLVertexArray.h"
 #include "OpenGLImGuiRenderer.h"
 
@@ -84,7 +85,7 @@ namespace Steins
 
 	Shared<Texture2D> OpenGLGraphicsDevice::CreateTexture2D(const FilePath& _path)
 	{
-		return Shared<Texture2D>();
+		return MakeShared<OpenGLTexture2D>(_path);
 	}
 
 	Unique<ImGuiRenderer> OpenGLGraphicsDevice::CreateImGuiRenderer()

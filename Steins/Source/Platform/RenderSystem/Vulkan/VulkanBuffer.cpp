@@ -91,6 +91,8 @@ namespace Steins
 
 	VulkanConstantBuffer::~VulkanConstantBuffer()
 	{
+		vkDestroyBuffer(device->GetDevice(), constantBuffer, nullptr);
+		vkFreeMemory(device->GetDevice(), constantBufferMemory, nullptr);
 	}
 
 	void VulkanConstantBuffer::Bind(UInt32 _slot, ShaderStage _flags) const

@@ -7,8 +7,17 @@ namespace Steins
 	class FilePath
 	{
 	public:
-		FilePath(std::string _path) 
-			:path(_path) {}
+        FilePath() = default;
+
+        explicit FilePath(std::filesystem::path&& _path) noexcept
+            : path(std::move(_path))
+        {}
+
+        FilePath(const FilePath& other) noexcept = default;
+        FilePath& operator=(const FilePath& other) noexcept = default;
+        
+        FilePath(FilePath&& other) noexcept = default;
+        FilePath& operator=(FilePath&& other) noexcept = default;
 
 		inline std::string ToString() const { return path.string(); }
 		inline const std::filesystem::path::value_type* ToCStr() const { return path.c_str(); }

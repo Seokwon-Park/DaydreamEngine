@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Base/Wrappers.h"
+#include "Base/IO/FilePath.h"
 
 #include "Steins/Core/Application.h"
 #include "Steins/Core/Logger.h"
@@ -22,6 +23,7 @@
 #include "Steins/Render/Framebuffer.h"
 #include "Steins/Render/PipelineState.h"
 #include "Steins/Render/VertexArray.h"
+#include "Steins/Render/Texture.h"
 
 #include "Steins/Render/OrthographicCamera.h"
 // -----------------------------------------------

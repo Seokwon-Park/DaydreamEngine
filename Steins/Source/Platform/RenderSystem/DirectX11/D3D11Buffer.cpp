@@ -97,27 +97,27 @@ namespace Steins
 	}
 	void D3D11ConstantBuffer::Bind(UInt32 _slot, ShaderStage _flags) const
 	{
-		if (_flags & ShaderStage::VertexBit)
+		if (_flags & ShaderStage::SteinsVertexBit)
 		{
 			device->GetContext()->VSSetConstantBuffers(_slot, 1, constantBuffer.GetAddressOf());
 		}
-		if (_flags & ShaderStage::HullBit)
+		if (_flags & ShaderStage::SteinsHullBit)
 		{
 			device->GetContext()->HSSetConstantBuffers(_slot, 1, constantBuffer.GetAddressOf());
 		}
-		if (_flags & ShaderStage::DomainBit)
+		if (_flags & ShaderStage::SteinsDomainBit)
 		{
 			device->GetContext()->DSSetConstantBuffers(_slot, 1, constantBuffer.GetAddressOf());
 		}
-		if (_flags & ShaderStage::GeometryBit)
+		if (_flags & ShaderStage::SteinsGeometryBit)
 		{
 			device->GetContext()->GSSetConstantBuffers(_slot, 1, constantBuffer.GetAddressOf());
 		}
-		if (_flags & ShaderStage::PixelBit)
+		if (_flags & ShaderStage::SteinsPixelBit)
 		{
 			device->GetContext()->PSSetConstantBuffers(_slot, 1, constantBuffer.GetAddressOf());
 		}
-		if (_flags & ShaderStage::ComputeBit)
+		if (_flags & ShaderStage::SteinsComputeBit)
 		{
 			device->GetContext()->CSSetConstantBuffers(_slot, 1, constantBuffer.GetAddressOf());
 		}

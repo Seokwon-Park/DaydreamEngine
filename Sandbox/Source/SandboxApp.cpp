@@ -1,5 +1,7 @@
 #include <Steins.h>
 
+#include "imgui/imgui.h"
+
 class ExampleLayer : public Steins::Layer 
 {
 public :
@@ -9,10 +11,11 @@ public :
 
 		//으이구 멍청아.
 		//dx11 default(cw), gl default(ccw)
-		float vertices[3 * 7] = {
-			-0.5f, -0.5f, 0.0f, 1.0f,0.0f,0.0f,1.0f,
-			 0.0f,  0.5f, 0.0f,0.0f,0.0f,1.0f,1.0f,
-			 0.5f, -0.5f, 0.0f,0.0f,1.0f,0.0f,1.0f,
+		float vertices[4 * 9] = {
+			-0.5f, -0.5f, 0.0f, 1.0f,0.0f,0.0f,1.0f, 0.0f,1.0f,
+			 0.0f,  0.5f, 0.0f,0.0f,0.0f,1.0f,1.0f, 0.0f,0.0f,
+			 0.5f, -0.5f, 0.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 1.0f,
+			 1.0f, 0.5f, 0.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 0.0f
 		};
 		// 
 		// 
@@ -26,15 +29,16 @@ public :
 
 		Steins::BufferLayout layout = {
 			{ Steins::ShaderDataType::Float3, "a_Position", "POSITION"},
-			{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"}
+			{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"},
+			{ Steins::ShaderDataType::Float2, "a_TexCoord", "TEXCOORD"}
 		};
 		vb = Steins::VertexBuffer::Create(vertices, sizeof(vertices), layout);
 
 		vb->SetLayout(layout);
 		va->AddVertexBuffer(vb);
 //
-		unsigned int indices[3] = { 0, 1, 2 };
-		ib = Steins::IndexBuffer::Create(indices, 3);
+		unsigned int indices[6] = { 0, 1, 2, 2, 1, 3 };
+		ib = Steins::IndexBuffer::Create(indices, 6);
 		va->SetIndexBuffer(ib);
 
 		if (Steins::Renderer::GetAPI() == Steins::RendererAPIType::DirectX11 || 
@@ -92,13 +96,13 @@ public :
 			
 			layout(location = 0) in vec3 a_Position;
 			layout(location = 1) in vec4 a_Color;
-
+			layout(location = 2) in vec2 a_TexCoord;
+			
 			layout(std140, binding = 0) uniform Camera
 			{
-				mat4 u_ViewProjection;
+			    mat4 u_ViewProjection;
 			};
-
-
+			
 			layout(std140, binding = 1) uniform Transform
 			{
 				mat4 u_Model;
@@ -108,14 +112,16 @@ public :
 			{
 				vec4 gl_Position;
 			};
-    
+
 			layout(location = 0) out vec3 v_Position;
 			layout(location = 1) out vec4 v_Color;
+			layout(location = 2) out vec2 v_TexCoord;
 
 			void main()
 			{
 				v_Position = a_Position;
 				v_Color = a_Color;
+				v_TexCoord = a_TexCoord;
 				gl_Position = u_ViewProjection * vec4(v_Position, 1.0f);
 			}
 		)";
@@ -126,11 +132,15 @@ public :
 
 			layout(location = 0) in vec3 v_Position;
 			layout(location = 1) in vec4 v_Color;
+			layout(location = 2) in vec2 v_TexCoord;
+
+			uniform sampler2D u_Texture;
 
 			void main()
 			{
-				color = vec4(v_Position * 0.5 + 0.5, 1.0);
-				color = v_Color;
+				//color = vec4(v_Position * 0.5 + 0.5, 1.0);
+				//color = vec4(v_TexCoord.x, v_TexCoord.y, 0.0f, 1.0f);
+				color = texture(u_Texture, v_TexCoord);
 			}
 		)";
 		
@@ -139,7 +149,7 @@ public :
 		}
 		if (Steins::Renderer::GetAPI() == Steins::RendererAPIType::Vulkan)
 		{
-			vs = Steins::Shader::Create("Asset/Shader/QuadEasyVS.spv", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
+			vs = Steins::Shader::Create("Asset/Shader/QuadVS.spv", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
 			ps = Steins::Shader::Create("Asset/Shader/QuadPS.spv", Steins::ShaderType::Pixel, Steins::ShaderLoadMode::File);
 		}
 
@@ -148,10 +158,13 @@ public :
 			{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"}
 		};
 
-		camera.SetPosition({ 0.0f,0.0f,0.0f,1.0f });
+		camera.SetPosition({ 0.3f,0.0f,0.0f,1.0f });
 		cameraPos = camera.GetViewProjectionMatrix();
 		viewProjMat = Steins::ConstantBuffer::Create(sizeof(Steins::Matrix4x4));
 		viewProjMat->Update(&cameraPos.glmMatrix[0], sizeof(Steins::Matrix4x4));
+
+		auto path = Steins::FilePath("Asset/Texture/Checkerboard.png");
+		texture = Steins::Texture2D::Create(path);
 
 		Steins::PipelineStateDesc desc;
 		desc.vertexShader = vs;
@@ -171,9 +184,8 @@ public :
 
 		//Steins::Renderer::BeginScene(camera);
 		pso->Bind();
-		viewProjMat->Bind(0, Steins::VertexBit);
-		
-
+		viewProjMat->Bind(0, Steins::SteinsVertexBit);
+		texture->Bind(0);
 
 		//va->Bind();
 		//vs->Bind();
@@ -194,6 +206,13 @@ public :
 	{
 		//STEINS_TRACE("{0}", _event);
 	}
+
+	void OnImGuiRender() override
+	{
+		 ImGui::Begin("OpenGL Texture Text");
+		 ImGui::Image((ImTextureID)(uintptr_t)texture->GetNativeHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
+		 ImGui::End();
+	}
 private:
 	Steins::Shared<Steins::VertexArray> va;
 	Steins::Shared<Steins::VertexBuffer> vb;
@@ -202,6 +221,7 @@ private:
 	Steins::Shared<Steins::Shader> ps;
 	Steins::Shared<Steins::PipelineState> pso;
 	Steins::Shared<Steins::ConstantBuffer> viewProjMat;
+	Steins::Shared<Steins::Texture2D> texture;
 
 	Steins::OrthographicCamera camera;
 	Steins::Matrix4x4 cameraPos;
@@ -228,7 +248,7 @@ Steins::Application* Steins::CreateApplication()
 	ApplicationSpecification spec;
 	spec.Name = "Sandbox";
 	spec.WorkingDirectory = "../Lab";
-	spec.rendererAPI = RendererAPIType::Vulkan;
+	spec.rendererAPI = RendererAPIType::OpenGL;
 
 	return new Sandbox(spec);
 }

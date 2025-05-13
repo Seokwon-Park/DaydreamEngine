@@ -211,7 +211,7 @@ namespace Steins
 		//vkUnmapMemory(device->GetDevice(), uniformBufferMemory);
 
 
-		//vkUpdateDescriptorSets(device->GetDevice(), 1, &descriptorWrite, 0, nullptr);
+		vkUpdateDescriptorSets(device->GetDevice(), 1, &descriptorWrite, 0, nullptr);
 
 	}
 

@@ -17,6 +17,11 @@ namespace Steins
 			GLenum type = GraphicsUtil::GetGLShaderStage(shader->GetType());
 			GLuint shaderID = static_cast<GLuint>(reinterpret_cast<uintptr_t>(shader->GetNativeHandle()));
 			glUseProgramStages(pipeline, type, shaderID);
+			GLint samplerLocation = glGetUniformLocation(shaderID, "u_Texture");
+
+			if (samplerLocation != -1) {
+				glProgramUniform1i(shaderID, samplerLocation, 0);
+			}
 		}
 
 		glValidateProgramPipeline(pipeline);
@@ -27,6 +32,15 @@ namespace Steins
 			glGetProgramPipelineInfoLog(pipeline, 512, NULL, infoLog);
 			STEINS_CORE_ERROR("pipeline validation failed!\n {0}", infoLog);
 		}
+
+		//GLuint samplerID;
+		//glGenSamplers(1, &samplerID);
+		//glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		//glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		//glSamplerParameteri(samplerID, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		//glSamplerParameteri(samplerID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		//glBindSampler(0, samplerID);
 
 		//GLuint shaderID = static_cast<GLuint>(reinterpret_cast<uintptr_t>(shader->GetNativeHandle()));
 		//	glShaderIDs.push_back(shader);
