@@ -14,12 +14,14 @@ namespace Steins
 
 		virtual void Bind(UInt32 _slot) const override;
 
-		virtual void* GetNativeHandle() override { return texture.Get(); }
+		virtual void* GetNativeHandle() override { return textureSrv.Get(); }
 	protected:
 
 	private:
 		D3D11GraphicsDevice* device;
 		ComPtr<ID3D11Texture2D> texture;
+		ComPtr<ID3D11ShaderResourceView> textureSrv;
+
 	};
 }
 

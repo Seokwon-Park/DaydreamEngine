@@ -10,15 +10,22 @@ namespace Steins
 	{
 		device = _device;
 
-		DXGI_FORMAT dataFormat;
-		if (channels == 4)
+		UInt8* newPixels = new UInt8[width * height];
+		if (channels == 3)
 		{
-			dataFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+			for (int i = 0; i < width * height; i++)
+			{
+				newPixels[i] = data[i];
+				newPixels[i+1] = data[i+1];
+				newPixels[i+2] = data[i+2];
+				newPixels[i+3] = 255;
+			}
 		}
-		else if (channels == 3)
+		else if (channels == 4)
 		{
-			dataFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+			memcpy(newPixels, data, width * height * 4 * sizeof(UInt8));
 		}
+		
 
 		D3D11_TEXTURE2D_DESC desc;
 		desc.Width = width;
@@ -33,6 +40,9 @@ namespace Steins
 		desc.CPUAccessFlags = 0;
 		desc.MiscFlags = 0;
 
+		D3D11_SUBRESOURCE_DATA data{};
+		data.SysMemPitch = desc.Width * sizeof(UInt8) * 4; //RGBA
+		data.pSysMem = newPixels;
 
 		device->GetDevice()->CreateTexture2D(&desc, nullptr, texture.GetAddressOf());
 	}

@@ -8,6 +8,7 @@
 #include "D3D11PipelineState.h"
 #include "D3D11ImGuiRenderer.h"
 #include "D3D11VertexArray.h"
+#include "D3D11Texture.h"
 
 #include "Platform/RenderSystem/GraphicsUtil.h"
 
@@ -20,15 +21,15 @@ namespace Steins
 
 	D3D11GraphicsDevice::~D3D11GraphicsDevice()
 	{
-#if defined(DEBUG) || defined(_DEBUG)
-		Microsoft::WRL::ComPtr<ID3D11Debug> DXGIDebug;
-
-		if (SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&DXGIDebug))))
-		{
-			DXGIDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
-			DXGIDebug = nullptr;
-		}
-#endif
+//#if defined(DEBUG) || defined(_DEBUG)
+//		Microsoft::WRL::ComPtr<ID3D11Debug> DXGIDebug;
+//
+//		if (SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&DXGIDebug))))
+//		{
+//			DXGIDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
+//			DXGIDebug = nullptr;
+//		}
+//#endif
 		/*dxgiAdapter->Release();
 		dxgiDevice->Release();
 		dxgiFactory->Release();*/
@@ -179,7 +180,7 @@ namespace Steins
 
 	Shared<Texture2D> D3D11GraphicsDevice::CreateTexture2D(const FilePath& _path)
 	{
-		return Shared<Texture2D>();
+		return MakeShared<D3D11Texture2D>(this, _path);
 	}
 
 	Unique<ImGuiRenderer> D3D11GraphicsDevice::CreateImGuiRenderer()

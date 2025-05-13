@@ -48,8 +48,6 @@ namespace Steins
 		void AttachOverlay(Layer* _overlay);
 
 		void ReadConfig(std::string_view _fileName);
-
-		unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
 	protected:
 
 	private:

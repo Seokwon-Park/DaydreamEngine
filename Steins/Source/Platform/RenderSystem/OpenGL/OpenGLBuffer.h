@@ -40,7 +40,7 @@ namespace Steins
 
 		virtual void Update(const void* _data, UInt32 _size) override;
 
-		virtual void* GetNativeHandle() override { return (void*)bufferID; }
+		virtual void* GetNativeHandle() override { return reinterpret_cast<void*>(static_cast<uintptr_t>(bufferID)); }
 
 	private:
 		UInt32 bufferID;

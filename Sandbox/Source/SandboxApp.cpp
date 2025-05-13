@@ -210,7 +210,8 @@ public :
 	void OnImGuiRender() override
 	{
 		 ImGui::Begin("OpenGL Texture Text");
-		 ImGui::Image((ImTextureID)(uintptr_t)texture->GetNativeHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
+		 //ImGui::Image((ImTextureID)(uintptr_t)texture->GetNativeHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
+		 //ImGui::Image((ImTextureID)texture->GetNativeHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
 		 ImGui::End();
 	}
 private:
@@ -248,7 +249,7 @@ Steins::Application* Steins::CreateApplication()
 	ApplicationSpecification spec;
 	spec.Name = "Sandbox";
 	spec.WorkingDirectory = "../Lab";
-	spec.rendererAPI = RendererAPIType::OpenGL;
+	spec.rendererAPI = RendererAPIType::DirectX11;
 
 	return new Sandbox(spec);
 }
