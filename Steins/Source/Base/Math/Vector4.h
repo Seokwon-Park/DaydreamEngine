@@ -2,6 +2,10 @@
 
 #include <iostream>
 #include "TypeTraits.h"
+#include "Vector2.h"
+
+#include "glm/glm.hpp"
+
 
 namespace Steins
 {

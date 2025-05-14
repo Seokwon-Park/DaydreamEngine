@@ -98,7 +98,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Source\Base\Math.h" />
-    <ClInclude Include="Source\Base\Math\MathInternal.h" />
     <ClInclude Include="Source\Base\Math\MathUtil.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11ImGuiRenderer.h">
       <SubType>

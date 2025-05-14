@@ -3,6 +3,9 @@
 
 #include "TypeTraits.h"
 
+#include "glm/glm.hpp"
+
+
 namespace Steins
 {
 	class Vector3
@@ -17,6 +20,7 @@ namespace Steins
 				Float32 z;
 			};
 			Float32 v[3];
+			glm::vec3 glmVec3;
 		};
 		Vector3() :x(0), y(0), z(0){}
 		template<typename U>

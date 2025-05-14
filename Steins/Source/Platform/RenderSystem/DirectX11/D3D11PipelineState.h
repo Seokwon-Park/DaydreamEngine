@@ -14,6 +14,7 @@ namespace Steins
 	private:
 		D3D11GraphicsDevice* device;
 		ComPtr<ID3D11RasterizerState> rasterizer;
+		ComPtr<ID3D11SamplerState> sampler;
 
 	};
 }

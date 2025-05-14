@@ -1,8 +1,9 @@
 #pragma once
 
-#include "MathInternal.h"
-#include <glm/glm.hpp>
-#include <DirectXMath.h>
+#include "Vector3.h"
+#include "Vector4.h"
+
+#include "glm/glm.hpp"
 
 namespace Steins
 {
@@ -11,41 +12,27 @@ namespace Steins
 	public:
 		union
 		{
-			Float32 values[4][4];
-			DirectX::XMMATRIX dxMatrix;
-			glm::mat4 glmMatrix;
+			Float32 mat[4][4];
+			Float32 values[16];
+			glm::mat4 glmMat;
 		};
 
-		Matrix4x4()
-		{
-			dxMatrix = DirectX::XMMatrixIdentity();
-		}
+		Matrix4x4();
 
-		void MatrixInverse()
-		{
-			dxMatrix = DirectX::XMMatrixInverse(nullptr, dxMatrix);
-		}
+		void MatrixInverse();
 
-		void Translate(Vector4 _translate)
-		{
-			//DirectX::XMVECTOR Vec = DirectX::XMLoadFloat4A(&_translate);
-			//dxMatrix = DirectX::XMMatrixTranslationFromVector(Vec);
-		}
+		void MatrixTranslate(Vector3 _translate);
+		void MatrixTranslate(Vector4 _translate);
 
-		void Transpose()
-		{
-			dxMatrix = DirectX::XMMatrixTranspose(dxMatrix);
-		}
+		void MatrixTranspose();
 
-		Matrix4x4 operator*(Matrix4x4 _matrix)
-		{
-			DirectX::XMMATRIX XMMat = DirectX::XMMatrixMultiply(dxMatrix, _matrix.dxMatrix);
-			Matrix4x4 Result;
-			Result.dxMatrix = XMMat;
-			return Result;
-		}
+		Matrix4x4 operator*(Matrix4x4 _matrix);
 
 		static Matrix4x4 Translate(Matrix4x4 _matrix, Vector3 _translate);
+		static Matrix4x4 Orthographic(float _left, float _right, float _bottom, float _top);
+		static Matrix4x4 Inverse(Matrix4x4 _matrix);
+
+
 	};
 }
 

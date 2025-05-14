@@ -98,7 +98,7 @@ public :
 			layout(location = 1) in vec4 a_Color;
 			layout(location = 2) in vec2 a_TexCoord;
 			
-			layout(std140, binding = 0) uniform Camera
+			layout(row_major, std140, binding = 0) uniform Camera
 			{
 			    mat4 u_ViewProjection;
 			};
@@ -161,7 +161,7 @@ public :
 		camera.SetPosition({ 0.3f,0.0f,0.0f });
 		cameraPos = camera.GetViewProjectionMatrix();
 		viewProjMat = Steins::ConstantBuffer::Create(sizeof(Steins::Matrix4x4));
-		viewProjMat->Update(&cameraPos.glmMatrix[0], sizeof(Steins::Matrix4x4));
+		viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
 
 		auto path = Steins::FilePath("Asset/Texture/Checkerboard.png");
 		texture = Steins::Texture2D::Create(path);
@@ -211,7 +211,7 @@ public :
 	{
 		 ImGui::Begin("OpenGL Texture Text");
 		 //ImGui::Image((ImTextureID)(uintptr_t)texture->GetNativeHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
-		 //ImGui::Image((ImTextureID)texture->GetNativeHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
+		 ImGui::Image((ImTextureID)texture->GetNativeHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
 		 ImGui::End();
 	}
 private:

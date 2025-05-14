@@ -3,6 +3,9 @@
 #include <iostream>
 #include "TypeTraits.h"
 
+#include "glm/glm.hpp"
+
+
 namespace Steins
 {
 	class Vector2

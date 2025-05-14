@@ -10,15 +10,15 @@ namespace Steins
 	{
 		device = _device;
 
-		UInt8* newPixels = new UInt8[width * height];
+		UInt8* newPixels = new UInt8[width * height*4];
 		if (channels == 3)
 		{
 			for (int i = 0; i < width * height; i++)
 			{
-				newPixels[i] = data[i];
-				newPixels[i+1] = data[i+1];
-				newPixels[i+2] = data[i+2];
-				newPixels[i+3] = 255;
+				newPixels[i*4] = data[i];
+				newPixels[i*4+1] = data[i+1];
+				newPixels[i*4+2] = data[i+2];
+				newPixels[i*4+3] = 255;
 			}
 		}
 		else if (channels == 4)
@@ -35,21 +35,23 @@ namespace Steins
 		desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		desc.SampleDesc.Count = 1; 
 		desc.SampleDesc.Quality = 0;
-		desc.Usage = D3D11_USAGE_DEFAULT;
+		desc.Usage = D3D11_USAGE_IMMUTABLE;
 		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 		desc.CPUAccessFlags = 0;
 		desc.MiscFlags = 0;
 
-		D3D11_SUBRESOURCE_DATA data{};
-		data.SysMemPitch = desc.Width * sizeof(UInt8) * 4; //RGBA
-		data.pSysMem = newPixels;
+		D3D11_SUBRESOURCE_DATA pixelData{};
+		pixelData.SysMemPitch = desc.Width * sizeof(UInt8) * 4; //RGBA
+		pixelData.pSysMem = newPixels;
 
 		device->GetDevice()->CreateTexture2D(&desc, nullptr, texture.GetAddressOf());
+		device->GetDevice()->CreateShaderResourceView(texture.Get(), nullptr, textureSrv.GetAddressOf());
 	}
 	D3D11Texture2D::~D3D11Texture2D()
 	{
 	}
 	void D3D11Texture2D::Bind(UInt32 _slot) const
 	{
+		device->GetContext()->PSSetShaderResources(_slot, 1, textureSrv.GetAddressOf());
 	}
 }
