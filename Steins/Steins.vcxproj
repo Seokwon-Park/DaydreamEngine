@@ -141,6 +141,7 @@
     <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12RendererAPI.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12Shader.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12SwapChain.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12Texture.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12VertexArray.h" />
     <ClInclude Include="Source\Platform\RenderSystem\GraphicsUtil.h" />
     <ClInclude Include="Source\Platform\RenderSystem\Metal\MetalGraphicsDevice.h" />
@@ -671,6 +672,7 @@
     <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12RendererAPI.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12Shader.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12SwapChain.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12Texture.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12VertexArray.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\GraphicsUtil.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\Metal\MetalGraphicsDevice.cpp" />
