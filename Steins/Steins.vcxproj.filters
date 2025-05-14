@@ -96,9 +96,6 @@
     <ClInclude Include="Source\Base\IO\FilePath.h">
       <Filter>Source\Base\IO</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Base\Math.h">
-      <Filter>Source\Base</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Base\Math\Color.h">
       <Filter>Source\Base\Math</Filter>
     </ClInclude>
@@ -1583,6 +1580,9 @@
     <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLImGuiRenderer.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12ImGuiRenderer.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12Shader.h" />
+    <ClInclude Include="Source\Base\Math.h" />
+    <ClInclude Include="Source\Base\Math\MathInternal.h" />
+    <ClInclude Include="Source\Base\Math\MathUtil.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">

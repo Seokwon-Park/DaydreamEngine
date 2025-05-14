@@ -15,7 +15,8 @@
 #include <unordered_map>
 #include <variant>
 #include <glm/glm.hpp>
-#include <DirectXMath.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "Steins/Core/Logger.h"
 #include "Steins/Core/Assert.h"

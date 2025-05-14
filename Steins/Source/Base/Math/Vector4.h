@@ -1,9 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include <DirectXMath.h>
 #include "TypeTraits.h"
-#include <glm/glm.hpp>
 
 namespace Steins
 {
@@ -21,10 +19,10 @@ namespace Steins
 				Float32 w;
 			};
 			Float32 v[4];
-			DirectX::XMFLOAT4A XMFloat;
-			glm::vec4 glmVec;
 		};
+
 		Vector4() :x(0), y(0), z(0), w(0) {}
+		Vector4(Vector2 _vec2, Float32 _z, Float32 _w);
 		Vector4(Float32 _x, Float32 _y, Float32 _z, Float32 _w) : x(_x), y(_y), z(_z), w(_w) {}
 
 		//template<typename U>
@@ -35,7 +33,7 @@ namespace Steins
 		template<typename X, typename Y, typename Z>
 			requires IsCastable<X, Float32>&& IsCastable<Y, Float32>&& IsCastable<Z, Float32>
 		Vector4(X _x, Y _y, Z _z)
-			: x(static_cast<Float32>(_x)), y(static_cast<Float32>(_y)), z(static_cast<Float32>(_z)), w(static_cast<Float32>(1)) {}
+			: x(static_cast<Float32>(_x)), y(static_cast<Float32>(_y)), z(static_cast<Float32>(_z)), w(1.0f) {}
 
 		template<typename X, typename Y, typename Z, typename W>
 			requires IsCastable<X, Float32>&& IsCastable<Y, Float32>&& IsCastable<Z, Float32>&& IsCastable<W, Float32>
@@ -54,14 +52,12 @@ namespace Steins
 			return _ostream;
 		}
 
-		Vector4 operator-() const { return Vector4(-x, -y, -z, w); }
-		Vector4 operator+(const Vector4& _other) const { return Vector4(x + _other.x, y + _other.y, z + _other.z); }
+		Vector4 operator-() const;
+		Vector4 operator+(const Vector4& _other) const;
 		Vector4 operator-(const Vector4& _other) const;
 		Vector4 operator/(const Vector4& _other) const;
 		Vector4 operator*(const Float32& _value) const;
 		Vector4 operator/(const Float32& _value) const;
-
-		//operator FIntPoint();
 
 		void operator+=(const Vector4& _other);
 		void operator-=(const Vector4& _other);

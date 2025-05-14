@@ -158,7 +158,7 @@ public :
 			{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"}
 		};
 
-		camera.SetPosition({ 0.3f,0.0f,0.0f,1.0f });
+		camera.SetPosition({ 0.3f,0.0f,0.0f });
 		cameraPos = camera.GetViewProjectionMatrix();
 		viewProjMat = Steins::ConstantBuffer::Create(sizeof(Steins::Matrix4x4));
 		viewProjMat->Update(&cameraPos.glmMatrix[0], sizeof(Steins::Matrix4x4));

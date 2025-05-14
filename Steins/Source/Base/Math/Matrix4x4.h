@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Vector4.h"
+#include "MathInternal.h"
 #include <glm/glm.hpp>
+#include <DirectXMath.h>
 
 namespace Steins
 {
@@ -10,7 +11,7 @@ namespace Steins
 	public:
 		union
 		{
-			Float32 matrix[4][4];
+			Float32 values[4][4];
 			DirectX::XMMATRIX dxMatrix;
 			glm::mat4 glmMatrix;
 		};
@@ -27,8 +28,8 @@ namespace Steins
 
 		void Translate(Vector4 _translate)
 		{
-			DirectX::XMVECTOR Vec = DirectX::XMLoadFloat4A(&_translate.XMFloat);
-			dxMatrix = DirectX::XMMatrixTranslationFromVector(Vec);
+			//DirectX::XMVECTOR Vec = DirectX::XMLoadFloat4A(&_translate);
+			//dxMatrix = DirectX::XMMatrixTranslationFromVector(Vec);
 		}
 
 		void Transpose()
@@ -44,6 +45,7 @@ namespace Steins
 			return Result;
 		}
 
+		static Matrix4x4 Translate(Matrix4x4 _matrix, Vector3 _translate);
 	};
 }
 

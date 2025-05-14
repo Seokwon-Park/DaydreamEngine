@@ -97,6 +97,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Base\Math.h" />
+    <ClInclude Include="Source\Base\Math\MathInternal.h" />
+    <ClInclude Include="Source\Base\Math\MathUtil.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11ImGuiRenderer.h">
       <SubType>
       </SubType>
@@ -110,7 +113,6 @@
     <ClInclude Include="Source\Base\Base.h" />
     <ClInclude Include="Source\Base\IO\File.h" />
     <ClInclude Include="Source\Base\IO\FilePath.h" />
-    <ClInclude Include="Source\Base\Math.h" />
     <ClInclude Include="Source\Base\Math\Color.h" />
     <ClInclude Include="Source\Base\Math\Matrix4x4.h" />
     <ClInclude Include="Source\Base\Math\TypeTraits.h" />

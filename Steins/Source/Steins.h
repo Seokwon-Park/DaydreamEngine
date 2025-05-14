@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Base/Wrappers.h"
-#include "Base/IO/FilePath.h"
+#include "Base/Base.h"
 
 #include "Steins/Core/Application.h"
 #include "Steins/Core/Logger.h"

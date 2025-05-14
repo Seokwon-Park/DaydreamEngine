@@ -3,64 +3,71 @@
 
 namespace Steins
 {
-	//Vector2 Vector2::operator+(const Vector2& _Other) const
-	//{
-	//	return Vector2(X + _Other.X, Y + _Other.Y);
-	//}
+	Vector2 Vector2::operator+(const Vector2& _other) const
+	{
+		return Vector2(x + _other.x, y + _other.y);
+	}
 
-	//Vector2 Vector2::operator-() const
-	//{
-	//	return Vector2(-X, -Y);
-	//}
+	Vector2 Vector2::operator-() const
+	{
+		return Vector2(-x, -y);
+	}
 
-	//Vector2 Vector2::operator-(const Vector2& _Other) const
-	//{
-	//	return Vector2(X - _Other.X, Y - _Other.Y);
-	//}
+	Vector2 Vector2::operator-(const Vector2& _other) const
+	{
+		return Vector2(x - _other.x, y - _other.y);
+	}
 
-	//Vector2 Vector2::operator/(const Vector2& _Other) const
-	//{
-	//	return Vector2(X / _Other.X, Y / _Other.Y);
-	//}
+	Vector2 Vector2::operator/(const Vector2& _other) const
+	{
+		if (_other.x == 0.0f || _other.y == 0.0f)
+		{
+			STEINS_CORE_ASSERT(false, "Can't divide by zero!");
+			return Vector2();
+		}
+		return Vector2(x / _other.x, y / _other.y);
 
-	//Vector2 Vector2::operator*(const float& _Value) const
-	//{
-	//	return Vector2(X * _Value, Y * _Value);
-	//}
+	}
 
-	//Vector2 Vector2::operator/(const float& _Value) const
-	//{
-	//	return Vector2(X / _Value, Y / _Value);
-	//}
+	Vector2 Vector2::operator*(Float32 _scalar) const
+	{
+		return Vector2(x * _scalar, y * _scalar);
+	}
 
-	////Vector2::operator FIntPoint()
-	////{
-	////	return FIntPoint(X, Y);
-	////}
+	Vector2 Vector2::operator/(Float32 _scalar) const
+	{
+		if (_scalar == 0.0f)
+		{
+			STEINS_CORE_ASSERT(false, "Can't divide by zero!");
+			return Vector2();
+		}
+		return Vector2(x / _scalar, y / _scalar);
+	}
 
-	//void Vector2::operator+=(const Vector2& _Other)
-	//{
-	//	*this = *this + _Other;
-	//}
+	void Vector2::operator+=(const Vector2& _other)
+	{
+		*this = *this + _other;
+	}
 
-	//void Vector2::operator-=(const Vector2& _Other)
-	//{
-	//	*this = *this - _Other;
-	//}
+	void Vector2::operator-=(const Vector2& _other)
+	{
+		*this = *this - _other;
+	}
 
-	//void Vector2::operator*=(const float& _Value)
-	//{
-	//	*this = *this * _Value;
-	//}
 
-	//void Vector2::operator*=(const Vector2& _Other)
-	//{
-	//	X *= _Other.X;
-	//	Y *= _Other.Y;
-	//}
+	void Vector2::operator*=(const Vector2& _other)
+	{
+		x *= _other.x;
+		y *= _other.y;
+	}
 
-	//void Vector2::operator/=(const float& _Value)
-	//{
-	//	*this *= 1.0f / _Value;
-	//}
+	void Vector2::operator*=(Float32 _scalar)
+	{
+		*this = *this * _scalar;
+	}
+
+	void Vector2::operator/=(Float32 _scalar)
+	{
+		*this *= 1.0f / _scalar;
+	}
 }

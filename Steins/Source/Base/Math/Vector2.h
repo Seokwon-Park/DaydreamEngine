@@ -1,12 +1,10 @@
 #pragma once
 
-#include <DirectXMath.h>
+#include <iostream>
 #include "TypeTraits.h"
 
 namespace Steins
 {
-	template<typename T>
-		requires IsValid<T>
 	class Vector2
 	{
 
@@ -15,22 +13,21 @@ namespace Steins
 		{
 			struct
 			{
-				T x;
-				T y;
+				Float32 x;
+				Float32 y;
 			};
-			T v[2];
-			DirectX::XMFLOAT2 XMFloat;
+			Float32 v[2];
 		};
-		Vector2() :x(0), y(0) {}
-		Vector2(T _x, T _y) : x(_x), y(_y) {}
+		Vector2() :x(0.0f), y(0.0f) {}
+		Vector2(Float32 _x, Float32 _y) : x(_x), y(_y) {}
 
-		//template<typename U>
-		//	requires IsCastable<U, T>
-		//Vector2(U _x, U _y) : x(static_cast<T>(_x)), y(static_cast<T>(_y)) {}
+		template<typename U>
+			requires IsCastable<U, Float32>
+		Vector2(U _x, U _y) : x(static_cast<Float32>(_x)), y(static_cast<Float32>(_y)) {}
 
 		template<typename X, typename Y>
-			requires IsCastable<X, T> && IsCastable<Y, T>
-		Vector2(X _x, Y _y) : x(static_cast<T>(_x)), y(static_cast<T>(_y)) {}
+			requires IsCastable<X, Float32> && IsCastable<Y, Float32>
+		Vector2(X _x, Y _y) : x(static_cast<Float32>(_x)), y(static_cast<Float32>(_y)) {}
 
 		static const Vector2 ZERO;
 		static const Vector2 LEFT;
@@ -44,27 +41,35 @@ namespace Steins
 			return _ostream;
 		}
 
-		Vector2 operator+(const Vector2& _other) const { return Vector2(x + _other.x, y + _other.y); }
-		Vector2 operator-() const { return Vector2(-x, -y); }
+		Vector2 operator+(const Vector2& _other) const;
+		Vector2 operator-() const;
 		Vector2 operator-(const Vector2& _other) const;
 		Vector2 operator/(const Vector2& _other) const;
-		Vector2 operator*(const float& _value) const;
-		Vector2 operator/(const float& _value) const;
-
-		//operator FIntPoint();
+		Vector2 operator*(Float32 _value) const;
+		Vector2 operator/(Float32 _value) const;
 
 		void operator+=(const Vector2& _other);
 		void operator-=(const Vector2& _other);
-		void operator*=(const float& _value);
 		void operator*=(const Vector2& _other);
-		void operator/=(const float& _value);
+		void operator*=(Float32 _scalar);
+		void operator/=(Float32 _scalar);
+
+		bool operator==(const Vector2& other) const;
+		bool operator!=(const Vector2& other) const;
+
+		float Length() const;
+		float LengthSquared() const;
+		void Normalize();
+		Vector2 Normalized() const; // 정규화된 새 벡터 반환
+
+		static float Dot(const Vector2& a, const Vector2& b);
 	};
 
-	template <typename T> requires IsValid<T> const Vector2<T> Vector2<T>::ZERO = Vector2(0, 0);
-	template <typename T> requires IsValid<T> const Vector2<T> Vector2<T>::LEFT = Vector2(-1, 0);
-	template <typename T> requires IsValid<T> const Vector2<T> Vector2<T>::RIGHT = Vector2(1, 0);
-	template <typename T> requires IsValid<T> const Vector2<T> Vector2<T>::UP = Vector2(0, 1);
-	template <typename T> requires IsValid<T> const Vector2<T> Vector2<T>::DOWN = Vector2(0, -1);
+	//template <typename T> requires IsValid<T> const Vector2<T> Vector2<T>::ZERO = Vector2(0, 0);
+	//template <typename T> requires IsValid<T> const Vector2<T> Vector2<T>::LEFT = Vector2(-1, 0);
+	//template <typename T> requires IsValid<T> const Vector2<T> Vector2<T>::RIGHT = Vector2(1, 0);
+	//template <typename T> requires IsValid<T> const Vector2<T> Vector2<T>::UP = Vector2(0, 1);
+	//template <typename T> requires IsValid<T> const Vector2<T> Vector2<T>::DOWN = Vector2(0, -1);
 }
 
 

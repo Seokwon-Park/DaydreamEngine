@@ -7,8 +7,8 @@ namespace Steins
 	public:
 		OrthographicCamera(float _left, float _right, float _bottom, float _top);
 
-		inline const Vector4 GetPosition() { return position;  }
-		inline void SetPosition(const Vector4& _position) { position = _position; CalculateViewMatrix(); }
+		inline const Vector3 GetPosition() { return position;  }
+		inline void SetPosition(const Vector3& _position) { position = _position; CalculateViewMatrix(); }
 
 		inline const Matrix4x4& GetProjectionMatrix() const { return projectionMatrix; }
 		inline const Matrix4x4& GetViewMatrix() const { return viewMatrix; }
@@ -21,7 +21,7 @@ namespace Steins
 		Matrix4x4 viewMatrix;
 		Matrix4x4 viewProjectionMatrix;
 
-		Vector4 position;
+		Vector3 position;
 		float rotation = 0.0f;
 	};
 }

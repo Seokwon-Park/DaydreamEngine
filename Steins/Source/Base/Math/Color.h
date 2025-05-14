@@ -26,7 +26,6 @@ namespace Steins
 			};
 
 			Float32 color[4];
-			DirectX::XMFLOAT4 XMFloat;
 		};
 		Color() :x(0.0f), y(0.0f), z(0.0f), w(0.0f) {}
 		Color(Float32 _x, Float32 _y, Float32 _z, Float32 _w) : x(_x), y(_y), z(_z), w(_w) {}
