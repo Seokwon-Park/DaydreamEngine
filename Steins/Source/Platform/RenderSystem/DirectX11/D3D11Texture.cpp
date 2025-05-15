@@ -13,7 +13,6 @@ namespace Steins
 		data = stbi_load(_path.ToString().c_str(), &width, &height, &channels, 0);
 		STEINS_CORE_ASSERT(data, "Failed to load image!");
 
-
 		UInt8* newPixels = new UInt8[width * height*4];
 		if (channels == 3)
 		{

@@ -14,17 +14,44 @@ namespace Steins
 		rootDescriptor.ShaderRegister = 0;    // HLSL의 b0 레지스터
 		rootDescriptor.RegisterSpace = 0;     // 기본 레지스터 공간
 
+		D3D12_DESCRIPTOR_RANGE range{};
+		range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+		range.NumDescriptors = 1;
+		range.BaseShaderRegister = 0;  // t0
+		range.RegisterSpace = 0;
+		range.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
 		// 2. 루트 파라미터(Root Parameter) 정의
-		D3D12_ROOT_PARAMETER rootParameters[1];
+		D3D12_ROOT_PARAMETER rootParameters[2];
 		rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; // 루트 CBV 타입
 		rootParameters[0].Descriptor = rootDescriptor;
 		rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX; // 예: 정점 셰이더에서만 사용
+				
+		rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+		rootParameters[1].DescriptorTable.NumDescriptorRanges = 1;
+		rootParameters[1].DescriptorTable.pDescriptorRanges = &range;
+		rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+		D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
+		staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+		staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		staticSamplers[0].MipLODBias = 0;
+		staticSamplers[0].MaxAnisotropy = 0;
+		staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+		staticSamplers[0].BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
+		staticSamplers[0].MinLOD = 0;
+		staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;
+		staticSamplers[0].ShaderRegister = 0;  // s0
+		staticSamplers[0].RegisterSpace = 0;
+		staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 		D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
-		rootSignatureDesc.NumParameters = 1;
-		rootSignatureDesc.pParameters = &rootParameters[0];
-		rootSignatureDesc.NumStaticSamplers = 0;
-		rootSignatureDesc.pStaticSamplers = nullptr;
+		rootSignatureDesc.NumParameters = 2;
+		rootSignatureDesc.pParameters = rootParameters;
+		rootSignatureDesc.NumStaticSamplers = 1;
+		rootSignatureDesc.pStaticSamplers = staticSamplers;
 		rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 		ComPtr<ID3DBlob> signature;

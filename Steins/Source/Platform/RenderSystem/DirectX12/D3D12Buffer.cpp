@@ -148,7 +148,7 @@ namespace Steins
 		D3D12_RESOURCE_DESC desc{};
 		desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 		desc.Alignment = 0;
-		desc.Width = _size;
+		desc.Width = (_size + 255) & ~255;
 		desc.Height = 1;
 		desc.DepthOrArraySize = 1;
 		desc.MipLevels = 1;
@@ -168,7 +168,7 @@ namespace Steins
 		);
 
 		constantBufferView.BufferLocation = constantBuffer->GetGPUVirtualAddress();
-		constantBufferView.SizeInBytes = 256;//static_cast<UINT>(_size);
+		constantBufferView.SizeInBytes = (_size + 255) & ~255;//static_cast<UINT>(_size);
 
 		D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle;
 		D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle;

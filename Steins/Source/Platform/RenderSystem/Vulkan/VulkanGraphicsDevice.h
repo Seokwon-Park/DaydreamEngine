@@ -58,11 +58,18 @@ namespace Steins
 		VkCommandPool GetCommandPool() const { return commandPool; }
 		VkRenderPass GetMainRenderPass() const { return mainRenderPass; }
 
+		VkCommandBuffer BeginSingleTimeCommands();
+		void EndSingleTimeCommands(VkCommandBuffer _commandBuffer);
+
 		SwapChainSupportDetails QuerySwapChainSupport(VkSurfaceKHR _surface);
 		UInt32 FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 		//Create a VkBuffer
 		void CreateBuffer(VkDeviceSize _size, VkBufferUsageFlags _usage, VkMemoryPropertyFlags _properties, VkBuffer& _buffer, VkDeviceMemory& _bufferMemory);
+		void CreateImage(UInt32 _width, UInt32 _height, VkFormat _format, VkImageTiling tiling, VkImageUsageFlags _usage, VkMemoryPropertyFlags _properties, VkImage& _image, VkDeviceMemory& _imageMemory);
+		void CreateImageView(VkImage _image, VkFormat _format, VkImageView& _imageView);
 		void CopyBuffer(VkBuffer _src, VkBuffer _dst, VkDeviceSize _size);
+		void CopyBufferToImage(VkBuffer _src, VkImage _dst, UInt32 _width, UInt32 _height);
+		void TransitionTextureLayout(VkImage _image, VkFormat _format, VkImageLayout _oldLayout, VkImageLayout _newLayout);
 
 		//SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice _physicalDevice, VkSurfaceKHR _surface);
 	private:

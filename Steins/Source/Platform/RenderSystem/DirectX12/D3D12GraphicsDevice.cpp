@@ -8,6 +8,7 @@
 #include "D3D12PipelineState.h"
 #include "D3D12ImGuiRenderer.h"
 #include "D3D12VertexArray.h"
+#include "D3D12Texture.h"
 #include "Platform/RenderSystem/GraphicsUtil.h"
 
 namespace Steins
@@ -212,7 +213,7 @@ namespace Steins
 
 	Shared<Texture2D> D3D12GraphicsDevice::CreateTexture2D(const FilePath& _path)
 	{
-		return Shared<Texture2D>();
+		return MakeShared<D3D12Texture2D>(this, _path);
 	}
 
 	Unique<ImGuiRenderer> D3D12GraphicsDevice::CreateImGuiRenderer()

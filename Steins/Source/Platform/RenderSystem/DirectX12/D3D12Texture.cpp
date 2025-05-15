@@ -68,8 +68,9 @@ namespace Steins
 		uploadBuffer->Map(0, &range, &pixelData);
 		for (int y = 0; y < height; y++)
 		{
-			memcpy(reinterpret_cast<UInt8*>(pixelData) + y * uploadPitch, data + y * width * 4, width * 4);
+			memcpy(reinterpret_cast<UInt8*>(pixelData) + y * uploadPitch, newPixels + y * width * 4, width * 4);
 		}
+		uploadBuffer->Unmap(0, &range);
 
 		// Copy the upload resource content into the real resource
 		D3D12_TEXTURE_COPY_LOCATION srcLocation = {};
@@ -97,7 +98,19 @@ namespace Steins
 		device->GetCommandList()->CopyTextureRegion(&dstLocation, 0, 0, 0, &srcLocation, NULL);
 		device->GetCommandList()->ResourceBarrier(1, &barrier);
 
-		 
+		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+		srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Texture2D.MipLevels = desc.MipLevels;
+		srvDesc.Texture2D.MostDetailedMip = 0;
+		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		device->GetCBVSRVUAVHeapAlloc().Alloc(&cpuHandle, &gpuHandle);
+		device->GetDevice()->CreateShaderResourceView(texture.Get(), &srvDesc, cpuHandle);
 
+		stbi_image_free(data);
+	}
+	void D3D12Texture2D::Bind(UInt32 _slot) const
+	{
+		device->GetCommandList()->SetGraphicsRootDescriptorTable(1, gpuHandle);
 	}
 }

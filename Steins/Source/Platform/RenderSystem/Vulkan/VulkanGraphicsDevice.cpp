@@ -7,6 +7,7 @@
 #include "VulkanSwapChain.h"
 #include "VulkanImGuiRenderer.h"
 #include "VulkanVertexArray.h"
+#include "VulkanTexture.h"
 #include "Platform/RenderSystem/GraphicsUtil.h"
 
 #include "GLFW/glfw3.h"
@@ -30,7 +31,7 @@ namespace Steins
 			{
 				STEINS_CORE_ERROR("Validation layer: {0}", _pCallbackData->pMessage);
 			}
-			else if (_messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) 
+			else if (_messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
 			{
 				STEINS_CORE_WARN("Validation layer: {0}", _pCallbackData->pMessage);
 			}
@@ -38,7 +39,7 @@ namespace Steins
 			{
 				STEINS_CORE_INFO("Validation layer: {0}", _pCallbackData->pMessage);
 			}
-			else if (_messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT) 
+			else if (_messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT)
 			{
 				STEINS_CORE_TRACE("Validation layer: {0}", _pCallbackData->pMessage);
 			}
@@ -59,7 +60,7 @@ namespace Steins
 			}
 		}
 
-		void DestroyDebugUtilsMessengerEXT(VkInstance _instance, VkDebugUtilsMessengerEXT _debugMessenger, const VkAllocationCallbacks* _pAllocator) 
+		void DestroyDebugUtilsMessengerEXT(VkInstance _instance, VkDebugUtilsMessengerEXT _debugMessenger, const VkAllocationCallbacks* _pAllocator)
 		{
 			auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(_instance, "vkDestroyDebugUtilsMessengerEXT");
 			if (func != nullptr) {
@@ -78,7 +79,7 @@ namespace Steins
 		vkDestroyRenderPass(device, mainRenderPass, nullptr);
 		vkDestroyDescriptorPool(device, descriptorPool, nullptr);
 		vkDestroyCommandPool(device, commandPool, nullptr);
-		if (enableValidationLayers == true) 
+		if (enableValidationLayers == true)
 		{
 			DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
 		}
@@ -217,7 +218,7 @@ namespace Steins
 
 	Shared<Texture2D> VulkanGraphicsDevice::CreateTexture2D(const FilePath& _path)
 	{
-		return Shared<Texture2D>();
+		return MakeShared<VulkanTexture2D>(this, _path);
 	}
 
 	Unique<ImGuiRenderer> VulkanGraphicsDevice::CreateImGuiRenderer()
@@ -235,6 +236,41 @@ namespace Steins
 		return MakeShared<VulkanConstantBuffer>(this, _size);
 	}
 
+
+	VkCommandBuffer VulkanGraphicsDevice::BeginSingleTimeCommands()
+	{
+		VkCommandBufferAllocateInfo allocInfo{};
+		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+		allocInfo.commandPool = commandPool;
+		allocInfo.commandBufferCount = 1;
+
+		VkCommandBuffer commandBuffer;
+		vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
+
+		VkCommandBufferBeginInfo beginInfo{};
+		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+		vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+		return commandBuffer;
+	}
+
+	void VulkanGraphicsDevice::EndSingleTimeCommands(VkCommandBuffer _commandBuffer)
+	{
+		vkEndCommandBuffer(_commandBuffer);
+
+		VkSubmitInfo submitInfo{};
+		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+		submitInfo.commandBufferCount = 1;
+		submitInfo.pCommandBuffers = &_commandBuffer;
+
+		vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+		vkQueueWaitIdle(graphicsQueue);
+
+		vkFreeCommandBuffers(device, commandPool, 1, &_commandBuffer);
+	}
 
 	SwapChainSupportDetails VulkanGraphicsDevice::QuerySwapChainSupport(VkSurfaceKHR _surface)
 	{
@@ -268,7 +304,7 @@ namespace Steins
 		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
 
 		for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
-			if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) 
+			if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties)
 			{
 				return i;
 			}
@@ -301,47 +337,153 @@ namespace Steins
 		vkBindBufferMemory(device, _buffer, _bufferMemory, 0);
 	}
 
+	void VulkanGraphicsDevice::CreateImage(UInt32 _width, UInt32 _height, VkFormat _format, VkImageTiling _tiling, VkImageUsageFlags _usage, VkMemoryPropertyFlags _properties, VkImage& _image, VkDeviceMemory& _imageMemory)
+	{
+		VkImageCreateInfo imageInfo{};
+		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+		imageInfo.imageType = VK_IMAGE_TYPE_2D;
+		imageInfo.extent.width = static_cast<UInt32>(_width);
+		imageInfo.extent.height = static_cast<UInt32>(_height);
+		imageInfo.extent.depth = 1;
+		imageInfo.mipLevels = 1;
+		imageInfo.arrayLayers = 1;
+		imageInfo.format = _format;
+		imageInfo.tiling = _tiling;
+		imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		imageInfo.usage = _usage;
+		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+		imageInfo.flags = 0;
+
+		vkCreateImage(device, &imageInfo, nullptr, &_image);
+
+		VkMemoryRequirements memRequirements;
+		vkGetImageMemoryRequirements(device, _image, &memRequirements);
+
+		VkMemoryAllocateInfo allocInfo{};
+		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+		allocInfo.allocationSize = memRequirements.size;
+		allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, _properties);
+
+		vkAllocateMemory(device, &allocInfo, nullptr, &_imageMemory);
+		vkBindImageMemory(device, _image, _imageMemory, 0);
+	}
+
+	void VulkanGraphicsDevice::CreateImageView(VkImage _image, VkFormat _format, VkImageView& _imageView)
+	{
+		VkImageViewCreateInfo viewInfo{};
+		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		viewInfo.image = _image;
+		viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		viewInfo.format = _format;
+		viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		viewInfo.subresourceRange.baseMipLevel = 0;
+		viewInfo.subresourceRange.levelCount = 1;
+		viewInfo.subresourceRange.baseArrayLayer = 0;
+		viewInfo.subresourceRange.layerCount = 1;
+
+		VkResult vr = vkCreateImageView(device, &viewInfo, nullptr, &_imageView);
+		STEINS_CORE_ASSERT(VK_SUCCEEDED(vr), "Failed to create texture image view!");
+	}
+
 	void VulkanGraphicsDevice::CopyBuffer(VkBuffer _src, VkBuffer _dst, VkDeviceSize _size)
 	{
-		VkCommandBufferAllocateInfo allocInfo{};
-		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		allocInfo.commandPool = commandPool;
-		allocInfo.commandBufferCount = 1;
-
-		VkCommandBuffer commandBuffer;
-		vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
-
-		VkCommandBufferBeginInfo beginInfo{};
-		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-
-		vkBeginCommandBuffer(commandBuffer, &beginInfo);
+		VkCommandBuffer copyCommandBuffer = BeginSingleTimeCommands();
 
 		VkBufferCopy copyRegion{};
 		copyRegion.srcOffset = 0; // Optional
 		copyRegion.dstOffset = 0; // Optional
 		copyRegion.size = _size;
 
-		vkCmdCopyBuffer(commandBuffer, _src, _dst, 1, &copyRegion);
+		vkCmdCopyBuffer(copyCommandBuffer, _src, _dst, 1, &copyRegion);
 
-		vkEndCommandBuffer(commandBuffer);
+		EndSingleTimeCommands(copyCommandBuffer);
+	}
 
-		VkSubmitInfo submitInfo{};
-		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-		submitInfo.commandBufferCount = 1;
-		submitInfo.pCommandBuffers = &commandBuffer;
+	void VulkanGraphicsDevice::CopyBufferToImage(VkBuffer _src, VkImage _dst, UInt32 _width, UInt32 _height)
+	{
+		VkCommandBuffer copyCommandBuffer = BeginSingleTimeCommands();
 
-		vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-		vkQueueWaitIdle(graphicsQueue);
+		VkBufferImageCopy region{};
+		region.bufferOffset = 0;
+		region.bufferRowLength = 0;
+		region.bufferImageHeight = 0;
 
-		vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
+		region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		region.imageSubresource.mipLevel = 0;
+		region.imageSubresource.baseArrayLayer = 0;
+		region.imageSubresource.layerCount = 1;
+
+		region.imageOffset = { 0, 0, 0 };
+		region.imageExtent = {
+			_width,
+			_height,
+			1
+		};
+
+		vkCmdCopyBufferToImage(copyCommandBuffer, _src, _dst, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+
+		EndSingleTimeCommands(copyCommandBuffer);
+	}
+
+	void VulkanGraphicsDevice::TransitionTextureLayout(VkImage _image, VkFormat _format, VkImageLayout _oldLayout, VkImageLayout _newLayout)
+	{
+		VkCommandBuffer transCommandBuffer = BeginSingleTimeCommands();
+
+		VkImageMemoryBarrier barrier{};
+		barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+		barrier.oldLayout = _oldLayout;
+		barrier.newLayout = _newLayout;
+		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier.image = _image;
+		barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		barrier.subresourceRange.baseArrayLayer = 0;
+		barrier.subresourceRange.baseMipLevel = 0;
+		barrier.subresourceRange.layerCount = 1;
+		barrier.subresourceRange.levelCount = 1;
+		barrier.srcAccessMask = 0;
+		barrier.dstAccessMask = 0;
+
+		VkPipelineStageFlags sourceStage;
+		VkPipelineStageFlags destinationStage;
+
+		if (_oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && _newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) 
+		{
+			barrier.srcAccessMask = 0;
+			barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+
+			sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+			destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+		}
+		else if (_oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && _newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) 
+		{
+			barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+			barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+			sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+			destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+		}
+		else {
+			throw std::invalid_argument("unsupported layout transition!");
+		}
+
+		vkCmdPipelineBarrier(
+			transCommandBuffer,
+			sourceStage, destinationStage,
+			0,
+			0, nullptr,
+			0, nullptr,
+			1, &barrier
+		);
+
+		EndSingleTimeCommands(transCommandBuffer);
 	}
 
 
 	void VulkanGraphicsDevice::CreateInstance()
 	{
-		if (enableValidationLayers == true && CheckValidationLayerSupport() == false) 
+		if (enableValidationLayers == true && CheckValidationLayerSupport() == false)
 		{
 			STEINS_CORE_ERROR("Validation layers requested, but not available!");
 			return;
@@ -389,7 +531,7 @@ namespace Steins
 		PopulateDebugMessengerCreateInfo(createInfo);
 
 		VkResult result = CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger);
-		if (result != VK_SUCCESS) 
+		if (result != VK_SUCCESS)
 		{
 			STEINS_CORE_ERROR("Failed to set up debug messenger!");
 		}
@@ -431,13 +573,15 @@ namespace Steins
 		queueCreateInfo.pQueuePriorities = &queuePriority;
 
 		VkPhysicalDeviceFeatures deviceFeatures{};
+		deviceFeatures.samplerAnisotropy = VK_TRUE; 
+
 		VkDeviceCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 		createInfo.pQueueCreateInfos = &queueCreateInfo;
 		createInfo.queueCreateInfoCount = 1;
 		createInfo.pEnabledFeatures = &deviceFeatures;
 		createInfo.enabledExtensionCount = Cast<UInt32>(deviceExtensions.size());
-		createInfo.ppEnabledExtensionNames= deviceExtensions.data();
+		createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 		if (enableValidationLayers)
 		{
 			createInfo.enabledLayerCount = Cast<UInt32>(validationLayers.size());
@@ -515,7 +659,10 @@ namespace Steins
 		QueueFamilyIndices indices = FindQueueFamilies(_physicalDevice);
 		//return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU &&
 		//	deviceFeatures.geometryShader;
-		return indices.IsComplete() && extensionSupported;
+		VkPhysicalDeviceFeatures supportedFeatures;
+		vkGetPhysicalDeviceFeatures(_physicalDevice, &supportedFeatures);
+
+		return indices.IsComplete() && extensionSupported && supportedFeatures.samplerAnisotropy;
 	}
 	QueueFamilyIndices VulkanGraphicsDevice::FindQueueFamilies(VkPhysicalDevice _physicalDevice)
 	{
@@ -527,7 +674,7 @@ namespace Steins
 		vkGetPhysicalDeviceQueueFamilyProperties(_physicalDevice, &queueFamilyCount, queueFamilies.data());
 
 		int i = 0;
-		for (const auto& queueFamily : queueFamilies) 
+		for (const auto& queueFamily : queueFamilies)
 		{
 			if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
 			{
@@ -556,7 +703,7 @@ namespace Steins
 		{
 			requiredExtensions.erase(extension.extensionName);
 		}
-			
+
 		return requiredExtensions.empty();
 	}
 

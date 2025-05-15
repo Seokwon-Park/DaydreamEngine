@@ -22,6 +22,9 @@ namespace Steins
 				VK_DYNAMIC_STATE_SCISSOR,
 			};
 
+
+
+
 			VkPipelineDynamicStateCreateInfo dynamicState{};
 			dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
 			dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
@@ -109,10 +112,19 @@ namespace Steins
 			uboLayoutBinding.descriptorCount = 1;
 			uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
+			VkDescriptorSetLayoutBinding samplerLayoutBinding{};
+			samplerLayoutBinding.binding = 1;
+			samplerLayoutBinding.descriptorCount = 1;
+			samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			samplerLayoutBinding.pImmutableSamplers = nullptr;
+			samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+			std::vector<VkDescriptorSetLayoutBinding> bindings = { uboLayoutBinding, samplerLayoutBinding };
+
 			VkDescriptorSetLayoutCreateInfo layoutInfo{};
 			layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-			layoutInfo.bindingCount = 1;
-			layoutInfo.pBindings = &uboLayoutBinding;
+			layoutInfo.bindingCount = bindings.size();
+			layoutInfo.pBindings = bindings.data();
 
 			if (vkCreateDescriptorSetLayout(device->GetDevice(), &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
 				throw std::runtime_error("failed to create descriptor set layout!");
@@ -135,15 +147,16 @@ namespace Steins
 			bufferInfo.offset = 0;
 			bufferInfo.range = sizeof(Matrix4x4);
 
-			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-			descriptorWrite.dstSet = descriptorSets[0];
-			descriptorWrite.dstBinding = 0;
-			descriptorWrite.dstArrayElement = 0;
-			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			descriptorWrite.descriptorCount = 1;
-			descriptorWrite.pBufferInfo = &bufferInfo;
-			descriptorWrite.pImageInfo = nullptr; // Optional
-			descriptorWrite.pTexelBufferView = nullptr; // Optional
+			descriptorWriteSets.resize(1);
+			descriptorWriteSets[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWriteSets[0].dstSet = descriptorSets[0];
+			descriptorWriteSets[0].dstBinding = 0;
+			descriptorWriteSets[0].dstArrayElement = 0;
+			descriptorWriteSets[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			descriptorWriteSets[0].descriptorCount = 1;
+			descriptorWriteSets[0].pBufferInfo = &bufferInfo;
+			descriptorWriteSets[0].pImageInfo = nullptr; // Optional
+			descriptorWriteSets[0].pTexelBufferView = nullptr; // Optional
 
 			VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 			pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -177,6 +190,9 @@ namespace Steins
 			VkResult result = vkCreateGraphicsPipelines(device->GetDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline);
 			STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create pipeline!");
 		}
+
+		vkUpdateDescriptorSets(device->GetDevice(), 1, descriptorWriteSets.data(), 0, nullptr);
+
 		//		VkBuffer uniformBuffer;
 		//VkDeviceMemory uniformBufferMemory;
 
@@ -209,10 +225,6 @@ namespace Steins
 		//vkMapMemory(device->GetDevice(), uniformBufferMemory, 0, bufferInfo.size, 0, &data);
 		//memcpy(data, &mat.glmMatrix, (size_t)bufferInfo.size);
 		//vkUnmapMemory(device->GetDevice(), uniformBufferMemory);
-
-
-		vkUpdateDescriptorSets(device->GetDevice(), 1, &descriptorWrite, 0, nullptr);
-
 	}
 
 
@@ -226,12 +238,6 @@ namespace Steins
 	{
 		vkCmdBindDescriptorSets(device->GetCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[0], 0, nullptr);
 		vkCmdBindPipeline(device->GetCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
-
-
-		VkDeviceSize bufferSize = sizeof(glm::mat4);
-
-
-
 	}
 
 	void VulkanPipelineState::CreateShaderStageInfo(const Shared<Shader>& _shader)

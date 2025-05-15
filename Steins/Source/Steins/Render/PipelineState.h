@@ -20,6 +20,7 @@ namespace Steins
 		//Shared<Shader> computeShader; //??
 
 		std::vector<ConstantBufferInfo> constantBuffers;
+		//std::vector<Shared<Texture2D>> textures;
 
 		BufferLayout inputLayout;
 		//InputLayoutDesc inputLayout;

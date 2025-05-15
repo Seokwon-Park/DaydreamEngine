@@ -1583,6 +1583,7 @@
     <ClInclude Include="Source\Base\Math.h" />
     <ClInclude Include="Source\Base\Math\MathUtil.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12Texture.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanTexture.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -1781,5 +1782,6 @@
     <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12ImGuiRenderer.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12Shader.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12Texture.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanTexture.cpp" />
   </ItemGroup>
 </Project>

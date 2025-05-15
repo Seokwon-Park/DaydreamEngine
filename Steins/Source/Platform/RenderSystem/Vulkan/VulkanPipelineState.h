@@ -24,6 +24,7 @@ namespace Steins
 		VkDescriptorSetLayout descriptorSetLayout;
 
 		std::vector<VkDescriptorSet> descriptorSets;
-		VkWriteDescriptorSet descriptorWrite{};
+		std::vector<VkWriteDescriptorSet> descriptorWriteSets;
+
 	};
 }

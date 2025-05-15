@@ -172,6 +172,10 @@
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanRendererAPI.h" />
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanShader.h" />
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapChain.h" />
+    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanTexture.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanVertexArray.h">
       <SubType>
       </SubType>
@@ -703,6 +707,10 @@
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanRendererAPI.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanShader.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapChain.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanTexture.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanVertexArray.cpp">
       <SubType>
       </SubType>
