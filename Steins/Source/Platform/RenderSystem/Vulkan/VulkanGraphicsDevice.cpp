@@ -140,8 +140,6 @@ namespace Steins
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 		allocInfo.commandBufferCount = 1;
 
-
-
 		if (vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer) != VK_SUCCESS) {
 			throw std::runtime_error("failed to allocate command buffers!");
 		}
@@ -151,6 +149,7 @@ namespace Steins
 			{
 				{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER , IMGUI_IMPL_VULKAN_MINIMUM_IMAGE_SAMPLER_POOL_SIZE },
 				{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER , 2 },
+				{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER , 2 },
 			};
 
 

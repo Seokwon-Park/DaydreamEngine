@@ -12,18 +12,18 @@ public:
 		//으이구 멍청아.
 		//dx11 default(cw), gl default(ccw)
 
-		float vertices[4 * 7] = {
-			-0.5f, -0.5f, 0.0f, 1.0f,0.0f,0.0f,1.0f,
-			 0.0f,  0.5f, 0.0f,0.0f,0.0f,1.0f,1.0f,
-			 0.5f, -0.5f, 0.0f,0.0f,1.0f,0.0f,1.0f,
-			 1.0f, 0.5f, 0.0f,0.0f,1.0f,0.0f,1.0f,
-		};
-		//float vertices[4 * 9] = {
-		//	-0.5f, -0.5f, 0.0f, 1.0f,0.0f,0.0f,1.0f, 0.0f,1.0f,
-		//	 0.0f,  0.5f, 0.0f,0.0f,0.0f,1.0f,1.0f, 0.0f,0.0f,
-		//	 0.5f, -0.5f, 0.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 1.0f,
-		//	 1.0f, 0.5f, 0.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 0.0f
+		//float vertices[4 * 7] = {
+		//	-0.5f, -0.5f, 0.0f, 1.0f,0.0f,0.0f,1.0f,
+		//	 0.0f,  0.5f, 0.0f,0.0f,0.0f,1.0f,1.0f,
+		//	 0.5f, -0.5f, 0.0f,0.0f,1.0f,0.0f,1.0f,
+		//	 1.0f, 0.5f, 0.0f,0.0f,1.0f,0.0f,1.0f,
 		//};
+		float vertices[4 * 9] = {
+			-0.5f, -0.5f, 0.0f, 1.0f,0.0f,0.0f,1.0f, 0.0f,1.0f,
+			 0.0f,  0.5f, 0.0f,0.0f,0.0f,1.0f,1.0f, 0.0f,0.0f,
+			 0.5f, -0.5f, 0.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 1.0f,
+			 1.0f, 0.5f, 0.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 0.0f
+		};
 		// 
 		// 
 //		float vertices[3 * 3] = {
@@ -158,8 +158,8 @@ public:
 		{
 			//vs = Steins::Shader::Create("Asset/Shader/QuadVS.spv", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
 			//ps = Steins::Shader::Create("Asset/Shader/QuadPS.spv", Steins::ShaderType::Pixel, Steins::ShaderLoadMode::File);
-			vs = Steins::Shader::Create("Asset/Shader/QuadTexVS.spv", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
-			ps = Steins::Shader::Create("Asset/Shader/QuadTexPS.spv", Steins::ShaderType::Pixel, Steins::ShaderLoadMode::File);
+			vs = Steins::Shader::Create("Asset/Shader/QuadVS.spv", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
+			ps = Steins::Shader::Create("Asset/Shader/QuadUV.spv", Steins::ShaderType::Pixel, Steins::ShaderLoadMode::File);
 		}
 
 		Steins::BufferLayout inputlayout = {
@@ -182,6 +182,7 @@ public:
 		desc.pixelShader = ps;
 		desc.inputLayout = inputlayout;
 		desc.constantBuffers = { { 0,viewProjMat} };
+		desc.textures = { texture };
 
 		pso = Steins::PipelineState::Create(desc);
 	}
@@ -225,7 +226,6 @@ public:
 		//ImGui::Image((ImTextureID)(ID3D11ShaderResourceView*)texture->GetNativeHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
 		//ImGui::Image((ImTextureID)static_cast<unsigned long long>(reinterpret_cast<uintptr_t>(texture->GetNativeHandle())), ImVec2(texture->GetWidth() * 2, texture->GetHeight() * 2));
 		ImGui::Image((ImTextureID)(texture->GetNativeHandle()), ImVec2(texture->GetWidth() * 2, texture->GetHeight() * 2));	
-		ImGui::Image((ImTextureID)(texture->GetNativeHandle()), ImVec2(texture->GetWidth() * 2, texture->GetHeight() * 2));
 		ImGui::End();
 	}
 private:

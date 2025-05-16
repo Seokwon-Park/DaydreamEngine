@@ -205,6 +205,10 @@
     <ClInclude Include="Source\Steins\Render\Buffer.h" />
     <ClInclude Include="Source\Steins\Render\Framebuffer.h" />
     <ClInclude Include="Source\Steins\Render\GraphicsDevice.h" />
+    <ClInclude Include="Source\Steins\Render\Material\Material.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Steins\Render\OrthographicCamera.h" />
     <ClInclude Include="Source\Steins\Render\PipelineState.h" />
     <ClInclude Include="Source\Steins\Render\RenderCommand.h" />
@@ -728,6 +732,10 @@
     <ClCompile Include="Source\Steins\Render\Buffer.cpp" />
     <ClCompile Include="Source\Steins\Render\Framebuffer.cpp" />
     <ClCompile Include="Source\Steins\Render\GraphicsDevice.cpp" />
+    <ClCompile Include="Source\Steins\Render\Material\Material.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Steins\Render\OrthographicCamera.cpp" />
     <ClCompile Include="Source\Steins\Render\PipelineState.cpp" />
     <ClCompile Include="Source\Steins\Render\RenderCommand.cpp" />

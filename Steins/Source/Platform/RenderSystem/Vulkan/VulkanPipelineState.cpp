@@ -4,6 +4,8 @@
 #include "VulkanSwapChain.h"
 #include "Platform/RenderSystem/GraphicsUtil.h"
 
+#include "VulkanTexture.h"
+
 namespace Steins
 {
 	VulkanPipelineState::VulkanPipelineState(VulkanGraphicsDevice* _device, PipelineStateDesc _desc)
@@ -35,10 +37,10 @@ namespace Steins
 
 			VkVertexInputBindingDescription desc;
 			desc.binding = 0;
-			desc.stride = 28;
+			desc.stride = 36;
 			desc.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
-			VkVertexInputAttributeDescription attribdesc[2];
+			VkVertexInputAttributeDescription attribdesc[3];
 			attribdesc[0].location = 0;
 			attribdesc[0].binding = 0;
 			attribdesc[0].format = VK_FORMAT_R32G32B32_SFLOAT;
@@ -49,11 +51,16 @@ namespace Steins
 			attribdesc[1].format = VK_FORMAT_R32G32B32A32_SFLOAT;
 			attribdesc[1].offset = 12;
 
+			attribdesc[2].location = 2;
+			attribdesc[2].binding = 0;
+			attribdesc[2].format = VK_FORMAT_R32G32_SFLOAT;
+			attribdesc[2].offset = 28;
+
 			VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 			vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 			vertexInputInfo.vertexBindingDescriptionCount = 1;
 			vertexInputInfo.pVertexBindingDescriptions = &desc; // Optional
-			vertexInputInfo.vertexAttributeDescriptionCount = 2;
+			vertexInputInfo.vertexAttributeDescriptionCount = 3;
 			vertexInputInfo.pVertexAttributeDescriptions = attribdesc; // Optional
 
 			VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
@@ -132,7 +139,7 @@ namespace Steins
 			VkDescriptorSetAllocateInfo allocInfo{};
 			allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 			allocInfo.descriptorPool = device->GetDescriptorPool();
-			allocInfo.descriptorSetCount = static_cast<uint32_t>(1);
+			allocInfo.descriptorSetCount = layouts.size();
 			allocInfo.pSetLayouts = layouts.data();
 
 			descriptorSets.resize(1);
@@ -145,6 +152,13 @@ namespace Steins
 			bufferInfo.offset = 0;
 			bufferInfo.range = sizeof(Matrix4x4);
 
+			auto tex = (VulkanTexture2D*)_desc.textures[0].get();
+
+			VkDescriptorImageInfo imageInfo{};
+			imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			imageInfo.imageView = tex->GetImageView();
+			imageInfo.sampler = tex->GetSampler();
+
 			descriptorWriteSets.resize(1);
 			descriptorWriteSets[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 			descriptorWriteSets[0].dstSet = descriptorSets[0];
@@ -155,6 +169,18 @@ namespace Steins
 			descriptorWriteSets[0].pBufferInfo = &bufferInfo;
 			descriptorWriteSets[0].pImageInfo = nullptr; // Optional
 			descriptorWriteSets[0].pTexelBufferView = nullptr; // Optional
+
+			//descriptorWriteSets[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			//descriptorWriteSets[1].dstSet = descriptorSets[0];
+			//descriptorWriteSets[1].dstBinding = 1;
+			//descriptorWriteSets[1].dstArrayElement = 0;
+			//descriptorWriteSets[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			//descriptorWriteSets[1].descriptorCount = 1;
+			//descriptorWriteSets[1].pBufferInfo = nullptr;
+			//descriptorWriteSets[1].pImageInfo = &imageInfo; // Optional
+			//descriptorWriteSets[1].pTexelBufferView = nullptr; // Optional
+
+			vkUpdateDescriptorSets(device->GetDevice(), descriptorWriteSets.size(), descriptorWriteSets.data(), 0, nullptr);
 
 			VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 			pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -189,7 +215,6 @@ namespace Steins
 			STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create pipeline!");
 		}
 
-		vkUpdateDescriptorSets(device->GetDevice(), 1, descriptorWriteSets.data(), 0, nullptr);
 
 		//		VkBuffer uniformBuffer;
 		//VkDeviceMemory uniformBufferMemory;
@@ -234,7 +259,7 @@ namespace Steins
 	}
 	void VulkanPipelineState::Bind() const
 	{
-		vkCmdBindDescriptorSets(device->GetCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 2, &descriptorSets[0], 0, nullptr);
+		vkCmdBindDescriptorSets(device->GetCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[0], 0, nullptr);
 		vkCmdBindPipeline(device->GetCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 	}
 
