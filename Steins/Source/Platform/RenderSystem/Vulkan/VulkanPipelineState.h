@@ -23,8 +23,7 @@ namespace Steins
 		VkPipelineLayout pipelineLayout; // root signature
 		VkDescriptorSetLayout descriptorSetLayout;
 
-		std::vector<VkDescriptorSet> descriptorSets;
-		std::vector<VkWriteDescriptorSet> descriptorWriteSets;
+
 
 	};
 }

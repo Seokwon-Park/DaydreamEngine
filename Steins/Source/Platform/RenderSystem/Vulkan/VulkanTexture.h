@@ -11,7 +11,7 @@ namespace Steins
 		VulkanTexture2D(VulkanGraphicsDevice* _device, const FilePath& _path);
 		virtual ~VulkanTexture2D();
 
-		virtual void* GetNativeHandle() override {return descriptorSet;}
+		virtual void* GetNativeHandle() override { return ??? }
 		virtual void Bind(UInt32 _slot) const override {};
 	protected:
 
@@ -24,7 +24,7 @@ namespace Steins
 		VkImage textureImage;
 		VkImageView textureImageView;
 		VkDeviceMemory textureImageMemory;
-		VkDescriptorSet descriptorSet;
+
 
 		VkSampler textureSampler;
 	};

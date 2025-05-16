@@ -35,7 +35,6 @@ namespace Steins
 		vkDestroyBuffer(device->GetDevice(), uploadBuffer, nullptr);
 		vkFreeMemory(device->GetDevice(), uploadBufferMemory, nullptr);
 
-		ImGui_ImplVulkan_AddTexture(textureSampler, textureImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		// sampler
 		VkPhysicalDeviceProperties properties{};
 		vkGetPhysicalDeviceProperties(device->GetGPU(), &properties);
@@ -58,38 +57,42 @@ namespace Steins
 		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
 
 		VkResult vr = vkCreateSampler(device->GetDevice(), &samplerInfo, nullptr, &textureSampler);
-		STEINS_CORE_ASSERT(vr = VK_SUCCESS, "failed to create texture sampler!");
+		STEINS_CORE_ASSERT(vr == VK_SUCCESS, "failed to create texture sampler!");
 
-		VkDescriptorSetLayoutBinding samplerLayoutBinding{};
-		samplerLayoutBinding.binding = 1;
-		samplerLayoutBinding.descriptorCount = 1;
-		samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		samplerLayoutBinding.pImmutableSamplers = nullptr;
-		samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+		//VkDescriptorSetLayoutBinding samplerLayoutBinding{};
+		//samplerLayoutBinding.binding = 1;
+		//samplerLayoutBinding.descriptorCount = 1;
+		//samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		//samplerLayoutBinding.pImmutableSamplers = nullptr;
+		//samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-		{
-			VkDescriptorSetAllocateInfo allocInfo = {};
-			allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-			allocInfo.descriptorPool = device->GetDescriptorPool();
-			allocInfo.descriptorSetCount = 1;
-			//allocInfo.pSetLayouts = ;
-			VkResult err = vkAllocateDescriptorSets(device->GetDevice(), &allocInfo, &descriptorSet);
-		}
+		descriptorSet = ImGui_ImplVulkan_AddTexture(textureSampler, textureImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
-		// Update the Descriptor Set:
-		{
-			VkDescriptorImageInfo imageDesc{};
-			imageDesc.sampler = textureSampler;
-			imageDesc.imageView = textureImageView;
-			imageDesc.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-			VkWriteDescriptorSet writeDesc{};
-			writeDesc.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-			writeDesc.dstSet = descriptorSet;
-			writeDesc.descriptorCount = 1;
-			writeDesc.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-			writeDesc.pImageInfo = &imageDesc;
-			vkUpdateDescriptorSets(device->GetDevice(), 1, &writeDesc, 0, nullptr);
-		}
+		//{
+		//	VkDescriptorSetAllocateInfo allocInfo = {};
+		//	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+		//	allocInfo.descriptorPool = device->GetDescriptorPool();
+		//	allocInfo.descriptorSetCount = 1;
+		//	//allocInfo.pSetLayouts = ;
+		//	VkResult err = vkAllocateDescriptorSets(device->GetDevice(), &allocInfo, &descriptorSet);
+		//}
+
+		//// Update the Descriptor Set:
+		//{
+		//	VkDescriptorImageInfo imageDesc{};
+		//	imageDesc.sampler = textureSampler;
+		//	imageDesc.imageView = textureImageView;
+		//	imageDesc.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		//	VkWriteDescriptorSet writeDesc{};
+		//	writeDesc.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		//	writeDesc.dstSet = descriptorSet;
+		//	writeDesc.descriptorCount = 1;
+		//	writeDesc.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+		//	writeDesc.pImageInfo = &imageDesc;
+		//	vkUpdateDescriptorSets(device->GetDevice(), 1, &writeDesc, 0, nullptr);
+		//}
+
+
 	}
 	VulkanTexture2D::~VulkanTexture2D()
 	{
