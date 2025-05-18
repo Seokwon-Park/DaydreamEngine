@@ -131,9 +131,14 @@ namespace Steins
 	{
 		while (isRunning)
 		{
+			timeStep.UpdateTime();
+			float deltaTime = timeStep.GetDeltaTime();
+
+			STEINS_CORE_INFO("{0}", deltaTime);
+
 			for (Layer* layer : layerStack)
 			{
-				layer->OnUpdate();
+				layer->OnUpdate(deltaTime);
 			}
 
 			//glBindVertexArray(m_VertexArray);

@@ -1585,6 +1585,7 @@
     <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12Texture.h" />
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanTexture.h" />
     <ClInclude Include="Source\Steins\Render\Material\Material.h" />
+    <ClInclude Include="Source\Base\Time\TimeStep.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -1785,5 +1786,6 @@
     <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12Texture.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanTexture.cpp" />
     <ClCompile Include="Source\Steins\Render\Material\Material.cpp" />
+    <ClCompile Include="Source\Base\Time\TimeStep.cpp" />
   </ItemGroup>
 </Project>

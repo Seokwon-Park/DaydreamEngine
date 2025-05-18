@@ -5,6 +5,7 @@
 #include "Steins/Event/KeyEvent.h"
 #include "Steins/Event/ApplicationEvent.h"
 #include "Steins/Render/GraphicsDevice.h"
+#include "Base/Time/TimeStep.h"
 
 #include "Steins/ImGui/ImGuiLayer.h"
 
@@ -72,6 +73,7 @@ namespace Steins
 		ImGuiLayer* imGuiLayer;
 		LayerStack layerStack;
 
+		TimeStep timeStep;
 	};
 
 	// To be defined in client

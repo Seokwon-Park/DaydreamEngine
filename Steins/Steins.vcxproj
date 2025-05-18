@@ -99,6 +99,7 @@
   <ItemGroup>
     <ClInclude Include="Source\Base\Math.h" />
     <ClInclude Include="Source\Base\Math\MathUtil.h" />
+    <ClInclude Include="Source\Base\Time\TimeStep.h" />
     <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11ImGuiRenderer.h">
       <SubType>
       </SubType>
@@ -640,6 +641,7 @@
     <ClInclude Include="Vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Base\Time\TimeStep.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Framebuffer.cpp" />
     <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11ImGuiRenderer.cpp">
       <SubType>

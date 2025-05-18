@@ -159,7 +159,7 @@ namespace Steins
 			imageInfo.imageView = tex->GetImageView();
 			imageInfo.sampler = tex->GetSampler();
 
-			descriptorWriteSets.resize(1);
+			descriptorWriteSets.resize(2);
 			descriptorWriteSets[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 			descriptorWriteSets[0].dstSet = descriptorSets[0];
 			descriptorWriteSets[0].dstBinding = 0;
@@ -170,15 +170,15 @@ namespace Steins
 			descriptorWriteSets[0].pImageInfo = nullptr; // Optional
 			descriptorWriteSets[0].pTexelBufferView = nullptr; // Optional
 
-			//descriptorWriteSets[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-			//descriptorWriteSets[1].dstSet = descriptorSets[0];
-			//descriptorWriteSets[1].dstBinding = 1;
-			//descriptorWriteSets[1].dstArrayElement = 0;
-			//descriptorWriteSets[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-			//descriptorWriteSets[1].descriptorCount = 1;
-			//descriptorWriteSets[1].pBufferInfo = nullptr;
-			//descriptorWriteSets[1].pImageInfo = &imageInfo; // Optional
-			//descriptorWriteSets[1].pTexelBufferView = nullptr; // Optional
+			descriptorWriteSets[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWriteSets[1].dstSet = descriptorSets[0];
+			descriptorWriteSets[1].dstBinding = 1;
+			descriptorWriteSets[1].dstArrayElement = 0;
+			descriptorWriteSets[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			descriptorWriteSets[1].descriptorCount = 1;
+			descriptorWriteSets[1].pBufferInfo = nullptr;
+			descriptorWriteSets[1].pImageInfo = &imageInfo; // Optional
+			descriptorWriteSets[1].pTexelBufferView = nullptr; // Optional
 
 			vkUpdateDescriptorSets(device->GetDevice(), descriptorWriteSets.size(), descriptorWriteSets.data(), 0, nullptr);
 
@@ -214,40 +214,6 @@ namespace Steins
 			VkResult result = vkCreateGraphicsPipelines(device->GetDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline);
 			STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create pipeline!");
 		}
-
-
-		//		VkBuffer uniformBuffer;
-		//VkDeviceMemory uniformBufferMemory;
-
-		//VkBufferCreateInfo bufferInfo{};
-		//bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-		//bufferInfo.size = 64;
-		//bufferInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
-		//bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		//VkResult result = vkCreateBuffer(device->GetDevice(), &bufferInfo, nullptr, &uniformBuffer);
-		//STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create vertex buffer!");
-
-		//VkMemoryRequirements memRequirements;
-		//vkGetBufferMemoryRequirements(device->GetDevice(), uniformBuffer, &memRequirements);
-
-		//VkMemoryAllocateInfo allocInfo{};
-		//allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-		//allocInfo.allocationSize = memRequirements.size;
-		//allocInfo.memoryTypeIndex = device->FindMemoryType(memRequirements.memoryTypeBits,
-		//	VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-
-		//if (vkAllocateMemory(device->GetDevice(), &allocInfo, nullptr, &uniformBufferMemory) != VK_SUCCESS)
-		//{
-		//	throw std::runtime_error("failed to allocate vertex buffer memory!");
-		//}
-
-		//Matrix4x4 mat{};
-
-		//vkBindBufferMemory(device->GetDevice(), uniformBuffer, uniformBufferMemory, 0);
-		//void* data;
-		//vkMapMemory(device->GetDevice(), uniformBufferMemory, 0, bufferInfo.size, 0, &data);
-		//memcpy(data, &mat.glmMatrix, (size_t)bufferInfo.size);
-		//vkUnmapMemory(device->GetDevice(), uniformBufferMemory);
 	}
 
 
