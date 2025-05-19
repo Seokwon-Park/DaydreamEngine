@@ -1586,6 +1586,7 @@
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanTexture.h" />
     <ClInclude Include="Source\Steins\Render\Material\Material.h" />
     <ClInclude Include="Source\Base\Time\TimeStep.h" />
+    <ClInclude Include="Source\Steins\Render\Mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">

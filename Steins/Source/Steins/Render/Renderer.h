@@ -13,6 +13,7 @@ namespace Steins
 	{
 	public:
 		static void Init(GraphicsDevice* _device);
+		static void OnWindowResize(UInt32 _width, UInt32 _height);
 		
 		static void BeginScene(OrthographicCamera& camera);
 		static void EndScene();

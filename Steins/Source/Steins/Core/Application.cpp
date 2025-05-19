@@ -134,8 +134,6 @@ namespace Steins
 			timeStep.UpdateTime();
 			float deltaTime = timeStep.GetDeltaTime();
 
-			STEINS_CORE_INFO("{0}", deltaTime);
-
 			for (Layer* layer : layerStack)
 			{
 				layer->OnUpdate(deltaTime);
@@ -209,8 +207,17 @@ namespace Steins
 		isRunning = false;
 		return true;
 	}
-	bool Application::OnWindowResize(WindowResizeEvent& _e)
+	bool Application::OnWindowResize(WindowResizeEvent& _event)
 	{
+		if (_event.GetWidth() == 0 || _event.GetHeight() == 0)
+		{
+			isMinimized = true;
+			return false;
+		}
+
+		isMinimized = false;
+		Renderer::OnWindowResize(_event.GetWidth(), _event.GetHeight());
+
 		return false;
 	}
 }

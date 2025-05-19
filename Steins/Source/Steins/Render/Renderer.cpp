@@ -12,6 +12,11 @@ namespace Steins
 		RenderCommand::Init(_device);
 	}
 
+	void Renderer::OnWindowResize(UInt32 _width, UInt32 _height)
+	{
+		RenderCommand::SetViewport(_width, _height);
+	}
+
 	void Renderer::BeginScene(OrthographicCamera& camera)
 	{
 		m_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();

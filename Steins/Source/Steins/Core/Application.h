@@ -67,6 +67,7 @@ namespace Steins
 		Unique<GraphicsDevice> graphicsDevice = nullptr;
 
 		bool isRunning = false;
+		bool isMinimized = false;
 		static Application* instance;
 
 		//Layers

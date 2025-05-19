@@ -13,10 +13,16 @@ namespace Steins
 	public:
 		static void Init(GraphicsDevice* _device);
 
+		inline static void SetViewport(UInt32 _width, UInt32 _height)
+		{
+			rendererAPI->SetViewport(0, 0, _width, _height);
+		}
+
 		inline static void SetClearColor(const Color& _color)
 		{
 			rendererAPI->SetClearColor(_color);
 		}
+
 
 		inline static void Clear()
 		{

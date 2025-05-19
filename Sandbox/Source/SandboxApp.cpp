@@ -105,16 +105,11 @@ public:
 			layout(location = 1) in vec4 a_Color;
 			layout(location = 2) in vec2 a_TexCoord;
 			
-			layout(row_major, std140, binding = 0) uniform Camera
+			layout(row_major, set = 0, std140, binding = 0) uniform Camera
 			{
 			    mat4 u_ViewProjection;
 			};
 			
-			layout(std140, binding = 1) uniform Transform
-			{
-				mat4 u_Model;
-			};
-
 			out gl_PerVertex 
 			{
 				vec4 gl_Position;
@@ -263,7 +258,7 @@ Steins::Application* Steins::CreateApplication()
 	ApplicationSpecification spec;
 	spec.Name = "Sandbox";
 	spec.WorkingDirectory = "../Lab";
-	spec.rendererAPI = RendererAPIType::Vulkan;
+	spec.rendererAPI = RendererAPIType::OpenGL;
 
 	return new Sandbox(spec);
 }

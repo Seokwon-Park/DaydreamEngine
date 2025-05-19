@@ -8,6 +8,10 @@ namespace Steins
 	void OpenGLRendererAPI::Init()
 	{
 	}
+	void OpenGLRendererAPI::SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height)
+	{
+		glViewport(0, 0, _width, _height);
+	}
 	void OpenGLRendererAPI::SetClearColor(const Color& _color)
 	{
 		glClearColor(_color.r, _color.g, _color.b, _color.a);

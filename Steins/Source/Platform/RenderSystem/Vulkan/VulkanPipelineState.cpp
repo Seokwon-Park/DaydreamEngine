@@ -111,11 +111,26 @@ namespace Steins
 			colorBlending.blendConstants[2] = 0.0f; // Optional
 			colorBlending.blendConstants[3] = 0.0f; // Optional
 
-			VkDescriptorSetLayoutBinding uboLayoutBinding{};
-			uboLayoutBinding.binding = 0;
-			uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			uboLayoutBinding.descriptorCount = 1;
-			uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+			VkDescriptorSetLayoutBinding cameraLayoutBinding{};
+			cameraLayoutBinding.binding = 0;
+			cameraLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			cameraLayoutBinding.descriptorCount = 1;
+			cameraLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+			VkDescriptorSetLayoutCreateInfo cameraLayoutInfo{};
+			cameraLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+			cameraLayoutInfo.bindingCount = 1;
+			cameraLayoutInfo.pBindings = &cameraLayoutBinding;
+
+			if (vkCreateDescriptorSetLayout(device->GetDevice(), &cameraLayoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
+				throw std::runtime_error("failed to create descriptor set layout!");
+			}
+
+			//VkDescriptorSetLayoutBinding transformLayoutBinding{};
+			//cameraLayoutBinding.binding = 0;
+			//cameraLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			//cameraLayoutBinding.descriptorCount = 1;
+			//cameraLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
 			VkDescriptorSetLayoutBinding samplerLayoutBinding{};
 			samplerLayoutBinding.binding = 1;
@@ -124,22 +139,15 @@ namespace Steins
 			samplerLayoutBinding.pImmutableSamplers = nullptr;
 			samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-			std::vector<VkDescriptorSetLayoutBinding> bindings = { uboLayoutBinding, samplerLayoutBinding };
+			std::vector<VkDescriptorSetLayoutBinding> bindings = { cameraLayoutBinding, samplerLayoutBinding };
 
-			VkDescriptorSetLayoutCreateInfo layoutInfo{};
-			layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-			layoutInfo.bindingCount = bindings.size();
-			layoutInfo.pBindings = bindings.data();
 
-			if (vkCreateDescriptorSetLayout(device->GetDevice(), &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
-				throw std::runtime_error("failed to create descriptor set layout!");
-			}
 
 			std::vector<VkDescriptorSetLayout> layouts(1, descriptorSetLayout);
 			VkDescriptorSetAllocateInfo allocInfo{};
 			allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 			allocInfo.descriptorPool = device->GetDescriptorPool();
-			allocInfo.descriptorSetCount = layouts.size();
+			allocInfo.descriptorSetCount = (UInt32)layouts.size();
 			allocInfo.pSetLayouts = layouts.data();
 
 			descriptorSets.resize(1);
@@ -180,7 +188,7 @@ namespace Steins
 			descriptorWriteSets[1].pImageInfo = &imageInfo; // Optional
 			descriptorWriteSets[1].pTexelBufferView = nullptr; // Optional
 
-			vkUpdateDescriptorSets(device->GetDevice(), descriptorWriteSets.size(), descriptorWriteSets.data(), 0, nullptr);
+			vkUpdateDescriptorSets(device->GetDevice(), (UInt32)descriptorWriteSets.size(), descriptorWriteSets.data(), 0, nullptr);
 
 			VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 			pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
