@@ -47,9 +47,8 @@ namespace Steins
 		STEINS_CORE_ASSERT(_vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
 		glBindVertexArray(rendererID);
-		_vertexBuffer->Bind();
+		//_vertexBuffer->Bind();
 		
-		//uint32_t index = 0;
 		const BufferLayout& layout = _vertexBuffer->GetLayout();
 		for (const BufferElement& element : layout)
 		{

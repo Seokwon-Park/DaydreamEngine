@@ -45,8 +45,6 @@ namespace Steins
 
 		static Shared<PipelineState> Create(PipelineStateDesc _desc);
 	protected:
-		bool ValidateShaders();
-
 		Shared<Shader> vertexShader;
 		Shared<Shader> hullShader;
 		Shared<Shader> domainShader;

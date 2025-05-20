@@ -6,9 +6,46 @@
 
 namespace Steins
 {
+	static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
+	{
+		switch (type)
+		{
+		case Steins::ShaderDataType::Float:    return GL_FLOAT;
+		case Steins::ShaderDataType::Float2:   return GL_FLOAT;
+		case Steins::ShaderDataType::Float3:   return GL_FLOAT;
+		case Steins::ShaderDataType::Float4:   return GL_FLOAT;
+		case Steins::ShaderDataType::Int:      return GL_INT;
+		case Steins::ShaderDataType::Int2:     return GL_INT;
+		case Steins::ShaderDataType::Int3:     return GL_INT;
+		case Steins::ShaderDataType::Int4:     return GL_INT;
+		case Steins::ShaderDataType::Mat3x3:     return GL_FLOAT;
+		case Steins::ShaderDataType::Mat4x4:     return GL_FLOAT;
+		case Steins::ShaderDataType::Bool:     return GL_BOOL;
+		}
+
+		STEINS_CORE_ASSERT(false, "Unknown ShaderDataType!");
+		return 0;
+	}
+
 	OpenGLPipelineState::OpenGLPipelineState(PipelineStateDesc _desc)
 		:PipelineState(_desc)
 	{
+		glCreateVertexArrays(1, &vao);
+
+		glBindVertexArray(vao);
+		const BufferLayout& layout = _desc.inputLayout;
+		for (const BufferElement& element : layout)
+		{
+			glEnableVertexAttribArray(inputDataIndex);
+			glVertexAttribPointer(inputDataIndex,
+				element.GetComponentCount(),
+				ShaderDataTypeToOpenGLBaseType(element.type),
+				element.normalized ? GL_TRUE : GL_FALSE,
+				layout.GetStride(),
+				(void*)element.offset);
+			inputDataIndex++;
+		}
+
 		glCreateProgramPipelines(1, &pipeline);
 		glBindProgramPipeline(pipeline);
 
@@ -117,6 +154,8 @@ namespace Steins
 	}
 	void OpenGLPipelineState::Bind() const
 	{
+		glBindVertexArray(vao);
+
 		GLuint vsid = static_cast<GLuint>(reinterpret_cast<uintptr_t>(vertexShader->GetNativeHandle()));
 
 

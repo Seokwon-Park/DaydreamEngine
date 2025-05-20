@@ -13,6 +13,9 @@ namespace Steins
 
 		virtual void Bind() const;
 	private:
+		UInt32 inputDataIndex = 0;
+
+		GLuint vao;
 		GLuint pipeline;
 	};
 }

@@ -116,7 +116,7 @@ namespace Steins
 		static Shared<VertexBuffer> Create(Float32* _vertices, UInt32 _size);
 		static Shared<VertexBuffer> Create(Float32* _vertices, UInt32 _size, const BufferLayout& _layout);
 	protected:
-		UInt32 slot;
+		UInt32 slot = 0;
 		BufferLayout layout;
 	};
 

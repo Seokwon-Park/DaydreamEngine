@@ -160,7 +160,7 @@ public:
 		Steins::BufferLayout inputlayout = {
 			{ Steins::ShaderDataType::Float3, "a_Position", "POSITION"},
 			{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"},
-			//{Steins::ShaderDataType::Float2, "a_TexCoord", "TEXCOORD"}
+			{ Steins::ShaderDataType::Float2, "a_TexCoord", "TEXCOORD"}
 
 		};
 
@@ -190,6 +190,8 @@ public:
 		////camera.SetPosition({ 0.5f, 0.5f, 0.0f });
 
 		//Steins::Renderer::BeginScene(camera);
+		vb->Bind();
+		ib->Bind();
 		pso->Bind();
 		viewProjMat->Bind(0, Steins::SteinsVertexBit);
 		texture->Bind(0);
