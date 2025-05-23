@@ -13,6 +13,10 @@ namespace Steins
 	void D3D11RendererAPI::Init()
 	{
 	}
+	void D3D11RendererAPI::SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height)
+	{
+		
+	}
 	void D3D11RendererAPI::SetClearColor(const Color& _color)
 	{
 		clearColor = _color;

@@ -117,15 +117,6 @@ namespace Steins
 			cameraLayoutBinding.descriptorCount = 1;
 			cameraLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
-			VkDescriptorSetLayoutCreateInfo cameraLayoutInfo{};
-			cameraLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-			cameraLayoutInfo.bindingCount = 1;
-			cameraLayoutInfo.pBindings = &cameraLayoutBinding;
-
-			if (vkCreateDescriptorSetLayout(device->GetDevice(), &cameraLayoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
-				throw std::runtime_error("failed to create descriptor set layout!");
-			}
-
 			//VkDescriptorSetLayoutBinding transformLayoutBinding{};
 			//cameraLayoutBinding.binding = 0;
 			//cameraLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -141,14 +132,25 @@ namespace Steins
 
 			std::vector<VkDescriptorSetLayoutBinding> bindings = { cameraLayoutBinding, samplerLayoutBinding };
 
+			VkDescriptorSetLayoutCreateInfo layoutCreateInfo{};
+			layoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+			layoutCreateInfo.bindingCount = bindings.size();
+			layoutCreateInfo.pBindings = bindings.data();
 
+			if (vkCreateDescriptorSetLayout(device->GetDevice(), &layoutCreateInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
+				throw std::runtime_error("failed to create descriptor set layout!");
+			}
 
-			std::vector<VkDescriptorSetLayout> layouts(1, descriptorSetLayout);
+			VkDescriptorPoolCreateInfo poolCreateInfo;
+			poolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+			
+			
+
 			VkDescriptorSetAllocateInfo allocInfo{};
 			allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 			allocInfo.descriptorPool = device->GetDescriptorPool();
-			allocInfo.descriptorSetCount = (UInt32)layouts.size();
-			allocInfo.pSetLayouts = layouts.data();
+			allocInfo.descriptorSetCount = 1;
+			allocInfo.pSetLayouts = &descriptorSetLayout;
 
 			descriptorSets.resize(1);
 			if (vkAllocateDescriptorSets(device->GetDevice(), &allocInfo, descriptorSets.data()) != VK_SUCCESS) {

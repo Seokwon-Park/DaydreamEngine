@@ -204,6 +204,14 @@
     <ClInclude Include="Source\Steins\ImGui\ImGuiRenderer.h" />
     <ClInclude Include="Source\Steins\ImGui\ImGuiLayer.h" />
     <ClInclude Include="Source\Steins\Render\Buffer.h" />
+    <ClInclude Include="Source\Steins\Render\CommandList.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Render\CommandQueue.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Steins\Render\Framebuffer.h" />
     <ClInclude Include="Source\Steins\Render\GraphicsDevice.h" />
     <ClInclude Include="Source\Steins\Render\Material\Material.h">
@@ -733,6 +741,14 @@
     <ClCompile Include="Source\Steins\ImGui\ImGuiRenderer.cpp" />
     <ClCompile Include="Source\Steins\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="Source\Steins\Render\Buffer.cpp" />
+    <ClCompile Include="Source\Steins\Render\CommandList.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Source\Steins\Render\CommandQueue.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Steins\Render\Framebuffer.cpp" />
     <ClCompile Include="Source\Steins\Render\GraphicsDevice.cpp" />
     <ClCompile Include="Source\Steins\Render\Material\Material.cpp">

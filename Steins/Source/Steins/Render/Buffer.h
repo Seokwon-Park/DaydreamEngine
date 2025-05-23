@@ -152,5 +152,6 @@ namespace Steins
 		void* data;
 
 	};
+
 }
 

@@ -1587,6 +1587,8 @@
     <ClInclude Include="Source\Steins\Render\Material\Material.h" />
     <ClInclude Include="Source\Base\Time\TimeStep.h" />
     <ClInclude Include="Source\Steins\Render\Mesh.h" />
+    <ClInclude Include="Source\Steins\Render\CommandQueue.h" />
+    <ClInclude Include="Source\Steins\Render\CommandList.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -1788,5 +1790,7 @@
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanTexture.cpp" />
     <ClCompile Include="Source\Steins\Render\Material\Material.cpp" />
     <ClCompile Include="Source\Base\Time\TimeStep.cpp" />
+    <ClCompile Include="Source\Steins\Render\CommandQueue.cpp" />
+    <ClCompile Include="Source\Steins\Render\CommandList.cpp" />
   </ItemGroup>
 </Project>

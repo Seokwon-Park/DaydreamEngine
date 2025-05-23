@@ -86,7 +86,6 @@ namespace Steins
 		device = _device;
 		device->CreateBuffer(_size, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, constantBuffer, constantBufferMemory);
 		vkMapMemory(device->GetDevice(), constantBufferMemory, 0, _size, 0, &data);
-
 	}
 
 	VulkanConstantBuffer::~VulkanConstantBuffer()
