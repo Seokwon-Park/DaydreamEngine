@@ -17,7 +17,7 @@ namespace Steins
 		FramebufferTextureFormat format = FramebufferTextureFormat::None;
 	};
 
-	struct FramebufferSpecification
+	struct FramebufferDesc
 	{
 		UInt32 width, height;
 		std::vector<FramebufferAttachmentSpecification> colorAttachments;
@@ -34,7 +34,7 @@ namespace Steins
 		virtual void Clear(Color _color) = 0;
 
 
-		static Shared<Framebuffer> Create(const FramebufferSpecification& _spec);
+		static Shared<Framebuffer> Create(const FramebufferDesc& _spec);
 	protected:
 	private:
 

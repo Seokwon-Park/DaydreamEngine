@@ -11,7 +11,7 @@ namespace Steins
 	class VulkanFramebuffer : public Framebuffer
 	{
 	public:
-		VulkanFramebuffer(VulkanGraphicsDevice* _device, const FramebufferSpecification& _spec);
+		VulkanFramebuffer(VulkanGraphicsDevice* _device, const FramebufferDesc& _spec);
 		VulkanFramebuffer(VulkanGraphicsDevice* _device, VulkanSwapChain* _swapChain);
 
 		virtual ~VulkanFramebuffer() override;

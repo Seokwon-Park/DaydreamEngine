@@ -14,9 +14,6 @@ namespace Steins
 		desc = *_desc;
 		window = (GLFWwindow*)_window->GetNativeWindow();
 		glfwMakeContextCurrent(window);
-
-		
-
 	}
 	OpenGLSwapChain::~OpenGLSwapChain()
 	{

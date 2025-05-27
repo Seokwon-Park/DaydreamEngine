@@ -5,24 +5,28 @@
 #include "OrthographicCamera.h"
 #include "RenderCommand.h"
 #include "Shader.h"
-#include "VertexArray.h"
 
 namespace Steins
 {
 	class Renderer
 	{
 	public:
-		static void Init(GraphicsDevice* _device);
+		static void Init(RendererAPIType _API);
+		static void RegisterWindow(std::string _name, SteinsWindow* _window);
 		static void OnWindowResize(UInt32 _width, UInt32 _height);
 		
 		static void BeginScene(OrthographicCamera& camera);
 		static void EndScene();
 
-		static void Submit(const Shared<VertexArray>& _vertexArray, const Matrix4x4 _transform = Matrix4x4());
+		static void Submit(UInt32 _indexCount, const Matrix4x4 _transform = Matrix4x4());
 
-		inline static RendererAPIType GetAPI() { return API; }
+		inline static RendererAPIType GetAPI() { return renderDevice->GetAPI(); }
+
+		inline static GraphicsDevice* GetRenderDevice() { return renderDevice.get(); }
 	private:
-		static RendererAPIType API;
+		static SteinsWindow* currentWindow;
+		static Unique<GraphicsDevice> renderDevice;
+		static std::unordered_map<std::string, SteinsWindow*> windows;
 
 		struct SceneData
 		{

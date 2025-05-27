@@ -149,7 +149,7 @@ namespace Steins
 	{
 		mainWindow = _window;
 		GLFWwindow* window = (GLFWwindow*)_window->GetNativeWindow();
-		switch (Application::GetGraphicsDevice()->GetAPI())
+		switch (Renderer::GetRenderDevice()->GetAPI())
 		{
 		case RendererAPIType::None:
 			STEINS_CORE_ERROR("None API is not supported");

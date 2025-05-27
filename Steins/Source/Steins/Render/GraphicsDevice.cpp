@@ -2,7 +2,6 @@
 #include "GraphicsDevice.h"
 
 #include "Steins/Core/Window.h"
-#include "RendererAPI.h"
 
 #include "Steins/Render/SwapChain.h"
 
@@ -24,5 +23,19 @@ namespace Steins
 		case RendererAPIType::Vulkan: return MakeUnique<VulkanGraphicsDevice>();
 		default: return nullptr;
 		}
+	}
+	void GraphicsDevice::CreateSwapChainForWnd(SteinsWindow* _window)
+	{
+		//TODO : 더 좋은 방법?
+		SwapChainSpecification desc;
+		desc.width = _window->GetWidth();
+		desc.height = _window->GetHeight();
+		desc.bufferCount = 2;
+		desc.format = RenderFormat::R8G8B8A8_UNORM;
+		desc.isFullscreen = false;
+		desc.isVSync = _window->IsVSync();
+
+		Shared<SwapChain> swapchain = CreateSwapChain(&desc, _window);
+		_window->SetSwapchain(swapchain);
 	}
 }

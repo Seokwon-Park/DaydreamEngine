@@ -16,6 +16,6 @@ namespace Steins
 
     Shared<Texture2D> Texture2D::Create(const FilePath& _path)
     {
-        return Application::GetGraphicsDevice()->CreateTexture2D(_path);
+        return Renderer::GetRenderDevice()->CreateTexture2D(_path);
     }
 }

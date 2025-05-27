@@ -84,9 +84,6 @@ namespace Steins
 
 	void D3D12SwapChain::SwapBuffers()
 	{
-
-
-
 		D3D12_RESOURCE_BARRIER barr{};
 
 		barr.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;

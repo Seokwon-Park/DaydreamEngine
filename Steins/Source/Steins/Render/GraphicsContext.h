@@ -5,7 +5,7 @@ namespace Steins
 {
 	class GraphicsDevice;
 
-	class RendererAPI
+	class GraphicsContext
 	{
 	public:
 		virtual void Init() = 0;
@@ -14,7 +14,7 @@ namespace Steins
 		virtual void Clear() = 0;
 		virtual void DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex) = 0;
 
-		static RendererAPI* Create(GraphicsDevice* _device);
+		static Shared<GraphicsContext> Create(GraphicsDevice* _device);
 	protected:
 	private:
 	};

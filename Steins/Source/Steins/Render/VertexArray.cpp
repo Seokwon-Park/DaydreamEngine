@@ -13,7 +13,7 @@ namespace Steins {
 
 	Shared<VertexArray> VertexArray::Create()
 	{
-		return Application::GetGraphicsDevice()->CreateVertexArray();
+		return Renderer::GetRenderDevice()->CreateVertexArray();
 	}
 
 }

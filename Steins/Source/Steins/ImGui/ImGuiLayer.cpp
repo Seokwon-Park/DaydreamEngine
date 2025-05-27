@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Steins/Core/Application.h"
+#include "Steins/Render/Renderer.h"
 
 namespace Steins
 {
@@ -36,7 +37,7 @@ namespace Steins
 
 		SetDarkThemeColors();
 		
-		renderer = Application::GetGraphicsDevice()->CreateImGuiRenderer();
+		renderer = Renderer::GetRenderDevice()->CreateImGuiRenderer();
 		renderer->Init(&Application::GetInstance().GetMainWindow());
 
 		//ImGui_ImplGlfw_InitForOpenGL(window, true);

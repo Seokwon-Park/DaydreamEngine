@@ -2,14 +2,14 @@
 
 #include "Base/MathTypes.h"
 #include "Steins/Enum/RendererEnums.h"
-#include "RendererAPI.h"
+#include "GraphicsContext.h"
 #include "Steins/ImGui/ImGuiRenderer.h"
 
 
 namespace Steins
 {
 	struct SwapChainSpecification; 
-	struct FramebufferSpecification;
+	struct FramebufferDesc;
 	struct PipelineStateDesc;
 	class SteinsWindow;
 	class VertexBuffer;
@@ -33,9 +33,10 @@ namespace Steins
 		virtual void Shutdown() = 0;
 		virtual void Render() = 0;
 
+		virtual Shared<GraphicsContext> CreateContext() = 0;
 		virtual Shared<VertexBuffer> CreateVertexBuffer(Float32* _vertices, UInt32 _size, const BufferLayout& _layout) = 0;
 		virtual Shared<IndexBuffer> CreateIndexBuffer(UInt32* _indices, UInt32 _count) = 0;
-		virtual Shared<Framebuffer> CreateFramebuffer(FramebufferSpecification _spec) = 0;
+		virtual Shared<Framebuffer> CreateFramebuffer(FramebufferDesc _spec) = 0;
 		virtual Shared<PipelineState> CreatePipelineState(PipelineStateDesc _desc)= 0;
 		virtual Shared<Shader> CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode) = 0;
 		virtual Shared<SwapChain> CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window) = 0;
@@ -43,6 +44,8 @@ namespace Steins
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() = 0;
 		virtual Shared<VertexArray> CreateVertexArray() = 0;
 		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) = 0;
+
+		void CreateSwapChainForWnd(SteinsWindow* _window);
 
 		inline RendererAPIType GetAPI() const { return API; }
 		inline SwapChain* GetSwapChain(UInt32 _index)

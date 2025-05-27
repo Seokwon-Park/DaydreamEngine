@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Steins/Render/RendererAPI.h"
+#include "Steins/Render/GraphicsContext.h"
 
 namespace Steins
 {
-	class OpenGLRendererAPI : public RendererAPI
+	class OpenGLGraphicsContext : public GraphicsContext
 	{
 	public:
 		virtual void Init() override;

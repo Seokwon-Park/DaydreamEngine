@@ -1,6 +1,9 @@
 #include <Steins.h>
+#include "Steins/Core/EntryPoint.h"
 
 #include "imgui/imgui.h"
+
+#include "Sandbox2D.h"
 
 class ExampleLayer : public Steins::Layer
 {
@@ -32,9 +35,9 @@ public:
 //			 0.0f,  0.5f, 0.0f
 //		};
 ////
-		va = Steins::VertexArray::Create();
 
-		Steins::BufferLayout layout = {
+		Steins::BufferLayout layout = 
+		{
 			{ Steins::ShaderDataType::Float3, "a_Position", "POSITION"},
 			{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"},
 			{ Steins::ShaderDataType::Float2, "a_TexCoord", "TEXCOORD"}
@@ -42,11 +45,9 @@ public:
 		vb = Steins::VertexBuffer::Create(vertices, sizeof(vertices), layout);
 
 		vb->SetLayout(layout);
-		va->AddVertexBuffer(vb);
 		//
 		unsigned int indices[6] = { 0, 1, 2, 2, 1, 3 };
 		ib = Steins::IndexBuffer::Create(indices, 6);
-		va->SetIndexBuffer(ib);
 
 		if (Steins::Renderer::GetAPI() == Steins::RendererAPIType::DirectX11 ||
 			Steins::Renderer::GetAPI() == Steins::RendererAPIType::DirectX12)
@@ -202,7 +203,7 @@ public:
 		////Steins::Matrix4x4 transform = Steins::Math::Translate(Steins::Matrix4x4(), Steins::Vector4(1.0f, 1.0f, 0.0f));
 		////transform.Transpose();
 
-		Steins::Renderer::Submit(va);
+		Steins::Renderer::Submit(ib->GetCount());
 
 		//STEINS_INFO("TestLayer::UPDATE");
 		/*if(Steins::Input::GetKeyDown(Steins::Key::Up))
@@ -245,8 +246,8 @@ public:
 	Sandbox(const Steins::ApplicationSpecification& _specification)
 		:Steins::Application(_specification)
 	{
-		AttachLayer(new ExampleLayer());
-		//AttachOverlay(new Steins::ImGuiLayer());
+		//AttachLayer(new ExampleLayer());
+		AttachOverlay(new Sandbox2D());
 	}
 
 	virtual ~Sandbox() override

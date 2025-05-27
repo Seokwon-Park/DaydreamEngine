@@ -4,7 +4,7 @@
 
 namespace Steins
 {
-	D3D11Framebuffer::D3D11Framebuffer(D3D11GraphicsDevice* _device, const FramebufferSpecification& _spec)
+	D3D11Framebuffer::D3D11Framebuffer(D3D11GraphicsDevice* _device, const FramebufferDesc& _spec)
 	{
 		device = _device;
 		for (const FramebufferAttachmentSpecification& colorAttachment : _spec.colorAttachments)

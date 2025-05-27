@@ -1,7 +1,7 @@
 #include "SteinsPCH.h"
 #include "D3D12GraphicsDevice.h"
 #include "D3D12Buffer.h"
-#include "D3D12RendererAPI.h"
+#include "D3D12GraphicsContext.h"
 #include "D3D12Framebuffer.h"
 #include "D3D12Shader.h"
 #include "D3D12SwapChain.h"
@@ -180,6 +180,11 @@ namespace Steins
 	{
 	}
 
+	Shared<GraphicsContext> D3D12GraphicsDevice::CreateContext()
+	{
+		return MakeShared<D3D12GraphicsContext>(this);
+	}
+
 	Shared<VertexBuffer> D3D12GraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, const BufferLayout& _layout)
 	{
 		return MakeShared<D3D12VertexBuffer>(this, _vertices, _size, _layout);
@@ -191,7 +196,7 @@ namespace Steins
 		return MakeShared<D3D12IndexBuffer>(this, _indices, _count);
 	}
 
-	Shared<Framebuffer> D3D12GraphicsDevice::CreateFramebuffer(FramebufferSpecification _spec)
+	Shared<Framebuffer> D3D12GraphicsDevice::CreateFramebuffer(FramebufferDesc _spec)
 	{
 		return MakeShared<D3D12Framebuffer>(this, _spec);
 	}

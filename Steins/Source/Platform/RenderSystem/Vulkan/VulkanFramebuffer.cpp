@@ -5,7 +5,7 @@
 
 namespace Steins
 {
-	VulkanFramebuffer::VulkanFramebuffer(VulkanGraphicsDevice* _device, const FramebufferSpecification& _spec)
+	VulkanFramebuffer::VulkanFramebuffer(VulkanGraphicsDevice* _device, const FramebufferDesc& _spec)
 	{
 		device = _device;
 	}

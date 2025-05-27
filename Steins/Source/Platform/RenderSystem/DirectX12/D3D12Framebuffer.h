@@ -10,7 +10,7 @@ namespace Steins
 	class D3D12Framebuffer : public Framebuffer
 	{
 	public:
-		D3D12Framebuffer(D3D12GraphicsDevice* _device, const FramebufferSpecification& _spec);
+		D3D12Framebuffer(D3D12GraphicsDevice* _device, const FramebufferDesc& _spec);
 		D3D12Framebuffer(D3D12GraphicsDevice* _device, D3D12SwapChain* _swapChain);
 		virtual ~D3D12Framebuffer() override {};
 

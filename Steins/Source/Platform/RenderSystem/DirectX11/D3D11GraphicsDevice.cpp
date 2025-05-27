@@ -1,6 +1,6 @@
 #include "SteinsPCH.h"
 #include "D3D11GraphicsDevice.h"
-#include "D3D11RendererAPI.h"
+#include "D3D11GraphicsContext.h"
 #include "D3D11Buffer.h"
 #include "D3D11Swapchain.h"
 #include "D3D11Shader.h"
@@ -136,6 +136,11 @@ namespace Steins
 	}
 
 
+	Shared<GraphicsContext> D3D11GraphicsDevice::CreateContext()
+	{
+		return MakeShared<D3D11GraphicsContext>(this);
+	}
+
 	Shared<VertexBuffer> D3D11GraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, const BufferLayout& _layout)
 	{
 		return MakeShared<D3D11VertexBuffer>(this, _vertices, _size, _layout);
@@ -146,7 +151,7 @@ namespace Steins
 		return MakeShared<D3D11IndexBuffer>(this, _indices, _count);
 	}
 
-	Shared<Framebuffer> D3D11GraphicsDevice::CreateFramebuffer(FramebufferSpecification _spec)
+	Shared<Framebuffer> D3D11GraphicsDevice::CreateFramebuffer(FramebufferDesc _spec)
 	{
 		return MakeShared<D3D11Framebuffer>(this, _spec);
 	}

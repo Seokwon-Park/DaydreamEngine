@@ -9,6 +9,6 @@ namespace Steins
 {
     Shared<SwapChain> SwapChain::Create(SwapChainSpecification* _desc, SteinsWindow* _window)
     {
-        return Application::GetGraphicsDevice()->CreateSwapChain(_desc, _window);
+        return Renderer::GetRenderDevice()->CreateSwapChain(_desc, _window);
     }
 }

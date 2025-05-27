@@ -185,6 +185,11 @@ namespace Steins
 	{
 	}
 
+	Shared<GraphicsContext> VulkanGraphicsDevice::CreateContext()
+	{
+		return Shared<GraphicsContext>();
+	}
+
 	Shared<VertexBuffer> VulkanGraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, const BufferLayout& _layout)
 	{
 		return MakeShared<VulkanVertexBuffer>(this, _vertices, _size, _layout);
@@ -195,7 +200,7 @@ namespace Steins
 		return MakeShared<VulkanIndexBuffer>(this, _indices, _count);
 	}
 
-	Shared<Framebuffer> VulkanGraphicsDevice::CreateFramebuffer(FramebufferSpecification _spec)
+	Shared<Framebuffer> VulkanGraphicsDevice::CreateFramebuffer(FramebufferDesc _spec)
 	{
 		return Shared<Framebuffer>();
 	}

@@ -36,57 +36,20 @@ namespace Steins
 		mainWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
 		mainWindow->SetVSync(true);
 
-		graphicsDevice = GraphicsDevice::Create(_specification.rendererAPI);
-		STEINS_CORE_ASSERT(graphicsDevice, "Failed to create graphics device!");
-		graphicsDevice->Init();
+		prop.width = 960;
+		prop.height = 540;
+		prop.title = "TestWindow";
+		prop.rendererAPI = _specification.rendererAPI;
 
-		//TODO : 더 좋은 방법?
-		SwapChainSpecification desc;
-		desc.width = mainWindow->GetWidth();
-		desc.height = mainWindow->GetHeight();
-		desc.bufferCount = 2;
-		desc.format = RenderFormat::R8G8B8A8_UNORM;
-		desc.isFullscreen = false;
-		desc.isVSync = mainWindow->IsVSync();
+		testWindow = SteinsWindow::Create(prop);
+		testWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
-		Shared<SwapChain> swapchain = graphicsDevice->CreateSwapChain(&desc, mainWindow.get());
-		mainWindow->SetSwapchain(swapchain);
-
-		//testWindow = SteinsWindow::Create();
-		//testWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
-
-		Renderer::Init(graphicsDevice.get());
+		Renderer::Init(_specification.rendererAPI);
+		Renderer::RegisterWindow("MainWindow", mainWindow.get());
+		Renderer::RegisterWindow("TestWindow", testWindow.get());
 
 		imGuiLayer = new ImGuiLayer();
-		AttachOverlay(imGuiLayer);
-
-
-		//glGenVertexArrays(1, &m_VertexArray);
-		//glBindVertexArray(m_VertexArray);
-
-		//glGenBuffers(1, &m_VertexBuffer);
-		//glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);
-
-
-		//float vertices[3 * 7] = {
-		//	-0.5f, -0.5f, 0.0f, 1.0f,0.0f,0.0f,1.0f,
-		//	 0.5f, -0.5f, 0.0f,0.0f,1.0f,0.0f,1.0f,
-		//	 0.0f,  0.5f, 0.0f,1.0f,0.0f,0.0f,1.0f
-		//};
-
-		//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-		//glEnableVertexAttribArray(0);
-		//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(0));
-
-		//glEnableVertexAttribArray(1);
-		//glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(3 * sizeof(float)));
-
-		//glGenBuffers(1, &m_IndexBuffer);
-		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer);
-
-		//unsigned int indices[3] = { 0, 1, 2 };
-		//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+		AttachOverlay(imGuiLayer);	
 	}
 
 	Application::~Application()
@@ -215,6 +178,7 @@ namespace Steins
 			return false;
 		}
 
+		STEINS_CORE_INFO("Window Resized : [ {0} , {1} ]", _event.GetWidth(), _event.GetHeight());
 		isMinimized = false;
 		Renderer::OnWindowResize(_event.GetWidth(), _event.GetHeight());
 

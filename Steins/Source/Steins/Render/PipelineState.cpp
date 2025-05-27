@@ -25,7 +25,7 @@ namespace Steins
 
 	Shared<PipelineState> PipelineState::Create(PipelineStateDesc _desc)
 	{
-		return Application::GetGraphicsDevice()->CreatePipelineState(_desc);
+		return Renderer::GetRenderDevice()->CreatePipelineState(_desc);
 	}
 
 

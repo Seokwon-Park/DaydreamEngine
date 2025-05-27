@@ -3,7 +3,7 @@
 #include "OpenGLBuffer.h"
 #include "OpenGLShader.h"
 #include "OpenGLSwapchain.h"
-#include "OpenGLRendererAPI.h"
+#include "OpenGLGraphicsContext.h"
 #include "OpenGLPipelineState.h"
 #include "OpenGLTexture.h"
 #include "OpenGLVertexArray.h"
@@ -52,6 +52,11 @@ namespace Steins
 	}
 
 
+	Shared<GraphicsContext> OpenGLGraphicsDevice::CreateContext()
+	{
+		return Shared<GraphicsContext>();
+	}
+
 	Shared<VertexBuffer> OpenGLGraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, const BufferLayout& _layout)
 	{
 		return MakeShared<OpenGLVertexBuffer>(_vertices, _size, _layout);
@@ -62,7 +67,7 @@ namespace Steins
 		return MakeShared<OpenGLIndexBuffer>(_indices, _count);
 	}
 
-	Shared<Framebuffer> OpenGLGraphicsDevice::CreateFramebuffer(FramebufferSpecification _spec)
+	Shared<Framebuffer> OpenGLGraphicsDevice::CreateFramebuffer(FramebufferDesc _spec)
 	{
 		return Shared<Framebuffer>();
 	}

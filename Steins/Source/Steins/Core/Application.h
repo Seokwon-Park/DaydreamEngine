@@ -42,7 +42,6 @@ namespace Steins
 		virtual ~Application();
 
 		inline static Application& GetInstance() { return *instance; }
-		inline static GraphicsDevice* GetGraphicsDevice() { return instance->graphicsDevice.get(); }
 		inline SteinsWindow& GetMainWindow() { return *mainWindow; }
 
 		void AttachLayer(Layer* _layer);
@@ -64,7 +63,6 @@ namespace Steins
 
 		Unique<SteinsWindow> mainWindow;
 		Unique<SteinsWindow> testWindow;
-		Unique<GraphicsDevice> graphicsDevice = nullptr;
 
 		bool isRunning = false;
 		bool isMinimized = false;

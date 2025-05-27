@@ -11,7 +11,7 @@ namespace Steins
 	class D3D11Framebuffer : public Framebuffer
 	{
 	public:
-		D3D11Framebuffer(D3D11GraphicsDevice* _device, const FramebufferSpecification& _spec);
+		D3D11Framebuffer(D3D11GraphicsDevice* _device, const FramebufferDesc& _spec);
 		D3D11Framebuffer(D3D11GraphicsDevice* _device, D3D11SwapChain* _swapChain);
 		virtual ~D3D11Framebuffer() override;
 		virtual void Bind() const override;

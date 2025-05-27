@@ -3,11 +3,14 @@
 
 namespace Steins
 {
-	RendererAPI* RenderCommand::rendererAPI = nullptr;
+	Shared<GraphicsContext> RenderCommand::context = nullptr;
 
 	void RenderCommand::Init(GraphicsDevice* _device)
 	{
-		rendererAPI = RendererAPI::Create(_device);
-		rendererAPI->Init();
+		context = GraphicsContext::Create(_device);
+		if (context)
+		{
+			context->Init();
+		}
 	}
 }

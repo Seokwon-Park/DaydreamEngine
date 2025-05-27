@@ -1,9 +1,6 @@
 #include "SteinsPCH.h"
 #include "VulkanShader.h"
 
-#include <spirv_cross/spirv_reflect.hpp>
-
-
 namespace Steins
 {
 	VulkanShader::VulkanShader(VulkanGraphicsDevice* _device, const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode)
