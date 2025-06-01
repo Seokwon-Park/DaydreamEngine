@@ -5,10 +5,27 @@
 
 namespace Steins
 {
-	D3D11VertexBuffer::D3D11VertexBuffer(D3D11GraphicsDevice* _device, void* _vertices, UInt32 _size, const BufferLayout& _layout)
+	D3D11VertexBuffer::D3D11VertexBuffer(D3D11GraphicsDevice* _device, UInt32 _bufferSize, UInt32 _stride)
 	{
 		device = _device;
-		layout = _layout;
+		stride = _stride;
+
+		D3D11_BUFFER_DESC bufferDesc;
+		ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+		bufferDesc.ByteWidth = _bufferSize;
+		bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+		bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		bufferDesc.MiscFlags = 0;
+		bufferDesc.StructureByteStride = 0;
+
+		device->GetDevice()->CreateBuffer(&bufferDesc, nullptr, vertexBuffer.GetAddressOf());
+	}
+
+	D3D11VertexBuffer::D3D11VertexBuffer(D3D11GraphicsDevice* _device, void* _vertices, UInt32 _size, UInt32 _stride)
+	{
+		device = _device;
+		stride = _stride;
 
 		D3D11_BUFFER_DESC bufferDesc;
 		ZeroMemory(&bufferDesc, sizeof(bufferDesc));
@@ -34,13 +51,18 @@ namespace Steins
 	}
 	void D3D11VertexBuffer::Bind() const
 	{
-		//TODO : VertexArray를 쓰는 방향이 맞나?
-		UINT stride = layout.GetStride();
 		UINT offset = 0;
 		device->GetContext()->IASetVertexBuffers(slot, 1, vertexBuffer.GetAddressOf(), &stride, &offset);
 	}
 	void D3D11VertexBuffer::Unbind() const
 	{
+	}
+	void D3D11VertexBuffer::SetData(void* _data, UInt32 _dataSize)
+	{
+		D3D11_MAPPED_SUBRESOURCE sub;
+		device->GetContext()->Map(vertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &sub);
+		memcpy(sub.pData, _data, _dataSize);
+		device->GetContext()->Unmap(vertexBuffer.Get(), 0);
 	}
 	D3D11IndexBuffer::D3D11IndexBuffer(D3D11GraphicsDevice* _device, UInt32* _indices, UInt32 _indexCount)
 	{

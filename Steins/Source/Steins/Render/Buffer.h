@@ -108,13 +108,15 @@ namespace Steins
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
+		virtual void SetData(void* _data, UInt32 _dataSize) = 0;
+
 		void SetSlot(UInt32 _slot = 0) { slot = _slot; }
 
 		const BufferLayout& GetLayout() const { return layout; }
 		void SetLayout(const BufferLayout& _layout) { layout = _layout; }
 
-		static Shared<VertexBuffer> Create(Float32* _vertices, UInt32 _size);
-		static Shared<VertexBuffer> Create(Float32* _vertices, UInt32 _size, const BufferLayout& _layout);
+		static Shared<VertexBuffer> Create(UInt32 _size, UInt32 _stride);
+		static Shared<VertexBuffer> Create(Float32* _vertices, UInt32 _size, UInt32 _stride);
 	protected:
 		UInt32 slot = 0;
 		BufferLayout layout;

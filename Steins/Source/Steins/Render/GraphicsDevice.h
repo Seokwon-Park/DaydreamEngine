@@ -34,7 +34,7 @@ namespace Steins
 		virtual void Render() = 0;
 
 		virtual Shared<GraphicsContext> CreateContext() = 0;
-		virtual Shared<VertexBuffer> CreateVertexBuffer(Float32* _vertices, UInt32 _size, const BufferLayout& _layout) = 0;
+		virtual Shared<VertexBuffer> CreateVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride) = 0;
 		virtual Shared<IndexBuffer> CreateIndexBuffer(UInt32* _indices, UInt32 _count) = 0;
 		virtual Shared<Framebuffer> CreateFramebuffer(FramebufferDesc _spec) = 0;
 		virtual Shared<PipelineState> CreatePipelineState(PipelineStateDesc _desc)= 0;
@@ -42,7 +42,6 @@ namespace Steins
 		virtual Shared<SwapChain> CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window) = 0;
 		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path) = 0;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() = 0;
-		virtual Shared<VertexArray> CreateVertexArray() = 0;
 		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) = 0;
 
 		void CreateSwapChainForWnd(SteinsWindow* _window);

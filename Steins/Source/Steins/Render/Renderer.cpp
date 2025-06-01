@@ -1,5 +1,6 @@
 #include "SteinsPCH.h"
 #include "Renderer.h"
+#include "Renderer2D.h"
 
 namespace Steins
 {
@@ -12,7 +13,13 @@ namespace Steins
 		renderDevice = GraphicsDevice::Create(_API);
 		STEINS_CORE_ASSERT(renderDevice, "Failed to create graphics device!");
 		renderDevice->Init();
+		Renderer2D::Init();
 		RenderCommand::Init(renderDevice.get());
+	}
+
+	void Renderer::Shutdown()
+	{
+		renderDevice.reset();
 	}
 
 	void Renderer::RegisterWindow(std::string _name, SteinsWindow* _window)
@@ -26,7 +33,7 @@ namespace Steins
 		RenderCommand::SetViewport(_width, _height);
 	}
 
-	void Renderer::BeginScene(OrthographicCamera& camera)
+	void Renderer::BeginScene(const OrthographicCamera& camera)
 	{
 		m_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
 	}

@@ -3,7 +3,8 @@
 
 namespace Steins
 {
-	Vector2 Vector2::operator+(const Vector2& _other) const
+	using Vector2 = glm::vec2;
+	/*Vector2 Vector2::operator+(const Vector2& _other) const
 	{
 		return Vector2(x + _other.x, y + _other.y);
 	}
@@ -69,5 +70,5 @@ namespace Steins
 	void Vector2::operator/=(Float32 _scalar)
 	{
 		*this *= 1.0f / _scalar;
-	}
+	}*/
 }

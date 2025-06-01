@@ -3,10 +3,10 @@
 
 namespace Steins
 {
-	D3D12VertexBuffer::D3D12VertexBuffer(D3D12GraphicsDevice* _device, void* _vertices, UInt32 _size, const BufferLayout& _layout)
+	D3D12VertexBuffer::D3D12VertexBuffer(D3D12GraphicsDevice* _device, void* _vertices, UInt32 _size, UInt32 _stride)
 	{
 		device = _device;
-		layout = _layout;
+		stride = _stride;
 		D3D12_HEAP_PROPERTIES props{};
 		props.Type = D3D12_HEAP_TYPE_UPLOAD;
 
@@ -61,7 +61,7 @@ namespace Steins
 		// (4) VB ºä »ý¼º
 		vertexBufferView.BufferLocation = vertexBuffer->GetGPUVirtualAddress();
 		vertexBufferView.SizeInBytes = (UINT)_size;
-		vertexBufferView.StrideInBytes = layout.GetStride();
+		vertexBufferView.StrideInBytes = stride;
 	}
 	void D3D12VertexBuffer::Bind() const
 	{

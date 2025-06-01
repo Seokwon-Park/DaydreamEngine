@@ -1,5 +1,6 @@
 #pragma once
 #include "Steins/Enum/RendererEnums.h"
+#include "Framebuffer.h"
 
 namespace Steins
 {
@@ -13,9 +14,15 @@ namespace Steins
 		virtual void SetClearColor(const Color& _color) = 0;
 		virtual void Clear() = 0;
 		virtual void DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex) = 0;
+		virtual void SetFramebuffer(Shared<Framebuffer> _framebuffer)
+		{
+			currentFramebuffer = _framebuffer;
+			_framebuffer->Bind();
+		}
 
 		static Shared<GraphicsContext> Create(GraphicsDevice* _device);
 	protected:
 	private:
+		Shared<Framebuffer> currentFramebuffer;
 	};
 }

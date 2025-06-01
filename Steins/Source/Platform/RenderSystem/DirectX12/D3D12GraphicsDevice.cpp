@@ -7,7 +7,6 @@
 #include "D3D12SwapChain.h"
 #include "D3D12PipelineState.h"
 #include "D3D12ImGuiRenderer.h"
-#include "D3D12VertexArray.h"
 #include "D3D12Texture.h"
 #include "Platform/RenderSystem/GraphicsUtil.h"
 
@@ -185,10 +184,9 @@ namespace Steins
 		return MakeShared<D3D12GraphicsContext>(this);
 	}
 
-	Shared<VertexBuffer> D3D12GraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, const BufferLayout& _layout)
+	Shared<VertexBuffer> D3D12GraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
 	{
-		return MakeShared<D3D12VertexBuffer>(this, _vertices, _size, _layout);
-
+		return MakeShared<D3D12VertexBuffer>(this, _vertices, _size, _stride);
 	}
 
 	Shared<IndexBuffer> D3D12GraphicsDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
@@ -224,11 +222,6 @@ namespace Steins
 	Unique<ImGuiRenderer> D3D12GraphicsDevice::CreateImGuiRenderer()
 	{
 		return MakeUnique<D3D12ImGuiRenderer>(this);
-	}
-
-	Shared<VertexArray> D3D12GraphicsDevice::CreateVertexArray()
-	{
-		return MakeShared<D3D12VertexArray>(this);
 	}
 
 	Shared<ConstantBuffer> D3D12GraphicsDevice::CreateConstantBuffer(UInt32 _size)

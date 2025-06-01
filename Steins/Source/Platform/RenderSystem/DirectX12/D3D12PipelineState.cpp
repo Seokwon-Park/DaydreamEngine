@@ -65,7 +65,7 @@ namespace Steins
 		D3D12_RASTERIZER_DESC rasterizerDesc{};
 		rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 		rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
-		rasterizerDesc.FrontCounterClockwise = false;
+		rasterizerDesc.FrontCounterClockwise = true;
 		rasterizerDesc.DepthBias = D3D12_DEFAULT_DEPTH_BIAS;
 		rasterizerDesc.DepthBiasClamp = D3D12_DEFAULT_DEPTH_BIAS_CLAMP;
 		rasterizerDesc.SlopeScaledDepthBias = D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;

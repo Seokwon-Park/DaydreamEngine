@@ -12,5 +12,4 @@ void main()
 {
 	color = vec4(v_Position * 0.5 + 0.5, 1.0);
 	color = texture(u_Texture, v_TexCoord);
-	color = vec4(v_TexCoord, 0.0f, 1.0f);
 }

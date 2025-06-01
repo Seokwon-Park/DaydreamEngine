@@ -1,12 +1,12 @@
 #include "SteinsPCH.h"
 #include "VulkanGraphicsDevice.h"
+#include "VulkanGraphicsContext.h"
 #include "VulkanBuffer.h"
 #include "VulkanFramebuffer.h"
 #include "VulkanPipelineState.h"
 #include "VulkanShader.h"
 #include "VulkanSwapChain.h"
 #include "VulkanImGuiRenderer.h"
-#include "VulkanVertexArray.h"
 #include "VulkanTexture.h"
 #include "Platform/RenderSystem/GraphicsUtil.h"
 
@@ -63,7 +63,8 @@ namespace Steins
 		void DestroyDebugUtilsMessengerEXT(VkInstance _instance, VkDebugUtilsMessengerEXT _debugMessenger, const VkAllocationCallbacks* _pAllocator)
 		{
 			auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(_instance, "vkDestroyDebugUtilsMessengerEXT");
-			if (func != nullptr) {
+			if (func != nullptr)
+			{
 				func(_instance, _debugMessenger, _pAllocator);
 			}
 		}
@@ -79,11 +80,11 @@ namespace Steins
 		vkDestroyRenderPass(device, mainRenderPass, nullptr);
 		vkDestroyDescriptorPool(device, descriptorPool, nullptr);
 		vkDestroyCommandPool(device, commandPool, nullptr);
+		vkDestroyDevice(device, nullptr);
 		if (enableValidationLayers == true)
 		{
 			DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
 		}
-		vkDestroyDevice(device, nullptr);
 		vkDestroyInstance(instance, nullptr);
 	}
 	void VulkanGraphicsDevice::Init()
@@ -187,12 +188,12 @@ namespace Steins
 
 	Shared<GraphicsContext> VulkanGraphicsDevice::CreateContext()
 	{
-		return Shared<GraphicsContext>();
+		return MakeShared<VulkanGraphicsContext>(this);
 	}
 
-	Shared<VertexBuffer> VulkanGraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, const BufferLayout& _layout)
+	Shared<VertexBuffer> VulkanGraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
 	{
-		return MakeShared<VulkanVertexBuffer>(this, _vertices, _size, _layout);
+		return MakeShared<VulkanVertexBuffer>(this, _vertices, _size, _stride);
 	}
 
 	Shared<IndexBuffer> VulkanGraphicsDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
@@ -228,11 +229,6 @@ namespace Steins
 	Unique<ImGuiRenderer> VulkanGraphicsDevice::CreateImGuiRenderer()
 	{
 		return MakeUnique<VulkanImGuiRenderer>(this);
-	}
-
-	Shared<VertexArray> VulkanGraphicsDevice::CreateVertexArray()
-	{
-		return MakeShared<VulkanVertexArray>();
 	}
 
 	Shared<ConstantBuffer> VulkanGraphicsDevice::CreateConstantBuffer(UInt32 _size)

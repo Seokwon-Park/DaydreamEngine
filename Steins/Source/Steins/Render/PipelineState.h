@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Shader.h"
+#include "Buffer.h"
 #include "Texture.h"
 
 namespace Steins
@@ -56,8 +57,6 @@ namespace Steins
 		//root signature??
 
 		std::vector<ConstantBuffer*> cbfs;
-
-		VertexArray* vertexArray;//input layout
 
 		//rtv, dsv;
 		//blend, rast, ds;

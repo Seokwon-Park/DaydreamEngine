@@ -27,6 +27,7 @@ namespace Steins
 		void MatrixTranspose();
 
 		Matrix4x4 operator*(Matrix4x4 _matrix);
+		Vector4 operator*(Vector4 _vector) const;
 
 		static Matrix4x4 Translate(Matrix4x4 _matrix, Vector3 _translate);
 		static Matrix4x4 Orthographic(float _left, float _right, float _bottom, float _top);

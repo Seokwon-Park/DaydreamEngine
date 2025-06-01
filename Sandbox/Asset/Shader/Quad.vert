@@ -9,6 +9,11 @@ layout(row_major, std140, binding = 0) uniform Camera
     mat4 u_ViewProjection;
 };
 
+out gl_PerVertex 
+{
+	vec4 gl_Position;
+};
+
 layout(location = 0) out vec3 v_Position;
 layout(location = 1) out vec4 v_Color;
 layout(location = 2) out vec2 v_TexCoord;

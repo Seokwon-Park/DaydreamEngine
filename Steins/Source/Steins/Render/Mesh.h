@@ -6,8 +6,9 @@ namespace Steins
 {
 	class Mesh
 	{
-
+		Mesh();
 	private:
 		Shared<VertexBuffer> vertexBuffer;
+		Shared<VertexBuffer> indexBuffer;
 	};
 }

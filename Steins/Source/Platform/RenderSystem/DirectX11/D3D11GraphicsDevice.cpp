@@ -7,7 +7,6 @@
 #include "D3D11Framebuffer.h"
 #include "D3D11PipelineState.h"
 #include "D3D11ImGuiRenderer.h"
-#include "D3D11VertexArray.h"
 #include "D3D11Texture.h"
 
 #include "Platform/RenderSystem/GraphicsUtil.h"
@@ -141,9 +140,16 @@ namespace Steins
 		return MakeShared<D3D11GraphicsContext>(this);
 	}
 
-	Shared<VertexBuffer> D3D11GraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, const BufferLayout& _layout)
+	Shared<VertexBuffer> D3D11GraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
 	{
-		return MakeShared<D3D11VertexBuffer>(this, _vertices, _size, _layout);
+		if (_vertices)
+		{
+			return MakeShared<D3D11VertexBuffer>(this, _vertices, _size, _stride);
+		}
+		else
+		{
+			return MakeShared<D3D11VertexBuffer>(this, _size, _stride);
+		}
 	}
 
 	Shared<IndexBuffer> D3D11GraphicsDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
@@ -191,11 +197,6 @@ namespace Steins
 	Unique<ImGuiRenderer> D3D11GraphicsDevice::CreateImGuiRenderer()
 	{
 		return MakeUnique<D3D11ImGuiRenderer>(this);
-	}
-
-	Shared<VertexArray> D3D11GraphicsDevice::CreateVertexArray()
-	{
-		return MakeShared<D3D11VertexArray>(this);
 	}
 
 	Shared<ConstantBuffer> D3D11GraphicsDevice::CreateConstantBuffer(UInt32 _size)

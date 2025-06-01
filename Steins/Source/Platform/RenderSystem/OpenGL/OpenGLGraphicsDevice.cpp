@@ -1,12 +1,12 @@
 #include "SteinsPCH.h"
 #include "OpenGLGraphicsDevice.h"
+#include "OpenGLGraphicsContext.h"
 #include "OpenGLBuffer.h"
 #include "OpenGLShader.h"
 #include "OpenGLSwapchain.h"
 #include "OpenGLGraphicsContext.h"
 #include "OpenGLPipelineState.h"
 #include "OpenGLTexture.h"
-#include "OpenGLVertexArray.h"
 #include "OpenGLImGuiRenderer.h"
 
 #include "Steins/Core/Window.h"
@@ -54,12 +54,12 @@ namespace Steins
 
 	Shared<GraphicsContext> OpenGLGraphicsDevice::CreateContext()
 	{
-		return Shared<GraphicsContext>();
+		return MakeShared<OpenGLGraphicsContext>();
 	}
 
-	Shared<VertexBuffer> OpenGLGraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, const BufferLayout& _layout)
+	Shared<VertexBuffer> OpenGLGraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
 	{
-		return MakeShared<OpenGLVertexBuffer>(_vertices, _size, _layout);
+		return MakeShared<OpenGLVertexBuffer>(_vertices, _size, _stride);
 	}
 
 	Shared<IndexBuffer> OpenGLGraphicsDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
@@ -96,11 +96,6 @@ namespace Steins
 	Unique<ImGuiRenderer> OpenGLGraphicsDevice::CreateImGuiRenderer()
 	{
 		return MakeUnique<OpenGLImGuiRenderer>(this);
-	}
-
-	Shared<VertexArray> OpenGLGraphicsDevice::CreateVertexArray()
-	{
-		return MakeShared<OpenGLVertexArray>();
 	}
 
 	Shared<ConstantBuffer> OpenGLGraphicsDevice::CreateConstantBuffer(UInt32 _size)

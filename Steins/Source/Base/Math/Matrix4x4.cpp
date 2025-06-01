@@ -16,13 +16,16 @@ namespace Steins
 	}
 	void Matrix4x4::MatrixTranslate(Vector3 _translate)
 	{
-		MatrixTranspose();
-		glmMat = glm::translate(glmMat, _translate.glmVec3);
-		MatrixTranspose();
+		//row_major -> col
+		glm::transpose(glmMat);
+		//col_major 기반연산
+		glmMat = glm::translate(glmMat, _translate);
+		//col_major -> row
+		glm::transpose(glmMat);
 	}
 	void Matrix4x4::MatrixTranslate(Vector4 _translate)
 	{
-
+		
 	}
 	void Matrix4x4::MatrixTranspose()
 	{
@@ -33,6 +36,11 @@ namespace Steins
 	{
 		glmMat *= _matrix.glmMat;
 		return *this;
+	}
+
+	Vector4 Matrix4x4::operator*(Vector4 _vector) const
+	{
+		return glmMat * _vector;
 	}
 
 	Matrix4x4 Matrix4x4::Translate(Matrix4x4 _matrix, Vector3 _translate)

@@ -10,13 +10,17 @@
 
 namespace Steins
 {
+	Shared<VertexBuffer> VertexBuffer::Create(UInt32 _bufferSize, UInt32 _stride)
+	{
+		return Renderer::GetRenderDevice()->CreateVertexBuffer(nullptr, _bufferSize, _stride);
+	}
 	/*Shared<VertexBuffer> VertexBuffer::Create(Float32* _vertices, UInt32 _size)
 	{
 		return Renderer::GetRenderDevice()->CreateVertexBuffer(_vertices, _size);
 	}*/
-	Shared<VertexBuffer> VertexBuffer::Create(Float32* _vertices, UInt32 _size, const BufferLayout& _layout)
+	Shared<VertexBuffer> VertexBuffer::Create(Float32* _vertices, UInt32 _size, UInt32 _stride)
 	{
-		return Renderer::GetRenderDevice()->CreateVertexBuffer(_vertices, _size, _layout);
+		return Renderer::GetRenderDevice()->CreateVertexBuffer(_vertices, _size, _stride);
 	}
 	Shared<IndexBuffer> IndexBuffer::Create(UInt32* _indices, UInt32 _size)
 	{

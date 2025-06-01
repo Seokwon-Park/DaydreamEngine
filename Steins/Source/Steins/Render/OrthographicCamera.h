@@ -1,11 +1,14 @@
 #pragma once
 
+#include "Camera.h"
+
 namespace Steins
 {
-	class OrthographicCamera
+	class OrthographicCamera : public Camera
 	{
 	public:
 		OrthographicCamera(float _left, float _right, float _bottom, float _top);
+		void SetProjection(float _left, float _right, float _bottom, float _top);
 
 		inline const Vector3 GetPosition() { return position;  }
 		inline void SetPosition(const Vector3& _position) { position = _position; CalculateViewMatrix(); }

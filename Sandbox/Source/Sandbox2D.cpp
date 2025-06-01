@@ -5,8 +5,8 @@ Sandbox2D::Sandbox2D()
 	float squareVertices[4 * 9] = {
 			-0.5f, -0.5f, 0.0f, 1.0f,0.0f,0.0f,1.0f, 0.0f,1.0f,
 			 -0.5f,  0.5f, 0.0f,0.0f,0.0f,1.0f,1.0f, 0.0f,0.0f,
-			 0.5f, -0.5f, 0.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 1.0f,
-			 0.5f, 0.5f, 0.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 0.0f
+			 0.5f, 0.5f, 0.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 1.0f
 	};
 
 	Steins::BufferLayout layout =
@@ -15,9 +15,9 @@ Sandbox2D::Sandbox2D()
 		{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"},
 		{ Steins::ShaderDataType::Float2, "a_TexCoord", "TEXCOORD"}
 	};
-	squareVB = Steins::VertexBuffer::Create(squareVertices, sizeof(squareVertices), layout);
+	squareVB = Steins::VertexBuffer::Create(squareVertices, sizeof(squareVertices), layout.GetStride());
 
-	uint32_t squareIndices[6] = { 0, 1, 2, 2, 1, 3 };
+	uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
 	squareIB = Steins::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 
 	if (Steins::Renderer::GetAPI() == Steins::RendererAPIType::DirectX11 ||
@@ -168,14 +168,18 @@ void Sandbox2D::OnUpdate(Float32 _deltaTime)
 	pso->Bind();
 	viewProjMat->Bind(0, Steins::SteinsVertexBit);
 	texture->Bind(0);
+	Steins::Renderer::Submit(squareIB->GetCount());
 
+	Steins::Renderer2D::BeginScene(camera);
+	Steins::Renderer2D::DrawQuad(Steins::Vector3(0.2f, 0.2f, 0.0f), Steins::Vector2(1.0f, 1.0f), { 1.0f,1.0f,1.0f,1.0f });
+	Steins::Renderer2D::DrawQuad(Steins::Vector3(-0.2f, -0.2f, 0.0f), Steins::Vector2(1.0f, 1.0f), { 1.0f,1.0f,1.0f,1.0f });
+	Steins::Renderer2D::EndScene();
 	//va->Bind();
 	//vs->Bind();
 	//ps->Bind();
 	////Steins::Matrix4x4 transform = Steins::Math::Translate(Steins::Matrix4x4(), Steins::Vector4(1.0f, 1.0f, 0.0f));
 	////transform.Transpose();
 
-	Steins::Renderer::Submit(squareIB->GetCount());
 
 }
 

@@ -8,13 +8,16 @@ namespace Steins
 	class D3D11VertexBuffer : public VertexBuffer
 	{
 	public:
-		D3D11VertexBuffer(D3D11GraphicsDevice* _device, void* _vertices, UInt32 _size, const BufferLayout& _layout);
+		D3D11VertexBuffer(D3D11GraphicsDevice* _device, UInt32 _bufferSize, UInt32 _stride);
+		D3D11VertexBuffer(D3D11GraphicsDevice* _device, void* _vertices, UInt32 _size, UInt32 _stride);
 		virtual ~D3D11VertexBuffer();
 
 		virtual void Bind() const;
 		virtual void Unbind() const;
 
+		virtual void SetData(void* _data, UInt32 _dataSize) override;
 	private:
+		UInt32 stride;
 		D3D11GraphicsDevice* device;
 		ComPtr<ID3D11Buffer> vertexBuffer;
 	};

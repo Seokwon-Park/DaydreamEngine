@@ -123,3 +123,44 @@ project "Sandbox"
 	filter "configurations:Release"
 		defines "STEINS_RELEASE"
 		symbols "On"
+
+project "SteinsGate"
+	location "SteinsGate"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++20"
+	staticruntime "on"
+
+	targetdir ("Build/Bin/%{cfg.buildcfg}/%{prj.name}")
+	objdir ("Build/Intermediate/%{cfg.buildcfg}/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/Source/**.h",
+		"%{prj.name}/Source/**.cpp"
+	}
+	includedirs
+	{
+		"Steins/Vendor/spdlog/include",
+		"Steins/Source",
+		"Steins/Vendor",
+		"%{IncludeDir.glm}"
+	}
+	links
+	{
+		"Steins"
+	}
+	filter "system:windows"
+		cppdialect "C++20"
+		staticruntime "On"
+		systemversion "latest"
+		defines
+		{
+			"STEINS_PLATFORM_WINDOWS",
+		}
+	filter "configurations:Debug"
+		defines "STEINS_DEBUG"
+		symbols "On"
+	filter "configurations:Release"
+		defines "STEINS_RELEASE"
+		symbols "On"

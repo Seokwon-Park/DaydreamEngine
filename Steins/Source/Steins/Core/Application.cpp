@@ -36,17 +36,17 @@ namespace Steins
 		mainWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
 		mainWindow->SetVSync(true);
 
-		prop.width = 960;
-		prop.height = 540;
-		prop.title = "TestWindow";
-		prop.rendererAPI = _specification.rendererAPI;
+		//prop.width = 960;
+		//prop.height = 540;
+		//prop.title = "TestWindow";
+		//prop.rendererAPI = _specification.rendererAPI;
 
-		testWindow = SteinsWindow::Create(prop);
-		testWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
+		//testWindow = SteinsWindow::Create(prop);
+		//testWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
 		Renderer::Init(_specification.rendererAPI);
 		Renderer::RegisterWindow("MainWindow", mainWindow.get());
-		Renderer::RegisterWindow("TestWindow", testWindow.get());
+		//Renderer::RegisterWindow("TestWindow", testWindow.get());
 
 		imGuiLayer = new ImGuiLayer();
 		AttachOverlay(imGuiLayer);	
@@ -55,8 +55,9 @@ namespace Steins
 	Application::~Application()
 	{
 		mainWindow->SetSwapchain(nullptr);
-		layerStack.Release();
 		mainWindow = nullptr;
+		layerStack.Release();
+		Renderer::Shutdown();
 	}
 
 	void Application::AttachLayer(Layer* _layer)
@@ -178,7 +179,7 @@ namespace Steins
 			return false;
 		}
 
-		STEINS_CORE_INFO("Window Resized : [ {0} , {1} ]", _event.GetWidth(), _event.GetHeight());
+		//STEINS_CORE_INFO("Window Resized : [ {0} , {1} ]", _event.GetWidth(), _event.GetHeight());
 		isMinimized = false;
 		Renderer::OnWindowResize(_event.GetWidth(), _event.GetHeight());
 

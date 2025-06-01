@@ -3,14 +3,12 @@
 
 namespace Steins
 {
-	VulkanVertexBuffer::VulkanVertexBuffer(VulkanGraphicsDevice* _device, void* _vertices, UInt32 _size, const BufferLayout& _layout)
+	VulkanVertexBuffer::VulkanVertexBuffer(VulkanGraphicsDevice* _device, void* _vertices, UInt32 _size, UInt32 _stride)
 	{
 		device = _device;
-		layout = _layout;
 
 		device->CreateBuffer(_size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
 			uploadBuffer, uploadBufferMemory);
-
 
 		void* data;
 		vkMapMemory(device->GetDevice(), uploadBufferMemory, 0, _size, 0, &data);

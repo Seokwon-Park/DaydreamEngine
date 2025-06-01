@@ -9,12 +9,12 @@ namespace Steins
 	class VulkanVertexBuffer : public VertexBuffer
 	{
 	public:
-		VulkanVertexBuffer(VulkanGraphicsDevice* _device, void* _vertices, UInt32 _size, const BufferLayout& _layout);
+		VulkanVertexBuffer(VulkanGraphicsDevice* _device, void* _vertices, UInt32 _size, UInt32 _stride);
 		virtual ~VulkanVertexBuffer() override;
 
 		virtual void Bind() const;
 		virtual void Unbind() const;
-
+		virtual void SetData(void* _data, UInt32 _dataSize) override {}
 	private:
 		VulkanGraphicsDevice* device;
 		VkBuffer uploadBuffer;

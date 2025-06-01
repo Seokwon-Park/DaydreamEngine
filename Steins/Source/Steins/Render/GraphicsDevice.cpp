@@ -26,7 +26,6 @@ namespace Steins
 	}
 	void GraphicsDevice::CreateSwapChainForWnd(SteinsWindow* _window)
 	{
-		//TODO : 더 좋은 방법?
 		SwapChainSpecification desc;
 		desc.width = _window->GetWidth();
 		desc.height = _window->GetHeight();

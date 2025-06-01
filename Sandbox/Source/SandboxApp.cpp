@@ -42,7 +42,7 @@ public:
 			{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"},
 			{ Steins::ShaderDataType::Float2, "a_TexCoord", "TEXCOORD"}
 		};
-		vb = Steins::VertexBuffer::Create(vertices, sizeof(vertices), layout);
+		vb = Steins::VertexBuffer::Create(vertices, sizeof(vertices),layout.GetStride());
 
 		vb->SetLayout(layout);
 		//
@@ -197,6 +197,7 @@ public:
 		viewProjMat->Bind(0, Steins::SteinsVertexBit);
 		texture->Bind(0);
 
+
 		//va->Bind();
 		//vs->Bind();
 		//ps->Bind();
@@ -227,7 +228,6 @@ public:
 		ImGui::End();
 	}
 private:
-	Steins::Shared<Steins::VertexArray> va;
 	Steins::Shared<Steins::VertexBuffer> vb;
 	Steins::Shared<Steins::IndexBuffer> ib;
 	Steins::Shared<Steins::Shader> vs;

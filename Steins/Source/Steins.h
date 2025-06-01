@@ -15,15 +15,16 @@
 
 // ---Renderer------------------------------------
 #include "Steins/Render/Renderer.h"
+#include "Steins/Render/Renderer2D.h"
 #include "Steins/Render/RenderCommand.h"
 
 #include "Steins/Render/Buffer.h"
 #include "Steins/Render/Shader.h"
 #include "Steins/Render/Framebuffer.h"
 #include "Steins/Render/PipelineState.h"
-#include "Steins/Render/VertexArray.h"
 #include "Steins/Render/Texture.h"
 
+#include "Steins/Render/Camera.h"
 #include "Steins/Render/OrthographicCamera.h"
 // -----------------------------------------------
 

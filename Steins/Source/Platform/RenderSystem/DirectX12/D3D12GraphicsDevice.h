@@ -73,7 +73,7 @@ namespace Steins
 		virtual void Render() override;
 
 		virtual Shared<GraphicsContext> CreateContext() override;
-		virtual Shared<VertexBuffer> CreateVertexBuffer(Float32* _vertices, UInt32 _size, const BufferLayout& _layout) override;
+		virtual Shared<VertexBuffer> CreateVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride) override;
 		virtual Shared<IndexBuffer> CreateIndexBuffer(UInt32* _indices, UInt32 _count) override;
 		virtual Shared<Framebuffer> CreateFramebuffer(FramebufferDesc _spec)override;
 		virtual Shared<PipelineState> CreatePipelineState(PipelineStateDesc _desc)override;
@@ -81,7 +81,6 @@ namespace Steins
 		virtual Shared<SwapChain> CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)override;
 		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path)override;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() override;
-		virtual Shared<VertexArray> CreateVertexArray() override;
 		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) override;
 
 		ID3D12Device* GetDevice() const { return device.Get(); }

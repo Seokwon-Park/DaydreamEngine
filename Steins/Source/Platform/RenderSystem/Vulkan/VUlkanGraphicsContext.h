@@ -5,10 +5,10 @@
 
 namespace Steins
 {
-	class VUlkanGraphicsContext : public GraphicsContext
+	class VulkanGraphicsContext : public GraphicsContext
 	{
 	public:
-		VUlkanGraphicsContext(VulkanGraphicsDevice* _device);
+		VulkanGraphicsContext(VulkanGraphicsDevice* _device);
 
 		virtual void Init() override;
 		virtual void SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height) override {};

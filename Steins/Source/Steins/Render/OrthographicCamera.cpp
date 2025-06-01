@@ -10,6 +10,10 @@ namespace Steins
 		viewProjectionMatrix = projectionMatrix * viewMatrix;
 
 	}
+	void OrthographicCamera::SetProjection(float _left, float _right, float _bottom, float _top)
+	{
+		projectionMatrix = Matrix4x4::Orthographic(_left, _right, _bottom, _top);
+	}
 	void OrthographicCamera::CalculateViewMatrix()
 	{
 		Matrix4x4 transform = Matrix4x4::Translate(Matrix4x4(), position);

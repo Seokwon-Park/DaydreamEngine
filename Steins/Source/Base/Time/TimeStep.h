@@ -9,7 +9,6 @@ namespace Steins
 	public:
 		TimeStep(float _fixedDeltaTime = 1.0f / 60.0f);
 
-
 		void UpdateTime();
 		inline float GetDeltaTime() const { return deltaTime; };
 	private:

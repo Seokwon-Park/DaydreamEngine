@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Steins/Enum/RendererEnums.h"
-#include "VertexArray.h"
 
 namespace Steins 
 {
