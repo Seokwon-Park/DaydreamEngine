@@ -6,7 +6,7 @@ namespace Steins
 		None = 0,
 		// Color
 		RGBA8,
-		R32_INT, 
+		R32_INT,
 		// Depth/stencil
 		DEPTH24STENCIL8,
 		Depth = DEPTH24STENCIL8 // Alias
@@ -31,12 +31,11 @@ namespace Steins
 		virtual ~Framebuffer() = default;
 
 		virtual void Bind() const = 0;
+		virtual void Unbind() const = 0;
 		virtual void Clear(Color _color) = 0;
-
 
 		static Shared<Framebuffer> Create(const FramebufferDesc& _spec);
 	protected:
 	private:
-
 	};
 }

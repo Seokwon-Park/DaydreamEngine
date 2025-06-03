@@ -19,6 +19,7 @@ namespace Steins
 
 	void Renderer::Shutdown()
 	{
+		Renderer2D::Shutdown();
 		renderDevice.reset();
 	}
 

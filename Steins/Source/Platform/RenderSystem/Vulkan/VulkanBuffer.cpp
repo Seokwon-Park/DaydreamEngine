@@ -3,6 +3,20 @@
 
 namespace Steins
 {
+	VulkanVertexBuffer::VulkanVertexBuffer(VulkanGraphicsDevice* _device, UInt32 _bufferSize, UInt32 _stride)
+	{
+		device = _device;
+
+		device->CreateBuffer(_bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+			uploadBuffer, uploadBufferMemory);
+
+		device->CreateBuffer(_bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+			vertexBuffer, vertexBufferMemory);
+
+
+
+	}
+
 	VulkanVertexBuffer::VulkanVertexBuffer(VulkanGraphicsDevice* _device, void* _vertices, UInt32 _size, UInt32 _stride)
 	{
 		device = _device;
@@ -23,8 +37,11 @@ namespace Steins
 
 	VulkanVertexBuffer::~VulkanVertexBuffer()
 	{
-		vkDestroyBuffer(device->GetDevice(), uploadBuffer, nullptr);
-		vkFreeMemory(device->GetDevice(), uploadBufferMemory, nullptr);
+		if (uploadBuffer != VK_NULL_HANDLE)
+		{
+			vkDestroyBuffer(device->GetDevice(), uploadBuffer, nullptr);
+			vkFreeMemory(device->GetDevice(), uploadBufferMemory, nullptr);
+		}
 
 		vkDestroyBuffer(device->GetDevice(), vertexBuffer, nullptr);
 		vkFreeMemory(device->GetDevice(), vertexBufferMemory, nullptr);
@@ -38,6 +55,16 @@ namespace Steins
 
 	void VulkanVertexBuffer::Unbind() const
 	{
+	}
+
+	void VulkanVertexBuffer::SetData(void* _data, UInt32 _dataSize)
+	{
+		void* data;
+		vkMapMemory(device->GetDevice(), uploadBufferMemory, 0, _dataSize, 0, &data);
+		memcpy(data, _data, _dataSize);
+		vkUnmapMemory(device->GetDevice(), uploadBufferMemory);
+
+		device->CopyBuffer(uploadBuffer, vertexBuffer, _dataSize);
 	}
 
 	VulkanIndexBuffer::VulkanIndexBuffer(VulkanGraphicsDevice* _device, UInt32* _indices, UInt32 _indexCount)

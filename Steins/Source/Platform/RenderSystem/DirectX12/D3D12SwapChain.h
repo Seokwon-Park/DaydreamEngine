@@ -17,6 +17,8 @@ namespace Steins
 		void SetVSync(bool _enabled) override;
 		void SwapBuffers() override;
 
+		virtual Framebuffer* GetBackFramebuffer() { return nullptr; };
+
 		void WaitForGPU();
 		void MoveToNextFrame();
 

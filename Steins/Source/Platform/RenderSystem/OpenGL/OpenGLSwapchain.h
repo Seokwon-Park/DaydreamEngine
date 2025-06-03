@@ -14,6 +14,8 @@ namespace Steins
 
 		virtual void SetVSync(bool _enabled) override;
 		virtual void SwapBuffers() override;
+
+		virtual Framebuffer* GetBackFramebuffer() { return nullptr; };
 	private:
 		GLFWwindow* window;
 		

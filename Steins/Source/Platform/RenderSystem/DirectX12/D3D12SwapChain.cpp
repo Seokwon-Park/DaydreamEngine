@@ -46,7 +46,6 @@ namespace Steins
 		frameIndex = swapChain->GetCurrentBackBufferIndex();
 
 		internalBuffer = MakeShared<D3D12Framebuffer>(device, this);
-		backFramebuffer = internalBuffer;
 
 		hr = device->GetDevice()->CreateFence(fenceValues[frameIndex], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fence.GetAddressOf()));
 		fenceValues[frameIndex]++; // 초기 값 증가
@@ -132,8 +131,8 @@ namespace Steins
 		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 		device->GetCommandList()->ResourceBarrier(1, &barr);
 
-		backFramebuffer->Bind();
-		backFramebuffer->Clear(Color(1.0f, 1.0f, 1.0f, 1.0f));
+		internalBuffer->Bind();
+		internalBuffer->Clear(Color(1.0f, 1.0f, 1.0f, 1.0f));
 
 	}
 	void D3D12SwapChain::WaitForGPU()

@@ -59,7 +59,9 @@ namespace Steins
 	}
 	void Renderer2D::Shutdown()
 	{
-
+		delete[] data.quadVertexBufferBase;
+		data.quadVertexBuffer.reset();
+		data.quadIndexBuffer.reset();
 	}
 	void Renderer2D::BeginScene(const OrthographicCamera& _camera)
 	{

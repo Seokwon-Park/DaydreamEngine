@@ -26,12 +26,16 @@ namespace Steins
 		virtual void SetVSync(bool _enabled) override;
 		virtual void SwapBuffers() override;
 
+		virtual Framebuffer* GetBackFramebuffer() { return framebuffers[imageIndex].get(); };
+
 		VkFormat GetFormat() const { return format; }
 		VkSwapchainKHR GetVKSwapChain() const { return swapChain; }
 		VkExtent2D GetExtent() const { return extent; }
+		UInt32 GetBackbufferIndex() const { return imageIndex; }
+
 		void recordCommandBuffer(VkCommandBuffer _commandBuffer, UInt32 _imageIndex);
-		void FrameRender();
-		void EndRender();
+
+
 
 	private:
 		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat);
@@ -39,15 +43,16 @@ namespace Steins
 		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& _capabilities);
 
 		VulkanGraphicsDevice* device;
-		Shared<VulkanFramebuffer> internalFramebuffer;
+		std::vector<Shared<VulkanFramebuffer>> framebuffers;
+
 		VkSurfaceKHR surface; // Vulkan window surface
 		VkSwapchainKHR swapChain;
 		VkFormat format; // swapchain image format
 		VkExtent2D extent;
-
 		VkSemaphore imageAvailableSemaphore;
 		VkSemaphore renderFinishedSemaphore;
 		VkFence inFlightFence;
+
 
 		//temp
 		UInt32 imageIndex = 0;

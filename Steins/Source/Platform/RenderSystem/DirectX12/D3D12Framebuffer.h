@@ -15,6 +15,7 @@ namespace Steins
 		virtual ~D3D12Framebuffer() override {};
 
 		virtual void Bind() const override;
+		virtual void Unbind() const override {};
 		virtual void Clear(Color _color) override;
 
 		std::vector<ComPtr<ID3D12Resource>>& GetRenderTargets() { return renderTargets; }

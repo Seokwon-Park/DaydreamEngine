@@ -1,5 +1,5 @@
 #include "SteinsPCH.h"
-#include "VulkanSwapChain.h"
+#include "VulkanSwapchain.h"
 
 #include "Platform/RenderSystem/GraphicsUtil.h"
 
@@ -87,8 +87,13 @@ namespace Steins
 			throw std::runtime_error("failed to create semaphores!");
 		}
 
-		internalFramebuffer = MakeShared<VulkanFramebuffer>(device, this);
-		backFramebuffer = internalFramebuffer;
+		framebuffers.resize(desc.bufferCount);
+		for (UInt32 i = 0; i < desc.bufferCount; i++)
+		{
+			imageIndex = i;
+			framebuffers[i] = MakeShared<VulkanFramebuffer>(device, this);
+		}
+		imageIndex = 0;
 
 		vkWaitForFences(device->GetDevice(), 1, &inFlightFence, VK_TRUE, UINT64_MAX);
 		vkResetFences(device->GetDevice(), 1, &inFlightFence);
@@ -102,20 +107,9 @@ namespace Steins
 		VkResult result = vkBeginCommandBuffer(device->GetCommandBuffer(), &beginInfo);
 		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to begin recording command buffer!");
 
-		VkFramebuffer buf = ((VulkanFramebuffer*)backFramebuffer.get())->GetFrameBuffers()[imageIndex];
+		//VkFramebuffer buf = ((VulkanFramebuffer*)backFramebuffer.get())->GetFrameBuffers()[imageIndex];
 
-		VkRenderPassBeginInfo renderPassInfo{};
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = device->GetMainRenderPass();
-		renderPassInfo.framebuffer = buf;
-		renderPassInfo.renderArea.offset = { 0, 0 };
-		renderPassInfo.renderArea.extent = extent;
-
-		VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
-		renderPassInfo.clearValueCount = 1;
-		renderPassInfo.pClearValues = &clearColor;
-
-		vkCmdBeginRenderPass(device->GetCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+		framebuffers[imageIndex]->Bind();
 
 		VkViewport viewport{};
 		viewport.x = 0.0f;
@@ -146,10 +140,9 @@ namespace Steins
 	}
 	void VulkanSwapChain::SwapBuffers()
 	{
-		VkCommandBuffer cmdbuf = device->GetCommandBuffer();
-
-		vkCmdEndRenderPass(cmdbuf);
-		if (vkEndCommandBuffer(cmdbuf) != VK_SUCCESS) {
+		framebuffers[imageIndex]->Unbind();
+		//vkCmdEndRenderPass(cmdbuf);
+		if (vkEndCommandBuffer(device->GetCommandBuffer()) != VK_SUCCESS) {
 			throw std::runtime_error("failed to record command buffer!");
 		}
 		VkSubmitInfo submitInfo{};
@@ -161,7 +154,9 @@ namespace Steins
 		submitInfo.pWaitSemaphores = waitSemaphores;
 		submitInfo.pWaitDstStageMask = waitStages;
 		submitInfo.commandBufferCount = 1;
-		submitInfo.pCommandBuffers = &cmdbuf;
+
+		VkCommandBuffer buffers[] = { device->GetCommandBuffer() };
+		submitInfo.pCommandBuffers = buffers;
 
 		VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
 		submitInfo.signalSemaphoreCount = 1;
@@ -185,10 +180,8 @@ namespace Steins
 		vkWaitForFences(device->GetDevice(), 1, &inFlightFence, VK_TRUE, UINT64_MAX);
 		vkResetFences(device->GetDevice(), 1, &inFlightFence);
 		vkAcquireNextImageKHR(device->GetDevice(), swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
-		vkResetCommandBuffer(cmdbuf, 0);
-		recordCommandBuffer(cmdbuf, imageIndex);
-
-
+		vkResetCommandBuffer(device->GetCommandBuffer(), 0);
+		recordCommandBuffer(device->GetCommandBuffer(), imageIndex);
 	}
 
 	VkSurfaceFormatKHR VulkanSwapChain::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat)
@@ -241,20 +234,22 @@ namespace Steins
 		VkResult result = vkBeginCommandBuffer(_commandBuffer, &beginInfo);
 		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to begin recording command buffer!");
 
-		VkFramebuffer buf = ((VulkanFramebuffer*)backFramebuffer.get())->GetFrameBuffers()[_imageIndex];
+		//VkFramebuffer buf = ((VulkanFramebuffer*)backFramebuffer.get())->GetFrameBuffers()[_imageIndex];
 
-		VkRenderPassBeginInfo renderPassInfo{};
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = device->GetMainRenderPass();
-		renderPassInfo.framebuffer = buf;
-		renderPassInfo.renderArea.offset = { 0, 0 };
-		renderPassInfo.renderArea.extent = extent;
+		//VkRenderPassBeginInfo renderPassInfo{};
+		//renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		//renderPassInfo.renderPass = device->GetMainRenderPass();
+		//renderPassInfo.framebuffer = buf;
+		//renderPassInfo.renderArea.offset = { 0, 0 };
+		//renderPassInfo.renderArea.extent = extent;
 
-		VkClearValue clearColor = { {1.0f, 1.0f, 1.0f, 1.0f} };
-		renderPassInfo.clearValueCount = 1;
-		renderPassInfo.pClearValues = &clearColor;
+		//VkClearValue clearColor = { {1.0f, 1.0f, 1.0f, 1.0f} };
+		//renderPassInfo.clearValueCount = 1;
+		//renderPassInfo.pClearValues = &clearColor;
 
-		vkCmdBeginRenderPass(_commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+		//vkCmdBeginRenderPass(_commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		framebuffers[_imageIndex]->Bind();
 
 		VkViewport viewport{};
 		viewport.x = 0.0f;
@@ -273,53 +268,5 @@ namespace Steins
 //		vkCmdDraw(_commandBuffer, 3, 1, 0, 0);
 
 
-	}
-	void VulkanSwapChain::FrameRender()
-	{
-		VkResult err = vkAcquireNextImageKHR(device->GetDevice(), swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
-		vkWaitForFences(device->GetDevice(), 1, &inFlightFence, VK_TRUE, UINT64_MAX);    // wait indefinitely instead of periodically checking
-
-		vkResetFences(device->GetDevice(), 1, &inFlightFence);
-		{
-			err = vkResetCommandPool(device->GetDevice(), device->GetCommandPool(), 0);
-			VkCommandBufferBeginInfo info = {};
-			info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-			info.flags |= VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-			err = vkBeginCommandBuffer(device->GetCommandBuffer(), &info);
-		}
-		{
-			VkRenderPassBeginInfo info = {};
-			info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-			info.renderPass = device->GetMainRenderPass();
-			info.framebuffer = ((VulkanFramebuffer*)backFramebuffer.get())->GetFrameBuffers()[imageIndex];
-			info.renderArea.extent.width = extent.width;
-			info.renderArea.extent.height = extent.height;
-			info.clearValueCount = 1;
-			VkClearValue clearColor = { {{1.0f, 1.0f, 1.0f, 1.0f}} };
-			info.pClearValues = &clearColor;
-			vkCmdBeginRenderPass(device->GetCommandBuffer(), &info, VK_SUBPASS_CONTENTS_INLINE);
-		}
-	}
-
-	void VulkanSwapChain::EndRender()
-	{
-		// Submit command buffer
-		vkCmdEndRenderPass(device->GetCommandBuffer());
-		{
-			VkCommandBuffer buf = device->GetCommandBuffer();
-			VkPipelineStageFlags wait_stage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-			VkSubmitInfo info = {};
-			info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-			info.waitSemaphoreCount = 1;
-			info.pWaitSemaphores = &imageAvailableSemaphore;
-			info.pWaitDstStageMask = &wait_stage;
-			info.commandBufferCount = 1;
-			info.pCommandBuffers = &buf;
-			info.signalSemaphoreCount = 1;
-			info.pSignalSemaphores = &renderFinishedSemaphore;
-
-			vkEndCommandBuffer(device->GetCommandBuffer());
-			vkQueueSubmit(device->GetQueue(), 1, &info, inFlightFence);
-		}
 	}
 }

@@ -1,7 +1,7 @@
 #include "SteinsPCH.h"
 #include "VulkanPipelineState.h"
 
-#include "VulkanSwapChain.h"
+#include "VulkanSwapchain.h"
 #include "Platform/RenderSystem/GraphicsUtil.h"
 
 #include "VulkanTexture.h"
@@ -216,7 +216,7 @@ namespace Steins
 			pipelineInfo.pColorBlendState = &colorBlending;
 			pipelineInfo.pDynamicState = &dynamicState;
 			pipelineInfo.layout = pipelineLayout;
-			pipelineInfo.renderPass = device->GetMainRenderPass();
+			pipelineInfo.renderPass = device->GetCurrentRenderPass();
 			pipelineInfo.subpass = 0;
 			pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
 			pipelineInfo.basePipelineIndex = -1; // Optional

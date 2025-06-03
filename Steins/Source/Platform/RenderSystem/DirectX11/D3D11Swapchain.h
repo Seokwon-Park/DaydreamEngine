@@ -15,10 +15,14 @@ namespace Steins
 		virtual void SetVSync(bool _enabled) override;
 		virtual void SwapBuffers() override;
 
+		virtual Framebuffer* GetBackFramebuffer() { return framebuffer.get(); };
+
 		inline IDXGISwapChain* GetDXGISwapChain() { return swapChain.Get(); }
 		
 	private:
 		D3D11GraphicsDevice* device;
 		ComPtr<IDXGISwapChain> swapChain;
+
+		Shared<D3D11Framebuffer> framebuffer;
 	};
 }

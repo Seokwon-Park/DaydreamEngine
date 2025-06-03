@@ -252,7 +252,7 @@
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanShader.h">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapChain.h">
+    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapchain.h">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanTexture.h">
@@ -1783,7 +1783,7 @@
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanShader.cpp">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapChain.cpp">
+    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapchain.cpp">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanTexture.cpp">
@@ -1874,5 +1874,6 @@
       <Filter>Vendor\stb</Filter>
     </ClCompile>
     <ClCompile Include="Source\Steins\Render\RenderPass.cpp" />
+    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanRenderPass.cpp" />
   </ItemGroup>
 </Project>

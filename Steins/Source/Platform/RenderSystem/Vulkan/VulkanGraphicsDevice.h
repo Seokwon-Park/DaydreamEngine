@@ -49,12 +49,14 @@ namespace Steins
 		VkInstance GetInstance() const { return instance; }
 		VkPhysicalDevice GetGPU() const { return physicalDevice; }
 		VkDevice GetDevice() const { return device; }
-		UInt32 GetGraphicsQueueFamily() const { return queueFamilyIndices.graphicsFamily.value(); }
+		UInt32 GetGraphicsFamilyIndex() const { return queueFamilyIndices.graphicsFamily.value(); }
 		VkQueue GetQueue() const { return graphicsQueue; }
 		VkDescriptorPool GetDescriptorPool() const { return descriptorPool; }
 		VkCommandBuffer GetCommandBuffer() const { return commandBuffer; }
 		VkCommandPool GetCommandPool() const { return commandPool; }
-		VkRenderPass GetMainRenderPass() const { return mainRenderPass; }
+
+		void SetCurrentRenderPass(VkRenderPass _renderPass) { renderPass = _renderPass; }
+		VkRenderPass GetCurrentRenderPass() const { return renderPass; }
 
 		VkCommandBuffer BeginSingleTimeCommands();
 		void EndSingleTimeCommands(VkCommandBuffer _commandBuffer);
@@ -102,7 +104,8 @@ namespace Steins
 		VkCommandPool commandPool;
 		VkCommandBuffer commandBuffer;
 		VkDescriptorPool descriptorPool;
-		VkRenderPass mainRenderPass;
+
+		VkRenderPass renderPass;
 	};
 }
 
