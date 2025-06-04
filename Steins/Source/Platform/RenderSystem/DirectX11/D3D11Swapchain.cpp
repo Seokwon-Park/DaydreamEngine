@@ -44,7 +44,8 @@ namespace Steins
 		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed To Create Swapchain!");
 		device->AddSwapChain(this);
 
-		//backFramebuffer = MakeShared<D3D11Framebuffer>(device, this);
+		framebuffer = MakeShared<D3D11Framebuffer>(device, this);
+		framebuffer->Bind();
 
 		D3D11_VIEWPORT viewport;
 		viewport.TopLeftX = 0;

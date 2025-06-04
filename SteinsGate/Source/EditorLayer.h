@@ -9,4 +9,17 @@ public:
 
 	virtual void OnUpdate(Float32 _deltaTime) override;
 	virtual void OnImGuiRender() override;
+private:
+	Steins::Shared<Steins::VertexBuffer> squareVB;
+	Steins::Shared<Steins::IndexBuffer> squareIB;
+
+	Steins::Shared<Steins::Shader> vs;
+	Steins::Shared<Steins::Shader> ps;
+
+	Steins::Shared<Steins::PipelineState> pso;
+	Steins::Shared<Steins::ConstantBuffer> viewProjMat;
+	Steins::Shared<Steins::Texture2D> texture;
+
+	Steins::OrthographicCamera camera = Steins::OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f);
+	Steins::Matrix4x4 cameraPos;
 };

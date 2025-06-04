@@ -4,6 +4,65 @@
 EditorLayer::EditorLayer()
 	:Layer("Editor Layer")
 {
+	float squareVertices[4 * 9] = {
+			-0.5f, -0.5f, 0.0f, 1.0f,0.0f,0.0f,1.0f, 0.0f,1.0f,
+			 -0.5f,  0.5f, 0.0f,0.0f,0.0f,1.0f,1.0f, 0.0f,0.0f,
+			 0.5f, 0.5f, 0.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 1.0f
+	};
+
+	Steins::BufferLayout layout =
+	{
+		{ Steins::ShaderDataType::Float3, "a_Position", "POSITION"},
+		{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"},
+		{ Steins::ShaderDataType::Float2, "a_TexCoord", "TEXCOORD"}
+	};
+	squareVB = Steins::VertexBuffer::Create(squareVertices, sizeof(squareVertices), layout.GetStride());
+
+	uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
+	squareIB = Steins::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
+
+	if (Steins::Renderer::GetAPI() == Steins::RendererAPIType::DirectX11 ||
+		Steins::Renderer::GetAPI() == Steins::RendererAPIType::DirectX12)
+	{
+		vs = Steins::Shader::Create("Asset/Shader/VertexShader.hlsl", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
+		ps = Steins::Shader::Create("Asset/Shader/PixelShader.hlsl", Steins::ShaderType::Pixel, Steins::ShaderLoadMode::File);
+	}
+	if (Steins::Renderer::GetAPI() == Steins::RendererAPIType::OpenGL)
+	{
+		vs = Steins::Shader::Create("Asset/Shader/Quad.vert", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
+		ps = Steins::Shader::Create("Asset/Shader/Quad.frag", Steins::ShaderType::Pixel, Steins::ShaderLoadMode::File);
+	}
+	if (Steins::Renderer::GetAPI() == Steins::RendererAPIType::Vulkan)
+	{
+		vs = Steins::Shader::Create("Asset/Shader/QuadTexVS.spv", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
+		ps = Steins::Shader::Create("Asset/Shader/QuadTexPS.spv", Steins::ShaderType::Pixel, Steins::ShaderLoadMode::File);
+	}
+
+
+	Steins::BufferLayout inputlayout = {
+	{ Steins::ShaderDataType::Float3, "a_Position", "POSITION"},
+	{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"},
+	{ Steins::ShaderDataType::Float2, "a_TexCoord", "TEXCOORD"}
+
+	};
+
+	camera.SetPosition({ 0.0f,0.0f,0.0f });
+	cameraPos = camera.GetViewProjectionMatrix();
+	viewProjMat = Steins::ConstantBuffer::Create(sizeof(Steins::Matrix4x4));
+	viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
+
+	auto path = Steins::FilePath("Asset/Texture/Checkerboard.png");
+	texture = Steins::Texture2D::Create(path);
+
+	Steins::PipelineStateDesc desc;
+	desc.vertexShader = vs;
+	desc.pixelShader = ps;
+	desc.inputLayout = inputlayout;
+	desc.constantBuffers = { { 0,viewProjMat} };
+	desc.textures = { texture };
+
+	pso = Steins::PipelineState::Create(desc);
 }
 
 void EditorLayer::OnUpdate(Float32 _deltaTime)
@@ -13,6 +72,12 @@ void EditorLayer::OnUpdate(Float32 _deltaTime)
 
 	////camera.SetPosition({ 0.5f, 0.5f, 0.0f });
 
+	squareVB->Bind();
+	squareIB->Bind();
+	pso->Bind();
+	viewProjMat->Bind(0, Steins::SteinsVertexBit);
+	texture->Bind(0);
+	Steins::Renderer::Submit(squareIB->GetCount());
 	//Steins::Renderer::BeginScene(camera);
 	//squareVB->Bind();
 	//squareIB->Bind();
