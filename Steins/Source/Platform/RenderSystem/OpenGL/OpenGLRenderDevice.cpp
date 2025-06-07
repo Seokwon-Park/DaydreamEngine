@@ -57,7 +57,12 @@ namespace Steins
 		return MakeShared<OpenGLGraphicsContext>();
 	}
 
-	Shared<VertexBuffer> OpenGLRenderDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
+	Shared<VertexBuffer> OpenGLRenderDevice::CreateDynamicVertexBuffer(UInt32 _bufferSize, UInt32 _stride)
+	{
+		return MakeShared<OpenGLVertexBuffer>(_bufferSize, _stride);
+	}
+
+	Shared<VertexBuffer> OpenGLRenderDevice::CreateStaticVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
 	{
 		return MakeShared<OpenGLVertexBuffer>(_vertices, _size, _stride);
 	}

@@ -47,6 +47,7 @@ namespace Steins
 
 		internalBuffer = MakeShared<D3D12Framebuffer>(device, this);
 
+
 		hr = device->GetDevice()->CreateFence(fenceValues[frameIndex], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fence.GetAddressOf()));
 		fenceValues[frameIndex]++; // 초기 값 증가
 		fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
@@ -61,6 +62,8 @@ namespace Steins
 		device->GetCommandList()->Reset(device->GetCommandAllocator(frameIndex), nullptr);
 		ID3D12DescriptorHeap* heaps[] = { device->GetSRVHeap() };
 		device->GetCommandList()->SetDescriptorHeaps(1, heaps);
+		internalBuffer->Begin();
+		internalBuffer->Clear(Color(1.0f, 1.0f, 1.0f, 1.0f));
 
 		D3D12_RESOURCE_BARRIER barr{};
 
@@ -138,6 +141,7 @@ namespace Steins
 	void D3D12SwapChain::ResizeSwapChain(UInt32 _width, UInt32 height)
 	{
 	}
+
 	void D3D12SwapChain::WaitForGPU()
 	{
 		// Schedule a Signal command in the queue.

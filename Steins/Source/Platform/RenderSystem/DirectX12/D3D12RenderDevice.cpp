@@ -105,7 +105,9 @@ namespace Steins
 			}
 
 
-			device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocators[0].Get(), nullptr, IID_PPV_ARGS(commandList.GetAddressOf()));
+			hr = device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocators[0].Get(), nullptr, IID_PPV_ARGS(commandList.GetAddressOf()));
+			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create commandlist");
+
 
 			commandList->Close();
 		}
@@ -184,16 +186,15 @@ namespace Steins
 		return MakeShared<D3D12GraphicsContext>(this);
 	}
 
-	Shared<VertexBuffer> D3D12RenderDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
+	Shared<VertexBuffer> D3D12RenderDevice::CreateDynamicVertexBuffer(UInt32 _bufferSize, UInt32 _stride)
 	{
-		if (_vertices)
-		{
-			return MakeShared<D3D12VertexBuffer>(this, _vertices, _size, _stride);
-		}
-		else
-		{
-			return MakeShared<D3D12VertexBuffer>(this, _size, _stride);
-		}
+		return MakeShared<D3D12VertexBuffer>(this, _bufferSize, _stride);
+
+	}
+
+	Shared<VertexBuffer> D3D12RenderDevice::CreateStaticVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
+	{
+		return MakeShared<D3D12VertexBuffer>(this, _vertices, _size, _stride);
 	}
 
 	Shared<IndexBuffer> D3D12RenderDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)

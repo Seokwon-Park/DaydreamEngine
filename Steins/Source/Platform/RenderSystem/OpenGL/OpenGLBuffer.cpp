@@ -11,6 +11,10 @@ namespace Steins {
 	// VertexBuffer /////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////
 
+	OpenGLVertexBuffer::OpenGLVertexBuffer(UInt32 _bufferSize, UInt32 _stride)
+	{
+	}
+
 	OpenGLVertexBuffer::OpenGLVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
 	{
 		glCreateBuffers(1, &rendererID);

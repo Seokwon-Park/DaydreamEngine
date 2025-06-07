@@ -15,7 +15,7 @@ Sandbox2D::Sandbox2D()
 		{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"},
 		{ Steins::ShaderDataType::Float2, "a_TexCoord", "TEXCOORD"}
 	};
-	squareVB = Steins::VertexBuffer::Create(squareVertices, sizeof(squareVertices), layout.GetStride());
+	squareVB = Steins::VertexBuffer::CreateStatic(squareVertices, sizeof(squareVertices), layout.GetStride());
 
 	uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
 	squareIB = Steins::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));

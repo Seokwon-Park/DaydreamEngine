@@ -42,7 +42,7 @@ public:
 			{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"},
 			{ Steins::ShaderDataType::Float2, "a_TexCoord", "TEXCOORD"}
 		};
-		vb = Steins::VertexBuffer::Create(vertices, sizeof(vertices),layout.GetStride());
+		vb = Steins::VertexBuffer::CreateStatic(vertices, sizeof(vertices),layout.GetStride());
 
 		vb->SetLayout(layout);
 		//
@@ -261,7 +261,7 @@ Steins::Application* Steins::CreateApplication()
 	ApplicationSpecification spec;
 	spec.Name = "Sandbox";
 	spec.WorkingDirectory = "../Lab";
-	spec.rendererAPI = RendererAPIType::DirectX11;
+	spec.rendererAPI = RendererAPIType::DirectX12;
 
 	return new Sandbox(spec);
 }

@@ -25,7 +25,6 @@ namespace Steins
 		UInt32 frameIndex = 0;
 		D3D12RenderDevice* device;
 		D3D12SwapChain* swapChain;
-		ComPtr<ID3D12CommandAllocator> commandAllocators[2];
 		std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> renderTargetHandles; 
 		D3D12_CPU_DESCRIPTOR_HANDLE depthStencilHandle; 
 		std::vector<ComPtr<ID3D12Resource>> renderTargets;

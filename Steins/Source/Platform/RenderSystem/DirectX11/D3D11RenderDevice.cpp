@@ -20,19 +20,19 @@ namespace Steins
 
 	D3D11RenderDevice::~D3D11RenderDevice()
 	{
-//#if defined(DEBUG) || defined(_DEBUG)
-//		Microsoft::WRL::ComPtr<ID3D11Debug> DXGIDebug;
-//
-//		if (SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&DXGIDebug))))
-//		{
-//			DXGIDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
-//			DXGIDebug = nullptr;
-//		}
-//#endif
-		/*dxgiAdapter->Release();
-		dxgiDevice->Release();
-		dxgiFactory->Release();*/
-		//device.Reset();
+		//#if defined(DEBUG) || defined(_DEBUG)
+		//		Microsoft::WRL::ComPtr<ID3D11Debug> DXGIDebug;
+		//
+		//		if (SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&DXGIDebug))))
+		//		{
+		//			DXGIDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_IGNORE_INTERNAL);
+		//			DXGIDebug = nullptr;
+		//		}
+		//#endif
+				/*dxgiAdapter->Release();
+				dxgiDevice->Release();
+				dxgiFactory->Release();*/
+				//device.Reset();
 	}
 
 	void D3D11RenderDevice::Init()
@@ -140,16 +140,14 @@ namespace Steins
 		return MakeShared<D3D11GraphicsContext>(this);
 	}
 
-	Shared<VertexBuffer> D3D11RenderDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
+	Shared<VertexBuffer> D3D11RenderDevice::CreateDynamicVertexBuffer(UInt32 _bufferSize, UInt32 _stride)
 	{
-		if (_vertices)
-		{
-			return MakeShared<D3D11VertexBuffer>(this, _vertices, _size, _stride);
-		}
-		else
-		{
-			return MakeShared<D3D11VertexBuffer>(this, _size, _stride);
-		}
+		return MakeShared<D3D11VertexBuffer>(this, _bufferSize, _stride);
+	}
+
+	Shared<VertexBuffer> D3D11RenderDevice::CreateStaticVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
+	{
+		return MakeShared<D3D11VertexBuffer>(this, _vertices, _size, _stride);
 	}
 
 	Shared<IndexBuffer> D3D11RenderDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)

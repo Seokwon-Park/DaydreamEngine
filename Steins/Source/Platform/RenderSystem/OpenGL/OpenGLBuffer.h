@@ -7,6 +7,7 @@ namespace Steins
 	class OpenGLVertexBuffer : public VertexBuffer
 	{
 	public:
+		OpenGLVertexBuffer(UInt32 _bufferSize, UInt32 _stride);
 		OpenGLVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride);
 		virtual ~OpenGLVertexBuffer();
 

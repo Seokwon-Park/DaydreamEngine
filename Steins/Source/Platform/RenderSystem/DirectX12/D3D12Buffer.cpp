@@ -5,6 +5,32 @@ namespace Steins
 {
 	D3D12VertexBuffer::D3D12VertexBuffer(D3D12RenderDevice* _device, UInt32 _bufferSize, UInt32 _stride)
 	{
+		device = _device;
+
+		D3D12_HEAP_PROPERTIES props{};
+		props.Type = D3D12_HEAP_TYPE_UPLOAD;
+
+		D3D12_RESOURCE_DESC desc{};
+		desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+		desc.Alignment = 0;
+		desc.Width = _bufferSize;
+		desc.Height = 1;
+		desc.DepthOrArraySize = 1;
+		desc.MipLevels = 1;
+		desc.Format = DXGI_FORMAT_UNKNOWN;
+		desc.SampleDesc.Count = 1;
+		desc.SampleDesc.Quality = 0;
+		desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+		desc.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+		device->GetDevice()->CreateCommittedResource(&props,
+			D3D12_HEAP_FLAG_NONE,
+			&desc,
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(vertexBuffer.GetAddressOf())
+		);
+
 	}
 	D3D12VertexBuffer::D3D12VertexBuffer(D3D12RenderDevice* _device, void* _vertices, UInt32 _size, UInt32 _stride)
 	{
@@ -45,7 +71,7 @@ namespace Steins
 		);
 
 		void* data;
-		HRESULT hr =uploadBuffer->Map(0, nullptr, &data);
+		HRESULT hr = uploadBuffer->Map(0, nullptr, &data);
 		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to map uploadBuffer");
 		memcpy(data, _vertices, _size);
 		uploadBuffer->Unmap(0, nullptr);
@@ -72,6 +98,14 @@ namespace Steins
 	}
 	void D3D12VertexBuffer::Unbind() const
 	{
+	}
+
+	void D3D12VertexBuffer::SetData(void* _data, UInt32 _dataSize)
+	{
+		void* data;
+		HRESULT hr = vertexBuffer->Map(0, nullptr, &data);
+		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to map uploadBuffer");
+		memcpy(data, _data, _dataSize);
 	}
 
 	D3D12IndexBuffer::D3D12IndexBuffer(D3D12RenderDevice* _device, UInt32* _indices, UInt32 _indexCount)
@@ -118,7 +152,7 @@ namespace Steins
 		memcpy(data, _indices, sizeof(UInt32) * _indexCount);
 		uploadBuffer.Get()->Unmap(0, nullptr);
 
-		device->GetCommandList()->CopyBufferRegion(indexBuffer.Get(),0, uploadBuffer.Get(), 0, sizeof(UInt32) * _indexCount);
+		device->GetCommandList()->CopyBufferRegion(indexBuffer.Get(), 0, uploadBuffer.Get(), 0, sizeof(UInt32) * _indexCount);
 
 		D3D12_RESOURCE_BARRIER barrier;
 		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;

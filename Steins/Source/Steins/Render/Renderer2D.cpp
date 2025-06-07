@@ -35,7 +35,7 @@ namespace Steins
 
 	void Renderer2D::Init()
 	{
-		data.quadVertexBuffer = VertexBuffer::Create(data.maxVertices * sizeof(QuadVertex), sizeof(QuadVertex));
+		data.quadVertexBuffer = VertexBuffer::CreateDynamic(data.maxVertices * sizeof(QuadVertex), sizeof(QuadVertex));
 
 		data.quadVertexBufferBase = new QuadVertex[data.maxVertices];
 		data.quadVertexBufferPtr = data.quadVertexBufferBase;

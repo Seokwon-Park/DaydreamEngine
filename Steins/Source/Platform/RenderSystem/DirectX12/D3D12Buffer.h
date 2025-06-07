@@ -13,7 +13,7 @@ namespace Steins
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
-		virtual void SetData(void* _data, UInt32 _dataSize) override {};
+		virtual void SetData(void* _data, UInt32 _dataSize) override;
 	private:
 		UInt32 stride;
 		D3D12RenderDevice* device;

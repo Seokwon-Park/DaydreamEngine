@@ -9,7 +9,7 @@ namespace Steins
         void Init() override;
         void Shutdown() override;
         void Render() override;
-        virtual Shared<VertexBuffer> CreateVertexBuffer(Float32* _vertices, UInt32 _size) {};
+        virtual Shared<VertexBuffer> CreateStaticVertexBuffer(Float32* _vertices, UInt32 _size) {};
     };
 }
 

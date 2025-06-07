@@ -158,16 +158,14 @@ namespace Steins
 		return MakeShared<VulkanGraphicsContext>(this);
 	}
 
-	Shared<VertexBuffer> VulkanRenderDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
+	Shared<VertexBuffer> VulkanRenderDevice::CreateDynamicVertexBuffer(UInt32 _bufferSize, UInt32 _stride)
 	{
-		if (_vertices)
-		{
-			return MakeShared<VulkanVertexBuffer>(this, _vertices, _size, _stride);
-		}
-		else
-		{
-			return MakeShared<VulkanVertexBuffer>(this, _size, _stride);
-		}
+		return MakeShared<VulkanVertexBuffer>(this, _bufferSize, _stride);
+	}
+
+	Shared<VertexBuffer> VulkanRenderDevice::CreateStaticVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
+	{
+		return MakeShared<VulkanVertexBuffer>(this, _vertices, _size, _stride);
 	}
 
 	Shared<IndexBuffer> VulkanRenderDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)

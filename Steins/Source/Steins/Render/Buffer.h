@@ -115,8 +115,8 @@ namespace Steins
 		const BufferLayout& GetLayout() const { return layout; }
 		void SetLayout(const BufferLayout& _layout) { layout = _layout; }
 
-		static Shared<VertexBuffer> Create(UInt32 _size, UInt32 _stride);
-		static Shared<VertexBuffer> Create(Float32* _vertices, UInt32 _size, UInt32 _stride);
+		static Shared<VertexBuffer> CreateDynamic(UInt32 _size, UInt32 _stride);
+		static Shared<VertexBuffer> CreateStatic(Float32* _vertices, UInt32 _size, UInt32 _stride);
 	protected:
 		UInt32 slot = 0;
 		BufferLayout layout;
