@@ -2,7 +2,7 @@
 
 #include "WindowDefine.h"
 #include "Steins/Event/Event.h"
-#include "Steins/Render/Swapchain.h"
+#include "Steins/Render/SwapChain.h"
 
 
 namespace Steins
@@ -53,8 +53,8 @@ namespace Steins
 		virtual void SetKeyDown(int _key) = 0;
 		virtual void OnUpdateKeyState() = 0;
 
-		void SetSwapchain(Shared<SwapChain> _swapchain) { swapChain = _swapchain; }
-		SwapChain* GetSwapchain() const { return swapChain.get(); }
+		void SetSwapChain(Shared<SwapChain> _swapchain) { swapChain = _swapchain; }
+		SwapChain* GetSwapChain() const { return swapChain.get(); }
 
 		static Unique<SteinsWindow> Create(const WindowProps& _props = WindowProps());
 	protected:

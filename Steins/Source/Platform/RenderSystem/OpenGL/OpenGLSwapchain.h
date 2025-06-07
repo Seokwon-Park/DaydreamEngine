@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Steins/Render/Swapchain.h"
+#include "Steins/Render/SwapChain.h"
 
 #include "GLFW/glfw3.h"
 
@@ -14,6 +14,7 @@ namespace Steins
 
 		virtual void SetVSync(bool _enabled) override;
 		virtual void SwapBuffers() override;
+		virtual void ResizeSwapChain(UInt32 _width, UInt32 height) override;
 
 		virtual Framebuffer* GetBackFramebuffer() { return nullptr; };
 	private:

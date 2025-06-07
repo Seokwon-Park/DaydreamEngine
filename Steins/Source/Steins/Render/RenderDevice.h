@@ -24,10 +24,10 @@ namespace Steins
 	class VertexArray;
 	class BufferLayout;
 
-	class GraphicsDevice
+	class RenderDevice
 	{
 	public:
-		virtual ~GraphicsDevice() {};
+		virtual ~RenderDevice() {};
 
 		virtual void Init() = 0;
 		virtual void Shutdown() = 0;
@@ -54,7 +54,7 @@ namespace Steins
 		};
 		inline void AddSwapChain(SwapChain* _swapChain) { swapChains.push_back(_swapChain); }
 
-		static Unique<GraphicsDevice> Create(RendererAPIType _API);
+		static Unique<RenderDevice> Create(RendererAPIType _API);
 	protected:
 		std::vector<SwapChain*> swapChains;
 		RendererAPIType API = RendererAPIType::None;

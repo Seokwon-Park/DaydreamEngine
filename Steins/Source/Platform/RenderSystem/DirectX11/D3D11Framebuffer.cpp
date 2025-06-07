@@ -1,18 +1,18 @@
 #include "SteinsPCH.h"
 #include "D3D11Framebuffer.h"
-#include "D3D11Swapchain.h"
+#include "D3D11SwapChain.h"
 
 namespace Steins
 {
-	D3D11Framebuffer::D3D11Framebuffer(D3D11GraphicsDevice* _device, const FramebufferDesc& _spec)
+	D3D11Framebuffer::D3D11Framebuffer(D3D11RenderDevice* _device, const FramebufferDesc& _spec)
 	{
 		device = _device;
-		for (const FramebufferAttachmentSpecification& colorAttachment : _spec.colorAttachments)
+		for (const FramebufferAttachmentDescription& colorAttachment : _spec.colorAttachments)
 		{
 
 		}
 	}
-	D3D11Framebuffer::D3D11Framebuffer(D3D11GraphicsDevice* _device, D3D11SwapChain* _swapChain)
+	D3D11Framebuffer::D3D11Framebuffer(D3D11RenderDevice* _device, D3D11SwapChain* _swapChain)
 	{
 		device = _device;
 		IDXGISwapChain* dxgiSwapChain = _swapChain->GetDXGISwapChain();
@@ -38,7 +38,7 @@ namespace Steins
 			rtv->Release();
 		}
 	}
-	void D3D11Framebuffer::Bind() const
+	void D3D11Framebuffer::Begin() const
 	{
 		device->GetContext()->OMSetRenderTargets(Cast<UINT>(renderTargetViews.size()), renderTargetViews.data(), nullptr);
 	}

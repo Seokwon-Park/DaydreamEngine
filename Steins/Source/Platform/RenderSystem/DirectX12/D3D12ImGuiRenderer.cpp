@@ -5,7 +5,7 @@
 
 namespace Steins
 {
-	D3D12ImGuiRenderer::D3D12ImGuiRenderer(D3D12GraphicsDevice* _device)
+	D3D12ImGuiRenderer::D3D12ImGuiRenderer(D3D12RenderDevice* _device)
 	{
 		device = _device;
 	}
@@ -22,11 +22,11 @@ namespace Steins
 		info.SrvDescriptorHeap = device->GetSRVHeap();
 		info.SrvDescriptorAllocFn = [](ImGui_ImplDX12_InitInfo* _info, D3D12_CPU_DESCRIPTOR_HANDLE* _outCpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE* _outGpuHandle)
 			{
-				((D3D12GraphicsDevice*)_info->UserData)->GetCBVSRVUAVHeapAlloc().Alloc(_outCpuHandle, _outGpuHandle);
+				((D3D12RenderDevice*)_info->UserData)->GetCBVSRVUAVHeapAlloc().Alloc(_outCpuHandle, _outGpuHandle);
 			};
 		info.SrvDescriptorFreeFn = [](ImGui_ImplDX12_InitInfo* _info, D3D12_CPU_DESCRIPTOR_HANDLE _outCpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE _outGpuHandle)
 			{
-				((D3D12GraphicsDevice*)_info->UserData)->GetCBVSRVUAVHeapAlloc().Free(_outCpuHandle, _outGpuHandle);
+				((D3D12RenderDevice*)_info->UserData)->GetCBVSRVUAVHeapAlloc().Free(_outCpuHandle, _outGpuHandle);
 			};
 
 		ImGui_ImplDX12_Init(&info);

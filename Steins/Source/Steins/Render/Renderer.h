@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GraphicsDevice.h"
+#include "RenderDevice.h"
 
 #include "OrthographicCamera.h"
 #include "RenderCommand.h"
@@ -23,10 +23,10 @@ namespace Steins
 
 		inline static RendererAPIType GetAPI() { return renderDevice->GetAPI(); }
 
-		inline static GraphicsDevice* GetRenderDevice() { return renderDevice.get(); }
+		inline static RenderDevice* GetRenderDevice() { return renderDevice.get(); }
 	private:
 		static SteinsWindow* currentWindow;
-		static Unique<GraphicsDevice> renderDevice;
+		static Unique<RenderDevice> renderDevice;
 		static std::unordered_map<std::string, SteinsWindow*> windows;
 
 		struct SceneData

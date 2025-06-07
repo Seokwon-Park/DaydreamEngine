@@ -1,14 +1,14 @@
 #pragma once
 
 #include "Steins/Render/PipelineState.h"
-#include "VulkanGraphicsDevice.h"
+#include "VulkanRenderDevice.h"
 
 namespace Steins
 {
 	class VulkanPipelineState : public PipelineState
 	{
 	public:
-		VulkanPipelineState(VulkanGraphicsDevice* _device, PipelineStateDesc _desc);
+		VulkanPipelineState(VulkanRenderDevice* _device, PipelineStateDesc _desc);
 		virtual ~VulkanPipelineState() override;
 
 		virtual void Bind() const override;
@@ -16,7 +16,7 @@ namespace Steins
 		void CreateShaderStageInfo(const Shared<Shader>& _shader);
 	private:
 
-		VulkanGraphicsDevice* device;
+		VulkanRenderDevice* device;
 		std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
 
 		VkPipeline pipeline;

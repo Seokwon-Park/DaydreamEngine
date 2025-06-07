@@ -1,7 +1,7 @@
 #pragma once
 
 #include "vulkan/vulkan.h"
-#include "Steins/Render/GraphicsDevice.h"
+#include "Steins/Render/RenderDevice.h"
 
 namespace Steins
 {
@@ -25,11 +25,11 @@ namespace Steins
 		std::vector<VkPresentModeKHR> presentModes;
 	};
 
-	class VulkanGraphicsDevice :public GraphicsDevice
+	class VulkanRenderDevice :public RenderDevice
 	{
 	public:
-		VulkanGraphicsDevice();
-		virtual ~VulkanGraphicsDevice() override;
+		VulkanRenderDevice();
+		virtual ~VulkanRenderDevice() override;
 
 		virtual void Init() override;
 		virtual void Shutdown() override;

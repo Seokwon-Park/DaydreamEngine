@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Steins/Render/Shader.h"
-#include "VulkanGraphicsDevice.h"
+#include "VulkanRenderDevice.h"
 
 #include "vulkan/vulkan.h"
 
@@ -10,7 +10,7 @@ namespace Steins
 	class VulkanShader : public Shader
 	{
 	public:
-		VulkanShader(VulkanGraphicsDevice* _device, const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode);
+		VulkanShader(VulkanRenderDevice* _device, const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode);
 		virtual ~VulkanShader() override;
 
 		virtual void Bind() const override;
@@ -18,7 +18,7 @@ namespace Steins
 
 		virtual void* GetNativeHandle() override { return shader; }
 	private:
-		VulkanGraphicsDevice* device;
+		VulkanRenderDevice* device;
 		VkShaderModule shader;
 
 		// Inherited via Shader

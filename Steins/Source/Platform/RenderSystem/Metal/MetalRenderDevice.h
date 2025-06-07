@@ -1,11 +1,11 @@
 #pragma once
-#include "Steins/Render/GraphicsDevice.h"
+#include "Steins/Render/RenderDevice.h"
 
 namespace Steins
 {
-    class MetalGraphicsDevice : public GraphicsDevice
+    class MetalRenderDevice : public RenderDevice
     {
-        // Inherited via GraphicsDevice
+        // Inherited via RenderDevice
         void Init() override;
         void Shutdown() override;
         void Render() override;

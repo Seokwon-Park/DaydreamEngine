@@ -3,7 +3,7 @@
 
 namespace Steins
 {
-	VulkanVertexBuffer::VulkanVertexBuffer(VulkanGraphicsDevice* _device, UInt32 _bufferSize, UInt32 _stride)
+	VulkanVertexBuffer::VulkanVertexBuffer(VulkanRenderDevice* _device, UInt32 _bufferSize, UInt32 _stride)
 	{
 		device = _device;
 
@@ -17,7 +17,7 @@ namespace Steins
 
 	}
 
-	VulkanVertexBuffer::VulkanVertexBuffer(VulkanGraphicsDevice* _device, void* _vertices, UInt32 _size, UInt32 _stride)
+	VulkanVertexBuffer::VulkanVertexBuffer(VulkanRenderDevice* _device, void* _vertices, UInt32 _size, UInt32 _stride)
 	{
 		device = _device;
 
@@ -67,7 +67,7 @@ namespace Steins
 		device->CopyBuffer(uploadBuffer, vertexBuffer, _dataSize);
 	}
 
-	VulkanIndexBuffer::VulkanIndexBuffer(VulkanGraphicsDevice* _device, UInt32* _indices, UInt32 _indexCount)
+	VulkanIndexBuffer::VulkanIndexBuffer(VulkanRenderDevice* _device, UInt32* _indices, UInt32 _indexCount)
 	{
 		device = _device;
 		indexCount = _indexCount;
@@ -106,7 +106,7 @@ namespace Steins
 	{
 	}
 
-	VulkanConstantBuffer::VulkanConstantBuffer(VulkanGraphicsDevice* _device, UInt32 _size)
+	VulkanConstantBuffer::VulkanConstantBuffer(VulkanRenderDevice* _device, UInt32 _size)
 	{
 		device = _device;
 		device->CreateBuffer(_size, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, constantBuffer, constantBufferMemory);

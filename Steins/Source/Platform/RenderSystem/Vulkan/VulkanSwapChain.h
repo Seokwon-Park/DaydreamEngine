@@ -4,11 +4,11 @@
 #if defined(STEINS_PLATFORM_WINDOWS)
 #define VK_USE_PLATFORM_WIN32_KHR
 #endif
-#include "Steins/Render/GraphicsDevice.h"
+#include "Steins/Render/RenderDevice.h"
 #include "Steins/Core/Window.h"
 
 #include "VulkanFrameBuffer.h"
-#include "VulkanGraphicsDevice.h"
+#include "VulkanRenderDevice.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -20,11 +20,12 @@ namespace Steins
 	class VulkanSwapChain : public SwapChain
 	{
 	public:
-		VulkanSwapChain(VulkanGraphicsDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window);
+		VulkanSwapChain(VulkanRenderDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window);
 		virtual ~VulkanSwapChain() override;
 
 		virtual void SetVSync(bool _enabled) override;
 		virtual void SwapBuffers() override;
+		virtual void ResizeSwapChain(UInt32 _width, UInt32 height) override;
 
 		virtual Framebuffer* GetBackFramebuffer() { return framebuffers[imageIndex].get(); };
 
@@ -42,7 +43,7 @@ namespace Steins
 		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& _availablePresentModes);
 		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& _capabilities);
 
-		VulkanGraphicsDevice* device;
+		VulkanRenderDevice* device;
 		std::vector<Shared<VulkanFramebuffer>> framebuffers;
 
 		VkSurfaceKHR surface; // Vulkan window surface

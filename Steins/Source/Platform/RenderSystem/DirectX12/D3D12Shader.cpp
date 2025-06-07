@@ -5,7 +5,7 @@
 
 namespace Steins
 {
-    D3D12Shader::D3D12Shader(D3D12GraphicsDevice* _device, const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode)
+    D3D12Shader::D3D12Shader(D3D12RenderDevice* _device, const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode)
     {
         device = _device;
         type = _type;

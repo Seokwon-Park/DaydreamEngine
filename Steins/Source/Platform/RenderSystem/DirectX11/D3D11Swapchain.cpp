@@ -12,7 +12,7 @@
 namespace Steins
 {
 	
-	D3D11SwapChain::D3D11SwapChain(D3D11GraphicsDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window)
+	D3D11SwapChain::D3D11SwapChain(D3D11RenderDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window)
 	{
 		device = _device;
 		desc = *_desc;
@@ -41,11 +41,11 @@ namespace Steins
 		desc.Flags = 0;
 
 		HRESULT hr = device->GetFactory()->CreateSwapChain(device->GetDevice(), &desc, swapChain.GetAddressOf());
-		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed To Create Swapchain!");
+		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed To Create SwapChain!");
 		device->AddSwapChain(this);
 
 		framebuffer = MakeShared<D3D11Framebuffer>(device, this);
-		framebuffer->Bind();
+		framebuffer->Begin();
 
 		D3D11_VIEWPORT viewport;
 		viewport.TopLeftX = 0;
@@ -68,6 +68,25 @@ namespace Steins
 	void D3D11SwapChain::SwapBuffers()
 	{
 		swapChain->Present(desc.isVSync, 0);
+	}
+
+	void D3D11SwapChain::ResizeSwapChain(UInt32 _width, UInt32 _height)
+	{
+		framebuffer.reset();
+		swapChain->ResizeBuffers(0, _width, _height, DXGI_FORMAT_UNKNOWN, 0);
+
+		framebuffer = MakeShared<D3D11Framebuffer>(device, this);
+		framebuffer->Begin();
+
+		D3D11_VIEWPORT viewport;
+		viewport.TopLeftX = 0;
+		viewport.TopLeftY = 0;
+		viewport.Width = Cast<Float32>(_width);
+		viewport.Height = Cast<Float32>(_height);
+		viewport.MinDepth = 0.0f;
+		viewport.MaxDepth = 1.0f;
+
+		device->GetContext()->RSSetViewports(1, &viewport);
 	}
 
 }

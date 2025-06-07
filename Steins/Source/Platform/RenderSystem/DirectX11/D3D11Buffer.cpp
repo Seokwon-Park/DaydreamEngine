@@ -1,11 +1,11 @@
 #include "SteinsPCH.h"
 #include "D3D11Buffer.h"
 
-#include "D3D11GraphicsDevice.h"
+#include "D3D11RenderDevice.h"
 
 namespace Steins
 {
-	D3D11VertexBuffer::D3D11VertexBuffer(D3D11GraphicsDevice* _device, UInt32 _bufferSize, UInt32 _stride)
+	D3D11VertexBuffer::D3D11VertexBuffer(D3D11RenderDevice* _device, UInt32 _bufferSize, UInt32 _stride)
 	{
 		device = _device;
 		stride = _stride;
@@ -22,7 +22,7 @@ namespace Steins
 		device->GetDevice()->CreateBuffer(&bufferDesc, nullptr, vertexBuffer.GetAddressOf());
 	}
 
-	D3D11VertexBuffer::D3D11VertexBuffer(D3D11GraphicsDevice* _device, void* _vertices, UInt32 _size, UInt32 _stride)
+	D3D11VertexBuffer::D3D11VertexBuffer(D3D11RenderDevice* _device, void* _vertices, UInt32 _size, UInt32 _stride)
 	{
 		device = _device;
 		stride = _stride;
@@ -64,7 +64,7 @@ namespace Steins
 		memcpy(sub.pData, _data, _dataSize);
 		device->GetContext()->Unmap(vertexBuffer.Get(), 0);
 	}
-	D3D11IndexBuffer::D3D11IndexBuffer(D3D11GraphicsDevice* _device, UInt32* _indices, UInt32 _indexCount)
+	D3D11IndexBuffer::D3D11IndexBuffer(D3D11RenderDevice* _device, UInt32* _indices, UInt32 _indexCount)
 	{
 		device = _device;
 		indexCount = _indexCount;
@@ -99,7 +99,7 @@ namespace Steins
 	{
 	}
 
-	D3D11ConstantBuffer::D3D11ConstantBuffer(D3D11GraphicsDevice* _device, UInt32 _size)
+	D3D11ConstantBuffer::D3D11ConstantBuffer(D3D11RenderDevice* _device, UInt32 _size)
 	{
 		device = _device;
 

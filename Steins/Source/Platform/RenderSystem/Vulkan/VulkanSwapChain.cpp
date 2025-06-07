@@ -1,11 +1,11 @@
 #include "SteinsPCH.h"
-#include "VulkanSwapchain.h"
+#include "VulkanSwapChain.h"
 
 #include "Platform/RenderSystem/GraphicsUtil.h"
 
 namespace Steins
 {
-	VulkanSwapChain::VulkanSwapChain(VulkanGraphicsDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window)
+	VulkanSwapChain::VulkanSwapChain(VulkanRenderDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window)
 	{
 		device = _device;
 		desc = *_desc;
@@ -24,29 +24,29 @@ namespace Steins
 		}
 
 		{
-			SwapChainSupportDetails swapChainSupport = device->QuerySwapChainSupport(surface);
-			if (swapChainSupport.formats.empty() || swapChainSupport.presentModes.empty())
+			SwapChainSupportDetails SwapchainSupport = device->QuerySwapChainSupport(surface);
+			if (SwapchainSupport.formats.empty() || SwapchainSupport.presentModes.empty())
 			{
 				STEINS_CORE_ERROR("GPU has no supported formats or presentmodes");
 			}
 
 
-			VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.formats, _desc->format);
-			VkPresentModeKHR presentMode = ChooseSwapPresentMode(swapChainSupport.presentModes);
+			VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(SwapchainSupport.formats, _desc->format);
+			VkPresentModeKHR presentMode = ChooseSwapPresentMode(SwapchainSupport.presentModes);
 			format = surfaceFormat.format;
-			extent = ChooseSwapExtent(swapChainSupport.capabilities);
+			extent = ChooseSwapExtent(SwapchainSupport.capabilities);
 
 			UInt32 imageCount = desc.bufferCount;
 
 			// 서피스 제한 확인
-			if (imageCount < swapChainSupport.capabilities.minImageCount)
+			if (imageCount < SwapchainSupport.capabilities.minImageCount)
 			{
-				imageCount = swapChainSupport.capabilities.minImageCount;
+				imageCount = SwapchainSupport.capabilities.minImageCount;
 			}
 
-			if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount)
+			if (SwapchainSupport.capabilities.maxImageCount > 0 && imageCount > SwapchainSupport.capabilities.maxImageCount)
 			{
-				imageCount = swapChainSupport.capabilities.maxImageCount;
+				imageCount = SwapchainSupport.capabilities.maxImageCount;
 			}
 
 			VkSwapchainCreateInfoKHR createInfo{};
@@ -59,7 +59,7 @@ namespace Steins
 			createInfo.imageArrayLayers = 1;
 			createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 			createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-			createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
+			createInfo.preTransform = SwapchainSupport.capabilities.currentTransform;
 			createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 			createInfo.presentMode = presentMode;
 			createInfo.clipped = VK_TRUE;
@@ -69,7 +69,7 @@ namespace Steins
 			VkResult result = vkCreateSwapchainKHR(device->GetDevice(), &createInfo, nullptr, &swapChain);
 			if (result != VK_SUCCESS)
 			{
-				STEINS_CORE_ERROR("Failed to create swapchain");
+				STEINS_CORE_ERROR("Failed to create Swapchain");
 			}
 		}
 		device->AddSwapChain(this);
@@ -109,7 +109,7 @@ namespace Steins
 
 		//VkFramebuffer buf = ((VulkanFramebuffer*)backFramebuffer.get())->GetFrameBuffers()[imageIndex];
 
-		framebuffers[imageIndex]->Bind();
+		framebuffers[imageIndex]->Begin();
 
 		VkViewport viewport{};
 		viewport.x = 0.0f;
@@ -140,7 +140,7 @@ namespace Steins
 	}
 	void VulkanSwapChain::SwapBuffers()
 	{
-		framebuffers[imageIndex]->Unbind();
+		framebuffers[imageIndex]->End();
 		//vkCmdEndRenderPass(cmdbuf);
 		if (vkEndCommandBuffer(device->GetCommandBuffer()) != VK_SUCCESS) {
 			throw std::runtime_error("failed to record command buffer!");
@@ -171,9 +171,9 @@ namespace Steins
 		presentInfo.waitSemaphoreCount = 1;
 		presentInfo.pWaitSemaphores = signalSemaphores;
 
-		VkSwapchainKHR swapChains[] = { swapChain };
+		VkSwapchainKHR Swapchains[] = { swapChain };
 		presentInfo.swapchainCount = 1;
-		presentInfo.pSwapchains = swapChains;
+		presentInfo.pSwapchains = Swapchains;
 		presentInfo.pImageIndices = &imageIndex;
 
 		vkQueuePresentKHR(device->GetQueue(), &presentInfo);
@@ -182,6 +182,10 @@ namespace Steins
 		vkAcquireNextImageKHR(device->GetDevice(), swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 		vkResetCommandBuffer(device->GetCommandBuffer(), 0);
 		recordCommandBuffer(device->GetCommandBuffer(), imageIndex);
+	}
+
+	void VulkanSwapChain::ResizeSwapChain(UInt32 _width, UInt32 height)
+	{
 	}
 
 	VkSurfaceFormatKHR VulkanSwapChain::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat)
@@ -249,7 +253,7 @@ namespace Steins
 
 		//vkCmdBeginRenderPass(_commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-		framebuffers[_imageIndex]->Bind();
+		framebuffers[_imageIndex]->Begin();
 
 		VkViewport viewport{};
 		viewport.x = 0.0f;

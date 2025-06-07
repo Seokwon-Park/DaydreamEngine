@@ -54,7 +54,7 @@ namespace Steins
 
 	Application::~Application()
 	{
-		mainWindow->SetSwapchain(nullptr);
+		mainWindow->SetSwapChain(nullptr);
 		mainWindow = nullptr;
 		layerStack.Release();
 		Renderer::Shutdown();
@@ -176,12 +176,13 @@ namespace Steins
 		if (_event.GetWidth() == 0 || _event.GetHeight() == 0)
 		{
 			isMinimized = true;
-			return false;
+			return false; 
 		}
 
 		//STEINS_CORE_INFO("Window Resized : [ {0} , {1} ]", _event.GetWidth(), _event.GetHeight());
 		isMinimized = false;
 		Renderer::OnWindowResize(_event.GetWidth(), _event.GetHeight());
+		mainWindow->GetSwapChain()->ResizeSwapChain(_event.GetWidth(), _event.GetHeight());
 
 		return false;
 	}

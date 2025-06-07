@@ -4,10 +4,10 @@
 
 namespace Steins
 {
-	D3D12Framebuffer::D3D12Framebuffer(D3D12GraphicsDevice* _device, const FramebufferDesc& _spec)
+	D3D12Framebuffer::D3D12Framebuffer(D3D12RenderDevice* _device, const FramebufferDesc& _spec)
 	{
 	}
-	D3D12Framebuffer::D3D12Framebuffer(D3D12GraphicsDevice* _device, D3D12SwapChain* _swapChain)
+	D3D12Framebuffer::D3D12Framebuffer(D3D12RenderDevice* _device, D3D12SwapChain* _swapChain)
 	{
 		device = _device;
 		swapChain = _swapChain;
@@ -25,7 +25,7 @@ namespace Steins
 			renderTargetHandles.push_back(cpuHandle);
 		}
 	}
-	void D3D12Framebuffer::Bind() const
+	void D3D12Framebuffer::Begin() const
 	{
 		device->GetCommandList()->OMSetRenderTargets(1, &renderTargetHandles[frameIndex], false, nullptr);
 	}

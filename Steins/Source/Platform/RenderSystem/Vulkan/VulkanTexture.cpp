@@ -6,7 +6,7 @@
 
 namespace Steins
 {
-	VulkanTexture2D::VulkanTexture2D(VulkanGraphicsDevice* _device, const FilePath& _path)
+	VulkanTexture2D::VulkanTexture2D(VulkanRenderDevice* _device, const FilePath& _path)
 		:Texture2D(_path)
 	{
 		device = _device;

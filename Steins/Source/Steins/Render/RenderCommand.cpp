@@ -5,7 +5,7 @@ namespace Steins
 {
 	Shared<GraphicsContext> RenderCommand::context = nullptr;
 
-	void RenderCommand::Init(GraphicsDevice* _device)
+	void RenderCommand::Init(RenderDevice* _device)
 	{
 		context = GraphicsContext::Create(_device);
 		if (context)

@@ -1,12 +1,12 @@
 #include "SteinsPCH.h"
 #include "D3D11Shader.h"
 
-#include "D3D11GraphicsDevice.h"
+#include "D3D11RenderDevice.h"
 #include "Platform/RenderSystem/GraphicsUtil.h"
 
 namespace Steins
 {
-	//D3D11GraphicsDevice::GetDevice()->CreateInputLayout(
+	//D3D11RenderDevice::GetDevice()->CreateInputLayout(
 	//	m_Context->GetInputElements().data(), UINT(m_Context->GetInputElements().size()),
 	//	vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(),
 	//	&m_InputLayout);
@@ -30,7 +30,7 @@ namespace Steins
 
 	//vsBlob->Release();
 	//psBlob->Release();*/
-	D3D11Shader::D3D11Shader(D3D11GraphicsDevice* _device, const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode)
+	D3D11Shader::D3D11Shader(D3D11RenderDevice* _device, const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode)
 	{
 		device = _device;
 		type = _type;
@@ -82,7 +82,7 @@ namespace Steins
 		//	shaderBlob.GetAddressOf(),
 		//	nullptr);
 
-		//hr = D3D11GraphicsDevice::GetDevice()->CreateVertexShader(
+		//hr = D3D11RenderDevice::GetDevice()->CreateVertexShader(
 		//	shaderBlob->GetBufferPointer(),
 		//	shaderBlob->GetBufferSize(),
 		//	nullptr,

@@ -5,7 +5,7 @@
 
 namespace Steins
 {
-	D3D12Texture2D::D3D12Texture2D(D3D12GraphicsDevice* _device, const FilePath& _path)
+	D3D12Texture2D::D3D12Texture2D(D3D12RenderDevice* _device, const FilePath& _path)
 		:Texture2D(_path)
 	{
 		device = _device;

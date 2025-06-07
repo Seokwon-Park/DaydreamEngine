@@ -8,9 +8,11 @@ public:
 	GameObject();
 	~GameObject();
 
+	inline void SetName(const std::string& _name) { name = _name; }
+
 protected:
 
 private:
-
+	std::string name;
 };
 

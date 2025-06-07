@@ -1,14 +1,14 @@
 #pragma once
 
 #include "Steins/Render/Shader.h"
-#include "D3D11GraphicsDevice.h"
+#include "D3D11RenderDevice.h"
 
 namespace Steins
 {
 	class D3D11Shader : public Shader
 	{
 	public:
-		D3D11Shader(D3D11GraphicsDevice* _device, const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode);
+		D3D11Shader(D3D11RenderDevice* _device, const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode);
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
@@ -16,7 +16,7 @@ namespace Steins
 		virtual void* GetNativeHandle() { return shaderBlob.Get(); }
 		//virtual void SetMat4(const std::string& _name, const Matrix4x4& _value) override;
 	protected:
-		D3D11GraphicsDevice* device;
+		D3D11RenderDevice* device;
 		ComPtr<ID3DBlob> shaderBlob;
 		ComPtr<ID3DBlob> errorBlob;
 	private:
@@ -25,7 +25,7 @@ namespace Steins
 	class D3D11VertexShader : public D3D11Shader
 	{
 	public:
-		D3D11VertexShader(D3D11GraphicsDevice* _device, const std::string& _src, const ShaderLoadMode& _mode);
+		D3D11VertexShader(D3D11RenderDevice* _device, const std::string& _src, const ShaderLoadMode& _mode);
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
@@ -40,7 +40,7 @@ namespace Steins
 	class D3D11PixelShader : public D3D11Shader
 	{
 	public:
-		D3D11PixelShader(D3D11GraphicsDevice* _device, const std::string& _src, const ShaderLoadMode& _mode);
+		D3D11PixelShader(D3D11RenderDevice* _device, const std::string& _src, const ShaderLoadMode& _mode);
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;

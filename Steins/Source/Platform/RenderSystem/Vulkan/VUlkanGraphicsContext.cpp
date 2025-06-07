@@ -4,7 +4,7 @@
 
 namespace Steins
 {
-	VulkanGraphicsContext::VulkanGraphicsContext(VulkanGraphicsDevice* _device)
+	VulkanGraphicsContext::VulkanGraphicsContext(VulkanRenderDevice* _device)
 	{
 		device = _device;
 	}

@@ -7,7 +7,7 @@ namespace Steins
 	class RenderCommand
 	{
 	public:
-		static void Init(GraphicsDevice* _device);
+		static void Init(RenderDevice* _device);
 
 		inline static void SetViewport(UInt32 _width, UInt32 _height)
 		{

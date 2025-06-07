@@ -1,12 +1,12 @@
 #include "SteinsPCH.h"
 #include "VulkanImGuiRenderer.h"
-#include "VulkanSwapchain.h"
+#include "VulkanSwapChain.h"
 
 #include "backends/imgui_impl_vulkan.h"
 
 namespace Steins
 {
-	VulkanImGuiRenderer::VulkanImGuiRenderer(VulkanGraphicsDevice* _device)
+	VulkanImGuiRenderer::VulkanImGuiRenderer(VulkanRenderDevice* _device)
 	{
 		device = _device;
 	}

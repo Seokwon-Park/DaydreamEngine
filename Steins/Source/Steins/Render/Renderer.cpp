@@ -6,11 +6,11 @@ namespace Steins
 {
 	std::unordered_map<std::string, SteinsWindow*> Renderer::windows;
 	Renderer::SceneData* Renderer::m_SceneData = new Renderer::SceneData;
-	Unique<GraphicsDevice> Renderer::renderDevice = nullptr;
+	Unique<RenderDevice> Renderer::renderDevice = nullptr;
 
 	void Renderer::Init(RendererAPIType _API)
 	{
-		renderDevice = GraphicsDevice::Create(_API);
+		renderDevice = RenderDevice::Create(_API);
 		STEINS_CORE_ASSERT(renderDevice, "Failed to create graphics device!");
 		renderDevice->Init();
 		Renderer2D::Init();

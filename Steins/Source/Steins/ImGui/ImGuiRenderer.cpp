@@ -16,7 +16,7 @@ namespace Steins
 	//	{
 	//	case RendererAPIType::OpenGL:
 	//	{
-	//		OpenGLGraphicsDevice* device = app.GetGraphicsDevice()->Get<OpenGLGraphicsDevice>();
+	//		OpenGLRenderDevice* device = app.GetRenderDevice()->Get<OpenGLRenderDevice>();
 	//		ImGui_ImplGlfw_InitForOpenGL(window, true);
 	//		ImGui_ImplOpenGL3_Init(device->GetVersion().data());
 	//		break;
@@ -27,7 +27,7 @@ namespace Steins
 	//	}
 	//	case RendererAPIType::DirectX12:
 	//	{
-	//		D3D12GraphicsDevice* device = app.GetGraphicsDevice()->Get<D3D12GraphicsDevice>();
+	//		D3D12RenderDevice* device = app.GetRenderDevice()->Get<D3D12RenderDevice>();
 	//		ImGui_ImplDX12_InitInfo info{};
 	//		info.Device = device->GetDevice();
 	//		info.CommandQueue = device->GetCommandQueue();     // Command queue used for queuing texture uploads.
@@ -38,11 +38,11 @@ namespace Steins
 	//		info.SrvDescriptorHeap = device->GetSRVHeap();
 	//		info.SrvDescriptorAllocFn = [](ImGui_ImplDX12_InitInfo* _info, D3D12_CPU_DESCRIPTOR_HANDLE* _outCpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE* _outGpuHandle)
 	//			{
-	//				((D3D12GraphicsDevice*)_info->UserData)->GetSRVHeapAlloc().Alloc(_outCpuHandle, _outGpuHandle);
+	//				((D3D12RenderDevice*)_info->UserData)->GetSRVHeapAlloc().Alloc(_outCpuHandle, _outGpuHandle);
 	//			};
 	//		info.SrvDescriptorFreeFn = [](ImGui_ImplDX12_InitInfo* _info, D3D12_CPU_DESCRIPTOR_HANDLE _outCpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE _outGpuHandle)
 	//			{
-	//				((D3D12GraphicsDevice*)_info->UserData)->GetSRVHeapAlloc().Free(_outCpuHandle, _outGpuHandle);
+	//				((D3D12RenderDevice*)_info->UserData)->GetSRVHeapAlloc().Free(_outCpuHandle, _outGpuHandle);
 	//			};
 
 	//		ImGui_ImplGlfw_InitForOther(window, true);
@@ -51,7 +51,7 @@ namespace Steins
 	//	}
 	//	case RendererAPIType::Vulkan:
 	//	{
-	//		VulkanGraphicsDevice* device = app.GetGraphicsDevice()->Get<VulkanGraphicsDevice>();
+	//		VulkanRenderDevice* device = app.GetRenderDevice()->Get<VulkanRenderDevice>();
 	//		ImGui_ImplVulkan_InitInfo info{};
 	//		//info.ApiVersion =;
 	//		info.Instance = device->GetInstance();
@@ -188,6 +188,6 @@ namespace Steins
 	void ImGuiRenderer::Render()
 	{
 		ImGui::Render();
-		//mainWindow->GetSwapchain()->GetBackFramebuffer()->Bind();
+		//mainWindow->GetSwapChain()->GetBackFramebuffer()->Bind();
 	}		
 }

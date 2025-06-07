@@ -5,7 +5,7 @@
 
 namespace Steins
 {
-	D3D11ImGuiRenderer::D3D11ImGuiRenderer(D3D11GraphicsDevice* _device)
+	D3D11ImGuiRenderer::D3D11ImGuiRenderer(D3D11RenderDevice* _device)
 	{
 		device = _device;
 	}

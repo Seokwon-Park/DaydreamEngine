@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Steins/Render/GraphicsDevice.h"
+#include "Steins/Render/RenderDevice.h"
 
 namespace Steins
 {
@@ -62,11 +62,11 @@ namespace Steins
 		}
 	};
 
-	class D3D12GraphicsDevice : public GraphicsDevice
+	class D3D12RenderDevice : public RenderDevice
 	{
 	public:
-		D3D12GraphicsDevice();
-		virtual ~D3D12GraphicsDevice();
+		D3D12RenderDevice();
+		virtual ~D3D12RenderDevice();
 
 		virtual void Init() override;
 		virtual void Shutdown() override;

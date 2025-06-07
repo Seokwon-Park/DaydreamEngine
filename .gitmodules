@@ -10,3 +10,6 @@
 [submodule "Steins/Vendor/glm"]
 	path = Steins/Vendor/glm
 	url = https://github.com/g-truc/glm
+[submodule "Steins/Vendor/assimp"]
+	path = Steins/Vendor/assimp
+	url = https://github.com/assimp/assimp

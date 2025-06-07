@@ -2,7 +2,7 @@
 
 
 #include "Steins/Render/Framebuffer.h"
-#include "Platform/RenderSystem/Vulkan/VulkanGraphicsDevice.h"
+#include "Platform/RenderSystem/Vulkan/VulkanRenderDevice.h"
 
 namespace Steins
 {
@@ -11,20 +11,20 @@ namespace Steins
 	class VulkanFramebuffer : public Framebuffer
 	{
 	public:
-		VulkanFramebuffer(VulkanGraphicsDevice* _device, const FramebufferDesc& _spec);
-		VulkanFramebuffer(VulkanGraphicsDevice* _device, VulkanSwapChain* _swapChain);
+		VulkanFramebuffer(VulkanRenderDevice* _device, const FramebufferDesc& _spec);
+		VulkanFramebuffer(VulkanRenderDevice* _device, VulkanSwapChain* _swapChain);
 
 		virtual ~VulkanFramebuffer() override;
 
-		virtual void Bind() const override;
-		virtual void Unbind() const override;
+		virtual void Begin() const override;
+		virtual void End() const override;
 		virtual void Clear(Color _color) override;
 
 		VkFramebuffer GetFramebuffer() { return framebuffer; }
 		VkRenderPass GetRenderPass() { return renderPass; }
 
 	private:
-		VulkanGraphicsDevice* device;
+		VulkanRenderDevice* device;
 		VkRenderPass renderPass;
 		VkFramebuffer framebuffer;
 		VkExtent2D extent;

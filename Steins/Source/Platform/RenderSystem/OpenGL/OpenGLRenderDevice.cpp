@@ -1,9 +1,9 @@
 #include "SteinsPCH.h"
-#include "OpenGLGraphicsDevice.h"
+#include "OpenGLRenderDevice.h"
 #include "OpenGLGraphicsContext.h"
 #include "OpenGLBuffer.h"
 #include "OpenGLShader.h"
-#include "OpenGLSwapchain.h"
+#include "OpenGLSwapChain.h"
 #include "OpenGLGraphicsContext.h"
 #include "OpenGLPipelineState.h"
 #include "OpenGLTexture.h"
@@ -14,16 +14,16 @@
 
 namespace Steins
 {
-	OpenGLGraphicsDevice::OpenGLGraphicsDevice()
+	OpenGLRenderDevice::OpenGLRenderDevice()
 	{
 		API = RendererAPIType::OpenGL;
 	}
 
-	OpenGLGraphicsDevice::~OpenGLGraphicsDevice()
+	OpenGLRenderDevice::~OpenGLRenderDevice()
 	{
 
 	}
-	void OpenGLGraphicsDevice::Init()
+	void OpenGLRenderDevice::Init()
 	{
 		//int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -44,61 +44,61 @@ namespace Steins
 		STEINS_CORE_INFO("  Renderer: {0}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
 		STEINS_CORE_INFO("  Version: {0}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
 	}
-	void OpenGLGraphicsDevice::Shutdown()
+	void OpenGLRenderDevice::Shutdown()
 	{
 	}
-	void OpenGLGraphicsDevice::Render()
+	void OpenGLRenderDevice::Render()
 	{
 	}
 
 
-	Shared<GraphicsContext> OpenGLGraphicsDevice::CreateContext()
+	Shared<GraphicsContext> OpenGLRenderDevice::CreateContext()
 	{
 		return MakeShared<OpenGLGraphicsContext>();
 	}
 
-	Shared<VertexBuffer> OpenGLGraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
+	Shared<VertexBuffer> OpenGLRenderDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
 	{
 		return MakeShared<OpenGLVertexBuffer>(_vertices, _size, _stride);
 	}
 
-	Shared<IndexBuffer> OpenGLGraphicsDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
+	Shared<IndexBuffer> OpenGLRenderDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
 	{
 		return MakeShared<OpenGLIndexBuffer>(_indices, _count);
 	}
 
-	Shared<Framebuffer> OpenGLGraphicsDevice::CreateFramebuffer(FramebufferDesc _spec)
+	Shared<Framebuffer> OpenGLRenderDevice::CreateFramebuffer(FramebufferDesc _spec)
 	{
 		return Shared<Framebuffer>();
 	}
 
-	Shared<PipelineState> OpenGLGraphicsDevice::CreatePipelineState(PipelineStateDesc _desc)
+	Shared<PipelineState> OpenGLRenderDevice::CreatePipelineState(PipelineStateDesc _desc)
 	{
 		return MakeShared<OpenGLPipelineState>(_desc);
 	}
 
-	Shared<Shader> OpenGLGraphicsDevice::CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode)
+	Shared<Shader> OpenGLRenderDevice::CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode)
 	{
 		return MakeShared<OpenGLShader>(_src, _type, _mode);
 	}
 
 
-	Shared<SwapChain> OpenGLGraphicsDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
+	Shared<SwapChain> OpenGLRenderDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
 	{
 		return MakeShared<OpenGLSwapChain>(_desc, _window);
 	}
 
-	Shared<Texture2D> OpenGLGraphicsDevice::CreateTexture2D(const FilePath& _path)
+	Shared<Texture2D> OpenGLRenderDevice::CreateTexture2D(const FilePath& _path)
 	{
 		return MakeShared<OpenGLTexture2D>(_path);
 	}
 
-	Unique<ImGuiRenderer> OpenGLGraphicsDevice::CreateImGuiRenderer()
+	Unique<ImGuiRenderer> OpenGLRenderDevice::CreateImGuiRenderer()
 	{
 		return MakeUnique<OpenGLImGuiRenderer>(this);
 	}
 
-	Shared<ConstantBuffer> OpenGLGraphicsDevice::CreateConstantBuffer(UInt32 _size)
+	Shared<ConstantBuffer> OpenGLRenderDevice::CreateConstantBuffer(UInt32 _size)
 	{
 		return MakeShared<OpenGLConstantBuffer>(_size);
 	}

@@ -1,11 +1,11 @@
 #include "SteinsPCH.h"
-#include "VulkanGraphicsDevice.h"
+#include "VulkanRenderDevice.h"
 #include "VulkanGraphicsContext.h"
 #include "VulkanBuffer.h"
 #include "VulkanFramebuffer.h"
 #include "VulkanPipelineState.h"
 #include "VulkanShader.h"
-#include "VulkanSwapchain.h"
+#include "VulkanSwapChain.h"
 #include "VulkanImGuiRenderer.h"
 #include "VulkanTexture.h"
 #include "Platform/RenderSystem/GraphicsUtil.h"
@@ -70,12 +70,12 @@ namespace Steins
 		}
 	}
 
-	VulkanGraphicsDevice::VulkanGraphicsDevice()
+	VulkanRenderDevice::VulkanRenderDevice()
 	{
 		API = RendererAPIType::Vulkan;
 	}
 
-	VulkanGraphicsDevice::~VulkanGraphicsDevice()
+	VulkanRenderDevice::~VulkanRenderDevice()
 	{
 		vkDestroyDescriptorPool(device, descriptorPool, nullptr);
 		vkDestroyCommandPool(device, commandPool, nullptr);
@@ -86,7 +86,7 @@ namespace Steins
 		}
 		vkDestroyInstance(instance, nullptr);
 	}
-	void VulkanGraphicsDevice::Init()
+	void VulkanRenderDevice::Init()
 	{
 		CreateInstance();
 		SetupDebugMessenger();
@@ -145,20 +145,20 @@ namespace Steins
 			VK_API_VERSION_PATCH(deviceProperties.apiVersion));
 	}
 
-	void VulkanGraphicsDevice::Shutdown()
+	void VulkanRenderDevice::Shutdown()
 	{
 	}
 
-	void VulkanGraphicsDevice::Render()
+	void VulkanRenderDevice::Render()
 	{
 	}
 
-	Shared<GraphicsContext> VulkanGraphicsDevice::CreateContext()
+	Shared<GraphicsContext> VulkanRenderDevice::CreateContext()
 	{
 		return MakeShared<VulkanGraphicsContext>(this);
 	}
 
-	Shared<VertexBuffer> VulkanGraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
+	Shared<VertexBuffer> VulkanRenderDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
 	{
 		if (_vertices)
 		{
@@ -170,48 +170,48 @@ namespace Steins
 		}
 	}
 
-	Shared<IndexBuffer> VulkanGraphicsDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
+	Shared<IndexBuffer> VulkanRenderDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
 	{
 		return MakeShared<VulkanIndexBuffer>(this, _indices, _count);
 	}
 
-	Shared<Framebuffer> VulkanGraphicsDevice::CreateFramebuffer(FramebufferDesc _spec)
+	Shared<Framebuffer> VulkanRenderDevice::CreateFramebuffer(FramebufferDesc _spec)
 	{
 		return Shared<Framebuffer>();
 	}
 
-	Shared<PipelineState> VulkanGraphicsDevice::CreatePipelineState(PipelineStateDesc _desc)
+	Shared<PipelineState> VulkanRenderDevice::CreatePipelineState(PipelineStateDesc _desc)
 	{
 		return MakeShared<VulkanPipelineState>(this, _desc);
 	}
 
-	Shared<Shader> VulkanGraphicsDevice::CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode)
+	Shared<Shader> VulkanRenderDevice::CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode)
 	{
 		return MakeShared<VulkanShader>(this, _src, _type, _mode);
 	}
 
-	Shared<SwapChain> VulkanGraphicsDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
+	Shared<SwapChain> VulkanRenderDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
 	{
 		return MakeShared<VulkanSwapChain>(this, _desc, _window);
 	}
 
-	Shared<Texture2D> VulkanGraphicsDevice::CreateTexture2D(const FilePath& _path)
+	Shared<Texture2D> VulkanRenderDevice::CreateTexture2D(const FilePath& _path)
 	{
 		return MakeShared<VulkanTexture2D>(this, _path);
 	}
 
-	Unique<ImGuiRenderer> VulkanGraphicsDevice::CreateImGuiRenderer()
+	Unique<ImGuiRenderer> VulkanRenderDevice::CreateImGuiRenderer()
 	{
 		return MakeUnique<VulkanImGuiRenderer>(this);
 	}
 
-	Shared<ConstantBuffer> VulkanGraphicsDevice::CreateConstantBuffer(UInt32 _size)
+	Shared<ConstantBuffer> VulkanRenderDevice::CreateConstantBuffer(UInt32 _size)
 	{
 		return MakeShared<VulkanConstantBuffer>(this, _size);
 	}
 
 
-	VkCommandBuffer VulkanGraphicsDevice::BeginSingleTimeCommands()
+	VkCommandBuffer VulkanRenderDevice::BeginSingleTimeCommands()
 	{
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -231,7 +231,7 @@ namespace Steins
 		return commandBuffer;
 	}
 
-	void VulkanGraphicsDevice::EndSingleTimeCommands(VkCommandBuffer _commandBuffer)
+	void VulkanRenderDevice::EndSingleTimeCommands(VkCommandBuffer _commandBuffer)
 	{
 		vkEndCommandBuffer(_commandBuffer);
 
@@ -246,7 +246,7 @@ namespace Steins
 		vkFreeCommandBuffers(device, commandPool, 1, &_commandBuffer);
 	}
 
-	SwapChainSupportDetails VulkanGraphicsDevice::QuerySwapChainSupport(VkSurfaceKHR _surface)
+	SwapChainSupportDetails VulkanRenderDevice::QuerySwapChainSupport(VkSurfaceKHR _surface)
 	{
 		SwapChainSupportDetails details;
 		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, _surface, &details.capabilities);
@@ -272,7 +272,7 @@ namespace Steins
 		return details;
 	}
 
-	UInt32 VulkanGraphicsDevice::FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
+	UInt32 VulkanRenderDevice::FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
 	{
 		VkPhysicalDeviceMemoryProperties memProperties;
 		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
@@ -286,7 +286,7 @@ namespace Steins
 		return 0;
 	}
 
-	void VulkanGraphicsDevice::CreateBuffer(VkDeviceSize _size, VkBufferUsageFlags _usage, VkMemoryPropertyFlags _properties, VkBuffer& _buffer, VkDeviceMemory& _bufferMemory)
+	void VulkanRenderDevice::CreateBuffer(VkDeviceSize _size, VkBufferUsageFlags _usage, VkMemoryPropertyFlags _properties, VkBuffer& _buffer, VkDeviceMemory& _bufferMemory)
 	{
 		VkBufferCreateInfo bufferInfo{};
 		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -311,7 +311,7 @@ namespace Steins
 		vkBindBufferMemory(device, _buffer, _bufferMemory, 0);
 	}
 
-	void VulkanGraphicsDevice::CreateImage(UInt32 _width, UInt32 _height, VkFormat _format, VkImageTiling _tiling, VkImageUsageFlags _usage, VkMemoryPropertyFlags _properties, VkImage& _image, VkDeviceMemory& _imageMemory)
+	void VulkanRenderDevice::CreateImage(UInt32 _width, UInt32 _height, VkFormat _format, VkImageTiling _tiling, VkImageUsageFlags _usage, VkMemoryPropertyFlags _properties, VkImage& _image, VkDeviceMemory& _imageMemory)
 	{
 		VkImageCreateInfo imageInfo{};
 		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -343,7 +343,7 @@ namespace Steins
 		vkBindImageMemory(device, _image, _imageMemory, 0);
 	}
 
-	void VulkanGraphicsDevice::CreateImageView(VkImage _image, VkFormat _format, VkImageView& _imageView)
+	void VulkanRenderDevice::CreateImageView(VkImage _image, VkFormat _format, VkImageView& _imageView)
 	{
 		VkImageViewCreateInfo viewInfo{};
 		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -360,7 +360,7 @@ namespace Steins
 		STEINS_CORE_ASSERT(VK_SUCCEEDED(vr), "Failed to create texture image view!");
 	}
 
-	void VulkanGraphicsDevice::CopyBuffer(VkBuffer _src, VkBuffer _dst, VkDeviceSize _size)
+	void VulkanRenderDevice::CopyBuffer(VkBuffer _src, VkBuffer _dst, VkDeviceSize _size)
 	{
 		VkCommandBuffer copyCommandBuffer = BeginSingleTimeCommands();
 
@@ -374,7 +374,7 @@ namespace Steins
 		EndSingleTimeCommands(copyCommandBuffer);
 	}
 
-	void VulkanGraphicsDevice::CopyBufferToImage(VkBuffer _src, VkImage _dst, UInt32 _width, UInt32 _height)
+	void VulkanRenderDevice::CopyBufferToImage(VkBuffer _src, VkImage _dst, UInt32 _width, UInt32 _height)
 	{
 		VkCommandBuffer copyCommandBuffer = BeginSingleTimeCommands();
 
@@ -400,7 +400,7 @@ namespace Steins
 		EndSingleTimeCommands(copyCommandBuffer);
 	}
 
-	void VulkanGraphicsDevice::TransitionTextureLayout(VkImage _image, VkFormat _format, VkImageLayout _oldLayout, VkImageLayout _newLayout)
+	void VulkanRenderDevice::TransitionTextureLayout(VkImage _image, VkFormat _format, VkImageLayout _oldLayout, VkImageLayout _newLayout)
 	{
 		VkCommandBuffer transCommandBuffer = BeginSingleTimeCommands();
 
@@ -455,7 +455,7 @@ namespace Steins
 	}
 
 
-	void VulkanGraphicsDevice::CreateInstance()
+	void VulkanRenderDevice::CreateInstance()
 	{
 		if (enableValidationLayers == true && CheckValidationLayerSupport() == false)
 		{
@@ -497,7 +497,7 @@ namespace Steins
 		VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
 		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create vkInstance!");
 	}
-	void VulkanGraphicsDevice::SetupDebugMessenger()
+	void VulkanRenderDevice::SetupDebugMessenger()
 	{
 		if (!enableValidationLayers) return;
 
@@ -510,7 +510,7 @@ namespace Steins
 			STEINS_CORE_ERROR("Failed to set up debug messenger!");
 		}
 	}
-	void VulkanGraphicsDevice::PickPhysicalDevice()
+	void VulkanRenderDevice::PickPhysicalDevice()
 	{
 		UInt32 deviceCount = 0;
 		vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
@@ -536,7 +536,7 @@ namespace Steins
 			STEINS_CORE_ERROR("Failed to find a suitable GPU!");
 		}
 	}
-	void VulkanGraphicsDevice::CreateLogicalDevice()
+	void VulkanRenderDevice::CreateLogicalDevice()
 	{
 		queueFamilyIndices = FindQueueFamilies(physicalDevice);
 		VkDeviceQueueCreateInfo queueCreateInfo{};
@@ -574,7 +574,7 @@ namespace Steins
 		vkGetDeviceQueue(device, queueFamilyIndices.graphicsFamily.value(), 0, &graphicsQueue);
 	}
 
-	bool VulkanGraphicsDevice::CheckValidationLayerSupport()
+	bool VulkanRenderDevice::CheckValidationLayerSupport()
 	{
 		UInt32 layerCount = 0;
 		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
@@ -598,7 +598,7 @@ namespace Steins
 
 		return true;
 	}
-	std::vector<const char*> VulkanGraphicsDevice::GetRequiredExtensions()
+	std::vector<const char*> VulkanRenderDevice::GetRequiredExtensions()
 	{
 		uint32_t glfwExtensionCount = 0;
 		const char** glfwExtensions;
@@ -612,7 +612,7 @@ namespace Steins
 
 		return extensions;
 	}
-	void VulkanGraphicsDevice::PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& _createInfo)
+	void VulkanRenderDevice::PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& _createInfo)
 	{
 		_createInfo = {};
 		_createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
@@ -620,7 +620,7 @@ namespace Steins
 		_createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
 		_createInfo.pfnUserCallback = DebugCallback;
 	}
-	bool VulkanGraphicsDevice::IsDeviceSuitable(VkPhysicalDevice _physicalDevice)
+	bool VulkanRenderDevice::IsDeviceSuitable(VkPhysicalDevice _physicalDevice)
 	{
 		VkPhysicalDeviceProperties deviceProperties;
 		VkPhysicalDeviceFeatures deviceFeatures;
@@ -638,7 +638,7 @@ namespace Steins
 
 		return indices.IsComplete() && extensionSupported && supportedFeatures.samplerAnisotropy;
 	}
-	QueueFamilyIndices VulkanGraphicsDevice::FindQueueFamilies(VkPhysicalDevice _physicalDevice)
+	QueueFamilyIndices VulkanRenderDevice::FindQueueFamilies(VkPhysicalDevice _physicalDevice)
 	{
 		QueueFamilyIndices indices;
 
@@ -664,7 +664,7 @@ namespace Steins
 		return indices;
 	}
 
-	bool VulkanGraphicsDevice::CheckDeviceExtensionSupport(VkPhysicalDevice _physicalDevice)
+	bool VulkanRenderDevice::CheckDeviceExtensionSupport(VkPhysicalDevice _physicalDevice)
 	{
 		UInt32 extensionCount = 0;
 		vkEnumerateDeviceExtensionProperties(_physicalDevice, nullptr, &extensionCount, nullptr);

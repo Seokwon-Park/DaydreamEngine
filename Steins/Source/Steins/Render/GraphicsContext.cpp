@@ -5,7 +5,7 @@
 
 namespace Steins
 {
-	Shared<GraphicsContext> GraphicsContext::Create(GraphicsDevice* _device)
+	Shared<GraphicsContext> GraphicsContext::Create(RenderDevice* _device)
 	{
 		return Renderer::GetRenderDevice()->CreateContext();
 

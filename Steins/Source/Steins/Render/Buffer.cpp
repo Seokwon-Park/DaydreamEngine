@@ -1,6 +1,6 @@
 #include "SteinsPCH.h"
 #include "Buffer.h"
-#include "GraphicsDevice.h"
+#include "RenderDevice.h"
 
 #include "Steins/Render/Renderer.h"
 #include "Steins/Render/GraphicsContext.h"

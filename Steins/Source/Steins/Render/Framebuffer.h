@@ -12,7 +12,7 @@ namespace Steins
 		Depth = DEPTH24STENCIL8 // Alias
 	};
 
-	struct FramebufferAttachmentSpecification
+	struct FramebufferAttachmentDescription
 	{
 		FramebufferTextureFormat format = FramebufferTextureFormat::None;
 	};
@@ -20,8 +20,8 @@ namespace Steins
 	struct FramebufferDesc
 	{
 		UInt32 width, height;
-		std::vector<FramebufferAttachmentSpecification> colorAttachments;
-		FramebufferAttachmentSpecification depthAttachment;
+		std::vector<FramebufferAttachmentDescription> colorAttachments;
+		FramebufferAttachmentDescription depthAttachment;
 		UInt32 samples = 1;
 	};
 
@@ -30,8 +30,8 @@ namespace Steins
 	public:
 		virtual ~Framebuffer() = default;
 
-		virtual void Bind() const = 0;
-		virtual void Unbind() const = 0;
+		virtual void Begin() const = 0;
+		virtual void End() const = 0;
 		virtual void Clear(Color _color) = 0;
 
 		static Shared<Framebuffer> Create(const FramebufferDesc& _spec);

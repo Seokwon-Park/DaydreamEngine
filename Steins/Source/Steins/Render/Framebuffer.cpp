@@ -1,7 +1,7 @@
 #include "SteinsPCH.h"
 #include "Framebuffer.h"
 
-#include "GraphicsDevice.h"
+#include "RenderDevice.h"
 #include "Renderer.h"
 
 #include "Steins/Core/Application.h"

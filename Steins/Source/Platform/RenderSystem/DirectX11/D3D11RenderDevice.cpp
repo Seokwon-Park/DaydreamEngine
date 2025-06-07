@@ -1,8 +1,8 @@
 #include "SteinsPCH.h"
-#include "D3D11GraphicsDevice.h"
+#include "D3D11RenderDevice.h"
 #include "D3D11GraphicsContext.h"
 #include "D3D11Buffer.h"
-#include "D3D11Swapchain.h"
+#include "D3D11SwapChain.h"
 #include "D3D11Shader.h"
 #include "D3D11Framebuffer.h"
 #include "D3D11PipelineState.h"
@@ -13,12 +13,12 @@
 
 namespace Steins
 {
-	D3D11GraphicsDevice::D3D11GraphicsDevice()
+	D3D11RenderDevice::D3D11RenderDevice()
 	{
 		API = RendererAPIType::DirectX11;
 	}
 
-	D3D11GraphicsDevice::~D3D11GraphicsDevice()
+	D3D11RenderDevice::~D3D11RenderDevice()
 	{
 //#if defined(DEBUG) || defined(_DEBUG)
 //		Microsoft::WRL::ComPtr<ID3D11Debug> DXGIDebug;
@@ -35,7 +35,7 @@ namespace Steins
 		//device.Reset();
 	}
 
-	void D3D11GraphicsDevice::Init()
+	void D3D11RenderDevice::Init()
 	{
 		UInt32 creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 
@@ -126,21 +126,21 @@ namespace Steins
 		STEINS_CORE_INFO("  Version: {0}", version);
 	}
 
-	void D3D11GraphicsDevice::Shutdown()
+	void D3D11RenderDevice::Shutdown()
 	{
 	}
 
-	void D3D11GraphicsDevice::Render()
+	void D3D11RenderDevice::Render()
 	{
 	}
 
 
-	Shared<GraphicsContext> D3D11GraphicsDevice::CreateContext()
+	Shared<GraphicsContext> D3D11RenderDevice::CreateContext()
 	{
 		return MakeShared<D3D11GraphicsContext>(this);
 	}
 
-	Shared<VertexBuffer> D3D11GraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
+	Shared<VertexBuffer> D3D11RenderDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
 	{
 		if (_vertices)
 		{
@@ -152,22 +152,22 @@ namespace Steins
 		}
 	}
 
-	Shared<IndexBuffer> D3D11GraphicsDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
+	Shared<IndexBuffer> D3D11RenderDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
 	{
 		return MakeShared<D3D11IndexBuffer>(this, _indices, _count);
 	}
 
-	Shared<Framebuffer> D3D11GraphicsDevice::CreateFramebuffer(FramebufferDesc _spec)
+	Shared<Framebuffer> D3D11RenderDevice::CreateFramebuffer(FramebufferDesc _spec)
 	{
 		return MakeShared<D3D11Framebuffer>(this, _spec);
 	}
 
-	Shared<PipelineState> D3D11GraphicsDevice::CreatePipelineState(PipelineStateDesc _desc)
+	Shared<PipelineState> D3D11RenderDevice::CreatePipelineState(PipelineStateDesc _desc)
 	{
 		return MakeShared<D3D11PipelineState>(this, _desc);
 	}
 
-	Shared<Shader> D3D11GraphicsDevice::CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode)
+	Shared<Shader> D3D11RenderDevice::CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode)
 	{
 		switch (_type)
 		{
@@ -184,22 +184,22 @@ namespace Steins
 		return Shared<Shader>();
 	}
 
-	Shared<SwapChain> D3D11GraphicsDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
+	Shared<SwapChain> D3D11RenderDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
 	{
 		return MakeShared<D3D11SwapChain>(this, _desc, _window);
 	}
 
-	Shared<Texture2D> D3D11GraphicsDevice::CreateTexture2D(const FilePath& _path)
+	Shared<Texture2D> D3D11RenderDevice::CreateTexture2D(const FilePath& _path)
 	{
 		return MakeShared<D3D11Texture2D>(this, _path);
 	}
 
-	Unique<ImGuiRenderer> D3D11GraphicsDevice::CreateImGuiRenderer()
+	Unique<ImGuiRenderer> D3D11RenderDevice::CreateImGuiRenderer()
 	{
 		return MakeUnique<D3D11ImGuiRenderer>(this);
 	}
 
-	Shared<ConstantBuffer> D3D11GraphicsDevice::CreateConstantBuffer(UInt32 _size)
+	Shared<ConstantBuffer> D3D11RenderDevice::CreateConstantBuffer(UInt32 _size)
 	{
 		return MakeShared<D3D11ConstantBuffer>(this, _size);
 	}

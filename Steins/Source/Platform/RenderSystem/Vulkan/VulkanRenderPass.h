@@ -1,6 +1,6 @@
 #pragma once
 
-#include "VulkanGraphicsDevice.h"
+#include "VulkanRenderDevice.h"
 #include "Steins/Render/RenderPass.h"
 
 namespace Steins
@@ -8,7 +8,7 @@ namespace Steins
 	class VulkanRenderPass : public RenderPass
 	{
 	public:
-		VulkanRenderPass(VulkanGraphicsDevice* _device);
+		VulkanRenderPass(VulkanRenderDevice* _device);
 
 		virtual void Begin(Shared<Framebuffer> _framebuffer) override;
 		virtual void End() override;
@@ -17,7 +17,7 @@ namespace Steins
 		VkRenderPass GetVkRenderPass() const { return renderPass; }
 
 	private:
-		VulkanGraphicsDevice* device;
+		VulkanRenderDevice* device;
 		VkRenderPass renderPass;
 	};
 }

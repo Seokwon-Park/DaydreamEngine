@@ -1,15 +1,15 @@
 #pragma once
-#include "Steins/Render/GraphicsDevice.h"
+#include "Steins/Render/RenderDevice.h"
 #include "GLFW/glfw3.h"
 //#include "glad/glad.h"
 
 namespace Steins
 {
-	class OpenGLGraphicsDevice: public GraphicsDevice
+	class OpenGLRenderDevice: public RenderDevice
 	{
 	public:
-		OpenGLGraphicsDevice();
-		~OpenGLGraphicsDevice() override;
+		OpenGLRenderDevice();
+		~OpenGLRenderDevice() override;
 
 		virtual void Init() override;
 		virtual void Shutdown() override;

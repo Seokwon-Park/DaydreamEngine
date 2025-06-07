@@ -1,5 +1,5 @@
 #include "SteinsPCH.h"
-#include "D3D12GraphicsDevice.h"
+#include "D3D12RenderDevice.h"
 #include "D3D12Buffer.h"
 #include "D3D12GraphicsContext.h"
 #include "D3D12Framebuffer.h"
@@ -12,12 +12,12 @@
 
 namespace Steins
 {
-	D3D12GraphicsDevice::D3D12GraphicsDevice()
+	D3D12RenderDevice::D3D12RenderDevice()
 	{
 		API = RendererAPIType::DirectX12;
 	}
 
-	D3D12GraphicsDevice::~D3D12GraphicsDevice()
+	D3D12RenderDevice::~D3D12RenderDevice()
 	{
 #if defined(DEBUG) || defined(_DEBUG)
 		Microsoft::WRL::ComPtr<ID3D12InfoQueue> infoQueue;
@@ -40,7 +40,7 @@ namespace Steins
 #endif
 	}
 
-	void D3D12GraphicsDevice::Init()
+	void D3D12RenderDevice::Init()
 	{
 #if defined(_DEBUG)
 		// Enable the D3D12 debug layer.
@@ -55,7 +55,7 @@ namespace Steins
 		{
 			STEINS_CORE_ERROR("Failed to create dxgiFactory!");
 		}
-		
+
 		// 디바이스 생성
 		int adapterIndex = 0; // we'll start looking for directx 12  compatible graphics devices starting at index 0
 		bool isAdapterFound = false; // set this to true when a good one was found
@@ -103,7 +103,7 @@ namespace Steins
 				HRESULT hr = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(commandAllocators[i].GetAddressOf()));
 				STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create command allocator {0}", i);
 			}
-			
+
 
 			device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocators[0].Get(), nullptr, IID_PPV_ARGS(commandList.GetAddressOf()));
 
@@ -154,7 +154,7 @@ namespace Steins
 
 		STEINS_CORE_INFO("DirectX12 Info:");
 		STEINS_CORE_INFO("  Vendor: {0}", GraphicsUtil::GetVendor(adapterDescription.VendorId));
-		STEINS_CORE_INFO("  Renderer: {0} {1} GB", videoCardDescription, std::round((double)adapterDescription.DedicatedVideoMemory/ (1<<30)));
+		STEINS_CORE_INFO("  Renderer: {0} {1} GB", videoCardDescription, std::round((double)adapterDescription.DedicatedVideoMemory / (1 << 30)));
 		STEINS_CORE_INFO("  Version: {0}", version);
 
 		//device->CreateDescriptorHeap()
@@ -171,65 +171,72 @@ namespace Steins
 
 	}
 
-	void D3D12GraphicsDevice::Shutdown()
+	void D3D12RenderDevice::Shutdown()
 	{
 	}
 
-	void D3D12GraphicsDevice::Render()
+	void D3D12RenderDevice::Render()
 	{
 	}
 
-	Shared<GraphicsContext> D3D12GraphicsDevice::CreateContext()
+	Shared<GraphicsContext> D3D12RenderDevice::CreateContext()
 	{
 		return MakeShared<D3D12GraphicsContext>(this);
 	}
 
-	Shared<VertexBuffer> D3D12GraphicsDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
+	Shared<VertexBuffer> D3D12RenderDevice::CreateVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
 	{
-		return MakeShared<D3D12VertexBuffer>(this, _vertices, _size, _stride);
+		if (_vertices)
+		{
+			return MakeShared<D3D12VertexBuffer>(this, _vertices, _size, _stride);
+		}
+		else
+		{
+			return MakeShared<D3D12VertexBuffer>(this, _size, _stride);
+		}
 	}
 
-	Shared<IndexBuffer> D3D12GraphicsDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
+	Shared<IndexBuffer> D3D12RenderDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
 	{
 		return MakeShared<D3D12IndexBuffer>(this, _indices, _count);
 	}
 
-	Shared<Framebuffer> D3D12GraphicsDevice::CreateFramebuffer(FramebufferDesc _spec)
+	Shared<Framebuffer> D3D12RenderDevice::CreateFramebuffer(FramebufferDesc _spec)
 	{
 		return MakeShared<D3D12Framebuffer>(this, _spec);
 	}
 
-	Shared<PipelineState> D3D12GraphicsDevice::CreatePipelineState(PipelineStateDesc _desc)
+	Shared<PipelineState> D3D12RenderDevice::CreatePipelineState(PipelineStateDesc _desc)
 	{
 		return MakeShared<D3D12PipelineState>(this, _desc);
 	}
 
-	Shared<Shader> D3D12GraphicsDevice::CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode)
+	Shared<Shader> D3D12RenderDevice::CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode)
 	{
 		return MakeShared<D3D12Shader>(this, _src, _type, _mode);
 	}
 
-	Shared<SwapChain> D3D12GraphicsDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
+	Shared<SwapChain> D3D12RenderDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
 	{
 		return MakeShared<D3D12SwapChain>(this, _desc, _window);
 	}
 
-	Shared<Texture2D> D3D12GraphicsDevice::CreateTexture2D(const FilePath& _path)
+	Shared<Texture2D> D3D12RenderDevice::CreateTexture2D(const FilePath& _path)
 	{
 		return MakeShared<D3D12Texture2D>(this, _path);
 	}
 
-	Unique<ImGuiRenderer> D3D12GraphicsDevice::CreateImGuiRenderer()
+	Unique<ImGuiRenderer> D3D12RenderDevice::CreateImGuiRenderer()
 	{
 		return MakeUnique<D3D12ImGuiRenderer>(this);
 	}
 
-	Shared<ConstantBuffer> D3D12GraphicsDevice::CreateConstantBuffer(UInt32 _size)
+	Shared<ConstantBuffer> D3D12RenderDevice::CreateConstantBuffer(UInt32 _size)
 	{
 		return MakeShared<D3D12ConstantBuffer>(this, _size);
 	}
 
-	//void D3D12GraphicsDevice::WaitForGPU(IDXGISwapChain3* _swapChain)
+	//void D3D12RenderDevice::WaitForGPU(IDXGISwapChain3* _swapChain)
 	//{
 	//	HRESULT hr;
 

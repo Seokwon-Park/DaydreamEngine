@@ -1,14 +1,14 @@
 #pragma once
 
 #include "Steins/Render/Texture.h"
-#include "VulkanGraphicsDevice.h"
+#include "VulkanRenderDevice.h"
 
 namespace Steins
 {
 	class VulkanTexture2D :public Texture2D
 	{
 	public:
-		VulkanTexture2D(VulkanGraphicsDevice* _device, const FilePath& _path);
+		VulkanTexture2D(VulkanRenderDevice* _device, const FilePath& _path);
 		virtual ~VulkanTexture2D();
 
 		virtual void* GetNativeHandle() override { return descriptorSet; }
@@ -20,7 +20,7 @@ namespace Steins
 	protected:
 
 	private:
-		VulkanGraphicsDevice* device;
+		VulkanRenderDevice* device;
 		VkDeviceSize imageSize;
 		VkBuffer uploadBuffer;
 		VkDeviceMemory uploadBufferMemory;

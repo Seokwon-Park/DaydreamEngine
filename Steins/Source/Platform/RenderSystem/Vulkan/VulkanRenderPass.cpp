@@ -4,7 +4,7 @@
 
 namespace Steins
 {
-	VulkanRenderPass::VulkanRenderPass(VulkanGraphicsDevice* _device)
+	VulkanRenderPass::VulkanRenderPass(VulkanRenderDevice* _device)
 	{
 		device = _device;
 

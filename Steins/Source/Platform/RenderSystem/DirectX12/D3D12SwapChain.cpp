@@ -9,9 +9,9 @@
 
 namespace Steins
 {
-	D3D12SwapChain::D3D12SwapChain(GraphicsDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window)
+	D3D12SwapChain::D3D12SwapChain(RenderDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window)
 	{
-		device = Cast<D3D12GraphicsDevice>(_device);
+		device = Cast<D3D12RenderDevice>(_device);
 		desc = *_desc;
 		DXGI_SAMPLE_DESC sampleDesc = {};
 		sampleDesc.Count = 1;    // 샘플 수 (1이면 MSAA 비활성화)
@@ -131,9 +131,12 @@ namespace Steins
 		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 		device->GetCommandList()->ResourceBarrier(1, &barr);
 
-		internalBuffer->Bind();
+		internalBuffer->Begin();
 		internalBuffer->Clear(Color(1.0f, 1.0f, 1.0f, 1.0f));
 
+	}
+	void D3D12SwapChain::ResizeSwapChain(UInt32 _width, UInt32 height)
+	{
 	}
 	void D3D12SwapChain::WaitForGPU()
 	{

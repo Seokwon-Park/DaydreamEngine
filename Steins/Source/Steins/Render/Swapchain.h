@@ -24,6 +24,7 @@ namespace Steins
 		virtual void SetVSync(bool _enabled) = 0;
 
 		virtual void SwapBuffers() = 0;
+		virtual void ResizeSwapChain(UInt32 _width, UInt32 height) = 0;
 		
 		virtual Framebuffer* GetBackFramebuffer() = 0;
 		static Shared<SwapChain> Create(SwapChainSpecification* _desc, SteinsWindow* _window);

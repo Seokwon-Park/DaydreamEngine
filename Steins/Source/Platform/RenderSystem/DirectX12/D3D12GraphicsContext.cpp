@@ -3,7 +3,7 @@
 
 namespace Steins
 {
-	D3D12GraphicsContext::D3D12GraphicsContext(D3D12GraphicsDevice* _device)
+	D3D12GraphicsContext::D3D12GraphicsContext(D3D12RenderDevice* _device)
 	{
 		device = _device;
 	}

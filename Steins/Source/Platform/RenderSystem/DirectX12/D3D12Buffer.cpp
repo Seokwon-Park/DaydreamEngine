@@ -3,7 +3,10 @@
 
 namespace Steins
 {
-	D3D12VertexBuffer::D3D12VertexBuffer(D3D12GraphicsDevice* _device, void* _vertices, UInt32 _size, UInt32 _stride)
+	D3D12VertexBuffer::D3D12VertexBuffer(D3D12RenderDevice* _device, UInt32 _bufferSize, UInt32 _stride)
+	{
+	}
+	D3D12VertexBuffer::D3D12VertexBuffer(D3D12RenderDevice* _device, void* _vertices, UInt32 _size, UInt32 _stride)
 	{
 		device = _device;
 		stride = _stride;
@@ -71,7 +74,7 @@ namespace Steins
 	{
 	}
 
-	D3D12IndexBuffer::D3D12IndexBuffer(D3D12GraphicsDevice* _device, UInt32* _indices, UInt32 _indexCount)
+	D3D12IndexBuffer::D3D12IndexBuffer(D3D12RenderDevice* _device, UInt32* _indices, UInt32 _indexCount)
 	{
 		indexCount = _indexCount;
 
@@ -139,7 +142,7 @@ namespace Steins
 	void D3D12IndexBuffer::Unbind() const
 	{
 	}
-	D3D12ConstantBuffer::D3D12ConstantBuffer(D3D12GraphicsDevice* _device, UInt32 _size)
+	D3D12ConstantBuffer::D3D12ConstantBuffer(D3D12RenderDevice* _device, UInt32 _size)
 	{
 		device = _device;
 		D3D12_HEAP_PROPERTIES props{};

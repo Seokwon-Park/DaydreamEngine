@@ -1,15 +1,15 @@
 #include "SteinsPCH.h"
 #include "VulkanFramebuffer.h"
-#include "VulkanSwapchain.h"
+#include "VulkanSwapChain.h"
 
 
 namespace Steins
 {
-	VulkanFramebuffer::VulkanFramebuffer(VulkanGraphicsDevice* _device, const FramebufferDesc& _spec)
+	VulkanFramebuffer::VulkanFramebuffer(VulkanRenderDevice* _device, const FramebufferDesc& _spec)
 	{
 		device = _device;
 	}
-	VulkanFramebuffer::VulkanFramebuffer(VulkanGraphicsDevice* _device, VulkanSwapChain* _swapChain)
+	VulkanFramebuffer::VulkanFramebuffer(VulkanRenderDevice* _device, VulkanSwapChain* _swapChain)
 	{
 		device = _device;
 		extent = _swapChain->GetExtent();
@@ -72,7 +72,7 @@ namespace Steins
 		}
 		vkDestroyFramebuffer(device->GetDevice(), framebuffer, nullptr);
 	}
-	void VulkanFramebuffer::Bind() const
+	void VulkanFramebuffer::Begin() const
 	{
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -88,7 +88,7 @@ namespace Steins
 		vkCmdBeginRenderPass(device->GetCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 		device->SetCurrentRenderPass(renderPass);
 	}
-	void VulkanFramebuffer::Unbind() const
+	void VulkanFramebuffer::End() const
 	{
 		vkCmdEndRenderPass(device->GetCommandBuffer());
 	}

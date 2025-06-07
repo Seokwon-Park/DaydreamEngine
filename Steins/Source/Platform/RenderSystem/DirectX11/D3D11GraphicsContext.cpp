@@ -1,12 +1,12 @@
 #include "SteinsPCH.h"
 #include "D3D11GraphicsContext.h"
-#include "D3D11GraphicsDevice.h"
+#include "D3D11RenderDevice.h"
 
-#include "Steins/Render/Swapchain.h"
+#include "Steins/Render/SwapChain.h"
 
 namespace Steins
 {
-	D3D11GraphicsContext::D3D11GraphicsContext(D3D11GraphicsDevice* _device)
+	D3D11GraphicsContext::D3D11GraphicsContext(D3D11RenderDevice* _device)
 	{
 		device = _device;
 	}
@@ -24,7 +24,7 @@ namespace Steins
 
 	void D3D11GraphicsContext::Clear()
 	{
-		device->GetSwapChain(0)->GetBackFramebuffer()->Bind();
+		device->GetSwapChain(0)->GetBackFramebuffer()->Begin();
 		device->GetSwapChain(0)->GetBackFramebuffer()->Clear(clearColor);
 	}
 

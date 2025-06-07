@@ -2,10 +2,11 @@
 #include "D3D12PipelineState.h"
 
 #include "Platform/RenderSystem/GraphicsUtil.h"
+#include "D3D12Shader.h"
 
 namespace Steins
 {
-	D3D12PipelineState::D3D12PipelineState(D3D12GraphicsDevice* _device, PipelineStateDesc _desc)
+	D3D12PipelineState::D3D12PipelineState(D3D12RenderDevice* _device, PipelineStateDesc _desc)
 		:PipelineState(_desc)
 	{
 		device = _device;
@@ -86,12 +87,11 @@ namespace Steins
 		};
 
 
+
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC desc{};
 		desc.pRootSignature = rootSignature.Get();
-		desc.VS.pShaderBytecode = ((ID3DBlob*)_desc.vertexShader->GetNativeHandle())->GetBufferPointer();
-		desc.VS.BytecodeLength = ((ID3DBlob*)_desc.vertexShader->GetNativeHandle())->GetBufferSize();
-		desc.PS.pShaderBytecode = ((ID3DBlob*)_desc.pixelShader->GetNativeHandle())->GetBufferPointer();
-		desc.PS.BytecodeLength = ((ID3DBlob*)_desc.pixelShader->GetNativeHandle())->GetBufferSize();
+		desc.VS = static_cast<D3D12Shader*>(_desc.vertexShader.get())->GetShaderBytecode();
+		desc.PS = static_cast<D3D12Shader*>(_desc.pixelShader.get())->GetShaderBytecode();
 		desc.RasterizerState = rasterizerDesc;
 		desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 		desc.NumRenderTargets = 1;

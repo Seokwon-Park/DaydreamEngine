@@ -27,4 +27,7 @@ namespace Steins
 	{
 		glfwSwapBuffers(window);
 	}
+	void OpenGLSwapChain::ResizeSwapChain(UInt32 _width, UInt32 height)
+	{
+	}
 }

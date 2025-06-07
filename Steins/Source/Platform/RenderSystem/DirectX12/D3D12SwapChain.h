@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Steins/Render/Swapchain.h"
-#include "D3D12GraphicsDevice.h"
+#include "Steins/Render/SwapChain.h"
+#include "D3D12RenderDevice.h"
 #include "D3D12Framebuffer.h"
 
 
@@ -10,12 +10,12 @@ namespace Steins
 	class D3D12SwapChain : public SwapChain
 	{
 	public:
-		D3D12SwapChain(GraphicsDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window);
+		D3D12SwapChain(RenderDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window);
 		virtual ~D3D12SwapChain() override;
 
-		// Inherited via Swapchain
-		void SetVSync(bool _enabled) override;
-		void SwapBuffers() override;
+		virtual void SetVSync(bool _enabled) override;
+		virtual void SwapBuffers() override;
+		virtual void ResizeSwapChain(UInt32 _width, UInt32 height) override;
 
 		virtual Framebuffer* GetBackFramebuffer() { return nullptr; };
 
@@ -26,7 +26,7 @@ namespace Steins
 
 		inline IDXGISwapChain3* GetDXGISwapChain() { return swapChain.Get(); }
 	private:
-		D3D12GraphicsDevice* device;
+		D3D12RenderDevice* device;
 		ComPtr<IDXGISwapChain3> swapChain;
 
 		Shared<D3D12Framebuffer> internalBuffer;

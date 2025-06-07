@@ -6,7 +6,7 @@
 
 namespace Steins
 {
-	OpenGLImGuiRenderer::OpenGLImGuiRenderer(OpenGLGraphicsDevice* _device)
+	OpenGLImGuiRenderer::OpenGLImGuiRenderer(OpenGLRenderDevice* _device)
 	{
 		device = _device;
 	}

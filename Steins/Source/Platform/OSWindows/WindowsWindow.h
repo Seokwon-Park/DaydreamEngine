@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Steins/Core/Window.h"
-#include "Steins/Render/GraphicsDevice.h"
+#include "Steins/Render/RenderDevice.h"
 
 #define GLFW_EXPOSE_NATIVE_WIN32
 

@@ -1,14 +1,14 @@
 #include "SteinsPCH.h"
 #include "VulkanPipelineState.h"
 
-#include "VulkanSwapchain.h"
+#include "VulkanSwapChain.h"
 #include "Platform/RenderSystem/GraphicsUtil.h"
 
 #include "VulkanTexture.h"
 
 namespace Steins
 {
-	VulkanPipelineState::VulkanPipelineState(VulkanGraphicsDevice* _device, PipelineStateDesc _desc)
+	VulkanPipelineState::VulkanPipelineState(VulkanRenderDevice* _device, PipelineStateDesc _desc)
 		:PipelineState(_desc)
 	{
 		device = _device;
@@ -144,8 +144,6 @@ namespace Steins
 			VkDescriptorPoolCreateInfo poolCreateInfo;
 			poolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 			
-			
-
 			VkDescriptorSetAllocateInfo allocInfo{};
 			allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 			allocInfo.descriptorPool = device->GetDescriptorPool();

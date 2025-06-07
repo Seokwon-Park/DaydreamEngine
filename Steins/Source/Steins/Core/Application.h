@@ -4,7 +4,7 @@
 #include "Steins/Core/LayerStack.h"
 #include "Steins/Event/KeyEvent.h"
 #include "Steins/Event/ApplicationEvent.h"
-#include "Steins/Render/GraphicsDevice.h"
+#include "Steins/Render/RenderDevice.h"
 #include "Base/Time/TimeStep.h"
 
 #include "Steins/ImGui/ImGuiLayer.h"
