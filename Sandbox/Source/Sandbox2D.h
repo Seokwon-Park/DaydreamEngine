@@ -9,6 +9,7 @@ public:
 	virtual ~Sandbox2D() = default;
 
 	virtual void OnUpdate(Float32 _deltaTime) override;
+	virtual void OnImGuiRender() override;
 
 private:
 	Steins::Shared<Steins::VertexBuffer> squareVB;

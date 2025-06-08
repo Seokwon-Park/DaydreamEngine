@@ -31,6 +31,10 @@ namespace Steins
 			IID_PPV_ARGS(vertexBuffer.GetAddressOf())
 		);
 
+		// 3. Vertex Buffer View »ý¼º
+		vertexBufferView.BufferLocation = vertexBuffer->GetGPUVirtualAddress();
+		vertexBufferView.SizeInBytes = _bufferSize;
+		vertexBufferView.StrideInBytes = _stride;
 	}
 	D3D12VertexBuffer::D3D12VertexBuffer(D3D12RenderDevice* _device, void* _vertices, UInt32 _size, UInt32 _stride)
 	{
@@ -106,6 +110,7 @@ namespace Steins
 		HRESULT hr = vertexBuffer->Map(0, nullptr, &data);
 		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to map uploadBuffer");
 		memcpy(data, _data, _dataSize);
+		vertexBuffer->Unmap(0, nullptr);
 	}
 
 	D3D12IndexBuffer::D3D12IndexBuffer(D3D12RenderDevice* _device, UInt32* _indices, UInt32 _indexCount)

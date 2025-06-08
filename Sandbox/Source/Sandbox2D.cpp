@@ -1,5 +1,7 @@
 #include "Sandbox2D.h"
 
+#include "imgui/imgui.h"
+
 Sandbox2D::Sandbox2D()
 {
 	float squareVertices[4 * 9] = {
@@ -15,7 +17,9 @@ Sandbox2D::Sandbox2D()
 		{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"},
 		{ Steins::ShaderDataType::Float2, "a_TexCoord", "TEXCOORD"}
 	};
-	squareVB = Steins::VertexBuffer::CreateStatic(squareVertices, sizeof(squareVertices), layout.GetStride());
+	//squareVB = Steins::VertexBuffer::CreateStatic(squareVertices, sizeof(squareVertices), layout.GetStride());
+	squareVB = Steins::VertexBuffer::CreateDynamic(sizeof(squareVertices), layout.GetStride());
+	squareVB->SetData(squareVertices, sizeof(squareVertices));
 
 	uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
 	squareIB = Steins::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
@@ -181,5 +185,10 @@ void Sandbox2D::OnUpdate(Float32 _deltaTime)
 	////transform.Transpose();
 
 
+}
+
+void Sandbox2D::OnImGuiRender()
+{
+	ImGui::ShowDemoWindow();
 }
 
