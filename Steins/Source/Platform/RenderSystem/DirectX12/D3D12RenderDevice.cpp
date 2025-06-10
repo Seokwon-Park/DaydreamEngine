@@ -108,7 +108,6 @@ namespace Steins
 			hr = device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocators[0].Get(), nullptr, IID_PPV_ARGS(commandList.GetAddressOf()));
 			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create commandlist");
 
-
 			commandList->Close();
 		}
 
@@ -189,7 +188,6 @@ namespace Steins
 	Shared<VertexBuffer> D3D12RenderDevice::CreateDynamicVertexBuffer(UInt32 _bufferSize, UInt32 _stride)
 	{
 		return MakeShared<D3D12VertexBuffer>(this, _bufferSize, _stride);
-
 	}
 
 	Shared<VertexBuffer> D3D12RenderDevice::CreateStaticVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)

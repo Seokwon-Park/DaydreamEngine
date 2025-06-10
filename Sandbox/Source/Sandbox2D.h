@@ -13,7 +13,9 @@ public:
 
 private:
 	Steins::Shared<Steins::VertexBuffer> squareVB;
+	Steins::Shared<Steins::VertexBuffer> squareVB2;
 	Steins::Shared<Steins::IndexBuffer> squareIB;
+	Steins::Shared<Steins::IndexBuffer> squareIB2;
 
 	Steins::Shared<Steins::Shader> vs;
 	Steins::Shared<Steins::Shader> ps;
@@ -24,5 +26,6 @@ private:
 
 	Steins::OrthographicCamera camera = Steins::OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f);
 	Steins::Matrix4x4 cameraPos;
+
 };
 

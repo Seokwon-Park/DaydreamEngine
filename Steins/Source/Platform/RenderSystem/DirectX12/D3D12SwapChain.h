@@ -28,8 +28,7 @@ namespace Steins
 	private:
 		D3D12RenderDevice* device;
 		ComPtr<IDXGISwapChain3> swapChain;
-
-		Shared<D3D12Framebuffer> internalBuffer;
+		std::vector<Shared<D3D12Framebuffer>> framebuffers;
 		Int32 frameIndex = 0;
 		ComPtr<ID3D12Fence> fence;
 		std::vector<UINT64> fenceValues;

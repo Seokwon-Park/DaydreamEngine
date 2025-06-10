@@ -37,6 +37,12 @@ namespace Steins
 		VkResult result = vkCreateRenderPass(_device->GetDevice(), &renderPassInfo, nullptr, &renderPass);
 		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create renderpass!");
 	}
+	void VulkanRenderPass::Begin(Shared<Framebuffer> _framebuffer)
+	{
+	}
+	void VulkanRenderPass::End()
+	{
+	}
 	//void VulkanRenderPass::Begin(Shared<Framebuffer> _framebuffer)
 	//{
 	//	VkRenderPassBeginInfo renderPassInfo{};

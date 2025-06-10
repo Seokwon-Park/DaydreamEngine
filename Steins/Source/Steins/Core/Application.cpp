@@ -9,8 +9,6 @@
 
 #include "glad/glad.h"
 
-
-
 namespace Steins
 {
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
@@ -44,6 +42,7 @@ namespace Steins
 		//testWindow = SteinsWindow::Create(prop);
 		//testWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
+		
 		Renderer::Init(_specification.rendererAPI);
 		Renderer::RegisterWindow("MainWindow", mainWindow.get());
 		//Renderer::RegisterWindow("TestWindow", testWindow.get());
@@ -103,16 +102,13 @@ namespace Steins
 				layer->OnUpdate(deltaTime);
 			}
 
-			//glBindVertexArray(m_VertexArray);
-			//glDrawElementsBaseVertex(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr, 0);
-
-
 			imGuiLayer->BeginImGui();
 			{
 				for (Layer* layer : layerStack)
 					layer->OnImGuiRender();
 			}
 			imGuiLayer->EndImGui();
+
 
 			//auto [x, y] = Input::GetMousePosition();
 			////STEINS_CORE_TRACE("{0}, {1}", x, y);

@@ -6,26 +6,31 @@ namespace Steins
 {
 	std::unordered_map<std::string, SteinsWindow*> Renderer::windows;
 	Renderer::SceneData* Renderer::m_SceneData = new Renderer::SceneData;
-	Unique<RenderDevice> Renderer::renderDevice = nullptr;
+	Renderer* Renderer::instance = nullptr;
 
-	void Renderer::Init(RendererAPIType _API)
+	Renderer::Renderer(RendererAPIType _API)
 	{
 		renderDevice = RenderDevice::Create(_API);
 		STEINS_CORE_ASSERT(renderDevice, "Failed to create graphics device!");
-		renderDevice->Init();
-		Renderer2D::Init();
-		RenderCommand::Init(renderDevice.get());
+	}
+
+	void Renderer::Init(RendererAPIType _API)
+	{
+		STEINS_CORE_ASSERT(instance == nullptr, "Renderer Already Initialized!");
+		instance = new Renderer(_API);
+		Get().renderDevice->Init();
+		RenderCommand::Init(Get().renderDevice.get());
 	}
 
 	void Renderer::Shutdown()
 	{
 		Renderer2D::Shutdown();
-		renderDevice.reset();
+		Get().renderDevice.reset();
 	}
 
 	void Renderer::RegisterWindow(std::string _name, SteinsWindow* _window)
 	{
-		renderDevice->CreateSwapChainForWnd(_window);
+		Get().renderDevice->CreateSwapChainForWnd(_window);
 		windows.insert({ _name, _window });
 	}
 
@@ -52,8 +57,6 @@ namespace Steins
 		//_vertexArray->Bind();
 		RenderCommand::DrawIndexed(_indexCount);
 	}
-
-
 
 
 }

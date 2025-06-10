@@ -1,11 +1,11 @@
 #pragma once
 
+#include "Base/Time/TimeStep.h"
+
 #include "Steins/Core/Window.h"
 #include "Steins/Core/LayerStack.h"
 #include "Steins/Event/KeyEvent.h"
 #include "Steins/Event/ApplicationEvent.h"
-#include "Steins/Render/RenderDevice.h"
-#include "Base/Time/TimeStep.h"
 
 #include "Steins/ImGui/ImGuiLayer.h"
 
@@ -34,10 +34,9 @@ namespace Steins
 		RendererAPIType rendererAPI = RendererAPIType::OpenGL;
 	};
 
-	class Application
+	class STEINS_API Application
 	{
 	public:
-		// constrcuter destructer
 		Application(ApplicationSpecification _specification);
 		virtual ~Application();
 

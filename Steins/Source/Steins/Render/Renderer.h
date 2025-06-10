@@ -21,12 +21,17 @@ namespace Steins
 
 		static void Submit(UInt32 _indexCount, const Matrix4x4 _transform = Matrix4x4());
 
-		inline static RendererAPIType GetAPI() { return renderDevice->GetAPI(); }
+		static Renderer& Get() { return *instance; }
+		static inline RendererAPIType GetAPI() { return Get().renderDevice->GetAPI(); }
+		static inline RenderDevice* GetRenderDevice() { return Get().renderDevice.get(); }
 
-		inline static RenderDevice* GetRenderDevice() { return renderDevice.get(); }
 	private:
+		Renderer(RendererAPIType _API);
+
+		static Renderer* instance;
+
 		static SteinsWindow* currentWindow;
-		static Unique<RenderDevice> renderDevice;
+		Unique<RenderDevice> renderDevice;
 		static std::unordered_map<std::string, SteinsWindow*> windows;
 
 		struct SceneData

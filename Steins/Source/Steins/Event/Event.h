@@ -64,8 +64,8 @@ namespace Steins
 
 	class EventDispatcher
 	{
-		template <typename T>
-		using EventFn = std::function<bool(T&)>;
+		template <typename EventTypeParam>
+		using EventFn = std::function<bool(EventTypeParam&)>;
 	public:
 		EventDispatcher(Event& _event)
 			:event(_event)

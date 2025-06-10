@@ -3,6 +3,8 @@
 
 #include "Platform/RenderSystem/GraphicsUtil.h"
 
+#include "Steins/Render/Renderer2D.h"
+
 #include "Steins/Core/Window.h"
 #include "GLFW/glfw3.h"
 #include "GLFW/glfw3native.h"
@@ -43,10 +45,14 @@ namespace Steins
 		);
 
 		swapChain1->QueryInterface(swapChain.GetAddressOf());
+
+		framebuffers.resize(desc.bufferCount);
+		for (UInt32 i = 0; i < desc.bufferCount; i++)
+		{
+			frameIndex = i;
+			framebuffers[i] = MakeShared<D3D12Framebuffer>(device, this);
+		}
 		frameIndex = swapChain->GetCurrentBackBufferIndex();
-
-		internalBuffer = MakeShared<D3D12Framebuffer>(device, this);
-
 
 		hr = device->GetDevice()->CreateFence(fenceValues[frameIndex], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fence.GetAddressOf()));
 		fenceValues[frameIndex]++; // 초기 값 증가
@@ -57,19 +63,19 @@ namespace Steins
 		}
 
 		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create swapChain!");
-
 		device->GetCommandAllocator(frameIndex)->Reset();
+		Renderer2D::Init();
 		device->GetCommandList()->Reset(device->GetCommandAllocator(frameIndex), nullptr);
 		ID3D12DescriptorHeap* heaps[] = { device->GetSRVHeap() };
 		device->GetCommandList()->SetDescriptorHeaps(1, heaps);
-		internalBuffer->Begin();
-		internalBuffer->Clear(Color(1.0f, 1.0f, 1.0f, 1.0f));
+		framebuffers[frameIndex]->Begin();
+		framebuffers[frameIndex]->Clear(Color(1.0f, 1.0f, 1.0f, 1.0f));
 
 		D3D12_RESOURCE_BARRIER barr{};
 
 		barr.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 		barr.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barr.Transition.pResource = internalBuffer->GetRenderTargets()[frameIndex].Get();
+		barr.Transition.pResource = framebuffers[frameIndex]->GetRenderTargets()[frameIndex].Get();
 		barr.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 		barr.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
@@ -90,7 +96,7 @@ namespace Steins
 
 		barr.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 		barr.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barr.Transition.pResource = internalBuffer->GetRenderTargets()[frameIndex].Get();
+		barr.Transition.pResource = framebuffers[frameIndex]->GetRenderTargets()[0].Get();
 		barr.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 		barr.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
@@ -128,14 +134,14 @@ namespace Steins
 
 		barr.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 		barr.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barr.Transition.pResource = internalBuffer->GetRenderTargets()[frameIndex].Get();
+		barr.Transition.pResource = framebuffers[frameIndex]->GetRenderTargets()[0].Get();
 		barr.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 		barr.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 		device->GetCommandList()->ResourceBarrier(1, &barr);
 
-		internalBuffer->Begin();
-		internalBuffer->Clear(Color(1.0f, 1.0f, 1.0f, 1.0f));
+		framebuffers[frameIndex]->Begin();
+		framebuffers[frameIndex]->Clear(Color(1.0f, 1.0f, 1.0f, 1.0f));
 
 	}
 	void D3D12SwapChain::ResizeSwapChain(UInt32 _width, UInt32 height)
@@ -163,7 +169,6 @@ namespace Steins
 		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to signal!");
 
 		frameIndex = swapChain->GetCurrentBackBufferIndex();
-		internalBuffer->UpdateFrameIndex(frameIndex);
 
 		if (fence->GetCompletedValue() < fenceValues[frameIndex])
 		{

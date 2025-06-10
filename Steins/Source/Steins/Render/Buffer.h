@@ -112,14 +112,10 @@ namespace Steins
 
 		void SetSlot(UInt32 _slot = 0) { slot = _slot; }
 
-		const BufferLayout& GetLayout() const { return layout; }
-		void SetLayout(const BufferLayout& _layout) { layout = _layout; }
-
 		static Shared<VertexBuffer> CreateDynamic(UInt32 _size, UInt32 _stride);
 		static Shared<VertexBuffer> CreateStatic(Float32* _vertices, UInt32 _size, UInt32 _stride);
 	protected:
 		UInt32 slot = 0;
-		BufferLayout layout;
 	};
 
 	class IndexBuffer

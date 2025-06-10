@@ -6,6 +6,7 @@ namespace Steins
 	D3D12VertexBuffer::D3D12VertexBuffer(D3D12RenderDevice* _device, UInt32 _bufferSize, UInt32 _stride)
 	{
 		device = _device;
+		stride = _stride;
 
 		D3D12_HEAP_PROPERTIES props{};
 		props.Type = D3D12_HEAP_TYPE_UPLOAD;
@@ -23,7 +24,7 @@ namespace Steins
 		desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 		desc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
-		device->GetDevice()->CreateCommittedResource(&props,
+		HRESULT hr = device->GetDevice()->CreateCommittedResource(&props,
 			D3D12_HEAP_FLAG_NONE,
 			&desc,
 			D3D12_RESOURCE_STATE_GENERIC_READ,
@@ -34,7 +35,7 @@ namespace Steins
 		// 3. Vertex Buffer View »ý¼º
 		vertexBufferView.BufferLocation = vertexBuffer->GetGPUVirtualAddress();
 		vertexBufferView.SizeInBytes = _bufferSize;
-		vertexBufferView.StrideInBytes = _stride;
+		vertexBufferView.StrideInBytes = stride;
 	}
 	D3D12VertexBuffer::D3D12VertexBuffer(D3D12RenderDevice* _device, void* _vertices, UInt32 _size, UInt32 _stride)
 	{
@@ -111,6 +112,7 @@ namespace Steins
 		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to map uploadBuffer");
 		memcpy(data, _data, _dataSize);
 		vertexBuffer->Unmap(0, nullptr);
+
 	}
 
 	D3D12IndexBuffer::D3D12IndexBuffer(D3D12RenderDevice* _device, UInt32* _indices, UInt32 _indexCount)

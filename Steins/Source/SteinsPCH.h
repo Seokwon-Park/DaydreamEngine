@@ -20,6 +20,7 @@
 
 #include "Steins/Core/Logger.h"
 #include "Steins/Core/Assert.h"
+#include "Steins/Core/Core.h"
 #include "Base/Base.h"
 
 

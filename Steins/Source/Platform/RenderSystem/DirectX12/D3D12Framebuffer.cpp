@@ -12,14 +12,14 @@ namespace Steins
 		device = _device;
 		swapChain = _swapChain;
 
-		renderTargets.resize(2);
+		renderTargets.resize(1);
 		IDXGISwapChain* dxgiSwapChain = _swapChain->GetDXGISwapChain();
-		for (int i = 0; i < 2; i++)
+		for (int i = 0; i < renderTargets.size(); i++)
 		{
 			D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle;
 			device->GetRTVHeapAlloc().AllocCPU(&cpuHandle);
 
-			dxgiSwapChain->GetBuffer(i, IID_PPV_ARGS(renderTargets[i].GetAddressOf()));
+			dxgiSwapChain->GetBuffer(_swapChain->GetBackbufferIndex(), IID_PPV_ARGS(renderTargets[i].GetAddressOf()));
 			STEINS_CORE_ASSERT(renderTargets[i].Get(), "Backbuffer is nullptr!");
 			device->GetDevice()->CreateRenderTargetView(renderTargets[i].Get(), nullptr, cpuHandle);
 			renderTargetHandles.push_back(cpuHandle);
@@ -27,10 +27,13 @@ namespace Steins
 	}
 	void D3D12Framebuffer::Begin() const
 	{
-		device->GetCommandList()->OMSetRenderTargets(1, &renderTargetHandles[frameIndex], false, nullptr);
+		device->GetCommandList()->OMSetRenderTargets(renderTargetHandles.size(), renderTargetHandles.data(), false, nullptr);
 	}
 	void D3D12Framebuffer::Clear(Color _color)
 	{
-		device->GetCommandList()->ClearRenderTargetView(renderTargetHandles[frameIndex], _color.color, 0, nullptr);
+		for (auto rth : renderTargetHandles)
+		{
+			device->GetCommandList()->ClearRenderTargetView(rth, _color.color, 0, nullptr);
+		}
 	}
 }

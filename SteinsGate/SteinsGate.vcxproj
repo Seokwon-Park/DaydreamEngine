@@ -92,6 +92,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\EditorLayer.h" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="Source\EditorLayer.cpp" />
     <ClCompile Include="Source\SteinsEditorApp.cpp" />
   </ItemGroup>
@@ -99,9 +102,6 @@
     <ProjectReference Include="..\Steins\Steins.vcxproj">
       <Project>{FB7AE7D1-E71C-12A8-D0D7-25FCBC1899F8}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Source\EditorLayer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -72,7 +72,6 @@ project "Steins"
 		defines
 		{
 			"STEINS_PLATFORM_WINDOWS",
-			"STEINS_BUILD_DLL",
 			"GLFW_INCLUDE_NONE"
 		}
 

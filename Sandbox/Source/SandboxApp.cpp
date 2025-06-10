@@ -44,8 +44,6 @@ public:
 		};
 		vb = Steins::VertexBuffer::CreateStatic(vertices, sizeof(vertices),layout.GetStride());
 
-		vb->SetLayout(layout);
-		//
 		unsigned int indices[6] = { 0, 1, 2, 2, 1, 3 };
 		ib = Steins::IndexBuffer::Create(indices, 6);
 
