@@ -1,10 +1,13 @@
 #include "SteinsPCH.h"
 #include "GameObject.h"
 
-GameObject::GameObject()
+namespace Steins
 {
-}
+	GameObject::GameObject()
+	{
+	}
 
-GameObject::~GameObject()
-{
+	GameObject::~GameObject()
+	{
+	}
 }

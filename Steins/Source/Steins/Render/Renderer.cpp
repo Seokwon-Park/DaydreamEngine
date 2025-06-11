@@ -4,18 +4,19 @@
 
 namespace Steins
 {
-	std::unordered_map<std::string, SteinsWindow*> Renderer::windows;
 	Renderer::SceneData* Renderer::m_SceneData = new Renderer::SceneData;
 	Renderer* Renderer::instance = nullptr;
 
 	Renderer::Renderer(RendererAPIType _API)
 	{
+		currentWindow = nullptr;
 		renderDevice = RenderDevice::Create(_API);
 		STEINS_CORE_ASSERT(renderDevice, "Failed to create graphics device!");
 	}
 
 	void Renderer::Init(RendererAPIType _API)
 	{
+		//두 번 호출하지 말 것.
 		STEINS_CORE_ASSERT(instance == nullptr, "Renderer Already Initialized!");
 		instance = new Renderer(_API);
 		Get().renderDevice->Init();
@@ -26,17 +27,20 @@ namespace Steins
 	{
 		Renderer2D::Shutdown();
 		Get().renderDevice.reset();
+		delete instance;
+		instance = nullptr;
 	}
 
 	void Renderer::RegisterWindow(std::string _name, SteinsWindow* _window)
 	{
 		Get().renderDevice->CreateSwapChainForWnd(_window);
-		windows.insert({ _name, _window });
+		Get().windows.insert({ _name, _window });
 	}
 
 	void Renderer::OnWindowResize(UInt32 _width, UInt32 _height)
 	{
 		RenderCommand::SetViewport(_width, _height);
+		Get().currentWindow->GetSwapChain()->ResizeSwapChain(_width, _height);
 	}
 
 	void Renderer::BeginScene(const OrthographicCamera& camera)

@@ -27,6 +27,9 @@ namespace Steins
 		virtual void SwapBuffers() override;
 		virtual void ResizeSwapChain(UInt32 _width, UInt32 height) override;
 
+		virtual void BeginFrame() override;
+		virtual void EndFrame() override;
+
 		virtual Framebuffer* GetBackFramebuffer() { return framebuffers[imageIndex].get(); };
 
 		VkFormat GetFormat() const { return format; }
@@ -35,9 +38,6 @@ namespace Steins
 		UInt32 GetBackbufferIndex() const { return imageIndex; }
 
 		void recordCommandBuffer(VkCommandBuffer _commandBuffer, UInt32 _imageIndex);
-
-
-
 	private:
 		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat);
 		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& _availablePresentModes);

@@ -17,6 +17,9 @@ namespace Steins
 		virtual void SwapBuffers() override;
 		virtual void ResizeSwapChain(UInt32 _width, UInt32 height) override;
 
+		virtual void BeginFrame() override;
+		virtual void EndFrame() override;
+
 		virtual Framebuffer* GetBackFramebuffer() { return nullptr; };
 
 		void WaitForGPU();
@@ -29,6 +32,7 @@ namespace Steins
 		D3D12RenderDevice* device;
 		ComPtr<IDXGISwapChain3> swapChain;
 		std::vector<Shared<D3D12Framebuffer>> framebuffers;
+		std::vector<ID3D12CommandList*> commandLists;
 		Int32 frameIndex = 0;
 		ComPtr<ID3D12Fence> fence;
 		std::vector<UINT64> fenceValues;

@@ -1,18 +1,28 @@
 #pragma once
 
-// Ό³Έν :
-class GameObject
+namespace Steins
 {
-public:
-	// constrcuter destructer
-	GameObject();
-	~GameObject();
+	class Component;
 
-	inline void SetName(const std::string& _name) { name = _name; }
+	class GameObject
+	{
+	public:
+		GameObject();
+		~GameObject();
 
-protected:
+		inline void SetName(const std::string& _name) { name = _name; }
 
-private:
-	std::string name;
-};
+		template <class Component, typename ...Args>
+		void AddComponent(Args& ...args);
+	protected:
+
+	private:
+		std::vector<Shared<Component>> components;
+
+		GameObject* parent;
+		std::vector<GameObject*> children;
+
+		std::string name;
+	};
+}
 

@@ -4,7 +4,6 @@
 namespace Steins
 {
 	Layer::Layer(const std::string& _name)
-
 	{
 
 	}

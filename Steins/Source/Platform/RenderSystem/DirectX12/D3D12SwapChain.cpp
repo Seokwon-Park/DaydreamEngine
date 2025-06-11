@@ -64,7 +64,6 @@ namespace Steins
 
 		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create swapChain!");
 		device->GetCommandAllocator(frameIndex)->Reset();
-		Renderer2D::Init();
 		device->GetCommandList()->Reset(device->GetCommandAllocator(frameIndex), nullptr);
 		ID3D12DescriptorHeap* heaps[] = { device->GetSRVHeap() };
 		device->GetCommandList()->SetDescriptorHeaps(1, heaps);
@@ -103,9 +102,10 @@ namespace Steins
 		device->GetCommandList()->ResourceBarrier(1, &barr);
 
 		device->GetCommandList()->Close();
-		ID3D12CommandList* commandLists[] = { device->GetCommandList() };
+		commandLists.push_back(device->GetCommandList());
 
-		device->GetCommandQueue()->ExecuteCommandLists(1, commandLists);
+		device->GetCommandQueue()->ExecuteCommandLists((UInt32)commandLists.size(), commandLists.data());
+		commandLists.clear();
 		swapChain->Present(desc.isVSync, 0);
 
 		MoveToNextFrame();
@@ -145,6 +145,14 @@ namespace Steins
 
 	}
 	void D3D12SwapChain::ResizeSwapChain(UInt32 _width, UInt32 height)
+	{
+	}
+
+	void D3D12SwapChain::BeginFrame()
+	{
+	}
+
+	void D3D12SwapChain::EndFrame()
 	{
 	}
 

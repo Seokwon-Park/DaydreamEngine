@@ -95,35 +95,11 @@ namespace Steins
 		}
 		imageIndex = 0;
 
-		vkWaitForFences(device->GetDevice(), 1, &inFlightFence, VK_TRUE, UINT64_MAX);
-		vkResetFences(device->GetDevice(), 1, &inFlightFence);
-		vkAcquireNextImageKHR(device->GetDevice(), swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
-		vkResetCommandBuffer(device->GetCommandBuffer() , 0);
-		//fb->Bind();
-
-		VkCommandBufferBeginInfo beginInfo{};
-		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-
-		VkResult result = vkBeginCommandBuffer(device->GetCommandBuffer(), &beginInfo);
-		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to begin recording command buffer!");
-
-		//VkFramebuffer buf = ((VulkanFramebuffer*)backFramebuffer.get())->GetFrameBuffers()[imageIndex];
+		BeginFrame();
 
 		framebuffers[imageIndex]->Begin();
 
-		VkViewport viewport{};
-		viewport.x = 0.0f;
-		viewport.y = (float)extent.height;
-		viewport.width = (float)extent.width;
-		viewport.height = -(float)extent.height;
-		viewport.minDepth = 0.0f;
-		viewport.maxDepth = 1.0f;
-		vkCmdSetViewport(device->GetCommandBuffer(), 0, 1, &viewport);
 
-		VkRect2D scissor{};
-		scissor.offset = { 0, 0 };
-		scissor.extent = extent;
-		vkCmdSetScissor(device->GetCommandBuffer(), 0, 1, &scissor);
 
 	}
 	VulkanSwapChain::~VulkanSwapChain()
@@ -177,14 +153,45 @@ namespace Steins
 		presentInfo.pImageIndices = &imageIndex;
 
 		vkQueuePresentKHR(device->GetQueue(), &presentInfo);
+
+		BeginFrame();
+		framebuffers[imageIndex]->Begin();
+	}
+
+	void VulkanSwapChain::ResizeSwapChain(UInt32 _width, UInt32 height)
+	{
+	}
+
+	void VulkanSwapChain::BeginFrame()
+	{
 		vkWaitForFences(device->GetDevice(), 1, &inFlightFence, VK_TRUE, UINT64_MAX);
 		vkResetFences(device->GetDevice(), 1, &inFlightFence);
 		vkAcquireNextImageKHR(device->GetDevice(), swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 		vkResetCommandBuffer(device->GetCommandBuffer(), 0);
-		recordCommandBuffer(device->GetCommandBuffer(), imageIndex);
+		//fb->Bind();
+
+		VkCommandBufferBeginInfo beginInfo{};
+		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+		VkResult result = vkBeginCommandBuffer(device->GetCommandBuffer(), &beginInfo);
+		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to begin recording command buffer!");
+
+		VkViewport viewport{};
+		viewport.x = 0.0f;
+		viewport.y = (float)extent.height;
+		viewport.width = (float)extent.width;
+		viewport.height = -(float)extent.height;
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		vkCmdSetViewport(device->GetCommandBuffer(), 0, 1, &viewport);
+
+		VkRect2D scissor{};
+		scissor.offset = { 0, 0 };
+		scissor.extent = extent;
+		vkCmdSetScissor(device->GetCommandBuffer(), 0, 1, &scissor);
 	}
 
-	void VulkanSwapChain::ResizeSwapChain(UInt32 _width, UInt32 height)
+	void VulkanSwapChain::EndFrame()
 	{
 	}
 
@@ -230,47 +237,47 @@ namespace Steins
 			return actualExtent;
 		}
 	}
-	void VulkanSwapChain::recordCommandBuffer(VkCommandBuffer _commandBuffer, UInt32 _imageIndex)
-	{
-		VkCommandBufferBeginInfo beginInfo{};
-		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-
-		VkResult result = vkBeginCommandBuffer(_commandBuffer, &beginInfo);
-		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to begin recording command buffer!");
-
-		//VkFramebuffer buf = ((VulkanFramebuffer*)backFramebuffer.get())->GetFrameBuffers()[_imageIndex];
-
-		//VkRenderPassBeginInfo renderPassInfo{};
-		//renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		//renderPassInfo.renderPass = device->GetMainRenderPass();
-		//renderPassInfo.framebuffer = buf;
-		//renderPassInfo.renderArea.offset = { 0, 0 };
-		//renderPassInfo.renderArea.extent = extent;
-
-		//VkClearValue clearColor = { {1.0f, 1.0f, 1.0f, 1.0f} };
-		//renderPassInfo.clearValueCount = 1;
-		//renderPassInfo.pClearValues = &clearColor;
-
-		//vkCmdBeginRenderPass(_commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-
-		framebuffers[_imageIndex]->Begin();
-
-		VkViewport viewport{};
-		viewport.x = 0.0f;
-		viewport.y = (float)extent.height;
-		viewport.width = (float)extent.width;
-		viewport.height = -(float)extent.height;
-		viewport.minDepth = 0.0f;
-		viewport.maxDepth = 1.0f;
-		vkCmdSetViewport(_commandBuffer, 0, 1, &viewport);
-
-		VkRect2D scissor{};
-		scissor.offset = { 0, 0 };
-		scissor.extent = extent;
-		vkCmdSetScissor(_commandBuffer, 0, 1, &scissor);
-
-//		vkCmdDraw(_commandBuffer, 3, 1, 0, 0);
-
-
-	}
+//	void VulkanSwapChain::recordCommandBuffer(VkCommandBuffer _commandBuffer, UInt32 _imageIndex)
+//	{
+//		VkCommandBufferBeginInfo beginInfo{};
+//		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+//
+//		VkResult result = vkBeginCommandBuffer(_commandBuffer, &beginInfo);
+//		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to begin recording command buffer!");
+//
+//		//VkFramebuffer buf = ((VulkanFramebuffer*)backFramebuffer.get())->GetFrameBuffers()[_imageIndex];
+//
+//		//VkRenderPassBeginInfo renderPassInfo{};
+//		//renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+//		//renderPassInfo.renderPass = device->GetMainRenderPass();
+//		//renderPassInfo.framebuffer = buf;
+//		//renderPassInfo.renderArea.offset = { 0, 0 };
+//		//renderPassInfo.renderArea.extent = extent;
+//
+//		//VkClearValue clearColor = { {1.0f, 1.0f, 1.0f, 1.0f} };
+//		//renderPassInfo.clearValueCount = 1;
+//		//renderPassInfo.pClearValues = &clearColor;
+//
+//		//vkCmdBeginRenderPass(_commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+//
+//		framebuffers[_imageIndex]->Begin();
+//
+//		VkViewport viewport{};
+//		viewport.x = 0.0f;
+//		viewport.y = (float)extent.height;
+//		viewport.width = (float)extent.width;
+//		viewport.height = -(float)extent.height;
+//		viewport.minDepth = 0.0f;
+//		viewport.maxDepth = 1.0f;
+//		vkCmdSetViewport(_commandBuffer, 0, 1, &viewport);
+//
+//		VkRect2D scissor{};
+//		scissor.offset = { 0, 0 };
+//		scissor.extent = extent;
+//		vkCmdSetScissor(_commandBuffer, 0, 1, &scissor);
+//
+////		vkCmdDraw(_commandBuffer, 3, 1, 0, 0);
+//
+//
+//	}
 }

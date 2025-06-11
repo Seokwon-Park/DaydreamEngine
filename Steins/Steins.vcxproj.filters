@@ -1647,6 +1647,7 @@
     <ClInclude Include="Vendor\stb\stb_image.h">
       <Filter>Vendor\stb</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Steins\Scene\Scene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -1892,5 +1893,6 @@
     <ClCompile Include="Vendor\stb\stb_image.cpp">
       <Filter>Vendor\stb</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Steins\Scene\Scene.cpp" />
   </ItemGroup>
 </Project>

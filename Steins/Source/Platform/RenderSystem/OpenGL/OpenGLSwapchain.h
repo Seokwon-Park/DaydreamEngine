@@ -16,6 +16,9 @@ namespace Steins
 		virtual void SwapBuffers() override;
 		virtual void ResizeSwapChain(UInt32 _width, UInt32 height) override;
 
+		virtual void BeginFrame() override;
+		virtual void EndFrame() override;
+
 		virtual Framebuffer* GetBackFramebuffer() { return nullptr; };
 	private:
 		GLFWwindow* window;

@@ -235,6 +235,15 @@ namespace Steins
 		return MakeShared<D3D12ConstantBuffer>(this, _size);
 	}
 
+	ComPtr<ID3D12GraphicsCommandList> D3D12RenderDevice::BeginSingleTimeCommands()
+	{
+		return ComPtr<ID3D12GraphicsCommandList>();
+	}
+
+	void D3D12RenderDevice::EndSingleTimeCommands(ComPtr<ID3D12GraphicsCommandList> _commandBuffer)
+	{
+	}
+
 	//void D3D12RenderDevice::WaitForGPU(IDXGISwapChain3* _swapChain)
 	//{
 	//	HRESULT hr;

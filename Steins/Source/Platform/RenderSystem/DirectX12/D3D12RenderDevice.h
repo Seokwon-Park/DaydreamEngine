@@ -93,6 +93,9 @@ namespace Steins
 		DescriptorHeapAllocator& GetCBVSRVUAVHeapAlloc() { return cbvSrvUavHeapAlloc; }
 		IDXGIFactory7* GetFactory() const { return dxgiFactory.Get(); }
 
+		ComPtr<ID3D12GraphicsCommandList> BeginSingleTimeCommands();
+		void EndSingleTimeCommands(ComPtr<ID3D12GraphicsCommandList> _commandBuffer);
+
 		//void WaitForGPU(IDXGISwapChain3* _swapChain);
 
 	private:

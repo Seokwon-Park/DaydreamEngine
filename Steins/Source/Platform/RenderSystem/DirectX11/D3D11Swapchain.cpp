@@ -89,4 +89,12 @@ namespace Steins
 		device->GetContext()->RSSetViewports(1, &viewport);
 	}
 
+	void D3D11SwapChain::BeginFrame()
+	{
+	}
+
+	void D3D11SwapChain::EndFrame()
+	{
+	}
+
 }

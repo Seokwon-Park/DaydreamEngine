@@ -30,4 +30,10 @@ namespace Steins
 	void OpenGLSwapChain::ResizeSwapChain(UInt32 _width, UInt32 height)
 	{
 	}
+	void OpenGLSwapChain::BeginFrame()
+	{
+	}
+	void OpenGLSwapChain::EndFrame()
+	{
+	}
 }
