@@ -147,121 +147,121 @@
     <ClInclude Include="Source\Platform\OSWindows\WindowsWindow.h">
       <Filter>Source\Platform\OSWindows</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Buffer.h">
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11Buffer.h">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Framebuffer.h">
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11Framebuffer.h">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11GraphicsContext.h">
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11GraphicsContext.h">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11ImGuiRenderer.h">
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11ImGuiRenderer.h">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11PipelineState.h">
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11PipelineState.h">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11RenderDevice.h">
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11RenderDevice.h">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Shader.h">
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11Shader.h">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Swapchain.h">
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11Swapchain.h">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Texture.h">
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11Texture.h">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12Buffer.h">
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Buffer.h">
       <Filter>Source\Platform\RenderSystem\DirectX12</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12Framebuffer.h">
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Framebuffer.h">
       <Filter>Source\Platform\RenderSystem\DirectX12</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12GraphicsContext.h">
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12GraphicsContext.h">
       <Filter>Source\Platform\RenderSystem\DirectX12</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12ImGuiRenderer.h">
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12ImGuiRenderer.h">
       <Filter>Source\Platform\RenderSystem\DirectX12</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12PipelineState.h">
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12PipelineState.h">
       <Filter>Source\Platform\RenderSystem\DirectX12</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12RenderDevice.h">
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12RenderDevice.h">
       <Filter>Source\Platform\RenderSystem\DirectX12</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12Shader.h">
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Shader.h">
       <Filter>Source\Platform\RenderSystem\DirectX12</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12SwapChain.h">
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12SwapChain.h">
       <Filter>Source\Platform\RenderSystem\DirectX12</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12Texture.h">
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Texture.h">
       <Filter>Source\Platform\RenderSystem\DirectX12</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\GraphicsUtil.h">
+    <ClInclude Include="Source\Steins\Graphics\Utility\GraphicsUtil.h">
       <Filter>Source\Platform\RenderSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\Metal\MetalRenderDevice.h">
+    <ClInclude Include="Source\Steins\Graphics\API\Metal\MetalRenderDevice.h">
       <Filter>Source\Platform\RenderSystem\Metal</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLBuffer.h">
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLBuffer.h">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLFramebuffer.h">
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLFramebuffer.h">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLGraphicsContext.h">
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLGraphicsContext.h">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLImGuiRenderer.h">
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLImGuiRenderer.h">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLPipelineState.h">
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLPipelineState.h">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLRenderDevice.h">
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLRenderDevice.h">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.h">
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLShader.h">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLSwapchain.h">
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLSwapchain.h">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLTexture.h">
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLTexture.h">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VUlkanGraphicsContext.h">
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VUlkanGraphicsContext.h">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanBuffer.h">
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanBuffer.h">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanFramebuffer.h">
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanFramebuffer.h">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanImGuiRenderer.h">
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanImGuiRenderer.h">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanPipelineState.h">
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanPipelineState.h">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanRenderDevice.h">
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanRenderDevice.h">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanRenderPass.h">
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanRenderPass.h">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanShader.h">
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanShader.h">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapChain.h">
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapChain.h">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanTexture.h">
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanTexture.h">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins.h">
@@ -330,61 +330,64 @@
     <ClInclude Include="Source\Steins\ImGui\ImGuiRenderer.h">
       <Filter>Source\Steins\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Render\Buffer.h">
+    <ClInclude Include="Source\Steins\Graphics\Resources\Buffer.h">
       <Filter>Source\Steins\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Render\Camera.h">
+    <ClInclude Include="Source\Steins\Graphics\Core\Camera.h">
       <Filter>Source\Steins\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Render\Framebuffer.h">
+    <ClInclude Include="Source\Steins\Graphics\Resources\Framebuffer.h">
       <Filter>Source\Steins\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Render\GraphicsContext.h">
+    <ClInclude Include="Source\Steins\Graphics\Core\GraphicsContext.h">
       <Filter>Source\Steins\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Render\Material.h">
+    <ClInclude Include="Source\Steins\Graphics\Resources\Material.h">
       <Filter>Source\Steins\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Render\Mesh.h">
+    <ClInclude Include="Source\Steins\Graphics\Resources\Mesh.h">
       <Filter>Source\Steins\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Render\OrthographicCamera.h">
+    <ClInclude Include="Source\Steins\Graphics\Core\OrthographicCamera.h">
       <Filter>Source\Steins\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Render\PipelineState.h">
+    <ClInclude Include="Source\Steins\Graphics\Core\PipelineState.h">
       <Filter>Source\Steins\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Render\RenderCommand.h">
+    <ClInclude Include="Source\Steins\Graphics\Core\RenderCommand.h">
       <Filter>Source\Steins\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Render\RenderDevice.h">
+    <ClInclude Include="Source\Steins\Graphics\Core\RenderDevice.h">
       <Filter>Source\Steins\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Render\RenderPass.h">
+    <ClInclude Include="Source\Steins\Graphics\Core\RenderPass.h">
       <Filter>Source\Steins\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Render\RenderUnit.h">
+    <ClInclude Include="Source\Steins\Graphics\Core\RenderUnit.h">
       <Filter>Source\Steins\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Render\Renderer.h">
+    <ClInclude Include="Source\Steins\Graphics\Core\Renderer.h">
       <Filter>Source\Steins\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Render\Renderer2D.h">
+    <ClInclude Include="Source\Steins\Graphics\Core\Renderer2D.h">
       <Filter>Source\Steins\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Render\Shader.h">
+    <ClInclude Include="Source\Steins\Graphics\Resources\Shader.h">
       <Filter>Source\Steins\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Render\Swapchain.h">
+    <ClInclude Include="Source\Steins\Graphics\Core\Swapchain.h">
       <Filter>Source\Steins\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Render\Texture.h">
+    <ClInclude Include="Source\Steins\Graphics\Resources\Texture.h">
       <Filter>Source\Steins\Render</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Scene\Component.h">
+    <ClInclude Include="Source\Steins\Scene\Components\Component.h">
       <Filter>Source\Steins\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Scene\GameObject.h">
+    <ClInclude Include="Source\Steins\Scene\Entity\GameObject.h">
+      <Filter>Source\Steins\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Scene\Scene.h">
       <Filter>Source\Steins\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Source\SteinsPCH.h">
@@ -1647,7 +1650,9 @@
     <ClInclude Include="Vendor\stb\stb_image.h">
       <Filter>Vendor\stb</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Scene\Scene.h" />
+    <ClInclude Include="Source\Steins\Graphics\Core\Asset.h" />
+    <ClInclude Include="Source\Steins\Graphics\Utility\MeshLoader.h" />
+    <ClInclude Include="Source\Steins\Scene\Components\CameraComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -1683,127 +1688,127 @@
     <ClCompile Include="Source\Platform\OSWindows\WindowsWindow.cpp">
       <Filter>Source\Platform\OSWindows</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Buffer.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11Buffer.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Framebuffer.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11Framebuffer.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11GraphicsContext.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11GraphicsContext.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11ImGuiRenderer.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11ImGuiRenderer.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11PipelineState.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11PipelineState.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11PixelShader.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11PixelShader.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11RenderDevice.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11RenderDevice.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Shader.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11Shader.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Swapchain.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11Swapchain.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Texture.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11Texture.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11VertexShader.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11VertexShader.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12Buffer.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Buffer.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX12</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12Framebuffer.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Framebuffer.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX12</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12GraphicsContext.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12GraphicsContext.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX12</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12ImGuiRenderer.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12ImGuiRenderer.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX12</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12PipelineState.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12PipelineState.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX12</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12RenderDevice.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12RenderDevice.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX12</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12Shader.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Shader.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX12</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12SwapChain.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12SwapChain.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX12</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12Texture.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Texture.cpp">
       <Filter>Source\Platform\RenderSystem\DirectX12</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\GraphicsUtil.cpp">
+    <ClCompile Include="Source\Steins\Graphics\Utility\GraphicsUtil.cpp">
       <Filter>Source\Platform\RenderSystem</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\Metal\MetalRenderDevice.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\Metal\MetalRenderDevice.cpp">
       <Filter>Source\Platform\RenderSystem\Metal</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLBuffer.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLBuffer.cpp">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLFramebuffer.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLFramebuffer.cpp">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLGraphicsContext.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLGraphicsContext.cpp">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLImGuiRenderer.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLImGuiRenderer.cpp">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLPipelineState.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLPipelineState.cpp">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLRenderDevice.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLRenderDevice.cpp">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLShader.cpp">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLSwapchain.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLSwapchain.cpp">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLTexture.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLTexture.cpp">
       <Filter>Source\Platform\RenderSystem\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VUlkanGraphicsContext.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VUlkanGraphicsContext.cpp">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanBuffer.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanBuffer.cpp">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanFramebuffer.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanFramebuffer.cpp">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanImGuiRenderer.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanImGuiRenderer.cpp">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanPipelineState.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanPipelineState.cpp">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanRenderDevice.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanRenderDevice.cpp">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanRenderPass.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanRenderPass.cpp">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanShader.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanShader.cpp">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapChain.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapChain.cpp">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanTexture.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanTexture.cpp">
       <Filter>Source\Platform\RenderSystem\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="Source\Steins\Core\Application.cpp">
@@ -1833,58 +1838,61 @@
     <ClCompile Include="Source\Steins\ImGui\ImGuiRenderer.cpp">
       <Filter>Source\Steins\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Render\Buffer.cpp">
+    <ClCompile Include="Source\Steins\Graphics\Resources\Buffer.cpp">
       <Filter>Source\Steins\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Render\Camera.cpp">
+    <ClCompile Include="Source\Steins\Graphics\Core\Camera.cpp">
       <Filter>Source\Steins\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Render\Framebuffer.cpp">
+    <ClCompile Include="Source\Steins\Graphics\Resources\Framebuffer.cpp">
       <Filter>Source\Steins\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Render\GraphicsContext.cpp">
+    <ClCompile Include="Source\Steins\Graphics\Core\GraphicsContext.cpp">
       <Filter>Source\Steins\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Render\Material.cpp">
+    <ClCompile Include="Source\Steins\Graphics\Resources\Material.cpp">
       <Filter>Source\Steins\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Render\Mesh.cpp">
+    <ClCompile Include="Source\Steins\Graphics\Resources\Mesh.cpp">
       <Filter>Source\Steins\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Render\OrthographicCamera.cpp">
+    <ClCompile Include="Source\Steins\Graphics\Core\OrthographicCamera.cpp">
       <Filter>Source\Steins\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Render\PipelineState.cpp">
+    <ClCompile Include="Source\Steins\Graphics\Core\PipelineState.cpp">
       <Filter>Source\Steins\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Render\RenderCommand.cpp">
+    <ClCompile Include="Source\Steins\Graphics\Core\RenderCommand.cpp">
       <Filter>Source\Steins\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Render\RenderDevice.cpp">
+    <ClCompile Include="Source\Steins\Graphics\Core\RenderDevice.cpp">
       <Filter>Source\Steins\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Render\RenderPass.cpp">
+    <ClCompile Include="Source\Steins\Graphics\Core\RenderPass.cpp">
       <Filter>Source\Steins\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Render\RenderUnit.cpp">
+    <ClCompile Include="Source\Steins\Graphics\Core\RenderUnit.cpp">
       <Filter>Source\Steins\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Render\Renderer.cpp">
+    <ClCompile Include="Source\Steins\Graphics\Core\Renderer.cpp">
       <Filter>Source\Steins\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Render\Renderer2D.cpp">
+    <ClCompile Include="Source\Steins\Graphics\Core\Renderer2D.cpp">
       <Filter>Source\Steins\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Render\Shader.cpp">
+    <ClCompile Include="Source\Steins\Graphics\Resources\Shader.cpp">
       <Filter>Source\Steins\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Render\Swapchain.cpp">
+    <ClCompile Include="Source\Steins\Graphics\Core\Swapchain.cpp">
       <Filter>Source\Steins\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Render\Texture.cpp">
+    <ClCompile Include="Source\Steins\Graphics\Resources\Texture.cpp">
       <Filter>Source\Steins\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Scene\GameObject.cpp">
+    <ClCompile Include="Source\Steins\Scene\Entity\GameObject.cpp">
+      <Filter>Source\Steins\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Steins\Scene\Scene.cpp">
       <Filter>Source\Steins\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Source\SteinsPCH.cpp">
@@ -1893,6 +1901,7 @@
     <ClCompile Include="Vendor\stb\stb_image.cpp">
       <Filter>Vendor\stb</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Scene\Scene.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Core\Asset.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Utility\MeshLoader.cpp" />
   </ItemGroup>
 </Project>

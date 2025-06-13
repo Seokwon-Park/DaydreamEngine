@@ -14,17 +14,17 @@
 #include "Steins/ImGui/ImGuiRenderer.h"
 
 // ---Renderer------------------------------------
-#include "Steins/Render/Renderer.h"
-#include "Steins/Render/Renderer2D.h"
-#include "Steins/Render/RenderCommand.h"
+#include "Steins/Graphics/Core/Renderer.h"
+#include "Steins/Graphics/Core/Renderer2D.h"
+#include "Steins/Graphics/Core/RenderCommand.h"
 
-#include "Steins/Render/Buffer.h"
-#include "Steins/Render/Shader.h"
-#include "Steins/Render/Framebuffer.h"
-#include "Steins/Render/PipelineState.h"
-#include "Steins/Render/Texture.h"
+#include "Steins/Graphics/Resources/Buffer.h"
+#include "Steins/Graphics/Resources/Shader.h"
+#include "Steins/Graphics/Resources/Framebuffer.h"
+#include "Steins/Graphics/Core/PipelineState.h"
+#include "Steins/Graphics/Resources/Texture.h"
 
-#include "Steins/Render/Camera.h"
-#include "Steins/Render/OrthographicCamera.h"
+#include "Steins/Graphics/Core/Camera.h"
+#include "Steins/Graphics/Core/OrthographicCamera.h"
 // -----------------------------------------------
 

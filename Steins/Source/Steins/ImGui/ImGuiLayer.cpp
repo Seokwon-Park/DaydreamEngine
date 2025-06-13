@@ -6,7 +6,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Steins/Core/Application.h"
-#include "Steins/Render/Renderer.h"
+#include "Steins/Graphics/Core/Renderer.h"
 
 namespace Steins
 {

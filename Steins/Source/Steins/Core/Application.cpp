@@ -5,7 +5,7 @@
 #include "Input.h"
 #include "KeyCodes.h"
 #include "Steins/ImGui/ImGuiLayer.h"
-#include "Steins/Render/Renderer.h"
+#include "Steins/Graphics/Core/Renderer.h"
 
 #include "glad/glad.h"
 
@@ -118,10 +118,10 @@ namespace Steins
 			//	STEINS_CORE_TRACE("MOUSE BUTTON DOWN TEST");
 			//}
 
-			//if (Input::GetKeyDown(Key::A))
-			//{
-			//	STEINS_CORE_TRACE("KEY DOWN TEST");
-			//}
+			if (Input::GetKeyDown(Key::A))
+			{
+				STEINS_CORE_TRACE("KEY DOWN TEST");
+			}
 
 			//if (Input::GetKeyPress(Key::B))
 			//{

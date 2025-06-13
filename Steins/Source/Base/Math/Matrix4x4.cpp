@@ -48,16 +48,32 @@ namespace Steins
 		_matrix.MatrixTranslate(_translate);
 		return _matrix;
 	}
-	Matrix4x4 Matrix4x4::Orthographic(float _left, float _right, float _bottom, float _top)
+	Matrix4x4 Matrix4x4::Orthographic(float _left, float _right, float _bottom, float _top, float _near, float _far)
 	{
-		Matrix4x4 out; 
+		Matrix4x4 out;
 		out.glmMat = glm::ortho(_left, _right, _bottom, _top);
 		out.MatrixTranspose(); // row-major;
 		return out;
+
 	}
+	Matrix4x4 Matrix4x4::Perspective(float _fovy, float _aspect, float _near, float _far)
+	{
+		Matrix4x4 out;
+		out.glmMat = glm::perspective(_fovy, _aspect, _near, _far);
+		out.MatrixTranspose(); // row-major;
+		return out;
+	}
+
 	Matrix4x4 Matrix4x4::Inverse(Matrix4x4 _matrix)
 	{
 		_matrix.MatrixInverse();
 		return _matrix;
+	}
+	Matrix4x4 Matrix4x4::LookAtLH(Vector3 _position, Vector3 _direction, Vector3 _up)
+	{
+		Matrix4x4 out;
+		out.glmMat = glm::lookAtLH(_position, _direction, _up);
+		out.MatrixTranspose(); // row-major;
+		return out;
 	}
 }

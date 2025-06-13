@@ -11,8 +11,10 @@ namespace Steins
 	{
 		SteinsWindow& window = Application::GetInstance().GetMainWindow();
 		int state = window.GetKeyState(_key);
+		//_key가 눌려 있지 않으면
 		if (state == STEINS_PRESS && window.GetIsKeyDown(_key) == false)
 		{
+			//_key를 누른 것으로 설정한다. -> 다음 틱에서도 누르고 있으면 false 리턴
 			window.SetKeyDown(_key);
 			return true;
 		}

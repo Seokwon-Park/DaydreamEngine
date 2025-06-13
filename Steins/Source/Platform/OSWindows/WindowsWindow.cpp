@@ -5,8 +5,8 @@
 #include "Steins/Event/MouseEvent.h"
 #include "Steins/Event/ApplicationEvent.h"
 
-#include "Platform/RenderSystem/OpenGL/OpenGLRenderDevice.h"
-#include "Platform/RenderSystem/DirectX11/D3D11RenderDevice.h"
+#include "Steins/Graphics/API/OpenGL/OpenGLRenderDevice.h"
+#include "Steins/Graphics/API/DirectX11/D3D11RenderDevice.h"
 
 namespace Steins
 {

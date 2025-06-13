@@ -193,10 +193,10 @@ void Sandbox2D::OnUpdate(Float32 _deltaTime)
 	Steins::Renderer::Submit(squareIB->GetCount());
 
 	//r2d.TestTick();
-	Steins::Renderer2D::BeginScene(camera);
-	Steins::Renderer2D::DrawQuad(Steins::Vector3(0.2f, 0.2f, 0.0f), Steins::Vector2(1.0f, 1.0f), { 1.0f,1.0f,1.0f,1.0f });
-	Steins::Renderer2D::DrawQuad(Steins::Vector3(-0.2f, -0.2f, 0.0f), Steins::Vector2(1.0f, 1.0f), { 1.0f,1.0f,1.0f,1.0f });
-	Steins::Renderer2D::EndScene();
+	//Steins::Renderer2D::BeginScene(camera);
+	//Steins::Renderer2D::DrawQuad(Steins::Vector3(0.2f, 0.2f, 0.0f), Steins::Vector2(1.0f, 1.0f), { 1.0f,1.0f,1.0f,1.0f });
+	//Steins::Renderer2D::DrawQuad(Steins::Vector3(-0.2f, -0.2f, 0.0f), Steins::Vector2(1.0f, 1.0f), { 1.0f,1.0f,1.0f,1.0f });
+	//Steins::Renderer2D::EndScene();
 	//va->Bind();
 	//vs->Bind();
 	//ps->Bind();

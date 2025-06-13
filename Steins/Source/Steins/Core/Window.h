@@ -2,7 +2,7 @@
 
 #include "WindowDefine.h"
 #include "Steins/Event/Event.h"
-#include "Steins/Render/SwapChain.h"
+#include "Steins/Graphics/Core/SwapChain.h"
 
 
 namespace Steins

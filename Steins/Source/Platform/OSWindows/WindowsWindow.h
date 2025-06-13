@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Steins/Core/Window.h"
-#include "Steins/Render/RenderDevice.h"
+#include "Steins/Graphics/Core/RenderDevice.h"
 
 #define GLFW_EXPOSE_NATIVE_WIN32
 
@@ -38,6 +38,7 @@ namespace Steins
 		void* GetNativeWindow() const override { return glfwWindow; }
 
 		inline void SetKeyState(int _key, int _state)override { windowData.keyStates[_key] = _state; }
+		// 이 함수는 window에서 releas
 		inline bool GetIsKeyDown(int _key) const override { return windowData.keyDownChecker[_key]; }
 		inline void SetKeyDown(int _key) override { windowData.keyDownChecker[_key] = true; }
 		void OnUpdateKeyState() override;

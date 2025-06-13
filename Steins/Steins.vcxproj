@@ -26,7 +26,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
+    <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
@@ -61,10 +61,12 @@
       <PrecompiledHeaderFile>SteinsPCH.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>STEINS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;STEINS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>Source;Vendor\spdlog\include;Vendor\glfw\include;Vendor\glad\include;Vendor\imgui;Vendor\glm;Vendor\stb;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source;Vendor\spdlog\include;Vendor\glfw\include;Vendor\glad\include;Vendor\imgui;Vendor\glm;Vendor\stb;Vendor\assimp\include;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
+      <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
@@ -73,8 +75,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>opengl32.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;vulkan-1.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;Vendor\assimp\bin\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -83,10 +85,12 @@
       <PrecompiledHeaderFile>SteinsPCH.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>STEINS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;STEINS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>Source;Vendor\spdlog\include;Vendor\glfw\include;Vendor\glad\include;Vendor\imgui;Vendor\glm;Vendor\stb;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source;Vendor\spdlog\include;Vendor\glfw\include;Vendor\glad\include;Vendor\imgui;Vendor\glm;Vendor\stb;Vendor\assimp\include;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
@@ -95,8 +99,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>opengl32.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;vulkan-1.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;Vendor\assimp\bin\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -118,45 +122,45 @@
     <ClInclude Include="Source\Platform\OSLinux\LinuxWindow.h" />
     <ClInclude Include="Source\Platform\OSMac\MacOSWindow.h" />
     <ClInclude Include="Source\Platform\OSWindows\WindowsWindow.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Buffer.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Framebuffer.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11GraphicsContext.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11ImGuiRenderer.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11PipelineState.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11RenderDevice.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Shader.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Swapchain.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX11\D3D11Texture.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12Buffer.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12Framebuffer.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12GraphicsContext.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12ImGuiRenderer.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12PipelineState.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12RenderDevice.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12Shader.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12SwapChain.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\DirectX12\D3D12Texture.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\GraphicsUtil.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\Metal\MetalRenderDevice.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLBuffer.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLFramebuffer.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLGraphicsContext.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLImGuiRenderer.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLPipelineState.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLRenderDevice.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLSwapchain.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\OpenGL\OpenGLTexture.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VUlkanGraphicsContext.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanBuffer.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanFramebuffer.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanImGuiRenderer.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanPipelineState.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanRenderDevice.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanRenderPass.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanShader.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapChain.h" />
-    <ClInclude Include="Source\Platform\RenderSystem\Vulkan\VulkanTexture.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11Buffer.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11Framebuffer.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11GraphicsContext.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11ImGuiRenderer.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11PipelineState.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11RenderDevice.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11Shader.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11Swapchain.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11Texture.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Buffer.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Framebuffer.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12GraphicsContext.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12ImGuiRenderer.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12PipelineState.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12RenderDevice.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Shader.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12SwapChain.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Texture.h" />
+    <ClInclude Include="Source\Steins\Graphics\Utility\GraphicsUtil.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\Metal\MetalRenderDevice.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLBuffer.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLFramebuffer.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLGraphicsContext.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLImGuiRenderer.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLPipelineState.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLRenderDevice.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLShader.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLSwapchain.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLTexture.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VUlkanGraphicsContext.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanBuffer.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanFramebuffer.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanImGuiRenderer.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanPipelineState.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanRenderDevice.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanRenderPass.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanShader.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapChain.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanTexture.h" />
     <ClInclude Include="Source\Steins.h" />
     <ClInclude Include="Source\Steins\Core\Application.h" />
     <ClInclude Include="Source\Steins\Core\Assert.h" />
@@ -179,27 +183,30 @@
     <ClInclude Include="Source\Steins\Event\MouseEvent.h" />
     <ClInclude Include="Source\Steins\ImGui\ImGuiLayer.h" />
     <ClInclude Include="Source\Steins\ImGui\ImGuiRenderer.h" />
-    <ClInclude Include="Source\Steins\Render\Buffer.h" />
-    <ClInclude Include="Source\Steins\Render\Camera.h" />
-    <ClInclude Include="Source\Steins\Render\Framebuffer.h" />
-    <ClInclude Include="Source\Steins\Render\GraphicsContext.h" />
-    <ClInclude Include="Source\Steins\Render\Material.h" />
-    <ClInclude Include="Source\Steins\Render\Mesh.h" />
-    <ClInclude Include="Source\Steins\Render\OrthographicCamera.h" />
-    <ClInclude Include="Source\Steins\Render\PipelineState.h" />
-    <ClInclude Include="Source\Steins\Render\RenderCommand.h" />
-    <ClInclude Include="Source\Steins\Render\RenderDevice.h" />
-    <ClInclude Include="Source\Steins\Render\RenderPass.h" />
-    <ClInclude Include="Source\Steins\Render\RenderUnit.h" />
-    <ClInclude Include="Source\Steins\Render\Renderer.h" />
-    <ClInclude Include="Source\Steins\Render\Renderer2D.h" />
-    <ClInclude Include="Source\Steins\Render\Shader.h" />
-    <ClInclude Include="Source\Steins\Render\Swapchain.h" />
-    <ClInclude Include="Source\Steins\Render\Texture.h" />
-    <ClInclude Include="Source\Steins\Scene\Component.h" />
-    <ClInclude Include="Source\Steins\Scene\GameObject.h" />
-    <ClInclude Include="Source\SteinsPCH.h" />
+    <ClInclude Include="Source\Steins\Graphics\Core\Asset.h" />
+    <ClInclude Include="Source\Steins\Graphics\Resources\Buffer.h" />
+    <ClInclude Include="Source\Steins\Graphics\Core\Camera.h" />
+    <ClInclude Include="Source\Steins\Graphics\Resources\Framebuffer.h" />
+    <ClInclude Include="Source\Steins\Graphics\Core\GraphicsContext.h" />
+    <ClInclude Include="Source\Steins\Graphics\Resources\Material.h" />
+    <ClInclude Include="Source\Steins\Graphics\Resources\Mesh.h" />
+    <ClInclude Include="Source\Steins\Graphics\Utility\MeshLoader.h" />
+    <ClInclude Include="Source\Steins\Graphics\Core\OrthographicCamera.h" />
+    <ClInclude Include="Source\Steins\Graphics\Core\PipelineState.h" />
+    <ClInclude Include="Source\Steins\Graphics\Core\RenderCommand.h" />
+    <ClInclude Include="Source\Steins\Graphics\Core\RenderDevice.h" />
+    <ClInclude Include="Source\Steins\Graphics\Core\RenderPass.h" />
+    <ClInclude Include="Source\Steins\Graphics\Core\RenderUnit.h" />
+    <ClInclude Include="Source\Steins\Graphics\Core\Renderer.h" />
+    <ClInclude Include="Source\Steins\Graphics\Core\Renderer2D.h" />
+    <ClInclude Include="Source\Steins\Graphics\Resources\Shader.h" />
+    <ClInclude Include="Source\Steins\Graphics\Core\Swapchain.h" />
+    <ClInclude Include="Source\Steins\Graphics\Resources\Texture.h" />
+    <ClInclude Include="Source\Steins\Scene\Components\CameraComponent.h" />
+    <ClInclude Include="Source\Steins\Scene\Components\Component.h" />
+    <ClInclude Include="Source\Steins\Scene\Entity\GameObject.h" />
     <ClInclude Include="Source\Steins\Scene\Scene.h" />
+    <ClInclude Include="Source\SteinsPCH.h" />
     <ClInclude Include="Vendor\glm\glm\common.hpp" />
     <ClInclude Include="Vendor\glm\glm\detail\_features.hpp" />
     <ClInclude Include="Vendor\glm\glm\detail\_fixes.hpp" />
@@ -632,47 +639,47 @@
     <ClCompile Include="Source\Platform\OSLinux\LinuxWindow.cpp" />
     <ClCompile Include="Source\Platform\OSMac\MacOSWindow.cpp" />
     <ClCompile Include="Source\Platform\OSWindows\WindowsWindow.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Buffer.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Framebuffer.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11GraphicsContext.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11ImGuiRenderer.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11PipelineState.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11PixelShader.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11RenderDevice.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Shader.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Swapchain.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11Texture.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX11\D3D11VertexShader.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12Buffer.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12Framebuffer.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12GraphicsContext.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12ImGuiRenderer.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12PipelineState.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12RenderDevice.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12Shader.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12SwapChain.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\DirectX12\D3D12Texture.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\GraphicsUtil.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\Metal\MetalRenderDevice.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLBuffer.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLFramebuffer.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLGraphicsContext.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLImGuiRenderer.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLPipelineState.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLRenderDevice.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLShader.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLSwapchain.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\OpenGL\OpenGLTexture.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VUlkanGraphicsContext.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanBuffer.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanFramebuffer.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanImGuiRenderer.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanPipelineState.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanRenderDevice.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanRenderPass.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanShader.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanSwapChain.cpp" />
-    <ClCompile Include="Source\Platform\RenderSystem\Vulkan\VulkanTexture.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11Buffer.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11Framebuffer.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11GraphicsContext.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11ImGuiRenderer.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11PipelineState.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11PixelShader.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11RenderDevice.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11Shader.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11Swapchain.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11Texture.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11VertexShader.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Buffer.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Framebuffer.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12GraphicsContext.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12ImGuiRenderer.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12PipelineState.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12RenderDevice.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Shader.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12SwapChain.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Texture.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Utility\GraphicsUtil.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\Metal\MetalRenderDevice.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLBuffer.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLFramebuffer.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLGraphicsContext.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLImGuiRenderer.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLPipelineState.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLRenderDevice.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLShader.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLSwapchain.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLTexture.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VUlkanGraphicsContext.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanBuffer.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanFramebuffer.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanImGuiRenderer.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanPipelineState.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanRenderDevice.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanRenderPass.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanShader.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapChain.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanTexture.cpp" />
     <ClCompile Include="Source\Steins\Core\Application.cpp" />
     <ClCompile Include="Source\Steins\Core\Input.cpp" />
     <ClCompile Include="Source\Steins\Core\Layer.cpp" />
@@ -682,28 +689,30 @@
     <ClCompile Include="Source\Steins\ImGui\ImGuiBackends.cpp" />
     <ClCompile Include="Source\Steins\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="Source\Steins\ImGui\ImGuiRenderer.cpp" />
-    <ClCompile Include="Source\Steins\Render\Buffer.cpp" />
-    <ClCompile Include="Source\Steins\Render\Camera.cpp" />
-    <ClCompile Include="Source\Steins\Render\Framebuffer.cpp" />
-    <ClCompile Include="Source\Steins\Render\GraphicsContext.cpp" />
-    <ClCompile Include="Source\Steins\Render\Material.cpp" />
-    <ClCompile Include="Source\Steins\Render\Mesh.cpp" />
-    <ClCompile Include="Source\Steins\Render\OrthographicCamera.cpp" />
-    <ClCompile Include="Source\Steins\Render\PipelineState.cpp" />
-    <ClCompile Include="Source\Steins\Render\RenderCommand.cpp" />
-    <ClCompile Include="Source\Steins\Render\RenderDevice.cpp" />
-    <ClCompile Include="Source\Steins\Render\RenderPass.cpp" />
-    <ClCompile Include="Source\Steins\Render\RenderUnit.cpp" />
-    <ClCompile Include="Source\Steins\Render\Renderer.cpp" />
-    <ClCompile Include="Source\Steins\Render\Renderer2D.cpp" />
-    <ClCompile Include="Source\Steins\Render\Shader.cpp" />
-    <ClCompile Include="Source\Steins\Render\Swapchain.cpp" />
-    <ClCompile Include="Source\Steins\Render\Texture.cpp" />
-    <ClCompile Include="Source\Steins\Scene\GameObject.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Core\Asset.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Resources\Buffer.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Core\Camera.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Resources\Framebuffer.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Core\GraphicsContext.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Resources\Material.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Resources\Mesh.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Utility\MeshLoader.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Core\OrthographicCamera.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Core\PipelineState.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Core\RenderCommand.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Core\RenderDevice.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Core\RenderPass.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Core\RenderUnit.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Core\Renderer.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Core\Renderer2D.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Resources\Shader.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Core\Swapchain.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Resources\Texture.cpp" />
+    <ClCompile Include="Source\Steins\Scene\Entity\GameObject.cpp" />
+    <ClCompile Include="Source\Steins\Scene\Scene.cpp" />
     <ClCompile Include="Source\SteinsPCH.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Scene\Scene.cpp" />
     <ClCompile Include="Vendor\stb\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>

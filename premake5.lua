@@ -14,11 +14,12 @@ workspace "Steins"
 	IncludeDir["ImGui"] = "Steins/Vendor/imgui"
 	IncludeDir["glm"] = "Steins/Vendor/glm"
 	IncludeDir["stb"] = "Steins/Vendor/stb"
+	IncludeDir["assimp"] = "Steins/Vendor/assimp/include"
 
 	include "Steins/Vendor/glfw"
 	include "Steins/Vendor/glad"
 	include "Steins/Vendor/imgui"
-
+	
 project "Steins"
 	location "Steins"
 	kind "StaticLib"
@@ -50,11 +51,13 @@ project "Steins"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb}",
+		"%{IncludeDir.assimp}",
 		"$(VULKAN_SDK)/Include"
 	}
 	libdirs 
 	{
-        "$(VULKAN_SDK)/Lib"
+        "$(VULKAN_SDK)/Lib",
+		"Steins/Vendor/assimp/bin/%{cfg.buildcfg}"
     }
 	links
 	{
@@ -74,13 +77,25 @@ project "Steins"
 			"STEINS_PLATFORM_WINDOWS",
 			"GLFW_INCLUDE_NONE"
 		}
+		flags { "MultiProcessorCompile" }
+
 
 	filter "configurations:Debug"
 		defines "STEINS_DEBUG"
 		symbols "On"
+		runtime "Debug"
+		links 
+		{
+             "assimp-vc143-mtd.lib" -- Assimp Debug 버전 라이브러리 이름 (필요 시 주석 해제)
+        }
 	filter "configurations:Release"
 		defines "STEINS_RELEASE"
 		symbols "On"
+		runtime "Release"
+		links 
+		{
+             "assimp-vc143-mt.lib" -- Assimp Debug 버전 라이브러리 이름 (필요 시 주석 해제)
+        }
 	
 project "Sandbox"
 	location "Sandbox"
@@ -116,12 +131,15 @@ project "Sandbox"
 		{
 			"STEINS_PLATFORM_WINDOWS",
 		}
+		flags { "MultiProcessorCompile" }
 	filter "configurations:Debug"
 		defines "STEINS_DEBUG"
 		symbols "On"
+		runtime "Debug"
 	filter "configurations:Release"
 		defines "STEINS_RELEASE"
 		symbols "On"
+		runtime "Release"
 
 project "SteinsGate"
 	location "SteinsGate"
@@ -157,9 +175,12 @@ project "SteinsGate"
 		{
 			"STEINS_PLATFORM_WINDOWS",
 		}
+		flags { "MultiProcessorCompile" }
 	filter "configurations:Debug"
 		defines "STEINS_DEBUG"
 		symbols "On"
+		runtime "Debug"
 	filter "configurations:Release"
 		defines "STEINS_RELEASE"
 		symbols "On"
+		runtime "Release"

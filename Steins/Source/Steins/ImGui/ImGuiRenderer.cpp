@@ -2,7 +2,7 @@
 #include "ImGuiRenderer.h"
 #include "Steins/Core/Application.h"
 
-#include "Steins/Render/Renderer.h"
+#include "Steins/Graphics/Core/Renderer.h"
 #include "backends/imgui_impl_glfw.h"
 
 #include "GLFW/glfw3.h"
