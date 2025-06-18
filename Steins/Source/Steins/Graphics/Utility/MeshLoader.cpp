@@ -1,9 +1,7 @@
 #include "SteinsPCH.h"
 #include "MeshLoader.h"
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+
 
 namespace Steins
 {
@@ -30,7 +28,7 @@ namespace Steins
 		std::vector<MeshData> meshes;
 		//Start form root node
 		ProcessNode(_scene->mRootNode, _scene, meshes);
-		return std::vector<MeshData>();
+		return meshes;
 	}
 	void MeshLoader::ProcessNode(aiNode* _node, const aiScene* _scene, std::vector<MeshData>& _meshes)
 	{
@@ -46,7 +44,7 @@ namespace Steins
 		MeshData meshData;
 		meshData.name = _mesh->mName.C_Str();
 
-		for (int i = 0; i < _mesh->mNumVertices; i++)
+		for (UInt32 i = 0; i < _mesh->mNumVertices; i++)
 		{
 			Vertex vertex;
 

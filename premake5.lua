@@ -25,7 +25,7 @@ project "Steins"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++20"
-	staticruntime "on"
+	staticruntime "off"
 
 	targetdir ("Build/Bin/%{cfg.buildcfg}/%{prj.name}")
 	objdir ("Build/Intermediate/%{cfg.buildcfg}/%{prj.name}")
@@ -40,7 +40,7 @@ project "Steins"
 		"%{prj.name}/Vendor/stb/**.h",
 		"%{prj.name}/Vendor/stb/**.cpp",
 		"%{prj.name}/Vendor/glm/glm/**.hpp",
- 		"%{prj.name}/Vendor/glm/glm/**.inl"
+ 		"%{prj.name}/Vendor/glm/glm/**.inl",
 	}
 	includedirs
 	{
@@ -65,12 +65,12 @@ project "Steins"
 		"glad",
 		"ImGui",
 		"opengl32.lib",
-		"vulkan-1.lib"
+		"vulkan-1.lib",
+
 	}
 
 	filter "system:windows"
 		cppdialect "C++20"
-		staticruntime "On"
 		systemversion "latest"
 		defines
 		{
@@ -86,7 +86,15 @@ project "Steins"
 		runtime "Debug"
 		links 
 		{
-             "assimp-vc143-mtd.lib" -- Assimp Debug 버전 라이브러리 이름 (필요 시 주석 해제)
+			"spirv-cross-cd.lib",
+			"spirv-cross-cored.lib",
+			"spirv-cross-cppd.lib",
+			"spirv-cross-glsld.lib",
+			"spirv-cross-hlsld.lib",
+			"spirv-cross-msld.lib",
+			"spirv-cross-reflectd.lib",
+			"spirv-cross-utild.lib",
+            "assimp-vc143-mtd.lib" -- Assimp Debug 버전 라이브러리 이름 (필요 시 주석 해제)
         }
 	filter "configurations:Release"
 		defines "STEINS_RELEASE"
@@ -94,7 +102,15 @@ project "Steins"
 		runtime "Release"
 		links 
 		{
-             "assimp-vc143-mt.lib" -- Assimp Debug 버전 라이브러리 이름 (필요 시 주석 해제)
+			"spirv-cross-c.lib",
+			"spirv-cross-core.lib",
+			"spirv-cross-cpp.lib",
+			"spirv-cross-glsl.lib",
+			"spirv-cross-hlsl.lib",
+			"spirv-cross-msl.lib",
+			"spirv-cross-reflect.lib",
+			"spirv-cross-util.lib",
+            "assimp-vc143-mt.lib" -- Assimp Debug 버전 라이브러리 이름 (필요 시 주석 해제)
         }
 	
 project "Sandbox"
@@ -102,7 +118,7 @@ project "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++20"
-	staticruntime "on"
+	staticruntime "off"
 
 	targetdir ("Build/Bin/%{cfg.buildcfg}/%{prj.name}")
 	objdir ("Build/Intermediate/%{cfg.buildcfg}/%{prj.name}")
@@ -125,7 +141,6 @@ project "Sandbox"
 	}
 	filter "system:windows"
 		cppdialect "C++20"
-		staticruntime "On"
 		systemversion "latest"
 		defines
 		{
@@ -146,7 +161,7 @@ project "SteinsGate"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++20"
-	staticruntime "on"
+	staticruntime "off"
 
 	targetdir ("Build/Bin/%{cfg.buildcfg}/%{prj.name}")
 	objdir ("Build/Intermediate/%{cfg.buildcfg}/%{prj.name}")
@@ -169,7 +184,6 @@ project "SteinsGate"
 	}
 	filter "system:windows"
 		cppdialect "C++20"
-		staticruntime "On"
 		systemversion "latest"
 		defines
 		{

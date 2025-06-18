@@ -11,3 +11,4 @@
 #include "Base/Math/Color.h"
 #include "Base/IO/FilePath.h"
 #include "Base/Time/TimeStep.h"
+#include "Base/Container/HashMap.h"

@@ -3,7 +3,8 @@
 
 namespace Steins
 {
-	Asset::Asset()
+	Asset::Asset(const std::string& _name)
+		:name(_name)
 	{
 	}
 }

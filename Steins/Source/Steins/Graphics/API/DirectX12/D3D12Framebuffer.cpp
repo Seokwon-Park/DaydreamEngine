@@ -27,7 +27,7 @@ namespace Steins
 	}
 	void D3D12Framebuffer::Begin() const
 	{
-		device->GetCommandList()->OMSetRenderTargets(renderTargetHandles.size(), renderTargetHandles.data(), false, nullptr);
+		device->GetCommandList()->OMSetRenderTargets((UInt32)renderTargetHandles.size(), renderTargetHandles.data(), false, nullptr);
 	}
 	void D3D12Framebuffer::Clear(Color _color)
 	{

@@ -24,7 +24,8 @@ private:
 	Steins::Shared<Steins::ConstantBuffer> viewProjMat;
 	Steins::Shared<Steins::Texture2D> texture;
 
-	Steins::OrthographicCamera camera = Steins::OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f);
+	//Steins::OrthographicCamera camera = Steins::OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f);
+	Steins::Camera camera = Steins::Camera();
 	Steins::Matrix4x4 cameraPos;
 
 };

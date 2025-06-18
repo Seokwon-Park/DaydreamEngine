@@ -12,20 +12,17 @@ namespace Steins
 	void Matrix4x4::MatrixInverse()
 	{
 		glmMat = glm::inverse(glmMat);
-		
 	}
 	void Matrix4x4::MatrixTranslate(Vector3 _translate)
 	{
-		//row_major -> col
-		glm::transpose(glmMat);
-		//col_major 기반연산
 		glmMat = glm::translate(glmMat, _translate);
-		//col_major -> row
-		glm::transpose(glmMat);
 	}
 	void Matrix4x4::MatrixTranslate(Vector4 _translate)
 	{
-		
+
+	}
+	void Matrix4x4::MatrixRotate(Vector3 _rollPitchYaw)
+	{
 	}
 	void Matrix4x4::MatrixTranspose()
 	{
@@ -43,24 +40,40 @@ namespace Steins
 		return glmMat * _vector;
 	}
 
+	Matrix4x4 Matrix4x4::Translate(Vector3 _translate)
+	{
+		return Translate(Matrix4x4(), _translate);
+	}
+
 	Matrix4x4 Matrix4x4::Translate(Matrix4x4 _matrix, Vector3 _translate)
 	{
 		_matrix.MatrixTranslate(_translate);
 		return _matrix;
 	}
-	Matrix4x4 Matrix4x4::Orthographic(float _left, float _right, float _bottom, float _top, float _near, float _far)
+
+	Matrix4x4 Matrix4x4::Rotate(Matrix4x4 _matrix, Vector3 _rollPitchYaw)
+	{
+		_matrix.MatrixRotate(_rollPitchYaw);
+		return Matrix4x4();
+	}
+	Matrix4x4 Matrix4x4::Orthographic(Float32 _size, Float32 _aspectRatio, Float32 _near, Float32 _far)
 	{
 		Matrix4x4 out;
-		out.glmMat = glm::ortho(_left, _right, _bottom, _top);
-		out.MatrixTranspose(); // row-major;
+		Float32 width = _size * _aspectRatio;
+		out.glmMat = glm::orthoLH(-width / 2, width / 2, -_size / 2, _size / 2, _near, _far);
+		return out;
+	}
+	Matrix4x4 Matrix4x4::Orthographic(Float32 _left, Float32 _right, Float32 _bottom, Float32 _top, Float32 _near, Float32 _far)
+	{
+		Matrix4x4 out;
+		out.glmMat = glm::orthoLH(_left, _right, _bottom, _top, _near, _far);
 		return out;
 
 	}
-	Matrix4x4 Matrix4x4::Perspective(float _fovy, float _aspect, float _near, float _far)
+	Matrix4x4 Matrix4x4::Perspective(Float32 _fovy, Float32 _aspect, Float32 _near, Float32 _far)
 	{
 		Matrix4x4 out;
 		out.glmMat = glm::perspective(_fovy, _aspect, _near, _far);
-		out.MatrixTranspose(); // row-major;
 		return out;
 	}
 
@@ -69,11 +82,6 @@ namespace Steins
 		_matrix.MatrixInverse();
 		return _matrix;
 	}
-	Matrix4x4 Matrix4x4::LookAtLH(Vector3 _position, Vector3 _direction, Vector3 _up)
-	{
-		Matrix4x4 out;
-		out.glmMat = glm::lookAtLH(_position, _direction, _up);
-		out.MatrixTranspose(); // row-major;
-		return out;
-	}
+
+	
 }

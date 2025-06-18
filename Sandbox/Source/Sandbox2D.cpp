@@ -156,7 +156,7 @@ Sandbox2D::Sandbox2D()
 
 	};
 
-	camera.SetPosition({ 0.0f,0.0f,0.0f });
+	camera.SetPosition({ 0.5f,0.0f,1.0f });
 	cameraPos = camera.GetViewProjectionMatrix();
 	viewProjMat = Steins::ConstantBuffer::Create(sizeof(Steins::Matrix4x4));
 	viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
@@ -180,6 +180,34 @@ void Sandbox2D::OnUpdate(Float32 _deltaTime)
 {
 	Steins::RenderCommand::SetClearColor(Steins::Color::White);
 	Steins::RenderCommand::Clear();
+
+	if (Steins::Input::GetKeyPress(Steins::Key::W))
+	{
+		camera.SetPosition(camera.GetPosition() + Steins::Vector3(0.0f, 1.0f, 0.0f) * _deltaTime);
+		cameraPos = camera.GetViewProjectionMatrix();
+		viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
+	}
+
+	if (Steins::Input::GetKeyPress(Steins::Key::A))
+	{
+		camera.SetPosition(camera.GetPosition() + Steins::Vector3(-1.0f, 0.0f, 0.0f) * _deltaTime);
+		cameraPos = camera.GetViewProjectionMatrix();
+		viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
+	}
+
+	if (Steins::Input::GetKeyPress(Steins::Key::S))
+	{
+		camera.SetPosition(camera.GetPosition() + Steins::Vector3(0.0f, -1.0f, 0.0f) * _deltaTime);
+		cameraPos = camera.GetViewProjectionMatrix();
+		viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
+	}
+
+	if (Steins::Input::GetKeyPress(Steins::Key::D))
+	{
+		camera.SetPosition(camera.GetPosition() + Steins::Vector3(1.0f, 0.0f, 0.0f) * _deltaTime);
+		cameraPos = camera.GetViewProjectionMatrix();
+		viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
+	}
 
 	////camera.SetPosition({ 0.5f, 0.5f, 0.0f });
 

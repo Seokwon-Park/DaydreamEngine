@@ -2,8 +2,21 @@
 
 #include "Steins/Enum/RendererEnums.h"
 
-namespace Steins 
+namespace Steins
 {
+	enum class ShaderResourceType
+	{
+		ConstantBuffer,
+		Texture,
+	};
+	struct ShaderResource
+	{
+		ShaderResourceType type;
+		UInt32 set;
+		UInt32 binding;
+		UInt32 size;
+	};
+
 	class Shader
 	{
 	public:
@@ -13,16 +26,14 @@ namespace Steins
 		virtual void Unbind() const = 0;
 
 		virtual void* GetNativeHandle() = 0;
-		//virtual void SetVertexArray(Shared<VertexArray> _vertexArray) { vertexArray = _vertexArray.get(); };
-
-		//virtual void SetMat4(const std::string& _name, const Matrix4x4& _value) = 0;
 
 		ShaderType GetType() const { return type; }
 
 		static Shared<Shader> Create(const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode);
 	protected:
 		ShaderType type;
-		//VertexArray* vertexArray;
+
+		HashMap<String, ShaderResource> resourceInfo;
 	};
 
 }

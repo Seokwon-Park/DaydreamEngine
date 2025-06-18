@@ -13,6 +13,8 @@ namespace Steins
 		return std::make_pair<T1, T2>(std::forward<T1>(_first), std::forward<T2>(_second));
 	}
 
+	using String = std::string;
+
 	template<typename T>
 	using Unique = std::unique_ptr<T>;
 
