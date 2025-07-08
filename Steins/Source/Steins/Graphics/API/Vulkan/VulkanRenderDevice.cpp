@@ -8,6 +8,7 @@
 #include "VulkanSwapChain.h"
 #include "VulkanImGuiRenderer.h"
 #include "VulkanTexture.h"
+#include "VulkanMaterial.h"
 #include "Steins/Graphics/Utility/GraphicsUtil.h"
 
 #include "GLFW/glfw3.h"
@@ -113,7 +114,7 @@ namespace Steins
 		}
 
 		{
-			std::vector<VkDescriptorPoolSize> poolSizes =
+			Array<VkDescriptorPoolSize> poolSizes =
 			{
 				{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER , IMGUI_IMPL_VULKAN_MINIMUM_IMAGE_SAMPLER_POOL_SIZE },
 				{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER , 2 },
@@ -206,6 +207,11 @@ namespace Steins
 	Shared<ConstantBuffer> VulkanRenderDevice::CreateConstantBuffer(UInt32 _size)
 	{
 		return MakeShared<VulkanConstantBuffer>(this, _size);
+	}
+
+	Shared<Material> VulkanRenderDevice::CreateMaterial(Shared<PipelineState> _pipeline)
+	{
+		return _pipeline->CreateMaterial();
 	}
 
 
@@ -488,7 +494,7 @@ namespace Steins
 			createInfo.pNext = nullptr;
 		}
 
-		std::vector<const char*> extensions = GetRequiredExtensions();
+		Array<const char*> extensions = GetRequiredExtensions();
 		createInfo.enabledExtensionCount = static_cast<UInt32>(extensions.size());
 		createInfo.ppEnabledExtensionNames = extensions.data();
 
@@ -517,7 +523,7 @@ namespace Steins
 			STEINS_CORE_ERROR("Failed to find GPUs with Vulkan support!");
 		}
 
-		std::vector<VkPhysicalDevice> devices(deviceCount);
+		Array<VkPhysicalDevice> devices(deviceCount);
 		vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
 
 		for (const VkPhysicalDevice& device : devices)
@@ -576,7 +582,7 @@ namespace Steins
 	{
 		UInt32 layerCount = 0;
 		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
-		std::vector<VkLayerProperties> availableLayers(layerCount);
+		Array<VkLayerProperties> availableLayers(layerCount);
 		vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
 
 		for (const char* layerName : validationLayers) {
@@ -596,13 +602,13 @@ namespace Steins
 
 		return true;
 	}
-	std::vector<const char*> VulkanRenderDevice::GetRequiredExtensions()
+	Array<const char*> VulkanRenderDevice::GetRequiredExtensions()
 	{
 		uint32_t glfwExtensionCount = 0;
 		const char** glfwExtensions;
 		glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-		std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+		Array<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
 		if (enableValidationLayers) {
 			extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
@@ -642,7 +648,7 @@ namespace Steins
 
 		UInt32 queueFamilyCount = 0;
 		vkGetPhysicalDeviceQueueFamilyProperties(_physicalDevice, &queueFamilyCount, nullptr);
-		std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+		Array<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
 		vkGetPhysicalDeviceQueueFamilyProperties(_physicalDevice, &queueFamilyCount, queueFamilies.data());
 
 		int i = 0;
@@ -666,7 +672,7 @@ namespace Steins
 	{
 		UInt32 extensionCount = 0;
 		vkEnumerateDeviceExtensionProperties(_physicalDevice, nullptr, &extensionCount, nullptr);
-		std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+		Array<VkExtensionProperties> availableExtensions(extensionCount);
 		vkEnumerateDeviceExtensionProperties(_physicalDevice, nullptr, &extensionCount, availableExtensions.data());
 
 		std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());

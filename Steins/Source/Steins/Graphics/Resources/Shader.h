@@ -11,9 +11,11 @@ namespace Steins
 	};
 	struct ShaderResource
 	{
-		ShaderResourceType type;
+		String name;
 		UInt32 set;
 		UInt32 binding;
+		ShaderResourceType type;
+		UInt32 count;
 		UInt32 size;
 	};
 
@@ -28,12 +30,13 @@ namespace Steins
 		virtual void* GetNativeHandle() = 0;
 
 		ShaderType GetType() const { return type; }
+		const Array<ShaderResource>& GetResourceInfo() { return resourceInfo; }
 
 		static Shared<Shader> Create(const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode);
 	protected:
 		ShaderType type;
 
-		HashMap<String, ShaderResource> resourceInfo;
+		Array<ShaderResource> resourceInfo;
 	};
 
 }

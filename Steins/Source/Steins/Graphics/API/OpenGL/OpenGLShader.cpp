@@ -61,7 +61,7 @@ namespace Steins
 			GLint maxLength = 0;
 			glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &maxLength);
 
-			std::vector<GLchar> infoLog(maxLength);
+			Array<GLchar> infoLog(maxLength);
 			glGetShaderInfoLog(shaderID, maxLength, &maxLength, &infoLog[0]);
 			glDeleteShader(shaderID);
 
@@ -80,7 +80,7 @@ namespace Steins
 			glGetProgramiv(shaderProgramID, GL_INFO_LOG_LENGTH, &maxLength);
 
 			// The maxLength includes the NULL character
-			std::vector<GLchar> infoLog(maxLength);
+			Array<GLchar> infoLog(maxLength);
 			glGetProgramInfoLog(shaderProgramID, maxLength, &maxLength, &infoLog[0]);
 
 			// We don't need the program anymore.

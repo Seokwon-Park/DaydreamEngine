@@ -8,6 +8,13 @@ namespace Steins
 {
 	class VulkanMaterial : public Material
 	{
-		VulkanMaterial(VulkanRenderDevice* _device);
+	public:
+		VulkanMaterial(VulkanRenderDevice* _device, VulkanPipelineState* _pso);
+
+		virtual void Bind() override {};
+
+	private:
+		Array<VkDescriptorSet> sets;
+		HashMap<String, VkWriteDescriptorSet> descriptorSets;
 	};
 }

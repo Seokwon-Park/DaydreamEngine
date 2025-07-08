@@ -20,7 +20,7 @@ namespace Steins
 	struct FramebufferDesc
 	{
 		UInt32 width, height;
-		std::vector<FramebufferAttachmentDescription> colorAttachments;
+		Array<FramebufferAttachmentDescription> colorAttachments;
 		FramebufferAttachmentDescription depthAttachment;
 		UInt32 samples = 1;
 	};

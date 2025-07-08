@@ -5,7 +5,7 @@
 
 namespace Steins
 {
-	std::vector<MeshData> MeshLoader::LoadFromFile(const FilePath& _filepath)
+	Array<MeshData> MeshLoader::LoadFromFile(const FilePath& _filepath)
 	{
 		Assimp::Importer importer;
 
@@ -23,14 +23,14 @@ namespace Steins
 		STEINS_CORE_ASSERT(nullptr != scene, "{0}", importer.GetErrorString());
 		return ProcessScene(scene);
 	}
-	std::vector<MeshData> MeshLoader::ProcessScene(const aiScene* _scene)
+	Array<MeshData> MeshLoader::ProcessScene(const aiScene* _scene)
 	{
-		std::vector<MeshData> meshes;
+		Array<MeshData> meshes;
 		//Start form root node
 		ProcessNode(_scene->mRootNode, _scene, meshes);
 		return meshes;
 	}
-	void MeshLoader::ProcessNode(aiNode* _node, const aiScene* _scene, std::vector<MeshData>& _meshes)
+	void MeshLoader::ProcessNode(aiNode* _node, const aiScene* _scene, Array<MeshData>& _meshes)
 	{
 		for (UInt32 i = 0; i < _node->mNumMeshes; i++)
 		{

@@ -39,12 +39,12 @@ namespace Steins
 
 		void recordCommandBuffer(VkCommandBuffer _commandBuffer, UInt32 _imageIndex);
 	private:
-		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat);
-		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& _availablePresentModes);
+		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const Array<VkSurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat);
+		VkPresentModeKHR ChooseSwapPresentMode(const Array<VkPresentModeKHR>& _availablePresentModes);
 		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& _capabilities);
 
 		VulkanRenderDevice* device;
-		std::vector<Shared<VulkanFramebuffer>> framebuffers;
+		Array<Shared<VulkanFramebuffer>> framebuffers;
 
 		VkSurfaceKHR surface; // Vulkan window surface
 		VkSwapchainKHR swapChain;

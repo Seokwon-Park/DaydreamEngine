@@ -58,8 +58,8 @@ namespace Steins
 			UInt32 height = 0;
 			bool isVSync;
 			EventCallbackFn eventCallbackFn;
-			std::vector<UInt16> keyStates;
-			std::vector<bool> keyDownChecker;
+			Array<UInt16> keyStates;
+			Array<bool> keyDownChecker;
 		};
 		WindowData windowData;
 	};

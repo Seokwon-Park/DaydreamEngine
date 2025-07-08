@@ -3,14 +3,18 @@
 
 #include "spirv_cross/spirv_cross.hpp"
 
+#include "Steins/Graphics/Utility/GraphicsUtil.h"
+
 
 namespace Steins
 {
+	
+	
 	VulkanShader::VulkanShader(VulkanRenderDevice* _device, const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode)
 	{
-
 		device = _device;
 		type = _type;
+		stageBit = GraphicsUtil::GetVKShaderStage(_type);
 		switch (_mode)
 		{
 		case Steins::ShaderLoadMode::Source:
@@ -26,8 +30,8 @@ namespace Steins
 
 			//tellg->파일의 입력위치 지정자를 리턴(사실상 size?)
 			UInt64 fileSize = (UInt64)file.tellg();
-			std::vector<uint32_t> reflect((fileSize + sizeof(uint32_t) - 1) / sizeof(uint32_t));
-			std::vector<char> buffer(fileSize);
+			Array<uint32_t> reflect((fileSize + sizeof(uint32_t) - 1) / sizeof(uint32_t));
+			Array<char> buffer(fileSize);
 			file.seekg(0);
 			file.read(buffer.data(), fileSize);
 			file.seekg(0);
@@ -47,31 +51,33 @@ namespace Steins
 			{
 				for (const spirv_cross::Resource& resource : res.stage_inputs)
 				{
-
+					comp.get_name(resource.id);
+					comp.get_decoration(resource.id, spv::DecorationLocation);
 				}
 			}
 
 			for (const spirv_cross::Resource& resource : res.uniform_buffers)
 			{
 				ShaderResource sr{};
+				sr.name = comp.get_name(resource.base_type_id);
 				sr.type = ShaderResourceType::ConstantBuffer;
 				sr.set = comp.get_decoration(resource.id, spv::DecorationDescriptorSet);
 				sr.binding = comp.get_decoration(resource.id, spv::DecorationBinding);
-				auto name = comp.get_name(resource.base_type_id);
+				sr.size = comp.get_declared_struct_size(comp.get_type(resource.type_id));
 
-				resourceInfo[name] = sr;
+				resourceInfo.push_back(sr);
 			}
 
 
 			for (const spirv_cross::Resource& resource : res.sampled_images)
 			{
 				ShaderResource sr{};
+				sr.name = comp.get_name(resource.id);
 				sr.type = ShaderResourceType::Texture;
 				sr.set = comp.get_decoration(resource.id, spv::DecorationDescriptorSet);
 				sr.binding = comp.get_decoration(resource.id, spv::DecorationBinding);
-				auto name = comp.get_name(resource.base_type_id);
 
-				resourceInfo[name] = sr;
+				resourceInfo.push_back(sr);
 			}
 
 			VkResult result = vkCreateShaderModule(device->GetDevice(), &createInfo, nullptr, &shader);

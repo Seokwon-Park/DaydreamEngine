@@ -20,6 +20,7 @@ namespace Steins
 	private:
 		VulkanRenderDevice* device;
 		VkShaderModule shader;
+		VkShaderStageFlagBits stageBit;
 
 		// Inherited via Shader
 	};

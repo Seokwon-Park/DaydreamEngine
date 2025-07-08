@@ -3,6 +3,7 @@
 
 namespace Steins
 {
+	// TODO: commandlist 생성전에 배리어 명령 내리는 문제 수정할 것
 	D3D12VertexBuffer::D3D12VertexBuffer(D3D12RenderDevice* _device, UInt32 _bufferSize, UInt32 _stride)
 	{
 		device = _device;

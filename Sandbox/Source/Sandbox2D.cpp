@@ -173,6 +173,8 @@ Sandbox2D::Sandbox2D()
 
 	pso = Steins::PipelineState::Create(desc);
 
+	material = Steins::Material::Create(pso);
+
 	//r2d.Test();
 }
 

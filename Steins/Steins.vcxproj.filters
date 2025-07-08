@@ -1684,6 +1684,9 @@
       <Filter>Vendor\stb</Filter>
     </ClInclude>
     <ClInclude Include="Source\Base\Container\HashMap.h" />
+    <ClInclude Include="Source\Steins\Graphics\Core\ResourceManager.h" />
+    <ClInclude Include="Source\Base\Container\SortedMap.h" />
+    <ClInclude Include="Source\Base\Container\Array.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">

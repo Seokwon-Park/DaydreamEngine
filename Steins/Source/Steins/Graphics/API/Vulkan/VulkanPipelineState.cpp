@@ -5,9 +5,27 @@
 #include "Steins/Graphics/Utility/GraphicsUtil.h"
 
 #include "VulkanTexture.h"
+#include "VulkanMaterial.h"
 
 namespace Steins
 {
+	VkDescriptorType ToVkDescType(ShaderResourceType _type)
+	{
+		switch (_type)
+		{
+		case ShaderResourceType::ConstantBuffer:
+			return VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			break;
+		case ShaderResourceType::Texture:
+			return VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			break;
+		default:
+			break;
+		}
+		STEINS_CORE_ASSERT(false, "Wrong type")
+		return VK_DESCRIPTOR_TYPE_MAX_ENUM;
+	}
+
 	VulkanPipelineState::VulkanPipelineState(VulkanRenderDevice* _device, PipelineStateDesc _desc)
 		:PipelineState(_desc)
 	{
@@ -19,7 +37,7 @@ namespace Steins
 		}
 
 		{
-			std::vector<VkDynamicState> dynamicStates = {
+			Array<VkDynamicState> dynamicStates = {
 				VK_DYNAMIC_STATE_VIEWPORT,
 				VK_DYNAMIC_STATE_SCISSOR,
 			};
@@ -111,55 +129,57 @@ namespace Steins
 			colorBlending.blendConstants[2] = 0.0f; // Optional
 			colorBlending.blendConstants[3] = 0.0f; // Optional
 
-			VkDescriptorSetLayoutBinding cameraLayoutBinding{};
-			cameraLayoutBinding.binding = 0;
-			cameraLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			cameraLayoutBinding.descriptorCount = 1;
-			cameraLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-
-			//VkDescriptorSetLayoutBinding transformLayoutBinding{};
-			//cameraLayoutBinding.binding = 0;
-			//cameraLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			//cameraLayoutBinding.descriptorCount = 1;
-			//cameraLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-
-			VkDescriptorSetLayoutBinding samplerLayoutBinding{};
-			samplerLayoutBinding.binding = 1;
-			samplerLayoutBinding.descriptorCount = 1;
-			samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-			samplerLayoutBinding.pImmutableSamplers = nullptr;
-			samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-
-			std::vector<VkDescriptorSetLayoutBinding> bindings = { cameraLayoutBinding, samplerLayoutBinding };
-
-			VkDescriptorSetLayoutCreateInfo layoutCreateInfo{};
-			layoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-			layoutCreateInfo.bindingCount = bindings.size();
-			layoutCreateInfo.pBindings = bindings.data();
-
-			if (vkCreateDescriptorSetLayout(device->GetDevice(), &layoutCreateInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
-				throw std::runtime_error("failed to create descriptor set layout!");
-			}
-
-			VkDescriptorPoolCreateInfo poolCreateInfo;
-			poolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 			
-			VkDescriptorSetAllocateInfo allocInfo{};
-			allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-			allocInfo.descriptorPool = device->GetDescriptorPool();
-			allocInfo.descriptorSetCount = 1;
-			allocInfo.pSetLayouts = &descriptorSetLayout;
+			SortedMap<UInt32, std::vector<VkDescriptorSetLayoutBinding>> setBindings;
 
-			descriptorSets.resize(1);
-			if (vkAllocateDescriptorSets(device->GetDevice(), &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
-				throw std::runtime_error("failed to allocate descriptor sets!");
+			for (auto shader : shaders)
+			{
+				for (const auto& info : shader->GetResourceInfo())
+				{
+					VkDescriptorSetLayoutBinding binding = {};
+					binding.binding = info.binding;
+					binding.descriptorType = ToVkDescType(info.type);
+					binding.descriptorCount = 1;
+					binding.stageFlags = GraphicsUtil::GetVKShaderStage(shader->GetType());
+					binding.pImmutableSamplers = nullptr;
+					setBindings[info.set].push_back(binding);
+				}
 			}
+
+			for (const auto& [setIndex, bindings] : setBindings)
+			{
+				VkDescriptorSetLayoutCreateInfo layoutCreateInfo{};
+				layoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+				layoutCreateInfo.bindingCount = Cast<UInt32>(bindings.size());
+				layoutCreateInfo.pBindings = bindings.data();
+
+				VkDescriptorSetLayout layout;
+				if (vkCreateDescriptorSetLayout(device->GetDevice(), &layoutCreateInfo, nullptr, &layout) != VK_SUCCESS) {
+					throw std::runtime_error("failed to create descriptor set layout!");
+				}
+				descriptorSetLayouts.push_back(layout);
+			}
+
+
+			//VkDescriptorPoolCreateInfo poolCreateInfo;
+			//poolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+			//
+			//VkDescriptorSetAllocateInfo allocInfo{};
+			//allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+			//allocInfo.descriptorPool = device->GetDescriptorPool();
+			//allocInfo.descriptorSetCount = 1;
+			//allocInfo.pSetLayouts = &descriptorSetLayout;
+
+			//descriptorSets.resize(1);
+			//if (vkAllocateDescriptorSets(device->GetDevice(), &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
+			//	throw std::runtime_error("failed to allocate descriptor sets!");
+			//}
 
 
 			VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 			pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-			pipelineLayoutInfo.setLayoutCount = 1; // Optional
-			pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout; // Optional
+			pipelineLayoutInfo.setLayoutCount = descriptorSetLayouts.size(); // Optional
+			pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data(); // Optional
 			pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
 			pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional
 
@@ -226,10 +246,12 @@ namespace Steins
 		}
 	}
 
-
 	VulkanPipelineState::~VulkanPipelineState()
 	{
-		vkDestroyDescriptorSetLayout(device->GetDevice(), descriptorSetLayout, nullptr);
+		for (auto& layout : descriptorSetLayouts)
+		{
+			vkDestroyDescriptorSetLayout(device->GetDevice(), layout, nullptr);
+		}
 		vkDestroyPipeline(device->GetDevice(), pipeline, nullptr);
 		vkDestroyPipelineLayout(device->GetDevice(), pipelineLayout, nullptr);
 	}
@@ -248,5 +270,9 @@ namespace Steins
 		shaderStageInfo.stage = GraphicsUtil::GetVKShaderStage(_shader->GetType());
 
 		shaderStages.push_back(shaderStageInfo);
+	}
+	Shared<Material> VulkanPipelineState::CreateMaterial()
+	{
+		return MakeShared<VulkanMaterial>(device, this);
 	}
 }

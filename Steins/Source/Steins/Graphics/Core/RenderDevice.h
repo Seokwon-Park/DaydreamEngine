@@ -23,6 +23,7 @@ namespace Steins
 	class ImGuiRenderer;
 	class VertexArray;
 	class BufferLayout;
+	class Material;
 
 	class RenderDevice
 	{
@@ -44,6 +45,8 @@ namespace Steins
 		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path) = 0;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() = 0;
 		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) = 0;
+		virtual Shared<Material> CreateMaterial(Shared<PipelineState> _pipeline) = 0;
+		
 
 		void CreateSwapChainForWnd(SteinsWindow* _window);
 
@@ -57,7 +60,7 @@ namespace Steins
 
 		static Unique<RenderDevice> Create(RendererAPIType _API);
 	protected:
-		std::vector<SwapChain*> swapChains;
+		Array<SwapChain*> swapChains;
 		RendererAPIType API = RendererAPIType::None;
 	};
 }

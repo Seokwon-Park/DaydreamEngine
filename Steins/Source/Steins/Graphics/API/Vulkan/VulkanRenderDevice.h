@@ -20,9 +20,9 @@ namespace Steins
 		//gpu와 surface 조합에서 지원되는 최소/최대 이미지 크기정보
 		VkSurfaceCapabilitiesKHR capabilities;
 		//색상 format
-		std::vector<VkSurfaceFormatKHR> formats;
+		Array<VkSurfaceFormatKHR> formats;
 		//present 방식
-		std::vector<VkPresentModeKHR> presentModes;
+		Array<VkPresentModeKHR> presentModes;
 	};
 
 	class VulkanRenderDevice :public RenderDevice
@@ -46,6 +46,7 @@ namespace Steins
 		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path)override;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() override;
 		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) override;
+		virtual Shared<Material> CreateMaterial(Shared<PipelineState> _pipeline) override;
 
 		VkInstance GetInstance() const { return instance; }
 		VkPhysicalDevice GetGPU() const { return physicalDevice; }
@@ -80,7 +81,7 @@ namespace Steins
 		void PickPhysicalDevice();
 
 		bool CheckValidationLayerSupport();
-		std::vector<const char*> GetRequiredExtensions();
+		Array<const char*> GetRequiredExtensions();
 		void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& _createInfo);
 		bool IsDeviceSuitable(VkPhysicalDevice _physicalDevice);
 		QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice _physicalDevice);
@@ -88,12 +89,12 @@ namespace Steins
 
 #if defined(STEINS_DEBUG) || defined(_DEBUG)
 		const bool enableValidationLayers = true;
-		const std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
+		const Array<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
 #else
 		const bool enableValidationLayers = false;
-		const std::vector<const char*> validationLayers = {};
+		const Array<const char*> validationLayers = {};
 #endif
-		const std::vector<const char*> deviceExtensions = {
+		const Array<const char*> deviceExtensions = {
 			VK_KHR_SWAPCHAIN_EXTENSION_NAME
 		};
 		VkInstance instance; // Vulkan library handle

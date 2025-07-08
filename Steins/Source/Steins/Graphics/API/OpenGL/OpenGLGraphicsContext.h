@@ -13,7 +13,7 @@ namespace Steins
 		virtual void Clear() override;
 		virtual void DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex) override;
 
-		//virtual void DrawIndexed(const std::shared_ptr<Vertexstd::vector>& vertexstd::vector) override;
+		//virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) override;
 	};
 }
 

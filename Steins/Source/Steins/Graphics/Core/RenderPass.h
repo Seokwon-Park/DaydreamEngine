@@ -42,7 +42,7 @@ namespace Steins
 		virtual void Begin(Shared<Framebuffer> _framebuffer) = 0;
 		virtual void End() = 0;
 
-		static Shared<RenderPass> Create(const std::vector<AttachmentDescription>& _attachments);
+		static Shared<RenderPass> Create(const Array<AttachmentDescription>& _attachments);
 	private:
 	};
 }

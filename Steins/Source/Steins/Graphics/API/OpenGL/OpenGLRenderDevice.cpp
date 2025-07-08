@@ -108,4 +108,9 @@ namespace Steins
 		return MakeShared<OpenGLConstantBuffer>(_size);
 	}
 
+	Shared<Material> OpenGLRenderDevice::CreateMaterial(Shared<PipelineState> _pipeline)
+	{
+		return nullptr;
+	}
+
 }

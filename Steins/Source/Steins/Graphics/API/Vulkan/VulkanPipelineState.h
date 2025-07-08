@@ -12,20 +12,22 @@ namespace Steins
 		virtual ~VulkanPipelineState() override;
 
 		virtual void Bind() const override;
+		virtual Shared<Material> CreateMaterial() override;
 
 		void CreateShaderStageInfo(const Shared<Shader>& _shader);
+		Array<VkDescriptorSetLayout> GetLayout() { return descriptorSetLayouts; };
 	private:
 
 		VulkanRenderDevice* device;
-		std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
+		Array<VkPipelineShaderStageCreateInfo> shaderStages;
 
 		VkPipeline pipeline;
 		VkPipelineLayout pipelineLayout; // root signature
-		VkDescriptorSetLayout descriptorSetLayout;
+		Array<VkDescriptorSetLayout> descriptorSetLayouts;
 
 		VkDescriptorPool descriptorPool;
-		std::vector<VkDescriptorSet> descriptorSets;
-		std::vector<VkWriteDescriptorSet> descriptorWriteSets;
+		Array<VkDescriptorSet> descriptorSets;
+		Array<VkWriteDescriptorSet> descriptorWriteSets;
 
 	};
 }

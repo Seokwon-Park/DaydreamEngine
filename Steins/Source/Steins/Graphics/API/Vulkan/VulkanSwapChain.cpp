@@ -195,7 +195,7 @@ namespace Steins
 	{
 	}
 
-	VkSurfaceFormatKHR VulkanSwapChain::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat)
+	VkSurfaceFormatKHR VulkanSwapChain::ChooseSwapSurfaceFormat(const Array<VkSurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat)
 	{
 		VkFormat desiredFormat = GraphicsUtil::RenderFormatToVkFormat(_desiredFormat);
 		for (const VkSurfaceFormatKHR& availableFormat : _availableFormats)
@@ -208,7 +208,7 @@ namespace Steins
 
 		return _availableFormats[0];
 	}
-	VkPresentModeKHR VulkanSwapChain::ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& _availablePresentModes)
+	VkPresentModeKHR VulkanSwapChain::ChooseSwapPresentMode(const Array<VkPresentModeKHR>& _availablePresentModes)
 	{
 		for (const VkPresentModeKHR& availablePresentMode : _availablePresentModes)
 		{

@@ -151,7 +151,7 @@ namespace Steins
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
 
-		for (std::vector<Layer*>::iterator itr = layerStack.end(); itr != layerStack.begin();)
+		for (Array<Layer*>::iterator itr = layerStack.end(); itr != layerStack.begin();)
 		{
 			if (_event.handled) // if Event is already handled then break;
 				break;

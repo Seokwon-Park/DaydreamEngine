@@ -28,8 +28,8 @@ namespace Steins
 		VkRenderPass renderPass;
 		VkFramebuffer framebuffer;
 		VkExtent2D extent;
-		std::vector<VkImage> colorImages;
-		std::vector<VkImageView> colorImageViews;
+		Array<VkImage> colorImages;
+		Array<VkImageView> colorImageViews;
 		VkImage depthImage;
 		VkImageView depthStencilViews;
 	};

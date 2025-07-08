@@ -5,7 +5,7 @@
 
 namespace Steins
 {
-	Shared<RenderPass> RenderPass::Create(const std::vector<AttachmentDescription>& _attachments)
+	Shared<RenderPass> RenderPass::Create(const Array<AttachmentDescription>& _attachments)
 	{
 		//return Renderer::GetRenderDevice();
 

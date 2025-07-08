@@ -14,6 +14,7 @@ namespace Steins
 		virtual ~D3D12PipelineState();
 
 		virtual void Bind() const override;
+		virtual Shared<Material> CreateMaterial() override { return nullptr; };
 	protected:
 
 	private:

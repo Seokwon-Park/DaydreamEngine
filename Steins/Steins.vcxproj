@@ -105,7 +105,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Source\Base\Base.h" />
+    <ClInclude Include="Source\Base\Container\Array.h" />
     <ClInclude Include="Source\Base\Container\HashMap.h" />
+    <ClInclude Include="Source\Base\Container\SortedMap.h" />
     <ClInclude Include="Source\Base\IO\File.h" />
     <ClInclude Include="Source\Base\IO\FilePath.h" />
     <ClInclude Include="Source\Base\Math.h" />
@@ -195,6 +197,7 @@
     <ClInclude Include="Source\Steins\Graphics\Core\RenderUnit.h" />
     <ClInclude Include="Source\Steins\Graphics\Core\Renderer.h" />
     <ClInclude Include="Source\Steins\Graphics\Core\Renderer2D.h" />
+    <ClInclude Include="Source\Steins\Graphics\Core\ResourceManager.h" />
     <ClInclude Include="Source\Steins\Graphics\Core\Swapchain.h" />
     <ClInclude Include="Source\Steins\Graphics\Resources\Buffer.h" />
     <ClInclude Include="Source\Steins\Graphics\Resources\Framebuffer.h" />

@@ -18,10 +18,10 @@ namespace Steins
 
 		void Release();
 
-		std::vector<Layer*>::iterator begin() { return layers.begin(); }
-		std::vector<Layer*>::iterator end() { return layers.end(); }
+		Array<Layer*>::iterator begin() { return layers.begin(); }
+		Array<Layer*>::iterator end() { return layers.end(); }
 	private:
-		std::vector<Layer*> layers;
+		Array<Layer*> layers;
 		UInt32 layerInsertIndex;
 	};
 }

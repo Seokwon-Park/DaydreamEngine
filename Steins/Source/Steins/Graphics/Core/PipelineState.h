@@ -3,6 +3,7 @@
 #include "Steins/Graphics/Resources/Shader.h"
 #include "Steins/Graphics/Resources/Buffer.h"
 #include "Steins/Graphics/Resources/Texture.h"
+#include "Steins/Graphics/Resources/Material.h"
 
 namespace Steins
 {
@@ -21,8 +22,8 @@ namespace Steins
 		Shared<Shader> pixelShader = nullptr;
 		//Shared<Shader> computeShader; //??
 
-		std::vector<ConstantBufferInfo> constantBuffers;
-		std::vector<Shared<Texture2D>> textures;
+		Array<ConstantBufferInfo> constantBuffers;
+		Array<Shared<Texture2D>> textures;
 
 		BufferLayout inputLayout;
 		//InputLayoutDesc inputLayout;
@@ -30,7 +31,7 @@ namespace Steins
 		//RasterizerDesc rasterizerState;
 		//BlendDesc blendState;
 		//DepthStencilDesc depthStencilState;
-		//std::vector<GraphicsFormat> renderTargetFormats; // RTV 포맷들
+		//Array<GraphicsFormat> renderTargetFormats; // RTV 포맷들
 		//GraphicsFormat depthStencilFormat = GraphicsFormat::Unknown; // DSV 포맷
 		uint32_t sampleCount = 1;
 		//PrimitiveTopologyType topologyType = PrimitiveTopologyType::TriangleList;
@@ -43,6 +44,9 @@ namespace Steins
 		virtual ~PipelineState() = default;
 
 		virtual void Bind() const = 0;
+		virtual Shared<Material> CreateMaterial() = 0;
+
+		Array<Shared<Shader>> GetShaders() { return shaders; }
 
 		static Shared<PipelineState> Create(PipelineStateDesc _desc);
 	protected:
@@ -52,11 +56,11 @@ namespace Steins
 		Shared<Shader> geometryShader;
 		Shared<Shader> pixelShader;
 
-		std::vector<Shared<Shader>> shaders;
+		Array<Shared<Shader>> shaders;
 
 		//root signature??
 
-		std::vector<ConstantBuffer*> cbfs;
+		Array<ConstantBuffer*> cbfs;
 
 		//rtv, dsv;
 		//blend, rast, ds;

@@ -26,6 +26,7 @@ namespace Steins
 		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path)override;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() override;
 		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) override;
+		virtual Shared<Material> CreateMaterial(Shared<PipelineState> _pipeline) override;
 
 		ID3D11Device* GetDevice() { return device.Get(); }
 		ID3D11DeviceContext* GetContext() { return deviceContext.Get(); }

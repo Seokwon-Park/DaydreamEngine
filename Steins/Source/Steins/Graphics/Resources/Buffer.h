@@ -77,12 +77,12 @@ namespace Steins
 		}
 
 		inline UInt32 GetStride() const { return stride; }
-		inline const std::vector<BufferElement>& GetElements() const { return elements; }
+		inline const Array<BufferElement>& GetElements() const { return elements; }
 
-		std::vector<BufferElement>::iterator begin() { return elements.begin(); }
-		std::vector<BufferElement>::iterator end() { return elements.end(); }
-		std::vector<BufferElement>::const_iterator begin() const { return elements.begin(); }
-		std::vector<BufferElement>::const_iterator end() const { return elements.end(); }
+		Array<BufferElement>::iterator begin() { return elements.begin(); }
+		Array<BufferElement>::iterator end() { return elements.end(); }
+		Array<BufferElement>::const_iterator begin() const { return elements.begin(); }
+		Array<BufferElement>::const_iterator end() const { return elements.end(); }
 	private:
 		void CalculateOffsetsAndStride()
 		{
@@ -96,7 +96,7 @@ namespace Steins
 			}
 		}
 	private:
-		std::vector<BufferElement> elements;
+		Array<BufferElement> elements;
 		UInt32 stride = 0;
 	};
 

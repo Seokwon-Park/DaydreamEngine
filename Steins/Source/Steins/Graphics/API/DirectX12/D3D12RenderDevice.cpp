@@ -235,6 +235,11 @@ namespace Steins
 		return MakeShared<D3D12ConstantBuffer>(this, _size);
 	}
 
+	Shared<Material> D3D12RenderDevice::CreateMaterial(Shared<PipelineState> _pipeline)
+	{
+		return nullptr;
+	}
+
 	ComPtr<ID3D12GraphicsCommandList> D3D12RenderDevice::BeginSingleTimeCommands()
 	{
 		return ComPtr<ID3D12GraphicsCommandList>();

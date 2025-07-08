@@ -25,7 +25,7 @@ namespace Steins
 	}
 	void LayerStack::PopLayer(Layer* _layer)
 	{
-		std::vector<Layer*>::iterator itr = std::find(layers.begin(), layers.begin() + layerInsertIndex + 1, _layer);
+		Array<Layer*>::iterator itr = std::find(layers.begin(), layers.begin() + layerInsertIndex + 1, _layer);
 		if (itr != layers.end())
 		{
 			(*itr)->OnDetach();
@@ -40,7 +40,7 @@ namespace Steins
 	}
 	void LayerStack::PopOverlay(Layer* _overlay)
 	{
-		std::vector<Layer*>::iterator itr = std::find(layers.begin()+ layerInsertIndex, layers.end(), _overlay);
+		Array<Layer*>::iterator itr = std::find(layers.begin()+ layerInsertIndex, layers.end(), _overlay);
 		if (itr != layers.end())
 		{
 			(*itr)->OnDetach();

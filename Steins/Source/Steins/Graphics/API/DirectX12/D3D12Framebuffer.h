@@ -18,14 +18,14 @@ namespace Steins
 		virtual void End() const override {};
 		virtual void Clear(Color _color) override;
 
-		std::vector<ComPtr<ID3D12Resource>>& GetRenderTargets() { return renderTargets; }
+		Array<ComPtr<ID3D12Resource>>& GetRenderTargets() { return renderTargets; }
 
 	private:
 		D3D12RenderDevice* device;
 		D3D12SwapChain* swapChain;
-		std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> renderTargetHandles; 
+		Array<D3D12_CPU_DESCRIPTOR_HANDLE> renderTargetHandles; 
 		D3D12_CPU_DESCRIPTOR_HANDLE depthStencilHandle; 
-		std::vector<ComPtr<ID3D12Resource>> renderTargets;
+		Array<ComPtr<ID3D12Resource>> renderTargets;
 		ComPtr<ID3D12Resource> depthAttachment;
 	};
 }

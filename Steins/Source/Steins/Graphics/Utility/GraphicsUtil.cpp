@@ -298,31 +298,7 @@ namespace Steins
 		STEINS_CORE_ASSERT(false, "Invalid type");
 		return DXShaderCompileParam();
 	}
-	VkShaderStageFlagBits GraphicsUtil::GetVKShaderStage(ShaderType _type)
-	{
-		switch (_type)
-		{
-		case ShaderType::Vertex:
-			return  VK_SHADER_STAGE_VERTEX_BIT;
-			break;
-		case ShaderType::Hull:
-			return VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
-			break;
-		case ShaderType::Domain:
-			return VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
-			break;
-		case ShaderType::Geometry:
-			return VK_SHADER_STAGE_GEOMETRY_BIT;
-			break;
-		case ShaderType::Pixel:
-			return VK_SHADER_STAGE_FRAGMENT_BIT;
-			break;
-		case ShaderType::Compute:
-			return VK_SHADER_STAGE_COMPUTE_BIT;
-			break;
-		}
-		return VK_SHADER_STAGE_ALL;
-	};
+
 
 	GLenum GraphicsUtil::GetGLShaderType(ShaderType _type)
 	{
@@ -377,6 +353,32 @@ namespace Steins
 			break;
 		}
 		return GL_NONE;
+	};
+
+	VkShaderStageFlagBits GraphicsUtil::GetVKShaderStage(ShaderType _type)
+	{
+		switch (_type)
+		{
+		case ShaderType::Vertex:
+			return  VK_SHADER_STAGE_VERTEX_BIT;
+			break;
+		case ShaderType::Hull:
+			return VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
+			break;
+		case ShaderType::Domain:
+			return VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
+			break;
+		case ShaderType::Geometry:
+			return VK_SHADER_STAGE_GEOMETRY_BIT;
+			break;
+		case ShaderType::Pixel:
+			return VK_SHADER_STAGE_FRAGMENT_BIT;
+			break;
+		case ShaderType::Compute:
+			return VK_SHADER_STAGE_COMPUTE_BIT;
+			break;
+		}
+		return VK_SHADER_STAGE_ALL;
 	};
 
 

@@ -202,6 +202,11 @@ namespace Steins
 		return MakeShared<D3D11ConstantBuffer>(this, _size);
 	}
 
+	Shared<Material> D3D11RenderDevice::CreateMaterial(Shared<PipelineState> _pipeline)
+	{
+		return Shared<Material>();
+	}
+
 
 
 }

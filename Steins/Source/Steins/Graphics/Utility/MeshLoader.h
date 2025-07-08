@@ -15,18 +15,18 @@ namespace Steins
 
 	struct MeshData
 	{
-		std::vector<Vertex> vertices;
-		std::vector<UInt32> indices;
+		Array<Vertex> vertices;
+		Array<UInt32> indices;
 		std::string name;
 	};
 
 	class MeshLoader
 	{
 	public:
-		static std::vector<MeshData> LoadFromFile(const FilePath& _filepath);
+		static Array<MeshData> LoadFromFile(const FilePath& _filepath);
 	private:
-		static std::vector<MeshData> ProcessScene(const aiScene* _scene);
-		static void ProcessNode(aiNode* _node, const aiScene* _scene, std::vector<MeshData>& _meshes);
+		static Array<MeshData> ProcessScene(const aiScene* _scene);
+		static void ProcessNode(aiNode* _node, const aiScene* _scene, Array<MeshData>& _meshes);
 		static MeshData ProcessMesh(aiMesh* _mesh, const aiScene* _scene);
 
 	};

@@ -17,10 +17,10 @@ namespace Steins
 	protected:
 
 	private:
-		std::vector<Shared<Component>> components;
+		Array<Shared<Component>> components;
 
 		GameObject* parent;
-		std::vector<GameObject*> children;
+		Array<GameObject*> children;
 
 		std::string name;
 	};

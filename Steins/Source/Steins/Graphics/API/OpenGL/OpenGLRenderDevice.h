@@ -27,6 +27,7 @@ namespace Steins
 		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path)override;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() override;
 		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) override;
+		virtual Shared<Material> CreateMaterial(Shared<PipelineState> _pipeline) override;
 
 		std::string GetVersion() const { return version; }
 	protected:

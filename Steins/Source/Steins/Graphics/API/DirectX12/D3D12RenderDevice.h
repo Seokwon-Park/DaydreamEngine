@@ -11,7 +11,7 @@ namespace Steins
 		D3D12_CPU_DESCRIPTOR_HANDLE heapStartCpu;
 		D3D12_GPU_DESCRIPTOR_HANDLE heapStartGpu;
 		UINT                        heapHandleIncrement;
-		std::vector<int>            freeIndices;
+		Array<int>            freeIndices;
 
 		void Create(ID3D12Device* _device, ID3D12DescriptorHeap* _heap)
 		{
@@ -83,6 +83,7 @@ namespace Steins
 		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path)override;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() override;
 		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) override;
+		virtual Shared<Material> CreateMaterial(Shared<PipelineState> _pipeline) override;
 
 		ID3D12Device* GetDevice() const { return device.Get(); }
 		ID3D12CommandQueue* GetCommandQueue() const { return commandQueue.Get(); }

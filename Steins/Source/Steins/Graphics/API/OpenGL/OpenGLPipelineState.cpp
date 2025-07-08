@@ -82,7 +82,7 @@ namespace Steins
 		//GLuint shaderID = static_cast<GLuint>(reinterpret_cast<uintptr_t>(shader->GetNativeHandle()));
 		//	glShaderIDs.push_back(shader);
 			//rendererID = glCreateProgram();
-			//std::vector<GLuint> glShaderIDs;
+			//Array<GLuint> glShaderIDs;
 
 			//for (auto [type, shaderSource] : shaderSources)
 			//{
@@ -100,7 +100,7 @@ namespace Steins
 			//		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
 
 			//		// The maxLength includes the NULL character
-			//		std::vector<GLchar> infoLog(maxLength);
+			//		Array<GLchar> infoLog(maxLength);
 			//		glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
 
 			//		// We don't need the shader anymore.
@@ -126,7 +126,7 @@ namespace Steins
 			//	glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
 
 			//	// The maxLength includes the NULL character
-			//	std::vector<GLchar> infoLog(maxLength);
+			//	Array<GLchar> infoLog(maxLength);
 			//	glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
 
 			//	// We don't need the program anymore.

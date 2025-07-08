@@ -17,7 +17,7 @@ namespace Steins
 		reflection->GetDesc(&shaderDesc);
 
 		// 입력 파라미터 정보를 저장할 벡터
-		std::vector<D3D11_INPUT_ELEMENT_DESC> inputLayoutDesc;
+		Array<D3D11_INPUT_ELEMENT_DESC> inputLayoutDesc;
 
 		// 각 입력 파라미터에 대해 순회
 		for (UINT i = 0; i < shaderDesc.InputParameters; i++)

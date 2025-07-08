@@ -12,6 +12,7 @@ namespace Steins
 		virtual ~OpenGLPipelineState();
 
 		virtual void Bind() const;
+		virtual Shared<Material> CreateMaterial() override { return nullptr; };
 	private:
 		UInt32 inputDataIndex = 0;
 
