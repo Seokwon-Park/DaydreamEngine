@@ -217,8 +217,12 @@ void Sandbox2D::OnUpdate(Float32 _deltaTime)
 	squareVB->Bind();
 	squareIB->Bind();
 	pso->Bind();
-	viewProjMat->Bind(0, Steins::SteinsVertexBit);
-	texture->Bind(0);
+	//material->SetTexture("u_Texture", texture);
+	//material->SetConstantBuffer("Camera", viewProjMat);
+	//material->Bind();
+	
+	//viewProjMat->Bind(0, Steins::SteinsVertexBit);
+	//texture->Bind(0);
 	//Steins::RenderCommand::DrawIndexed(squareIB->GetCount());
 	Steins::Renderer::Submit(squareIB->GetCount());
 

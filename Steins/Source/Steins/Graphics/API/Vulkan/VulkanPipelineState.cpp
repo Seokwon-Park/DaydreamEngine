@@ -161,19 +161,19 @@ namespace Steins
 			}
 
 
-			//VkDescriptorPoolCreateInfo poolCreateInfo;
-			//poolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-			//
-			//VkDescriptorSetAllocateInfo allocInfo{};
-			//allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-			//allocInfo.descriptorPool = device->GetDescriptorPool();
-			//allocInfo.descriptorSetCount = 1;
-			//allocInfo.pSetLayouts = &descriptorSetLayout;
+			VkDescriptorPoolCreateInfo poolCreateInfo;
+			poolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+			
+			VkDescriptorSetAllocateInfo allocInfo{};
+			allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+			allocInfo.descriptorPool = device->GetDescriptorPool();
+			allocInfo.descriptorSetCount = 1;
+			allocInfo.pSetLayouts = descriptorSetLayouts.data();
 
-			//descriptorSets.resize(1);
-			//if (vkAllocateDescriptorSets(device->GetDevice(), &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
-			//	throw std::runtime_error("failed to allocate descriptor sets!");
-			//}
+			descriptorSets.resize(1);
+			if (vkAllocateDescriptorSets(device->GetDevice(), &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
+				throw std::runtime_error("failed to allocate descriptor sets!");
+			}
 
 
 			VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
@@ -242,7 +242,6 @@ namespace Steins
 			descriptorWriteSets[1].pTexelBufferView = nullptr; // Optional
 
 			vkUpdateDescriptorSets(device->GetDevice(), (UInt32)descriptorWriteSets.size(), descriptorWriteSets.data(), 0, nullptr);
-
 		}
 	}
 
@@ -257,7 +256,7 @@ namespace Steins
 	}
 	void VulkanPipelineState::Bind() const
 	{
-		vkCmdBindDescriptorSets(device->GetCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[0], 0, nullptr);
+		vkCmdBindDescriptorSets(device->GetCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, descriptorSets.data(), 0, nullptr);
 		vkCmdBindPipeline(device->GetCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 	}
 

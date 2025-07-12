@@ -16,6 +16,7 @@ namespace Steins
 
 		void CreateShaderStageInfo(const Shared<Shader>& _shader);
 		Array<VkDescriptorSetLayout> GetLayout() { return descriptorSetLayouts; };
+		VkPipelineLayout GetPipelineLayout() { return pipelineLayout; }
 	private:
 
 		VulkanRenderDevice* device;

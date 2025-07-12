@@ -68,7 +68,6 @@ namespace Steins
 				resourceInfo.push_back(sr);
 			}
 
-
 			for (const spirv_cross::Resource& resource : res.sampled_images)
 			{
 				ShaderResource sr{};
@@ -76,6 +75,13 @@ namespace Steins
 				sr.type = ShaderResourceType::Texture;
 				sr.set = comp.get_decoration(resource.id, spv::DecorationDescriptorSet);
 				sr.binding = comp.get_decoration(resource.id, spv::DecorationBinding);
+
+				const auto& type = comp.get_type(resource.type_id);
+				UInt32 count = 1;
+				if (!type.array.empty())
+				{
+					count = type.array[0];
+				}
 
 				resourceInfo.push_back(sr);
 			}

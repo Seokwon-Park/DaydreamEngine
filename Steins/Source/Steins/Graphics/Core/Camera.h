@@ -29,6 +29,6 @@ namespace Steins
 		Float32 nearPlane, farPlane;
 		Float32 fovy;
 		Float32 orthoSize;
-		ProjectionType projectionType = ProjectionType::Perspective;
+		ProjectionType projectionType = ProjectionType::Orthographic;
 	};
 }

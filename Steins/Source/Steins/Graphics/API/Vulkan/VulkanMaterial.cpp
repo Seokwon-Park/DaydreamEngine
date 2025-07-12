@@ -1,10 +1,14 @@
 #include "SteinsPCH.h"
 #include "VulkanMaterial.h"
+#include "VulkanTexture.h"
+#include "VulkanBuffer.h"
 
 namespace Steins
 {
 	VulkanMaterial::VulkanMaterial(VulkanRenderDevice* _device, VulkanPipelineState* _pso)
 	{
+		device = _device;
+		pso = _pso;
 		VkDescriptorPoolCreateInfo poolCreateInfo;
 		poolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 
@@ -16,23 +20,65 @@ namespace Steins
 		allocInfo.descriptorSetCount = layouts.size();
 		allocInfo.pSetLayouts = layouts.data();
 
-		
-		
+		sets.resize(layouts.size());
 		VkResult result = vkAllocateDescriptorSets(_device->GetDevice(), &allocInfo, sets.data());
 		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to allocate descriptor sets!");
+		STEINS_CORE_INFO("Allocated {0} descriptor sets", sets.size());
+	
 		for (auto shader : _pso->GetShaders())
 		{
-			auto tmp = shader->GetResourceInfo();
-			for (auto info : tmp)
+			auto resources = shader->GetResourceInfo();
+			for (auto resource : resources)
 			{
-				switch (info.type)
-				{
-				case ShaderResourceType::ConstantBuffer:
-					break;
-				case ShaderResourceType::Texture:
-					break;
-				}
+				bindingMap[resource.name] = resource;
 			}
+		}
+	}
+	void VulkanMaterial::SetTexture(const std::string& _name, Shared<Texture> _texture)
+	{
+		if (bindingMap.find(_name) != bindingMap.end())
+		{
+			auto resourceInfo = bindingMap[_name];
+
+			VulkanTexture2D* texture = Cast<VulkanTexture2D>(_texture.get());
+			VkDescriptorImageInfo imageInfo{};
+			imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			imageInfo.imageView = texture->GetImageView();
+			imageInfo.sampler = texture->GetSampler();
+
+			VkWriteDescriptorSet writeSet = {};
+			writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			writeSet.dstSet = sets[resourceInfo.set];
+			writeSet.dstBinding = resourceInfo.binding;  // 특정 binding만 업데이트
+			writeSet.descriptorCount = 1;
+			writeSet.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			writeSet.pImageInfo = &imageInfo;
+
+			vkUpdateDescriptorSets(device->GetDevice(), 1, &writeSet, 0, nullptr);
+		}
+	}
+	void VulkanMaterial::SetConstantBuffer(const std::string& _name, Shared<ConstantBuffer> _buffer)
+	{
+		if (bindingMap.find(_name) != bindingMap.end())
+		{
+			auto resourceInfo = bindingMap[_name];
+			if (resourceInfo.type != ShaderResourceType::ConstantBuffer) return;
+
+			VulkanConstantBuffer* buffer = Cast<VulkanConstantBuffer>(_buffer.get());
+			VkDescriptorBufferInfo bufferInfo{};
+			bufferInfo.buffer = (VkBuffer)_buffer->GetNativeHandle();
+			bufferInfo.offset = 0;
+			bufferInfo.range = buffer->GetSize();
+
+			VkWriteDescriptorSet writeSet = {};
+			writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			writeSet.dstSet = sets[resourceInfo.set];
+			writeSet.dstBinding = resourceInfo.binding;  // 특정 binding만 업데이트
+			writeSet.descriptorCount = 1;
+			writeSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			writeSet.pBufferInfo= &bufferInfo;
+
+			vkUpdateDescriptorSets(device->GetDevice(), 1, &writeSet, 0, nullptr);
 		}
 	}
 } 

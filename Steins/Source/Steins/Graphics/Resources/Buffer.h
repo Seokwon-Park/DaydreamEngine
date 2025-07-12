@@ -144,10 +144,12 @@ namespace Steins
 		virtual void Update(const void* _data, UInt32 _size) = 0;
 
 		virtual void* GetNativeHandle() = 0;
+		UInt32 GetSize() { return size; }
 
 		static Shared<ConstantBuffer> Create(UInt32 _size);
 	protected:
 		void* data;
+		UInt32 size;
 
 	};
 
