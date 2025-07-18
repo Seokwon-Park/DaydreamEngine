@@ -324,6 +324,30 @@ namespace Steins
 		return GL_NONE;
 	}
 
+	D3D12_SHADER_VISIBILITY GraphicsUtil::GetDX12ShaderVisibility(ShaderType _type)
+	{
+		switch (_type)
+		{
+
+		case ShaderType::Vertex:
+			return D3D12_SHADER_VISIBILITY_VERTEX;
+			break;
+		case ShaderType::Hull:
+			return D3D12_SHADER_VISIBILITY_HULL;
+			break;
+		case ShaderType::Domain:
+			return D3D12_SHADER_VISIBILITY_DOMAIN;
+			break;
+		case ShaderType::Geometry:
+			return D3D12_SHADER_VISIBILITY_GEOMETRY;
+			break;
+		case ShaderType::Pixel:
+			return D3D12_SHADER_VISIBILITY_PIXEL;
+			break;
+		};
+		return D3D12_SHADER_VISIBILITY_ALL;
+	}
+
 
 	GLenum GraphicsUtil::GetGLShaderStage(ShaderType _type)
 	{

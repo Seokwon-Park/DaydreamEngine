@@ -5,7 +5,7 @@ struct VSInput
     float2 uv: TEXCOORD0;
 };
 
-cbuffer VS_Cbuffer : register(b0)
+cbuffer Camera : register(b0)
 {
     matrix viewProjection;
 }

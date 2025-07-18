@@ -43,7 +43,7 @@ namespace Steins
 		D3D11ConstantBuffer(D3D11RenderDevice* _device, UInt32 _size);
 		virtual ~D3D11ConstantBuffer();
 
-		virtual void Bind(UInt32 _slot, ShaderStage _flags) const override;
+		virtual void Bind(UInt32 _slot) const override;
 
 		virtual void Update(const void* _data, UInt32 _size) override;
 

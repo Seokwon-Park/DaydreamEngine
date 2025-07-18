@@ -8,6 +8,7 @@
 #include "D3D11PipelineState.h"
 #include "D3D11ImGuiRenderer.h"
 #include "D3D11Texture.h"
+#include "D3D11Material.h"
 
 #include "Steins/Graphics/Utility/GraphicsUtil.h"
 
@@ -204,7 +205,7 @@ namespace Steins
 
 	Shared<Material> D3D11RenderDevice::CreateMaterial(Shared<PipelineState> _pipeline)
 	{
-		return Shared<Material>();
+		return _pipeline->CreateMaterial();
 	}
 
 

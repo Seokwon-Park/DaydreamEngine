@@ -2,11 +2,11 @@
 
 namespace Steins
 {
-	class Asset
+	class Resource
 	{
 	public:
-		Asset() {};
-		Asset(const std::string& _name);
+		Resource() {};
+		Resource(const std::string& _name);
 
 		inline void SetName(const std::string& _name) { name = _name; }
 		inline std::string GetName() const { return name; }

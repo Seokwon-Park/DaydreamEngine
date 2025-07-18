@@ -12,7 +12,8 @@ namespace Steins
 
 		virtual void Bind(UInt32 _slot) const override;
 
-		virtual void* GetNativeHandle() override { return reinterpret_cast<void*>(static_cast<size_t>(gpuHandle.ptr)); };
+		virtual void* GetNativeHandle() override { return reinterpret_cast<void*>(gpuHandle.ptr); };
+		//const D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() const { return gpuHandle; };
 	private:
 		D3D12RenderDevice* device;
 		ComPtr<ID3D12Resource> uploadBuffer;

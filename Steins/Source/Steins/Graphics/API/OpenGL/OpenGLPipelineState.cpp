@@ -1,14 +1,15 @@
 #include "SteinsPCH.h"
 #include "OpenGLPipelineState.h"
 #include "Steins/Graphics/Utility/GraphicsUtil.h"
+#include "OpenGLMaterial.h"
 
 #include "glm/gtc/type_ptr.hpp"
 
 namespace Steins
 {
-	static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
+	static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType _type)
 	{
-		switch (type)
+		switch (_type)
 		{
 		case Steins::ShaderDataType::Float:    return GL_FLOAT;
 		case Steins::ShaderDataType::Float2:   return GL_FLOAT;
@@ -31,20 +32,20 @@ namespace Steins
 		:PipelineState(_desc)
 	{
 		glCreateVertexArrays(1, &vao);
-
-		glBindVertexArray(vao);
 		const BufferLayout& layout = _desc.inputLayout;
 		for (const BufferElement& element : layout)
 		{
-			glEnableVertexAttribArray(inputDataIndex);
-			glVertexAttribPointer(inputDataIndex,
+			glEnableVertexArrayAttrib(vao, inputDataIndex);
+			glVertexArrayAttribFormat(vao, inputDataIndex,
 				element.GetComponentCount(),
 				ShaderDataTypeToOpenGLBaseType(element.type),
 				element.normalized ? GL_TRUE : GL_FALSE,
-				layout.GetStride(),
-				(void*)element.offset);
+				element.offset);
+			glVertexArrayAttribBinding(vao, inputDataIndex, 0);
 			inputDataIndex++;
 		}
+
+		glVertexArrayBindingDivisor(vao, 0, 0);
 
 		glCreateProgramPipelines(1, &pipeline);
 		glBindProgramPipeline(pipeline);
@@ -55,7 +56,6 @@ namespace Steins
 			GLuint shaderID = static_cast<GLuint>(reinterpret_cast<uintptr_t>(shader->GetNativeHandle()));
 			glUseProgramStages(pipeline, type, shaderID);
 			GLint samplerLocation = glGetUniformLocation(shaderID, "u_Texture");
-
 			if (samplerLocation != -1) {
 				glProgramUniform1i(shaderID, samplerLocation, 0);
 			}
@@ -175,5 +175,9 @@ namespace Steins
 		//GLint location = glGetUniformLocation(vsid, "u_ViewProjection");
 		//glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(test));
 
+	}
+	Shared<Material> OpenGLPipelineState::CreateMaterial()
+	{
+		return MakeShared<OpenGLMaterial>();
 	}
 }

@@ -3,6 +3,7 @@
 
 #include "Steins/Graphics/Utility/GraphicsUtil.h"
 #include "D3D12Shader.h"
+#include "D3D12Material.h"
 
 namespace Steins
 {
@@ -11,27 +12,82 @@ namespace Steins
 	{
 		device = _device;
 
+		Array<D3D12_ROOT_PARAMETER> rootParameters;
+		Array<D3D12_DESCRIPTOR_RANGE> descriptorRanges;
+
+		for (auto shader : shaders)
+		{
+			for (UInt32 i = 0; i< shader->GetResourceInfo().size(); i++)
+			{
+				auto& info = shader->GetResourceInfo()[i];
+				switch (info.type)
+				{
+				case ShaderResourceType::ConstantBuffer:
+				{
+					D3D12_ROOT_PARAMETER rootParam = {};
+					rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+					rootParam.Descriptor.ShaderRegister = info.binding;
+					rootParam.Descriptor.RegisterSpace = 0;
+					rootParam.ShaderVisibility = GraphicsUtil::GetDX12ShaderVisibility(shader->GetType());
+					rootParameters.push_back(rootParam);
+					break;
+				}
+				case ShaderResourceType::Texture2D:
+				{
+					D3D12_DESCRIPTOR_RANGE srvRange{};
+					srvRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+					srvRange.NumDescriptors = 1;
+					srvRange.BaseShaderRegister = info.binding;  // t0
+					srvRange.RegisterSpace = 0;
+					srvRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+					D3D12_ROOT_PARAMETER rootParam{};
+					rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+					rootParam.DescriptorTable.NumDescriptorRanges = 1;
+					rootParam.DescriptorTable.pDescriptorRanges = &srvRange;
+					rootParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+					rootParameters.push_back(rootParam);
+					break;
+				}
+				case ShaderResourceType::Sampler:
+					//D3D12_DESCRIPTOR_RANGE samplerRange{};
+					//samplerRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER;
+					//samplerRange.NumDescriptors = 1;
+					//samplerRange.BaseShaderRegister = 0; // s0부터 시작
+					//samplerRange.RegisterSpace = 0;
+					//samplerRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+					//descriptorRanges.push_back(samplerRange);
+
+					//D3D12_ROOT_PARAMETER rootParam = {};
+					//rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+					//rootParam.DescriptorTable.NumDescriptorRanges = 1;
+					//rootParam.DescriptorTable.pDescriptorRanges = &samplerRange;
+					//rootParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+					//rootParameters.push_back(rootParam);
+					break;
+				}
+				info.set = i;
+			}
+		}
+
+
 		D3D12_ROOT_DESCRIPTOR rootDescriptor;
 		rootDescriptor.ShaderRegister = 0;    // HLSL의 b0 레지스터
 		rootDescriptor.RegisterSpace = 0;     // 기본 레지스터 공간
 
-		D3D12_DESCRIPTOR_RANGE range{};
-		range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-		range.NumDescriptors = 1;
-		range.BaseShaderRegister = 0;  // t0
-		range.RegisterSpace = 0;
-		range.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-		// 2. 루트 파라미터(Root Parameter) 정의
-		D3D12_ROOT_PARAMETER rootParameters[2];
-		rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; // 루트 CBV 타입
-		rootParameters[0].Descriptor = rootDescriptor;
-		rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX; // 예: 정점 셰이더에서만 사용
-				
-		rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-		rootParameters[1].DescriptorTable.NumDescriptorRanges = 1;
-		rootParameters[1].DescriptorTable.pDescriptorRanges = &range;
-		rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+
+		//// 2. 루트 파라미터(Root Parameter) 정의
+		//D3D12_ROOT_PARAMETER rootParameters[2];
+		//rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; // 루트 CBV 타입
+		//rootParameters[0].Descriptor = rootDescriptor;
+		//rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX; // 예: 정점 셰이더에서만 사용
+		//		
+		//rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+		//rootParameters[1].DescriptorTable.NumDescriptorRanges = 1;
+		//rootParameters[1].DescriptorTable.pDescriptorRanges = &range;
+		//rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 		D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
 		staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
@@ -49,8 +105,8 @@ namespace Steins
 		staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 		D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
-		rootSignatureDesc.NumParameters = 2;
-		rootSignatureDesc.pParameters = rootParameters;
+		rootSignatureDesc.NumParameters = rootParameters.size();
+		rootSignatureDesc.pParameters = rootParameters.data();
 		rootSignatureDesc.NumStaticSamplers = 1;
 		rootSignatureDesc.pStaticSamplers = staticSamplers;
 		rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
@@ -130,6 +186,10 @@ namespace Steins
 	{
 		device->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
 		device->GetCommandList()->SetPipelineState(pipeline.Get());
+	}
+	Shared<Material> D3D12PipelineState::CreateMaterial()
+	{
+		return MakeShared<D3D12Material>(device, this);
 	}
 }
 

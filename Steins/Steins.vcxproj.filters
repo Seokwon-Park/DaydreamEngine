@@ -7,6 +7,9 @@
     <Filter Include="Source\Base">
       <UniqueIdentifier>{A0CD140F-0C83-8D04-9577-87DB012C8408}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Base\Container">
+      <UniqueIdentifier>{721D6B63-DE89-265E-A77D-BEBB13A948C6}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source\Base\IO">
       <UniqueIdentifier>{473B5617-3309-4A1D-1C9D-BA43080A2682}</UniqueIdentifier>
     </Filter>
@@ -110,6 +113,15 @@
   <ItemGroup>
     <ClInclude Include="Source\Base\Base.h">
       <Filter>Source\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Base\Container\Array.h">
+      <Filter>Source\Base\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Base\Container\HashMap.h">
+      <Filter>Source\Base\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Base\Container\SortedMap.h">
+      <Filter>Source\Base\Container</Filter>
     </ClInclude>
     <ClInclude Include="Source\Base\IO\File.h">
       <Filter>Source\Base\IO</Filter>
@@ -342,7 +354,7 @@
     <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanTexture.h">
       <Filter>Source\Steins\Graphics\API\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Graphics\Core\Asset.h">
+    <ClInclude Include="Source\Steins\Graphics\Resources\Resource.h">
       <Filter>Source\Steins\Graphics\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\Graphics\Core\Camera.h">
@@ -376,6 +388,9 @@
       <Filter>Source\Steins\Graphics\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\Graphics\Core\Renderer2D.h">
+      <Filter>Source\Steins\Graphics\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Graphics\Core\ResourceManager.h">
       <Filter>Source\Steins\Graphics\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\Graphics\Core\Swapchain.h">
@@ -1683,10 +1698,9 @@
     <ClInclude Include="Vendor\stb\stb_image.h">
       <Filter>Vendor\stb</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Base\Container\HashMap.h" />
-    <ClInclude Include="Source\Steins\Graphics\Core\ResourceManager.h" />
-    <ClInclude Include="Source\Base\Container\SortedMap.h" />
-    <ClInclude Include="Source\Base\Container\Array.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11Material.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Material.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLMaterial.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -1866,7 +1880,7 @@
     <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanTexture.cpp">
       <Filter>Source\Steins\Graphics\API\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Graphics\Core\Asset.cpp">
+    <ClCompile Include="Source\Steins\Graphics\Resources\Resource.cpp">
       <Filter>Source\Steins\Graphics\Core</Filter>
     </ClCompile>
     <ClCompile Include="Source\Steins\Graphics\Core\Camera.cpp">
@@ -1947,5 +1961,8 @@
     <ClCompile Include="Vendor\stb\stb_image.cpp">
       <Filter>Vendor\stb</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11Material.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Material.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLMaterial.cpp" />
   </ItemGroup>
 </Project>

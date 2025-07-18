@@ -120,7 +120,7 @@ namespace Steins
 		vkFreeMemory(device->GetDevice(), constantBufferMemory, nullptr);
 	}
 
-	void VulkanConstantBuffer::Bind(UInt32 _slot, ShaderStage _flags) const
+	void Steins::VulkanConstantBuffer::Bind(UInt32 _slot) const
 	{
 		
 	}

@@ -2,7 +2,7 @@
 
 namespace Steins
 {
-	enum class ProjectionType { Orthographic, Perspective	};
+	enum class ProjectionType { Orthographic, Perspective };
 
 	class Camera
 	{
@@ -17,6 +17,8 @@ namespace Steins
 		void SetPosition(Vector3 _position);
 		inline Vector3 GetPosition() const { return position; }
 
+		void SetProjectionType(ProjectionType _type) { projectionType = _type; }
+
 	private:
 		void UpdateMatrix();
 
@@ -29,6 +31,6 @@ namespace Steins
 		Float32 nearPlane, farPlane;
 		Float32 fovy;
 		Float32 orthoSize;
-		ProjectionType projectionType = ProjectionType::Orthographic;
+		ProjectionType projectionType = ProjectionType::Perspective;
 	};
 }

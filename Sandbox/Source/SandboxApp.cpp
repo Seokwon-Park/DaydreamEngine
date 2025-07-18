@@ -192,7 +192,7 @@ public:
 		vb->Bind();
 		ib->Bind();
 		pso->Bind();
-		viewProjMat->Bind(0, Steins::SteinsVertexBit);
+		viewProjMat->Bind(0);
 		texture->Bind(0);
 
 
@@ -259,7 +259,7 @@ Steins::Application* Steins::CreateApplication()
 	ApplicationSpecification spec;
 	spec.Name = "Sandbox";
 	spec.WorkingDirectory = "../Lab";
-	spec.rendererAPI = RendererAPIType::Vulkan;
+	spec.rendererAPI = RendererAPIType::OpenGL;
 
 	return new Sandbox(spec);
 }

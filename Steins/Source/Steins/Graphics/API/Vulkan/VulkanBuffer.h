@@ -49,7 +49,7 @@ namespace Steins
 		VulkanConstantBuffer(VulkanRenderDevice* _device, UInt32 _size);
 		virtual ~VulkanConstantBuffer() override;
 
-		virtual void Bind(UInt32 _slot, ShaderStage _flags) const override;
+		virtual void Bind(UInt32 _slot) const override;
 		virtual void Update(const void* _data, UInt32 _size);
 
 		virtual void* GetNativeHandle() override { return constantBuffer; }

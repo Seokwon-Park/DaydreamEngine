@@ -237,7 +237,7 @@ namespace Steins
 
 	Shared<Material> D3D12RenderDevice::CreateMaterial(Shared<PipelineState> _pipeline)
 	{
-		return nullptr;
+		return _pipeline->CreateMaterial();
 	}
 
 	ComPtr<ID3D12GraphicsCommandList> D3D12RenderDevice::BeginSingleTimeCommands()

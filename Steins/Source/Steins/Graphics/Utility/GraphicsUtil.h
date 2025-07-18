@@ -29,6 +29,7 @@ namespace Steins
 		//ShaderType, ShaderStage
 		static GLenum GetGLShaderStage(ShaderType _type);
 		static GLenum GetGLShaderType(ShaderType _type);
+		static D3D12_SHADER_VISIBILITY GetDX12ShaderVisibility(ShaderType _type);
 		static VkShaderStageFlagBits GetVKShaderStage(ShaderType _type);
 
 		static std::string GetVendor(int _vendorCode);

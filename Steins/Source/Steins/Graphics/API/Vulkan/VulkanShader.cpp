@@ -13,7 +13,7 @@ namespace Steins
 	VulkanShader::VulkanShader(VulkanRenderDevice* _device, const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode)
 	{
 		device = _device;
-		type = _type;
+		shaderType = _type;
 		stageBit = GraphicsUtil::GetVKShaderStage(_type);
 		switch (_mode)
 		{
@@ -47,7 +47,7 @@ namespace Steins
 			spirv_cross::Compiler comp(reflect); // const uint32_t *, size_t interface is also available.
 			spirv_cross::ShaderResources res = comp.get_shader_resources();
 
-			if (type == ShaderType::Vertex)
+			if (shaderType == ShaderType::Vertex)
 			{
 				for (const spirv_cross::Resource& resource : res.stage_inputs)
 				{
@@ -58,7 +58,7 @@ namespace Steins
 
 			for (const spirv_cross::Resource& resource : res.uniform_buffers)
 			{
-				ShaderResource sr{};
+				ShaderResourceDesc sr{};
 				sr.name = comp.get_name(resource.base_type_id);
 				sr.type = ShaderResourceType::ConstantBuffer;
 				sr.set = comp.get_decoration(resource.id, spv::DecorationDescriptorSet);
@@ -70,9 +70,9 @@ namespace Steins
 
 			for (const spirv_cross::Resource& resource : res.sampled_images)
 			{
-				ShaderResource sr{};
+				ShaderResourceDesc sr{};
 				sr.name = comp.get_name(resource.id);
-				sr.type = ShaderResourceType::Texture;
+				sr.type = ShaderResourceType::Texture2D;
 				sr.set = comp.get_decoration(resource.id, spv::DecorationDescriptorSet);
 				sr.binding = comp.get_decoration(resource.id, spv::DecorationBinding);
 

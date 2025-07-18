@@ -111,6 +111,6 @@ namespace Steins
 	}
 	void D3D12Texture2D::Bind(UInt32 _slot) const
 	{
-		device->GetCommandList()->SetGraphicsRootDescriptorTable(1, gpuHandle);
+		//device->GetCommandList()->SetGraphicsRootDescriptorTable(1, gpuHandle);
 	}
 }

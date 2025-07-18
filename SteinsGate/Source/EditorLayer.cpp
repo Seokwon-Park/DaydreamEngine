@@ -80,7 +80,7 @@ void EditorLayer::OnUpdate(Float32 _deltaTime)
 	squareVB->Bind();
 	squareIB->Bind();
 	pso->Bind();
-	viewProjMat->Bind(0, Steins::SteinsVertexBit);
+	viewProjMat->Bind(0);
 	texture->Bind(0);
 	Steins::Renderer::Submit(squareIB->GetCount());
 	//Steins::Renderer::BeginScene(camera);

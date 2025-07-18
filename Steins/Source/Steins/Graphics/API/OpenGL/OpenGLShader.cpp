@@ -8,7 +8,7 @@ namespace Steins
 {
 	OpenGLShader::OpenGLShader(const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode)
 	{
-		type = _type;
+		shaderType = _type;
 		std::string src = _src;
 		if (_mode == ShaderLoadMode::File)
 		{
@@ -48,7 +48,7 @@ namespace Steins
 	//}
 	void OpenGLShader::Compile(const std::string& _src)
 	{
-		GLuint shaderID = glCreateShader(GraphicsUtil::GetGLShaderType(type));
+		GLuint shaderID = glCreateShader(GraphicsUtil::GetGLShaderType(shaderType));
 		const GLchar* source = _src.c_str();
 
 		glShaderSource(shaderID, 1, &source, nullptr);
@@ -70,7 +70,7 @@ namespace Steins
 			return;
 		}
 
-		shaderProgramID = glCreateShaderProgramv(GraphicsUtil::GetGLShaderType(type), 1, &source);
+		shaderProgramID = glCreateShaderProgramv(GraphicsUtil::GetGLShaderType(shaderType), 1, &source);
 
 		GLint isLinked = 0;
 		glGetProgramiv(shaderProgramID, GL_LINK_STATUS, &isLinked);
@@ -91,6 +91,72 @@ namespace Steins
 			STEINS_CORE_ERROR("{0}", infoLog.data());
 			STEINS_CORE_ASSERT(false, "Shader link failure!");
 			return;
+		}
+
+		GLint numUniformBlocks;
+		glGetProgramiv(shaderProgramID, GL_ACTIVE_UNIFORM_BLOCKS, &numUniformBlocks);
+
+		for (int i = 0; i < numUniformBlocks; i++)
+		{
+			GLsizei length;
+			GLchar blockName[256];
+
+			glGetActiveUniformBlockName(shaderProgramID, i, 256, &length, blockName);
+
+			// 블록 크기와 바인딩 정보
+			GLint blockSize;
+			GLint blockBinding;
+			glGetActiveUniformBlockiv(shaderProgramID, i, GL_UNIFORM_BLOCK_DATA_SIZE, &blockSize);
+			glGetActiveUniformBlockiv(shaderProgramID, i, GL_UNIFORM_BLOCK_BINDING, &blockBinding);
+
+			ShaderResourceDesc desc{};
+			desc.name = blockName;
+			desc.type = ShaderResourceType::ConstantBuffer;
+			desc.set = 0;
+			desc.binding = blockBinding;
+			desc.count = 1;
+			desc.size = blockSize;
+
+			resourceInfo.push_back(desc);
+		}
+
+		GLint numUniforms;
+		glGetProgramInterfaceiv(shaderProgramID, GL_UNIFORM, GL_ACTIVE_RESOURCES, &numUniforms);
+		for (int i = 0; i < numUniforms; i++)
+		{
+			GLchar name[256];
+			GLsizei length;
+
+			glGetProgramResourceName(shaderProgramID, GL_UNIFORM, i, 256, &length, name);
+
+			// 상세 정보 쿼리
+			GLenum properties[] = { GL_TYPE, GL_LOCATION, GL_ARRAY_SIZE, GL_OFFSET, GL_BLOCK_INDEX };
+			GLint values[5];
+
+			glGetProgramResourceiv(shaderProgramID, GL_UNIFORM, i, 5, properties, 5, nullptr, values);
+
+			GLenum type = values[0];
+			GLint location = values[1];
+			GLint arraySize = values[2];
+			GLint blockIndex = values[4];
+
+			// uniform block에 속한 uniform은 제외
+			if (blockIndex != -1) {
+				continue;
+			}
+
+			// 샘플러 타입만 처리
+			if (type == GL_SAMPLER_2D) {
+				ShaderResourceDesc desc{};
+				desc.name = std::string(name);
+				desc.type = ShaderResourceType::Texture2D;
+				desc.set = 0;
+				desc.binding = location;
+				desc.count = arraySize;
+				desc.size = 0;
+
+				resourceInfo.push_back(desc);
+			}
 		}
 
 		glDeleteShader(shaderID);

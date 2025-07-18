@@ -37,6 +37,7 @@ namespace Steins
 		static Matrix4x4 Orthographic(Float32 _left, Float32 _right, Float32 _bottom, Float32 _top, Float32 _near, Float32 _far);
 		static Matrix4x4 Perspective(Float32 _fovy, Float32 _aspect, Float32 _near, Float32 _far);
 		static Matrix4x4 Inverse(Matrix4x4 _matrix);
+		static Matrix4x4 LookTo(Vector3 _eye, Vector3 _direction, Vector3 _up);
 
 
 

@@ -60,20 +60,20 @@ namespace Steins
 	{
 		Matrix4x4 out;
 		Float32 width = _size * _aspectRatio;
-		out.glmMat = glm::orthoLH(-width / 2, width / 2, -_size / 2, _size / 2, _near, _far);
-		return out;
+		return Orthographic(-width / 2, width / 2, -_size / 2, _size / 2, _near, _far);
 	}
 	Matrix4x4 Matrix4x4::Orthographic(Float32 _left, Float32 _right, Float32 _bottom, Float32 _top, Float32 _near, Float32 _far)
 	{
 		Matrix4x4 out;
-		out.glmMat = glm::orthoLH(_left, _right, _bottom, _top, _near, _far);
+		out.glmMat = glm::ortho(_left, _right, _bottom, _top, _near, _far);
 		return out;
 
 	}
 	Matrix4x4 Matrix4x4::Perspective(Float32 _fovy, Float32 _aspect, Float32 _near, Float32 _far)
 	{
 		Matrix4x4 out;
-		out.glmMat = glm::perspective(_fovy, _aspect, _near, _far);
+		out.glmMat = glm::perspectiveRH_NO(_fovy, _aspect, _near, _far);
+		out.glmMat = glm::perspectiveLH_ZO(_fovy, _aspect, _near, _far);
 		return out;
 	}
 
@@ -83,5 +83,10 @@ namespace Steins
 		return _matrix;
 	}
 
-	
+	Matrix4x4 Matrix4x4::LookTo(Vector3 _eye, Vector3 _direction, Vector3 _up)
+	{
+		Matrix4x4 out;
+		out.glmMat = glm::lookAt(_eye, _eye + glm::normalize(_direction), _up);
+		return out;
+	}
 }

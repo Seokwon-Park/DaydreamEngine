@@ -13,26 +13,29 @@ namespace Steins {
 
 	OpenGLVertexBuffer::OpenGLVertexBuffer(UInt32 _bufferSize, UInt32 _stride)
 	{
-		glCreateBuffers(1, &rendererID);
-		glBindBuffer(GL_ARRAY_BUFFER, rendererID);
-		glBufferData(GL_ARRAY_BUFFER, _bufferSize, nullptr, GL_DYNAMIC_DRAW);
+		stride = _stride;
+		glCreateBuffers(1, &bufferID);
+		glNamedBufferData(bufferID, _bufferSize, nullptr, GL_DYNAMIC_DRAW);
 	}
 
 	OpenGLVertexBuffer::OpenGLVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
 	{
-		glCreateBuffers(1, &rendererID);
-		glBindBuffer(GL_ARRAY_BUFFER, rendererID);
-		glBufferData(GL_ARRAY_BUFFER, _size, _vertices, GL_STATIC_DRAW);
+		stride = _stride;
+		glCreateBuffers(1, &bufferID);
+		glNamedBufferData(bufferID, _size, _vertices, GL_DYNAMIC_DRAW);
 	}
 
 	OpenGLVertexBuffer::~OpenGLVertexBuffer()
 	{
-		glDeleteBuffers(1, &rendererID);
+		glDeleteBuffers(1, &bufferID);
 	}
 
 	void OpenGLVertexBuffer::Bind() const
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, rendererID);
+		//glBindBuffer(GL_ARRAY_BUFFER, bufferID);
+		GLint currentVAO = 0; // 결과를 저장할 변수
+		glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &currentVAO);
+		glVertexArrayVertexBuffer(currentVAO, 0, bufferID, 0,stride);
 	}
 
 	void OpenGLVertexBuffer::Unbind() const
@@ -42,8 +45,7 @@ namespace Steins {
 
 	void OpenGLVertexBuffer::SetData(void* _data, UInt32 _dataSize)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, rendererID);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, _dataSize, _data);
+		glNamedBufferSubData(bufferID, 0, _dataSize, _data);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////
@@ -53,19 +55,21 @@ namespace Steins {
 	OpenGLIndexBuffer::OpenGLIndexBuffer(UInt32* _indices, UInt32 _indexCount)
 	{
 		indexCount = _indexCount;
-		glCreateBuffers(1, &rendererID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendererID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indexCount * sizeof(UInt32), _indices, GL_STATIC_DRAW);
+		glCreateBuffers(1, &bufferID);
+		glNamedBufferData(bufferID, _indexCount * sizeof(UInt32), _indices, GL_STATIC_DRAW);
 	}
 
 	OpenGLIndexBuffer::~OpenGLIndexBuffer()
 	{
-		glDeleteBuffers(1, &rendererID);
+		glDeleteBuffers(1, &bufferID);
 	}
 
 	void OpenGLIndexBuffer::Bind() const
 	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendererID);
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferID);
+		GLint currentVAO = 0; // 결과를 저장할 변수
+		glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &currentVAO);
+		glVertexArrayElementBuffer(currentVAO, bufferID);
 	}
 
 	void OpenGLIndexBuffer::Unbind() const
@@ -80,9 +84,7 @@ namespace Steins {
 	OpenGLConstantBuffer::OpenGLConstantBuffer(UInt32 _size)
 	{
 		glCreateBuffers(1, &bufferID);
-		glBindBuffer(GL_UNIFORM_BUFFER, bufferID);
-		glBufferData(GL_UNIFORM_BUFFER, _size, nullptr, GL_DYNAMIC_DRAW);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		glNamedBufferData(bufferID, _size, nullptr, GL_DYNAMIC_DRAW);
 	}
 
 	OpenGLConstantBuffer::~OpenGLConstantBuffer()
@@ -90,14 +92,13 @@ namespace Steins {
 		glDeleteBuffers(1, &bufferID);
 	}
 
-	void OpenGLConstantBuffer::Bind(UInt32 _slot, ShaderStage _flags) const
+	void Steins::OpenGLConstantBuffer::Bind(UInt32 _slot) const
 	{
 		glBindBufferBase(GL_UNIFORM_BUFFER, 0, bufferID);
+
 	}
 	void OpenGLConstantBuffer::Update(const void* _data, UInt32 _size)
 	{
-		glBindBuffer(GL_UNIFORM_BUFFER, bufferID);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, _size, _data);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		glNamedBufferSubData(bufferID, 0, _size, _data);
 	}
 }

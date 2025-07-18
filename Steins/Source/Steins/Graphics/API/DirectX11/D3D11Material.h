@@ -1,25 +1,24 @@
 #pragma once
 
 #include "Steins/Graphics/Resources/Material.h"
-#include "Steins/Graphics/API/Vulkan/VulkanRenderDevice.h"
-#include "Steins/Graphics/API/Vulkan/VulkanPipelineState.h"
+#include "D3D11RenderDevice.h"
+#include "D3D11PipelineState.h"
 
 namespace Steins
 {
-	class VulkanMaterial : public Material
+	class D3D11Material : public Material
 	{
 	public:
-		VulkanMaterial(VulkanRenderDevice* _device, VulkanPipelineState* _pso);
+		D3D11Material(D3D11RenderDevice* _device, D3D11PipelineState* _pso);
 
 		virtual void Bind() override;
 
 		virtual void SetTexture2D(const std::string& _name, Shared<Texture2D> _texture)override;
 		virtual void SetConstantBuffer(const std::string& _name, Shared<ConstantBuffer> _buffer)override;
-
-
 	private:
-		VulkanRenderDevice* device;
-		VulkanPipelineState* pso;
-		Array<VkDescriptorSet> sets;
+		D3D11RenderDevice* device;
+
+		HashMap<String, Shared<ConstantBuffer>> cbuffers;
+		HashMap<String, Shared<Texture2D>> textures;
 	};
 }

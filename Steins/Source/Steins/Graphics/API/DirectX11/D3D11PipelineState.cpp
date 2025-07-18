@@ -1,5 +1,6 @@
 #include "SteinsPCH.h"
 #include "D3D11PipelineState.h"
+#include "D3D11Material.h"
 
 namespace Steins
 {
@@ -36,5 +37,9 @@ namespace Steins
 		}
 		device->GetContext()->RSSetState(rasterizer.Get());
 		device->GetContext()->PSSetSamplers(0, 1, sampler.GetAddressOf());
+	}
+	Shared<Material> D3D11PipelineState::CreateMaterial()
+	{
+		return MakeShared<D3D11Material>(device, this);
 	}
 }

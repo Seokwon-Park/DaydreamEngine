@@ -24,7 +24,7 @@ namespace Steins
 		VkResult result = vkAllocateDescriptorSets(_device->GetDevice(), &allocInfo, sets.data());
 		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to allocate descriptor sets!");
 		STEINS_CORE_INFO("Allocated {0} descriptor sets", sets.size());
-	
+
 		for (auto shader : _pso->GetShaders())
 		{
 			auto resources = shader->GetResourceInfo();
@@ -34,7 +34,11 @@ namespace Steins
 			}
 		}
 	}
-	void VulkanMaterial::SetTexture(const std::string& _name, Shared<Texture> _texture)
+	void VulkanMaterial::Bind()
+	{
+		vkCmdBindDescriptorSets(device->GetCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pso->GetPipelineLayout(), 0, 1, sets.data(), 0, nullptr);
+	}
+	void VulkanMaterial::SetTexture2D(const std::string& _name, Shared<Texture2D> _texture)
 	{
 		if (bindingMap.find(_name) != bindingMap.end())
 		{
@@ -76,9 +80,9 @@ namespace Steins
 			writeSet.dstBinding = resourceInfo.binding;  // 특정 binding만 업데이트
 			writeSet.descriptorCount = 1;
 			writeSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			writeSet.pBufferInfo= &bufferInfo;
+			writeSet.pBufferInfo = &bufferInfo;
 
 			vkUpdateDescriptorSets(device->GetDevice(), 1, &writeSet, 0, nullptr);
 		}
 	}
-} 
+}

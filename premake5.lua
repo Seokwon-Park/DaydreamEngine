@@ -66,7 +66,12 @@ project "Steins"
 		"ImGui",
 		"opengl32.lib",
 		"vulkan-1.lib",
+	}
 
+	defines
+	{
+		"GLM_FORCE_LEFT_HANDED",
+		"GLM_FORCE_DEPTH_ZERO_TO_ONE"
 	}
 
 	filter "system:windows"

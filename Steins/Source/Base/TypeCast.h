@@ -31,7 +31,7 @@ namespace Steins
 	}
 
 	template <typename To, typename From>
-	To PointerCast(From* from)
+	To ReinterpretCast(From* from)
 	{
 		return reinterpret_cast<To>(from);
 	}

@@ -6,7 +6,7 @@ static Steins::Renderer2D r2d;
 
 Sandbox2D::Sandbox2D()
 {
-	float squareVertices[8 * 9] = {
+	float squareVertices[4 * 9] = {
 			-0.5f, -0.5f, 0.0f, 1.0f,0.0f,0.0f,1.0f, 0.0f,1.0f,
 			 -0.5f,  0.5f, 0.0f,0.0f,0.0f,1.0f,1.0f, 0.0f,0.0f,
 			 0.5f, 0.5f, 0.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 0.0f,
@@ -28,7 +28,7 @@ Sandbox2D::Sandbox2D()
 	};
 	//squareVB = Steins::VertexBuffer::CreateStatic(squareVertices, sizeof(squareVertices), layout.GetStride());
 	squareVB = Steins::VertexBuffer::CreateDynamic(sizeof(squareVertices), layout.GetStride());
-	squareVB->SetData(squareVertices, 4*4*9);
+	squareVB->SetData(squareVertices, sizeof(squareVertices2));
 
 	squareVB2 = Steins::VertexBuffer::CreateDynamic(sizeof(squareVertices2), layout.GetStride());
 	squareVB2->SetData(squareVertices2, sizeof(squareVertices2));
@@ -156,7 +156,7 @@ Sandbox2D::Sandbox2D()
 
 	};
 
-	camera.SetPosition({ 0.5f,0.0f,1.0f });
+	camera.SetPosition({ 0.0f,0.0f,-1.0f });
 	cameraPos = camera.GetViewProjectionMatrix();
 	viewProjMat = Steins::ConstantBuffer::Create(sizeof(Steins::Matrix4x4));
 	viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
@@ -174,14 +174,25 @@ Sandbox2D::Sandbox2D()
 	pso = Steins::PipelineState::Create(desc);
 
 	material = Steins::Material::Create(pso);
-
-	//r2d.Test();
 }
 
 void Sandbox2D::OnUpdate(Float32 _deltaTime)
 {
 	Steins::RenderCommand::SetClearColor(Steins::Color::White);
 	Steins::RenderCommand::Clear();
+
+	if (Steins::Input::GetKeyPress(Steins::Key::Q))
+	{
+		camera.SetPosition(camera.GetPosition() + Steins::Vector3(0.0f, 0.0f, 1.0f) * _deltaTime);
+		cameraPos = camera.GetViewProjectionMatrix();
+		viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
+	}
+	if (Steins::Input::GetKeyPress(Steins::Key::E))
+	{
+		camera.SetPosition(camera.GetPosition() + Steins::Vector3(0.0f, 0.0f, -1.0f) * _deltaTime);
+		cameraPos = camera.GetViewProjectionMatrix();
+		viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
+	}
 
 	if (Steins::Input::GetKeyPress(Steins::Key::W))
 	{
@@ -214,12 +225,12 @@ void Sandbox2D::OnUpdate(Float32 _deltaTime)
 	////camera.SetPosition({ 0.5f, 0.5f, 0.0f });
 
 	//Steins::Renderer::BeginScene(camera);
+	pso->Bind();
 	squareVB->Bind();
 	squareIB->Bind();
-	pso->Bind();
-	//material->SetTexture("u_Texture", texture);
-	//material->SetConstantBuffer("Camera", viewProjMat);
-	//material->Bind();
+	material->Bind();
+	material->SetTexture2D("u_Texture", texture);
+	material->SetConstantBuffer("Camera", viewProjMat);
 	
 	//viewProjMat->Bind(0, Steins::SteinsVertexBit);
 	//texture->Bind(0);

@@ -14,14 +14,13 @@ namespace Steins
 		virtual ~D3D12PipelineState();
 
 		virtual void Bind() const override;
-		virtual Shared<Material> CreateMaterial() override { return nullptr; };
+		virtual Shared<Material> CreateMaterial() override;
+
 	protected:
 
 	private:
 		D3D12RenderDevice* device;
 		ComPtr<ID3D12RootSignature> rootSignature;
 		ComPtr<ID3D12PipelineState> pipeline;
-
-
 	};
 }

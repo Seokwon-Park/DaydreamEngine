@@ -15,7 +15,8 @@ namespace Steins
 		virtual void Unbind() const;
 		virtual void SetData(void* _data, UInt32 _dataSize) override;
 	private:
-		UInt32 rendererID;
+		UInt32 bufferID;
+		UInt32 stride;
 	};
 
 	class OpenGLIndexBuffer : public IndexBuffer
@@ -28,7 +29,7 @@ namespace Steins
 		virtual void Unbind() const;
 
 	private:
-		UInt32 rendererID;
+		UInt32 bufferID;
 	};
 
 	class OpenGLConstantBuffer: public ConstantBuffer
@@ -37,7 +38,7 @@ namespace Steins
 		OpenGLConstantBuffer(UInt32 _size);
 		virtual ~OpenGLConstantBuffer();
 
-		virtual void Bind(UInt32 _slot, ShaderStage _flags) const override;
+		virtual void Bind(UInt32 _slot) const override;
 
 		virtual void Update(const void* _data, UInt32 _size) override;
 

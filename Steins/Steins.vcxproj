@@ -60,7 +60,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>SteinsPCH.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>STEINS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;STEINS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLM_FORCE_LEFT_HANDED;GLM_FORCE_DEPTH_ZERO_TO_ONE;STEINS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;STEINS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>Source;Vendor\spdlog\include;Vendor\glfw\include;Vendor\glad\include;Vendor\imgui;Vendor\glm;Vendor\stb;Vendor\assimp\include;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -84,7 +84,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>SteinsPCH.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>STEINS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;STEINS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLM_FORCE_LEFT_HANDED;GLM_FORCE_DEPTH_ZERO_TO_ONE;STEINS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;STEINS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>Source;Vendor\spdlog\include;Vendor\glfw\include;Vendor\glad\include;Vendor\imgui;Vendor\glm;Vendor\stb;Vendor\assimp\include;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -150,6 +150,7 @@
     <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11Framebuffer.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11GraphicsContext.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11ImGuiRenderer.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11Material.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11PipelineState.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11RenderDevice.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11Shader.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Framebuffer.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12GraphicsContext.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12ImGuiRenderer.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Material.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12PipelineState.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12RenderDevice.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Shader.h" />
@@ -169,6 +171,7 @@
     <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLFramebuffer.h" />
     <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLGraphicsContext.h" />
     <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLImGuiRenderer.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLMaterial.h" />
     <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLPipelineState.h" />
     <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLRenderDevice.h" />
     <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLShader.h" />
@@ -185,7 +188,7 @@
     <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanShader.h" />
     <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapChain.h" />
     <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanTexture.h" />
-    <ClInclude Include="Source\Steins\Graphics\Core\Asset.h" />
+    <ClInclude Include="Source\Steins\Graphics\Resources\Resource.h" />
     <ClInclude Include="Source\Steins\Graphics\Core\Camera.h" />
     <ClInclude Include="Source\Steins\Graphics\Core\EditorCamera.h" />
     <ClInclude Include="Source\Steins\Graphics\Core\GraphicsContext.h" />
@@ -657,6 +660,7 @@
     <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11Framebuffer.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11GraphicsContext.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11ImGuiRenderer.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11Material.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11PipelineState.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11PixelShader.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11RenderDevice.cpp" />
@@ -668,6 +672,7 @@
     <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Framebuffer.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12GraphicsContext.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12ImGuiRenderer.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Material.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12PipelineState.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12RenderDevice.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Shader.cpp" />
@@ -678,6 +683,7 @@
     <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLFramebuffer.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLGraphicsContext.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLImGuiRenderer.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLMaterial.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLPipelineState.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLRenderDevice.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLShader.cpp" />
@@ -694,7 +700,7 @@
     <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanShader.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapChain.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanTexture.cpp" />
-    <ClCompile Include="Source\Steins\Graphics\Core\Asset.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Resources\Resource.cpp" />
     <ClCompile Include="Source\Steins\Graphics\Core\Camera.cpp" />
     <ClCompile Include="Source\Steins\Graphics\Core\GraphicsContext.cpp" />
     <ClCompile Include="Source\Steins\Graphics\Core\OrthographicCamera.cpp" />

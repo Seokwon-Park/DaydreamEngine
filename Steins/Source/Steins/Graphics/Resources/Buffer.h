@@ -139,7 +139,7 @@ namespace Steins
 	public:
 		virtual ~ConstantBuffer() {}
 
-		virtual void Bind(UInt32 _slot, ShaderStage _flags = ShaderAllBit) const = 0;
+		virtual void Bind(UInt32 _slot) const = 0;
 
 		virtual void Update(const void* _data, UInt32 _size) = 0;
 
