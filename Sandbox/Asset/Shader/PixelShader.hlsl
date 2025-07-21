@@ -10,8 +10,9 @@ struct PSOutput
     float4 color : SV_Target0;
 };
 
+[[vk::combinedImageSampler]][[vk::binding(1)]]
 Texture2D u_Texture : register(t0);
-
+[[vk::combinedImageSampler]][[vk::binding(1)]]
 SamplerState u_TextureSampler : register(s0);
 
 PSOutput PSMain(PSInput input)

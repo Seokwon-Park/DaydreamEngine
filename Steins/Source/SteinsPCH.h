@@ -27,6 +27,8 @@
 #include "Base/Base.h"
 
 
+
+
 #if defined(STEINS_PLATFORM_WINDOWS)
 	#define GLFW_EXPOSE_NATIVE_WIN32
 	#ifndef NOMINMAX

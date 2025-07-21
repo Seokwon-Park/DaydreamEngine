@@ -14,6 +14,7 @@ namespace Steins
 	}
 
 	using String = std::string;
+	using WideString = std::wstring;
 
 	template<typename T>
 	using Unique = std::unique_ptr<T>;

@@ -6,19 +6,21 @@ namespace Steins
 {
 	enum class ShaderResourceType
 	{
+		Input,
 		ConstantBuffer,
 		Texture2D,
 		Sampler,
 	};
-	struct ShaderResourceDesc
+	struct ShaderReflectionInfo
 	{
-		String name;
 		UInt32 set;
 		UInt32 binding;
-		ShaderResourceType type;
 		UInt32 count;
 		UInt32 size;
 		ShaderType shaderType;
+		ShaderResourceType shaderResourceType;
+		String name;
+		RenderFormat format; // only for input layouts
 	};
 
 	class Shader
@@ -32,13 +34,13 @@ namespace Steins
 		virtual void* GetNativeHandle() = 0;
 
 		ShaderType GetType() const { return shaderType; }
-		Array<ShaderResourceDesc>& GetResourceInfo() { return resourceInfo; }
+		Array<ShaderReflectionInfo>& GetReflectionInfo() { return reflectionInfo; }
 
-		static Shared<Shader> Create(const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode);
+		static Shared<Shader> Create(const String& _src, const ShaderType& _type, const ShaderLoadMode& _mode);
 	protected:
 		ShaderType shaderType;
 
-		Array<ShaderResourceDesc> resourceInfo;
+		Array<ShaderReflectionInfo> reflectionInfo;
 	};
 
 }

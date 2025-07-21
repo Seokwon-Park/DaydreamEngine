@@ -1,7 +1,6 @@
 #include "SteinsPCH.h"
 #include "OrthographicCamera.h"
 
-
 namespace Steins
 {
 	OrthographicCamera::OrthographicCamera(float _left, float _right, float _bottom, float _top)

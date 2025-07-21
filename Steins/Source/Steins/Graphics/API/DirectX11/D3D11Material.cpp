@@ -8,11 +8,11 @@ namespace Steins
 		device = _device;
 		for (auto shader : _pso->GetShaders())
 		{
-			auto resourceInfo = shader->GetResourceInfo();
+			auto resourceInfo = shader->GetReflectionInfo();
 			for (auto& info : resourceInfo)
 			{
 				bindingMap[info.name] = info;
-				switch (info.type)
+				switch (info.shaderResourceType)
 				{
 				case ShaderResourceType::ConstantBuffer:
 				{

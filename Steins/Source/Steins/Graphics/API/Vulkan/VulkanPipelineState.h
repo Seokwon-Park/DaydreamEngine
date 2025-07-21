@@ -30,5 +30,7 @@ namespace Steins
 		Array<VkDescriptorSet> descriptorSets;
 		Array<VkWriteDescriptorSet> descriptorWriteSets;
 
+		HashMap<ShaderType, String> entryPoints;
+
 	};
 }

@@ -6,6 +6,8 @@
 #include "KeyCodes.h"
 #include "Steins/ImGui/ImGuiLayer.h"
 #include "Steins/Graphics/Core/Renderer.h"
+#include "Steins/Graphics/Utility/ShaderCompileHelper.h"
+
 
 #include "glad/glad.h"
 
@@ -42,13 +44,15 @@ namespace Steins
 		//testWindow = SteinsWindow::Create(prop);
 		//testWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
-		
+
 		Renderer::Init(_specification.rendererAPI);
 		Renderer::RegisterWindow("MainWindow", mainWindow.get());
 		//Renderer::RegisterWindow("TestWindow", testWindow.get());
 
 		imGuiLayer = new ImGuiLayer();
-		AttachOverlay(imGuiLayer);	
+		AttachOverlay(imGuiLayer);
+
+		ShaderCompileHelper::Init();
 	}
 
 	Application::~Application()

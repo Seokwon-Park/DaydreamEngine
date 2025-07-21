@@ -12,11 +12,11 @@ namespace Steins
 
 		for (auto shader : _pso->GetShaders())
 		{
-			auto resourceInfo = shader->GetResourceInfo();
+			auto resourceInfo = shader->GetReflectionInfo();
 			for (auto info : resourceInfo)
 			{
 				bindingMap[info.name] = info;
-				switch (info.type)
+				switch (info.shaderResourceType)
 				{
 				case ShaderResourceType::ConstantBuffer:
 				{
@@ -58,7 +58,6 @@ namespace Steins
 	{
 		if (bindingMap.find(_name) != bindingMap.end() && textures.find(_name) != textures.end())
 		{
-			auto resourceInfo = bindingMap[_name];
 			textures[_name] = _texture;
 		}
 
@@ -68,7 +67,6 @@ namespace Steins
 		
 		if (bindingMap.find(_name) != bindingMap.end() && cbuffers.find(_name) != cbuffers.end())
 		{
-			auto resourceInfo = bindingMap[_name];
 			cbuffers[_name] = _buffer;
 		}
 	}

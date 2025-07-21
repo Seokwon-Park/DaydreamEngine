@@ -3,6 +3,110 @@
 
 namespace Steins
 {
+	UInt32 GraphicsUtil::GetRenderFormatSize(RenderFormat _format)
+	{
+		switch (_format)
+		{
+			// 128-bit formats (16 bytes)
+		case RenderFormat::R32G32B32A32_FLOAT:
+		case RenderFormat::R32G32B32A32_UINT:
+		case RenderFormat::R32G32B32A32_SINT:
+			return 16;
+
+			// 96-bit formats (12 bytes)
+		case RenderFormat::R32G32B32_FLOAT:
+		case RenderFormat::R32G32B32_UINT:
+		case RenderFormat::R32G32B32_SINT:
+			return 12;
+
+			// 64-bit formats (8 bytes)
+		case RenderFormat::R16G16B16A16_FLOAT:
+		case RenderFormat::R16G16B16A16_UNORM:
+		case RenderFormat::R16G16B16A16_UINT:
+		case RenderFormat::R16G16B16A16_SINT:
+		case RenderFormat::R32G32_FLOAT:
+		case RenderFormat::R32G32_UINT:
+		case RenderFormat::R32G32_SINT:
+		case RenderFormat::D32_FLOAT_S8X24_UINT:
+			return 8;
+
+			// 32-bit formats (4 bytes)
+		case RenderFormat::R10G10B10A2_UNORM:
+		case RenderFormat::R10G10B10A2_UINT:
+		case RenderFormat::R11G11B10_FLOAT:
+		case RenderFormat::R8G8B8A8_UNORM:
+		case RenderFormat::R8G8B8A8_UNORM_SRGB:
+		case RenderFormat::R8G8B8A8_UINT:
+		case RenderFormat::R8G8B8A8_SINT:
+		case RenderFormat::R16G16_FLOAT:
+		case RenderFormat::R16G16_UNORM:
+		case RenderFormat::R16G16_UINT:
+		case RenderFormat::R16G16_SINT:
+		case RenderFormat::D32_FLOAT:
+		case RenderFormat::R32_FLOAT:
+		case RenderFormat::R32_UINT:
+		case RenderFormat::R32_SINT:
+		case RenderFormat::D24_UNORM_S8_UINT:
+		case RenderFormat::B8G8R8A8_UNORM:
+		case RenderFormat::B8G8R8A8_UNORM_SRGB:
+		case RenderFormat::B8G8R8X8_UNORM:
+		case RenderFormat::R9G9B9E5_SHAREDEXP:
+			return 4;
+
+			// 16-bit formats (2 bytes)
+		case RenderFormat::R8G8_UNORM:
+		case RenderFormat::R8G8_UINT:
+		case RenderFormat::R8G8_SINT:
+		case RenderFormat::R16_FLOAT:
+		case RenderFormat::D16_UNORM:
+		case RenderFormat::R16_UNORM:
+		case RenderFormat::R16_UINT:
+		case RenderFormat::R16_SINT:
+		case RenderFormat::B5G6R5_UNORM:
+		case RenderFormat::B5G5R5A1_UNORM:
+		case RenderFormat::B4G4R4A4_UNORM:
+		case RenderFormat::A4B4G4R4_UNORM:
+			return 2;
+
+			// 8-bit formats (1 byte)
+		case RenderFormat::R8_UNORM:
+		case RenderFormat::R8_UINT:
+		case RenderFormat::R8_SINT:
+		case RenderFormat::A8_UNORM:
+			return 1;
+
+			// Compressed formats (variable size, but commonly used block sizes)
+		case RenderFormat::BC1_UNORM:
+		case RenderFormat::BC1_UNORM_SRGB:
+		case RenderFormat::BC4_UNORM:
+		case RenderFormat::BC4_SNORM:
+			return 8; // 8 bytes per 4x4 block
+
+		case RenderFormat::BC2_UNORM:
+		case RenderFormat::BC2_UNORM_SRGB:
+		case RenderFormat::BC3_UNORM:
+		case RenderFormat::BC3_UNORM_SRGB:
+		case RenderFormat::BC5_UNORM:
+		case RenderFormat::BC5_SNORM:
+		case RenderFormat::BC6H_UF16:
+		case RenderFormat::BC6H_SF16:
+		case RenderFormat::BC7_UNORM:
+		case RenderFormat::BC7_UNORM_SRGB:
+			return 16; // 16 bytes per 4x4 block
+
+			// Special/YUV formats (commonly used sizes)
+		case RenderFormat::NV12:
+			return 1; // Variable, but 12 bits per pixel average
+
+		case RenderFormat::YUY2:
+			return 2; // 16 bits per pixel
+
+			// Unknown or unsupported format
+		case RenderFormat::UNKNOWN:
+		default:
+			return 0;
+		}
+	}
 	DXGI_FORMAT GraphicsUtil::ShaderDataTypeToDXGIFormat(ShaderDataType type)
 	{
 		switch (type)
@@ -277,28 +381,129 @@ namespace Steins
 		default: return VK_FORMAT_UNDEFINED;
 		}
 	}
-	DXShaderCompileParam GraphicsUtil::GetDXShaderCompileParam(ShaderType _type)
+
+	RenderFormat GraphicsUtil::ConvertSPIRVTypeToRenderFormat(spirv_cross::SPIRType::BaseType _baseType, UInt32 _componentCount)
+	{
+		switch (_baseType)
+		{
+		case spirv_cross::SPIRType::Float:
+			switch (_componentCount)
+			{
+			case 1: return RenderFormat::R32_FLOAT;
+			case 2: return RenderFormat::R32G32_FLOAT;
+			case 3: return RenderFormat::R32G32B32_FLOAT;
+			case 4: return RenderFormat::R32G32B32A32_FLOAT;
+			}
+			break;
+		case spirv_cross::SPIRType::Int:
+			switch (_componentCount)
+			{
+			case 1: return RenderFormat::R32_SINT;
+			case 2: return RenderFormat::R32G32_SINT;
+			case 3: return RenderFormat::R32G32B32_SINT;
+			case 4: return RenderFormat::R32G32B32A32_SINT;
+			}
+			break;
+		case spirv_cross::SPIRType::UInt:
+			switch (_componentCount)
+			{
+			case 1: return RenderFormat::R32_UINT;
+			case 2: return RenderFormat::R32G32_UINT;
+			case 3: return RenderFormat::R32G32B32_UINT;
+			case 4: return RenderFormat::R32G32B32A32_UINT;
+			}
+			break;
+		}
+		return RenderFormat::UNKNOWN;
+	}
+
+	String GraphicsUtil::GetShaderEntryPointName(ShaderType _type)
 	{
 		switch (_type)
 		{
 		case ShaderType::None:
 		{
 			STEINS_CORE_ASSERT(false, "Invalid type");
-			return DXShaderCompileParam();
+			return nullptr;
 		}
-		case ShaderType::Vertex:return { "VSMain","vs_5_0" };
-		case ShaderType::Hull:return { "HSMain","hs_5_0" };
-		case ShaderType::Domain:return { "DSMain","ds_5_0" };
-		case ShaderType::Geometry:return { "GSMain","gs_5_0" };
-		case ShaderType::Pixel:return { "PSMain","ps_5_0" };
-		case ShaderType::Compute:return { "CSMain","cs_5_0" };
+		case ShaderType::Vertex:	return "VSMain";
+		case ShaderType::Hull:		return "HSMain";
+		case ShaderType::Domain:	return "DSMain";
+		case ShaderType::Geometry:	return "GSMain";
+		case ShaderType::Pixel:		return "PSMain";
+		case ShaderType::Compute:	return "CSMain";
 		default:
 			break;
 		}
 		STEINS_CORE_ASSERT(false, "Invalid type");
-		return DXShaderCompileParam();
+		return nullptr;
 	}
 
+	WideString GraphicsUtil::GetShaderEntryPointNameW(ShaderType _type)
+	{
+		switch (_type)
+		{
+		case ShaderType::None:
+		{
+			STEINS_CORE_ASSERT(false, "Invalid type");
+			return nullptr;
+		}
+		case ShaderType::Vertex:	return L"VSMain";
+		case ShaderType::Hull:		return L"HSMain";
+		case ShaderType::Domain:	return L"DSMain";
+		case ShaderType::Geometry:	return L"GSMain";
+		case ShaderType::Pixel:		return L"PSMain";
+		case ShaderType::Compute:	return L"CSMain";
+		default:
+			break;
+		}
+		STEINS_CORE_ASSERT(false, "Invalid type");
+		return nullptr;
+	}
+
+	String GraphicsUtil::GetShaderTargetName(ShaderType _type)
+	{
+		switch (_type)
+		{
+		case ShaderType::None:
+		{
+			STEINS_CORE_ASSERT(false, "Invalid type");
+			return nullptr;
+		}
+		case ShaderType::Vertex:	return "vs_6_0";
+		case ShaderType::Hull:		return "hs_6_0";
+		case ShaderType::Domain:	return "ds_6_0";
+		case ShaderType::Geometry:	return "gs_6_0";
+		case ShaderType::Pixel:		return "ps_6_0";
+		case ShaderType::Compute:	return "cs_6_0";
+		default:
+			break;
+		}
+		STEINS_CORE_ASSERT(false, "Invalid type");
+		return nullptr;
+	}
+
+	WideString GraphicsUtil::GetShaderTargetNameW(ShaderType _type, WideString _version)
+	{
+		switch (_type)
+		{
+		case ShaderType::None:
+		{
+			STEINS_CORE_ASSERT(false, "Invalid type");
+			return nullptr;
+		}
+		case ShaderType::Vertex:	return L"vs_"+_version;
+		case ShaderType::Hull:		return L"hs_"+_version;
+		case ShaderType::Domain:	return L"ds_"+_version;
+		case ShaderType::Geometry:	return L"gs_"+_version;
+		case ShaderType::Pixel:		return L"ps_"+_version;
+		case ShaderType::Compute:	return L"cs_"+_version;
+		default:
+			break;
+		}
+		STEINS_CORE_ASSERT(false, "Invalid type");
+		return nullptr;
+	}
 
 	GLenum GraphicsUtil::GetGLShaderType(ShaderType _type)
 	{

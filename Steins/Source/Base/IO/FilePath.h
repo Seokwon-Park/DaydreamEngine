@@ -9,8 +9,8 @@ namespace Steins
 	public:
         FilePath() = default;
 
-        explicit FilePath(std::filesystem::path&& _path) noexcept
-            : path(std::move(_path))
+        explicit FilePath(std::string _path) noexcept
+            : path(_path)
         {}
 
         FilePath(const FilePath& other) noexcept = default;
@@ -20,7 +20,7 @@ namespace Steins
         FilePath& operator=(FilePath&& other) noexcept = default;
 
 		inline std::string ToString() const { return path.string(); }
-		inline const std::filesystem::path::value_type* ToCStr() const { return path.c_str(); }
+		inline std::wstring ToWString() const { return path.wstring(); }
 		inline std::string GetNameFromPath() const { return path.filename().string(); }
 		std::string GetFileName() const;
 		inline std::string GetCurrentPath() const { return std::filesystem::current_path().string(); }

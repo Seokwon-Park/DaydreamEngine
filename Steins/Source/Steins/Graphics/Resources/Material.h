@@ -21,7 +21,7 @@ namespace Steins
 
 		static Shared<Material> Create(Shared<PipelineState> _pipeline);
 	protected:
-		HashMap<String, ShaderResourceDesc> bindingMap;
+		HashMap<String, ShaderReflectionInfo> bindingMap;
 	private:
 
 	};

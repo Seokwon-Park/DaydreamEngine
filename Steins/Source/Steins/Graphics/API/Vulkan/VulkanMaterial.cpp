@@ -17,7 +17,7 @@ namespace Steins
 		VkDescriptorSetAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 		allocInfo.descriptorPool = _device->GetDescriptorPool();
-		allocInfo.descriptorSetCount = layouts.size();
+		allocInfo.descriptorSetCount = (UInt32)layouts.size();
 		allocInfo.pSetLayouts = layouts.data();
 
 		sets.resize(layouts.size());
@@ -27,7 +27,7 @@ namespace Steins
 
 		for (auto shader : _pso->GetShaders())
 		{
-			auto resources = shader->GetResourceInfo();
+			auto resources = shader->GetReflectionInfo();
 			for (auto resource : resources)
 			{
 				bindingMap[resource.name] = resource;
@@ -66,7 +66,7 @@ namespace Steins
 		if (bindingMap.find(_name) != bindingMap.end())
 		{
 			auto resourceInfo = bindingMap[_name];
-			if (resourceInfo.type != ShaderResourceType::ConstantBuffer) return;
+			if (resourceInfo.shaderResourceType != ShaderResourceType::ConstantBuffer) return;
 
 			VulkanConstantBuffer* buffer = Cast<VulkanConstantBuffer>(_buffer.get());
 			VkDescriptorBufferInfo bufferInfo{};

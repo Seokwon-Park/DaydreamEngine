@@ -31,12 +31,71 @@ namespace Steins
 	{
 		device = _device;
 
-		for (Shared<Shader> shader : shaders)
+		SortedMap<UInt32, Array<VkDescriptorSetLayoutBinding>> setBindings;
+
+		VkVertexInputBindingDescription desc;
+		desc.binding = 0;
+		desc.stride = 0;
+		desc.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+		UInt32 offset = 0;
+		
+
+		Array<VkVertexInputAttributeDescription> attribDescArray;
+		for (const Shared<Shader>& shader : shaders)
 		{
-			CreateShaderStageInfo(shader);
+			entryPoints[shader->GetType()] = GraphicsUtil::GetShaderEntryPointName(shader->GetType());
+			
+
+			VkPipelineShaderStageCreateInfo shaderStageInfo{};
+			shaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+			shaderStageInfo.module = (VkShaderModule)shader->GetNativeHandle();
+			shaderStageInfo.pName = entryPoints[shader->GetType()].c_str();
+			shaderStageInfo.stage = GraphicsUtil::GetVKShaderStage(shader->GetType());
+
+			shaderStages.push_back(shaderStageInfo);
+			for (const auto& info : shader->GetReflectionInfo())
+			{
+				if (info.shaderResourceType == ShaderResourceType::Input && shader->GetType() == ShaderType::Vertex)
+				{
+					VkVertexInputAttributeDescription attribDesc{};
+					attribDesc.location = info.set;
+					attribDesc.binding = info.binding;
+					attribDesc.format = GraphicsUtil::RenderFormatToVkFormat(info.format);
+					attribDesc.offset = offset;
+
+					offset += info.size;
+					desc.stride += info.size;
+
+					attribDescArray.push_back(attribDesc);
+					continue;
+				}
+				VkDescriptorSetLayoutBinding binding = {};
+				binding.binding = info.binding;
+				binding.descriptorType = ToVkDescType(info.shaderResourceType);
+				binding.descriptorCount = 1;
+				binding.stageFlags = GraphicsUtil::GetVKShaderStage(shader->GetType());
+				binding.pImmutableSamplers = nullptr;
+				setBindings[info.set].push_back(binding);
+			}
+
 		}
 
-		Array<VkDynamicState> dynamicStates = 
+		for (const auto& [setIndex, bindings] : setBindings)
+		{
+			VkDescriptorSetLayoutCreateInfo layoutCreateInfo{};
+			layoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+			layoutCreateInfo.bindingCount = Cast<UInt32>(bindings.size());
+			layoutCreateInfo.pBindings = bindings.data();
+
+			VkDescriptorSetLayout layout;
+			if (vkCreateDescriptorSetLayout(device->GetDevice(), &layoutCreateInfo, nullptr, &layout) != VK_SUCCESS) {
+				throw std::runtime_error("failed to create descriptor set layout!");
+			}
+			descriptorSetLayouts.push_back(layout);
+		}
+
+		Array<VkDynamicState> dynamicStates =
 		{
 			VK_DYNAMIC_STATE_VIEWPORT,
 			VK_DYNAMIC_STATE_SCISSOR,
@@ -52,33 +111,12 @@ namespace Steins
 		viewportState.viewportCount = 1;
 		viewportState.scissorCount = 1;
 
-		VkVertexInputBindingDescription desc;
-		desc.binding = 0;
-		desc.stride = 36;
-		desc.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-
-		VkVertexInputAttributeDescription attribdesc[3];
-		attribdesc[0].location = 0;
-		attribdesc[0].binding = 0;
-		attribdesc[0].format = VK_FORMAT_R32G32B32_SFLOAT;
-		attribdesc[0].offset = 0;
-
-		attribdesc[1].location = 1;
-		attribdesc[1].binding = 0;
-		attribdesc[1].format = VK_FORMAT_R32G32B32A32_SFLOAT;
-		attribdesc[1].offset = 12;
-
-		attribdesc[2].location = 2;
-		attribdesc[2].binding = 0;
-		attribdesc[2].format = VK_FORMAT_R32G32_SFLOAT;
-		attribdesc[2].offset = 28;
-
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 		vertexInputInfo.vertexBindingDescriptionCount = 1;
 		vertexInputInfo.pVertexBindingDescriptions = &desc; // Optional
-		vertexInputInfo.vertexAttributeDescriptionCount = 3;
-		vertexInputInfo.pVertexAttributeDescriptions = attribdesc; // Optional
+		vertexInputInfo.vertexAttributeDescriptionCount = attribDescArray.size();
+		vertexInputInfo.pVertexAttributeDescriptions = attribDescArray.data(); // Optional
 
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 		inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -128,51 +166,19 @@ namespace Steins
 		colorBlending.blendConstants[2] = 0.0f; // Optional
 		colorBlending.blendConstants[3] = 0.0f; // Optional
 
+		//VkDescriptorPoolCreateInfo poolCreateInfo;
+		//poolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 
-		SortedMap<UInt32, std::vector<VkDescriptorSetLayoutBinding>> setBindings;
+		//VkDescriptorSetAllocateInfo allocInfo{};
+		//allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+		//allocInfo.descriptorPool = device->GetDescriptorPool();
+		//allocInfo.descriptorSetCount = 1;
+		//allocInfo.pSetLayouts = descriptorSetLayouts.data();
 
-		for (auto shader : shaders)
-		{
-			for (const auto& info : shader->GetResourceInfo())
-			{
-				VkDescriptorSetLayoutBinding binding = {};
-				binding.binding = info.binding;
-				binding.descriptorType = ToVkDescType(info.type);
-				binding.descriptorCount = 1;
-				binding.stageFlags = GraphicsUtil::GetVKShaderStage(shader->GetType());
-				binding.pImmutableSamplers = nullptr;
-				setBindings[info.set].push_back(binding);
-			}
-		}
-
-		for (const auto& [setIndex, bindings] : setBindings)
-		{
-			VkDescriptorSetLayoutCreateInfo layoutCreateInfo{};
-			layoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-			layoutCreateInfo.bindingCount = Cast<UInt32>(bindings.size());
-			layoutCreateInfo.pBindings = bindings.data();
-
-			VkDescriptorSetLayout layout;
-			if (vkCreateDescriptorSetLayout(device->GetDevice(), &layoutCreateInfo, nullptr, &layout) != VK_SUCCESS) {
-				throw std::runtime_error("failed to create descriptor set layout!");
-			}
-			descriptorSetLayouts.push_back(layout);
-		}
-
-
-		VkDescriptorPoolCreateInfo poolCreateInfo;
-		poolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-
-		VkDescriptorSetAllocateInfo allocInfo{};
-		allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-		allocInfo.descriptorPool = device->GetDescriptorPool();
-		allocInfo.descriptorSetCount = 1;
-		allocInfo.pSetLayouts = descriptorSetLayouts.data();
-
-		descriptorSets.resize(1);
-		if (vkAllocateDescriptorSets(device->GetDevice(), &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
-			throw std::runtime_error("failed to allocate descriptor sets!");
-		}
+		//descriptorSets.resize(1);
+		//if (vkAllocateDescriptorSets(device->GetDevice(), &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
+		//	throw std::runtime_error("failed to allocate descriptor sets!");
+		//}
 
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
@@ -260,13 +266,7 @@ namespace Steins
 
 	void VulkanPipelineState::CreateShaderStageInfo(const Shared<Shader>& _shader)
 	{
-		VkPipelineShaderStageCreateInfo shaderStageInfo{};
-		shaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-		shaderStageInfo.module = (VkShaderModule)_shader->GetNativeHandle();
-		shaderStageInfo.pName = "main";
-		shaderStageInfo.stage = GraphicsUtil::GetVKShaderStage(_shader->GetType());
 
-		shaderStages.push_back(shaderStageInfo);
 	}
 	Shared<Material> VulkanPipelineState::CreateMaterial()
 	{

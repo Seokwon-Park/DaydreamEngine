@@ -4,17 +4,18 @@
 #include "spirv_cross/spirv_cross.hpp"
 
 #include "Steins/Graphics/Utility/GraphicsUtil.h"
+#include "Steins/Graphics/Utility/ShaderCompileHelper.h"
 
 
 namespace Steins
 {
-	
-	
 	VulkanShader::VulkanShader(VulkanRenderDevice* _device, const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode)
 	{
 		device = _device;
 		shaderType = _type;
 		stageBit = GraphicsUtil::GetVKShaderStage(_type);
+
+		FilePath path(_src);
 		switch (_mode)
 		{
 		case Steins::ShaderLoadMode::Source:
@@ -28,62 +29,78 @@ namespace Steins
 
 			STEINS_CORE_ASSERT(file.is_open() == true, "Failed to open file! Check directory");
 
-			//tellg->파일의 입력위치 지정자를 리턴(사실상 size?)
-			UInt64 fileSize = (UInt64)file.tellg();
-			Array<uint32_t> reflect((fileSize + sizeof(uint32_t) - 1) / sizeof(uint32_t));
-			Array<char> buffer(fileSize);
-			file.seekg(0);
-			file.read(buffer.data(), fileSize);
-			file.seekg(0);
 
-			file.read((char*)reflect.data(), fileSize);
-			file.close();
+			//tellg->파일의 입력위치 지정자를 리턴(사실상 size?)
+			//UInt64 fileSize = (UInt64)file.tellg();
+			Array<uint32_t> reflect;
+			//Array<char> buffer(fileSize);
+			//file.seekg(0);
+			//file.read(buffer.data(), fileSize);
+			//file.seekg(0);
+			//file.read((char*)reflect.data(), fileSize);
+			//file.close();
+
+			ShaderCompileHelper::ConvertHLSLtoSPIRV(path, _type, reflect);
 
 			VkShaderModuleCreateInfo createInfo{};
 			createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-			createInfo.codeSize = buffer.size();
-			createInfo.pCode = reinterpret_cast<uint32_t*>(buffer.data());
+			createInfo.codeSize = reflect.size() * 4;
+			createInfo.pCode = reflect.data();
 
-			spirv_cross::Compiler comp(reflect); // const uint32_t *, size_t interface is also available.
-			spirv_cross::ShaderResources res = comp.get_shader_resources();
+			spirv_cross::Compiler compiler(reflect);
+			spirv_cross::ShaderResources res = compiler.get_shader_resources();
 
 			if (shaderType == ShaderType::Vertex)
 			{
 				for (const spirv_cross::Resource& resource : res.stage_inputs)
 				{
-					comp.get_name(resource.id);
-					comp.get_decoration(resource.id, spv::DecorationLocation);
+					const spirv_cross::SPIRType& spirType = compiler.get_type(resource.type_id);
+
+					ShaderReflectionInfo sr{};
+					sr.name = compiler.get_name(resource.id);
+					sr.set = compiler.get_decoration(resource.id, spv::DecorationLocation);
+					sr.binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
+					sr.shaderResourceType = ShaderResourceType::Input;
+					 
+					UInt32 componentCount = spirType.vecsize;
+					spirv_cross::SPIRType::BaseType baseType = spirType.basetype;
+					sr.format = GraphicsUtil::ConvertSPIRVTypeToRenderFormat(baseType, componentCount);
+					sr.size = GraphicsUtil::GetRenderFormatSize(sr.format);
+					sr.shaderType = shaderType;
+
+					reflectionInfo.push_back(sr);
 				}
 			}
 
+
 			for (const spirv_cross::Resource& resource : res.uniform_buffers)
 			{
-				ShaderResourceDesc sr{};
-				sr.name = comp.get_name(resource.base_type_id);
-				sr.type = ShaderResourceType::ConstantBuffer;
-				sr.set = comp.get_decoration(resource.id, spv::DecorationDescriptorSet);
-				sr.binding = comp.get_decoration(resource.id, spv::DecorationBinding);
-				sr.size = comp.get_declared_struct_size(comp.get_type(resource.type_id));
+				ShaderReflectionInfo sr{};
+				sr.name = compiler.get_name(resource.id);
+				sr.shaderResourceType = ShaderResourceType::ConstantBuffer;
+				sr.set = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
+				sr.binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
+				sr.size = compiler.get_declared_struct_size(compiler.get_type(resource.type_id));
 
-				resourceInfo.push_back(sr);
+				reflectionInfo.push_back(sr);
 			}
 
 			for (const spirv_cross::Resource& resource : res.sampled_images)
 			{
-				ShaderResourceDesc sr{};
-				sr.name = comp.get_name(resource.id);
-				sr.type = ShaderResourceType::Texture2D;
-				sr.set = comp.get_decoration(resource.id, spv::DecorationDescriptorSet);
-				sr.binding = comp.get_decoration(resource.id, spv::DecorationBinding);
+				ShaderReflectionInfo sr{};
+				sr.name = compiler.get_name(resource.id);
+				sr.shaderResourceType = ShaderResourceType::Texture2D;
+				sr.set = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
+				sr.binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
 
-				const auto& type = comp.get_type(resource.type_id);
+				const auto& type = compiler.get_type(resource.type_id);
 				UInt32 count = 1;
 				if (!type.array.empty())
 				{
 					count = type.array[0];
 				}
 
-				resourceInfo.push_back(sr);
+				reflectionInfo.push_back(sr);
 			}
 
 			VkResult result = vkCreateShaderModule(device->GetDevice(), &createInfo, nullptr, &shader);

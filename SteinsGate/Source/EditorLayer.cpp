@@ -59,8 +59,6 @@ EditorLayer::EditorLayer()
 	desc.vertexShader = vs;
 	desc.pixelShader = ps;
 	desc.inputLayout = inputlayout;
-	desc.constantBuffers = { { 0,viewProjMat} };
-	desc.textures = { texture };
 
 	pso = Steins::PipelineState::Create(desc);
 

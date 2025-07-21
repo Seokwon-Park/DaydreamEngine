@@ -10,6 +10,10 @@ namespace Steins
 	public:
 		OpenGLShader(const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode);
 
+		void ReflectTextures();
+
+		void ReflectUniformBlocks();
+
 		virtual ~OpenGLShader();
 
 		virtual void Bind() const override;

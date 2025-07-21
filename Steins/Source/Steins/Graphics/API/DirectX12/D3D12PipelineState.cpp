@@ -14,13 +14,29 @@ namespace Steins
 
 		Array<D3D12_ROOT_PARAMETER> rootParameters;
 		Array<D3D12_DESCRIPTOR_RANGE> descriptorRanges;
+		Array<D3D12_INPUT_ELEMENT_DESC> inputLayoutDesc;
 
+		for (const auto& info : vertexShader->GetReflectionInfo())
+		{
+			if (info.shaderResourceType != ShaderResourceType::Input) continue;
+			D3D12_INPUT_ELEMENT_DESC elementDesc;
+			elementDesc.SemanticName = info.name.c_str();
+			elementDesc.SemanticIndex = info.binding;
+			elementDesc.Format = GraphicsUtil::RenderFormatToDXGIFormat(info.format);
+			elementDesc.InputSlot = 0;
+			elementDesc.AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+			elementDesc.InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
+			elementDesc.InstanceDataStepRate = 0;
+
+			inputLayoutDesc.push_back(elementDesc);
+		}
+
+		UInt32 index = 0;
 		for (auto shader : shaders)
 		{
-			for (UInt32 i = 0; i< shader->GetResourceInfo().size(); i++)
+			for (auto& info : shader->GetReflectionInfo())
 			{
-				auto& info = shader->GetResourceInfo()[i];
-				switch (info.type)
+				switch (info.shaderResourceType)
 				{
 				case ShaderResourceType::ConstantBuffer:
 				{
@@ -64,9 +80,11 @@ namespace Steins
 					//rootParam.DescriptorTable.pDescriptorRanges = &samplerRange;
 					//rootParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 					//rootParameters.push_back(rootParam);
-					break;
+					continue;
+				case ShaderResourceType::Input:
+					continue;
 				}
-				info.set = i;
+				info.set = index++;
 			}
 		}
 
@@ -105,7 +123,7 @@ namespace Steins
 		staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 		D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
-		rootSignatureDesc.NumParameters = rootParameters.size();
+		rootSignatureDesc.NumParameters = (UINT)rootParameters.size();
 		rootSignatureDesc.pParameters = rootParameters.data();
 		rootSignatureDesc.NumStaticSamplers = 1;
 		rootSignatureDesc.pStaticSamplers = staticSamplers;
@@ -136,12 +154,6 @@ namespace Steins
 		sampleDesc.Count = _desc.sampleCount;
 		sampleDesc.Quality = 0;
 
-		D3D12_INPUT_ELEMENT_DESC inputElementDescs[] = {
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }, // 위치(float3) 다음이므로 12바이트 오프셋
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 } // 위치(float3) 다음이므로 12바이트 오프셋
-		};
-
 
 
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC desc{};
@@ -152,7 +164,8 @@ namespace Steins
 		desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 		desc.NumRenderTargets = 1;
 		desc.SampleDesc = sampleDesc;
-		desc.InputLayout = { inputElementDescs, _countof(inputElementDescs) };
+		desc.InputLayout.NumElements = inputLayoutDesc.size();
+		desc.InputLayout.pInputElementDescs = inputLayoutDesc.data();
 		desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		desc.SampleMask = UINT_MAX;
 

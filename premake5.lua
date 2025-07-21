@@ -15,6 +15,7 @@ workspace "Steins"
 	IncludeDir["glm"] = "Steins/Vendor/glm"
 	IncludeDir["stb"] = "Steins/Vendor/stb"
 	IncludeDir["assimp"] = "Steins/Vendor/assimp/include"
+	IncludeDir["dxcompiler"] = "Steins/Vendor/dxcompiler/include"
 
 	include "Steins/Vendor/glfw"
 	include "Steins/Vendor/glad"
@@ -52,12 +53,15 @@ project "Steins"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb}",
 		"%{IncludeDir.assimp}",
-		"$(VULKAN_SDK)/Include"
+		"%{IncludeDir.dxcompiler}",
+		"$(VULKAN_SDK)/Include",
 	}
 	libdirs 
 	{
         "$(VULKAN_SDK)/Lib",
-		"Steins/Vendor/assimp/bin/%{cfg.buildcfg}"
+		"Steins/Vendor/assimp/bin/%{cfg.buildcfg}",
+		"Steins/Vendor/dxcompiler",
+
     }
 	links
 	{
@@ -66,6 +70,8 @@ project "Steins"
 		"ImGui",
 		"opengl32.lib",
 		"vulkan-1.lib",
+		"dxcompiler.lib",
+		"dxil.lib",
 	}
 
 	defines

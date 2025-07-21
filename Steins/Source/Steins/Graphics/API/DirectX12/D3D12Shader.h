@@ -2,6 +2,7 @@
 
 #include "Steins/Graphics/Resources/Shader.h"
 #include "D3D12RenderDevice.h"
+#include "dxc/dxcapi.h"
 
 namespace Steins
 {
@@ -12,12 +13,13 @@ namespace Steins
 
 		void Bind() const override;
 		void Unbind() const override;
-		void* GetNativeHandle() override { return shaderBlob.Get(); };
+		virtual void* GetNativeHandle() override { return shaderBlob.Get(); };
 
 		D3D12_SHADER_BYTECODE GetShaderBytecode() const { return shaderByteCode; }
 	private:
 		D3D12RenderDevice* device;
 		D3D12_SHADER_BYTECODE shaderByteCode;
-		ComPtr<ID3DBlob> shaderBlob;
+		//ComPtr<ID3DBlob> shaderBlob;
+		ComPtr<IDxcBlob> shaderBlob;
 	};
 }

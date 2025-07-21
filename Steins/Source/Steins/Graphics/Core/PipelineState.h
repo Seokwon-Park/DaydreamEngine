@@ -7,10 +7,9 @@
 
 namespace Steins
 {
-	struct ConstantBufferInfo
+	enum class PrimitiveTopologyType
 	{
-		UInt32 bindingSlot;
-		Shared<ConstantBuffer> constantBuffer;
+		TriangleList,
 	};
 
 	struct PipelineStateDesc
@@ -22,7 +21,6 @@ namespace Steins
 		Shared<Shader> pixelShader = nullptr;
 		//Shared<Shader> computeShader; //??
 
-		Array<ConstantBufferInfo> constantBuffers;
 		Array<Shared<Texture2D>> textures;
 
 		BufferLayout inputLayout;
@@ -34,7 +32,7 @@ namespace Steins
 		//Array<GraphicsFormat> renderTargetFormats; // RTV 포맷들
 		//GraphicsFormat depthStencilFormat = GraphicsFormat::Unknown; // DSV 포맷
 		uint32_t sampleCount = 1;
-		//PrimitiveTopologyType topologyType = PrimitiveTopologyType::TriangleList;
+		PrimitiveTopologyType topologyType = PrimitiveTopologyType::TriangleList;
 	};
 
 	class PipelineState
@@ -59,8 +57,6 @@ namespace Steins
 		Array<Shared<Shader>> shaders;
 
 		//root signature??
-
-		Array<ConstantBuffer*> cbfs;
 
 		//rtv, dsv;
 		//blend, rast, ds;

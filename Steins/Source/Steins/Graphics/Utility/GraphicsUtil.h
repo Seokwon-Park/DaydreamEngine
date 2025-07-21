@@ -3,6 +3,7 @@
 #include "Steins/Enum/RendererEnums.h"
 #include "vulkan/vulkan.h"
 #include "glad/glad.h"
+#include "spirv_cross/spirv_cross.hpp"
 
 #define VK_SUCCEEDED(x) x == VK_SUCCESS
 
@@ -14,17 +15,30 @@ namespace Steins
 		std::string target;
 	};
 
+	struct DXShaderCompileParamW
+	{
+		std::wstring entryPoint;
+		std::wstring target;
+	};
+
 	class GraphicsUtil
 	{
 	public:
+		static UInt32 GetRenderFormatSize(RenderFormat _format);
+
 		static DXGI_FORMAT ShaderDataTypeToDXGIFormat(ShaderDataType type);
 
 		//RenderFormat
 		static DXGI_FORMAT RenderFormatToDXGIFormat(RenderFormat _format);
 		static VkFormat RenderFormatToVkFormat(RenderFormat _format);
+		static RenderFormat ConvertSPIRVTypeToRenderFormat(spirv_cross::SPIRType::BaseType _baseType, UInt32 _componentCount);
+
 
 		//ShaderCompile
-		static DXShaderCompileParam GetDXShaderCompileParam(ShaderType _type);
+		static String GetShaderEntryPointName(ShaderType _type);
+		static WideString GetShaderEntryPointNameW(ShaderType _type);
+		static String GetShaderTargetName(ShaderType _type);
+		static WideString GetShaderTargetNameW(ShaderType _type, WideString _version);
 
 		//ShaderType, ShaderStage
 		static GLenum GetGLShaderStage(ShaderType _type);

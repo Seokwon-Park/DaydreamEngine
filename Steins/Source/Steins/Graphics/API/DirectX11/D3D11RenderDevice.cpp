@@ -4,6 +4,7 @@
 #include "D3D11Buffer.h"
 #include "D3D11SwapChain.h"
 #include "D3D11Shader.h"
+#include "D3D11VertexShader.h"
 #include "D3D11Framebuffer.h"
 #include "D3D11PipelineState.h"
 #include "D3D11ImGuiRenderer.h"

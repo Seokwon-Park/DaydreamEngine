@@ -3,6 +3,9 @@
 
 #include "D3D11RenderDevice.h"
 #include "Steins/Graphics/Utility/GraphicsUtil.h"
+#include "Steins/Graphics/Utility/ShaderCompileHelper.h"
+
+#include "dxc/dxcapi.h"
 
 namespace Steins
 {
@@ -34,13 +37,15 @@ namespace Steins
 	{
 		device = _device;
 		shaderType = _type;
-		DXShaderCompileParam param = GraphicsUtil::GetDXShaderCompileParam(shaderType);
+		String target = GraphicsUtil::GetShaderTargetName(_type);
+		String entryPoint = GraphicsUtil::GetShaderEntryPointName(_type);
 		HRESULT hr;
+
 		switch (_mode)
 		{
 		case ShaderLoadMode::Source:
 		{
-			hr = D3DCompile(_src.c_str(), _src.size(), nullptr, nullptr, nullptr, param.entryPoint.c_str(), param.target.c_str(), 0, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
+			hr = D3DCompile(_src.c_str(), _src.size(), nullptr, nullptr, nullptr, entryPoint.c_str(), target.c_str(), 0, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
 			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
 			break;
 		}
@@ -48,7 +53,7 @@ namespace Steins
 		{
 			FilePath path = FilePath(_src);
 			//STEINS_CORE_INFO(path.GetCurrentPath());
-			hr = D3DCompileFromFile(path.ToCStr(), nullptr, nullptr, param.entryPoint.c_str(), param.target.c_str(), 0, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
+			hr = D3DCompileFromFile(path.ToWString().c_str(), nullptr, nullptr, entryPoint.c_str(), target.c_str(), 0, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
 			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
 			break;
 		}
@@ -56,8 +61,10 @@ namespace Steins
 			break;
 		}
 
-		ID3D11ShaderReflection* reflection = nullptr;
-		hr = D3DReflect(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), IID_PPV_ARGS(&reflection));
+
+
+		hr = D3DReflect(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), IID_PPV_ARGS(reflection.GetAddressOf()));
+		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to reflection");
 
 		// 셰이더 입력 시그니처 정보 얻기
 		D3D11_SHADER_DESC shaderDesc;
@@ -81,42 +88,48 @@ namespace Steins
 				D3D11_SHADER_BUFFER_DESC cbufferDesc;
 				cbuffer->GetDesc(&cbufferDesc);
 
-				ShaderResourceDesc sr{};
+				ShaderReflectionInfo sr{};
 				sr.name = name;
-				sr.type = ShaderResourceType::ConstantBuffer;
+				sr.shaderResourceType = ShaderResourceType::ConstantBuffer;
 				sr.set = 0; // D3D11에서는 set 개념이 없음
 				sr.binding = bindDesc.BindPoint;
 				sr.count = bindDesc.BindCount;
 				sr.size = cbufferDesc.Size;
 				sr.shaderType = shaderType;
-				resourceInfo.push_back(sr);
+				reflectionInfo.push_back(sr);
 				break;
 			}
 			case D3D_SIT_TEXTURE:
 			{
-				ShaderResourceDesc sr{};
+				ShaderReflectionInfo sr{};
 				sr.name = name;
-				sr.type = ShaderResourceType::Texture2D;
+				sr.shaderResourceType = ShaderResourceType::Texture2D;
 				sr.set = 0; // D3D11에서는 set 개념이 없음
 				sr.binding = bindDesc.BindPoint;
 				sr.count = bindDesc.BindCount;
 				sr.shaderType = shaderType;
-				resourceInfo.push_back(sr);
+				reflectionInfo.push_back(sr);
 				break;
 			}
 			case D3D_SIT_SAMPLER:
 			{
-				ShaderResourceDesc sr{};
+				ShaderReflectionInfo sr{};
 				sr.name = name;
-				sr.type = ShaderResourceType::Sampler;
+				sr.shaderResourceType = ShaderResourceType::Sampler;
 				sr.set = 0; // D3D11에서는 set 개념이 없음
 				sr.binding = bindDesc.BindPoint;
 				sr.count = bindDesc.BindCount;
-				resourceInfo.push_back(sr);
+				reflectionInfo.push_back(sr);
 				break;
 			}
 			}
 		}
+	}
+
+	D3D11Shader::~D3D11Shader()
+	{
+		shaderBlob.Reset();
+		errorBlob.Reset();
 	}
 
 	void D3D11Shader::Bind() const

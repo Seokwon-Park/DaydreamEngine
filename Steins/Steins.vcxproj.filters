@@ -249,6 +249,9 @@
     <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11ImGuiRenderer.h">
       <Filter>Source\Steins\Graphics\API\DirectX11</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11Material.h">
+      <Filter>Source\Steins\Graphics\API\DirectX11</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11PipelineState.h">
       <Filter>Source\Steins\Graphics\API\DirectX11</Filter>
     </ClInclude>
@@ -264,6 +267,9 @@
     <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11Texture.h">
       <Filter>Source\Steins\Graphics\API\DirectX11</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11VertexShader.h">
+      <Filter>Source\Steins\Graphics\API\DirectX11</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Buffer.h">
       <Filter>Source\Steins\Graphics\API\DirectX12</Filter>
     </ClInclude>
@@ -274,6 +280,9 @@
       <Filter>Source\Steins\Graphics\API\DirectX12</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12ImGuiRenderer.h">
+      <Filter>Source\Steins\Graphics\API\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Material.h">
       <Filter>Source\Steins\Graphics\API\DirectX12</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12PipelineState.h">
@@ -306,6 +315,9 @@
     <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLImGuiRenderer.h">
       <Filter>Source\Steins\Graphics\API\OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLMaterial.h">
+      <Filter>Source\Steins\Graphics\API\OpenGL</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLPipelineState.h">
       <Filter>Source\Steins\Graphics\API\OpenGL</Filter>
     </ClInclude>
@@ -321,13 +333,13 @@
     <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLTexture.h">
       <Filter>Source\Steins\Graphics\API\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VUlkanGraphicsContext.h">
-      <Filter>Source\Steins\Graphics\API\Vulkan</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanBuffer.h">
       <Filter>Source\Steins\Graphics\API\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanFramebuffer.h">
+      <Filter>Source\Steins\Graphics\API\Vulkan</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanGraphicsContext.h">
       <Filter>Source\Steins\Graphics\API\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanImGuiRenderer.h">
@@ -354,9 +366,6 @@
     <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanTexture.h">
       <Filter>Source\Steins\Graphics\API\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Graphics\Resources\Resource.h">
-      <Filter>Source\Steins\Graphics\Core</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Steins\Graphics\Core\Camera.h">
       <Filter>Source\Steins\Graphics\Core</Filter>
     </ClInclude>
@@ -370,6 +379,9 @@
       <Filter>Source\Steins\Graphics\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\Graphics\Core\PipelineState.h">
+      <Filter>Source\Steins\Graphics\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Graphics\Core\RasterizerState.h">
       <Filter>Source\Steins\Graphics\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\Graphics\Core\RenderCommand.h">
@@ -408,6 +420,9 @@
     <ClInclude Include="Source\Steins\Graphics\Resources\Mesh.h">
       <Filter>Source\Steins\Graphics\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Steins\Graphics\Resources\Resource.h">
+      <Filter>Source\Steins\Graphics\Resources</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Steins\Graphics\Resources\Shader.h">
       <Filter>Source\Steins\Graphics\Resources</Filter>
     </ClInclude>
@@ -418,6 +433,9 @@
       <Filter>Source\Steins\Graphics\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\Graphics\Utility\MeshLoader.h">
+      <Filter>Source\Steins\Graphics\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Graphics\Utility\ShaderCompileHelper.h">
       <Filter>Source\Steins\Graphics\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\ImGui\ImGuiLayer.h">
@@ -1698,9 +1716,6 @@
     <ClInclude Include="Vendor\stb\stb_image.h">
       <Filter>Vendor\stb</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11Material.h" />
-    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Material.h" />
-    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLMaterial.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -1769,6 +1784,9 @@
     <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11ImGuiRenderer.cpp">
       <Filter>Source\Steins\Graphics\API\DirectX11</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11Material.cpp">
+      <Filter>Source\Steins\Graphics\API\DirectX11</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11PipelineState.cpp">
       <Filter>Source\Steins\Graphics\API\DirectX11</Filter>
     </ClCompile>
@@ -1802,6 +1820,9 @@
     <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12ImGuiRenderer.cpp">
       <Filter>Source\Steins\Graphics\API\DirectX12</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Material.cpp">
+      <Filter>Source\Steins\Graphics\API\DirectX12</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12PipelineState.cpp">
       <Filter>Source\Steins\Graphics\API\DirectX12</Filter>
     </ClCompile>
@@ -1832,6 +1853,9 @@
     <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLImGuiRenderer.cpp">
       <Filter>Source\Steins\Graphics\API\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLMaterial.cpp">
+      <Filter>Source\Steins\Graphics\API\OpenGL</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLPipelineState.cpp">
       <Filter>Source\Steins\Graphics\API\OpenGL</Filter>
     </ClCompile>
@@ -1847,13 +1871,13 @@
     <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLTexture.cpp">
       <Filter>Source\Steins\Graphics\API\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VUlkanGraphicsContext.cpp">
-      <Filter>Source\Steins\Graphics\API\Vulkan</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanBuffer.cpp">
       <Filter>Source\Steins\Graphics\API\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanFramebuffer.cpp">
+      <Filter>Source\Steins\Graphics\API\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanGraphicsContext.cpp">
       <Filter>Source\Steins\Graphics\API\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanImGuiRenderer.cpp">
@@ -1879,9 +1903,6 @@
     </ClCompile>
     <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanTexture.cpp">
       <Filter>Source\Steins\Graphics\API\Vulkan</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Steins\Graphics\Resources\Resource.cpp">
-      <Filter>Source\Steins\Graphics\Core</Filter>
     </ClCompile>
     <ClCompile Include="Source\Steins\Graphics\Core\Camera.cpp">
       <Filter>Source\Steins\Graphics\Core</Filter>
@@ -1928,6 +1949,9 @@
     <ClCompile Include="Source\Steins\Graphics\Resources\Mesh.cpp">
       <Filter>Source\Steins\Graphics\Resources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Steins\Graphics\Resources\Resource.cpp">
+      <Filter>Source\Steins\Graphics\Resources</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Steins\Graphics\Resources\Shader.cpp">
       <Filter>Source\Steins\Graphics\Resources</Filter>
     </ClCompile>
@@ -1938,6 +1962,9 @@
       <Filter>Source\Steins\Graphics\Utility</Filter>
     </ClCompile>
     <ClCompile Include="Source\Steins\Graphics\Utility\MeshLoader.cpp">
+      <Filter>Source\Steins\Graphics\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Steins\Graphics\Utility\ShaderCompileHelper.cpp">
       <Filter>Source\Steins\Graphics\Utility</Filter>
     </ClCompile>
     <ClCompile Include="Source\Steins\ImGui\ImGuiBackends.cpp">
@@ -1961,8 +1988,5 @@
     <ClCompile Include="Vendor\stb\stb_image.cpp">
       <Filter>Vendor\stb</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11Material.cpp" />
-    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Material.cpp" />
-    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLMaterial.cpp" />
   </ItemGroup>
 </Project>

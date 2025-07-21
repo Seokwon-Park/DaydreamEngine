@@ -92,7 +92,7 @@ namespace Steins {
 		glDeleteBuffers(1, &bufferID);
 	}
 
-	void Steins::OpenGLConstantBuffer::Bind(UInt32 _slot) const
+	void OpenGLConstantBuffer::Bind(UInt32 _slot) const
 	{
 		glBindBufferBase(GL_UNIFORM_BUFFER, 0, bufferID);
 

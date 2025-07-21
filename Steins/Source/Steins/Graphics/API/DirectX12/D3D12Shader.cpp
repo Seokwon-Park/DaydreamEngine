@@ -2,35 +2,87 @@
 #include "D3D12Shader.h"
 
 #include "Steins/Graphics/Utility/GraphicsUtil.h"
+#include "Steins/Graphics/Utility/ShaderCompileHelper.h"
 
 namespace Steins
 {
+	namespace
+	{
+		RenderFormat ConvertToRenderFormat(const D3D12_SIGNATURE_PARAMETER_DESC& paramDesc)
+		{
+			int componentCount = __popcnt(paramDesc.Mask); // 비트 수 세는 함수
+
+			switch (componentCount)
+			{
+			case 1:
+				switch (paramDesc.ComponentType)
+				{
+				case D3D_REGISTER_COMPONENT_UINT32:  return RenderFormat::R32_UINT;
+				case D3D_REGISTER_COMPONENT_SINT32:  return RenderFormat::R32_SINT;
+				case D3D_REGISTER_COMPONENT_FLOAT32: return RenderFormat::R32_FLOAT;
+				default: return RenderFormat::UNKNOWN;
+				}
+
+			case 2:
+				switch (paramDesc.ComponentType)
+				{
+				case D3D_REGISTER_COMPONENT_UINT32:  return RenderFormat::R32G32_UINT;
+				case D3D_REGISTER_COMPONENT_SINT32:  return RenderFormat::R32G32_SINT;
+				case D3D_REGISTER_COMPONENT_FLOAT32: return RenderFormat::R32G32_FLOAT;
+				default: return RenderFormat::UNKNOWN;
+				}
+
+			case 3:
+				switch (paramDesc.ComponentType)
+				{
+				case D3D_REGISTER_COMPONENT_UINT32:  return RenderFormat::R32G32B32_UINT;
+				case D3D_REGISTER_COMPONENT_SINT32:  return RenderFormat::R32G32B32_SINT;
+				case D3D_REGISTER_COMPONENT_FLOAT32: return RenderFormat::R32G32B32_FLOAT;
+				default: return RenderFormat::UNKNOWN;
+				}
+
+			case 4:
+				switch (paramDesc.ComponentType)
+				{
+				case D3D_REGISTER_COMPONENT_UINT32:  return RenderFormat::R32G32B32A32_UINT;
+				case D3D_REGISTER_COMPONENT_SINT32:  return RenderFormat::R32G32B32A32_SINT;
+				case D3D_REGISTER_COMPONENT_FLOAT32: return RenderFormat::R32G32B32A32_FLOAT;
+				default: return RenderFormat::UNKNOWN;
+				}
+
+			default:
+				return RenderFormat::UNKNOWN;
+			}
+		}
+	}
+
     D3D12Shader::D3D12Shader(D3D12RenderDevice* _device, const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode)
     {
         device = _device;
         shaderType = _type;
-		DXShaderCompileParam param = GraphicsUtil::GetDXShaderCompileParam(shaderType);
+		String target = GraphicsUtil::GetShaderTargetName(_type);
+		String entryPoint = GraphicsUtil::GetShaderEntryPointName(_type);
 		HRESULT hr;
-		ComPtr<ID3DBlob> errorBlob;
-		switch (_mode)
-		{
-		case ShaderLoadMode::Source:
-		{
-			hr = D3DCompile(_src.c_str(), _src.size(), nullptr, nullptr, nullptr, param.entryPoint.c_str(), param.target.c_str(), 0, 0,shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
-			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
-			break;
-		}
-		case ShaderLoadMode::File:
-		{
-			FilePath path = FilePath(_src);
-			//STEINS_CORE_INFO(path.GetCurrentPath());
-			hr = D3DCompileFromFile(path.ToCStr(), nullptr, nullptr, param.entryPoint.c_str(), param.target.c_str(), 0, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
-			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
-			break;
-		}
-		default:
-			break;
-		}
+		//ComPtr<ID3DBlob> errorBlob;
+		//switch (_mode)
+		//{
+		//case ShaderLoadMode::Source:
+		//{
+		//	hr = D3DCompile(_src.c_str(), _src.size(), nullptr, nullptr, nullptr, entryPoint.c_str(), target.c_str(), 0, 0,shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
+		//	STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
+		//	break;
+		//}
+		//case ShaderLoadMode::File:
+		//{
+		//	FilePath path = FilePath(_src);
+		//	//STEINS_CORE_INFO(path.GetCurrentPath());
+		//	hr = D3DCompileFromFile(path.ToWString().c_str(), nullptr, nullptr, entryPoint.c_str(), target.c_str(), 0, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
+		//	STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
+		//	break;
+		//}
+		//default:
+		//	break;
+		//}
 		//std::ifstream fin(file, std::ios::binary);
 
 		//fin.seekg(0, std::ios_base::end);
@@ -44,13 +96,38 @@ namespace Steins
 		//fin.close();
 
 		//return blob;
+		ComPtr<ID3D12ShaderReflection> reflection = nullptr;
 
-		ID3D12ShaderReflection* reflection = nullptr;
-		hr = D3DReflect(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), IID_PPV_ARGS(&reflection));
+		FilePath path(_src);
+		ShaderCompileHelper::GetDXIL(path, _type, shaderBlob);
+		ShaderCompileHelper::GetDX12Reflection(shaderBlob, reflection);
+
+		//hr = D3DReflect(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), IID_PPV_ARGS(&reflection));
 
 		// 셰이더 입력 시그니처 정보 얻기
 		D3D12_SHADER_DESC shaderDesc;
 		reflection->GetDesc(&shaderDesc);
+
+		// 각 입력 파라미터에 대해 순회
+		if (shaderType == ShaderType::Vertex)
+		{
+			for (UInt32 i = 0; i < shaderDesc.InputParameters; i++)
+			{
+				D3D12_SIGNATURE_PARAMETER_DESC paramDesc;
+				reflection->GetInputParameterDesc(i, &paramDesc);
+
+				ShaderReflectionInfo sr{};
+				sr.name = paramDesc.SemanticName;
+				sr.set = 0;
+				sr.binding = paramDesc.SemanticIndex;
+				sr.shaderResourceType = ShaderResourceType::Input;
+				sr.format = ConvertToRenderFormat(paramDesc);
+				sr.size = GraphicsUtil::GetRenderFormatSize(sr.format);
+				sr.shaderType = shaderType;
+
+				reflectionInfo.push_back(sr);
+			}
+		}
 
 		// cbuffer의 바인딩 정보 찾기
 		D3D12_SHADER_INPUT_BIND_DESC bindDesc;
@@ -70,37 +147,37 @@ namespace Steins
 				D3D12_SHADER_BUFFER_DESC cbufferDesc;
 				cbuffer->GetDesc(&cbufferDesc);
 
-				ShaderResourceDesc sr{};
+				ShaderReflectionInfo sr{};
 				sr.name = name;
-				sr.type = ShaderResourceType::ConstantBuffer;
+				sr.shaderResourceType = ShaderResourceType::ConstantBuffer;
 				sr.set = 0; // D3D11에서는 set 개념이 없음
 				sr.binding = bindDesc.BindPoint;
 				sr.count = bindDesc.BindCount;
 				sr.size = cbufferDesc.Size;
-				resourceInfo.push_back(sr);
+				reflectionInfo.push_back(sr);
 				break;
 			}
 			case D3D_SIT_TEXTURE:
 			{
-				ShaderResourceDesc sr{};
+				ShaderReflectionInfo sr{};
 				sr.name = name;
-				sr.type = ShaderResourceType::Texture2D;
+				sr.shaderResourceType = ShaderResourceType::Texture2D;
 				sr.set = 0; // D3D11에서는 set 개념이 없음
 				sr.binding = bindDesc.BindPoint;
 				sr.count = bindDesc.BindCount;
-				resourceInfo.push_back(sr);
+				reflectionInfo.push_back(sr);
 				break;
 
 			}
 			case D3D_SIT_SAMPLER:
 			{
-				ShaderResourceDesc sr{};
+				ShaderReflectionInfo sr{};
 				sr.name = name;
-				sr.type = ShaderResourceType::Sampler;
+				sr.shaderResourceType = ShaderResourceType::Sampler;
 				sr.set = 0; // D3D11에서는 set 개념이 없음
 				sr.binding = bindDesc.BindPoint;
 				sr.count = bindDesc.BindCount;
-				resourceInfo.push_back(sr);
+				reflectionInfo.push_back(sr);
 				break;
 			}
 			}

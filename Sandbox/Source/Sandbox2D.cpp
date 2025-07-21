@@ -137,15 +137,19 @@ Sandbox2D::Sandbox2D()
 		//	}
 		//)";
 
-		vs = Steins::Shader::Create("Asset/Shader/Quad.vert", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
-		ps = Steins::Shader::Create("Asset/Shader/Quad.frag", Steins::ShaderType::Pixel, Steins::ShaderLoadMode::File);
+		//vs = Steins::Shader::Create("Asset/Shader/Quad.vert", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
+		//ps = Steins::Shader::Create("Asset/Shader/Quad.frag", Steins::ShaderType::Pixel, Steins::ShaderLoadMode::File);
+		vs = Steins::Shader::Create("F:/SteinsReboot/Sandbox/Asset/Shader/VertexShader.hlsl", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
+		ps = Steins::Shader::Create("F:/SteinsReboot/Sandbox/Asset/Shader/PixelShader.hlsl", Steins::ShaderType::Pixel, Steins::ShaderLoadMode::File);
 	}
 	if (Steins::Renderer::GetAPI() == Steins::RendererAPIType::Vulkan)
 	{
 		//vs = Steins::Shader::Create("Asset/Shader/QuadVS.spv", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
 		//ps = Steins::Shader::Create("Asset/Shader/QuadPS.spv", Steins::ShaderType::Pixel, Steins::ShaderLoadMode::File);
-		vs = Steins::Shader::Create("Asset/Shader/QuadTexVS.spv", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
-		ps = Steins::Shader::Create("Asset/Shader/QuadTexPS.spv", Steins::ShaderType::Pixel, Steins::ShaderLoadMode::File);
+		//vs = Steins::Shader::Create("Asset/Shader/QuadTexVS.spv", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
+		//ps = Steins::Shader::Create("Asset/Shader/QuadTexPS.spv", Steins::ShaderType::Pixel, Steins::ShaderLoadMode::File);
+		vs = Steins::Shader::Create("F:/SteinsReboot/Sandbox/Asset/Shader/VertexShader.hlsl", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
+		ps = Steins::Shader::Create("F:/SteinsReboot/Sandbox/Asset/Shader/PixelShader.hlsl", Steins::ShaderType::Pixel, Steins::ShaderLoadMode::File);
 	}
 
 
@@ -168,8 +172,6 @@ Sandbox2D::Sandbox2D()
 	desc.vertexShader = vs;
 	desc.pixelShader = ps;
 	desc.inputLayout = inputlayout;
-	desc.constantBuffers = { { 0,viewProjMat} };
-	desc.textures = { texture };
 
 	pso = Steins::PipelineState::Create(desc);
 

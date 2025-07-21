@@ -22,6 +22,7 @@ namespace Steins
 		VkShaderModule shader;
 		VkShaderStageFlagBits stageBit;
 
+
 		// Inherited via Shader
 	};
 }

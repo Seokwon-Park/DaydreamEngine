@@ -1,8 +1,6 @@
 #include "SteinsPCH.h"
 #include "MeshLoader.h"
 
-
-
 namespace Steins
 {
 	Array<MeshData> MeshLoader::LoadFromFile(const FilePath& _filepath)
