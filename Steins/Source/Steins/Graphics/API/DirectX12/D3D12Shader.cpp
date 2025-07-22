@@ -60,7 +60,7 @@ namespace Steins
     {
         device = _device;
         shaderType = _type;
-		String target = GraphicsUtil::GetShaderTargetName(_type);
+		String target = GraphicsUtil::GetShaderTargetName(_type, "6_0");
 		String entryPoint = GraphicsUtil::GetShaderEntryPointName(_type);
 		HRESULT hr;
 		//ComPtr<ID3DBlob> errorBlob;

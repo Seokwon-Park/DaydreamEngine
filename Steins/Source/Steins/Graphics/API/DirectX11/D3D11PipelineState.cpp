@@ -67,7 +67,7 @@ namespace Steins
 		}
 		device->GetContext()->IASetInputLayout(inputLayout.Get());
 		device->GetContext()->RSSetState(rasterizer.Get());
-		device->GetContext()->PSSetSamplers(0, 1, sampler.GetAddressOf());
+		device->GetContext()->PSSetSamplers(1, 1, sampler.GetAddressOf());
 	}
 	Shared<Material> D3D11PipelineState::CreateMaterial()
 	{

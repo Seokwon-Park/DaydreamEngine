@@ -3,9 +3,11 @@
 #include "Steins/Enum/RendererEnums.h"
 
 #include <spirv_cross/spirv_glsl.hpp>
+#include <spirv_cross/spirv_hlsl.hpp>
 
 #include <Steins/Graphics/Utility/GraphicsUtil.h>
-#include <shaderc/shaderc.h>
+
+#include <Steins/Graphics/Resources/Shader.h>
 
 namespace Steins
 {
@@ -105,11 +107,11 @@ namespace Steins
 		WideString entryPoint = GraphicsUtil::GetShaderEntryPointNameW(_type);
 
 		// 기본 옵션
-		args.push_back(L"-spirv");
 		args.push_back(L"-T");
 		args.push_back(target.c_str());
 		args.push_back(L"-E");
 		args.push_back(entryPoint.c_str());
+		args.push_back(L"-spirv");
 		args.push_back(L"-fspv-reflect");
 		args.push_back(L"-fvk-use-dx-layout");
 		args.push_back(L"-O3");
@@ -134,7 +136,7 @@ namespace Steins
 
 			HRESULT status;
 			result->GetStatus(&status);
-			if (FAILED(status)) return ;
+			if (FAILED(status)) return;
 		}
 
 		// SPIR-V 결과
@@ -142,23 +144,30 @@ namespace Steins
 		result->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&spirvBlob), nullptr);
 		if (!spirvBlob) return;
 
-		_output.resize((spirvBlob->GetBufferSize()+sizeof(UInt32)-1)/sizeof(UInt32));
+		_output.resize((spirvBlob->GetBufferSize() + sizeof(UInt32) - 1) / sizeof(UInt32));
 		memcpy(_output.data(), spirvBlob->GetBufferPointer(), spirvBlob->GetBufferSize());
 	}
-	void ShaderCompileHelper::ConvertSPIRVtoHLSL(const FilePath& _filepath, ShaderType _type, Array<UInt32>& _output)
+	void ShaderCompileHelper::ConvertSPIRVtoDXBC(const Array<UInt32> _spirvData, ShaderType _type, String& _hlslSource)
 	{
+		spirv_cross::CompilerHLSL hlsl(_spirvData);
+
+		// 옵션 설정
+		spirv_cross::CompilerHLSL::Options options{};
+		options.shader_model = 50;
+		options.use_entry_point_name = true;
+		hlsl.set_hlsl_options(options);
+
+		_hlslSource = hlsl.compile();
 	}
 	void ShaderCompileHelper::ConvertSPIRVtoGLSL(const Array<UInt32> _spirvData, ShaderType _type, String& _glslSource)
 	{
 		spirv_cross::CompilerGLSL compilerGLSL(_spirvData);
 
 		// GLSL 컴파일 옵션 설정
-		spirv_cross::CompilerGLSL::Options options;
-		options.version = 450;  // GLSL 3.30 버전
-		options.es = false;     // OpenGL ES가 아닌 데스크톱 OpenGL
-		options.vulkan_semantics = false;  // Vulkan 시맨틱 사용 안함
-		options.emit_push_constant_as_uniform_buffer = false;
-		options.separate_shader_objects = true;  
+		spirv_cross::CompilerGLSL::Options options{};
+		options.version = 450;  
+		options.separate_shader_objects = true;
+		
 
 		compilerGLSL.set_common_options(options);
 		// GLSL 코드 생성

@@ -461,7 +461,7 @@ namespace Steins
 		return nullptr;
 	}
 
-	String GraphicsUtil::GetShaderTargetName(ShaderType _type)
+	String GraphicsUtil::GetShaderTargetName(ShaderType _type, String _version)
 	{
 		switch (_type)
 		{
@@ -470,12 +470,12 @@ namespace Steins
 			STEINS_CORE_ASSERT(false, "Invalid type");
 			return nullptr;
 		}
-		case ShaderType::Vertex:	return "vs_6_0";
-		case ShaderType::Hull:		return "hs_6_0";
-		case ShaderType::Domain:	return "ds_6_0";
-		case ShaderType::Geometry:	return "gs_6_0";
-		case ShaderType::Pixel:		return "ps_6_0";
-		case ShaderType::Compute:	return "cs_6_0";
+		case ShaderType::Vertex:	return "vs_" + _version;
+		case ShaderType::Hull:		return "hs_" + _version;
+		case ShaderType::Domain:	return "ds_" + _version;
+		case ShaderType::Geometry:	return "gs_" + _version;
+		case ShaderType::Pixel:		return "ps_" + _version;
+		case ShaderType::Compute:	return "cs_" + _version;
 		default:
 			break;
 		}

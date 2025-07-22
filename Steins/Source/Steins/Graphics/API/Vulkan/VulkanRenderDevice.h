@@ -95,7 +95,9 @@ namespace Steins
 		const Array<const char*> validationLayers = {};
 #endif
 		const Array<const char*> deviceExtensions = {
-			VK_KHR_SWAPCHAIN_EXTENSION_NAME
+			VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+			VK_GOOGLE_HLSL_FUNCTIONALITY_1_EXTENSION_NAME,
+			VK_GOOGLE_USER_TYPE_EXTENSION_NAME
 		};
 		VkInstance instance; // Vulkan library handle
 		VkDebugUtilsMessengerEXT debugMessenger;

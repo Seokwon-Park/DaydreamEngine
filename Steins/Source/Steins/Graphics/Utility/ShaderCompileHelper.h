@@ -13,7 +13,7 @@ namespace Steins
 		static void GetDXIL(const FilePath& _filepath, ShaderType _type, ComPtr<IDxcBlob>& _shaderBlob);
 		static void GetDX12Reflection(ComPtr<IDxcBlob>& _shaderBlob, ComPtr<ID3D12ShaderReflection>& _reflection);
 		static void ConvertHLSLtoSPIRV(const FilePath& _filepath, ShaderType _type, Array<UInt32>& _output);
-		static void ConvertSPIRVtoHLSL(const FilePath& _filepath, ShaderType _type, Array<UInt32>& _output);
+		static void ConvertSPIRVtoDXBC(const Array<UInt32> _spirvData, ShaderType _type, String& _hlslSource);
 		static void ConvertSPIRVtoGLSL(const Array<UInt32> _spirvData, ShaderType _type, String& _glslSource);
 	private:
 		static IDxcUtils* utils;

@@ -44,7 +44,7 @@ namespace Steins
 
 			VkShaderModuleCreateInfo createInfo{};
 			createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-			createInfo.codeSize = reflect.size() * 4;
+			createInfo.codeSize = reflect.size()*sizeof(UInt32);
 			createInfo.pCode = reflect.data();
 
 			spirv_cross::Compiler compiler(reflect);

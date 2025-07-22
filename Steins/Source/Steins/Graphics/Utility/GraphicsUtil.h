@@ -37,7 +37,7 @@ namespace Steins
 		//ShaderCompile
 		static String GetShaderEntryPointName(ShaderType _type);
 		static WideString GetShaderEntryPointNameW(ShaderType _type);
-		static String GetShaderTargetName(ShaderType _type);
+		static String GetShaderTargetName(ShaderType _type, String _version);
 		static WideString GetShaderTargetNameW(ShaderType _type, WideString _version);
 
 		//ShaderType, ShaderStage

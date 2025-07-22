@@ -66,16 +66,12 @@ namespace Steins
 				{
 				case ShaderResourceType::ConstantBuffer:
 				{
-					const GLchar* name = info.name.c_str();
 					info.set = uboIndex;
 					glUniformBlockBinding(shaderID, info.binding, uboIndex++);
 					break;
 				}
 				case ShaderResourceType::Texture2D:
 				{
-					const GLchar* name = info.name.c_str();
-					info.set = textureIndex;
-					glProgramUniform1i(shaderID, info.binding, textureIndex++);
 					break;
 				}
 				}
