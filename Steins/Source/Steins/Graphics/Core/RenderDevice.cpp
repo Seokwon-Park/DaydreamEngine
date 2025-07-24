@@ -3,7 +3,7 @@
 
 #include "Steins/Core/Window.h"
 
-#include "Steins/Graphics/Core/SwapChain.h"
+#include "Steins/Graphics/Core/Swapchain.h"
 
 #include "Steins/Graphics/API/OpenGL/OpenGLRenderDevice.h"
 #include "Steins/Graphics/API/DirectX11/D3D11RenderDevice.h"
@@ -24,9 +24,9 @@ namespace Steins
 		default: return nullptr;
 		}
 	}
-	void RenderDevice::CreateSwapChainForWnd(SteinsWindow* _window)
+	void RenderDevice::CreateSwapchainForWnd(SteinsWindow* _window)
 	{
-		SwapChainSpecification desc;
+		SwapchainDesc desc;
 		desc.width = _window->GetWidth();
 		desc.height = _window->GetHeight();
 		desc.bufferCount = 2;
@@ -34,7 +34,7 @@ namespace Steins
 		desc.isFullscreen = false;
 		desc.isVSync = _window->IsVSync();
 
-		Shared<SwapChain> swapchain = CreateSwapChain(&desc, _window);
-		_window->SetSwapChain(swapchain);
+		Shared<Swapchain> swapchain = CreateSwapchain(_window, desc);
+		_window->SetSwapchain(swapchain);
 	}
 }

@@ -9,30 +9,6 @@
 
 namespace Steins
 {
-	//D3D11RenderDevice::GetDevice()->CreateInputLayout(
-	//	m_Context->GetInputElements().data(), UINT(m_Context->GetInputElements().size()),
-	//	vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(),
-	//	&m_InputLayout);
-	//ID3DBlob* psBlob;
-	//hr = D3DCompile(
-	//	pixelSrc.c_str(),
-	//	pixelSrc.length(),
-	//	nullptr,
-	//	nullptr,
-	//	nullptr,
-	//	"ps_main", "ps_5_0",
-	//	0, 0,
-	//	&psBlob,
-	//	nullptr);
-
-	//hr = m_Context->GetD3DDevice()->CreatePixelShader(
-	//	psBlob->GetBufferPointer(),
-	//	psBlob->GetBufferSize(),
-	//	nullptr,
-	//	&m_PixelShader);
-
-	//vsBlob->Release();
-	//psBlob->Release();*/
 	D3D11Shader::D3D11Shader(D3D11RenderDevice* _device, const std::string& _src, const ShaderType& _type, const ShaderLoadMode& _mode)
 	{
 		device = _device;
@@ -45,31 +21,32 @@ namespace Steins
 		String src;
 		Array<UInt32> spirvData;
 		ShaderCompileHelper::ConvertHLSLtoSPIRV(path, _type, spirvData);
-		spirv_cross::CompilerHLSL compiler(spirvData);
-		spirv_cross::ShaderResources res = compiler.get_shader_resources();
-		for (const spirv_cross::Resource& resource : res.uniform_buffers)
+		//spirv_cross::CompilerHLSL compiler(spirvData);
+		Unique<spirv_cross::CompilerHLSL> compiler = MakeUnique<spirv_cross::CompilerHLSL>(spirvData);
+		Unique<spirv_cross::ShaderResources> res = MakeUnique <spirv_cross::ShaderResources>(compiler->get_shader_resources());
+		for (const spirv_cross::Resource& resource : res->uniform_buffers)
 		{
 			ShaderReflectionInfo sr{};
-			sr.name = compiler.get_name(resource.id);
+			sr.name = compiler->get_name(resource.id);
 			sr.shaderResourceType = ShaderResourceType::ConstantBuffer;
-			sr.set = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
-			sr.binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
-			sr.size = compiler.get_declared_struct_size(compiler.get_type(resource.type_id));
+			sr.set = compiler->get_decoration(resource.id, spv::DecorationDescriptorSet);
+			sr.binding = compiler->get_decoration(resource.id, spv::DecorationBinding);
+			sr.size = compiler->get_declared_struct_size(compiler->get_type(resource.type_id));
 			sr.shaderType = _type;
 
 			reflectionInfo.push_back(sr);
 		}
 
-		for (const spirv_cross::Resource& resource : res.sampled_images)
+		for (const spirv_cross::Resource& resource : res->sampled_images)
 		{
 			ShaderReflectionInfo sr{};
-			sr.name = compiler.get_name(resource.id);
+			sr.name = compiler->get_name(resource.id);
 			sr.shaderResourceType = ShaderResourceType::Texture2D;
-			sr.set = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
-			sr.binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
+			sr.set = compiler->get_decoration(resource.id, spv::DecorationDescriptorSet);
+			sr.binding = compiler->get_decoration(resource.id, spv::DecorationBinding);
 			sr.shaderType = _type;
 
-			const auto& type = compiler.get_type(resource.type_id);
+			const auto& type = compiler->get_type(resource.type_id);
 			UInt32 count = 1;
 			if (!type.array.empty())
 			{
@@ -174,31 +151,9 @@ namespace Steins
 	}
 
 	void D3D11Shader::Bind() const
-	{
-	}
+	{}
 
 	void D3D11Shader::Unbind() const
 	{
 	}
-
-	//HRESULT hr = D3DCompile(
-	//	_src.c_str(),
-	//	_src.length(),
-	//	nullptr,
-	//	nullptr,
-	//	nullptr,
-	//	"vs_main", "vs_5_0",
-	//	0, 0,
-	//	shaderBlob.GetAddressOf(),
-	//	nullptr);
-
-	//hr = D3D11RenderDevice::GetDevice()->CreateVertexShader(
-	//	shaderBlob->GetBufferPointer(),
-	//	shaderBlob->GetBufferSize(),
-	//	nullptr,
-	//	&vs);
-
-
-
-
 }

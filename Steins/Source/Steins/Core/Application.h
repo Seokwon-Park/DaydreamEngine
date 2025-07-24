@@ -59,6 +59,7 @@ namespace Steins
 		void OnEvent(Event& _e);
 		bool OnWindowClose(WindowCloseEvent& _e);
 		bool OnWindowResize(WindowResizeEvent& _e);
+		bool OnWindowFocused(WindowFocusEvent& _e);
 
 		Unique<SteinsWindow> mainWindow;
 		Unique<SteinsWindow> testWindow;

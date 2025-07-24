@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Steins/Graphics/Core/SwapChain.h"
+#include "Steins/Graphics/Core/Swapchain.h"
 #if defined(STEINS_PLATFORM_WINDOWS)
 #define VK_USE_PLATFORM_WIN32_KHR
 #endif
@@ -17,15 +17,15 @@
 
 namespace Steins
 {
-	class VulkanSwapChain : public SwapChain
+	class VulkanSwapchain : public Swapchain
 	{
 	public:
-		VulkanSwapChain(VulkanRenderDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window);
-		virtual ~VulkanSwapChain() override;
+		VulkanSwapchain(VulkanRenderDevice* _device, SteinsWindow* _window, const SwapchainDesc& _desc);
+		virtual ~VulkanSwapchain() override;
 
 		virtual void SetVSync(bool _enabled) override;
 		virtual void SwapBuffers() override;
-		virtual void ResizeSwapChain(UInt32 _width, UInt32 height) override;
+		virtual void ResizeSwapchain(UInt32 _width, UInt32 height) override;
 
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
@@ -33,11 +33,10 @@ namespace Steins
 		virtual Framebuffer* GetBackFramebuffer() { return framebuffers[imageIndex].get(); };
 
 		VkFormat GetFormat() const { return format; }
-		VkSwapchainKHR GetVKSwapChain() const { return swapChain; }
+		VkSwapchainKHR GetVKSwapchain() const { return swapChain; }
 		VkExtent2D GetExtent() const { return extent; }
 		UInt32 GetBackbufferIndex() const { return imageIndex; }
 
-		void recordCommandBuffer(VkCommandBuffer _commandBuffer, UInt32 _imageIndex);
 	private:
 		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const Array<VkSurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat);
 		VkPresentModeKHR ChooseSwapPresentMode(const Array<VkPresentModeKHR>& _availablePresentModes);

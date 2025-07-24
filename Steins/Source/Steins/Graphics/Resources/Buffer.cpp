@@ -3,7 +3,7 @@
 #include "Steins/Graphics/Core/RenderDevice.h"
 
 #include "Steins/Graphics/Core/Renderer.h"
-#include "Steins/Graphics/Core/GraphicsContext.h"
+#include "Steins/Graphics/Core/RenderContext.h"
 
 namespace Steins
 {

@@ -3,10 +3,10 @@
 
 #include "EditorLayer.h"
 
-class SteinsEditorApp: public Steins::Application
+class EditorApplication: public Steins::Application
 {
 public:
-	SteinsEditorApp(const Steins::ApplicationSpecification& _spec)
+	EditorApplication(const Steins::ApplicationSpecification& _spec)
 		:Steins::Application(_spec)
 	{
 		AttachOverlay(new EditorLayer());
@@ -20,5 +20,5 @@ Steins::Application* Steins::CreateApplication()
 	spec.WorkingDirectory = "../Lab";
 	spec.rendererAPI = RendererAPIType::DirectX12;
 
-	return new SteinsEditorApp(spec);
+	return new EditorApplication(spec);
 }

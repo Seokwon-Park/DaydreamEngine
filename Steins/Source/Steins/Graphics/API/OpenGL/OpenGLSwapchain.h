@@ -1,20 +1,20 @@
 #pragma once
 
-#include "Steins/Graphics/Core/SwapChain.h"
+#include "Steins/Graphics/Core/Swapchain.h"
 
 #include "GLFW/glfw3.h"
 
 namespace Steins
 {
-	class OpenGLSwapChain : public SwapChain
+	class OpenGLSwapchain : public Swapchain
 	{
 	public:
-		OpenGLSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window);
-		virtual ~OpenGLSwapChain() override;
+		OpenGLSwapchain(SteinsWindow* _window, const SwapchainDesc& _desc);
+		virtual ~OpenGLSwapchain() override;
 
 		virtual void SetVSync(bool _enabled) override;
 		virtual void SwapBuffers() override;
-		virtual void ResizeSwapChain(UInt32 _width, UInt32 height) override;
+		virtual void ResizeSwapchain(UInt32 _width, UInt32 height) override;
 
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;

@@ -6,13 +6,13 @@
 
 namespace Steins
 {
-	class VulkanSwapChain;
+	class VulkanSwapchain;
 
 	class VulkanFramebuffer : public Framebuffer
 	{
 	public:
 		VulkanFramebuffer(VulkanRenderDevice* _device, const FramebufferDesc& _spec);
-		VulkanFramebuffer(VulkanRenderDevice* _device, VulkanSwapChain* _swapChain);
+		VulkanFramebuffer(VulkanRenderDevice* _device, VulkanSwapchain* _swapChain);
 
 		virtual ~VulkanFramebuffer() override;
 

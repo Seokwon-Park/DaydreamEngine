@@ -149,6 +149,13 @@ namespace Steins
 				MouseMovedEvent event((float)_xPos, (float)_yPos);
 				data.eventCallbackFn(event);
 			});
+
+		glfwSetWindowFocusCallback(glfwWindow, [](GLFWwindow* _window, int _isFocused)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(_window);
+				WindowFocusEvent event(_isFocused, data.title);
+				data.eventCallbackFn(event);
+			});
 	}
 
 	void WindowsWindow::Shutdown()

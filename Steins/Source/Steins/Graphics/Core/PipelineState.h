@@ -12,6 +12,31 @@ namespace Steins
 		TriangleList,
 	};
 
+	struct RasterizerStateDesc
+	{
+		enum class FillMode {
+			Solid,
+			Wireframe
+		};
+
+		enum class CullMode {
+			None,
+			Front,
+			Back
+		};
+
+		FillMode fillMode = FillMode::Solid;
+		CullMode cullMode = CullMode::Back;
+		bool frontCounterClockwise = false;
+		bool depthClipEnable = true;
+		bool scissorEnable = false;
+		bool multisampleEnable = false;
+		bool antialiasedLineEnable = false;
+		int depthBias = 0;
+		float depthBiasClamp = 0.0f;
+		float slopeScaledDepthBias = 0.0f;
+	};
+
 	struct PipelineStateDesc
 	{
 		Shared<Shader> vertexShader = nullptr;
@@ -21,12 +46,10 @@ namespace Steins
 		Shared<Shader> pixelShader = nullptr;
 		//Shared<Shader> computeShader; //??
 
-		Array<Shared<Texture2D>> textures;
-
 		BufferLayout inputLayout;
 		//InputLayoutDesc inputLayout;
 		//Shared<ResourceBindingLayout> resourceBindingLayout; // RootSignature/PipelineLayout
-		//RasterizerDesc rasterizerState;
+		RasterizerStateDesc rasterizerState;
 		//BlendDesc blendState;
 		//DepthStencilDesc depthStencilState;
 		//Array<GraphicsFormat> renderTargetFormats; // RTV Æ÷¸Ëµé
@@ -38,7 +61,7 @@ namespace Steins
 	class PipelineState
 	{
 	public:
-		PipelineState(PipelineStateDesc _desc);
+		PipelineState(const PipelineStateDesc& _desc);
 		virtual ~PipelineState() = default;
 
 		virtual void Bind() const = 0;
@@ -46,7 +69,7 @@ namespace Steins
 
 		Array<Shared<Shader>> GetShaders() { return shaders; }
 
-		static Shared<PipelineState> Create(PipelineStateDesc _desc);
+		static Shared<PipelineState> Create(const PipelineStateDesc& _desc);
 	protected:
 		Shared<Shader> vertexShader;
 		Shared<Shader> hullShader;

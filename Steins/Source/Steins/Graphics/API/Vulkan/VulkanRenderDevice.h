@@ -15,7 +15,7 @@ namespace Steins
 		}
 	};
 
-	struct SwapChainSupportDetails
+	struct SwapchainSupportDetails
 	{
 		//gpu와 surface 조합에서 지원되는 최소/최대 이미지 크기정보
 		VkSurfaceCapabilitiesKHR capabilities;
@@ -35,15 +35,15 @@ namespace Steins
 		virtual void Shutdown() override;
 		virtual void Render() override;
 
-		virtual Shared<GraphicsContext> CreateContext() override;
+		virtual Shared<RenderContext> CreateContext() override;
 		virtual Shared<VertexBuffer> CreateDynamicVertexBuffer(UInt32 _bufferSize, UInt32 _stride)override;
 		virtual Shared<VertexBuffer> CreateStaticVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride) override;
 		virtual Shared<IndexBuffer> CreateIndexBuffer(UInt32* _indices, UInt32 _count) override;
 		virtual Shared<Framebuffer> CreateFramebuffer(FramebufferDesc _spec)override;
-		virtual Shared<PipelineState> CreatePipelineState(PipelineStateDesc _desc)override;
+		virtual Shared<PipelineState> CreatePipelineState(const PipelineStateDesc& _desc)override;
 		virtual Shared<Shader> CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode) override;
-		virtual Shared<SwapChain> CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)override;
-		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path)override;
+		virtual Shared<Swapchain> CreateSwapchain(SteinsWindow* _window, const SwapchainDesc& _desc)override;
+		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path, const TextureDesc& _desc)override;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() override;
 		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) override;
 		virtual Shared<Material> CreateMaterial(Shared<PipelineState> _pipeline) override;
@@ -63,7 +63,7 @@ namespace Steins
 		VkCommandBuffer BeginSingleTimeCommands();
 		void EndSingleTimeCommands(VkCommandBuffer _commandBuffer);
 
-		SwapChainSupportDetails QuerySwapChainSupport(VkSurfaceKHR _surface);
+		SwapchainSupportDetails QuerySwapchainSupport(VkSurfaceKHR _surface);
 		UInt32 FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 		//Create a VkBuffer
 		void CreateBuffer(VkDeviceSize _size, VkBufferUsageFlags _usage, VkMemoryPropertyFlags _properties, VkBuffer& _buffer, VkDeviceMemory& _bufferMemory);
@@ -73,7 +73,7 @@ namespace Steins
 		void CopyBufferToImage(VkBuffer _src, VkImage _dst, UInt32 _width, UInt32 _height);
 		void TransitionTextureLayout(VkImage _image, VkFormat _format, VkImageLayout _oldLayout, VkImageLayout _newLayout);
 
-		//SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice _physicalDevice, VkSurfaceKHR _surface);
+		//SwapchainSupportDetails QuerySwapchainSupport(VkPhysicalDevice _physicalDevice, VkSurfaceKHR _surface);
 	private:
 		void CreateInstance();
 		void SetupDebugMessenger();

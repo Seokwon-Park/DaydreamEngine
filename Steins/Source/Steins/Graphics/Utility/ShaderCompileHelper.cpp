@@ -113,6 +113,10 @@ namespace Steins
 		args.push_back(entryPoint.c_str());
 		args.push_back(L"-spirv");
 		args.push_back(L"-fspv-reflect");
+		if (_type == ShaderType::Vertex)
+		{
+			args.push_back(L"-fvk-invert-y");
+		}
 		args.push_back(L"-fvk-use-dx-layout");
 		args.push_back(L"-O3");
 
@@ -151,10 +155,16 @@ namespace Steins
 	{
 		spirv_cross::CompilerHLSL hlsl(_spirvData);
 
-		// 可记 汲沥
+		spirv_cross::CompilerGLSL::Options commonOptions{};
+		commonOptions.vertex.flip_vert_y = true;
+
+		hlsl.set_common_options(commonOptions);
+		
 		spirv_cross::CompilerHLSL::Options options{};
 		options.shader_model = 50;
 		options.use_entry_point_name = true;
+		
+		
 		hlsl.set_hlsl_options(options);
 
 		_hlslSource = hlsl.compile();
@@ -167,8 +177,8 @@ namespace Steins
 		spirv_cross::CompilerGLSL::Options options{};
 		options.version = 450;  
 		options.separate_shader_objects = true;
-		
-
+		options.vertex.flip_vert_y = true;
+				
 		compilerGLSL.set_common_options(options);
 		// GLSL 内靛 积己
 		_glslSource = compilerGLSL.compile();

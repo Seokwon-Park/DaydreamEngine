@@ -1,23 +1,20 @@
 #include "SteinsPCH.h"
 #include "D3D11Framebuffer.h"
-#include "D3D11SwapChain.h"
+#include "D3D11Swapchain.h"
 
 namespace Steins
 {
 	D3D11Framebuffer::D3D11Framebuffer(D3D11RenderDevice* _device, const FramebufferDesc& _spec)
 	{
 		device = _device;
-		for (const FramebufferAttachmentDescription& colorAttachment : _spec.colorAttachments)
-		{
 
-		}
 	}
-	D3D11Framebuffer::D3D11Framebuffer(D3D11RenderDevice* _device, D3D11SwapChain* _swapChain)
+	D3D11Framebuffer::D3D11Framebuffer(D3D11RenderDevice* _device, D3D11Swapchain* _swapChain)
 	{
 		device = _device;
-		IDXGISwapChain* dxgiSwapChain = _swapChain->GetDXGISwapChain();
+		IDXGISwapChain* dxgiSwapchain = _swapChain->GetDXGISwapchain();
 		ComPtr<ID3D11Texture2D> backBuffer;
-		dxgiSwapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
+		dxgiSwapchain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
 		STEINS_CORE_ASSERT(backBuffer, "Backbuffer is nullptr!");
 
 		//D3D11_TEXTURE2D_DESC textureDesc;

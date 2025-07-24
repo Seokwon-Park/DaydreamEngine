@@ -15,8 +15,6 @@ namespace Steins
 
 		virtual void SetTexture2D(const std::string& _name, Shared<Texture2D> _texture)override;
 		virtual void SetConstantBuffer(const std::string& _name, Shared<ConstantBuffer> _buffer)override;
-
-
 	private:
 		VulkanRenderDevice* device;
 		VulkanPipelineState* pso;

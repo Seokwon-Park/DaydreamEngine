@@ -1,8 +1,8 @@
 #include "SteinsPCH.h"
 #include "D3D11RenderDevice.h"
-#include "D3D11GraphicsContext.h"
+#include "D3D11RenderContext.h"
 #include "D3D11Buffer.h"
-#include "D3D11SwapChain.h"
+#include "D3D11Swapchain.h"
 #include "D3D11Shader.h"
 #include "D3D11VertexShader.h"
 #include "D3D11Framebuffer.h"
@@ -137,7 +137,7 @@ namespace Steins
 	}
 
 
-	Shared<GraphicsContext> D3D11RenderDevice::CreateContext()
+	Shared<RenderContext> D3D11RenderDevice::CreateContext()
 	{
 		return MakeShared<D3D11GraphicsContext>(this);
 	}
@@ -162,7 +162,7 @@ namespace Steins
 		return MakeShared<D3D11Framebuffer>(this, _spec);
 	}
 
-	Shared<PipelineState> D3D11RenderDevice::CreatePipelineState(PipelineStateDesc _desc)
+	Shared<PipelineState> Steins::D3D11RenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)
 	{
 		return MakeShared<D3D11PipelineState>(this, _desc);
 	}
@@ -171,27 +171,27 @@ namespace Steins
 	{
 		switch (_type)
 		{
-		case Steins::ShaderType::None:  return nullptr;
-		case Steins::ShaderType::Vertex: return MakeShared<D3D11VertexShader>(this, _src, _mode);
-		case Steins::ShaderType::Hull: return nullptr;
-		case Steins::ShaderType::Domain: return nullptr;
-		case Steins::ShaderType::Geometry: return nullptr;
-		case Steins::ShaderType::Pixel: return MakeShared<D3D11PixelShader>(this, _src, _mode);
-		case Steins::ShaderType::Compute: return nullptr;
+		case ShaderType::None:  return nullptr;
+		case ShaderType::Vertex: return MakeShared<D3D11VertexShader>(this, _src, _mode);
+		case ShaderType::Hull: return nullptr;
+		case ShaderType::Domain: return nullptr;
+		case ShaderType::Geometry: return nullptr;
+		case ShaderType::Pixel: return MakeShared<D3D11PixelShader>(this, _src, _mode);
+		case ShaderType::Compute: return nullptr;
 		default:
 			break;
 		}
 		return Shared<Shader>();
 	}
 
-	Shared<SwapChain> D3D11RenderDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
+	Shared<Swapchain> D3D11RenderDevice::CreateSwapchain(SteinsWindow* _window, const SwapchainDesc& _desc)
 	{
-		return MakeShared<D3D11SwapChain>(this, _desc, _window);
+		return MakeShared<D3D11Swapchain>(this, _window, _desc);
 	}
 
-	Shared<Texture2D> D3D11RenderDevice::CreateTexture2D(const FilePath& _path)
+	Shared<Texture2D> D3D11RenderDevice::CreateTexture2D(const FilePath& _path, const TextureDesc& _desc)
 	{
-		return MakeShared<D3D11Texture2D>(this, _path);
+		return MakeShared<D3D11Texture2D>(this, _path, _desc);
 	}
 
 	Unique<ImGuiRenderer> D3D11RenderDevice::CreateImGuiRenderer()
@@ -208,7 +208,4 @@ namespace Steins
 	{
 		return _pipeline->CreateMaterial();
 	}
-
-
-
 }

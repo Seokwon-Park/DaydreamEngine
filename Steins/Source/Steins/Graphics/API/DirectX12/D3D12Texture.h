@@ -8,7 +8,7 @@ namespace Steins
 	class D3D12Texture2D : public Texture2D
 	{
 	public:
-		D3D12Texture2D(D3D12RenderDevice* _device, const FilePath& _path);
+		D3D12Texture2D(D3D12RenderDevice* _device, const FilePath& _path, const TextureDesc& _desc);
 
 		virtual void Bind(UInt32 _slot) const override;
 

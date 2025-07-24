@@ -29,6 +29,25 @@ namespace Steins
 		EVENT_CLASS_TYPE(WindowClose)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
+		class WindowFocusEvent : public Event
+	{
+	public:
+		WindowFocusEvent(bool _isFocused, String _name) 
+			: isFocused(_isFocused), name(_name){}
+		inline bool GetIsFocused() { return isFocused; }
+		inline String GetWindowName() { return name; }
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "WindowFocused";
+			return ss.str();
+		}
+		EVENT_CLASS_TYPE(WindowFocus)
+		EVENT_CLASS_CATEGORY(EventCategoryApplication)
+	private:
+		String name;
+		bool isFocused;
+	};
 	class AppTickEvent : public Event
 	{
 	public:

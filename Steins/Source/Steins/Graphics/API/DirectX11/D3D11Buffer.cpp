@@ -117,33 +117,7 @@ namespace Steins
 	D3D11ConstantBuffer::~D3D11ConstantBuffer()
 	{
 	}
-	void Steins::D3D11ConstantBuffer::Bind(UInt32 _slot) const
-	{
-		//if (_flags & ShaderStage::SteinsVertexBit)
-		//{
-		//	device->GetContext()->VSSetConstantBuffers(_slot, 1, constantBuffer.GetAddressOf());
-		//}
-		//if (_flags & ShaderStage::SteinsHullBit)
-		//{
-		//	device->GetContext()->HSSetConstantBuffers(_slot, 1, constantBuffer.GetAddressOf());
-		//}
-		//if (_flags & ShaderStage::SteinsDomainBit)
-		//{
-		//	device->GetContext()->DSSetConstantBuffers(_slot, 1, constantBuffer.GetAddressOf());
-		//}
-		//if (_flags & ShaderStage::SteinsGeometryBit)
-		//{
-		//	device->GetContext()->GSSetConstantBuffers(_slot, 1, constantBuffer.GetAddressOf());
-		//}
-		//if (_flags & ShaderStage::SteinsPixelBit)
-		//{
-		//	device->GetContext()->PSSetConstantBuffers(_slot, 1, constantBuffer.GetAddressOf());
-		//}
-		//if (_flags & ShaderStage::SteinsComputeBit)
-		//{
-		//	device->GetContext()->CSSetConstantBuffers(_slot, 1, constantBuffer.GetAddressOf());
-		//}
-	}
+
 	void D3D11ConstantBuffer::Update(const void* _data, UInt32 _size)
 	{
 		D3D11_MAPPED_SUBRESOURCE data;

@@ -7,7 +7,7 @@
 
 namespace Steins
 {
-	PipelineState::PipelineState(PipelineStateDesc _desc)
+	Steins::PipelineState::PipelineState(const PipelineStateDesc& _desc)
 	{
 		vertexShader = _desc.vertexShader;
 		hullShader = _desc.hullShader;
@@ -23,7 +23,7 @@ namespace Steins
 		if (geometryShader != nullptr)shaders.push_back(geometryShader);
 	}
 
-	Shared<PipelineState> PipelineState::Create(PipelineStateDesc _desc)
+	Shared<PipelineState> Steins::PipelineState::Create(const PipelineStateDesc& _desc)
 	{
 		return Renderer::GetRenderDevice()->CreatePipelineState(_desc);
 	}

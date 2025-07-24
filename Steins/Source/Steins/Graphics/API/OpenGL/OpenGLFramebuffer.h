@@ -10,6 +10,8 @@ namespace Steins
 		OpenGLFramebuffer(const FramebufferDesc& _desc);
 		virtual ~OpenGLFramebuffer() override;
 	private:
-
+		UInt32 framebufferID;
+		Array<UInt32> colorAttachments;
+		UInt32 depthAttachment;
 	};
 }

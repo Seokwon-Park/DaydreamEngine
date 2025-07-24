@@ -1,5 +1,5 @@
 #include "SteinsPCH.h"
-#include "OpenGLGraphicsContext.h"
+#include "OpenGLRenderContext.h"
 
 #include "glad/glad.h"
 
@@ -10,7 +10,7 @@ namespace Steins
 	}
 	void OpenGLGraphicsContext::SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height)
 	{
-		glViewport(0, 0, _width, _height);
+		//glViewport(_x, _y, _width, _height);
 	}
 	void OpenGLGraphicsContext::SetClearColor(const Color& _color)
 	{

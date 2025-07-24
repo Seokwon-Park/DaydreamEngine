@@ -1,11 +1,11 @@
 #include "SteinsPCH.h"
 #include "VulkanRenderDevice.h"
-#include "VulkanGraphicsContext.h"
+#include "VulkanRenderContext.h"
 #include "VulkanBuffer.h"
 #include "VulkanFramebuffer.h"
 #include "VulkanPipelineState.h"
 #include "VulkanShader.h"
-#include "VulkanSwapChain.h"
+#include "VulkanSwapchain.h"
 #include "VulkanImGuiRenderer.h"
 #include "VulkanTexture.h"
 #include "VulkanMaterial.h"
@@ -154,7 +154,7 @@ namespace Steins
 	{
 	}
 
-	Shared<GraphicsContext> VulkanRenderDevice::CreateContext()
+	Shared<RenderContext> VulkanRenderDevice::CreateContext()
 	{
 		return MakeShared<VulkanGraphicsContext>(this);
 	}
@@ -179,7 +179,7 @@ namespace Steins
 		return Shared<Framebuffer>();
 	}
 
-	Shared<PipelineState> VulkanRenderDevice::CreatePipelineState(PipelineStateDesc _desc)
+	Shared<PipelineState> Steins::VulkanRenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)
 	{
 		return MakeShared<VulkanPipelineState>(this, _desc);
 	}
@@ -189,14 +189,14 @@ namespace Steins
 		return MakeShared<VulkanShader>(this, _src, _type, _mode);
 	}
 
-	Shared<SwapChain> VulkanRenderDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
+	Shared<Swapchain> Steins::VulkanRenderDevice::CreateSwapchain(SteinsWindow* _window, const SwapchainDesc& _desc)
 	{
-		return MakeShared<VulkanSwapChain>(this, _desc, _window);
+		return MakeShared<VulkanSwapchain>(this, _window, _desc);
 	}
 
-	Shared<Texture2D> VulkanRenderDevice::CreateTexture2D(const FilePath& _path)
+	Shared<Texture2D> Steins::VulkanRenderDevice::CreateTexture2D(const FilePath& _path, const TextureDesc& _desc)
 	{
-		return MakeShared<VulkanTexture2D>(this, _path);
+		return MakeShared<VulkanTexture2D>(this, _path, _desc);
 	}
 
 	Unique<ImGuiRenderer> VulkanRenderDevice::CreateImGuiRenderer()
@@ -250,9 +250,9 @@ namespace Steins
 		vkFreeCommandBuffers(device, commandPool, 1, &_commandBuffer);
 	}
 
-	SwapChainSupportDetails VulkanRenderDevice::QuerySwapChainSupport(VkSurfaceKHR _surface)
+	SwapchainSupportDetails VulkanRenderDevice::QuerySwapchainSupport(VkSurfaceKHR _surface)
 	{
-		SwapChainSupportDetails details;
+		SwapchainSupportDetails details;
 		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, _surface, &details.capabilities);
 
 		UInt32 formatCount = 0;

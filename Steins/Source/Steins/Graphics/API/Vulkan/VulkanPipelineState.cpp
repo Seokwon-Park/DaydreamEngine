@@ -1,7 +1,7 @@
 #include "SteinsPCH.h"
 #include "VulkanPipelineState.h"
 
-#include "VulkanSwapChain.h"
+#include "VulkanSwapchain.h"
 #include "Steins/Graphics/Utility/GraphicsUtil.h"
 
 #include "VulkanTexture.h"
@@ -115,7 +115,7 @@ namespace Steins
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 		vertexInputInfo.vertexBindingDescriptionCount = 1;
 		vertexInputInfo.pVertexBindingDescriptions = &desc; // Optional
-		vertexInputInfo.vertexAttributeDescriptionCount = attribDescArray.size();
+		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<UInt32>(attribDescArray.size());
 		vertexInputInfo.pVertexAttributeDescriptions = attribDescArray.data(); // Optional
 
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
@@ -183,7 +183,7 @@ namespace Steins
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		pipelineLayoutInfo.setLayoutCount = descriptorSetLayouts.size(); // Optional
+		pipelineLayoutInfo.setLayoutCount = static_cast<UInt32>(descriptorSetLayouts.size()); // Optional
 		pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data(); // Optional
 		pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
 		pipelineLayoutInfo.pPushConstantRanges = nullptr; // Optional

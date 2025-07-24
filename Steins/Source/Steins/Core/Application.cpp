@@ -43,10 +43,10 @@ namespace Steins
 
 		//testWindow = SteinsWindow::Create(prop);
 		//testWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
-
-
+		
 		Renderer::Init(_specification.rendererAPI);
-		Renderer::RegisterWindow("MainWindow", mainWindow.get());
+		Renderer::RegisterWindow(prop.title, mainWindow.get());
+		Renderer::SetWindow(mainWindow.get());
 		//Renderer::RegisterWindow("TestWindow", testWindow.get());
 
 		imGuiLayer = new ImGuiLayer();
@@ -57,7 +57,7 @@ namespace Steins
 
 	Application::~Application()
 	{
-		mainWindow->SetSwapChain(nullptr);
+		mainWindow->SetSwapchain(nullptr);
 		mainWindow = nullptr;
 		layerStack.Release();
 		Renderer::Shutdown();
@@ -152,6 +152,7 @@ namespace Steins
 	{
 		EventDispatcher dispatcher(_event);
 		//_event의 타입이 WindowCloseEvent에 해당하면 OnWindowClose를 실행시킨다.
+		dispatcher.Dispatch<WindowFocusEvent>(BIND_EVENT_FN(OnWindowFocused));
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
 
@@ -182,8 +183,17 @@ namespace Steins
 		//STEINS_CORE_INFO("Window Resized : [ {0} , {1} ]", _event.GetWidth(), _event.GetHeight());
 		isMinimized = false;
 		Renderer::OnWindowResize(_event.GetWidth(), _event.GetHeight());
-		mainWindow->GetSwapChain()->ResizeSwapChain(_event.GetWidth(), _event.GetHeight());
+		mainWindow->GetSwapchain()->ResizeSwapchain(_event.GetWidth(), _event.GetHeight());
 
+		return false;
+	}
+	bool Application::OnWindowFocused(WindowFocusEvent& _e)
+	{
+		if (_e.GetIsFocused() == true)
+		{
+			STEINS_CORE_INFO("{0} Window is now focused", _e.GetWindowName());
+			//	Renderer::SetWindow(_e.GetWindowName());
+		}
 		return false;
 	}
 }

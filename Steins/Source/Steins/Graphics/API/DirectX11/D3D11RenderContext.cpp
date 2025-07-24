@@ -1,8 +1,8 @@
 #include "SteinsPCH.h"
-#include "D3D11GraphicsContext.h"
+#include "D3D11RenderContext.h"
 #include "D3D11RenderDevice.h"
 
-#include "Steins/Graphics/Core/SwapChain.h"
+#include "Steins/Graphics/Core/Swapchain.h"
 
 namespace Steins
 {
@@ -24,8 +24,8 @@ namespace Steins
 
 	void D3D11GraphicsContext::Clear()
 	{
-		device->GetSwapChain(0)->GetBackFramebuffer()->Begin();
-		device->GetSwapChain(0)->GetBackFramebuffer()->Clear(clearColor);
+		device->GetSwapchain(0)->GetBackFramebuffer()->Begin();
+		device->GetSwapchain(0)->GetBackFramebuffer()->Clear(clearColor);
 	}
 
 	void D3D11GraphicsContext::DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex)

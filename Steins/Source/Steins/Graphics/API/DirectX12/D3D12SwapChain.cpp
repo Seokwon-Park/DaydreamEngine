@@ -1,5 +1,5 @@
 #include "SteinsPCH.h"
-#include "D3D12SwapChain.h"
+#include "D3D12Swapchain.h"
 
 #include "Steins/Graphics/Utility/GraphicsUtil.h"
 
@@ -11,29 +11,29 @@
 
 namespace Steins
 {
-	D3D12SwapChain::D3D12SwapChain(RenderDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window)
+	D3D12Swapchain::D3D12Swapchain(RenderDevice* _device, SteinsWindow* _window, const SwapchainDesc& _desc)
 	{
 		device = Cast<D3D12RenderDevice>(_device);
-		desc = *_desc;
+		desc = _desc;
 		DXGI_SAMPLE_DESC sampleDesc = {};
 		sampleDesc.Count = 1;    // 샘플 수 (1이면 MSAA 비활성화)
 		sampleDesc.Quality = 0;  // 품질 레벨 (0이면 기본값)
 
 		DXGI_SWAP_CHAIN_DESC1 swapchainDesc;
 		ZeroMemory(&swapchainDesc, sizeof(swapchainDesc));
-		swapchainDesc.Width = _desc->width;
-		swapchainDesc.Height = _desc->height;
-		swapchainDesc.Format = GraphicsUtil::RenderFormatToDXGIFormat(_desc->format);
+		swapchainDesc.Width = _desc.width;
+		swapchainDesc.Height = _desc.height;
+		swapchainDesc.Format = GraphicsUtil::RenderFormatToDXGIFormat(_desc.format);
 		swapchainDesc.Stereo = 0;
 		swapchainDesc.SampleDesc = sampleDesc;
 		swapchainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		swapchainDesc.BufferCount = _desc->bufferCount;
+		swapchainDesc.BufferCount = _desc.bufferCount;
 		swapchainDesc.Scaling = DXGI_SCALING_NONE;
 		swapchainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 		swapchainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
 		swapchainDesc.Flags = 0;
 
-		fenceValues.resize(_desc->bufferCount);
+		fenceValues.resize(_desc.bufferCount);
 
 		ComPtr<IDXGISwapChain1> swapChain1;
 		HRESULT hr = device->GetFactory()->CreateSwapChainForHwnd(
@@ -80,16 +80,16 @@ namespace Steins
 		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 		device->GetCommandList()->ResourceBarrier(1, &barr);
 	}
-	D3D12SwapChain::~D3D12SwapChain()
+	D3D12Swapchain::~D3D12Swapchain()
 	{
 		WaitForGPU();
 		device = nullptr;
 	}
-	void D3D12SwapChain::SetVSync(bool _enabled)
+	void D3D12Swapchain::SetVSync(bool _enabled)
 	{
 	}
 
-	void D3D12SwapChain::SwapBuffers()
+	void D3D12Swapchain::SwapBuffers()
 	{
 		D3D12_RESOURCE_BARRIER barr{};
 
@@ -144,19 +144,19 @@ namespace Steins
 		framebuffers[frameIndex]->Clear(Color(1.0f, 1.0f, 1.0f, 1.0f));
 
 	}
-	void D3D12SwapChain::ResizeSwapChain(UInt32 _width, UInt32 height)
+	void D3D12Swapchain::ResizeSwapchain(UInt32 _width, UInt32 height)
 	{
 	}
 
-	void D3D12SwapChain::BeginFrame()
+	void D3D12Swapchain::BeginFrame()
 	{
 	}
 
-	void D3D12SwapChain::EndFrame()
+	void D3D12Swapchain::EndFrame()
 	{
 	}
 
-	void D3D12SwapChain::WaitForGPU()
+	void D3D12Swapchain::WaitForGPU()
 	{
 		// Schedule a Signal command in the queue.
 		device->GetCommandQueue()->Signal(fence.Get(), fenceValues[frameIndex]);
@@ -170,7 +170,7 @@ namespace Steins
 	}
 
 	// GPU가 이전 프레임 작업을 끝낼 때까지 기다림
-	void D3D12SwapChain::MoveToNextFrame()
+	void D3D12Swapchain::MoveToNextFrame()
 	{
 		const UINT64 currentFenceValue = fenceValues[frameIndex];
 		HRESULT hr = device->GetCommandQueue()->Signal(fence.Get(), currentFenceValue);

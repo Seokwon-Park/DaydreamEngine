@@ -6,10 +6,10 @@
 
 namespace Steins
 {
-	OpenGLTexture2D::OpenGLTexture2D(const FilePath& _path)
+	OpenGLTexture2D::OpenGLTexture2D(const FilePath& _path, const TextureDesc& _desc)
 		:Texture2D(_path)
 	{
-		stbi_set_flip_vertically_on_load(1);
+		//stbi_set_flip_vertically_on_load(1);
 		data = stbi_load(_path.ToString().c_str(), &width, &height, &channels, 0);
 		STEINS_CORE_ASSERT(data, "Failed to load image!");
 

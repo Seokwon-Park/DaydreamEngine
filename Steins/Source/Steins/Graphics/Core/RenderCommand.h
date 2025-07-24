@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GraphicsContext.h"
+#include "RenderContext.h"
 
 namespace Steins
 {
@@ -19,7 +19,6 @@ namespace Steins
 			context->SetClearColor(_color);
 		}
 
-
 		inline static void Clear()
 		{
 			context->Clear();
@@ -31,7 +30,7 @@ namespace Steins
 		}
 
 	private:
-		static Shared<GraphicsContext> context;
+		static Shared<RenderContext> context;
 	};
 }
 

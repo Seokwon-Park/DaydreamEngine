@@ -1,27 +1,20 @@
 #pragma once
 
+#include <Steins/Enum/RendererEnums.h>
+
 namespace Steins
 {
-	enum class FramebufferTextureFormat {
-		None = 0,
-		// Color
-		RGBA8,
-		R32_INT,
-		// Depth/stencil
-		DEPTH24STENCIL8,
-		Depth = DEPTH24STENCIL8 // Alias
-	};
-
-	struct FramebufferAttachmentDescription
+	struct FramebufferAttachmentDesc
 	{
-		FramebufferTextureFormat format = FramebufferTextureFormat::None;
+		RenderFormat format = RenderFormat::UNKNOWN;
 	};
 
 	struct FramebufferDesc
 	{
-		UInt32 width, height;
-		Array<FramebufferAttachmentDescription> colorAttachments;
-		FramebufferAttachmentDescription depthAttachment;
+		UInt32 width;
+		UInt32 height;
+		Array<FramebufferAttachmentDesc> colorAttachments;
+		FramebufferAttachmentDesc depthAttachment;
 		UInt32 samples = 1;
 	};
 

@@ -3,11 +3,11 @@
 
 namespace Steins
 {
-	Shared<GraphicsContext> RenderCommand::context = nullptr;
+	Shared<RenderContext> RenderCommand::context = nullptr;
 
 	void RenderCommand::Init(RenderDevice* _device)
 	{
-		context = GraphicsContext::Create(_device);
+		context = RenderContext::Create(_device);
 		if (context)
 		{
 			context->Init();

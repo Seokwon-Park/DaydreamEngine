@@ -220,10 +220,6 @@ namespace Steins
 		device->GetCBVSRVUAVHeapAlloc().Alloc(&cpuHandle, &gpuHandle);
 		device->GetDevice()->CreateConstantBufferView(&constantBufferView, cpuHandle);
 	}
-	void Steins::D3D12ConstantBuffer::Bind(UInt32 _slot) const
-	{
-		//device->GetCommandList()->SetGraphicsRootConstantBufferView(_slot, constantBuffer->GetGPUVirtualAddress());
-	}
 	void D3D12ConstantBuffer::Update(const void* _data, UInt32 _size)
 	{
 		void* data;

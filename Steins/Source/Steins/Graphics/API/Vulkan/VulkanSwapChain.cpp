@@ -1,14 +1,14 @@
 #include "SteinsPCH.h"
-#include "VulkanSwapChain.h"
+#include "VulkanSwapchain.h"
 
 #include "Steins/Graphics/Utility/GraphicsUtil.h"
 
 namespace Steins
 {
-	VulkanSwapChain::VulkanSwapChain(VulkanRenderDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window)
+	VulkanSwapchain::VulkanSwapchain(VulkanRenderDevice* _device, SteinsWindow* _window, const SwapchainDesc& _desc)
 	{
 		device = _device;
-		desc = *_desc;
+		desc = _desc;
 		GLFWwindow* window = Cast<GLFWwindow>(_window->GetNativeWindow());
 		//#if defined(STEINS_PLATFORM_WINDOWS)
 		//		VkWin32SurfaceCreateInfoKHR createInfo{};
@@ -24,14 +24,14 @@ namespace Steins
 		}
 
 		{
-			SwapChainSupportDetails SwapchainSupport = device->QuerySwapChainSupport(surface);
+			SwapchainSupportDetails SwapchainSupport = device->QuerySwapchainSupport(surface);
 			if (SwapchainSupport.formats.empty() || SwapchainSupport.presentModes.empty())
 			{
 				STEINS_CORE_ERROR("GPU has no supported formats or presentmodes");
 			}
 
 
-			VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(SwapchainSupport.formats, _desc->format);
+			VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(SwapchainSupport.formats, _desc.format);
 			VkPresentModeKHR presentMode = ChooseSwapPresentMode(SwapchainSupport.presentModes);
 			format = surfaceFormat.format;
 			extent = ChooseSwapExtent(SwapchainSupport.capabilities);
@@ -72,7 +72,7 @@ namespace Steins
 				STEINS_CORE_ERROR("Failed to create Swapchain");
 			}
 		}
-		device->AddSwapChain(this);
+		device->AddSwapchain(this);
 
 		VkSemaphoreCreateInfo semaphoreInfo{};
 		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -102,7 +102,7 @@ namespace Steins
 
 
 	}
-	VulkanSwapChain::~VulkanSwapChain()
+	VulkanSwapchain::~VulkanSwapchain()
 	{
 		vkDeviceWaitIdle(device->GetDevice());
 		vkDestroySemaphore(device->GetDevice(), imageAvailableSemaphore, nullptr);
@@ -111,10 +111,10 @@ namespace Steins
 		vkDestroySwapchainKHR(device->GetDevice(), swapChain, nullptr);
 		vkDestroySurfaceKHR(device->GetInstance(), surface, nullptr);
 	}
-	void VulkanSwapChain::SetVSync(bool _enabled)
+	void VulkanSwapchain::SetVSync(bool _enabled)
 	{
 	}
-	void VulkanSwapChain::SwapBuffers()
+	void VulkanSwapchain::SwapBuffers()
 	{
 		framebuffers[imageIndex]->End();
 		//vkCmdEndRenderPass(cmdbuf);
@@ -158,11 +158,11 @@ namespace Steins
 		framebuffers[imageIndex]->Begin();
 	}
 
-	void VulkanSwapChain::ResizeSwapChain(UInt32 _width, UInt32 height)
+	void VulkanSwapchain::ResizeSwapchain(UInt32 _width, UInt32 height)
 	{
 	}
 
-	void VulkanSwapChain::BeginFrame()
+	void VulkanSwapchain::BeginFrame()
 	{
 		vkWaitForFences(device->GetDevice(), 1, &inFlightFence, VK_TRUE, UINT64_MAX);
 		vkResetFences(device->GetDevice(), 1, &inFlightFence);
@@ -177,10 +177,14 @@ namespace Steins
 		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to begin recording command buffer!");
 
 		VkViewport viewport{};
+		//viewport.x = 0.0f;
+		//viewport.y = (float)extent.height;
+		//viewport.width = (float)extent.width;
+		//viewport.height = -(float)extent.height;
 		viewport.x = 0.0f;
-		viewport.y = (float)extent.height;
+		viewport.y = 0.0f;
 		viewport.width = (float)extent.width;
-		viewport.height = -(float)extent.height;
+		viewport.height = (float)extent.height;
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 		vkCmdSetViewport(device->GetCommandBuffer(), 0, 1, &viewport);
@@ -191,11 +195,11 @@ namespace Steins
 		vkCmdSetScissor(device->GetCommandBuffer(), 0, 1, &scissor);
 	}
 
-	void VulkanSwapChain::EndFrame()
+	void VulkanSwapchain::EndFrame()
 	{
 	}
 
-	VkSurfaceFormatKHR VulkanSwapChain::ChooseSwapSurfaceFormat(const Array<VkSurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat)
+	VkSurfaceFormatKHR VulkanSwapchain::ChooseSwapSurfaceFormat(const Array<VkSurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat)
 	{
 		VkFormat desiredFormat = GraphicsUtil::RenderFormatToVkFormat(_desiredFormat);
 		for (const VkSurfaceFormatKHR& availableFormat : _availableFormats)
@@ -208,7 +212,7 @@ namespace Steins
 
 		return _availableFormats[0];
 	}
-	VkPresentModeKHR VulkanSwapChain::ChooseSwapPresentMode(const Array<VkPresentModeKHR>& _availablePresentModes)
+	VkPresentModeKHR VulkanSwapchain::ChooseSwapPresentMode(const Array<VkPresentModeKHR>& _availablePresentModes)
 	{
 		for (const VkPresentModeKHR& availablePresentMode : _availablePresentModes)
 		{
@@ -220,7 +224,7 @@ namespace Steins
 
 		return VK_PRESENT_MODE_FIFO_KHR;
 	}
-	VkExtent2D VulkanSwapChain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& _capabilities)
+	VkExtent2D VulkanSwapchain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& _capabilities)
 	{
 		if (_capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
 			return _capabilities.currentExtent;
@@ -237,7 +241,7 @@ namespace Steins
 			return actualExtent;
 		}
 	}
-//	void VulkanSwapChain::recordCommandBuffer(VkCommandBuffer _commandBuffer, UInt32 _imageIndex)
+//	void VulkanSwapchain::recordCommandBuffer(VkCommandBuffer _commandBuffer, UInt32 _imageIndex)
 //	{
 //		VkCommandBufferBeginInfo beginInfo{};
 //		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;

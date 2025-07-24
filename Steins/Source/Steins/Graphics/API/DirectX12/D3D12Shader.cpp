@@ -106,7 +106,8 @@ namespace Steins
 
 		// 셰이더 입력 시그니처 정보 얻기
 		D3D12_SHADER_DESC shaderDesc;
-		reflection->GetDesc(&shaderDesc);
+		hr = reflection->GetDesc(&shaderDesc);
+		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to get shader description")
 
 		// 각 입력 파라미터에 대해 순회
 		if (shaderType == ShaderType::Vertex)

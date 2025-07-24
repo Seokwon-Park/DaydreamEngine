@@ -5,7 +5,7 @@
 namespace Steins
 {
 	class SteinsWindow;
-	struct SwapChainSpecification
+	struct SwapchainDesc
 	{
 		UInt32 width = 0;
 		UInt32 height = 0;
@@ -15,23 +15,23 @@ namespace Steins
 		bool isVSync = false;
 	};
 
-	class SwapChain
+	class Swapchain
 	{
 	public:
-		virtual ~SwapChain() = default;
+		virtual ~Swapchain() = default;
 
 		bool GetVSync() const { return desc.isVSync; }
 		virtual void SetVSync(bool _enabled) = 0;
 
 		virtual void SwapBuffers() = 0;
-		virtual void ResizeSwapChain(UInt32 _width, UInt32 height) = 0;
+		virtual void ResizeSwapchain(UInt32 _width, UInt32 height) = 0;
 
 		virtual void BeginFrame() = 0;
 		virtual void EndFrame() = 0;
 		
 		virtual Framebuffer* GetBackFramebuffer() = 0;
-		static Shared<SwapChain> Create(SwapChainSpecification* _desc, SteinsWindow* _window);
+		static Shared<Swapchain> Create(SteinsWindow* _window, const SwapchainDesc& _desc);
 	protected:
-		SwapChainSpecification desc;
+		SwapchainDesc desc;
 	};
 }

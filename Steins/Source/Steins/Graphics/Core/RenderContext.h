@@ -6,7 +6,7 @@ namespace Steins
 {
 	class RenderDevice;
 
-	class GraphicsContext
+	class RenderContext
 	{
 	public:
 		virtual void Init() = 0;
@@ -20,7 +20,7 @@ namespace Steins
 			_framebuffer->Begin();
 		}
 
-		static Shared<GraphicsContext> Create(RenderDevice* _device);
+		static Shared<RenderContext> Create(RenderDevice* _device);
 	protected:
 	private:
 		Shared<Framebuffer> currentFramebuffer;

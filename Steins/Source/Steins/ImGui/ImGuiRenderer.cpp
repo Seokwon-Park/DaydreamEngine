@@ -57,6 +57,6 @@ namespace Steins
 	void ImGuiRenderer::Render()
 	{
 		ImGui::Render();
-		//mainWindow->GetSwapChain()->GetBackFramebuffer()->Bind();
+		//mainWindow->GetSwapchain()->GetBackFramebuffer()->Bind();
 	}		
 }

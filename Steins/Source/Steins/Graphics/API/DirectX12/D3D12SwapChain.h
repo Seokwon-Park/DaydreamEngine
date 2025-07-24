@@ -1,21 +1,21 @@
 #pragma once
 
-#include "Steins/Graphics/Core/SwapChain.h"
+#include "Steins/Graphics/Core/Swapchain.h"
 #include "D3D12RenderDevice.h"
 #include "D3D12Framebuffer.h"
 
 
 namespace Steins
 {
-	class D3D12SwapChain : public SwapChain
+	class D3D12Swapchain : public Swapchain
 	{
 	public:
-		D3D12SwapChain(RenderDevice* _device, SwapChainSpecification* _desc, SteinsWindow* _window);
-		virtual ~D3D12SwapChain() override;
+		D3D12Swapchain(RenderDevice* _device, SteinsWindow* _window, const SwapchainDesc& _desc);
+		virtual ~D3D12Swapchain() override;
 
 		virtual void SetVSync(bool _enabled) override;
 		virtual void SwapBuffers() override;
-		virtual void ResizeSwapChain(UInt32 _width, UInt32 height) override;
+		virtual void ResizeSwapchain(UInt32 _width, UInt32 height) override;
 
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
@@ -27,7 +27,7 @@ namespace Steins
 
 		UInt32 GetBackbufferIndex() { return frameIndex; }
 
-		inline IDXGISwapChain3* GetDXGISwapChain() { return swapChain.Get(); }
+		inline IDXGISwapChain3* GetDXGISwapchain() { return swapChain.Get(); }
 	private:
 		D3D12RenderDevice* device;
 		ComPtr<IDXGISwapChain3> swapChain;

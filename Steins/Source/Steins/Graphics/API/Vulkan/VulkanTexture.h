@@ -8,7 +8,7 @@ namespace Steins
 	class VulkanTexture2D :public Texture2D
 	{
 	public:
-		VulkanTexture2D(VulkanRenderDevice* _device, const FilePath& _path);
+		VulkanTexture2D(VulkanRenderDevice* _device, const FilePath& _path, const TextureDesc& _desc);
 		virtual ~VulkanTexture2D();
 
 		virtual void* GetNativeHandle() override { return descriptorSet; }

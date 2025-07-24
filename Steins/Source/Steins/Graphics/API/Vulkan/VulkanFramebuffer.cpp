@@ -1,6 +1,6 @@
 #include "SteinsPCH.h"
 #include "VulkanFramebuffer.h"
-#include "VulkanSwapChain.h"
+#include "VulkanSwapchain.h"
 
 
 namespace Steins
@@ -9,7 +9,7 @@ namespace Steins
 	{
 		device = _device;
 	}
-	VulkanFramebuffer::VulkanFramebuffer(VulkanRenderDevice* _device, VulkanSwapChain* _swapChain)
+	VulkanFramebuffer::VulkanFramebuffer(VulkanRenderDevice* _device, VulkanSwapchain* _swapChain)
 	{
 		device = _device;
 		extent = _swapChain->GetExtent();
@@ -44,12 +44,12 @@ namespace Steins
 		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create renderpass!");
 
 		UInt32 swapChainImageCount = 0;
-		vkGetSwapchainImagesKHR(device->GetDevice(), _swapChain->GetVKSwapChain(), &swapChainImageCount, nullptr);
+		vkGetSwapchainImagesKHR(device->GetDevice(), _swapChain->GetVKSwapchain(), &swapChainImageCount, nullptr);
 		colorImages.resize(swapChainImageCount);
-		vkGetSwapchainImagesKHR(device->GetDevice(), _swapChain->GetVKSwapChain(), &swapChainImageCount, colorImages.data());
+		vkGetSwapchainImagesKHR(device->GetDevice(), _swapChain->GetVKSwapchain(), &swapChainImageCount, colorImages.data());
 
 		colorImageViews.resize(1);
-		device->CreateImageView(colorImages[_swapChain->GetBackbufferIndex()], VK_FORMAT_R8G8B8A8_UNORM, colorImageViews[0]);
+		device->CreateImageView(colorImages[_swapChain->GetBackbufferIndex()], _swapChain->GetFormat(), colorImageViews[0]);
 		
 		VkFramebufferCreateInfo framebufferInfo{};
 		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;

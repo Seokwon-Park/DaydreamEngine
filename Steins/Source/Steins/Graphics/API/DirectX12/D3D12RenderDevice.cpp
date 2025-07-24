@@ -1,10 +1,10 @@
 #include "SteinsPCH.h"
 #include "D3D12RenderDevice.h"
 #include "D3D12Buffer.h"
-#include "D3D12GraphicsContext.h"
+#include "D3D12RenderContext.h"
 #include "D3D12Framebuffer.h"
 #include "D3D12Shader.h"
-#include "D3D12SwapChain.h"
+#include "D3D12Swapchain.h"
 #include "D3D12PipelineState.h"
 #include "D3D12ImGuiRenderer.h"
 #include "D3D12Texture.h"
@@ -168,7 +168,7 @@ namespace Steins
 		//swapDesc.OutputWindow = hwnd;
 		//swapDesc.Windowed = TRUE;
 		//swapDesc.SampleDesc.Count = 1;
-		//dxgiFactory->CreateSwapChain(commandQueue.Get(), &swapDesc, &swapChain);
+		//dxgiFactory->CreateSwapchain(commandQueue.Get(), &swapDesc, &swapChain);
 
 	}
 
@@ -180,7 +180,7 @@ namespace Steins
 	{
 	}
 
-	Shared<GraphicsContext> D3D12RenderDevice::CreateContext()
+	Shared<RenderContext> D3D12RenderDevice::CreateContext()
 	{
 		return MakeShared<D3D12GraphicsContext>(this);
 	}
@@ -205,7 +205,7 @@ namespace Steins
 		return MakeShared<D3D12Framebuffer>(this, _spec);
 	}
 
-	Shared<PipelineState> D3D12RenderDevice::CreatePipelineState(PipelineStateDesc _desc)
+	Shared<PipelineState> Steins::D3D12RenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)
 	{
 		return MakeShared<D3D12PipelineState>(this, _desc);
 	}
@@ -215,14 +215,14 @@ namespace Steins
 		return MakeShared<D3D12Shader>(this, _src, _type, _mode);
 	}
 
-	Shared<SwapChain> D3D12RenderDevice::CreateSwapChain(SwapChainSpecification* _desc, SteinsWindow* _window)
+	Shared<Swapchain> Steins::D3D12RenderDevice::CreateSwapchain(SteinsWindow* _window, const SwapchainDesc& _desc)
 	{
-		return MakeShared<D3D12SwapChain>(this, _desc, _window);
+		return MakeShared<D3D12Swapchain>(this, _window, _desc);
 	}
 
-	Shared<Texture2D> D3D12RenderDevice::CreateTexture2D(const FilePath& _path)
+	Shared<Texture2D> Steins::D3D12RenderDevice::CreateTexture2D(const FilePath& _path, const TextureDesc& _desc)
 	{
-		return MakeShared<D3D12Texture2D>(this, _path);
+		return MakeShared<D3D12Texture2D>(this, _path, _desc);
 	}
 
 	Unique<ImGuiRenderer> D3D12RenderDevice::CreateImGuiRenderer()

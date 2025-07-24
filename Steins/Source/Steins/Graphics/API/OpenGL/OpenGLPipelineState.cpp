@@ -41,14 +41,14 @@ namespace Steins
 			glVertexArrayAttribFormat(vao, inputDataIndex,
 				info.count,
 				RenderFormatToOpenGLBaseType(info.format),
-				GL_TRUE,
+				GL_FALSE,
 				offset);
-			offset += info.size;
 			glVertexArrayAttribBinding(vao, inputDataIndex, 0);
+			offset += info.size;
 			inputDataIndex++;
 		}
 
-		glVertexArrayBindingDivisor(vao, 0, 0);
+		//glVertexArrayBindingDivisor(vao, 0, 0);
 
 		glCreateProgramPipelines(1, &pipeline);
 		glBindProgramPipeline(pipeline);

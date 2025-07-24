@@ -33,14 +33,14 @@ namespace Steins
 
 	void Renderer::RegisterWindow(std::string _name, SteinsWindow* _window)
 	{
-		Get().renderDevice->CreateSwapChainForWnd(_window);
+		Get().renderDevice->CreateSwapchainForWnd(_window);
 		Get().windows.insert({ _name, _window });
 	}
 
 	void Renderer::OnWindowResize(UInt32 _width, UInt32 _height)
 	{
 		RenderCommand::SetViewport(_width, _height);
-		Get().currentWindow->GetSwapChain()->ResizeSwapChain(_width, _height);
+		Get().currentWindow->GetSwapchain()->ResizeSwapchain(_width, _height);
 	}
 
 	void Renderer::BeginScene(const OrthographicCamera& camera)

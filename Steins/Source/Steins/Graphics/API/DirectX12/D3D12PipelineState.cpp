@@ -164,7 +164,7 @@ namespace Steins
 		desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 		desc.NumRenderTargets = 1;
 		desc.SampleDesc = sampleDesc;
-		desc.InputLayout.NumElements = inputLayoutDesc.size();
+		desc.InputLayout.NumElements = static_cast<UInt32>(inputLayoutDesc.size());
 		desc.InputLayout.pInputElementDescs = inputLayoutDesc.data();
 		desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		desc.SampleMask = UINT_MAX;

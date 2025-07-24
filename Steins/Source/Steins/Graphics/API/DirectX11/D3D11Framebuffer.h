@@ -6,13 +6,13 @@
 
 namespace Steins
 {
-	class D3D11SwapChain;
+	class D3D11Swapchain;
 
 	class D3D11Framebuffer : public Framebuffer
 	{
 	public:
 		D3D11Framebuffer(D3D11RenderDevice* _device, const FramebufferDesc& _spec);
-		D3D11Framebuffer(D3D11RenderDevice* _device, D3D11SwapChain* _swapChain);
+		D3D11Framebuffer(D3D11RenderDevice* _device, D3D11Swapchain* _swapChain);
 		virtual ~D3D11Framebuffer() override;
 
 		virtual void Begin() const override;

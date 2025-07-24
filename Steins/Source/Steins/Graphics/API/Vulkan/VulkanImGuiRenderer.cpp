@@ -1,6 +1,6 @@
 #include "SteinsPCH.h"
 #include "VulkanImGuiRenderer.h"
-#include "VulkanSwapChain.h"
+#include "VulkanSwapchain.h"
 
 #include "backends/imgui_impl_vulkan.h"
 

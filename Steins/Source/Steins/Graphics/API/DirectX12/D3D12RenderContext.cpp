@@ -1,5 +1,5 @@
 #include "SteinsPCH.h"
-#include "D3D12GraphicsContext.h"
+#include "D3D12RenderContext.h"
 
 namespace Steins
 {

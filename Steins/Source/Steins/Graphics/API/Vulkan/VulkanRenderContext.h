@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Steins/Graphics/Core/GraphicsContext.h"
+#include "Steins/Graphics/Core/RenderContext.h"
 #include "VulkanRenderDevice.h"
 
 namespace Steins
 {
-	class VulkanGraphicsContext : public GraphicsContext
+	class VulkanGraphicsContext : public RenderContext
 	{
 	public:
 		VulkanGraphicsContext(VulkanRenderDevice* _device);

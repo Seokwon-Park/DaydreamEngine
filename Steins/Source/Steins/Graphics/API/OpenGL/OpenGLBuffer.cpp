@@ -22,7 +22,7 @@ namespace Steins {
 	{
 		stride = _stride;
 		glCreateBuffers(1, &bufferID);
-		glNamedBufferData(bufferID, _size, _vertices, GL_DYNAMIC_DRAW);
+		glNamedBufferData(bufferID, _size, _vertices, GL_STATIC_DRAW);
 	}
 
 	OpenGLVertexBuffer::~OpenGLVertexBuffer()
@@ -35,7 +35,7 @@ namespace Steins {
 		//glBindBuffer(GL_ARRAY_BUFFER, bufferID);
 		GLint currentVAO = 0; // 결과를 저장할 변수
 		glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &currentVAO);
-		glVertexArrayVertexBuffer(currentVAO, 0, bufferID, 0,stride);
+		glVertexArrayVertexBuffer(currentVAO, 0, bufferID, 0, stride);
 	}
 
 	void OpenGLVertexBuffer::Unbind() const
@@ -92,11 +92,11 @@ namespace Steins {
 		glDeleteBuffers(1, &bufferID);
 	}
 
-	void OpenGLConstantBuffer::Bind(UInt32 _slot) const
-	{
-		glBindBufferBase(GL_UNIFORM_BUFFER, 0, bufferID);
+	//void OpenGLConstantBuffer::Bind(UInt32 _slot) const
+	//{
+	//	glBindBufferBase(GL_UNIFORM_BUFFER, 0, bufferID);
 
-	}
+	
 	void OpenGLConstantBuffer::Update(const void* _data, UInt32 _size)
 	{
 		glNamedBufferSubData(bufferID, 0, _size, _data);

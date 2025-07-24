@@ -5,13 +5,13 @@
 
 namespace Steins
 {
-	class D3D12SwapChain;
+	class D3D12Swapchain;
 
 	class D3D12Framebuffer : public Framebuffer
 	{
 	public:
 		D3D12Framebuffer(D3D12RenderDevice* _device, const FramebufferDesc& _spec);
-		D3D12Framebuffer(D3D12RenderDevice* _device, D3D12SwapChain* _swapChain);
+		D3D12Framebuffer(D3D12RenderDevice* _device, D3D12Swapchain* _swapChain);
 		virtual ~D3D12Framebuffer() override {};
 
 		virtual void Begin() const override;
@@ -22,7 +22,7 @@ namespace Steins
 
 	private:
 		D3D12RenderDevice* device;
-		D3D12SwapChain* swapChain;
+		D3D12Swapchain* swapChain;
 		Array<D3D12_CPU_DESCRIPTOR_HANDLE> renderTargetHandles; 
 		D3D12_CPU_DESCRIPTOR_HANDLE depthStencilHandle; 
 		Array<ComPtr<ID3D12Resource>> renderTargets;

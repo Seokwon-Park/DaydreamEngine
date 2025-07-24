@@ -100,7 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\EditorLayer.cpp" />
-    <ClCompile Include="Source\SteinsEditorApp.cpp" />
+    <ClCompile Include="Source\EditorApp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Steins\Steins.vcxproj">

@@ -42,7 +42,7 @@ namespace Steins
 	public:
 		D3D12ConstantBuffer(D3D12RenderDevice* _device, UInt32 _size);
 
-		virtual void Bind(UInt32 _slot) const override;
+		//virtual void Bind(UInt32 _slot) const override;
 
 		virtual void Update(const void* _data, UInt32 _size) override;
 

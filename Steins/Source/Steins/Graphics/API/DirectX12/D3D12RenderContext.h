@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Steins/Graphics/Core/GraphicsContext.h"
+#include "Steins/Graphics/Core/RenderContext.h"
 
 #include "D3D12RenderDevice.h"
 
 namespace Steins
 {
-	class D3D12GraphicsContext: public GraphicsContext
+	class D3D12GraphicsContext: public RenderContext
 	{
 	public:
 		D3D12GraphicsContext(D3D12RenderDevice* _device);

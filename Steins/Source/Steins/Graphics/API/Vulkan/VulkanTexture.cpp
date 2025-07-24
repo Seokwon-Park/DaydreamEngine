@@ -6,11 +6,10 @@
 
 namespace Steins
 {
-	VulkanTexture2D::VulkanTexture2D(VulkanRenderDevice* _device, const FilePath& _path)
+	VulkanTexture2D::VulkanTexture2D(VulkanRenderDevice* _device, const FilePath& _path, const TextureDesc& _desc)
 		:Texture2D(_path)
 	{
 		device = _device;
-
 
 		data = stbi_load(_path.ToString().c_str(), &width, &height, &channels, STBI_rgb_alpha);
 		STEINS_CORE_ASSERT(data, "Failed to load image!");
@@ -67,6 +66,7 @@ namespace Steins
 		//samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
 		descriptorSet = ImGui_ImplVulkan_AddTexture(textureSampler, textureImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		
 
 		//{
 		//	VkDescriptorSetAllocateInfo allocInfo = {};

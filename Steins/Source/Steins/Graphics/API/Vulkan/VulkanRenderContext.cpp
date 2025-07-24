@@ -1,5 +1,5 @@
 #include "SteinsPCH.h"
-#include "VulkanGraphicsContext.h"
+#include "VulkanRenderContext.h"
 
 
 namespace Steins

@@ -15,6 +15,7 @@ namespace Steins
 		static void Shutdown();
 		static void RegisterWindow(std::string _name, SteinsWindow* _window);
 		static void SetWindow(SteinsWindow* _window) { Get().currentWindow = _window; }
+		static void SetWindow(String _name) { Get().currentWindow = Get().windows[_name]; }
 		static void OnWindowResize(UInt32 _width, UInt32 _height);
 		
 		static void BeginScene(const OrthographicCamera& camera);

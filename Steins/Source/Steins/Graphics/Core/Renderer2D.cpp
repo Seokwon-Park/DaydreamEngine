@@ -68,7 +68,7 @@ namespace Steins
 	}
 	void Renderer2D::EndScene()
 	{
-		data.quadVertexBuffer->SetData(data.quadVertexBufferBase, (data.quadVertexBufferPtr - data.quadVertexBufferBase) * sizeof(QuadVertex));
+		data.quadVertexBuffer->SetData(data.quadVertexBufferBase, (data.quadVertexBufferPtr - data.quadVertexBufferBase) * (UInt32)sizeof(QuadVertex));
 		data.quadVertexBuffer->Bind();
 		data.quadIndexBuffer->Bind();
 		RenderCommand::DrawIndexed(data.quadIndexCount);

@@ -116,13 +116,13 @@ namespace Steins
 
 				ShaderReflectionInfo sr{};
 				sr.name = compiler.get_name(resource.id);
-				sr.set = compiler.get_decoration(resource.id, spv::DecorationLocation);
-				sr.binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
+				sr.binding = compiler.get_decoration(resource.id, spv::DecorationLocation);
 				sr.shaderResourceType = ShaderResourceType::Input;
 
 				UInt32 componentCount = spirType.vecsize;
 				spirv_cross::SPIRType::BaseType baseType = spirType.basetype;
 				sr.format = GraphicsUtil::ConvertSPIRVTypeToRenderFormat(baseType, componentCount);
+				sr.count = componentCount;
 				sr.size = GraphicsUtil::GetRenderFormatSize(sr.format);
 				sr.shaderType = shaderType;
 

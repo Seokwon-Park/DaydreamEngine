@@ -120,11 +120,6 @@ namespace Steins
 		vkFreeMemory(device->GetDevice(), constantBufferMemory, nullptr);
 	}
 
-	void Steins::VulkanConstantBuffer::Bind(UInt32 _slot) const
-	{
-		
-	}
-
 	void VulkanConstantBuffer::Update(const void* _data, UInt32 _size)
 	{
 		memcpy(data, _data, _size);
