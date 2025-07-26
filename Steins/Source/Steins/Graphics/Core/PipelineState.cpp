@@ -21,6 +21,8 @@ namespace Steins
 		if (hullShader != nullptr)shaders.push_back(hullShader);
 		if (domainShader != nullptr)shaders.push_back(domainShader);
 		if (geometryShader != nullptr)shaders.push_back(geometryShader);
+
+		renderPass = _desc.renderPass;
 	}
 
 	Shared<PipelineState> Steins::PipelineState::Create(const PipelineStateDesc& _desc)

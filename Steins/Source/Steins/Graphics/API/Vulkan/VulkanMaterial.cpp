@@ -43,8 +43,7 @@ namespace Steins
 		if (bindingMap.find(_name) != bindingMap.end())
 		{
 			auto resourceInfo = bindingMap[_name];
-
-			VulkanTexture2D* texture = Cast<VulkanTexture2D>(_texture.get());
+			Shared<VulkanTexture2D> texture = static_pointer_cast<VulkanTexture2D>(_texture);
 			VkDescriptorImageInfo imageInfo{};
 			imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 			imageInfo.imageView = texture->GetImageView();
@@ -68,7 +67,7 @@ namespace Steins
 			auto resourceInfo = bindingMap[_name];
 			if (resourceInfo.shaderResourceType != ShaderResourceType::ConstantBuffer) return;
 
-			VulkanConstantBuffer* buffer = Cast<VulkanConstantBuffer>(_buffer.get());
+			Shared<VulkanConstantBuffer> buffer = static_pointer_cast<VulkanConstantBuffer>(_buffer);
 			VkDescriptorBufferInfo bufferInfo{};
 			bufferInfo.buffer = (VkBuffer)_buffer->GetNativeHandle();
 			bufferInfo.offset = 0;

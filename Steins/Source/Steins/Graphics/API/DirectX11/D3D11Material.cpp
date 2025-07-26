@@ -36,6 +36,7 @@ namespace Steins
 			}
 		}
 	}
+
 	//TODO:
 	void D3D11Material::Bind()
 	{
@@ -44,12 +45,14 @@ namespace Steins
 			if (texture == nullptr) continue;
 			auto resourceInfo = bindingMap[name];
 			STEINS_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX11, "Wrong API!");
-			Shared<D3D11Texture2D> inTex = static_pointer_cast<D3D11Texture2D>(texture);
+			Shared<D3D11Texture2D> d3d11Tex = static_pointer_cast<D3D11Texture2D>(texture);
 			switch (bindingMap[name].shaderType)
 			{
 			case Steins::ShaderType::None:
+				STEINS_CORE_ASSERT(false, "ERROR");
 				break;
 			case Steins::ShaderType::Vertex:
+				device->GetContext()->VSSetShaderResources(resourceInfo.binding, 1, d3d11Tex->GetSRV().GetAddressOf());
 				break;
 			case Steins::ShaderType::Hull:
 				break;
@@ -58,7 +61,7 @@ namespace Steins
 			case Steins::ShaderType::Geometry:
 				break;
 			case Steins::ShaderType::Pixel:
-				device->GetContext()->PSSetShaderResources(resourceInfo.binding, 1, inTex->GetSRV().GetAddressOf());
+				device->GetContext()->PSSetShaderResources(resourceInfo.binding, 1, d3d11Tex->GetSRV().GetAddressOf());
 				break;
 			case Steins::ShaderType::Compute:
 				break;
@@ -73,13 +76,13 @@ namespace Steins
 			auto resourceInfo = bindingMap[name];
 			//ID3D11Buffer* buffer = Cast<ID3D11Buffer>(cbuffer->GetNativeHandle());
 			STEINS_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX11, "Wrong API!");
-			auto buffer = static_pointer_cast<D3D11ConstantBuffer>(cbuffer);
+			auto d3d11Buffer = static_pointer_cast<D3D11ConstantBuffer>(cbuffer);
 			switch (bindingMap[name].shaderType)
 			{
 			case Steins::ShaderType::None:
 				break;
 			case Steins::ShaderType::Vertex:
-				device->GetContext()->VSSetConstantBuffers(resourceInfo.binding, 1, buffer->GetBuffer().GetAddressOf());
+				device->GetContext()->VSSetConstantBuffers(resourceInfo.binding, 1, d3d11Buffer->GetBuffer().GetAddressOf());
 				break;
 			case Steins::ShaderType::Hull:
 				break;

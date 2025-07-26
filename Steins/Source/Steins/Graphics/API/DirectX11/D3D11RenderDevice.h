@@ -19,7 +19,8 @@ namespace Steins
 		virtual Shared<VertexBuffer> CreateDynamicVertexBuffer(UInt32 _bufferSize, UInt32 _stride) override;
 		virtual Shared<VertexBuffer> CreateStaticVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride) override;
 		virtual Shared<IndexBuffer> CreateIndexBuffer(UInt32* _indices, UInt32 _count) override;
-		virtual Shared<Framebuffer> CreateFramebuffer(FramebufferDesc _spec)override;
+		virtual Shared<RenderPass> CreateRenderPass(const RenderPassDesc& _desc) override;
+		virtual Shared<Framebuffer> CreateFramebuffer(const FramebufferDesc& _desc) override;
 		virtual Shared<PipelineState> CreatePipelineState(const PipelineStateDesc& _desc)override;
 		virtual Shared<Shader> CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode) override;
 		virtual Shared<Swapchain> CreateSwapchain(SteinsWindow* _window, const SwapchainDesc& _desc)override;

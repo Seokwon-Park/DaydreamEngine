@@ -25,6 +25,7 @@ private:
 	Steins::Shared<Steins::Texture2D> texture;
 
 	Steins::Shared<Steins::Material> material;
+	Steins::Shared<Steins::Framebuffer> framebuffer;
 
 	//Steins::OrthographicCamera camera = Steins::OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f);
 	Steins::Camera camera = Steins::Camera();

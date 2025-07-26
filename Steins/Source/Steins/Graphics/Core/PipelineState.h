@@ -4,6 +4,7 @@
 #include "Steins/Graphics/Resources/Buffer.h"
 #include "Steins/Graphics/Resources/Texture.h"
 #include "Steins/Graphics/Resources/Material.h"
+#include "Steins/Graphics/Core/RenderPass.h"
 
 namespace Steins
 {
@@ -49,6 +50,7 @@ namespace Steins
 		BufferLayout inputLayout;
 		//InputLayoutDesc inputLayout;
 		//Shared<ResourceBindingLayout> resourceBindingLayout; // RootSignature/PipelineLayout
+		Shared<RenderPass> renderPass;
 		RasterizerStateDesc rasterizerState;
 		//BlendDesc blendState;
 		//DepthStencilDesc depthStencilState;
@@ -76,10 +78,9 @@ namespace Steins
 		Shared<Shader> domainShader;
 		Shared<Shader> geometryShader;
 		Shared<Shader> pixelShader;
+		Shared<RenderPass> renderPass;
 
 		Array<Shared<Shader>> shaders;
-
-		//root signature??
 
 		//rtv, dsv;
 		//blend, rast, ds;

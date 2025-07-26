@@ -43,15 +43,17 @@ namespace Steins
 		for (auto [name, texture] : textures)
 		{
 			if (texture == nullptr) continue;
-			D3D12_GPU_DESCRIPTOR_HANDLE handle{};
-			handle.ptr = reinterpret_cast<UINT64>(texture->GetNativeHandle());
-			device->GetCommandList()->SetGraphicsRootDescriptorTable(bindingMap[name].set, handle);
+			STEINS_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
+			Shared<D3D12Texture2D> d3d12Tex = static_pointer_cast<D3D12Texture2D>(texture);
+			device->GetCommandList()->SetGraphicsRootDescriptorTable(bindingMap[name].set, d3d12Tex->GetSRVGPUHandle());
 		}
 
 		for (auto [name, cbuffer] : cbuffers)
 		{
 			if (cbuffer== nullptr) continue;
-			device->GetCommandList()->SetGraphicsRootConstantBufferView(bindingMap[name].set, Cast<ID3D12Resource>(cbuffer->GetNativeHandle())->GetGPUVirtualAddress());
+			STEINS_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
+			Shared<D3D12ConstantBuffer> d3d12Buffer= static_pointer_cast<D3D12ConstantBuffer>(cbuffer);
+			device->GetCommandList()->SetGraphicsRootConstantBufferView(bindingMap[name].set, d3d12Buffer->GetGPUVirtualAddress());
 		}
 	}
 	void D3D12Material::SetTexture2D(const std::string& _name, Shared<Texture2D> _texture)

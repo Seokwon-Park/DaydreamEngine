@@ -1,39 +1,100 @@
 #include "SteinsPCH.h"
 #include "VulkanTexture.h"
 
-#include "stb_image.h"
+#include "Steins/Graphics/Utility/GraphicsUtil.h"
+#include "Steins/Graphics/Utility/ImageLoader.h"
 #include "backends/imgui_impl_vulkan.h"
 
 namespace Steins
 {
+	VulkanTexture2D::VulkanTexture2D(VulkanRenderDevice* _device, const TextureDesc& _desc)
+	{
+		device = _device;
+		desc = _desc;
+
+		width = _desc.width;
+		height = _desc.height;
+		imageSize = width * height * 4;
+		imageFormat = GraphicsUtil::RenderFormatToVkFormat(_desc.format);
+
+		device->CreateImage(
+			width,
+			height,
+			imageFormat,
+			VK_IMAGE_TILING_OPTIMAL,
+			GraphicsUtil::ConvertToVkImageUsageFlags(_desc.bindFlags),
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+			textureImage,
+			textureImageMemory);
+
+		device->TransitionTextureLayout(textureImage, imageFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+		device->CreateImageView(textureImage, imageFormat, textureImageView);
+
+		CreateSampler();
+	}
+
 	VulkanTexture2D::VulkanTexture2D(VulkanRenderDevice* _device, const FilePath& _path, const TextureDesc& _desc)
 		:Texture2D(_path)
 	{
 		device = _device;
 
-		data = stbi_load(_path.ToString().c_str(), &width, &height, &channels, STBI_rgb_alpha);
-		STEINS_CORE_ASSERT(data, "Failed to load image!");
+		Array<UInt8> imageData = ImageLoader::LoadImageFile(_path, width, height, channels);
+		STEINS_CORE_ASSERT(!imageData.empty(), "Failed to load image!");
 		imageSize = width * height * 4;
-		device->CreateBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, uploadBuffer, uploadBufferMemory);
+
+		device->CreateBuffer(
+			imageSize,
+			VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+			uploadBuffer,
+			uploadBufferMemory);
 
 		void* pixelData;
 		vkMapMemory(device->GetDevice(), uploadBufferMemory, 0, imageSize, 0, &pixelData);
-		memcpy(pixelData, data, imageSize);
+		memcpy(pixelData, imageData.data(), imageSize);
 		vkUnmapMemory(device->GetDevice(), uploadBufferMemory);
 
-		stbi_image_free(data);
+		imageFormat = GraphicsUtil::RenderFormatToVkFormat(_desc.format);
+		device->CreateImage(
+			width,
+			height,
+			imageFormat,
+			VK_IMAGE_TILING_OPTIMAL,
+			GraphicsUtil::ConvertToVkImageUsageFlags(_desc.bindFlags),
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+			textureImage,
+			textureImageMemory);
 
-		device->CreateImage(width, height, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
-
-		device->TransitionTextureLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-
+		device->TransitionTextureLayout(textureImage, imageFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 		device->CopyBufferToImage(uploadBuffer, textureImage, width, height);
-		device->TransitionTextureLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-		device->CreateImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB, textureImageView);
+		device->TransitionTextureLayout(textureImage, imageFormat, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		device->CreateImageView(textureImage, imageFormat, textureImageView);
 
 		vkDestroyBuffer(device->GetDevice(), uploadBuffer, nullptr);
 		vkFreeMemory(device->GetDevice(), uploadBufferMemory, nullptr);
 
+		CreateSampler();
+
+		ImGuiDescriptorSet = ImGui_ImplVulkan_AddTexture(textureSampler, textureImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+	}
+
+	
+
+	VulkanTexture2D::VulkanTexture2D(VulkanRenderDevice* _device, VkImage _image)
+	{
+		device = _device;
+		textureImage = _image;
+		isSwapchainImage = true;
+
+		device->CreateImageView(textureImage, VK_FORMAT_R8G8B8A8_UNORM, textureImageView);
+
+		CreateSampler();
+
+		//ImGuiDescriptorSet = ImGui_ImplVulkan_AddTexture(textureSampler, textureImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+	}
+
+	void VulkanTexture2D::CreateSampler()
+	{
 		// sampler
 		VkPhysicalDeviceProperties properties{};
 		vkGetPhysicalDeviceProperties(device->GetGPU(), &properties);
@@ -57,48 +118,28 @@ namespace Steins
 
 		VkResult vr = vkCreateSampler(device->GetDevice(), &samplerInfo, nullptr, &textureSampler);
 		STEINS_CORE_ASSERT(vr == VK_SUCCESS, "failed to create texture sampler!");
-
-		//VkDescriptorSetLayoutBinding samplerLayoutBinding{};
-		//samplerLayoutBinding.binding = 1;
-		//samplerLayoutBinding.descriptorCount = 1;
-		//samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		//samplerLayoutBinding.pImmutableSamplers = nullptr;
-		//samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-
-		descriptorSet = ImGui_ImplVulkan_AddTexture(textureSampler, textureImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-		
-
-		//{
-		//	VkDescriptorSetAllocateInfo allocInfo = {};
-		//	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-		//	allocInfo.descriptorPool = device->GetDescriptorPool();
-		//	allocInfo.descriptorSetCount = 1;
-		//	//allocInfo.pSetLayouts = ;
-		//	VkResult err = vkAllocateDescriptorSets(device->GetDevice(), &allocInfo, &descriptorSet);
-		//}
-
-		//// Update the Descriptor Set:
-		//{
-		//	VkDescriptorImageInfo imageDesc{};
-		//	imageDesc.sampler = textureSampler;
-		//	imageDesc.imageView = textureImageView;
-		//	imageDesc.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		//	VkWriteDescriptorSet writeDesc{};
-		//	writeDesc.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		//	writeDesc.dstSet = descriptorSet;
-		//	writeDesc.descriptorCount = 1;
-		//	writeDesc.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		//	writeDesc.pImageInfo = &imageDesc;
-		//	vkUpdateDescriptorSets(device->GetDevice(), 1, &writeDesc, 0, nullptr);
-		//}
-
-
 	}
+
 	VulkanTexture2D::~VulkanTexture2D()
 	{
-		vkDestroySampler(device->GetDevice(), textureSampler, nullptr);
-		vkDestroyImageView(device->GetDevice(), textureImageView, nullptr);
-		vkDestroyImage(device->GetDevice(), textureImage, nullptr);
-		vkFreeMemory(device->GetDevice(), textureImageMemory, nullptr);
+		if (textureSampler != VK_NULL_HANDLE) vkDestroySampler(device->GetDevice(), textureSampler, nullptr);
+		if (textureImageView != VK_NULL_HANDLE) vkDestroyImageView(device->GetDevice(), textureImageView, nullptr);
+		if (!isSwapchainImage && textureImage != VK_NULL_HANDLE)
+		{
+			vkDestroyImage(device->GetDevice(), textureImage, nullptr);
+		}
+		if (!isSwapchainImage && textureImageMemory != VK_NULL_HANDLE) vkFreeMemory(device->GetDevice(), textureImageMemory, nullptr);
 	}
+
+	void* VulkanTexture2D::GetImGuiHandle()
+	{
+		if (ImGuiDescriptorSet != VK_NULL_HANDLE) return ImGuiDescriptorSet;
+		return ImGuiDescriptorSet = ImGui_ImplVulkan_AddTexture(textureSampler, textureImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+	}
+
+	VkImageView VulkanTexture2D::GetImageView()
+	{
+		return textureImageView;
+	}
+
 }

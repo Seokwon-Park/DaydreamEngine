@@ -24,6 +24,7 @@
 #include "Steins/Core/Logger.h"
 #include "Steins/Core/Assert.h"
 #include "Steins/Core/Core.h"
+#include "Steins/Enum/RendererEnums.h"
 #include "Base/Base.h"
 
 

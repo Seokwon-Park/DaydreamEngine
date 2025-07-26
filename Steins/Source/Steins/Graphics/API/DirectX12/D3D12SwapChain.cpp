@@ -62,23 +62,23 @@ namespace Steins
 			STEINS_CORE_ERROR("Failed to Create FenceEvent!");
 		}
 
-		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create swapChain!");
+		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create swapchain!");
 		device->GetCommandAllocator(frameIndex)->Reset();
 		device->GetCommandList()->Reset(device->GetCommandAllocator(frameIndex), nullptr);
-		ID3D12DescriptorHeap* heaps[] = { device->GetSRVHeap() };
+		ID3D12DescriptorHeap* heaps[] = { device->GetCBVSRVUAVHeap() };
 		device->GetCommandList()->SetDescriptorHeaps(1, heaps);
 		framebuffers[frameIndex]->Begin();
 		framebuffers[frameIndex]->Clear(Color(1.0f, 1.0f, 1.0f, 1.0f));
 
-		D3D12_RESOURCE_BARRIER barr{};
+		D3D12_RESOURCE_BARRIER barrier{};
 
-		barr.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		barr.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barr.Transition.pResource = framebuffers[frameIndex]->GetRenderTargets()[frameIndex].Get();
-		barr.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-		barr.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-		device->GetCommandList()->ResourceBarrier(1, &barr);
+		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barrier.Transition.pResource = framebuffers[frameIndex]->GetRenderTarget().Get();
+		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		device->GetCommandList()->ResourceBarrier(1, &barrier);
 	}
 	D3D12Swapchain::~D3D12Swapchain()
 	{
@@ -95,7 +95,7 @@ namespace Steins
 
 		barr.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 		barr.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barr.Transition.pResource = framebuffers[frameIndex]->GetRenderTargets()[0].Get();
+		barr.Transition.pResource = framebuffers[frameIndex]->GetRenderTarget().Get();
 		barr.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 		barr.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
@@ -129,12 +129,12 @@ namespace Steins
 		scissorRect.bottom = static_cast<LONG>(desc.height);
 		device->GetCommandList()->RSSetScissorRects(1, &scissorRect);
 
-		ID3D12DescriptorHeap* srvHeap = device->GetSRVHeap();
+		ID3D12DescriptorHeap* srvHeap = device->GetCBVSRVUAVHeap();
 		device->GetCommandList()->SetDescriptorHeaps(1, &srvHeap);
 
 		barr.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 		barr.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barr.Transition.pResource = framebuffers[frameIndex]->GetRenderTargets()[0].Get();
+		barr.Transition.pResource = framebuffers[frameIndex]->GetRenderTarget().Get();
 		barr.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 		barr.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;

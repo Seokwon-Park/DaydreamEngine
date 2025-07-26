@@ -68,10 +68,10 @@ project "Steins"
 		"GLFW",
 		"glad",
 		"ImGui",
-		"opengl32.lib",
 		"vulkan-1.lib",
 		"dxcompiler.lib",
 		"dxil.lib",
+		"opengl32.lib",
 	}
 
 	defines

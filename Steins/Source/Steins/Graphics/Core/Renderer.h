@@ -11,13 +11,18 @@ namespace Steins
 	class Renderer
 	{
 	public:
+		//Do not Call twice
 		static void Init(RendererAPIType _API);
 		static void Shutdown();
-		static void RegisterWindow(std::string _name, SteinsWindow* _window);
-		static void SetWindow(SteinsWindow* _window) { Get().currentWindow = _window; }
-		static void SetWindow(String _name) { Get().currentWindow = Get().windows[_name]; }
+		static void RegisterWindow(String _name, SteinsWindow* _window);
+		static void CreateSwapchainFor(SteinsWindow* _window);
+		static void SetCurrentWindow(SteinsWindow* _window) { instance->currentWindow = _window; }
+		static void SetCurrentWindow(String _name) { SetCurrentWindow(instance->windows[_name]); }
 		static void OnWindowResize(UInt32 _width, UInt32 _height);
 		
+		static void BeginSwapchainFramebuffer();
+		static void EndSwapchainFramebuffer();
+
 		static void BeginScene(const OrthographicCamera& camera);
 		static void EndScene();
 

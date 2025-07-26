@@ -30,12 +30,11 @@ namespace Steins
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
 
-		virtual Framebuffer* GetBackFramebuffer() { return framebuffers[imageIndex].get(); };
+		virtual Shared<Framebuffer> GetBackFramebuffer() { return framebuffers[imageIndex]; };
 
 		VkFormat GetFormat() const { return format; }
-		VkSwapchainKHR GetVKSwapchain() const { return swapChain; }
+		VkSwapchainKHR GetVKSwapchain() const { return swapchain; }
 		VkExtent2D GetExtent() const { return extent; }
-		UInt32 GetBackbufferIndex() const { return imageIndex; }
 
 	private:
 		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const Array<VkSurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat);
@@ -43,18 +42,19 @@ namespace Steins
 		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& _capabilities);
 
 		VulkanRenderDevice* device;
+		Array<VkCommandBuffer> commandBuffers;
 		Array<Shared<VulkanFramebuffer>> framebuffers;
 
 		VkSurfaceKHR surface; // Vulkan window surface
-		VkSwapchainKHR swapChain;
+		VkSwapchainKHR swapchain;
 		VkFormat format; // swapchain image format
 		VkExtent2D extent;
-		VkSemaphore imageAvailableSemaphore;
-		VkSemaphore renderFinishedSemaphore;
-		VkFence inFlightFence;
+		Array<VkSemaphore> imageAvailableSemaphores;
+		Array<VkSemaphore> renderFinishedSemaphores;
+		Array<VkFence> inFlightFences;
+		UInt32 imageCount;
 
-
-		//temp
+		UInt32 currentFrame = 0;
 		UInt32 imageIndex = 0;
 	};
 }

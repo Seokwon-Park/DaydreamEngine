@@ -19,7 +19,7 @@ namespace Steins
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
 
-		virtual Framebuffer* GetBackFramebuffer() { return framebuffer.get(); };
+		virtual Shared<Framebuffer> GetBackFramebuffer() { return framebuffer; };
 
 		inline IDXGISwapChain* GetDXGISwapchain() { return swapChain.Get(); }
 		

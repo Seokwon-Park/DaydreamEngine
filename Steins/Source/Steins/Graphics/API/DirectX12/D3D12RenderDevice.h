@@ -36,7 +36,7 @@ namespace Steins
 			freeIndices.clear();
 		}
 
-		void AllocCPU(D3D12_CPU_DESCRIPTOR_HANDLE* _outCpuDescriptorHandle)
+		void Alloc(D3D12_CPU_DESCRIPTOR_HANDLE* _outCpuDescriptorHandle)
 		{
 			STEINS_CORE_ASSERT(freeIndices.size() > 0, "");
 			int idx = freeIndices.back();
@@ -76,7 +76,8 @@ namespace Steins
 		virtual Shared<VertexBuffer> CreateDynamicVertexBuffer(UInt32 _bufferSize, UInt32 _stride) override;
 		virtual Shared<VertexBuffer> CreateStaticVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride) override;
 		virtual Shared<IndexBuffer> CreateIndexBuffer(UInt32* _indices, UInt32 _count) override;
-		virtual Shared<Framebuffer> CreateFramebuffer(FramebufferDesc _spec)override;
+		virtual Shared<RenderPass> CreateRenderPass(const RenderPassDesc& _desc) override;
+		virtual Shared<Framebuffer> CreateFramebuffer(const FramebufferDesc& _desc) override;
 		virtual Shared<PipelineState> CreatePipelineState(const PipelineStateDesc& _desc)override;
 		virtual Shared<Shader> CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode) override;
 		virtual Shared<Swapchain> CreateSwapchain(SteinsWindow* _window, const SwapchainDesc& _desc)override;
@@ -89,8 +90,13 @@ namespace Steins
 		ID3D12CommandQueue* GetCommandQueue() const { return commandQueue.Get(); }
 		ID3D12GraphicsCommandList* GetCommandList() const { return commandList.Get(); }
 		ID3D12CommandAllocator* GetCommandAllocator(UInt32 _index) const { return commandAllocators[_index].Get(); }
-		ID3D12DescriptorHeap* GetSRVHeap() const { return cbvSrvUavHeap.Get(); }
+		ID3D12DescriptorHeap* GetRTVHeap() const { return rtvHeap.Get(); }
+		ID3D12DescriptorHeap* GetDSVHeap() const { return dsvHeap.Get(); }
+		ID3D12DescriptorHeap* GetSamplerHeap() const { return samplerHeap.Get(); }
+		ID3D12DescriptorHeap* GetCBVSRVUAVHeap() const { return cbvSrvUavHeap.Get(); }
 		DescriptorHeapAllocator& GetRTVHeapAlloc() { return rtvHeapAlloc; }
+		DescriptorHeapAllocator& GetDSVHeapAlloc() { return dsvHeapAlloc; }
+		DescriptorHeapAllocator& GetSamplerHeapAlloc() { return rtvHeapAlloc; }
 		DescriptorHeapAllocator& GetCBVSRVUAVHeapAlloc() { return cbvSrvUavHeapAlloc; }
 		IDXGIFactory7* GetFactory() const { return dxgiFactory.Get(); }
 
@@ -104,14 +110,17 @@ namespace Steins
 		ComPtr<ID3D12CommandQueue> commandQueue;
 		ComPtr<ID3D12CommandAllocator> commandAllocators[2];
 
-		// ComPtr<ID3D12Resource> renderTargets;
 		ComPtr<ID3D12RootSignature> rootSignature;
 		ComPtr<ID3D12DescriptorHeap> rtvHeap;
+		ComPtr<ID3D12DescriptorHeap> dsvHeap;
+		ComPtr<ID3D12DescriptorHeap> samplerHeap;
 		ComPtr<ID3D12DescriptorHeap> cbvSrvUavHeap;
 		ComPtr<ID3D12PipelineState> pipelineState;
 		ComPtr<ID3D12GraphicsCommandList> commandList;
 
 		DescriptorHeapAllocator rtvHeapAlloc;
+		DescriptorHeapAllocator dsvHeapAlloc;      
+		DescriptorHeapAllocator samplerHeapAlloc;      
 		DescriptorHeapAllocator cbvSrvUavHeapAlloc;
 
 		ComPtr<IDXGIFactory7> dxgiFactory;

@@ -19,7 +19,7 @@ namespace Steins
 		info.RTVFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 		info.DSVFormat = DXGI_FORMAT_UNKNOWN;
 		info.UserData = device;
-		info.SrvDescriptorHeap = device->GetSRVHeap();
+		info.SrvDescriptorHeap = device->GetCBVSRVUAVHeap();
 		info.SrvDescriptorAllocFn = [](ImGui_ImplDX12_InitInfo* _info, D3D12_CPU_DESCRIPTOR_HANDLE* _outCpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE* _outGpuHandle)
 			{
 				((D3D12RenderDevice*)_info->UserData)->GetCBVSRVUAVHeapAlloc().Alloc(_outCpuHandle, _outGpuHandle);

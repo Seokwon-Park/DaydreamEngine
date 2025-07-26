@@ -28,6 +28,7 @@ namespace Steins
 		prop.title = _specification.Name;
 		prop.rendererAPI = _specification.rendererAPI;
 
+		//일단 프로그램 윈도우 생성
 		mainWindow = SteinsWindow::Create(prop);
 		if (mainWindow == nullptr)
 		{
@@ -44,9 +45,11 @@ namespace Steins
 		//testWindow = SteinsWindow::Create(prop);
 		//testWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
 		
+		//렌더러 초기화
 		Renderer::Init(_specification.rendererAPI);
+		//렌더러에 윈도우 
 		Renderer::RegisterWindow(prop.title, mainWindow.get());
-		Renderer::SetWindow(mainWindow.get());
+		Renderer::SetCurrentWindow(mainWindow.get());
 		//Renderer::RegisterWindow("TestWindow", testWindow.get());
 
 		imGuiLayer = new ImGuiLayer();
@@ -106,6 +109,8 @@ namespace Steins
 				layer->OnUpdate(deltaTime);
 			}
 
+			Renderer::BeginSwapchainFramebuffer();
+
 			imGuiLayer->BeginImGui();
 			{
 				for (Layer* layer : layerStack)
@@ -113,7 +118,7 @@ namespace Steins
 			}
 			imGuiLayer->EndImGui();
 
-
+			Renderer::EndSwapchainFramebuffer();
 			//auto [x, y] = Input::GetMousePosition();
 			////STEINS_CORE_TRACE("{0}, {1}", x, y);
 

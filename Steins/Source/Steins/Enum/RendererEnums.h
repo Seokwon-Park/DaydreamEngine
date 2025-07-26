@@ -12,6 +12,26 @@ namespace Steins
 		Metal
 	};
 
+	enum class RenderBindFlags
+	{
+		Unknown = 0,
+		ShaderResource = 1 << 0,
+		RenderTarget = 1 << 1,
+		DepthStencil = 1 << 2,
+		UnorderedAccess = 1 << 3,
+		VertexBuffer = 1 << 4,
+		IndexBuffer = 1 << 5,
+		ConstantBuffer = 1 << 6,
+		StreamOutput = 1 << 7,
+		TransferSource = 1 << 8,
+		TransferDestination = 1 << 9,
+	};
+
+	inline RenderBindFlags operator|(RenderBindFlags a, RenderBindFlags b)
+	{
+		return static_cast<RenderBindFlags>(static_cast<int>(a) | static_cast<int>(b));
+	}
+
 	enum class ShaderType
 	{
 		None,

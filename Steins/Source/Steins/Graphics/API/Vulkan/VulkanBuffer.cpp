@@ -12,9 +12,6 @@ namespace Steins
 
 		device->CreateBuffer(_bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
 			vertexBuffer, vertexBufferMemory);
-
-
-
 	}
 
 	VulkanVertexBuffer::VulkanVertexBuffer(VulkanRenderDevice* _device, void* _vertices, UInt32 _size, UInt32 _stride)

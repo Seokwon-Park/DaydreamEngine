@@ -360,7 +360,7 @@
     <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanShader.h">
       <Filter>Source\Steins\Graphics\API\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapChain.h">
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapchain.h">
       <Filter>Source\Steins\Graphics\API\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanTexture.h">
@@ -1716,6 +1716,7 @@
     <ClInclude Include="Vendor\stb\stb_image.h">
       <Filter>Vendor\stb</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Steins\Graphics\Utility\ImageLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -1898,7 +1899,7 @@
     <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanShader.cpp">
       <Filter>Source\Steins\Graphics\API\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapChain.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapchain.cpp">
       <Filter>Source\Steins\Graphics\API\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanTexture.cpp">
@@ -1988,5 +1989,6 @@
     <ClCompile Include="Vendor\stb\stb_image.cpp">
       <Filter>Vendor\stb</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Steins\Graphics\Utility\ImageLoader.cpp" />
   </ItemGroup>
 </Project>

@@ -56,8 +56,22 @@ Sandbox2D::Sandbox2D()
 	viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
 
 	auto path = Steins::FilePath("F:/SteinsReboot/Sandbox/Asset/Texture/Checkerboard.png");
-	Steins::TextureDesc textureDesc;
+	Steins::TextureDesc textureDesc{};
+	textureDesc.bindFlags = Steins::RenderBindFlags::ShaderResource;
+	textureDesc.format = Steins::RenderFormat::R8G8B8A8_UNORM_SRGB;
 	texture = Steins::Texture2D::Create(path, textureDesc);
+
+	Steins::FramebufferDesc fbDesc;
+	fbDesc.width = 1600;
+	fbDesc.height = 900;
+
+	Steins::FramebufferAttachmentDesc attach{};
+	attach.format = Steins::RenderFormat::R8G8B8A8_UNORM;
+	attach.loadOp = Steins::AttachmentLoadOp::Clear;
+	attach.storeOp = Steins::AttachmentStoreOp::Store;
+	fbDesc.colorAttachments.push_back(attach);
+
+	framebuffer = Steins::Framebuffer::Create(fbDesc);
 
 	Steins::PipelineStateDesc desc;
 	desc.vertexShader = vs;
@@ -67,6 +81,12 @@ Sandbox2D::Sandbox2D()
 	pso = Steins::PipelineState::Create(desc);
 
 	material = Steins::Material::Create(pso);
+
+	material->SetTexture2D("u_Texture", texture);
+	material->SetConstantBuffer("Camera", viewProjMat);
+
+
+	
 }
 
 void Sandbox2D::OnUpdate(Float32 _deltaTime)
@@ -115,6 +135,7 @@ void Sandbox2D::OnUpdate(Float32 _deltaTime)
 		viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
 	}
 
+	framebuffer->Begin();
 	////camera.SetPosition({ 0.5f, 0.5f, 0.0f });
 
 	//Steins::Renderer::BeginScene(camera);
@@ -122,13 +143,14 @@ void Sandbox2D::OnUpdate(Float32 _deltaTime)
 	squareVB->Bind();
 	squareIB->Bind();
 	material->Bind();
-	material->SetTexture2D("u_Texture", texture);
-	material->SetConstantBuffer("Camera", viewProjMat);
+
 	
 	//viewProjMat->Bind(0, Steins::SteinsVertexBit);
 	//texture->Bind(0);
 	//Steins::RenderCommand::DrawIndexed(squareIB->GetCount());
 	Steins::Renderer::Submit(squareIB->GetCount());
+
+	framebuffer->End();
 
 	//r2d.TestTick();
 	//Steins::Renderer2D::BeginScene(camera);
@@ -149,7 +171,7 @@ void Sandbox2D::OnImGuiRender()
 	ImGui::ShowDemoWindow();
 
 	ImGui::Begin("ImGui texture Image Test");
-	//ImGui::Image((ImTextureID)(uintptr_t)texture->GetNativeHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
+	ImGui::Image((ImTextureID)texture->GetImGuiHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
 	//ImGui::Image((ImTextureID)(ID3D11ShaderResourceView*)texture->GetNativeHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
 	//ImGui::Image((ImTextureID)static_cast<unsigned long long>(reinterpret_cast<uintptr_t>(texture->GetNativeHandle())), ImVec2(texture->GetWidth() * 2, texture->GetHeight() * 2));
 	//ImGui::Image((ImTextureID)(texture->GetNativeHandle()), ImVec2(texture->GetWidth() * 2, texture->GetHeight() * 2));

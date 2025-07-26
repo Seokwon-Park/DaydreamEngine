@@ -164,7 +164,6 @@ namespace Steins
 		options.shader_model = 50;
 		options.use_entry_point_name = true;
 		
-		
 		hlsl.set_hlsl_options(options);
 
 		_hlslSource = hlsl.compile();

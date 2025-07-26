@@ -16,7 +16,7 @@ namespace Steins
 		UInt32 set;
 		UInt32 binding;
 		UInt32 count;
-		UInt32 size;
+		UInt64 size;
 		ShaderType shaderType;
 		ShaderResourceType shaderResourceType;
 		String name;

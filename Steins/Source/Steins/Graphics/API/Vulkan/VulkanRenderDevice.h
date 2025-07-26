@@ -39,7 +39,8 @@ namespace Steins
 		virtual Shared<VertexBuffer> CreateDynamicVertexBuffer(UInt32 _bufferSize, UInt32 _stride)override;
 		virtual Shared<VertexBuffer> CreateStaticVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride) override;
 		virtual Shared<IndexBuffer> CreateIndexBuffer(UInt32* _indices, UInt32 _count) override;
-		virtual Shared<Framebuffer> CreateFramebuffer(FramebufferDesc _spec)override;
+		virtual Shared<RenderPass> CreateRenderPass(const RenderPassDesc& _desc) override;
+		virtual Shared<Framebuffer> CreateFramebuffer(const FramebufferDesc& _desc) override;
 		virtual Shared<PipelineState> CreatePipelineState(const PipelineStateDesc& _desc)override;
 		virtual Shared<Shader> CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode) override;
 		virtual Shared<Swapchain> CreateSwapchain(SteinsWindow* _window, const SwapchainDesc& _desc)override;
@@ -54,7 +55,8 @@ namespace Steins
 		UInt32 GetGraphicsFamilyIndex() const { return queueFamilyIndices.graphicsFamily.value(); }
 		VkQueue GetQueue() const { return graphicsQueue; }
 		VkDescriptorPool GetDescriptorPool() const { return descriptorPool; }
-		VkCommandBuffer GetCommandBuffer() const { return commandBuffer; }
+		VkCommandBuffer GetCommandBuffer() const { return currentCommandBuffer; }
+		void SetCommandBuffer(const VkCommandBuffer& _commandBuffer) { currentCommandBuffer = _commandBuffer; }
 		VkCommandPool GetCommandPool() const { return commandPool; }
 
 		void SetCurrentRenderPass(VkRenderPass _renderPass) { renderPass = _renderPass; }
@@ -106,7 +108,7 @@ namespace Steins
 		QueueFamilyIndices queueFamilyIndices;
 		VkQueue graphicsQueue; // vulkan graphics Queue
 		VkCommandPool commandPool;
-		VkCommandBuffer commandBuffer;
+		VkCommandBuffer currentCommandBuffer;
 		VkDescriptorPool descriptorPool;
 
 		VkRenderPass renderPass;

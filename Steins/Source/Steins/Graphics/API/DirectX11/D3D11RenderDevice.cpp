@@ -157,9 +157,14 @@ namespace Steins
 		return MakeShared<D3D11IndexBuffer>(this, _indices, _count);
 	}
 
-	Shared<Framebuffer> D3D11RenderDevice::CreateFramebuffer(FramebufferDesc _spec)
+	Shared<RenderPass> D3D11RenderDevice::CreateRenderPass(const RenderPassDesc& _desc)
 	{
-		return MakeShared<D3D11Framebuffer>(this, _spec);
+		return Shared<RenderPass>();
+	}
+
+	Shared<Framebuffer> D3D11RenderDevice::CreateFramebuffer(const FramebufferDesc& _desc)
+	{
+		return MakeShared<D3D11Framebuffer>(this, _desc);
 	}
 
 	Shared<PipelineState> Steins::D3D11RenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)

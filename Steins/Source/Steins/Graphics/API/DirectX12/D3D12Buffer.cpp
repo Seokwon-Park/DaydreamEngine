@@ -116,6 +116,7 @@ namespace Steins
 
 	}
 
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	D3D12IndexBuffer::D3D12IndexBuffer(D3D12RenderDevice* _device, UInt32* _indices, UInt32 _indexCount)
 	{
 		indexCount = _indexCount;
@@ -184,6 +185,7 @@ namespace Steins
 	void D3D12IndexBuffer::Unbind() const
 	{
 	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	D3D12ConstantBuffer::D3D12ConstantBuffer(D3D12RenderDevice* _device, UInt32 _size)
 	{
 		device = _device;

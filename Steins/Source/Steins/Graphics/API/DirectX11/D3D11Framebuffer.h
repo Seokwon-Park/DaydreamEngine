@@ -3,6 +3,7 @@
 #include "Steins/Graphics/Resources/Framebuffer.h"
 #include "Steins/Graphics/Resources/Texture.h"
 #include "D3D11RenderDevice.h"
+#include "D3D11Texture.h"
 
 namespace Steins
 {
@@ -21,9 +22,8 @@ namespace Steins
 
 	private:
 		D3D11RenderDevice* device;
-		Array<ID3D11RenderTargetView*> renderTargetViews;
 		ComPtr<ID3D11DepthStencilView> depthStencilView;
-		Array<ComPtr<ID3D11Texture2D>> colorAttachments;
-		ComPtr<ID3D11Texture2D> depthAttachment;
+		Array<Shared<D3D11Texture2D>> colorAttachments;
+		Shared<D3D11Texture2D> depthAttachment;
 	};
 }

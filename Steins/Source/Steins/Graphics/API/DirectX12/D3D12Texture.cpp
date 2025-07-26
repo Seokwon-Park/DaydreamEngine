@@ -1,7 +1,8 @@
 #include "SteinsPCH.h"
 #include "D3D12Texture.h"
 
-#include "stb_image.h"
+#include "Steins/Graphics/Utility/ImageLoader.h"
+#include "Steins/Graphics/Utility/GraphicsUtil.h"
 
 namespace Steins
 {
@@ -10,78 +11,74 @@ namespace Steins
 	{
 		device = _device;
 
-		data = stbi_load(_path.ToString().c_str(), &width, &height, &channels, 0);
-		STEINS_CORE_ASSERT(data, "Failed to load image!");
+		Array<UInt8> imageData = ImageLoader::LoadImageFile(_path, width, height, channels);
 
-		UInt8* newPixels = new UInt8[width * height * 4];
-		if (channels == 3)
-		{
-			for (int i = 0; i < width * height; i++)
-			{
-				newPixels[i * 4] = data[i * 3];
-				newPixels[i * 4 + 1] = data[i * 3 + 1];
-				newPixels[i * 4 + 2] = data[i * 3 + 2];
-				newPixels[i * 4 + 3] = 255;
-			}
-		}
-		else if (channels == 4)
-		{
-			memcpy(newPixels, data, width * height * 4 * sizeof(UInt8));
-		}
-
+		//texture
 		D3D12_HEAP_PROPERTIES props{};
 		props.Type = D3D12_HEAP_TYPE_DEFAULT;
 		props.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
 		props.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
 
-		D3D12_RESOURCE_DESC desc{};
-		desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-		desc.Alignment = 0;
-		desc.Width = width;
-		desc.Height = height;
-		desc.DepthOrArraySize = 1;
-		desc.MipLevels = 1;
-		desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		desc.SampleDesc.Count = 1;
-		desc.SampleDesc.Quality = 0;
-		desc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-		desc.Flags = D3D12_RESOURCE_FLAG_NONE;
+		D3D12_RESOURCE_DESC textureDesc{};
+		textureDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+		textureDesc.Alignment = 0;
+		textureDesc.Width = width;
+		textureDesc.Height = height;
+		textureDesc.DepthOrArraySize = 1;
+		textureDesc.MipLevels = 1;
+		textureDesc.Format = GraphicsUtil::RenderFormatToDXGIFormat(_desc.format);
+		textureDesc.SampleDesc.Count = 1;
+		textureDesc.SampleDesc.Quality = 0;
+		textureDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+		textureDesc.Flags = GraphicsUtil::ConvertToD3D12BindFlags(_desc.bindFlags);
 
-		device->GetDevice()->CreateCommittedResource(&props, D3D12_HEAP_FLAG_NONE, &desc,
-			D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(texture.GetAddressOf()));
+		device->GetDevice()->CreateCommittedResource(&props, D3D12_HEAP_FLAG_NONE, &textureDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(texture.GetAddressOf()));
 
-		UInt32 uploadPitch = (width * 4 + D3D12_TEXTURE_DATA_PITCH_ALIGNMENT - 1u) & ~(D3D12_TEXTURE_DATA_PITCH_ALIGNMENT - 1u);
-		UInt32 uploadSize = height * uploadPitch;
-		desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-		desc.Width = uploadSize;
-		desc.Height = 1;
-		desc.Format = DXGI_FORMAT_UNKNOWN;
-		desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+
+		D3D12_RESOURCE_DESC uploadBufferDesc{};
+		D3D12_PLACED_SUBRESOURCE_FOOTPRINT placedFootprint;
+		UINT numRows;
+		UINT64 rowSizeInBytes;
+		UINT64 totalBytes;
+
+		device->GetDevice()->GetCopyableFootprints(
+			&textureDesc,
+			0,
+			1,
+			0,
+			&placedFootprint,
+			&numRows,
+			&rowSizeInBytes,
+			&totalBytes
+		);
+		UInt32 uploadPitch = static_cast<UInt32>(placedFootprint.Footprint.RowPitch); // This will be aligned
+		UInt32 uploadSize = static_cast<UInt32>(totalBytes); // Total bytes for the subresource
+		//UInt32 uploadPitch = (width * 4 + D3D12_TEXTURE_DATA_PITCH_ALIGNMENT - 1u) & ~(D3D12_TEXTURE_DATA_PITCH_ALIGNMENT - 1u);
+		//UInt32 uploadSize = height * uploadPitch;
+		textureDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+		textureDesc.Width = uploadSize;
+		textureDesc.Height = 1;
+		textureDesc.Format = DXGI_FORMAT_UNKNOWN;
+		textureDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
 		props.Type = D3D12_HEAP_TYPE_UPLOAD;
 
-		device->GetDevice()->CreateCommittedResource(&props, D3D12_HEAP_FLAG_NONE, &desc,
+		device->GetDevice()->CreateCommittedResource(&props, D3D12_HEAP_FLAG_NONE, &textureDesc,
 			D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(uploadBuffer.GetAddressOf()));
 
 		void* pixelData;
 		D3D12_RANGE range = { 0, uploadSize };
 		uploadBuffer->Map(0, &range, &pixelData);
-		for (int y = 0; y < height; y++)
-		{
-			memcpy(reinterpret_cast<UInt8*>(pixelData) + y * uploadPitch, newPixels + y * width * 4, width * 4);
-		}
+		memcpy(pixelData, imageData.data(), width * height * 4);
 		uploadBuffer->Unmap(0, &range);
 
-		// Copy the upload resource content into the real resource
+		// 업로드 버퍼의 정보를 텍스쳐 처럼 해석하기 위해서
 		D3D12_TEXTURE_COPY_LOCATION srcLocation = {};
 		srcLocation.pResource = uploadBuffer.Get();
 		srcLocation.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
-		srcLocation.PlacedFootprint.Footprint.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		srcLocation.PlacedFootprint.Footprint.Width = width;
-		srcLocation.PlacedFootprint.Footprint.Height = height;
-		srcLocation.PlacedFootprint.Footprint.Depth = 1;
-		srcLocation.PlacedFootprint.Footprint.RowPitch = uploadPitch;
+		srcLocation.PlacedFootprint = placedFootprint;
 
+		//이미 위에서 texture2d로 desc를 설정하고 만들었기 때문에 괜찮
 		D3D12_TEXTURE_COPY_LOCATION dstLocation = {};
 		dstLocation.pResource = texture.Get();
 		dstLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
@@ -97,20 +94,148 @@ namespace Steins
 
 		device->GetCommandList()->CopyTextureRegion(&dstLocation, 0, 0, 0, &srcLocation, NULL);
 		device->GetCommandList()->ResourceBarrier(1, &barrier);
-
-		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-		srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-		srvDesc.Texture2D.MipLevels = desc.MipLevels;
-		srvDesc.Texture2D.MostDetailedMip = 0;
-		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-		device->GetCBVSRVUAVHeapAlloc().Alloc(&cpuHandle, &gpuHandle);
-		device->GetDevice()->CreateShaderResourceView(texture.Get(), &srvDesc, cpuHandle);
-
-		stbi_image_free(data);
 	}
-	void D3D12Texture2D::Bind(UInt32 _slot) const
+	D3D12Texture2D::D3D12Texture2D(D3D12RenderDevice* _device, ComPtr<ID3D12Resource> _texture)
 	{
-		//device->GetCommandList()->SetGraphicsRootDescriptorTable(1, gpuHandle);
+		device = _device;
+		texture = _texture;
 	}
+	D3D12_CPU_DESCRIPTOR_HANDLE D3D12Texture2D::GetSRVCPUHandle()
+	{
+		D3D12_RESOURCE_DESC textureDesc = texture->GetDesc();
+		if (!(textureDesc.Flags & D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE))
+		{
+			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+			srvDesc.Format = textureDesc.Format;
+			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+			srvDesc.Texture2D.MipLevels = textureDesc.MipLevels;
+			srvDesc.Texture2D.MostDetailedMip = 0;
+			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+			device->GetCBVSRVUAVHeapAlloc().Alloc(&srvCpuHandle, &srvGpuHandle);
+			device->GetDevice()->CreateShaderResourceView(texture.Get(), &srvDesc, srvCpuHandle);
+			return srvCpuHandle;
+		}
+		STEINS_CORE_ASSERT(srvCpuHandle.ptr == 0, "This texture was not created with the Shader Resourc View (SRV) bind flag.");
+		return {};
+	}
+	D3D12_GPU_DESCRIPTOR_HANDLE D3D12Texture2D::GetSRVGPUHandle()
+	{
+		if (srvGpuHandle.ptr == 0)
+		{
+			GetSRVCPUHandle();
+		}
+		return srvGpuHandle;
+	}
+	D3D12_CPU_DESCRIPTOR_HANDLE D3D12Texture2D::GetRTVCPUHandle()
+	{
+		if (rtvCpuHandle.ptr != 0) return rtvCpuHandle;
+
+		D3D12_RESOURCE_DESC textureDesc = texture->GetDesc();
+
+		if (textureDesc.Flags & D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET)
+		{
+			device->GetRTVHeapAlloc().Alloc(&rtvCpuHandle);
+			D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
+			rtvDesc.Format = textureDesc.Format;
+			rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+			//// Determine ViewDimension based on texture type
+			//if (resDesc.Dimension == D3D12_RESOURCE_DIMENSION_TEXTURE2D && resDesc.DepthOrArraySize == 1) {
+			//	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+			//	// If MSAA: rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DMS;
+			//}
+			//else if (resDesc.Dimension == D3D12_RESOURCE_DIMENSION_TEXTURE2D && resDesc.DepthOrArraySize > 1) {
+			//	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DARRAY;
+			//	rtvDesc.Texture2DArray.ArraySize = resDesc.DepthOrArraySize;
+			//	rtvDesc.Texture2DArray.FirstArraySlice = 0;
+			//	rtvDesc.Texture2DArray.MipSlice = 0; // Usually mip 0 for RTV
+			//}
+			// Handle 3D if needed, etc.
+
+			device->GetDevice()->CreateRenderTargetView(texture.Get(), &rtvDesc, rtvCpuHandle);
+			return rtvCpuHandle;
+		}
+		STEINS_CORE_ASSERT(rtvCpuHandle.ptr == 0, "This texture was not created with the Render Target View (RTV) bind flag.");
+		return {};
+	}
+	D3D12_CPU_DESCRIPTOR_HANDLE D3D12Texture2D::GetDSVCPUHandle()
+	{
+		if (dsvCpuHandle.ptr != 0) return dsvCpuHandle;
+
+		D3D12_RESOURCE_DESC textureDesc = texture->GetDesc();
+
+		if (textureDesc.Flags & D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL)
+		{
+			device->GetDSVHeapAlloc().Alloc(&dsvCpuHandle); // DSVs only need CPU handle
+			D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
+			dsvDesc.Format = textureDesc.Format;
+			dsvDesc.Flags = D3D12_DSV_FLAG_NONE; // Can be D3D12_DSV_FLAG_READ_ONLY_DEPTH or _STENCIL
+			dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+
+			// Determine ViewDimension based on texture type
+			//if (resDesc.Dimension == D3D12_RESOURCE_DIMENSION_TEXTURE2D && resDesc.DepthOrArraySize == 1) {
+			//	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+			//	// If MSAA: dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2DMS;
+			//}
+			//else if (resDesc.Dimension == D3D12_RESOURCE_DIMENSION_TEXTURE2D && resDesc.DepthOrArraySize > 1) {
+			//	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2DARRAY;
+			//	dsvDesc.Texture2DArray.ArraySize = resDesc.DepthOrArraySize;
+			//	dsvDesc.Texture2DArray.FirstArraySlice = 0;
+			//	dsvDesc.Texture2DArray.MipSlice = 0; // Usually mip 0 for DSV
+			//}
+
+			device->GetDevice()->CreateDepthStencilView(texture.Get(), &dsvDesc, dsvCpuHandle);
+			return dsvCpuHandle;
+		}
+		STEINS_CORE_ASSERT(false, "This texture was not created with the Depth Stencil View (DSV) bind flag.");
+		return {};
+	}
+
+	D3D12_CPU_DESCRIPTOR_HANDLE D3D12Texture2D::GetUAVCPUHandle()
+	{
+		if (uavCpuHandle.ptr != 0) return uavCpuHandle;
+
+		D3D12_RESOURCE_DESC textureDesc = texture->GetDesc();
+
+		if (textureDesc.Flags & D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS)
+		{
+			D3D12_GPU_DESCRIPTOR_HANDLE tempGpuHandle;
+			device->GetCBVSRVUAVHeapAlloc().Alloc(&uavCpuHandle, &tempGpuHandle); // UAV needs both CPU and GPU handle
+
+			D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
+			uavDesc.Format = textureDesc.Format;
+			uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
+
+			// Determine ViewDimension based on texture type
+			//if (resDesc.Dimension == D3D12_RESOURCE_DIMENSION_TEXTURE2D && resDesc.DepthOrArraySize == 1) {
+			//	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
+			//	uavDesc.Texture2D.MipSlice = 0; // Usually mip 0 for UAV
+			//}
+			//else if (resDesc.Dimension == D3D12_RESOURCE_DIMENSION_TEXTURE2D && resDesc.DepthOrArraySize > 1) {
+			//	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2DARRAY;
+			//	uavDesc.Texture2DArray.ArraySize = resDesc.DepthOrArraySize;
+			//	uavDesc.Texture2DArray.FirstArraySlice = 0;
+			//	uavDesc.Texture2DArray.MipSlice = 0;
+			//}
+			//else if (resDesc.Dimension == D3D12_RESOURCE_DIMENSION_TEXTURE3D) {
+			//	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE3D;
+			//	uavDesc.Texture3D.MipSlice = 0;
+			//	uavDesc.Texture3D.FirstWSlice = 0;
+			//	uavDesc.Texture3D.WSize = resDesc.DepthOrArraySize;
+			//}
+
+			device->GetDevice()->CreateUnorderedAccessView(texture.Get(), nullptr, &uavDesc, uavCpuHandle);
+			return uavCpuHandle;
+		}
+		STEINS_CORE_ASSERT(false, "This texture was not created with the Unordered Access View (UAV) bind flag.");
+		return {};
+	}
+	D3D12_GPU_DESCRIPTOR_HANDLE D3D12Texture2D::GetUAVGPUHandle()
+	{
+		if (uavCpuHandle.ptr == 0)
+		{
+			GetUAVCPUHandle();
+		}
+		return uavGpuHandle;
+	}
+
 }

@@ -2,13 +2,13 @@
 
 #include "Base/MathTypes.h"
 #include "Steins/Enum/RendererEnums.h"
-#include "RenderContext.h"
 #include "Steins/ImGui/ImGuiRenderer.h"
-
+#include "Steins/Graphics/Core/RenderContext.h"
 
 namespace Steins
 {
 	struct SwapchainDesc; 
+	struct RenderPassDesc;
 	struct FramebufferDesc;
 	struct PipelineStateDesc;
 	struct TextureDesc;
@@ -17,6 +17,7 @@ namespace Steins
 	class VertexBuffer;
 	class IndexBuffer;
 	class ConstantBuffer;
+	class RenderPass;
 	class Framebuffer;
 	class PipelineState;
 	class Shader;
@@ -27,9 +28,6 @@ namespace Steins
 	class VertexArray;
 	class BufferLayout;
 	class Material;
-	class ShaderResourceView;
-	class RenderTargetView;
-	class UnorderedAccessView;
 
 	class RenderDevice
 	{
@@ -44,7 +42,8 @@ namespace Steins
 		virtual Shared<VertexBuffer> CreateDynamicVertexBuffer(UInt32 _bufferSize, UInt32 _stride) = 0;
 		virtual Shared<VertexBuffer> CreateStaticVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride) = 0;
 		virtual Shared<IndexBuffer> CreateIndexBuffer(UInt32* _indices, UInt32 _count) = 0;
-		virtual Shared<Framebuffer> CreateFramebuffer(FramebufferDesc _spec) = 0;
+		virtual Shared<RenderPass> CreateRenderPass(const RenderPassDesc& _desc) = 0;
+		virtual Shared<Framebuffer> CreateFramebuffer(const FramebufferDesc& _spec) = 0;
 		virtual Shared<PipelineState> CreatePipelineState(const PipelineStateDesc& _desc)= 0;
 		virtual Shared<Shader> CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode) = 0;
 		virtual Shared<Swapchain> CreateSwapchain(SteinsWindow* _window, const SwapchainDesc& _desc) = 0;

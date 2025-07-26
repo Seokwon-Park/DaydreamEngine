@@ -2,7 +2,8 @@
 
 
 #include "Steins/Graphics/Resources/Framebuffer.h"
-#include "Steins/Graphics/API/Vulkan/VulkanRenderDevice.h"
+#include "VulkanRenderDevice.h"
+#include "VulkanTexture.h"
 
 namespace Steins
 {
@@ -11,8 +12,8 @@ namespace Steins
 	class VulkanFramebuffer : public Framebuffer
 	{
 	public:
-		VulkanFramebuffer(VulkanRenderDevice* _device, const FramebufferDesc& _spec);
-		VulkanFramebuffer(VulkanRenderDevice* _device, VulkanSwapchain* _swapChain);
+		VulkanFramebuffer(VulkanRenderDevice* _device, const FramebufferDesc& _desc);
+		VulkanFramebuffer(VulkanRenderDevice* _device, VulkanSwapchain* _swapChain, UInt32 _frameIndex);
 
 		virtual ~VulkanFramebuffer() override;
 
@@ -24,12 +25,16 @@ namespace Steins
 		VkRenderPass GetRenderPass() { return renderPass; }
 
 	private:
+		void CreateRenderPass(const FramebufferDesc& _desc, bool _isBackBuffer);
+
+
 		VulkanRenderDevice* device;
 		VkRenderPass renderPass;
 		VkFramebuffer framebuffer;
 		VkExtent2D extent;
 		Array<VkImage> colorImages;
 		Array<VkImageView> colorImageViews;
+		Array<Shared<VulkanTexture2D>> colorAttachments;
 		VkImage depthImage;
 		VkImageView depthStencilViews;
 	};

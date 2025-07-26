@@ -47,6 +47,7 @@ namespace Steins
 		virtual void Update(const void* _data, UInt32 _size) override;
 
 		virtual void* GetNativeHandle() override { return constantBuffer.Get(); }
+		D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress() { return constantBuffer->GetGPUVirtualAddress(); }
 
 	private:
 		D3D12RenderDevice* device;

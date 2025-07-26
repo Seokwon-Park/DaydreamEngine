@@ -13,6 +13,8 @@
 #include "Steins/ImGui/ImGuiLayer.h"
 #include "Steins/ImGui/ImGuiRenderer.h"
 
+#include "Steins/Enum/RendererEnums.h"
+
 // ---Renderer------------------------------------
 #include "Steins/Graphics/Core/Renderer.h"
 #include "Steins/Graphics/Core/Renderer2D.h"

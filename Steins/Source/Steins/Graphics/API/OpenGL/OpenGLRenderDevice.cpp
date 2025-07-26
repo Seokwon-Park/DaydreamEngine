@@ -72,7 +72,12 @@ namespace Steins
 		return MakeShared<OpenGLIndexBuffer>(_indices, _count);
 	}
 
-	Shared<Framebuffer> OpenGLRenderDevice::CreateFramebuffer(FramebufferDesc _spec)
+	Shared<RenderPass> OpenGLRenderDevice::CreateRenderPass(const RenderPassDesc& _desc)
+	{
+		return Shared<RenderPass>();
+	}
+
+	Shared<Framebuffer> OpenGLRenderDevice::CreateFramebuffer(const FramebufferDesc& _desc)
 	{
 		return Shared<Framebuffer>();
 	}
@@ -88,12 +93,12 @@ namespace Steins
 	}
 
 
-	Shared<Swapchain> Steins::OpenGLRenderDevice::CreateSwapchain(SteinsWindow* _window, const SwapchainDesc& _desc)
+	Shared<Swapchain> OpenGLRenderDevice::CreateSwapchain(SteinsWindow* _window, const SwapchainDesc& _desc)
 	{
 		return MakeShared<OpenGLSwapchain>(_window, _desc);
 	}
 
-	Shared<Texture2D> Steins::OpenGLRenderDevice::CreateTexture2D(const FilePath& _path, const TextureDesc& _desc)
+	Shared<Texture2D> OpenGLRenderDevice::CreateTexture2D(const FilePath& _path, const TextureDesc& _desc)
 	{
 		return MakeShared<OpenGLTexture2D>(_path, _desc);
 	}

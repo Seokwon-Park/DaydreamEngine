@@ -20,7 +20,7 @@ namespace Steins
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
 
-		virtual Framebuffer* GetBackFramebuffer() { return nullptr; };
+		virtual Shared<Framebuffer> GetBackFramebuffer() { return framebuffers[frameIndex]; };
 
 		void WaitForGPU();
 		void MoveToNextFrame();

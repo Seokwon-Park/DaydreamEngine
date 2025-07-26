@@ -113,7 +113,7 @@ namespace Steins
 
 		{
 			D3D12_DESCRIPTOR_HEAP_DESC desc{};
-			desc.NumDescriptors = 2;
+			desc.NumDescriptors = 8;
 			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(rtvHeap.GetAddressOf()));
@@ -123,14 +123,38 @@ namespace Steins
 
 		{
 			D3D12_DESCRIPTOR_HEAP_DESC desc{};
-			desc.NumDescriptors = 64;
+			desc.NumDescriptors = 4;
+			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
+			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(dsvHeap.GetAddressOf()));
+			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create DSV descriptor heap");
+			dsvHeapAlloc.Create(device.Get(), dsvHeap.Get());
+
+		}
+
+		{
+			D3D12_DESCRIPTOR_HEAP_DESC desc{};
+			desc.NumDescriptors = 32;
+			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER;
+			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(samplerHeap.GetAddressOf()));
+			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create sampler descriptor heap");
+			samplerHeapAlloc.Create(device.Get(), samplerHeap.Get());
+
+		}
+
+		{
+			D3D12_DESCRIPTOR_HEAP_DESC desc{};
+			desc.NumDescriptors = 256;
 			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(cbvSrvUavHeap.GetAddressOf()));
-			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create RTV descriptor heap");
+			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create cbvSrvUav descriptor heap");
 			cbvSrvUavHeapAlloc.Create(device.Get(), cbvSrvUavHeap.Get());
 
 		}
+
+
 
 		DXGI_ADAPTER_DESC3 adapterDescription; // Vendor
 		SecureZeroMemory(&adapterDescription, sizeof(DXGI_ADAPTER_DESC));
@@ -200,9 +224,14 @@ namespace Steins
 		return MakeShared<D3D12IndexBuffer>(this, _indices, _count);
 	}
 
-	Shared<Framebuffer> D3D12RenderDevice::CreateFramebuffer(FramebufferDesc _spec)
+	Shared<RenderPass> D3D12RenderDevice::CreateRenderPass(const RenderPassDesc& _desc)
 	{
-		return MakeShared<D3D12Framebuffer>(this, _spec);
+		return Shared<RenderPass>();
+	}
+
+	Shared<Framebuffer> D3D12RenderDevice::CreateFramebuffer(const FramebufferDesc& _desc)
+	{
+		return MakeShared<D3D12Framebuffer>(this, _desc);
 	}
 
 	Shared<PipelineState> Steins::D3D12RenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)

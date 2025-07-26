@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Steins/Enum/RendererEnums.h"
+
 namespace Steins
 {
 
@@ -28,21 +30,15 @@ namespace Steins
 		MirroredRepeat
 	};
 
-	enum TextureUsage : UInt32
-	{
-		Unknown = 0,
-		ShaderResource = 1 << 0,
-		RenderTarget = 1 << 1,
-		DepthStencil = 1 << 2,
-		UnorderdAccess = 1 << 3,
-	};
-
 	struct TextureDesc
 	{
+		UInt32 width;
+		UInt32 height;
 		TextureType type;
 		FilterMode filterMode;
 		WrapMode wrapMode;
-		UInt32 usage;
+		RenderFormat format;
+		RenderBindFlags bindFlags;
 	};
 
 
@@ -55,13 +51,13 @@ namespace Steins
 		virtual UInt32 GetHeight() const = 0;
 
 		virtual void* GetNativeHandle() = 0;
-
-		virtual void Bind(UInt32 _slot = 0) const = 0;
+		virtual void* GetImGuiHandle() = 0;
 	};
 
 	class Texture2D : public Texture
 	{
 	public:
+		Texture2D() {};
 		Texture2D(const FilePath& _path);
 		virtual ~Texture2D() = default;
 
@@ -69,14 +65,14 @@ namespace Steins
 		virtual UInt32 GetHeight() const { return height; }
 
 		virtual void* GetNativeHandle() override = 0;
+		virtual void* GetImGuiHandle() override = 0;
 
 		static Shared<Texture2D> Create(const FilePath& _path, const TextureDesc& _desc);
 	protected:
-		unsigned char* data;
 		FilePath path;
 		TextureDesc desc;
-		Int32 width;
-		Int32 height;
-		Int32 channels;
+		Int32 width = 0;
+		Int32 height = 0;
+		Int32 channels = 0;
 	};
 }

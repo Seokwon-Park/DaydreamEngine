@@ -21,31 +21,39 @@ namespace Steins
 		std::wstring target;
 	};
 
-	class GraphicsUtil
+	namespace GraphicsUtil
 	{
-	public:
-		static UInt32 GetRenderFormatSize(RenderFormat _format);
+		bool HasFlag(RenderBindFlags _target, RenderBindFlags _flags);
 
-		static DXGI_FORMAT ShaderDataTypeToDXGIFormat(ShaderDataType type);
+		UInt32 GetRenderFormatSize(RenderFormat _format);
+
+		DXGI_FORMAT ShaderDataTypeToDXGIFormat(ShaderDataType type);
 
 		//RenderFormat
-		static DXGI_FORMAT RenderFormatToDXGIFormat(RenderFormat _format);
-		static VkFormat RenderFormatToVkFormat(RenderFormat _format);
-		static RenderFormat ConvertSPIRVTypeToRenderFormat(spirv_cross::SPIRType::BaseType _baseType, UInt32 _componentCount);
+		DXGI_FORMAT RenderFormatToDXGIFormat(RenderFormat _format);
+		VkFormat RenderFormatToVkFormat(RenderFormat _format);
+		VkFormat RenderFormatToGLFormat(RenderFormat _format);
+		RenderFormat ConvertSPIRVTypeToRenderFormat(spirv_cross::SPIRType::BaseType _baseType, UInt32 _componentCount);
 
 
 		//ShaderCompile
-		static String GetShaderEntryPointName(ShaderType _type);
-		static WideString GetShaderEntryPointNameW(ShaderType _type);
-		static String GetShaderTargetName(ShaderType _type, String _version);
-		static WideString GetShaderTargetNameW(ShaderType _type, WideString _version);
+		String GetShaderEntryPointName(ShaderType _type);
+		WideString GetShaderEntryPointNameW(ShaderType _type);
+		String GetShaderTargetName(ShaderType _type, String _version);
+		WideString GetShaderTargetNameW(ShaderType _type, WideString _version);
 
 		//ShaderType, ShaderStage
-		static GLenum GetGLShaderStage(ShaderType _type);
-		static GLenum GetGLShaderType(ShaderType _type);
-		static D3D12_SHADER_VISIBILITY GetDX12ShaderVisibility(ShaderType _type);
-		static VkShaderStageFlagBits GetVKShaderStage(ShaderType _type);
+		GLenum GetGLShaderStage(ShaderType _type);
+		GLenum GetGLShaderType(ShaderType _type);
+		D3D12_SHADER_VISIBILITY GetDX12ShaderVisibility(ShaderType _type);
+		VkShaderStageFlagBits GetVKShaderStage(ShaderType _type);
 
-		static std::string GetVendor(int _vendorCode);
-	};
+		UInt32 ConvertToD3D11BindFlags(RenderBindFlags _flags);
+		D3D12_RESOURCE_FLAGS ConvertToD3D12BindFlags(RenderBindFlags flags);
+		D3D12_RESOURCE_STATES ConvertToD3D12ResourceStates(RenderBindFlags flags);
+
+		VkImageUsageFlags ConvertToVkImageUsageFlags(RenderBindFlags usageFlags);
+
+		String GetVendor(UInt32 _vendorCode);
+	}
 }

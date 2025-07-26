@@ -75,7 +75,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>opengl32.lib;vulkan-1.lib;dxcompiler.lib;dxil.lib;spirv-cross-cd.lib;spirv-cross-cored.lib;spirv-cross-cppd.lib;spirv-cross-glsld.lib;spirv-cross-hlsld.lib;spirv-cross-msld.lib;spirv-cross-reflectd.lib;spirv-cross-utild.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib;dxcompiler.lib;dxil.lib;spirv-cross-cd.lib;spirv-cross-cored.lib;spirv-cross-cppd.lib;spirv-cross-glsld.lib;spirv-cross-hlsld.lib;spirv-cross-msld.lib;spirv-cross-reflectd.lib;spirv-cross-utild.lib;opengl32.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;Vendor\assimp\bin\Debug;Vendor\dxcompiler;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -187,7 +187,7 @@
     <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanRenderDevice.h" />
     <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanRenderPass.h" />
     <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanShader.h" />
-    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapChain.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapchain.h" />
     <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanTexture.h" />
     <ClInclude Include="Source\Steins\Graphics\Core\Camera.h" />
     <ClInclude Include="Source\Steins\Graphics\Core\EditorCamera.h" />
@@ -211,6 +211,7 @@
     <ClInclude Include="Source\Steins\Graphics\Resources\Shader.h" />
     <ClInclude Include="Source\Steins\Graphics\Resources\Texture.h" />
     <ClInclude Include="Source\Steins\Graphics\Utility\GraphicsUtil.h" />
+    <ClInclude Include="Source\Steins\Graphics\Utility\ImageLoader.h" />
     <ClInclude Include="Source\Steins\Graphics\Utility\MeshLoader.h" />
     <ClInclude Include="Source\Steins\Graphics\Utility\ShaderCompileHelper.h" />
     <ClInclude Include="Source\Steins\ImGui\ImGuiLayer.h" />
@@ -701,7 +702,7 @@
     <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanRenderDevice.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanRenderPass.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanShader.cpp" />
-    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapChain.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapchain.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanTexture.cpp" />
     <ClCompile Include="Source\Steins\Graphics\Core\Camera.cpp" />
     <ClCompile Include="Source\Steins\Graphics\Core\RenderContext.cpp" />
@@ -722,6 +723,7 @@
     <ClCompile Include="Source\Steins\Graphics\Resources\Shader.cpp" />
     <ClCompile Include="Source\Steins\Graphics\Resources\Texture.cpp" />
     <ClCompile Include="Source\Steins\Graphics\Utility\GraphicsUtil.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\Utility\ImageLoader.cpp" />
     <ClCompile Include="Source\Steins\Graphics\Utility\MeshLoader.cpp" />
     <ClCompile Include="Source\Steins\Graphics\Utility\ShaderCompileHelper.cpp" />
     <ClCompile Include="Source\Steins\ImGui\ImGuiBackends.cpp" />

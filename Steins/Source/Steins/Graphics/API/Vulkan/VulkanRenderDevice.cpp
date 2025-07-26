@@ -103,16 +103,6 @@ namespace Steins
 			throw std::runtime_error("failed to create command pool!");
 		}
 
-		VkCommandBufferAllocateInfo allocInfo{};
-		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-		allocInfo.commandPool = commandPool;
-		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		allocInfo.commandBufferCount = 1;
-
-		if (vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer) != VK_SUCCESS) {
-			throw std::runtime_error("failed to allocate command buffers!");
-		}
-
 		{
 			Array<VkDescriptorPoolSize> poolSizes =
 			{
@@ -174,9 +164,10 @@ namespace Steins
 		return MakeShared<VulkanIndexBuffer>(this, _indices, _count);
 	}
 
-	Shared<Framebuffer> VulkanRenderDevice::CreateFramebuffer(FramebufferDesc _spec)
+
+	Shared<Framebuffer> VulkanRenderDevice::CreateFramebuffer(const FramebufferDesc& _desc)
 	{
-		return Shared<Framebuffer>();
+		return MakeShared<VulkanFramebuffer>(this, _desc);
 	}
 
 	Shared<PipelineState> Steins::VulkanRenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)
@@ -442,7 +433,16 @@ namespace Steins
 			sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
 			destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
 		}
-		else {
+		else if (_oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && _newLayout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+		{
+			barrier.srcAccessMask = 0;
+			barrier.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
+			sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+			destinationStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+		}
+		else
+		{
 			throw std::invalid_argument("unsupported layout transition!");
 		}
 

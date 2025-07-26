@@ -16,31 +16,44 @@ namespace Steins
 
 	void Renderer::Init(RendererAPIType _API)
 	{
-		//두 번 호출하지 말 것.
 		STEINS_CORE_ASSERT(instance == nullptr, "Renderer Already Initialized!");
 		instance = new Renderer(_API);
-		Get().renderDevice->Init();
-		RenderCommand::Init(Get().renderDevice.get());
+		instance->renderDevice->Init();
+		RenderCommand::Init(instance->renderDevice.get());
 	}
 
 	void Renderer::Shutdown()
 	{
 		Renderer2D::Shutdown();
-		Get().renderDevice.reset();
+		instance->renderDevice.reset();
 		delete instance;
 		instance = nullptr;
 	}
 
-	void Renderer::RegisterWindow(std::string _name, SteinsWindow* _window)
+	void Renderer::CreateSwapchainFor(SteinsWindow* _window)
 	{
-		Get().renderDevice->CreateSwapchainForWnd(_window);
-		Get().windows.insert({ _name, _window });
+		instance->renderDevice->CreateSwapchainForWnd(_window);
+	}
+
+	void Renderer::RegisterWindow(String _name, SteinsWindow* _window)
+	{
+		instance->windows.insert({ _name, _window });
 	}
 
 	void Renderer::OnWindowResize(UInt32 _width, UInt32 _height)
 	{
 		RenderCommand::SetViewport(_width, _height);
-		Get().currentWindow->GetSwapchain()->ResizeSwapchain(_width, _height);
+		instance->currentWindow->GetSwapchain()->ResizeSwapchain(_width, _height);
+	}
+
+	void Renderer::BeginSwapchainFramebuffer()
+	{
+		instance->currentWindow->GetSwapchain()->GetBackFramebuffer()->Begin();
+	}
+
+	void Renderer::EndSwapchainFramebuffer()
+	{
+		instance->currentWindow->GetSwapchain()->GetBackFramebuffer()->End();
 	}
 
 	void Renderer::BeginScene(const OrthographicCamera& camera)

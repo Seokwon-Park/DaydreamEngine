@@ -29,7 +29,7 @@ namespace Steins
 		virtual void BeginFrame() = 0;
 		virtual void EndFrame() = 0;
 		
-		virtual Framebuffer* GetBackFramebuffer() = 0;
+		virtual Shared<Framebuffer> GetBackFramebuffer() = 0;
 		static Shared<Swapchain> Create(SteinsWindow* _window, const SwapchainDesc& _desc);
 	protected:
 		SwapchainDesc desc;
