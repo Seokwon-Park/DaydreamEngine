@@ -1,8 +1,9 @@
 #include "SteinsPCH.h"
 #include "D3D12Swapchain.h"
-#include "D3D12RenderPass.h"
 
 #include "Steins/Graphics/Utility/GraphicsUtil.h"
+
+#include "Steins/Graphics/Core/Renderer2D.h"
 
 #include "Steins/Core/Window.h"
 #include "GLFW/glfw3.h"
@@ -32,6 +33,8 @@ namespace Steins
 		swapchainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
 		swapchainDesc.Flags = 0;
 
+		fenceValues.resize(_desc.bufferCount);
+
 		ComPtr<IDXGISwapChain1> swapChain1;
 		HRESULT hr = device->GetFactory()->CreateSwapChainForHwnd(
 			device->GetCommandQueue(),
@@ -55,11 +58,11 @@ namespace Steins
 		framebuffers.resize(desc.bufferCount);
 		for (UInt32 i = 0; i < desc.bufferCount; i++)
 		{
+			frameIndex = i;
 			framebuffers[i] = MakeShared<D3D12Framebuffer>(device, mainRenderPass.get(), this);
 		}
 		frameIndex = swapChain->GetCurrentBackBufferIndex();
 
-		fenceValues.resize(_desc.bufferCount);
 		hr = device->GetDevice()->CreateFence(fenceValues[frameIndex], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fence.GetAddressOf()));
 		fenceValues[frameIndex]++; // 초기 값 증가
 		fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
@@ -68,23 +71,23 @@ namespace Steins
 			STEINS_CORE_ERROR("Failed to Create FenceEvent!");
 		}
 
-		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create swapchain!");
+		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create swapChain!");
 		device->GetCommandAllocator(frameIndex)->Reset();
 		device->GetCommandList()->Reset(device->GetCommandAllocator(frameIndex), nullptr);
 		ID3D12DescriptorHeap* heaps[] = { device->GetCBVSRVUAVHeap() };
 		device->GetCommandList()->SetDescriptorHeaps(1, heaps);
-		//framebuffers[frameIndex]->Begin();
-		//framebuffers[frameIndex]->Clear(Color(1.0f, 1.0f, 1.0f, 1.0f));
+		framebuffers[frameIndex]->Begin();
+		framebuffers[frameIndex]->Clear(Color(1.0f, 1.0f, 1.0f, 1.0f));
 
-		D3D12_RESOURCE_BARRIER barrier{};
+		D3D12_RESOURCE_BARRIER barr{};
 
-		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barrier.Transition.pResource = framebuffers[frameIndex]->GetRenderTarget().Get();
-		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-		device->GetCommandList()->ResourceBarrier(1, &barrier);
+		barr.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barr.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barr.Transition.pResource = framebuffers[frameIndex]->GetRenderTarget().Get();
+		barr.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+		barr.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		device->GetCommandList()->ResourceBarrier(1, &barr);
 	}
 	D3D12Swapchain::~D3D12Swapchain()
 	{
@@ -146,8 +149,8 @@ namespace Steins
 		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 		device->GetCommandList()->ResourceBarrier(1, &barr);
 
-		//framebuffers[frameIndex]->Begin();
-		//framebuffers[frameIndex]->Clear(Color(1.0f, 1.0f, 1.0f, 1.0f));
+		framebuffers[frameIndex]->Begin();
+		framebuffers[frameIndex]->Clear(Color(1.0f, 1.0f, 1.0f, 1.0f));
 
 	}
 	void D3D12Swapchain::ResizeSwapchain(UInt32 _width, UInt32 height)
