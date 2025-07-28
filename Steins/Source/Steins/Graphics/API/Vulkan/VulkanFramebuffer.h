@@ -18,7 +18,6 @@ namespace Steins
 
 		virtual ~VulkanFramebuffer() override;
 
-		virtual void Clear(Color _color) override;
 		virtual void* GetColorAttachmentTexture(UInt32 _index) override;
 
 		VkFramebuffer GetFramebuffer() { return framebuffer; }

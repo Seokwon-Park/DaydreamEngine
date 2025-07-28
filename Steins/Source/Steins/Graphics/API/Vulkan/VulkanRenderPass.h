@@ -5,6 +5,8 @@
 
 namespace Steins
 {
+	class VulkanFramebuffer;
+
 	class VulkanRenderPass : public RenderPass
 	{
 	public:
@@ -16,10 +18,10 @@ namespace Steins
 
 		virtual Shared<Framebuffer> CreateFramebuffer(const FramebufferDesc& _desc) override;
 
-		virtual void* GetNativeHandle() const { return renderPass; }
 		VkRenderPass GetVkRenderPass() const { return renderPass; }
 	private:
 		VulkanRenderDevice* device;
 		VkRenderPass renderPass;
+		Shared<VulkanFramebuffer> currentFramebuffer;
 	};
 }

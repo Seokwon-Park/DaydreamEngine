@@ -153,6 +153,7 @@
     <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11Material.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11PipelineState.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11RenderDevice.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11RenderPass.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11Shader.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11Swapchain.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11Texture.h" />
@@ -164,6 +165,7 @@
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Material.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12PipelineState.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12RenderDevice.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12RenderPass.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Shader.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Swapchain.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Texture.h" />
@@ -668,6 +670,7 @@
     <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11PipelineState.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11PixelShader.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11RenderDevice.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11RenderPass.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11Shader.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11Swapchain.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11Texture.cpp" />
@@ -679,6 +682,7 @@
     <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Material.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12PipelineState.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12RenderDevice.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12RenderPass.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Shader.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Swapchain.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Texture.cpp" />

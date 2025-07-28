@@ -25,7 +25,7 @@ namespace Steins
 	void D3D11GraphicsContext::Clear()
 	{
 		//device->GetSwapchain(0)->GetBackFramebuffer()->Begin();
-		device->GetSwapchain(0)->GetBackFramebuffer()->Clear(clearColor);
+		//device->GetSwapchain(0)->GetBackFramebuffer()->Clear(clearColor);
 	}
 
 	void D3D11GraphicsContext::DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex)

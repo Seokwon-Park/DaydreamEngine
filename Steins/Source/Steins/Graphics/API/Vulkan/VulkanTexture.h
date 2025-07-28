@@ -10,7 +10,7 @@ namespace Steins
 	public:
 		VulkanTexture2D(VulkanRenderDevice* _device, const TextureDesc& _desc);
 		VulkanTexture2D(VulkanRenderDevice* _device, const FilePath& _path, const TextureDesc& _desc);
-		VulkanTexture2D(VulkanRenderDevice* _device, VkImage _image);
+		VulkanTexture2D(VulkanRenderDevice* _device, VkImage _image, VkFormat _format);
 		void CreateSampler();
 		virtual ~VulkanTexture2D();
 
@@ -20,6 +20,9 @@ namespace Steins
 		VkImage GetImage() { return textureImage; }
 		VkImageView GetImageView();
 		VkSampler GetSampler() { return textureSampler; }
+
+		void TransitionLayout(VkImageLayout _targetLayout);
+
 	protected:
 
 	private:
@@ -39,6 +42,8 @@ namespace Steins
 		VkDescriptorSet ImGuiDescriptorSet = VK_NULL_HANDLE;
 
 		VkSampler textureSampler;
+
+		VkImageLayout currentLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 	};
 }
 

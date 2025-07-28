@@ -17,7 +17,6 @@ namespace Steins
 	public:
 		virtual ~Framebuffer() = default;
 
-		virtual void Clear(Color _color) = 0;
 		virtual void* GetColorAttachmentTexture(UInt32 _index) = 0;
 
 		UInt32 GetWidth() { return width; }

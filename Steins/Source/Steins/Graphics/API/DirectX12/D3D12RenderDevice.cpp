@@ -2,6 +2,7 @@
 #include "D3D12RenderDevice.h"
 #include "D3D12Buffer.h"
 #include "D3D12RenderContext.h"
+#include "D3D12RenderPass.h"
 #include "D3D12Framebuffer.h"
 #include "D3D12Shader.h"
 #include "D3D12Swapchain.h"
@@ -19,25 +20,7 @@ namespace Steins
 
 	D3D12RenderDevice::~D3D12RenderDevice()
 	{
-#if defined(DEBUG) || defined(_DEBUG)
-		Microsoft::WRL::ComPtr<ID3D12InfoQueue> infoQueue;
-		if (SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&infoQueue))))
-		{
-			infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE);
-			infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
-			infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, FALSE); // 원하면 TRUE로
 
-			// 필요 없는 메시지는 필터링도 가능
-			D3D12_MESSAGE_ID denyIds[] = {
-				D3D12_MESSAGE_ID_MAP_INVALID_NULLRANGE,
-				D3D12_MESSAGE_ID_UNMAP_INVALID_NULLRANGE
-			};
-			D3D12_INFO_QUEUE_FILTER filter = {};
-			filter.DenyList.NumIDs = _countof(denyIds);
-			filter.DenyList.pIDList = denyIds;
-			infoQueue->AddStorageFilterEntries(&filter);
-		}
-#endif
 	}
 
 	void D3D12RenderDevice::Init()
@@ -47,6 +30,7 @@ namespace Steins
 		if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugLayer))))
 		{
 			debugLayer->EnableDebugLayer();
+			debugLayer->SetEnableGPUBasedValidation(TRUE);
 		}
 #endif
 		// DXGI 팩토리 생성
@@ -89,6 +73,26 @@ namespace Steins
 
 		hr = D3D12CreateDevice(dxgiAdapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(device.GetAddressOf()));
 		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to Create Device!");
+
+#if defined(DEBUG) || defined(_DEBUG)
+		Microsoft::WRL::ComPtr<ID3D12InfoQueue> infoQueue;
+		if (SUCCEEDED(device->QueryInterface(IID_PPV_ARGS(&infoQueue))))
+		{
+			infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE);
+			infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
+			infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, FALSE); // 원하면 TRUE로
+
+			// 필요 없는 메시지는 필터링도 가능
+			D3D12_MESSAGE_ID denyIds[] = {
+				D3D12_MESSAGE_ID_MAP_INVALID_NULLRANGE,
+				D3D12_MESSAGE_ID_UNMAP_INVALID_NULLRANGE
+			};
+			D3D12_INFO_QUEUE_FILTER filter = {};
+			filter.DenyList.NumIDs = _countof(denyIds);
+			filter.DenyList.pIDList = denyIds;
+			infoQueue->AddStorageFilterEntries(&filter);
+		}
+#endif
 
 		// 커맨드 큐 생성
 		{
@@ -226,12 +230,12 @@ namespace Steins
 
 	Shared<RenderPass> D3D12RenderDevice::CreateRenderPass(const RenderPassDesc& _desc)
 	{
-		return Shared<RenderPass>();
+		return MakeShared<D3D12RenderPass>(this, _desc);
 	}
 
 	Shared<Framebuffer> Steins::D3D12RenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc)
 	{
-		return MakeShared<D3D12Framebuffer>(this, _desc);
+		return _renderPass->CreateFramebuffer(_desc);
 	}
 
 	Shared<PipelineState> Steins::D3D12RenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)

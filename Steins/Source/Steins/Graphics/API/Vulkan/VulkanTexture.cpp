@@ -68,25 +68,22 @@ namespace Steins
 		device->TransitionTextureLayout(textureImage, imageFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 		device->CopyBufferToImage(uploadBuffer, textureImage, width, height);
 		device->TransitionTextureLayout(textureImage, imageFormat, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		currentLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 		device->CreateImageView(textureImage, imageFormat, textureImageView);
 
 		vkDestroyBuffer(device->GetDevice(), uploadBuffer, nullptr);
 		vkFreeMemory(device->GetDevice(), uploadBufferMemory, nullptr);
 
 		CreateSampler();
-
-		ImGuiDescriptorSet = ImGui_ImplVulkan_AddTexture(textureSampler, textureImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 	}
-
 	
-
-	VulkanTexture2D::VulkanTexture2D(VulkanRenderDevice* _device, VkImage _image)
+	VulkanTexture2D::VulkanTexture2D(VulkanRenderDevice* _device, VkImage _image, VkFormat _format)
 	{
 		device = _device;
 		textureImage = _image;
 		isSwapchainImage = true;
 
-		device->CreateImageView(textureImage, VK_FORMAT_R8G8B8A8_UNORM, textureImageView);
+		device->CreateImageView(textureImage, _format, textureImageView);
 
 		CreateSampler();
 
@@ -141,5 +138,13 @@ namespace Steins
 	{
 		return textureImageView;
 	}
+
+	void VulkanTexture2D::TransitionLayout(VkImageLayout _targetLayout)
+	{
+		if (currentLayout == _targetLayout) return;
+		device->TransitionTextureLayout(textureImage, imageFormat, currentLayout, _targetLayout);
+		currentLayout = _targetLayout;
+	}
+
 
 }

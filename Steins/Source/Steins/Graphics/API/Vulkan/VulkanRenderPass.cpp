@@ -24,7 +24,7 @@ namespace Steins
 			colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 			colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 			colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-			colorAttachment.finalLayout = _desc.isSwapchain? VK_IMAGE_LAYOUT_PRESENT_SRC_KHR : VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+			colorAttachment.finalLayout = _desc.isSwapchain? VK_IMAGE_LAYOUT_PRESENT_SRC_KHR : VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
 			attachments.push_back(colorAttachment);
 
@@ -88,18 +88,19 @@ namespace Steins
 	void VulkanRenderPass::Begin(Shared<Framebuffer> _framebuffer)
 	{
 		STEINS_CORE_ASSERT(device->GetAPI() == RendererAPIType::Vulkan, "Wrong API");
-		Shared<VulkanFramebuffer> framebuffer = static_pointer_cast<VulkanFramebuffer>(_framebuffer);
+		currentFramebuffer = static_pointer_cast<VulkanFramebuffer>(_framebuffer);
 
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 		renderPassInfo.renderPass = renderPass;
-		renderPassInfo.framebuffer = framebuffer->GetFramebuffer();
+		renderPassInfo.framebuffer = currentFramebuffer->GetFramebuffer();
 		renderPassInfo.renderArea.offset = { 0, 0 };
-		renderPassInfo.renderArea.extent = framebuffer->GetExtent();
+		renderPassInfo.renderArea.extent = currentFramebuffer->GetExtent();
 
-		VkClearValue clearColor = { {0.0f, 0.0f, 0.0f, 1.0f} };
+		VkClearValue vulkanClearColor;
+		memcpy(vulkanClearColor.color.float32, clearColor.color, sizeof(clearColor));
 		renderPassInfo.clearValueCount = 1;
-		renderPassInfo.pClearValues = &clearColor;
+		renderPassInfo.pClearValues = &vulkanClearColor;
 
 		vkCmdBeginRenderPass(device->GetCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 		device->SetCurrentRenderPass(renderPass);
@@ -110,17 +111,16 @@ namespace Steins
 		//viewport.height = -(float)extent.height;
 		viewport.x = 0.0f;
 		viewport.y = 0.0f;
-		viewport.width = (float)framebuffer->GetExtent().width;
-		viewport.height = (float)framebuffer->GetExtent().width;
+		viewport.width = (float)currentFramebuffer->GetExtent().width;
+		viewport.height = (float)currentFramebuffer->GetExtent().height;
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 		vkCmdSetViewport(device->GetCommandBuffer(), 0, 1, &viewport);
 
 		VkRect2D scissor{};
 		scissor.offset = { 0, 0 };
-		scissor.extent = framebuffer->GetExtent();
+		scissor.extent = currentFramebuffer->GetExtent();
 		vkCmdSetScissor(device->GetCommandBuffer(), 0, 1, &scissor);
-
 	}
 	void VulkanRenderPass::End()
 	{

@@ -13,12 +13,12 @@ Sandbox2D::Sandbox2D()
 			 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
 	};
 
-	//float squareVertices2[4 * 9] = {
-	//	-0.3f, -0.4f, 0.0f, 1.0f,0.0f,0.0f,1.0f, 0.0f,1.0f,
-	//	 -0.3f,  0.6f, 0.0f,0.0f,0.0f,1.0f,1.0f, 0.0f,0.0f,
-	//	 0.7f, 0.6f, 0.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 0.0f,
-	//	 0.7f, -0.4f, 0.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 1.0f,
-	//};
+	float squareVertices2[4 * 9] = {
+		-0.3f, -0.4f, 1.0f, 1.0f,0.0f,0.0f,1.0f, 0.0f,1.0f,
+		 -0.3f,  0.6f, 1.0f,0.0f,0.0f,1.0f,1.0f, 0.0f,0.0f,
+		 0.7f, 0.6f, 1.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 0.0f,
+		 0.7f, -0.4f, 1.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 1.0f,
+	};
 
 	Steins::BufferLayout layout =
 	{
@@ -30,14 +30,14 @@ Sandbox2D::Sandbox2D()
 	squareVB = Steins::VertexBuffer::CreateDynamic(sizeof(squareVertices), layout.GetStride());
 	squareVB->SetData(squareVertices, sizeof(squareVertices));
 
-	//squareVB2 = Steins::VertexBuffer::CreateDynamic(sizeof(squareVertices2), layout.GetStride());
-	//squareVB2->SetData(squareVertices2, sizeof(squareVertices2));
+	squareVB2 = Steins::VertexBuffer::CreateDynamic(sizeof(squareVertices2), layout.GetStride());
+	squareVB2->SetData(squareVertices2, sizeof(squareVertices2));
 
 	uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0};
 	squareIB = Steins::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 
-	//uint32_t squareIndices2[6] = { 0, 1, 2, 2, 3, 0 };
-	//squareIB2 = Steins::IndexBuffer::Create(squareIndices2, sizeof(squareIndices2) / sizeof(uint32_t));
+	uint32_t squareIndices2[6] = { 0, 1, 2, 2, 3, 0 };
+	squareIB2 = Steins::IndexBuffer::Create(squareIndices2, sizeof(squareIndices2) / sizeof(uint32_t));
 
 	
 	vs = Steins::Shader::Create("Asset/Shader/VertexShader.hlsl", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
@@ -61,21 +61,22 @@ Sandbox2D::Sandbox2D()
 	textureDesc.format = Steins::RenderFormat::R8G8B8A8_UNORM_SRGB;
 	texture = Steins::Texture2D::Create(path, textureDesc);
 
-	Steins::RenderPassDesc rpDesc;
+	//Steins::RenderPassDesc rpDesc;
 
-	Steins::RenderPassAttachmentDesc attach{};
-	attach.format = Steins::RenderFormat::R8G8B8A8_UNORM;
-	attach.loadOp = Steins::AttachmentLoadOp::Clear;
-	attach.storeOp = Steins::AttachmentStoreOp::Store;
-	rpDesc.colorAttachments.push_back(attach);
+	//Steins::RenderPassAttachmentDesc attach{};
+	//attach.format = Steins::RenderFormat::R8G8B8A8_UNORM;
+	//attach.loadOp = Steins::AttachmentLoadOp::Clear;
+	//attach.storeOp = Steins::AttachmentStoreOp::Store;
+	//rpDesc.colorAttachments.push_back(attach);
 
-	renderPass = Steins::RenderPass::Create(rpDesc);
+	//renderPass = Steins::RenderPass::Create(rpDesc);
+	//renderPass->SetClearColor(Steins::Color::White);
 
-	Steins::FramebufferDesc fbDesc;
-	fbDesc.width = 1600;
-	fbDesc.height = 900;
+	//Steins::FramebufferDesc fbDesc;
+	//fbDesc.width = 128;
+	//fbDesc.height = 72;
 
-	framebuffer = Steins::Framebuffer::Create(renderPass, fbDesc);
+	//framebuffer = Steins::Framebuffer::Create(renderPass, fbDesc);
 
 	Steins::PipelineStateDesc desc;
 	desc.vertexShader = vs;
@@ -90,9 +91,6 @@ Sandbox2D::Sandbox2D()
 
 	material->SetTexture2D("u_Texture", texture);
 	material->SetConstantBuffer("Camera", viewProjMat);
-
-
-	
 }
 
 void Sandbox2D::OnUpdate(Float32 _deltaTime)
@@ -141,7 +139,7 @@ void Sandbox2D::OnUpdate(Float32 _deltaTime)
 		viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
 	}
 
-	renderPass->Begin(framebuffer);
+	//renderPass->Begin(framebuffer);
 	////camera.SetPosition({ 0.5f, 0.5f, 0.0f });
 
 	//Steins::Renderer::BeginScene(camera);
@@ -149,14 +147,22 @@ void Sandbox2D::OnUpdate(Float32 _deltaTime)
 	squareVB->Bind();
 	squareIB->Bind();
 	material->Bind();
-
 	
 	//viewProjMat->Bind(0, Steins::SteinsVertexBit);
 	//texture->Bind(0);
 	//Steins::RenderCommand::DrawIndexed(squareIB->GetCount());
 	Steins::Renderer::Submit(squareIB->GetCount());
 
-	renderPass->End();
+	squareVB2->Bind();
+	squareIB2->Bind();
+
+	//viewProjMat->Bind(0, Steins::SteinsVertexBit);
+	//texture->Bind(0);
+	//Steins::RenderCommand::DrawIndexed(squareIB->GetCount());
+	Steins::Renderer::Submit(squareIB2->GetCount());
+
+
+	//renderPass->End();
 	//framebuffer->End();
 
 	//r2d.TestTick();
@@ -179,7 +185,7 @@ void Sandbox2D::OnImGuiRender()
 
 	ImGui::Begin("ImGui texture Image Test");
 	//ImGui::Image((ImTextureID)texture->GetImGuiHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
-	ImGui::Image((ImTextureID)framebuffer->GetColorAttachmentTexture(0), ImVec2(framebuffer->GetWidth(), framebuffer->GetHeight()));
+	//ImGui::Image((ImTextureID)framebuffer->GetColorAttachmentTexture(0), ImVec2(framebuffer->GetWidth(), framebuffer->GetHeight()));
 	//ImGui::Image((ImTextureID)(ID3D11ShaderResourceView*)texture->GetNativeHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
 	//ImGui::Image((ImTextureID)static_cast<unsigned long long>(reinterpret_cast<uintptr_t>(texture->GetNativeHandle())), ImVec2(texture->GetWidth() * 2, texture->GetHeight() * 2));
 	//ImGui::Image((ImTextureID)(texture->GetNativeHandle()), ImVec2(texture->GetWidth() * 2, texture->GetHeight() * 2));

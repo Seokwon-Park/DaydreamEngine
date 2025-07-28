@@ -1,9 +1,8 @@
 #include "SteinsPCH.h"
 #include "D3D12Swapchain.h"
+#include "D3D12RenderPass.h"
 
 #include "Steins/Graphics/Utility/GraphicsUtil.h"
-
-#include "Steins/Graphics/Core/Renderer2D.h"
 
 #include "Steins/Core/Window.h"
 #include "GLFW/glfw3.h"
@@ -33,8 +32,6 @@ namespace Steins
 		swapchainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
 		swapchainDesc.Flags = 0;
 
-		fenceValues.resize(_desc.bufferCount);
-
 		ComPtr<IDXGISwapChain1> swapChain1;
 		HRESULT hr = device->GetFactory()->CreateSwapChainForHwnd(
 			device->GetCommandQueue(),
@@ -46,14 +43,23 @@ namespace Steins
 
 		swapChain1->QueryInterface(swapChain.GetAddressOf());
 
+		RenderPassAttachmentDesc colorDesc;
+		colorDesc.format = _desc.format;
+
+		RenderPassDesc rpDesc{};
+		rpDesc.colorAttachments.push_back(colorDesc);
+		rpDesc.isSwapchain = true;
+
+		mainRenderPass = MakeShared<D3D12RenderPass>(device, rpDesc);
+
 		framebuffers.resize(desc.bufferCount);
 		for (UInt32 i = 0; i < desc.bufferCount; i++)
 		{
-			frameIndex = i;
-			framebuffers[i] = MakeShared<D3D12Framebuffer>(device, this);
+			framebuffers[i] = MakeShared<D3D12Framebuffer>(device, mainRenderPass.get(), this);
 		}
 		frameIndex = swapChain->GetCurrentBackBufferIndex();
 
+		fenceValues.resize(_desc.bufferCount);
 		hr = device->GetDevice()->CreateFence(fenceValues[frameIndex], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fence.GetAddressOf()));
 		fenceValues[frameIndex]++; // 초기 값 증가
 		fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
@@ -68,7 +74,7 @@ namespace Steins
 		ID3D12DescriptorHeap* heaps[] = { device->GetCBVSRVUAVHeap() };
 		device->GetCommandList()->SetDescriptorHeaps(1, heaps);
 		//framebuffers[frameIndex]->Begin();
-		framebuffers[frameIndex]->Clear(Color(1.0f, 1.0f, 1.0f, 1.0f));
+		//framebuffers[frameIndex]->Clear(Color(1.0f, 1.0f, 1.0f, 1.0f));
 
 		D3D12_RESOURCE_BARRIER barrier{};
 
@@ -141,7 +147,7 @@ namespace Steins
 		device->GetCommandList()->ResourceBarrier(1, &barr);
 
 		//framebuffers[frameIndex]->Begin();
-		framebuffers[frameIndex]->Clear(Color(1.0f, 1.0f, 1.0f, 1.0f));
+		//framebuffers[frameIndex]->Clear(Color(1.0f, 1.0f, 1.0f, 1.0f));
 
 	}
 	void D3D12Swapchain::ResizeSwapchain(UInt32 _width, UInt32 height)

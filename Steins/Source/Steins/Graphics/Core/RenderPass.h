@@ -47,12 +47,11 @@ namespace Steins
 		virtual Shared<Framebuffer> CreateFramebuffer(const FramebufferDesc& _desc) = 0;
 
 		const RenderPassDesc& GetDesc() { return desc; }
+		void SetClearColor(Color _clearColor) { clearColor = _clearColor; }
 
 		static Shared<RenderPass> Create(const RenderPassDesc& _desc);
 	protected:
 		RenderPassDesc desc;
-
-
-
+		Color clearColor;
 	};
 }

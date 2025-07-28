@@ -6,6 +6,28 @@
 
 namespace Steins
 {
+	D3D11Texture2D::D3D11Texture2D(D3D11RenderDevice* _device, const TextureDesc& _desc)
+	{
+		device = _device;
+
+		width = _desc.width;
+		height = _desc.height;
+
+		D3D11_TEXTURE2D_DESC textureDesc = {};
+		textureDesc.Width = width;
+		textureDesc.Height = height;
+		textureDesc.MipLevels = 1;
+		textureDesc.ArraySize = 1;
+		textureDesc.Format = GraphicsUtil::RenderFormatToDXGIFormat(_desc.format);
+		textureDesc.SampleDesc.Count = 1;
+		textureDesc.SampleDesc.Quality = 0;
+		textureDesc.Usage = D3D11_USAGE_DEFAULT;
+		textureDesc.BindFlags = GraphicsUtil::ConvertToD3D11BindFlags(_desc.bindFlags);
+		textureDesc.CPUAccessFlags = 0;
+
+		HRESULT hr = device->GetDevice()->CreateTexture2D(&textureDesc, nullptr, texture.GetAddressOf());
+		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create Texture!");
+	}
 	D3D11Texture2D::D3D11Texture2D(D3D11RenderDevice* _device, const FilePath& _path, const TextureDesc& _desc)
 		:Texture2D(_path)
 	{

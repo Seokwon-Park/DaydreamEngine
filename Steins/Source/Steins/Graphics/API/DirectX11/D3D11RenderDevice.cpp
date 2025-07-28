@@ -10,6 +10,7 @@
 #include "D3D11ImGuiRenderer.h"
 #include "D3D11Texture.h"
 #include "D3D11Material.h"
+#include "D3D11RenderPass.h"
 
 #include "Steins/Graphics/Utility/GraphicsUtil.h"
 
@@ -159,15 +160,15 @@ namespace Steins
 
 	Shared<RenderPass> D3D11RenderDevice::CreateRenderPass(const RenderPassDesc& _desc)
 	{
-		return Shared<RenderPass>();
+		return MakeShared<D3D11RenderPass>(this, _desc);
 	}
 
-	Shared<Framebuffer> Steins::D3D11RenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc)
+	Shared<Framebuffer> D3D11RenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc)
 	{
-		return MakeShared<D3D11Framebuffer>(this, _desc);
+		return _renderPass->CreateFramebuffer(_desc);
 	}
 
-	Shared<PipelineState> Steins::D3D11RenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)
+	Shared<PipelineState> D3D11RenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)
 	{
 		return MakeShared<D3D11PipelineState>(this, _desc);
 	}

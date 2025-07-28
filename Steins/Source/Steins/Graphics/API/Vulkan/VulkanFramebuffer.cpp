@@ -93,7 +93,7 @@ namespace Steins
 		colorImages.resize(swapChainImageCount);
 		vkGetSwapchainImagesKHR(device->GetDevice(), _swapchain->GetVKSwapchain(), &swapChainImageCount, colorImages.data());
 
-		Shared<VulkanTexture2D> backBufferTexture = MakeShared<VulkanTexture2D>(device, colorImages[_frameIndex]);
+		Shared<VulkanTexture2D> backBufferTexture = MakeShared<VulkanTexture2D>(device, colorImages[_frameIndex], _swapchain->GetFormat());
 		colorAttachments.push_back(backBufferTexture);
 		colorImageViews.push_back(backBufferTexture->GetImageView());
 		//device->CreateImageView(colorImages[_frameIndex], _swapchain->GetFormat(), colorImageViews[0]);
@@ -116,13 +116,8 @@ namespace Steins
 		if(framebuffer != VK_NULL_HANDLE) vkDestroyFramebuffer(device->GetDevice(), framebuffer, nullptr);
 	}
 
-	void VulkanFramebuffer::Clear(Color _color)
-	{
-	}
-
-	void* Steins::VulkanFramebuffer::GetColorAttachmentTexture(UInt32 _index)
+	void* VulkanFramebuffer::GetColorAttachmentTexture(UInt32 _index)
 	{
 		return colorAttachments[_index]->GetImGuiHandle();
 	}
-
 }

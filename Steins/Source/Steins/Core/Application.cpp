@@ -105,12 +105,12 @@ namespace Steins
 			timeStep.UpdateTime();
 			float deltaTime = timeStep.GetDeltaTime();
 
+			Renderer::BeginSwapchainFramebuffer();
+
 			for (Layer* layer : layerStack)
 			{
 				layer->OnUpdate(deltaTime);
 			}
-
-			Renderer::BeginSwapchainFramebuffer();
 
 			imGuiLayer->BeginImGui();
 			{

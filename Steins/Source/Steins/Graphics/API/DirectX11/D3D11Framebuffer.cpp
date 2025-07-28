@@ -5,12 +5,41 @@
 
 namespace Steins
 {
-	D3D11Framebuffer::D3D11Framebuffer(D3D11RenderDevice* _device, const FramebufferDesc& _spec)
+	D3D11Framebuffer::D3D11Framebuffer(D3D11RenderDevice* _device, RenderPass* _renderPass, const FramebufferDesc& _desc)
 	{
 		device = _device;
+		
+		width = _desc.width;
+		height = _desc.height;
 
+		const RenderPassDesc& renderPassDesc = _renderPass->GetDesc();
+		for (const auto& colorAttachmentDesc : renderPassDesc.colorAttachments)
+		{
+			TextureDesc textureDesc;
+			textureDesc.width = _desc.width;
+			textureDesc.height = _desc.height;
+			textureDesc.format = colorAttachmentDesc.format;
+			textureDesc.bindFlags = RenderBindFlags::RenderTarget | RenderBindFlags::ShaderResource;
+
+			Shared<D3D11Texture2D> colorTexture = MakeShared<D3D11Texture2D>(device, textureDesc);
+			colorAttachments.push_back(colorTexture);
+			rtvs.push_back(colorTexture->GetRTV().Get());
+		}
+
+		if (renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
+		{
+			TextureDesc textureDesc;
+			textureDesc.width = _desc.width;
+			textureDesc.height = _desc.height;
+			textureDesc.format = renderPassDesc.depthAttachment.format;
+			textureDesc.bindFlags = RenderBindFlags::DepthStencil;
+
+			Shared<D3D11Texture2D> depthTexture = MakeShared<D3D11Texture2D>(device, textureDesc);
+			depthAttachment = depthTexture;
+			depthStencilView = depthTexture->GetDSV();
+		}
 	}
-	D3D11Framebuffer::D3D11Framebuffer(D3D11RenderDevice* _device, D3D11Swapchain* _swapChain)
+	D3D11Framebuffer::D3D11Framebuffer(D3D11RenderDevice* _device, RenderPass* _renderPass, D3D11Swapchain* _swapChain)
 	{
 		device = _device;
 		IDXGISwapChain* dxgiSwapchain = _swapChain->GetDXGISwapchain();
@@ -21,16 +50,10 @@ namespace Steins
 		colorAttachments.push_back(backBufferTexture);
 		STEINS_CORE_ASSERT(backBuffer, "Backbuffer is nullptr!");
 
-		//D3D11_TEXTURE2D_DESC textureDesc;
-		//backBuffer->GetDesc(&textureDesc);
-
-		//// 텍스처의 너비와 높이 변경
-		//textureDesc.SampleDesc.Count = 1;
-		//textureDesc.SampleDesc.Quality = 0;
-		//textureDesc.Usage = D3D11_USAGE_DEFAULT;
-		//ID3D11RenderTargetView* rtv;
-		//device->GetDevice()->CreateRenderTargetView(backBuffer.Get(), nullptr, &rtv);
-		//renderTargetViews.push_back(rtv);
+		for (auto texture : colorAttachments)
+		{
+			rtvs.push_back(texture->GetRTV().Get());
+		}
 	}
 	D3D11Framebuffer::~D3D11Framebuffer()
 	{
@@ -45,16 +68,8 @@ namespace Steins
 	//	device->GetContext()->OMSetRenderTargets(Cast<UINT>(rtv.size()), rtv.data(), nullptr);
 	//}
 
-	void D3D11Framebuffer::Clear(Color _color)
+	void* D3D11Framebuffer::GetColorAttachmentTexture(UInt32 _index)
 	{
-		Array<ID3D11RenderTargetView*> rtv;
-		for (auto texture : colorAttachments)
-		{
-			device->GetContext()->ClearRenderTargetView(texture->GetRTV().Get(), _color.color);
-		}
-	}
-	void* Steins::D3D11Framebuffer::GetColorAttachmentTexture(UInt32 _index)
-	{
-		return nullptr;
+		return colorAttachments[_index]->GetSRV().Get();
 	}
 }

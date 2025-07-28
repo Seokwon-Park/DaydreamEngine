@@ -43,8 +43,16 @@ namespace Steins
 		HRESULT hr = device->GetFactory()->CreateSwapChain(device->GetDevice(), &desc, swapChain.GetAddressOf());
 		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed To Create Swapchain!");
 
-		framebuffer = MakeShared<D3D11Framebuffer>(device, this);
-		//framebuffer->Begin();
+		RenderPassAttachmentDesc colorDesc;
+		colorDesc.format = _desc.format;
+
+		RenderPassDesc rpDesc{};
+		rpDesc.colorAttachments.push_back(colorDesc);
+		rpDesc.isSwapchain = true;
+
+		mainRenderPass = MakeShared<D3D11RenderPass>(device, rpDesc);
+
+		framebuffer = MakeShared<D3D11Framebuffer>(device, mainRenderPass.get(), this);
 
 		D3D11_VIEWPORT viewport;
 		viewport.TopLeftX = 0;
@@ -74,7 +82,7 @@ namespace Steins
 		framebuffer.reset();
 		swapChain->ResizeBuffers(0, _width, _height, DXGI_FORMAT_UNKNOWN, 0);
 
-		framebuffer = MakeShared<D3D11Framebuffer>(device, this);
+		//framebuffer = MakeShared<D3D11Framebuffer>(device, this);
 		//framebuffer->Begin();
 
 		D3D11_VIEWPORT viewport;
