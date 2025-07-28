@@ -7,6 +7,7 @@
 #include "Steins/Graphics/Core/RenderDevice.h"
 #include "Steins/Core/Window.h"
 
+#include "VulkanRenderPass.h"
 #include "VulkanFrameBuffer.h"
 #include "VulkanRenderDevice.h"
 
@@ -21,6 +22,8 @@ namespace Steins
 	{
 	public:
 		VulkanSwapchain(VulkanRenderDevice* _device, SteinsWindow* _window, const SwapchainDesc& _desc);
+		void CreateSwapchain(GLFWwindow* window, const Steins::SwapchainDesc& _desc);
+		void CreateCommandBuffers();
 		virtual ~VulkanSwapchain() override;
 
 		virtual void SetVSync(bool _enabled) override;
@@ -35,6 +38,7 @@ namespace Steins
 		VkFormat GetFormat() const { return format; }
 		VkSwapchainKHR GetVKSwapchain() const { return swapchain; }
 		VkExtent2D GetExtent() const { return extent; }
+		VkRenderPass GetVkRenderPass() const { return renderPass->GetVkRenderPass(); }
 
 	private:
 		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const Array<VkSurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat);
@@ -44,6 +48,7 @@ namespace Steins
 		VulkanRenderDevice* device;
 		Array<VkCommandBuffer> commandBuffers;
 		Array<Shared<VulkanFramebuffer>> framebuffers;
+		Shared<VulkanRenderPass> renderPass;
 
 		VkSurfaceKHR surface; // Vulkan window surface
 		VkSwapchainKHR swapchain;

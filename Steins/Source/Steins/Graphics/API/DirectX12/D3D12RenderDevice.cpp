@@ -229,7 +229,7 @@ namespace Steins
 		return Shared<RenderPass>();
 	}
 
-	Shared<Framebuffer> D3D12RenderDevice::CreateFramebuffer(const FramebufferDesc& _desc)
+	Shared<Framebuffer> Steins::D3D12RenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc)
 	{
 		return MakeShared<D3D12Framebuffer>(this, _desc);
 	}

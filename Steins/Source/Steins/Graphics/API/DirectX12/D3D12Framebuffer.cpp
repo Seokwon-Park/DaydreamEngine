@@ -34,20 +34,24 @@ namespace Steins
 	{
 
 	}
-	void D3D12Framebuffer::Begin() const
-	{
-		Array<D3D12_CPU_DESCRIPTOR_HANDLE> renderTargetHandles;
-		for (auto texture : colorAttachments)
-		{
-			renderTargetHandles.push_back(texture->GetRTVCPUHandle());
-		}
-		device->GetCommandList()->OMSetRenderTargets((UInt32)renderTargetHandles.size(), renderTargetHandles.data(), false, nullptr);
-	}
+	//void D3D12Framebuffer::Begin() const
+	//{
+	//	Array<D3D12_CPU_DESCRIPTOR_HANDLE> renderTargetHandles;
+	//	for (auto texture : colorAttachments)
+	//	{
+	//		renderTargetHandles.push_back(texture->GetRTVCPUHandle());
+	//	}
+	//	device->GetCommandList()->OMSetRenderTargets((UInt32)renderTargetHandles.size(), renderTargetHandles.data(), false, nullptr);
+	//}
 	void D3D12Framebuffer::Clear(Color _color)
 	{
 		for (auto texture : colorAttachments)
 		{
 			device->GetCommandList()->ClearRenderTargetView(texture->GetRTVCPUHandle(), _color.color, 0, nullptr);
 		}
+	}
+	void* Steins::D3D12Framebuffer::GetColorAttachmentTexture(UInt32 _index)
+	{
+		return nullptr;
 	}
 }

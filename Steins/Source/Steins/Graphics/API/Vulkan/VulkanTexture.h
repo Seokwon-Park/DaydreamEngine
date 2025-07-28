@@ -36,7 +36,7 @@ namespace Steins
 		VkDeviceMemory textureImageMemory;
 
 		//ImGui Image¿ë
-		VkDescriptorSet ImGuiDescriptorSet;
+		VkDescriptorSet ImGuiDescriptorSet = VK_NULL_HANDLE;
 
 		VkSampler textureSampler;
 	};

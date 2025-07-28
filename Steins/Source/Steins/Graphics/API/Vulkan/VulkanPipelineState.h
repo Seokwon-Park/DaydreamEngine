@@ -8,7 +8,7 @@ namespace Steins
 	class VulkanPipelineState : public PipelineState
 	{
 	public:
-		VulkanPipelineState(VulkanRenderDevice* _device, PipelineStateDesc _desc);
+		VulkanPipelineState(VulkanRenderDevice* _device, const PipelineStateDesc& _desc);
 		virtual ~VulkanPipelineState() override;
 
 		virtual void Bind() const override;

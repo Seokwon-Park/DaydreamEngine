@@ -65,8 +65,7 @@ EditorLayer::EditorLayer()
 
 	Steins::FramebufferDesc spec;
 
-
-	viewport = Steins::Framebuffer::Create(Steins::FramebufferDesc());
+	//viewport = Steins::Framebuffer::Create(Steins::FramebufferDesc(), fbDesc);
 }
 
 void EditorLayer::OnUpdate(Float32 _deltaTime)

@@ -15,9 +15,8 @@ namespace Steins
 		D3D12Framebuffer(D3D12RenderDevice* _device, D3D12Swapchain* _swapChain);
 		virtual ~D3D12Framebuffer() override;
 
-		virtual void Begin() const override;
-		virtual void End() const override {};
 		virtual void Clear(Color _color) override;
+		virtual void* GetColorAttachmentTexture(UInt32 _index) override;
 
 		ComPtr<ID3D12Resource> GetRenderTarget() { return colorAttachments[0]->GetTexture(); }
 

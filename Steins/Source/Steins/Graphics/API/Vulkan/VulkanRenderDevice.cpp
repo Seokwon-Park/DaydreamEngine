@@ -2,6 +2,7 @@
 #include "VulkanRenderDevice.h"
 #include "VulkanRenderContext.h"
 #include "VulkanBuffer.h"
+#include "VulkanRenderPass.h"
 #include "VulkanFramebuffer.h"
 #include "VulkanPipelineState.h"
 #include "VulkanShader.h"
@@ -164,10 +165,14 @@ namespace Steins
 		return MakeShared<VulkanIndexBuffer>(this, _indices, _count);
 	}
 
-
-	Shared<Framebuffer> VulkanRenderDevice::CreateFramebuffer(const FramebufferDesc& _desc)
+	Shared<RenderPass> VulkanRenderDevice::CreateRenderPass(const RenderPassDesc& _desc)
 	{
-		return MakeShared<VulkanFramebuffer>(this, _desc);
+		return MakeShared<VulkanRenderPass>(this, _desc);
+	}
+
+	Shared<Framebuffer> Steins::VulkanRenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc & _desc)
+	{
+		return _renderPass->CreateFramebuffer(_desc);
 	}
 
 	Shared<PipelineState> Steins::VulkanRenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)

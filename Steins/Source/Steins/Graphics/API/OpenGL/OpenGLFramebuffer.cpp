@@ -33,4 +33,8 @@ namespace Steins
 	OpenGLFramebuffer::~OpenGLFramebuffer()
 	{
 	}
+	void* Steins::OpenGLFramebuffer::GetColorAttachmentTexture(UInt32 _index)
+	{
+		return nullptr;
+	}
 }

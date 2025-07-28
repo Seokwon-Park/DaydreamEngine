@@ -35,15 +35,15 @@ namespace Steins
 	D3D11Framebuffer::~D3D11Framebuffer()
 	{
 	}
-	void D3D11Framebuffer::Begin() const
-	{
-		Array<ID3D11RenderTargetView*> rtv;
-		for (auto texture : colorAttachments)
-		{
-			rtv.push_back(texture->GetRTV().Get());
-		}
-		device->GetContext()->OMSetRenderTargets(Cast<UINT>(rtv.size()), rtv.data(), nullptr);
-	}
+	//void D3D11Framebuffer::Begin() const
+	//{
+	//	Array<ID3D11RenderTargetView*> rtv;
+	//	for (auto texture : colorAttachments)
+	//	{
+	//		rtv.push_back(texture->GetRTV().Get());
+	//	}
+	//	device->GetContext()->OMSetRenderTargets(Cast<UINT>(rtv.size()), rtv.data(), nullptr);
+	//}
 
 	void D3D11Framebuffer::Clear(Color _color)
 	{
@@ -52,5 +52,9 @@ namespace Steins
 		{
 			device->GetContext()->ClearRenderTargetView(texture->GetRTV().Get(), _color.color);
 		}
+	}
+	void* Steins::D3D11Framebuffer::GetColorAttachmentTexture(UInt32 _index)
+	{
+		return nullptr;
 	}
 }

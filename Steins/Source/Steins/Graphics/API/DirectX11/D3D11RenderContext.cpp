@@ -24,7 +24,7 @@ namespace Steins
 
 	void D3D11GraphicsContext::Clear()
 	{
-		device->GetSwapchain(0)->GetBackFramebuffer()->Begin();
+		//device->GetSwapchain(0)->GetBackFramebuffer()->Begin();
 		device->GetSwapchain(0)->GetBackFramebuffer()->Clear(clearColor);
 	}
 

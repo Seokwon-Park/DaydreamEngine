@@ -61,26 +61,32 @@ Sandbox2D::Sandbox2D()
 	textureDesc.format = Steins::RenderFormat::R8G8B8A8_UNORM_SRGB;
 	texture = Steins::Texture2D::Create(path, textureDesc);
 
+	Steins::RenderPassDesc rpDesc;
+
+	Steins::RenderPassAttachmentDesc attach{};
+	attach.format = Steins::RenderFormat::R8G8B8A8_UNORM;
+	attach.loadOp = Steins::AttachmentLoadOp::Clear;
+	attach.storeOp = Steins::AttachmentStoreOp::Store;
+	rpDesc.colorAttachments.push_back(attach);
+
+	renderPass = Steins::RenderPass::Create(rpDesc);
+
 	Steins::FramebufferDesc fbDesc;
 	fbDesc.width = 1600;
 	fbDesc.height = 900;
 
-	Steins::FramebufferAttachmentDesc attach{};
-	attach.format = Steins::RenderFormat::R8G8B8A8_UNORM;
-	attach.loadOp = Steins::AttachmentLoadOp::Clear;
-	attach.storeOp = Steins::AttachmentStoreOp::Store;
-	fbDesc.colorAttachments.push_back(attach);
-
-	framebuffer = Steins::Framebuffer::Create(fbDesc);
+	framebuffer = Steins::Framebuffer::Create(renderPass, fbDesc);
 
 	Steins::PipelineStateDesc desc;
 	desc.vertexShader = vs;
 	desc.pixelShader = ps;
 	desc.inputLayout = inputlayout;
+	desc.renderPass = renderPass;
 
 	pso = Steins::PipelineState::Create(desc);
 
 	material = Steins::Material::Create(pso);
+	//material = pso->CreateMaterial(); // 이것도 가능
 
 	material->SetTexture2D("u_Texture", texture);
 	material->SetConstantBuffer("Camera", viewProjMat);
@@ -94,48 +100,48 @@ void Sandbox2D::OnUpdate(Float32 _deltaTime)
 	Steins::RenderCommand::SetClearColor(Steins::Color::White);
 	Steins::RenderCommand::Clear();
 
-	if (Steins::Input::GetKeyPress(Steins::Key::Q))
+	if (Steins::Input::GetKeyPressed(Steins::Key::Q))
 	{
 		camera.SetPosition(camera.GetPosition() + Steins::Vector3(0.0f, 0.0f, 1.0f) * _deltaTime);
 		cameraPos = camera.GetViewProjectionMatrix();
 		viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
 	}
-	if (Steins::Input::GetKeyPress(Steins::Key::E))
+	if (Steins::Input::GetKeyPressed(Steins::Key::E))
 	{
 		camera.SetPosition(camera.GetPosition() + Steins::Vector3(0.0f, 0.0f, -1.0f) * _deltaTime);
 		cameraPos = camera.GetViewProjectionMatrix();
 		viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
 	}
 
-	if (Steins::Input::GetKeyPress(Steins::Key::W))
+	if (Steins::Input::GetKeyPressed(Steins::Key::W))
 	{
 		camera.SetPosition(camera.GetPosition() + Steins::Vector3(0.0f, 1.0f, 0.0f) * _deltaTime);
 		cameraPos = camera.GetViewProjectionMatrix();
 		viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
 	}
 
-	if (Steins::Input::GetKeyPress(Steins::Key::A))
+	if (Steins::Input::GetKeyPressed(Steins::Key::A))
 	{
 		camera.SetPosition(camera.GetPosition() + Steins::Vector3(-1.0f, 0.0f, 0.0f) * _deltaTime);
 		cameraPos = camera.GetViewProjectionMatrix();
 		viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
 	}
 
-	if (Steins::Input::GetKeyPress(Steins::Key::S))
+	if (Steins::Input::GetKeyPressed(Steins::Key::S))
 	{
 		camera.SetPosition(camera.GetPosition() + Steins::Vector3(0.0f, -1.0f, 0.0f) * _deltaTime);
 		cameraPos = camera.GetViewProjectionMatrix();
 		viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
 	}
 
-	if (Steins::Input::GetKeyPress(Steins::Key::D))
+	if (Steins::Input::GetKeyPressed(Steins::Key::D))
 	{
 		camera.SetPosition(camera.GetPosition() + Steins::Vector3(1.0f, 0.0f, 0.0f) * _deltaTime);
 		cameraPos = camera.GetViewProjectionMatrix();
 		viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
 	}
 
-	framebuffer->Begin();
+	renderPass->Begin(framebuffer);
 	////camera.SetPosition({ 0.5f, 0.5f, 0.0f });
 
 	//Steins::Renderer::BeginScene(camera);
@@ -150,7 +156,8 @@ void Sandbox2D::OnUpdate(Float32 _deltaTime)
 	//Steins::RenderCommand::DrawIndexed(squareIB->GetCount());
 	Steins::Renderer::Submit(squareIB->GetCount());
 
-	framebuffer->End();
+	renderPass->End();
+	//framebuffer->End();
 
 	//r2d.TestTick();
 	//Steins::Renderer2D::BeginScene(camera);
@@ -171,7 +178,8 @@ void Sandbox2D::OnImGuiRender()
 	ImGui::ShowDemoWindow();
 
 	ImGui::Begin("ImGui texture Image Test");
-	ImGui::Image((ImTextureID)texture->GetImGuiHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
+	//ImGui::Image((ImTextureID)texture->GetImGuiHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
+	ImGui::Image((ImTextureID)framebuffer->GetColorAttachmentTexture(0), ImVec2(framebuffer->GetWidth(), framebuffer->GetHeight()));
 	//ImGui::Image((ImTextureID)(ID3D11ShaderResourceView*)texture->GetNativeHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
 	//ImGui::Image((ImTextureID)static_cast<unsigned long long>(reinterpret_cast<uintptr_t>(texture->GetNativeHandle())), ImVec2(texture->GetWidth() * 2, texture->GetHeight() * 2));
 	//ImGui::Image((ImTextureID)(texture->GetNativeHandle()), ImVec2(texture->GetWidth() * 2, texture->GetHeight() * 2));

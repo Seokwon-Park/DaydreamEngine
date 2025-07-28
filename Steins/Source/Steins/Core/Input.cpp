@@ -20,7 +20,7 @@ namespace Steins
 		}
 		return false;
 	}
-	bool Input::GetKeyPress(KeyCode _key)
+	bool Input::GetKeyPressed(KeyCode _key)
 	{
 		SteinsWindow& window = Application::GetInstance().GetMainWindow();
 		int state = window.GetKeyState(_key);

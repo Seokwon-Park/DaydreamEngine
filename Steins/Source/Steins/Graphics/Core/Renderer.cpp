@@ -48,12 +48,12 @@ namespace Steins
 
 	void Renderer::BeginSwapchainFramebuffer()
 	{
-		instance->currentWindow->GetSwapchain()->GetBackFramebuffer()->Begin();
+		instance->currentWindow->GetSwapchain()->BeginRenderPass();
 	}
 
 	void Renderer::EndSwapchainFramebuffer()
 	{
-		instance->currentWindow->GetSwapchain()->GetBackFramebuffer()->End();
+		instance->currentWindow->GetSwapchain()->EndRenderPass();
 	}
 
 	void Renderer::BeginScene(const OrthographicCamera& camera)

@@ -49,6 +49,7 @@ namespace Steins
 		Renderer::Init(_specification.rendererAPI);
 		//렌더러에 윈도우 
 		Renderer::RegisterWindow(prop.title, mainWindow.get());
+		Renderer::CreateSwapchainFor(mainWindow.get());
 		Renderer::SetCurrentWindow(mainWindow.get());
 		//Renderer::RegisterWindow("TestWindow", testWindow.get());
 

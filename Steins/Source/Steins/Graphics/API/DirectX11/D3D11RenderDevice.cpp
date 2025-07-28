@@ -162,7 +162,7 @@ namespace Steins
 		return Shared<RenderPass>();
 	}
 
-	Shared<Framebuffer> D3D11RenderDevice::CreateFramebuffer(const FramebufferDesc& _desc)
+	Shared<Framebuffer> Steins::D3D11RenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc)
 	{
 		return MakeShared<D3D11Framebuffer>(this, _desc);
 	}

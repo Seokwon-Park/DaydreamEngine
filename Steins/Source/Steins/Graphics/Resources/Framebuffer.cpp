@@ -6,8 +6,8 @@
 
 namespace Steins
 {
-	Shared<Framebuffer> Framebuffer::Create(const FramebufferDesc& _spec)
+	Shared<Framebuffer> Framebuffer::Create(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc)
 	{
-		return Renderer::GetRenderDevice()->CreateFramebuffer(_spec);
+		return Renderer::GetRenderDevice()->CreateFramebuffer(_renderPass, _desc);
 	}
 }

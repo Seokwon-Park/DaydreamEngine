@@ -21,6 +21,7 @@ private:
 	Steins::Shared<Steins::Shader> ps;
 
 	Steins::Shared<Steins::PipelineState> pso;
+	Steins::Shared<Steins::RenderPass> renderPass;
 	Steins::Shared<Steins::ConstantBuffer> viewProjMat;
 	Steins::Shared<Steins::Texture2D> texture;
 

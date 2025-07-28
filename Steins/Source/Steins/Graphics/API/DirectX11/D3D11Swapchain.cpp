@@ -42,10 +42,9 @@ namespace Steins
 
 		HRESULT hr = device->GetFactory()->CreateSwapChain(device->GetDevice(), &desc, swapChain.GetAddressOf());
 		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed To Create Swapchain!");
-		device->AddSwapchain(this);
 
 		framebuffer = MakeShared<D3D11Framebuffer>(device, this);
-		framebuffer->Begin();
+		//framebuffer->Begin();
 
 		D3D11_VIEWPORT viewport;
 		viewport.TopLeftX = 0;
@@ -76,7 +75,7 @@ namespace Steins
 		swapChain->ResizeBuffers(0, _width, _height, DXGI_FORMAT_UNKNOWN, 0);
 
 		framebuffer = MakeShared<D3D11Framebuffer>(device, this);
-		framebuffer->Begin();
+		//framebuffer->Begin();
 
 		D3D11_VIEWPORT viewport;
 		viewport.TopLeftX = 0;

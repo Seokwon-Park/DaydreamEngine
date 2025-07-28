@@ -2,6 +2,7 @@
 #include "RenderPass.h"
 
 #include "Steins/Graphics/Core/Renderer.h"
+#include "Steins/Graphics/Resources/Framebuffer.h"
 
 namespace Steins
 {

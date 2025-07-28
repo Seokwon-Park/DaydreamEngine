@@ -43,7 +43,7 @@ namespace Steins
 		virtual Shared<VertexBuffer> CreateStaticVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride) = 0;
 		virtual Shared<IndexBuffer> CreateIndexBuffer(UInt32* _indices, UInt32 _count) = 0;
 		virtual Shared<RenderPass> CreateRenderPass(const RenderPassDesc& _desc) = 0;
-		virtual Shared<Framebuffer> CreateFramebuffer(const FramebufferDesc& _spec) = 0;
+		virtual Shared<Framebuffer> CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc & _desc) = 0;
 		virtual Shared<PipelineState> CreatePipelineState(const PipelineStateDesc& _desc)= 0;
 		virtual Shared<Shader> CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode) = 0;
 		virtual Shared<Swapchain> CreateSwapchain(SteinsWindow* _window, const SwapchainDesc& _desc) = 0;

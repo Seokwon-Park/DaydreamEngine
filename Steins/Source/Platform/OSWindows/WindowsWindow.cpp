@@ -49,9 +49,7 @@ namespace Steins
 			glfwSetErrorCallback(GLFWErrorCallback);
 			sIsGLFWInitialized = true;
 		}
-		if (_props.rendererAPI == RendererAPIType::Vulkan || 
-			_props.rendererAPI == RendererAPIType::DirectX11 ||
-			_props.rendererAPI == RendererAPIType::DirectX12)
+		if (_props.rendererAPI != RendererAPIType::OpenGL)
 		{
 			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		}

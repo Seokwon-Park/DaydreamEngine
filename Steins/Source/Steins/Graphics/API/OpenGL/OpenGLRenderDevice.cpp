@@ -77,7 +77,7 @@ namespace Steins
 		return Shared<RenderPass>();
 	}
 
-	Shared<Framebuffer> OpenGLRenderDevice::CreateFramebuffer(const FramebufferDesc& _desc)
+	Shared<Framebuffer> Steins::OpenGLRenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc & _desc)
 	{
 		return Shared<Framebuffer>();
 	}

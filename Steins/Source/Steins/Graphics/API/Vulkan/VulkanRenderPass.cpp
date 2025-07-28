@@ -2,46 +2,133 @@
 #include "VulkanRenderPass.h"
 #include "VulkanFramebuffer.h"
 
+#include "Steins/Graphics/Utility/GraphicsUtil.h"
+
 namespace Steins
 {
-	VulkanRenderPass::VulkanRenderPass(VulkanRenderDevice* _device)
+	VulkanRenderPass::VulkanRenderPass(VulkanRenderDevice* _device, const RenderPassDesc& _desc)
 	{
 		device = _device;
+		desc = _desc;
+		std::vector<VkAttachmentDescription> attachments;
+		std::vector<VkAttachmentReference> colorAttachmentRefs;
 
-		VkAttachmentDescription colorAttachment{};
-		colorAttachment.format = VK_FORMAT_R8G8B8A8_UNORM;
-		colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-		colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-		colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-		colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-		colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+		// ƒ√∑Ø attachmentµÈ
+		for (size_t i = 0; i < _desc.colorAttachments.size(); ++i)
+		{
+			VkAttachmentDescription colorAttachment{};
+			colorAttachment.format = GraphicsUtil::RenderFormatToVkFormat(_desc.colorAttachments[i].format);
+			colorAttachment.samples = static_cast<VkSampleCountFlagBits>(_desc.samples);
+			colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+			colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+			colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+			colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+			colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			colorAttachment.finalLayout = _desc.isSwapchain? VK_IMAGE_LAYOUT_PRESENT_SRC_KHR : VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-		VkAttachmentReference colorAttachmentRef{};
-		colorAttachmentRef.attachment = 0;
-		colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+			attachments.push_back(colorAttachment);
+
+			VkAttachmentReference colorAttachmentRef{};
+			colorAttachmentRef.attachment = static_cast<uint32_t>(i);
+			colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+			colorAttachmentRefs.push_back(colorAttachmentRef);
+		}
+
+		// ±Ì¿Ã attachment
+		VkAttachmentReference depthAttachmentRef{};
+		bool hasDepth = (_desc.depthAttachment.format != RenderFormat::UNKNOWN);
+		if (hasDepth)
+		{
+			VkAttachmentDescription depthAttachment{};
+			depthAttachment.format = GraphicsUtil::RenderFormatToVkFormat(_desc.depthAttachment.format);
+			depthAttachment.samples = static_cast<VkSampleCountFlagBits>(_desc.samples);
+			depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+			depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+			depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+			depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+			depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+			depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+			attachments.push_back(depthAttachment);
+
+			depthAttachmentRef.attachment = static_cast<uint32_t>(attachments.size() - 1);
+			depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+		}
 
 		VkSubpassDescription subpass{};
 		subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-		subpass.colorAttachmentCount = 1;
-		subpass.pColorAttachments = &colorAttachmentRef;
+		subpass.colorAttachmentCount = static_cast<uint32_t>(colorAttachmentRefs.size());
+		subpass.pColorAttachments = colorAttachmentRefs.data();
+		subpass.pDepthStencilAttachment = hasDepth ? &depthAttachmentRef : nullptr;
+
+		VkSubpassDependency dependency{};
+		dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+		dependency.dstSubpass = 0;
+		dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+		dependency.srcAccessMask = 0;
+		dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+		dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 
 		VkRenderPassCreateInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-		renderPassInfo.attachmentCount = 1;
-		renderPassInfo.pAttachments = &colorAttachment;
+		renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+		renderPassInfo.pAttachments = attachments.data();
 		renderPassInfo.subpassCount = 1;
 		renderPassInfo.pSubpasses = &subpass;
+		renderPassInfo.dependencyCount = 1;
+		renderPassInfo.pDependencies = &dependency;
 
-		VkResult result = vkCreateRenderPass(_device->GetDevice(), &renderPassInfo, nullptr, &renderPass);
+		VkResult result = vkCreateRenderPass(device->GetDevice(), &renderPassInfo, nullptr, &renderPass);
 		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create renderpass!");
+	}
+	VulkanRenderPass::~VulkanRenderPass()
+	{
+		if (renderPass != VK_NULL_HANDLE) vkDestroyRenderPass(device->GetDevice(), renderPass, nullptr);
 	}
 	void VulkanRenderPass::Begin(Shared<Framebuffer> _framebuffer)
 	{
+		STEINS_CORE_ASSERT(device->GetAPI() == RendererAPIType::Vulkan, "Wrong API");
+		Shared<VulkanFramebuffer> framebuffer = static_pointer_cast<VulkanFramebuffer>(_framebuffer);
+
+		VkRenderPassBeginInfo renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassInfo.renderPass = renderPass;
+		renderPassInfo.framebuffer = framebuffer->GetFramebuffer();
+		renderPassInfo.renderArea.offset = { 0, 0 };
+		renderPassInfo.renderArea.extent = framebuffer->GetExtent();
+
+		VkClearValue clearColor = { {0.0f, 0.0f, 0.0f, 1.0f} };
+		renderPassInfo.clearValueCount = 1;
+		renderPassInfo.pClearValues = &clearColor;
+
+		vkCmdBeginRenderPass(device->GetCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+		device->SetCurrentRenderPass(renderPass);
+		VkViewport viewport{};
+		//viewport.x = 0.0f;
+		//viewport.y = (float)extent.height;
+		//viewport.width = (float)extent.width;
+		//viewport.height = -(float)extent.height;
+		viewport.x = 0.0f;
+		viewport.y = 0.0f;
+		viewport.width = (float)framebuffer->GetExtent().width;
+		viewport.height = (float)framebuffer->GetExtent().width;
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		vkCmdSetViewport(device->GetCommandBuffer(), 0, 1, &viewport);
+
+		VkRect2D scissor{};
+		scissor.offset = { 0, 0 };
+		scissor.extent = framebuffer->GetExtent();
+		vkCmdSetScissor(device->GetCommandBuffer(), 0, 1, &scissor);
+
 	}
 	void VulkanRenderPass::End()
 	{
+		vkCmdEndRenderPass(device->GetCommandBuffer());
+	}
+	Shared<Framebuffer> VulkanRenderPass::CreateFramebuffer(const FramebufferDesc& _desc)
+	{
+		return MakeShared<VulkanFramebuffer>(device, this, _desc);
 	}
 	//void VulkanRenderPass::Begin(Shared<Framebuffer> _framebuffer)
 	//{

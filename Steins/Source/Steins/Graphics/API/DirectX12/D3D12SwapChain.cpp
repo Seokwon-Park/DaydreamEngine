@@ -67,7 +67,7 @@ namespace Steins
 		device->GetCommandList()->Reset(device->GetCommandAllocator(frameIndex), nullptr);
 		ID3D12DescriptorHeap* heaps[] = { device->GetCBVSRVUAVHeap() };
 		device->GetCommandList()->SetDescriptorHeaps(1, heaps);
-		framebuffers[frameIndex]->Begin();
+		//framebuffers[frameIndex]->Begin();
 		framebuffers[frameIndex]->Clear(Color(1.0f, 1.0f, 1.0f, 1.0f));
 
 		D3D12_RESOURCE_BARRIER barrier{};
@@ -140,7 +140,7 @@ namespace Steins
 		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 		device->GetCommandList()->ResourceBarrier(1, &barr);
 
-		framebuffers[frameIndex]->Begin();
+		//framebuffers[frameIndex]->Begin();
 		framebuffers[frameIndex]->Clear(Color(1.0f, 1.0f, 1.0f, 1.0f));
 
 	}

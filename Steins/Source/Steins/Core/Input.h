@@ -9,7 +9,7 @@ namespace Steins
 	{
 	public:
 		static bool GetKeyDown(KeyCode _key);
-		static bool GetKeyPress(KeyCode _key);
+		static bool GetKeyPressed(KeyCode _key);
 		static bool GetKeyUp(KeyCode _key);
 
 		static bool GetMouseButtonPress(MouseCode button);

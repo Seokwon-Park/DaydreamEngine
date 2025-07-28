@@ -26,21 +26,20 @@ namespace Steins
 			return VK_DESCRIPTOR_TYPE_MAX_ENUM;
 	}
 
-	VulkanPipelineState::VulkanPipelineState(VulkanRenderDevice* _device, PipelineStateDesc _desc)
+	VulkanPipelineState::VulkanPipelineState(VulkanRenderDevice* _device, const PipelineStateDesc& _desc)
 		:PipelineState(_desc)
 	{
 		device = _device;
 
 		SortedMap<UInt32, Array<VkDescriptorSetLayoutBinding>> setBindings;
 
-		VkVertexInputBindingDescription desc;
-		desc.binding = 0;
-		desc.stride = 0;
-		desc.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+		VkVertexInputBindingDescription vertexInputdesc;
+		vertexInputdesc.binding = 0;
+		vertexInputdesc.stride = 0;
+		vertexInputdesc.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
 		UInt32 offset = 0;
 		
-
 		Array<VkVertexInputAttributeDescription> attribDescArray;
 		for (const Shared<Shader>& shader : shaders)
 		{
@@ -65,7 +64,7 @@ namespace Steins
 					attribDesc.offset = offset;
 
 					offset += info.size;
-					desc.stride += info.size;
+					vertexInputdesc.stride += info.size;
 
 					attribDescArray.push_back(attribDesc);
 					continue;
@@ -114,7 +113,7 @@ namespace Steins
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 		vertexInputInfo.vertexBindingDescriptionCount = 1;
-		vertexInputInfo.pVertexBindingDescriptions = &desc; // Optional
+		vertexInputInfo.pVertexBindingDescriptions = &vertexInputdesc; // Optional
 		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<UInt32>(attribDescArray.size());
 		vertexInputInfo.pVertexAttributeDescriptions = attribDescArray.data(); // Optional
 
@@ -192,6 +191,8 @@ namespace Steins
 			throw std::runtime_error("failed to create pipeline layout!");
 		}
 
+		Shared<VulkanRenderPass> rp = static_pointer_cast<VulkanRenderPass>(_desc.renderPass);
+
 		VkGraphicsPipelineCreateInfo pipelineInfo{};
 		pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 		pipelineInfo.stageCount = (UInt32)shaderStages.size();
@@ -205,7 +206,7 @@ namespace Steins
 		pipelineInfo.pColorBlendState = &colorBlending;
 		pipelineInfo.pDynamicState = &dynamicState;
 		pipelineInfo.layout = pipelineLayout;
-		pipelineInfo.renderPass = device->GetCurrentRenderPass();
+		pipelineInfo.renderPass = rp->GetVkRenderPass();
 		pipelineInfo.subpass = 0;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
 		pipelineInfo.basePipelineIndex = -1; // Optional

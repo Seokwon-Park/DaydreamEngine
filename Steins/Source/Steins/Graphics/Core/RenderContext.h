@@ -14,11 +14,6 @@ namespace Steins
 		virtual void SetClearColor(const Color& _color) = 0;
 		virtual void Clear() = 0;
 		virtual void DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex) = 0;
-		virtual void SetFramebuffer(Shared<Framebuffer> _framebuffer)
-		{
-			currentFramebuffer = _framebuffer;
-			_framebuffer->Begin();
-		}
 
 		static Shared<RenderContext> Create(RenderDevice* _device);
 	protected:

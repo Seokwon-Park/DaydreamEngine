@@ -22,7 +22,7 @@ namespace Steins
 		info.QueueFamily = device->GetGraphicsFamilyIndex();
 		info.Queue = device->GetQueue();
 		info.DescriptorPool = device->GetDescriptorPool();
-		info.RenderPass = device->GetCurrentRenderPass();
+		info.RenderPass = static_cast<VulkanSwapchain*>(_window->GetSwapchain())->GetVkRenderPass();
 		info.MinImageCount = 2;
 		info.ImageCount = 2;
 		info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
