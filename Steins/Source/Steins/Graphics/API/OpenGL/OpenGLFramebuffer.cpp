@@ -83,8 +83,8 @@ namespace Steins
 	OpenGLFramebuffer::~OpenGLFramebuffer()
 	{
 	}
-	void* OpenGLFramebuffer::GetColorAttachmentTexture(UInt32 _index)
+	Shared<Texture2D> OpenGLFramebuffer::GetColorAttachmentTexture(UInt32 _index)
 	{
-		return colorAttachments[_index]->GetNativeHandle();
+		return colorAttachments[_index];
 	}
 }

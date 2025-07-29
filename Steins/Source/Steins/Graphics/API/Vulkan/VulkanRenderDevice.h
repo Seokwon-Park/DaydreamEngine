@@ -70,7 +70,7 @@ namespace Steins
 		//Create a VkBuffer
 		void CreateBuffer(VkDeviceSize _size, VkBufferUsageFlags _usage, VkMemoryPropertyFlags _properties, VkBuffer& _buffer, VkDeviceMemory& _bufferMemory);
 		void CreateImage(UInt32 _width, UInt32 _height, VkFormat _format, VkImageTiling tiling, VkImageUsageFlags _usage, VkMemoryPropertyFlags _properties, VkImage& _image, VkDeviceMemory& _imageMemory);
-		void CreateImageView(VkImage _image, VkFormat _format, VkImageView& _imageView);
+		void CreateImageView(VkImage _image, VkFormat _format, VkImageView& _imageView, VkImageAspectFlags _aspectMask);
 		void CopyBuffer(VkBuffer _src, VkBuffer _dst, VkDeviceSize _size);
 		void CopyBufferToImage(VkBuffer _src, VkImage _dst, UInt32 _width, UInt32 _height);
 		void TransitionTextureLayout(VkImage _image, VkFormat _format, VkImageLayout _oldLayout, VkImageLayout _newLayout);

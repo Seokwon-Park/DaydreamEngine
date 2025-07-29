@@ -17,9 +17,12 @@ namespace Steins
 		D3D11Framebuffer(D3D11RenderDevice* _device, RenderPass* _renderPass, D3D11Swapchain* _swapChain);
 		virtual ~D3D11Framebuffer() override;
 
-		virtual void* GetColorAttachmentTexture(UInt32 _index) override;
+		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) override;
+		virtual bool HasDepthAttachment() override { return depthAttachment != nullptr; }
+		//virtual Shared<Texture2D> GetDepthAttachemntTexture(UInt32 _index) override;
 
 		Array<ID3D11RenderTargetView*> GetRenderTargetViews() { return rtvs; }
+		ComPtr<ID3D11DepthStencilView> GetDepthStencilView() { return depthAttachment->GetDSV(); }
 
 	private:
 		D3D11RenderDevice* device;

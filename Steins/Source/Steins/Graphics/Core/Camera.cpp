@@ -6,7 +6,7 @@ namespace Steins
 	Camera::Camera()
 		:viewMatrix(Matrix4x4())
 	{
-		direction = Vector3(0.0f, 0.0f, 1.0f);
+		dir= Vector3(0.0f, 0.0f, 1.0f);
 		up = Vector3(0.0f, 1.0f, 0.0f);
 		fovy = 70.0f;
 		UpdateMatrix();
@@ -33,7 +33,7 @@ namespace Steins
 	}
 	void Camera::UpdateMatrix()
 	{
-		viewMatrix = Matrix4x4::LookTo(position, direction, up);
+		viewMatrix = Matrix4x4::LookTo(position, dir, up);
 		//viewMatrix = Matrix4x4::Inverse(Matrix4x4::Translate({ -position.x, -position.y, -position.z }));
 		switch (projectionType)
 		{

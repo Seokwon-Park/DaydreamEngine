@@ -46,6 +46,8 @@ namespace Steins
 			STEINS_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
 			Shared<D3D12Texture2D> d3d12Tex = static_pointer_cast<D3D12Texture2D>(texture);
 			device->GetCommandList()->SetGraphicsRootDescriptorTable(bindingMap[name].set, d3d12Tex->GetSRVGPUHandle());
+			String samplerName = name + "Sampler";
+			device->GetCommandList()->SetGraphicsRootDescriptorTable(bindingMap[samplerName].set, d3d12Tex->GetSamplerGPUHandle());
 		}
 
 		for (auto [name, cbuffer] : cbuffers)
@@ -66,7 +68,6 @@ namespace Steins
 	}
 	void D3D12Material::SetConstantBuffer(const std::string& _name, Shared<ConstantBuffer> _buffer)
 	{
-		
 		if (bindingMap.find(_name) != bindingMap.end() && cbuffers.find(_name) != cbuffers.end())
 		{
 			cbuffers[_name] = _buffer;

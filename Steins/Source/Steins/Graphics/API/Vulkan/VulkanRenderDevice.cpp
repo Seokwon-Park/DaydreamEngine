@@ -345,14 +345,14 @@ namespace Steins
 		vkBindImageMemory(device, _image, _imageMemory, 0);
 	}
 
-	void VulkanRenderDevice::CreateImageView(VkImage _image, VkFormat _format, VkImageView& _imageView)
+	void VulkanRenderDevice::CreateImageView(VkImage _image, VkFormat _format, VkImageView& _imageView, VkImageAspectFlags _aspectMask)
 	{
 		VkImageViewCreateInfo viewInfo{};
 		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 		viewInfo.image = _image;
 		viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
 		viewInfo.format = _format;
-		viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		viewInfo.subresourceRange.aspectMask = _aspectMask;
 		viewInfo.subresourceRange.baseMipLevel = 0;
 		viewInfo.subresourceRange.levelCount = 1;
 		viewInfo.subresourceRange.baseArrayLayer = 0;

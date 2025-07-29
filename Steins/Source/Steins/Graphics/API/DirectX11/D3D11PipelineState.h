@@ -15,7 +15,6 @@ namespace Steins
 	private:
 		D3D11RenderDevice* device;
 		ComPtr<ID3D11RasterizerState> rasterizer;
-		ComPtr<ID3D11SamplerState> sampler;
 		ComPtr<ID3D11InputLayout> inputLayout;
 
 	};

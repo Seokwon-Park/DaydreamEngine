@@ -33,6 +33,7 @@ namespace Steins
 		DXGI_FORMAT ConvertRenderFormatToDXGIFormat(RenderFormat _format);
 		VkFormat ConvertRenderFormatToVkFormat(RenderFormat _format);
 		UInt32 ConvertRenderFormatToGLFormat(RenderFormat _format);
+		UInt32 ConvertRenderFormatToGLDataFormat(RenderFormat _format);
 		RenderFormat ConvertSPIRVTypeToRenderFormat(spirv_cross::SPIRType::BaseType _baseType, UInt32 _componentCount);
 
 

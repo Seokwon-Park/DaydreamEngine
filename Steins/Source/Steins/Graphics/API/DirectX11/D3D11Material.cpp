@@ -62,6 +62,7 @@ namespace Steins
 				break;
 			case Steins::ShaderType::Pixel:
 				device->GetContext()->PSSetShaderResources(resourceInfo.binding, 1, d3d11Tex->GetSRV().GetAddressOf());
+				device->GetContext()->PSSetSamplers(resourceInfo.binding, 1, d3d11Tex->GetSampler().GetAddressOf());
 				break;
 			case Steins::ShaderType::Compute:
 				break;

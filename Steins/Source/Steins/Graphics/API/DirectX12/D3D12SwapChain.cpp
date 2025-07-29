@@ -124,10 +124,6 @@ namespace Steins
 		scissorRect.right = static_cast<LONG>(desc.width);
 		scissorRect.bottom = static_cast<LONG>(desc.height);
 		device->GetCommandList()->RSSetScissorRects(1, &scissorRect);
-
-		ID3D12DescriptorHeap* srvHeap = device->GetCBVSRVUAVHeap();
-		device->GetCommandList()->SetDescriptorHeaps(1, &srvHeap);
-
 	}
 	void D3D12Swapchain::ResizeSwapchain(UInt32 _width, UInt32 height)
 	{
@@ -138,8 +134,8 @@ namespace Steins
 		commandAllocators[frameIndex]->Reset();
 		device->SetCommandList(commandLists[frameIndex].Get());
 		device->GetCommandList()->Reset(commandAllocators[frameIndex].Get(), nullptr);
-		ID3D12DescriptorHeap* heaps[] = { device->GetCBVSRVUAVHeap() };
-		device->GetCommandList()->SetDescriptorHeaps(1, heaps);
+		ID3D12DescriptorHeap* heaps[] = { device->GetCBVSRVUAVHeap(), device->GetSamplerHeap()};
+		device->GetCommandList()->SetDescriptorHeaps(2, heaps);
 
 		D3D12_RESOURCE_BARRIER barr{};
 

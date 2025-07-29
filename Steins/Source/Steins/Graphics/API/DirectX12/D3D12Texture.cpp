@@ -33,6 +33,7 @@ namespace Steins
 		textureDesc.Flags = GraphicsUtil::ConvertToD3D12BindFlags(_desc.bindFlags);
 
 		device->GetDevice()->CreateCommittedResource(&props, D3D12_HEAP_FLAG_NONE, &textureDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(texture.GetAddressOf()));
+
 	}
 	D3D12Texture2D::D3D12Texture2D(D3D12RenderDevice* _device, const FilePath& _path, const TextureDesc& _desc)
 		:Texture2D(_path)
@@ -61,7 +62,6 @@ namespace Steins
 		textureDesc.Flags = GraphicsUtil::ConvertToD3D12BindFlags(_desc.bindFlags);
 
 		device->GetDevice()->CreateCommittedResource(&props, D3D12_HEAP_FLAG_NONE, &textureDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(texture.GetAddressOf()));
-
 
 		D3D12_RESOURCE_DESC uploadBufferDesc{};
 		D3D12_PLACED_SUBRESOURCE_FOOTPRINT placedFootprint;
@@ -122,6 +122,8 @@ namespace Steins
 
 		device->GetCommandList()->CopyTextureRegion(&dstLocation, 0, 0, 0, &srcLocation, NULL);
 		device->GetCommandList()->ResourceBarrier(1, &barrier);
+
+		
 	}
 	D3D12Texture2D::D3D12Texture2D(D3D12RenderDevice* _device, ComPtr<ID3D12Resource> _texture)
 	{
@@ -185,7 +187,7 @@ namespace Steins
 		STEINS_CORE_ASSERT(rtvCpuHandle.ptr == 0, "This texture was not created with the Render Target View (RTV) bind flag.");
 		return {};
 	}
-	D3D12_CPU_DESCRIPTOR_HANDLE D3D12Texture2D::GetDSVCPUHandle()
+	const D3D12_CPU_DESCRIPTOR_HANDLE& D3D12Texture2D::GetDSVCPUHandle()
 	{
 		if (dsvCpuHandle.ptr != 0) return dsvCpuHandle;
 
@@ -264,6 +266,43 @@ namespace Steins
 			GetUAVCPUHandle();
 		}
 		return uavGpuHandle;
+	}
+
+	D3D12_CPU_DESCRIPTOR_HANDLE D3D12Texture2D::GetSamplerCPUHandle()
+	{
+		if (samplerCpuHandle.ptr != 0) return samplerCpuHandle;
+		else
+		{
+			D3D12_SAMPLER_DESC samplerDesc = {};
+			samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // 선형 필터링
+			samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; // 텍스처 주소 모드 (반복)
+			samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+			samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+			samplerDesc.MipLODBias = 0.0f;
+			samplerDesc.MaxAnisotropy = 1; // 비등방성 필터링 사용 안 함
+			samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; // 비교 함수 (그림자 맵 등에서 사용)
+			samplerDesc.BorderColor[0] = 0.0f; // 경계 색상
+			samplerDesc.BorderColor[1] = 0.0f;
+			samplerDesc.BorderColor[2] = 0.0f;
+			samplerDesc.BorderColor[3] = 0.0f;
+			samplerDesc.MinLOD = 0.0f;
+			samplerDesc.MaxLOD = D3D12_FLOAT32_MAX; // 모든 밉맵 레벨 사용
+
+			device->GetSamplerHeapAlloc().Alloc(&samplerCpuHandle, &samplerGpuHandle);
+
+			device->GetDevice()->CreateSampler(&samplerDesc, samplerCpuHandle);
+			//STEINS_CORE_ASSERT(srvCpuHandle.ptr == 0, "This texture was not created with the Shader Resourc View (SRV) bind flag.");
+		return samplerCpuHandle;
+		}
+	}
+
+	D3D12_GPU_DESCRIPTOR_HANDLE D3D12Texture2D::GetSamplerGPUHandle()
+	{
+		if (samplerCpuHandle.ptr == 0)
+		{
+			GetSamplerCPUHandle();
+		}
+		return samplerGpuHandle;
 	}
 
 }

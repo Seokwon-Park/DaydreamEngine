@@ -27,8 +27,16 @@ namespace Steins
 			textureImage,
 			textureImageMemory);
 
-		device->TransitionTextureLayout(textureImage, imageFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
-		device->CreateImageView(textureImage, imageFormat, textureImageView);
+		//device->TransitionTextureLayout(textureImage, imageFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+		if (imageFormat == VK_FORMAT_D24_UNORM_S8_UINT)
+		{
+			device->CreateImageView(textureImage, imageFormat, textureImageView, VK_IMAGE_ASPECT_DEPTH_BIT| VK_IMAGE_ASPECT_STENCIL_BIT);
+		}
+		else
+		{
+			device->CreateImageView(textureImage, imageFormat, textureImageView, VK_IMAGE_ASPECT_COLOR_BIT);
+
+		}
 
 		CreateSampler();
 	}
@@ -69,7 +77,7 @@ namespace Steins
 		device->CopyBufferToImage(uploadBuffer, textureImage, width, height);
 		device->TransitionTextureLayout(textureImage, imageFormat, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 		currentLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		device->CreateImageView(textureImage, imageFormat, textureImageView);
+		device->CreateImageView(textureImage, imageFormat, textureImageView, VK_IMAGE_ASPECT_COLOR_BIT);
 
 		vkDestroyBuffer(device->GetDevice(), uploadBuffer, nullptr);
 		vkFreeMemory(device->GetDevice(), uploadBufferMemory, nullptr);
@@ -83,7 +91,7 @@ namespace Steins
 		textureImage = _image;
 		isSwapchainImage = true;
 
-		device->CreateImageView(textureImage, _format, textureImageView);
+		device->CreateImageView(textureImage, _format, textureImageView, VK_IMAGE_ASPECT_COLOR_BIT);
 
 		CreateSampler();
 

@@ -2,6 +2,7 @@
 
 #include <Steins/Enum/RendererEnums.h>
 #include <Steins/Graphics/Core/RenderPass.h>
+#include <Steins/Graphics/Resources/Texture.h>
 
 namespace Steins
 {
@@ -17,7 +18,9 @@ namespace Steins
 	public:
 		virtual ~Framebuffer() = default;
 
-		virtual void* GetColorAttachmentTexture(UInt32 _index) = 0;
+		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) = 0;
+		virtual bool HasDepthAttachment() { return false; }
+		//virtual Shared<Texture2D> GetDepthAttachemntTexture(UInt32 _index) = 0;
 
 		UInt32 GetWidth() { return width; }
 		UInt32 GetHeight() { return height; }

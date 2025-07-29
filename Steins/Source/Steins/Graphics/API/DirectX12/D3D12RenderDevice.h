@@ -96,7 +96,7 @@ namespace Steins
 		ID3D12DescriptorHeap* GetCBVSRVUAVHeap() const { return cbvSrvUavHeap.Get(); }
 		DescriptorHeapAllocator& GetRTVHeapAlloc() { return rtvHeapAlloc; }
 		DescriptorHeapAllocator& GetDSVHeapAlloc() { return dsvHeapAlloc; }
-		DescriptorHeapAllocator& GetSamplerHeapAlloc() { return rtvHeapAlloc; }
+		DescriptorHeapAllocator& GetSamplerHeapAlloc() { return samplerHeapAlloc; }
 		DescriptorHeapAllocator& GetCBVSRVUAVHeapAlloc() { return cbvSrvUavHeapAlloc; }
 		IDXGIFactory7* GetFactory() const { return dxgiFactory.Get(); }
 

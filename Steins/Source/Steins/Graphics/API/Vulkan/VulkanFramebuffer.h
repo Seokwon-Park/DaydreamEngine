@@ -18,7 +18,8 @@ namespace Steins
 
 		virtual ~VulkanFramebuffer() override;
 
-		virtual void* GetColorAttachmentTexture(UInt32 _index) override;
+		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) override;
+		virtual inline bool HasDepthAttachment() override { return depthAttachment != nullptr; }
 
 		VkFramebuffer GetFramebuffer() { return framebuffer; }
 		VkExtent2D GetExtent() { return extent; }
@@ -28,7 +29,7 @@ namespace Steins
 		VkFramebuffer framebuffer;
 		VkExtent2D extent;
 		Array<VkImage> colorImages;
-		Array<VkImageView> colorImageViews;
+		Array<VkImageView> AttachmentImageViews;
 		Array<Shared<VulkanTexture2D>> colorAttachments;
 		Shared<VulkanTexture2D> depthAttachment;
 		VkImageView depthStencilView;

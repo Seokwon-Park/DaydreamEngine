@@ -14,8 +14,8 @@ Sandbox2D::Sandbox2D()
 	};
 
 	float squareVertices2[4 * 9] = {
-		-0.3f, -0.4f, 1.0f, 1.0f,0.0f,0.0f,1.0f, 0.0f,1.0f,
-		 -0.3f,  0.6f, 1.0f,0.0f,0.0f,1.0f,1.0f, 0.0f,0.0f,
+		-0.3f, -0.4f, .5f, 1.0f,0.0f,0.0f,1.0f, 0.0f,1.0f,
+		 -0.3f,  0.6f, .5f,0.0f,0.0f,1.0f,1.0f, 0.0f,0.0f,
 		 0.7f, 0.6f, 1.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 0.0f,
 		 0.7f, -0.4f, 1.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 1.0f,
 	};
@@ -191,7 +191,7 @@ void Sandbox2D::OnImGuiRender()
 
 	ImGui::Begin("ImGui texture Image Test(Engine Viewport)");
 	ImGui::Image((ImTextureID)texture->GetImGuiHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
-	ImGui::Image((ImTextureID)framebuffer->GetColorAttachmentTexture(0), ImVec2(framebuffer->GetWidth(), framebuffer->GetHeight()));
+	ImGui::Image((ImTextureID)framebuffer->GetColorAttachmentTexture(0)->GetImGuiHandle(), ImVec2(framebuffer->GetWidth(), framebuffer->GetHeight()));
 	//ImGui::Image((ImTextureID)(ID3D11ShaderResourceView*)texture->GetNativeHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
 	//ImGui::Image((ImTextureID)static_cast<unsigned long long>(reinterpret_cast<uintptr_t>(texture->GetNativeHandle())), ImVec2(texture->GetWidth() * 2, texture->GetHeight() * 2));
 	//ImGui::Image((ImTextureID)(texture->GetNativeHandle()), ImVec2(texture->GetWidth() * 2, texture->GetHeight() * 2));

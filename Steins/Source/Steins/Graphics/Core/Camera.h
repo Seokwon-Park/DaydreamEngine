@@ -27,7 +27,7 @@ namespace Steins
 		Matrix4x4 viewProjectionMatrix;
 
 		Vector3 position, rotation;
-		Vector3 direction, up;
+		Vector3 dir, up;
 		Float32 nearPlane, farPlane;
 		Float32 fovy;
 		Float32 orthoSize;

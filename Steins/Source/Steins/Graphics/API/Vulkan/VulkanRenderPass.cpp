@@ -97,10 +97,24 @@ namespace Steins
 		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = currentFramebuffer->GetExtent();
 
-		VkClearValue vulkanClearColor;
-		memcpy(vulkanClearColor.color.float32, clearColor.color, sizeof(clearColor));
-		renderPassInfo.clearValueCount = 1;
-		renderPassInfo.pClearValues = &vulkanClearColor;
+		Array<VkClearValue> colors;
+		for (int i = 0; i < desc.colorAttachments.size(); i++)
+		{
+			VkClearValue vulkanClearColor;
+			memcpy(vulkanClearColor.color.float32, clearColor.color, sizeof(clearColor));
+			colors.push_back(vulkanClearColor);
+		}
+
+		if (currentFramebuffer->HasDepthAttachment())
+		{
+			VkClearValue vulkanClearDepthStencil;
+			vulkanClearDepthStencil.depthStencil.depth = 1.0f; // 또는 0.0f
+			vulkanClearDepthStencil.depthStencil.stencil = 0;   // 스텐실 값도 함께 초기화
+			colors.push_back(vulkanClearDepthStencil);
+		}
+
+		renderPassInfo.clearValueCount = colors.size();
+		renderPassInfo.pClearValues = colors.data();
 
 		vkCmdBeginRenderPass(device->GetCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 		device->SetCurrentRenderPass(renderPass);

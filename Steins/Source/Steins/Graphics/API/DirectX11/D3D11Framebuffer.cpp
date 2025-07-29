@@ -68,8 +68,17 @@ namespace Steins
 	//	device->GetContext()->OMSetRenderTargets(Cast<UINT>(rtv.size()), rtv.data(), nullptr);
 	//}
 
-	void* D3D11Framebuffer::GetColorAttachmentTexture(UInt32 _index)
+	Shared<Texture2D> Steins::D3D11Framebuffer::GetColorAttachmentTexture(UInt32 _index)
 	{
-		return colorAttachments[_index]->GetSRV().Get();
+		STEINS_CORE_ASSERT(_index < colorAttachments.size(), "index out of range");
+		return colorAttachments[_index];
 	}
+	//Shared<Texture2D> D3D11Framebuffer::GetDepthAttachemntTexture(UInt32 _index)
+	//{
+	//	if (depthAttachment == nullptr)
+	//	{
+	//		STEINS_CORE_WARN("depthAttachment is nullptr");
+	//	}
+	//	return depthAttachment;
+	//}
 }

@@ -66,23 +66,26 @@ namespace Steins
 					break;
 				}
 				case ShaderResourceType::Sampler:
-					//D3D12_DESCRIPTOR_RANGE samplerRange{};
-					//samplerRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER;
-					//samplerRange.NumDescriptors = 1;
-					//samplerRange.BaseShaderRegister = 0; // s0부터 시작
-					//samplerRange.RegisterSpace = 0;
-					//samplerRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-					//descriptorRanges.push_back(samplerRange);
+				{
+					D3D12_DESCRIPTOR_RANGE samplerRange{};
+					samplerRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER;
+					samplerRange.NumDescriptors = 1;
+					samplerRange.BaseShaderRegister = info.binding; // s0부터 시작
+					samplerRange.RegisterSpace = 0;
+					samplerRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-					//D3D12_ROOT_PARAMETER rootParam = {};
-					//rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-					//rootParam.DescriptorTable.NumDescriptorRanges = 1;
-					//rootParam.DescriptorTable.pDescriptorRanges = &samplerRange;
-					//rootParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-					//rootParameters.push_back(rootParam);
-					continue;
+					D3D12_ROOT_PARAMETER rootParam = {};
+					rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+					rootParam.DescriptorTable.NumDescriptorRanges = 1;
+					rootParam.DescriptorTable.pDescriptorRanges = &samplerRange;
+					rootParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+					rootParameters.push_back(rootParam);
+					break;
+				}
 				case ShaderResourceType::Input:
+				{
 					continue;
+				}
 				}
 				info.set = index++;
 			}
@@ -92,8 +95,6 @@ namespace Steins
 		D3D12_ROOT_DESCRIPTOR rootDescriptor;
 		rootDescriptor.ShaderRegister = 0;    // HLSL의 b0 레지스터
 		rootDescriptor.RegisterSpace = 0;     // 기본 레지스터 공간
-
-
 
 
 		//// 2. 루트 파라미터(Root Parameter) 정의
@@ -107,26 +108,26 @@ namespace Steins
 		//rootParameters[1].DescriptorTable.pDescriptorRanges = &range;
 		//rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
-		D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
-		staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-		staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-		staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-		staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-		staticSamplers[0].MipLODBias = 0;
-		staticSamplers[0].MaxAnisotropy = 0;
-		staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS;
-		staticSamplers[0].BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
-		staticSamplers[0].MinLOD = 0;
-		staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;
-		staticSamplers[0].ShaderRegister = 0;  // s0
-		staticSamplers[0].RegisterSpace = 0;
-		staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+		//D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
+		//staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+		//staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		//staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		//staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		//staticSamplers[0].MipLODBias = 0;
+		//staticSamplers[0].MaxAnisotropy = 0;
+		//staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+		//staticSamplers[0].BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
+		//staticSamplers[0].MinLOD = 0;
+		//staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;
+		//staticSamplers[0].ShaderRegister = 0;  // s0
+		//staticSamplers[0].RegisterSpace = 0;
+		//staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 		D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
 		rootSignatureDesc.NumParameters = (UINT)rootParameters.size();
 		rootSignatureDesc.pParameters = rootParameters.data();
-		rootSignatureDesc.NumStaticSamplers = 1;
-		rootSignatureDesc.pStaticSamplers = staticSamplers;
+		rootSignatureDesc.NumStaticSamplers = 0;
+		rootSignatureDesc.pStaticSamplers = nullptr;
 		rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 		ComPtr<ID3DBlob> signature;
@@ -154,8 +155,6 @@ namespace Steins
 		sampleDesc.Count = _desc.sampleCount;
 		sampleDesc.Quality = 0;
 
-
-
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC desc{};
 		desc.pRootSignature = rootSignature.Get();
 		desc.VS = static_cast<D3D12Shader*>(_desc.vertexShader.get())->GetShaderBytecode();
@@ -181,14 +180,41 @@ namespace Steins
 		for (UINT i = 0; i < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
 			desc.BlendState.RenderTarget[i] = defaultRenderTargetBlendDesc;
 
+		desc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT; // 실제 포맷과 맞춰야 함
+		D3D12_DEPTH_STENCIL_DESC dsDesc{};
 		// 깊이/스텐실 상태 설정 (d3dx12 없이 직접 - 깊이 테스트 비활성화)
-		desc.DepthStencilState.DepthEnable = FALSE; // 깊이 테스트 끔
-		desc.DepthStencilState.StencilEnable = FALSE; // 스텐실 테스트 끔
+		dsDesc.DepthEnable = TRUE; // 깊이 테스트 끔
+		dsDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+		dsDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS; // 또는 적절한 함수
+		dsDesc.StencilEnable = TRUE; // 스텐실 테스트 끔
+		dsDesc.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;   // 0xFF (모든 비트 읽기)
+		dsDesc.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK; // 0xFF (모든 비트 쓰기)
+
+		// FrontFace (기본적으로 DepthFunc과 동일하게 설정)
+		dsDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;      // 스텐실 테스트 실패 시 동작 유지
+		dsDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP; // 깊이 테스트 실패 시 동작 유지
+		dsDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;      // 스텐실 및 깊이 테스트 모두 통과 시 동작 유지
+		dsDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS; // 스텐실 함수 항상 통과
+
+		// BackFace (기본적으로 FrontFace와 동일하게 설정)
+		dsDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+		dsDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+		dsDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+		dsDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+
+		desc.DepthStencilState = dsDesc;
 		//// 아래 값들은 DepthEnable=FALSE 이므로 무시됨
 		//desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 		//desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_NEVER;
 
 		hr = device->GetDevice()->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(pipeline.GetAddressOf()));
+		if (FAILED(hr))
+		{
+			// 에러 코드 출력
+			STEINS_CORE_ERROR("PSO creation failed with HRESULT: 0x{:x}", hr);
+
+			// D3D12 디버그 레이어 활성화했다면 더 자세한 정보가 출력됨
+		}
 		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create pipeline!");
 	}
 

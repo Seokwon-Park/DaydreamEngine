@@ -25,7 +25,7 @@ namespace Steins
 
 			Shared<VulkanTexture2D> colorTexture = MakeShared<VulkanTexture2D>(device, textureDesc);
 			colorAttachments.push_back(colorTexture);
-			colorImageViews.push_back(colorTexture->GetImageView());
+			AttachmentImageViews.push_back(colorTexture->GetImageView());
 		}
 
 		if(renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
@@ -39,13 +39,15 @@ namespace Steins
 			Shared<VulkanTexture2D> depthTexture = MakeShared<VulkanTexture2D>(device, textureDesc);
 			depthAttachment = depthTexture;
 			depthStencilView = depthTexture->GetImageView();
+			AttachmentImageViews.push_back(depthAttachment->GetImageView());
+
 		}
 
 		VkFramebufferCreateInfo framebufferInfo{};
 		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 		framebufferInfo.renderPass = _renderPass->GetVkRenderPass();
-		framebufferInfo.attachmentCount = colorImageViews.size();
-		framebufferInfo.pAttachments = colorImageViews.data();
+		framebufferInfo.attachmentCount = AttachmentImageViews.size();
+		framebufferInfo.pAttachments = AttachmentImageViews.data();
 		framebufferInfo.width = _desc.width;
 		framebufferInfo.height = _desc.height;
 		framebufferInfo.layers = 1;
@@ -95,14 +97,14 @@ namespace Steins
 
 		Shared<VulkanTexture2D> backBufferTexture = MakeShared<VulkanTexture2D>(device, colorImages[_frameIndex], _swapchain->GetFormat());
 		colorAttachments.push_back(backBufferTexture);
-		colorImageViews.push_back(backBufferTexture->GetImageView());
+		AttachmentImageViews.push_back(backBufferTexture->GetImageView());
 		//device->CreateImageView(colorImages[_frameIndex], _swapchain->GetFormat(), colorImageViews[0]);
 		
 		VkFramebufferCreateInfo framebufferInfo{};
 		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 		framebufferInfo.renderPass = _renderPass->GetVkRenderPass();
-		framebufferInfo.attachmentCount = colorImageViews.size();
-		framebufferInfo.pAttachments = colorImageViews.data();
+		framebufferInfo.attachmentCount = AttachmentImageViews.size();
+		framebufferInfo.pAttachments = AttachmentImageViews.data();
 		framebufferInfo.width = extent.width;
 		framebufferInfo.height = extent.height;
 		framebufferInfo.layers = 1;
@@ -112,12 +114,12 @@ namespace Steins
 	} 
 	VulkanFramebuffer::~VulkanFramebuffer()
 	{
-		colorImageViews.clear();
+		AttachmentImageViews.clear();
 		if(framebuffer != VK_NULL_HANDLE) vkDestroyFramebuffer(device->GetDevice(), framebuffer, nullptr);
 	}
 
-	void* VulkanFramebuffer::GetColorAttachmentTexture(UInt32 _index)
+	Shared<Texture2D> VulkanFramebuffer::GetColorAttachmentTexture(UInt32 _index)
 	{
-		return colorAttachments[_index]->GetImGuiHandle();
+		return colorAttachments[_index];
 	}
 }

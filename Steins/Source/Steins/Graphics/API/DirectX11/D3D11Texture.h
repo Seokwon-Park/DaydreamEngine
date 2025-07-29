@@ -21,11 +21,13 @@ namespace Steins
 		ComPtr<ID3D11DepthStencilView> GetDSV();
 		ComPtr<ID3D11RenderTargetView> GetRTV();
 		ComPtr<ID3D11UnorderedAccessView> GetUAV();
+		ComPtr<ID3D11SamplerState> GetSampler() { return textureSampler; }
 	protected:
 
 	private:
 		D3D11RenderDevice* device;
 		ComPtr<ID3D11Texture2D> texture;
+		ComPtr<ID3D11SamplerState> textureSampler;
 		ComPtr<ID3D11ShaderResourceView> srv;
 		ComPtr<ID3D11DepthStencilView> dsv;
 		ComPtr<ID3D11RenderTargetView> rtv;

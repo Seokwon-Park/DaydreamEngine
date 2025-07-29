@@ -19,10 +19,12 @@ namespace Steins
 		D3D12_CPU_DESCRIPTOR_HANDLE GetSRVCPUHandle();
 		D3D12_GPU_DESCRIPTOR_HANDLE GetSRVGPUHandle();
 		D3D12_CPU_DESCRIPTOR_HANDLE GetRTVCPUHandle();
-		D3D12_CPU_DESCRIPTOR_HANDLE GetDSVCPUHandle();
+		const D3D12_CPU_DESCRIPTOR_HANDLE& GetDSVCPUHandle();
 		D3D12_CPU_DESCRIPTOR_HANDLE GetUAVCPUHandle();
 		D3D12_GPU_DESCRIPTOR_HANDLE GetUAVGPUHandle();
-		virtual inline void* GetImGuiHandle() { return reinterpret_cast<void*>(srvGpuHandle.ptr); }
+		D3D12_CPU_DESCRIPTOR_HANDLE GetSamplerCPUHandle();
+		D3D12_GPU_DESCRIPTOR_HANDLE GetSamplerGPUHandle();
+		virtual inline void* GetImGuiHandle() { return reinterpret_cast<void*>(GetSRVGPUHandle().ptr); }
 		//const D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() const { return gpuHandle; };
 
 
@@ -30,6 +32,9 @@ namespace Steins
 		D3D12RenderDevice* device;
 		ComPtr<ID3D12Resource> uploadBuffer;
 		ComPtr<ID3D12Resource> texture;
+		D3D12_CPU_DESCRIPTOR_HANDLE samplerCpuHandle = {};
+		D3D12_GPU_DESCRIPTOR_HANDLE samplerGpuHandle = {};
+
 		D3D12_CPU_DESCRIPTOR_HANDLE srvCpuHandle = {};
 		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = {};
 		

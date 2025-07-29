@@ -16,7 +16,7 @@ namespace Steins
 
 		GLenum internalFormat = 0, dataFormat = 0;
 		internalFormat = GraphicsUtil::ConvertRenderFormatToGLFormat(_desc.format);
-		dataFormat = GL_RGBA;
+		dataFormat = GraphicsUtil::ConvertRenderFormatToGLDataFormat(_desc.format);
 
 		STEINS_CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");
 

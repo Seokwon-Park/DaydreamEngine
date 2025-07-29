@@ -165,6 +165,30 @@ namespace Steins
 		colorBlending.blendConstants[2] = 0.0f; // Optional
 		colorBlending.blendConstants[3] = 0.0f; // Optional
 
+		VkPipelineDepthStencilStateCreateInfo depthStencil{};
+		depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+		depthStencil.pNext = nullptr; // 확장기능
+		depthStencil.flags = 0; // 나중에 사용될 예약된 필드
+		depthStencil.depthTestEnable = VK_TRUE;
+		depthStencil.depthWriteEnable = VK_TRUE;
+		depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+		depthStencil.depthBoundsTestEnable = VK_FALSE;
+		depthStencil.stencilTestEnable = VK_TRUE;
+		depthStencil.front.failOp = VK_STENCIL_OP_KEEP;           // 스텐실 테스트 실패 시
+		depthStencil.front.passOp = VK_STENCIL_OP_KEEP;           // 스텐실 테스트 통과, 깊이 테스트 통과 시
+		depthStencil.front.depthFailOp = VK_STENCIL_OP_KEEP;      // 스텐실 테스트 통과, 깊이 테스트 실패 시
+		depthStencil.front.compareOp = VK_COMPARE_OP_ALWAYS;      // 스텐실 비교 연산
+		depthStencil.front.compareMask = 0xFF;                    // 비교 마스크
+		depthStencil.front.writeMask = 0xFF;                      // 쓰기 마스크
+		depthStencil.front.reference = 0;                         // 참조 값
+
+		// 일반적으로 front와 back은 동일하게 설정하거나, 양면 렌더링에 따라 다르게 설정합니다.
+		depthStencil.back = depthStencil.front;
+		//boundTest활성화 했을때만
+		//depthStencil.minDepthBounds = 
+		//depthStencil.maxDepthBounds = 
+
+
 		//VkDescriptorPoolCreateInfo poolCreateInfo;
 		//poolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 
@@ -202,7 +226,7 @@ namespace Steins
 		pipelineInfo.pViewportState = &viewportState;
 		pipelineInfo.pRasterizationState = &rasterizer;
 		pipelineInfo.pMultisampleState = &multisampling;
-		pipelineInfo.pDepthStencilState = nullptr; // Optional
+		pipelineInfo.pDepthStencilState = &depthStencil; // Optional
 		pipelineInfo.pColorBlendState = &colorBlending;
 		pipelineInfo.pDynamicState = &dynamicState;
 		pipelineInfo.layout = pipelineLayout;

@@ -14,7 +14,8 @@ namespace Steins
 		OpenGLFramebuffer(OpenGLSwapchain* _desc);
 		virtual ~OpenGLFramebuffer() override;
 
-		virtual void* GetColorAttachmentTexture(UInt32 _index) override;
+		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) override;
+		virtual inline bool HasDepthAttachment() override { return depthAttachment != nullptr; }
 
 		void AttachTextures();
 		bool IsBackbuffer() { return isBackbuffer; }

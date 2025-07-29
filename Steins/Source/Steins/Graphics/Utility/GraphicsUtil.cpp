@@ -441,6 +441,55 @@ namespace Steins
 			}
 		}
 
+		UInt32 GraphicsUtil::ConvertRenderFormatToGLDataFormat(RenderFormat _format)
+		{
+			switch (_format) {
+				// 32-bit float formats
+			case RenderFormat::R32G32B32A32_FLOAT:     return GL_RGBA;
+			case RenderFormat::R32G32B32_FLOAT:        return GL_RGB;
+			case RenderFormat::R32G32_FLOAT:           return GL_RG;
+			case RenderFormat::R32_FLOAT:              return GL_RED;
+				// 16-bit float formats
+			case RenderFormat::R16G16B16A16_FLOAT:     return GL_RGBA;
+			case RenderFormat::R16G16_FLOAT:           return GL_RG;
+			case RenderFormat::R16_FLOAT:              return GL_RED;
+				// 8-bit normalized formats
+			case RenderFormat::R8G8B8A8_UNORM:         return GL_RGBA;
+			case RenderFormat::R8G8B8A8_UNORM_SRGB:    return GL_RGBA;
+			case RenderFormat::B8G8R8A8_UNORM:         return GL_BGRA;
+			case RenderFormat::B8G8R8A8_UNORM_SRGB:    return GL_BGRA;
+			case RenderFormat::R8G8_UNORM:             return GL_RG;
+			case RenderFormat::R8_UNORM:               return GL_RED;
+				// 16-bit normalized formats
+			case RenderFormat::R16G16B16A16_UNORM:     return GL_RGBA;
+			case RenderFormat::R16G16_UNORM:           return GL_RG;
+			case RenderFormat::R16_UNORM:              return GL_RED;
+				// Integer formats
+			case RenderFormat::R32G32B32A32_UINT:      return GL_RGBA_INTEGER;
+			case RenderFormat::R32G32B32A32_SINT:      return GL_RGBA_INTEGER;
+			case RenderFormat::R16G16B16A16_UINT:      return GL_RGBA_INTEGER;
+			case RenderFormat::R16G16B16A16_SINT:      return GL_RGBA_INTEGER;
+			case RenderFormat::R8G8B8A8_UINT:          return GL_RGBA_INTEGER;
+			case RenderFormat::R8G8B8A8_SINT:          return GL_RGBA_INTEGER;
+				// Special formats
+			case RenderFormat::R11G11B10_FLOAT:        return GL_RGB;
+			case RenderFormat::R10G10B10A2_UNORM:      return GL_RGBA;
+			case RenderFormat::R10G10B10A2_UINT:       return GL_RGBA_INTEGER;
+				// Depth formats
+			case RenderFormat::D32_FLOAT:              return GL_DEPTH_COMPONENT;
+			case RenderFormat::D24_UNORM_S8_UINT:      return GL_DEPTH_STENCIL;
+			case RenderFormat::D16_UNORM:              return GL_DEPTH_COMPONENT;
+			case RenderFormat::D32_FLOAT_S8X24_UINT:   return GL_DEPTH_STENCIL;
+				// Compressed formats는 data format이 필요없음 (NULL 데이터와 함께 사용)
+			case RenderFormat::BC7_UNORM:              return GL_RGBA;
+			case RenderFormat::BC7_UNORM_SRGB:         return GL_RGBA;
+			case RenderFormat::UNKNOWN:
+			default:
+				STEINS_CORE_ERROR("Unsupported or unknown render format for data format: {0}", static_cast<int>(_format));
+				return GL_RGBA;
+			}
+		}
+
 		RenderFormat GraphicsUtil::ConvertSPIRVTypeToRenderFormat(spirv_cross::SPIRType::BaseType _baseType, UInt32 _componentCount)
 		{
 			switch (_baseType)
@@ -721,7 +770,7 @@ namespace Steins
 			if (HasFlag(flags, RenderBindFlags::RenderTarget)) return D3D12_RESOURCE_STATE_RENDER_TARGET;
 			if (HasFlag(flags, RenderBindFlags::DepthStencil)) return D3D12_RESOURCE_STATE_DEPTH_WRITE;
 			if (HasFlag(flags, RenderBindFlags::UnorderedAccess)) return D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
-			return D3D12_RESOURCE_STATE_COMMON; 
+			return D3D12_RESOURCE_STATE_COMMON;
 		}
 
 		VkImageUsageFlags GraphicsUtil::ConvertToVkImageUsageFlags(RenderBindFlags usageFlags)
@@ -744,6 +793,8 @@ namespace Steins
 			vkFlags |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT; // If you need to read back or generate mips
 			return vkFlags;
 		}
+
+
 
 		String GraphicsUtil::GetVendor(UInt32 _vendorCode)
 		{

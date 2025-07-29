@@ -67,8 +67,8 @@ namespace Steins
 
 	}
 
-	void* D3D12Framebuffer::GetColorAttachmentTexture(UInt32 _index)
+	Shared<Texture2D> D3D12Framebuffer::GetColorAttachmentTexture(UInt32 _index)
 	{
-		return reinterpret_cast<void*>(colorAttachments[_index]->GetSRVGPUHandle().ptr);
+		return colorAttachments[_index];
 	}
 }
