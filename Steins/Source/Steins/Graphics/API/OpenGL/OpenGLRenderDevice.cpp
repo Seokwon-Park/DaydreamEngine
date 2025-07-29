@@ -1,16 +1,17 @@
 #include "SteinsPCH.h"
+#include "OpenGLShader.h"
+#include "OpenGLBuffer.h"
+#include "OpenGLTexture.h"
+#include "OpenGLSwapchain.h"
+#include "OpenGLRenderPass.h"
+#include "OpenGLFramebuffer.h"
 #include "OpenGLRenderDevice.h"
 #include "OpenGLRenderContext.h"
-#include "OpenGLBuffer.h"
-#include "OpenGLShader.h"
-#include "OpenGLSwapchain.h"
-#include "OpenGLRenderContext.h"
 #include "OpenGLPipelineState.h"
-#include "OpenGLTexture.h"
 #include "OpenGLImGuiRenderer.h"
 
-#include "Steins/Core/Window.h"
 #include "glad/glad.h"
+#include "Steins/Core/Window.h"
 
 namespace Steins
 {
@@ -74,12 +75,12 @@ namespace Steins
 
 	Shared<RenderPass> OpenGLRenderDevice::CreateRenderPass(const RenderPassDesc& _desc)
 	{
-		return Shared<RenderPass>();
+		return MakeShared<OpenGLRenderPass>(_desc);
 	}
 
-	Shared<Framebuffer> Steins::OpenGLRenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc & _desc)
+	Shared<Framebuffer> Steins::OpenGLRenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc &_desc)
 	{
-		return Shared<Framebuffer>();
+		return _renderPass->CreateFramebuffer(_desc);
 	}
 
 	Shared<PipelineState> Steins::OpenGLRenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)
@@ -96,6 +97,11 @@ namespace Steins
 	Shared<Swapchain> OpenGLRenderDevice::CreateSwapchain(SteinsWindow* _window, const SwapchainDesc& _desc)
 	{
 		return MakeShared<OpenGLSwapchain>(_window, _desc);
+	}
+
+	Shared<Texture2D> OpenGLRenderDevice::CreateEmptyTexture2D(const TextureDesc& _desc)
+	{
+		return MakeShared<OpenGLTexture2D>(_desc);
 	}
 
 	Shared<Texture2D> OpenGLRenderDevice::CreateTexture2D(const FilePath& _path, const TextureDesc& _desc)

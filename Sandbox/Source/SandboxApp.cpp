@@ -34,6 +34,7 @@ private:
 	Steins::Shared<Steins::PipelineState> pso;
 	Steins::Shared<Steins::ConstantBuffer> viewProjMat;
 	Steins::Shared<Steins::Texture2D> texture;
+	
 
 	Steins::OrthographicCamera camera;
 	Steins::Matrix4x4 cameraPos;
@@ -60,7 +61,7 @@ Steins::Application* Steins::CreateApplication()
 	ApplicationSpecification spec;
 	spec.Name = "Sandbox";
 	spec.WorkingDirectory = "../Lab";
-	spec.rendererAPI = RendererAPIType::DirectX12;
+	spec.rendererAPI = RendererAPIType::OpenGL;
 
 	return new Sandbox(spec);
 }

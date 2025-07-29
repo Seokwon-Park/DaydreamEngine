@@ -14,7 +14,7 @@ namespace Steins
 	}
 	void OpenGLGraphicsContext::SetClearColor(const Color& _color)
 	{
-		glClearColor(_color.r, _color.g, _color.b, _color.a);
+		//glClearColor(_color.r, _color.g, _color.b, _color.a);
 	}
 	void OpenGLGraphicsContext::Clear()
 	{

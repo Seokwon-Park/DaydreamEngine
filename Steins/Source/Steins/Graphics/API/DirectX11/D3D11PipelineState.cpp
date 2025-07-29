@@ -21,7 +21,7 @@ namespace Steins
 			elementDesc.SemanticName = info.name.c_str();
 			elementDesc.SemanticIndex = info.binding;
 			elementDesc.InputSlot = 0;
-			elementDesc.Format = GraphicsUtil::RenderFormatToDXGIFormat(info.format);
+			elementDesc.Format = GraphicsUtil::ConvertRenderFormatToDXGIFormat(info.format);
 			elementDesc.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 			elementDesc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 			elementDesc.InstanceDataStepRate = 0;

@@ -7,6 +7,7 @@ namespace Steins
 	class OpenGLTexture2D : public Texture2D
 	{
 	public:
+		OpenGLTexture2D(const TextureDesc& _desc);
 		OpenGLTexture2D(const FilePath& _path, const TextureDesc& _desc);
 		virtual ~OpenGLTexture2D() override;
 

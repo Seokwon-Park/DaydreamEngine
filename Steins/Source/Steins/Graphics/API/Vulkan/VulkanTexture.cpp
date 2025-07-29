@@ -15,7 +15,7 @@ namespace Steins
 		width = _desc.width;
 		height = _desc.height;
 		imageSize = width * height * 4;
-		imageFormat = GraphicsUtil::RenderFormatToVkFormat(_desc.format);
+		imageFormat = GraphicsUtil::ConvertRenderFormatToVkFormat(_desc.format);
 
 		device->CreateImage(
 			width,
@@ -54,7 +54,7 @@ namespace Steins
 		memcpy(pixelData, imageData.data(), imageSize);
 		vkUnmapMemory(device->GetDevice(), uploadBufferMemory);
 
-		imageFormat = GraphicsUtil::RenderFormatToVkFormat(_desc.format);
+		imageFormat = GraphicsUtil::ConvertRenderFormatToVkFormat(_desc.format);
 		device->CreateImage(
 			width,
 			height,

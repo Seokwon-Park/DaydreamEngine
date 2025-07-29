@@ -47,6 +47,7 @@ namespace Steins
 		virtual Shared<PipelineState> CreatePipelineState(const PipelineStateDesc& _desc)= 0;
 		virtual Shared<Shader> CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode) = 0;
 		virtual Shared<Swapchain> CreateSwapchain(SteinsWindow* _window, const SwapchainDesc& _desc) = 0;
+		virtual Shared<Texture2D> CreateEmptyTexture2D(const TextureDesc& _desc) { return nullptr; };
 		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path, const TextureDesc& _desc) = 0;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() = 0;
 		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) = 0;

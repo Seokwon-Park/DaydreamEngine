@@ -88,8 +88,8 @@ namespace Steins
 
 		ID3D12Device* GetDevice() const { return device.Get(); }
 		ID3D12CommandQueue* GetCommandQueue() const { return commandQueue.Get(); }
+		void SetCommandList(ID3D12GraphicsCommandList* _commandList) { commandList = _commandList; }
 		ID3D12GraphicsCommandList* GetCommandList() const { return commandList.Get(); }
-		ID3D12CommandAllocator* GetCommandAllocator(UInt32 _index) const { return commandAllocators[_index].Get(); }
 		ID3D12DescriptorHeap* GetRTVHeap() const { return rtvHeap.Get(); }
 		ID3D12DescriptorHeap* GetDSVHeap() const { return dsvHeap.Get(); }
 		ID3D12DescriptorHeap* GetSamplerHeap() const { return samplerHeap.Get(); }
@@ -108,7 +108,6 @@ namespace Steins
 	private:
 		ComPtr<ID3D12Device> device;
 		ComPtr<ID3D12CommandQueue> commandQueue;
-		ComPtr<ID3D12CommandAllocator> commandAllocators[2];
 
 		ComPtr<ID3D12RootSignature> rootSignature;
 		ComPtr<ID3D12DescriptorHeap> rtvHeap;

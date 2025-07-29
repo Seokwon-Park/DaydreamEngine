@@ -177,6 +177,7 @@
     <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLMaterial.h" />
     <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLPipelineState.h" />
     <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLRenderDevice.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLRenderPass.h" />
     <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLShader.h" />
     <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLSwapchain.h" />
     <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLTexture.h" />
@@ -200,7 +201,6 @@
     <ClInclude Include="Source\Steins\Graphics\Core\RenderCommand.h" />
     <ClInclude Include="Source\Steins\Graphics\Core\RenderDevice.h" />
     <ClInclude Include="Source\Steins\Graphics\Core\RenderPass.h" />
-    <ClInclude Include="Source\Steins\Graphics\Core\RenderUnit.h" />
     <ClInclude Include="Source\Steins\Graphics\Core\Renderer.h" />
     <ClInclude Include="Source\Steins\Graphics\Core\Renderer2D.h" />
     <ClInclude Include="Source\Steins\Graphics\Core\ResourceManager.h" />
@@ -694,6 +694,7 @@
     <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLMaterial.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLPipelineState.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLRenderDevice.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLRenderPass.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLSwapchain.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLTexture.cpp" />
@@ -715,7 +716,6 @@
     <ClCompile Include="Source\Steins\Graphics\Core\RenderCommand.cpp" />
     <ClCompile Include="Source\Steins\Graphics\Core\RenderDevice.cpp" />
     <ClCompile Include="Source\Steins\Graphics\Core\RenderPass.cpp" />
-    <ClCompile Include="Source\Steins\Graphics\Core\RenderUnit.cpp" />
     <ClCompile Include="Source\Steins\Graphics\Core\Renderer.cpp" />
     <ClCompile Include="Source\Steins\Graphics\Core\Renderer2D.cpp" />
     <ClCompile Include="Source\Steins\Graphics\Core\Swapchain.cpp" />

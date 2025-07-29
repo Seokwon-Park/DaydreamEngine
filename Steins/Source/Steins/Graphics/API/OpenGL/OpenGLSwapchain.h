@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Steins/Graphics/Core/Swapchain.h"
+#include "OpenGLFramebuffer.h"
 
 #include "GLFW/glfw3.h"
 
@@ -19,9 +20,10 @@ namespace Steins
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
 
-		virtual Shared<Framebuffer> GetBackFramebuffer() { return nullptr; };
+		virtual Shared<Framebuffer> GetBackFramebuffer() { return framebuffer; };
 	private:
 		GLFWwindow* window;
+		Shared<OpenGLFramebuffer> framebuffer;
 		
 	};
 }

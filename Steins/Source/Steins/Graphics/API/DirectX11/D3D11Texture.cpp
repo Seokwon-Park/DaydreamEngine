@@ -18,7 +18,7 @@ namespace Steins
 		textureDesc.Height = height;
 		textureDesc.MipLevels = 1;
 		textureDesc.ArraySize = 1;
-		textureDesc.Format = GraphicsUtil::RenderFormatToDXGIFormat(_desc.format);
+		textureDesc.Format = GraphicsUtil::ConvertRenderFormatToDXGIFormat(_desc.format);
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.SampleDesc.Quality = 0;
 		textureDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -40,7 +40,7 @@ namespace Steins
 		textureDesc.Height = height;
 		textureDesc.MipLevels = 1;
 		textureDesc.ArraySize = 1;
-		textureDesc.Format = GraphicsUtil::RenderFormatToDXGIFormat(_desc.format);
+		textureDesc.Format = GraphicsUtil::ConvertRenderFormatToDXGIFormat(_desc.format);
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.SampleDesc.Quality = 0;
 		textureDesc.Usage = D3D11_USAGE_DEFAULT;

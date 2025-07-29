@@ -101,18 +101,6 @@ namespace Steins
 			desc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
 			desc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 			device->CreateCommandQueue(&desc, IID_PPV_ARGS(commandQueue.GetAddressOf()));
-
-			for (int i = 0; i < 2; i++)
-			{
-				HRESULT hr = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(commandAllocators[i].GetAddressOf()));
-				STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create command allocator {0}", i);
-			}
-
-
-			hr = device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocators[0].Get(), nullptr, IID_PPV_ARGS(commandList.GetAddressOf()));
-			STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to create commandlist");
-
-			commandList->Close();
 		}
 
 		{

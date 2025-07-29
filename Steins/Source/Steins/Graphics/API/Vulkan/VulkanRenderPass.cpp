@@ -17,7 +17,7 @@ namespace Steins
 		for (size_t i = 0; i < _desc.colorAttachments.size(); ++i)
 		{
 			VkAttachmentDescription colorAttachment{};
-			colorAttachment.format = GraphicsUtil::RenderFormatToVkFormat(_desc.colorAttachments[i].format);
+			colorAttachment.format = GraphicsUtil::ConvertRenderFormatToVkFormat(_desc.colorAttachments[i].format);
 			colorAttachment.samples = static_cast<VkSampleCountFlagBits>(_desc.samples);
 			colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 			colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -40,7 +40,7 @@ namespace Steins
 		if (hasDepth)
 		{
 			VkAttachmentDescription depthAttachment{};
-			depthAttachment.format = GraphicsUtil::RenderFormatToVkFormat(_desc.depthAttachment.format);
+			depthAttachment.format = GraphicsUtil::ConvertRenderFormatToVkFormat(_desc.depthAttachment.format);
 			depthAttachment.samples = static_cast<VkSampleCountFlagBits>(_desc.samples);
 			depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 			depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;

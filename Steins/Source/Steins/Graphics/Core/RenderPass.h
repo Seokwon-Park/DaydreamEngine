@@ -36,6 +36,8 @@ namespace Steins
 		bool isSwapchain = false;
 	};
 
+	//TODO : Framebuffer와의 Validation 추가할 것.
+	//       여러가지 옵션들 어떻게 추가할지 생각해보기
 	class RenderPass
 	{
 	public:

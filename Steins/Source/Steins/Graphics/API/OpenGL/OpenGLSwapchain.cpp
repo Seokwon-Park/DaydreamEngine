@@ -1,5 +1,6 @@
 #include "SteinsPCH.h"
 #include "OpenGLSwapchain.h"
+#include "OpenGLRenderPass.h"
 
 #include "Steins/Core/Window.h"
 #include "GLFW/glfw3.h"
@@ -14,6 +15,17 @@ namespace Steins
 		desc = _desc;
 		window = (GLFWwindow*)_window->GetNativeWindow();
 		glfwMakeContextCurrent(window);
+
+		RenderPassAttachmentDesc colorDesc;
+		colorDesc.format = _desc.format;
+
+		RenderPassDesc rpDesc{};
+		rpDesc.colorAttachments.push_back(colorDesc);
+		rpDesc.isSwapchain = true;
+
+		mainRenderPass = MakeShared<OpenGLRenderPass>(rpDesc);
+
+		framebuffer = MakeShared<OpenGLFramebuffer>(this);
 	}
 	OpenGLSwapchain::~OpenGLSwapchain()
 	{

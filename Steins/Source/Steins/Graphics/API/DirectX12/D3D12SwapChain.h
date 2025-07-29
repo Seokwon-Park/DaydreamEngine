@@ -32,8 +32,11 @@ namespace Steins
 		D3D12RenderDevice* device;
 		ComPtr<IDXGISwapChain3> swapChain;
 		Array<Shared<D3D12Framebuffer>> framebuffers;
-		Array<ID3D12CommandList*> commandLists;
+		Array<ComPtr<ID3D12GraphicsCommandList>> commandLists;
+		Array<ComPtr<ID3D12CommandAllocator>> commandAllocators;
+
 		Int32 frameIndex = 0;
+
 		ComPtr<ID3D12Fence> fence;
 		Array<UINT64> fenceValues;
 		HANDLE fenceEvent; // a handle to an event when our fence is unlocked by the gpu

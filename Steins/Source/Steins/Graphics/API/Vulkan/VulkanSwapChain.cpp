@@ -242,7 +242,7 @@ namespace Steins
 
 	VkSurfaceFormatKHR VulkanSwapchain::ChooseSwapSurfaceFormat(const Array<VkSurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat)
 	{
-		VkFormat desiredFormat = GraphicsUtil::RenderFormatToVkFormat(_desiredFormat);
+		VkFormat desiredFormat = GraphicsUtil::ConvertRenderFormatToVkFormat(_desiredFormat);
 		for (const VkSurfaceFormatKHR& availableFormat : _availableFormats)
 		{
 			if (availableFormat.format == desiredFormat && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)

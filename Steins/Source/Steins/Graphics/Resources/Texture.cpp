@@ -18,4 +18,9 @@ namespace Steins
     {
         return Renderer::GetRenderDevice()->CreateTexture2D(_path, _desc);
     }
+
+    Shared<Texture2D> Texture2D::CreateEmpty(const TextureDesc& _desc)
+    {
+        return Renderer::GetRenderDevice()->CreateEmptyTexture2D(_desc);
+    }
 }

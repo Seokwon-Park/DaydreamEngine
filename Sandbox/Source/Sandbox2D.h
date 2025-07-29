@@ -24,6 +24,7 @@ private:
 	Steins::Shared<Steins::RenderPass> renderPass;
 	Steins::Shared<Steins::ConstantBuffer> viewProjMat;
 	Steins::Shared<Steins::Texture2D> texture;
+	Steins::Shared<Steins::Texture2D> texture2;
 
 	Steins::Shared<Steins::Material> material;
 	Steins::Shared<Steins::Framebuffer> framebuffer;

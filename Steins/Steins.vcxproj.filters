@@ -393,9 +393,6 @@
     <ClInclude Include="Source\Steins\Graphics\Core\RenderPass.h">
       <Filter>Source\Steins\Graphics\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Graphics\Core\RenderUnit.h">
-      <Filter>Source\Steins\Graphics\Core</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Steins\Graphics\Core\Renderer.h">
       <Filter>Source\Steins\Graphics\Core</Filter>
     </ClInclude>
@@ -1719,6 +1716,7 @@
     <ClInclude Include="Source\Steins\Graphics\Utility\ImageLoader.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX11\D3D11RenderPass.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12RenderPass.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLRenderPass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -1928,9 +1926,6 @@
     <ClCompile Include="Source\Steins\Graphics\Core\RenderPass.cpp">
       <Filter>Source\Steins\Graphics\Core</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Graphics\Core\RenderUnit.cpp">
-      <Filter>Source\Steins\Graphics\Core</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Steins\Graphics\Core\Renderer.cpp">
       <Filter>Source\Steins\Graphics\Core</Filter>
     </ClCompile>
@@ -1994,5 +1989,6 @@
     <ClCompile Include="Source\Steins\Graphics\Utility\ImageLoader.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX11\D3D11RenderPass.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12RenderPass.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLRenderPass.cpp" />
   </ItemGroup>
 </Project>

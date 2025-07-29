@@ -18,10 +18,7 @@ namespace Steins
 
 		virtual void* GetColorAttachmentTexture(UInt32 _index) override;
 
-		void Begin() const;
-		void Clear(Color _color);
-
-		ComPtr<ID3D12Resource> GetRenderTarget() { return colorAttachments[0]->GetTexture(); }
+		Array<Shared<D3D12Texture2D>>& GetColorAttachments() { return colorAttachments; }
 		Array<D3D12_CPU_DESCRIPTOR_HANDLE> GetRenderTargetHandles() { return renderTargetHandles; }
 
 	private:

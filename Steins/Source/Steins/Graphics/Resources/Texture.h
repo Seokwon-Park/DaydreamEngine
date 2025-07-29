@@ -68,6 +68,7 @@ namespace Steins
 		virtual void* GetImGuiHandle() override = 0;
 
 		static Shared<Texture2D> Create(const FilePath& _path, const TextureDesc& _desc);
+		static Shared<Texture2D> CreateEmpty(const TextureDesc& _desc);
 	protected:
 		FilePath path;
 		TextureDesc desc;

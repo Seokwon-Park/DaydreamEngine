@@ -11,13 +11,13 @@ struct PSOutput
 };
 
 [[vk::combinedImageSampler]][[vk::binding(1)]]
-Texture2D u_Texture : register(t0);
+Texture2D Texture : register(t0);
 [[vk::combinedImageSampler]][[vk::binding(1)]]
-SamplerState u_TextureSampler : register(s0);
+SamplerState TextureSampler : register(s0);
 
 PSOutput PSMain(PSInput input)
 {
     PSOutput output = (PSOutput) 0;
-    output.color = u_Texture.Sample(u_TextureSampler, input.uv) + input.color;
+    output.color = Texture.Sample(TextureSampler, input.uv) + input.color;
     return output;
 }

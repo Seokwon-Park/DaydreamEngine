@@ -28,7 +28,7 @@ namespace Steins
 		//bufferDesc.RefreshRate 
 		bufferDesc.Scaling = DXGI_MODE_SCALING_STRETCHED;
 		bufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED; // 프로그레시브로 설정
-		bufferDesc.Format = GraphicsUtil::RenderFormatToDXGIFormat(_desc.format);
+		bufferDesc.Format = GraphicsUtil::ConvertRenderFormatToDXGIFormat(_desc.format);
 
 		DXGI_SWAP_CHAIN_DESC desc;
 		desc.BufferDesc = bufferDesc;

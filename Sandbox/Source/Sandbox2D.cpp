@@ -60,23 +60,32 @@ Sandbox2D::Sandbox2D()
 	textureDesc.bindFlags = Steins::RenderBindFlags::ShaderResource;
 	textureDesc.format = Steins::RenderFormat::R8G8B8A8_UNORM_SRGB;
 	texture = Steins::Texture2D::Create(path, textureDesc);
+	
+	//texture2 = Steins::Texture2D::CreateEmpty(textureDesc);
 
-	//Steins::RenderPassDesc rpDesc;
+	Steins::RenderPassDesc rpDesc;
 
-	//Steins::RenderPassAttachmentDesc attach{};
-	//attach.format = Steins::RenderFormat::R8G8B8A8_UNORM;
-	//attach.loadOp = Steins::AttachmentLoadOp::Clear;
-	//attach.storeOp = Steins::AttachmentStoreOp::Store;
-	//rpDesc.colorAttachments.push_back(attach);
+	Steins::RenderPassAttachmentDesc attach{};
+	attach.format = Steins::RenderFormat::R8G8B8A8_UNORM;
+	attach.loadOp = Steins::AttachmentLoadOp::Clear;
+	attach.storeOp = Steins::AttachmentStoreOp::Store;
+	rpDesc.colorAttachments.push_back(attach);
 
-	//renderPass = Steins::RenderPass::Create(rpDesc);
-	//renderPass->SetClearColor(Steins::Color::White);
+	attach.format = Steins::RenderFormat::D24_UNORM_S8_UINT;
+	attach.loadOp = Steins::AttachmentLoadOp::Clear;
+	attach.storeOp = Steins::AttachmentStoreOp::Store;
+	rpDesc.depthAttachment = attach;
 
-	//Steins::FramebufferDesc fbDesc;
-	//fbDesc.width = 128;
-	//fbDesc.height = 72;
+	renderPass = Steins::RenderPass::Create(rpDesc);
+	renderPass->SetClearColor(Steins::Color::White);
 
-	//framebuffer = Steins::Framebuffer::Create(renderPass, fbDesc);
+	Steins::FramebufferDesc fbDesc;
+	fbDesc.width = 320;
+	fbDesc.height = 180;
+	//fbDesc.width = 1600;
+	//fbDesc.height = 900;
+
+	framebuffer = Steins::Framebuffer::Create(renderPass, fbDesc);
 
 	Steins::PipelineStateDesc desc;
 	desc.vertexShader = vs;
@@ -89,7 +98,7 @@ Sandbox2D::Sandbox2D()
 	material = Steins::Material::Create(pso);
 	//material = pso->CreateMaterial(); // 이것도 가능
 
-	material->SetTexture2D("u_Texture", texture);
+	material->SetTexture2D("Texture", texture);
 	material->SetConstantBuffer("Camera", viewProjMat);
 }
 
@@ -139,7 +148,7 @@ void Sandbox2D::OnUpdate(Float32 _deltaTime)
 		viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
 	}
 
-	//renderPass->Begin(framebuffer);
+	renderPass->Begin(framebuffer);
 	////camera.SetPosition({ 0.5f, 0.5f, 0.0f });
 
 	//Steins::Renderer::BeginScene(camera);
@@ -161,8 +170,7 @@ void Sandbox2D::OnUpdate(Float32 _deltaTime)
 	//Steins::RenderCommand::DrawIndexed(squareIB->GetCount());
 	Steins::Renderer::Submit(squareIB2->GetCount());
 
-
-	//renderPass->End();
+	renderPass->End();
 	//framebuffer->End();
 
 	//r2d.TestTick();
@@ -175,17 +183,15 @@ void Sandbox2D::OnUpdate(Float32 _deltaTime)
 	//ps->Bind();
 	////Steins::Matrix4x4 transform = Steins::Math::Translate(Steins::Matrix4x4(), Steins::Vector4(1.0f, 1.0f, 0.0f));
 	////transform.Transpose();
-
-
 }
 
 void Sandbox2D::OnImGuiRender()
 {
 	ImGui::ShowDemoWindow();
 
-	ImGui::Begin("ImGui texture Image Test");
-	//ImGui::Image((ImTextureID)texture->GetImGuiHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
-	//ImGui::Image((ImTextureID)framebuffer->GetColorAttachmentTexture(0), ImVec2(framebuffer->GetWidth(), framebuffer->GetHeight()));
+	ImGui::Begin("ImGui texture Image Test(Engine Viewport)");
+	ImGui::Image((ImTextureID)texture->GetImGuiHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
+	ImGui::Image((ImTextureID)framebuffer->GetColorAttachmentTexture(0), ImVec2(framebuffer->GetWidth(), framebuffer->GetHeight()));
 	//ImGui::Image((ImTextureID)(ID3D11ShaderResourceView*)texture->GetNativeHandle(), ImVec2(texture->GetWidth(), texture->GetHeight()));
 	//ImGui::Image((ImTextureID)static_cast<unsigned long long>(reinterpret_cast<uintptr_t>(texture->GetNativeHandle())), ImVec2(texture->GetWidth() * 2, texture->GetHeight() * 2));
 	//ImGui::Image((ImTextureID)(texture->GetNativeHandle()), ImVec2(texture->GetWidth() * 2, texture->GetHeight() * 2));

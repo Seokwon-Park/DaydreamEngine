@@ -60,7 +60,7 @@ namespace Steins
 					VkVertexInputAttributeDescription attribDesc{};
 					attribDesc.location = info.set;
 					attribDesc.binding = info.binding;
-					attribDesc.format = GraphicsUtil::RenderFormatToVkFormat(info.format);
+					attribDesc.format = GraphicsUtil::ConvertRenderFormatToVkFormat(info.format);
 					attribDesc.offset = offset;
 
 					offset += info.size;
