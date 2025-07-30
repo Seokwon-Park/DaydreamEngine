@@ -2,19 +2,19 @@ struct VSInput
 {
     float3 position : POSITION;
     float4 color : COLOR0;
-    float2 uv: TEXCOORD0;
+    float2 uv : TEXCOORD0;
 };
 
-cbuffer VS_Cbuffer : register(b0)
+cbuffer Camera : register(b0)
 {
     matrix viewProjection;
-}
+};
 
 struct VSOutput
 {
     float4 position : SV_Position;
     float4 color : COLOR0;
-    float2 uv: TEXCOORD0;
+    float2 uv : TEXCOORD0;
 };
 
 VSOutput VSMain(VSInput input)

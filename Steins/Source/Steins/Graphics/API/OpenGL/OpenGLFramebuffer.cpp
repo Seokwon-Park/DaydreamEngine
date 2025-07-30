@@ -11,35 +11,12 @@ namespace Steins
 
 		width = _desc.width;
 		height = _desc.height;
+		renderPass = _renderPass;
 
-		const RenderPassDesc& renderPassDesc = _renderPass->GetDesc();
-		for (const auto& colorAttachmentDesc : renderPassDesc.colorAttachments)
-		{
-			TextureDesc textureDesc;
-			textureDesc.width = _desc.width;
-			textureDesc.height = _desc.height;
-			textureDesc.format = colorAttachmentDesc.format;
-			textureDesc.bindFlags = RenderBindFlags::RenderTarget | RenderBindFlags::ShaderResource;
-
-			Shared<OpenGLTexture2D> colorTexture = MakeShared<OpenGLTexture2D>(textureDesc);
-			colorAttachments.push_back(colorTexture);
-		}
-
-		if (renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
-		{
-			TextureDesc textureDesc;
-			textureDesc.width = _desc.width;
-			textureDesc.height = _desc.height;
-			textureDesc.format = renderPassDesc.depthAttachment.format;
-			textureDesc.bindFlags = RenderBindFlags::DepthStencil;
-
-			Shared<OpenGLTexture2D> depthTexture = MakeShared<OpenGLTexture2D>(textureDesc);
-			depthAttachment = depthTexture;
-		}
+		CreateAttachments();
 
 		AttachTextures();
 	}
-
 
 	OpenGLFramebuffer::OpenGLFramebuffer(OpenGLSwapchain* _desc)
 	{
@@ -82,9 +59,45 @@ namespace Steins
 
 	OpenGLFramebuffer::~OpenGLFramebuffer()
 	{
+		colorAttachments.clear();
+		depthAttachment = nullptr;
+		glDeleteFramebuffers(1, &framebufferID);
 	}
 	Shared<Texture2D> OpenGLFramebuffer::GetColorAttachmentTexture(UInt32 _index)
 	{
 		return colorAttachments[_index];
+	}
+	void OpenGLFramebuffer::Resize(UInt32 _width, UInt32 _height)
+	{
+		width = _width;
+		height = _height;
+		CreateAttachments();
+	}
+	void OpenGLFramebuffer::CreateAttachments()
+	{
+		const RenderPassDesc& renderPassDesc = renderPass->GetDesc();
+		for (const auto& colorAttachmentDesc : renderPassDesc.colorAttachments)
+		{
+			TextureDesc textureDesc;
+			textureDesc.width = width;
+			textureDesc.height = height;
+			textureDesc.format = colorAttachmentDesc.format;
+			textureDesc.bindFlags = RenderBindFlags::RenderTarget | RenderBindFlags::ShaderResource;
+
+			Shared<OpenGLTexture2D> colorTexture = MakeShared<OpenGLTexture2D>(textureDesc);
+			colorAttachments.push_back(colorTexture);
+		}
+
+		if (renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
+		{
+			TextureDesc textureDesc;
+			textureDesc.width = width;
+			textureDesc.height = height;
+			textureDesc.format = renderPassDesc.depthAttachment.format;
+			textureDesc.bindFlags = RenderBindFlags::DepthStencil;
+
+			Shared<OpenGLTexture2D> depthTexture = MakeShared<OpenGLTexture2D>(textureDesc);
+			depthAttachment = depthTexture;
+		}
 	}
 }

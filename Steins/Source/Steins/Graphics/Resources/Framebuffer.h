@@ -20,7 +20,7 @@ namespace Steins
 
 		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) = 0;
 		virtual bool HasDepthAttachment() = 0;
-		virtual void ResizeFramebuffer() {};
+		virtual void Resize(UInt32 _width, UInt32 _height) {};
 		//virtual Shared<Texture2D> GetDepthAttachemntTexture(UInt32 _index) = 0;
 
 		UInt32 GetWidth() { return width; }
@@ -29,6 +29,7 @@ namespace Steins
 	protected:
 		UInt32 width;
 		UInt32 height;
+		RenderPass* renderPass;
 	private:
 	};
 }

@@ -20,7 +20,7 @@ namespace Steins
 		ApplicationSpecification spec;
 		spec.Name = "Steins Engine Editor";
 		spec.WorkingDirectory = "../Lab";
-		spec.rendererAPI = RendererAPIType::DirectX12;
+		spec.rendererAPI = RendererAPIType::OpenGL;
 
 		return new EditorApplication(spec);
 	}

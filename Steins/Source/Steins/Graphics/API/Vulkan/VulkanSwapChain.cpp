@@ -169,8 +169,6 @@ namespace Steins
 		//vkCmdEndRenderPass(cmdbuf);
 		EndFrame();
 
-
-
 		currentFrame = (currentFrame + 1) % imageCount;
 
 		BeginFrame();
@@ -199,6 +197,24 @@ namespace Steins
 		currentFrame = (currentFrame + 1) % imageCount;
 
 		BeginFrame();
+
+		VkViewport viewport{};
+		//viewport.x = 0.0f;
+		//viewport.y = (float)extent.height;
+		//viewport.width = (float)extent.width;
+		//viewport.height = -(float)extent.height;
+		viewport.x = 0.0f;
+		viewport.y = 0.0f;
+		viewport.width = (float)extent.width;
+		viewport.height = (float)extent.height;
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		vkCmdSetViewport(device->GetCommandBuffer(), 0, 1, &viewport);
+
+		VkRect2D scissor{};
+		scissor.offset = { 0, 0 };
+		scissor.extent = extent;
+		vkCmdSetScissor(device->GetCommandBuffer(), 0, 1, &scissor);
 	}
 
 	void VulkanSwapchain::BeginFrame()

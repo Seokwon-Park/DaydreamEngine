@@ -103,12 +103,6 @@ namespace Steins
 	{
 		EndFrame();
 
-		Array<ID3D12CommandList*> execCommandLists = { commandLists[frameIndex].Get() };
-		device->GetCommandQueue()->ExecuteCommandLists((UInt32)execCommandLists.size(), execCommandLists.data());
-		swapChain->Present(desc.isVSync, 0);
-
-		MoveToNextFrame();
-
 		BeginFrame();
 
 		D3D12_VIEWPORT viewport = {};
@@ -130,7 +124,6 @@ namespace Steins
 	void D3D12Swapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
 	{
 		EndFrame();
-		WaitForGPU();
 
 		framebuffers.clear();
 
@@ -145,6 +138,7 @@ namespace Steins
 			format,
 			DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH
 		);
+		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to resize swapchain!");
 
 		framebuffers.resize(desc.bufferCount);
 		for (UInt32 i = 0; i < desc.bufferCount; i++)
@@ -153,7 +147,11 @@ namespace Steins
 			framebuffers[i] = MakeShared<D3D12Framebuffer>(device, mainRenderPass.get(), this);
 		}
 		frameIndex = swapChain->GetCurrentBackBufferIndex();
+		fenceValues[frameIndex]++;
+
 		BeginFrame();
+
+
 	}
 
 	void D3D12Swapchain::BeginFrame()
@@ -188,6 +186,12 @@ namespace Steins
 		device->GetCommandList()->ResourceBarrier(1, &barr);
 
 		device->GetCommandList()->Close();
+
+		Array<ID3D12CommandList*> execCommandLists = { commandLists[frameIndex].Get() };
+		device->GetCommandQueue()->ExecuteCommandLists((UInt32)execCommandLists.size(), execCommandLists.data());
+		swapChain->Present(desc.isVSync, 0);
+
+		MoveToNextFrame();
 	}
 
 	//모든 GPU작업이 끝날때까지 대기
@@ -210,8 +214,8 @@ namespace Steins
 	void D3D12Swapchain::MoveToNextFrame()
 	{
 		// 1. 현재 프레임의 커맨드 제출 완료를 위한 펜스 값 기록 요청
-		const UINT64 currentFrameCompletedFenceValue = fenceValues[frameIndex]; // 현재 프레임의 '고유한' 펜스 값
-		HRESULT hr = device->GetCommandQueue()->Signal(fence.Get(), currentFrameCompletedFenceValue); // GPU에게 이 값으로 펜스 시그널 요청
+		const UINT64 currentFenceValue = fenceValues[frameIndex]; // 현재 프레임의 '고유한' 펜스 값
+		HRESULT hr = device->GetCommandQueue()->Signal(fence.Get(), currentFenceValue); // GPU에게 이 값으로 펜스 시그널 요청
 		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to signal!");
 
 		// 2. 다음 백 버퍼 인덱스 획득 (GPU가 렌더링을 마친 버퍼를 가져옴) Present이후 호출이므로 바뀜
@@ -225,6 +229,6 @@ namespace Steins
 			fence->SetEventOnCompletion(fenceValues[frameIndex], fenceEvent);
 			WaitForSingleObjectEx(fenceEvent, INFINITE, FALSE);
 		}
-		fenceValues[frameIndex] = currentFrameCompletedFenceValue + 1;
+		fenceValues[frameIndex] = currentFenceValue + 1;
 	}
 }

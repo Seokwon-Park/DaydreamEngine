@@ -10,35 +10,11 @@ namespace Steins
 
 		width = _desc.width;
 		height = _desc.height;
+		renderPass = _renderPass;
 
-		const RenderPassDesc& renderPassDesc = _renderPass->GetDesc();
-		for (const auto& colorAttachmentDesc : renderPassDesc.colorAttachments)
-		{
-			TextureDesc textureDesc;
-			textureDesc.width = _desc.width;
-			textureDesc.height = _desc.height;
-			textureDesc.format = colorAttachmentDesc.format;
-			textureDesc.bindFlags = RenderBindFlags::RenderTarget | RenderBindFlags::ShaderResource;
-
-			Shared<D3D12Texture2D> colorTexture = MakeShared<D3D12Texture2D>(device, textureDesc);
-			colorAttachments.push_back(colorTexture);
-			renderTargetHandles.push_back(colorTexture->GetRTVCPUHandle());
-		}
-
-		if (renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
-		{
-			TextureDesc textureDesc;
-			textureDesc.width = _desc.width;
-			textureDesc.height = _desc.height;
-			textureDesc.format = renderPassDesc.depthAttachment.format;
-			textureDesc.bindFlags = RenderBindFlags::DepthStencil;
-
-			Shared<D3D12Texture2D> depthTexture = MakeShared<D3D12Texture2D>(device, textureDesc);
-			depthAttachment = depthTexture;
-			depthStencilHandle = depthTexture->GetDSVCPUHandle();
-		}
-
+		CreateAttachments();
 	}
+
 	D3D12Framebuffer::D3D12Framebuffer(D3D12RenderDevice* _device, RenderPass* _renderPass, D3D12Swapchain* _swapChain)
 	{
 		device = _device;
@@ -74,5 +50,47 @@ namespace Steins
 	Shared<Texture2D> D3D12Framebuffer::GetColorAttachmentTexture(UInt32 _index)
 	{
 		return colorAttachments[_index];
+	}
+
+	void D3D12Framebuffer::Resize(UInt32 _width, UInt32 _height)
+	{
+		renderTargetHandles.clear();
+		depthStencilHandle;
+		colorAttachments.clear();
+		depthAttachment = nullptr;
+
+		width = _width;
+		height = _height;
+		CreateAttachments();
+	}
+
+	void D3D12Framebuffer::CreateAttachments()
+	{
+		const RenderPassDesc& renderPassDesc = renderPass->GetDesc();
+		for (const auto& colorAttachmentDesc : renderPassDesc.colorAttachments)
+		{
+			TextureDesc textureDesc;
+			textureDesc.width = width;
+			textureDesc.height = height;
+			textureDesc.format = colorAttachmentDesc.format;
+			textureDesc.bindFlags = RenderBindFlags::RenderTarget | RenderBindFlags::ShaderResource;
+
+			Shared<D3D12Texture2D> colorTexture = MakeShared<D3D12Texture2D>(device, textureDesc);
+			colorAttachments.push_back(colorTexture);
+			renderTargetHandles.push_back(colorTexture->GetRTVCPUHandle());
+		}
+
+		if (renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
+		{
+			TextureDesc textureDesc;
+			textureDesc.width = width;
+			textureDesc.height = height;
+			textureDesc.format = renderPassDesc.depthAttachment.format;
+			textureDesc.bindFlags = RenderBindFlags::DepthStencil;
+
+			Shared<D3D12Texture2D> depthTexture = MakeShared<D3D12Texture2D>(device, textureDesc);
+			depthAttachment = depthTexture;
+			depthStencilHandle = depthTexture->GetDSVCPUHandle();
+		}
 	}
 }

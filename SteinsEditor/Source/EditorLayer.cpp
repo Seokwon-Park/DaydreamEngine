@@ -6,11 +6,61 @@ namespace Steins
 	EditorLayer::EditorLayer()
 		:Layer("Editor Layer")
 	{
+		float squareVertices[4 * 9] = {
+		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+		-0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+		 0.5f,	0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+		 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+		};
 
-	}
+		float squareVertices2[4 * 9] = {
+			-0.3f, -0.4f, .5f, 1.0f,0.0f,0.0f,1.0f, 0.0f,1.0f,
+			 -0.3f,  0.6f, .5f,0.0f,0.0f,1.0f,1.0f, 0.0f,0.0f,
+			 0.7f, 0.6f, 1.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 0.0f,
+			 0.7f, -0.4f, 1.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 1.0f,
+		};
 
-	void EditorLayer::OnUpdate(Float32 _deltaTime)
-	{
+		Steins::BufferLayout layout =
+		{
+			{ Steins::ShaderDataType::Float3, "a_Position", "POSITION"},
+			{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"},
+			{ Steins::ShaderDataType::Float2, "a_TexCoord", "TEXCOORD"}
+		};
+		//squareVB = Steins::VertexBuffer::CreateStatic(squareVertices, sizeof(squareVertices), layout.GetStride());
+		squareVB = Steins::VertexBuffer::CreateDynamic(sizeof(squareVertices), layout.GetStride());
+		squareVB->SetData(squareVertices, sizeof(squareVertices));
+
+		squareVB2 = Steins::VertexBuffer::CreateDynamic(sizeof(squareVertices2), layout.GetStride());
+		squareVB2->SetData(squareVertices2, sizeof(squareVertices2));
+
+		uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
+		squareIB = Steins::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
+
+		uint32_t squareIndices2[6] = { 0, 1, 2, 2, 3, 0 };
+		squareIB2 = Steins::IndexBuffer::Create(squareIndices2, sizeof(squareIndices2) / sizeof(uint32_t));
+
+
+		vs = Steins::Shader::Create("Asset/Shader/VertexShader.hlsl", Steins::ShaderType::Vertex, Steins::ShaderLoadMode::File);
+		ps = Steins::Shader::Create("Asset/Shader/PixelShader.hlsl", Steins::ShaderType::Pixel, Steins::ShaderLoadMode::File);
+
+
+		Steins::BufferLayout inputlayout = {
+		{ Steins::ShaderDataType::Float3, "a_Position", "POSITION"},
+		{ Steins::ShaderDataType::Float4, "a_Color", "COLOR"},
+		{ Steins::ShaderDataType::Float2, "a_TexCoord", "TEXCOORD"}
+		};
+
+		camera.SetPosition({ 0.0f,0.0f,-1.0f });
+		cameraPos = camera.GetViewProjectionMatrix();
+		viewProjMat = Steins::ConstantBuffer::Create(sizeof(Steins::Matrix4x4));
+		viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
+
+		auto path = Steins::FilePath("F:/SteinsReboot/Sandbox/Asset/Texture/Checkerboard.png");
+		Steins::TextureDesc textureDesc{};
+		textureDesc.bindFlags = Steins::RenderBindFlags::ShaderResource;
+		textureDesc.format = Steins::RenderFormat::R8G8B8A8_UNORM_SRGB;
+		texture = Steins::Texture2D::Create(path, textureDesc);
+		///////////////////////////////////////////////////////
 		Steins::RenderPassDesc rpDesc;
 
 		Steins::RenderPassAttachmentDesc attach{};
@@ -41,6 +91,67 @@ namespace Steins
 		desc.renderPass = renderPass;
 
 		pso = Steins::PipelineState::Create(desc);
+
+		material = Steins::Material::Create(pso);
+		//material = pso->CreateMaterial(); // 이것도 가능
+
+		material->SetTexture2D("Texture", texture);
+		material->SetConstantBuffer("Camera", viewProjMat);
+	}
+
+	void EditorLayer::OnUpdate(Float32 _deltaTime)
+	{
+		if (Steins::Input::GetKeyPressed(Steins::Key::Q))
+		{
+			camera.SetPosition(camera.GetPosition() + Steins::Vector3(0.0f, 0.0f, 1.0f) * _deltaTime);
+			cameraPos = camera.GetViewProjectionMatrix();
+			viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
+		}
+		if (Steins::Input::GetKeyPressed(Steins::Key::E))
+		{
+			camera.SetPosition(camera.GetPosition() + Steins::Vector3(0.0f, 0.0f, -1.0f) * _deltaTime);
+			cameraPos = camera.GetViewProjectionMatrix();
+			viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
+		}
+
+		if (Steins::Input::GetKeyPressed(Steins::Key::W))
+		{
+			camera.SetPosition(camera.GetPosition() + Steins::Vector3(0.0f, 1.0f, 0.0f) * _deltaTime);
+			cameraPos = camera.GetViewProjectionMatrix();
+			viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
+		}
+
+		if (Steins::Input::GetKeyPressed(Steins::Key::A))
+		{
+			camera.SetPosition(camera.GetPosition() + Steins::Vector3(-1.0f, 0.0f, 0.0f) * _deltaTime);
+			cameraPos = camera.GetViewProjectionMatrix();
+			viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
+		}
+
+		if (Steins::Input::GetKeyPressed(Steins::Key::S))
+		{
+			camera.SetPosition(camera.GetPosition() + Steins::Vector3(0.0f, -1.0f, 0.0f) * _deltaTime);
+			cameraPos = camera.GetViewProjectionMatrix();
+			viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
+		}
+
+		if (Steins::Input::GetKeyPressed(Steins::Key::D))
+		{
+			camera.SetPosition(camera.GetPosition() + Steins::Vector3(1.0f, 0.0f, 0.0f) * _deltaTime);
+			cameraPos = camera.GetViewProjectionMatrix();
+			viewProjMat->Update(&cameraPos.mat, sizeof(Steins::Matrix4x4));
+		}
+
+		renderPass->Begin(viewportFramebuffer);
+
+		pso->Bind();
+		squareVB->Bind();
+		squareIB->Bind();
+		material->Bind();
+
+		Renderer::Submit(squareIB->GetCount());
+
+		renderPass->End();
 
 
 	}
@@ -80,13 +191,14 @@ namespace Steins
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 }); // 뷰포트 창 패딩 제거
 		ImGui::Begin("Viewport");
 		ImVec2 ImGuiViewportSize = ImGui::GetContentRegionAvail();
-		if (viewportSize != Vector2(ImGuiViewportSize.x, ImGuiViewportSize.y))
+		//STEINS_INFO("{0}, {1}", viewportSize.x, viewportSize.y);
+		if (viewportSize != Vector2(ImGuiViewportSize.x, ImGuiViewportSize.y) && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
 		{
-
+			viewportFramebuffer->Resize(ImGuiViewportSize.x, ImGuiViewportSize.y);
+			viewportSize = Vector2(ImGuiViewportSize.x, ImGuiViewportSize.y);
 		}
-		// 여기에 렌더링 엔진의 최종 이미지를 ImGui::Image() 로 그릴 것입니다.
-		// (지금 당장은 빈 창일 수 있습니다.)
-		ImGui::Text("Rendered Scene will go here!");
+		ImGui::Image((ImTextureID)viewportFramebuffer->GetColorAttachmentTexture(0)->GetImGuiHandle(), ImGuiViewportSize, ImVec2{0,1}, ImVec2{1,0});
+		//ImGui::Text("Rendered Scene will go here!");
 		ImGui::End();
 		ImGui::PopStyleVar();
 

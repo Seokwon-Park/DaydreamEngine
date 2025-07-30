@@ -11,13 +11,18 @@ namespace Steins
 
 		width = _desc.width;
 		height = _desc.height;
+		renderPass = _renderPass;
 
-		const RenderPassDesc& renderPassDesc = _renderPass->GetDesc();
+		CreateAttachments();
+	}
+	void D3D11Framebuffer::CreateAttachments()
+	{
+		const RenderPassDesc& renderPassDesc = renderPass->GetDesc();
 		for (const auto& colorAttachmentDesc : renderPassDesc.colorAttachments)
 		{
 			TextureDesc textureDesc;
-			textureDesc.width = _desc.width;
-			textureDesc.height = _desc.height;
+			textureDesc.width = width;
+			textureDesc.height = height;
 			textureDesc.format = colorAttachmentDesc.format;
 			textureDesc.bindFlags = RenderBindFlags::RenderTarget | RenderBindFlags::ShaderResource;
 
@@ -29,8 +34,8 @@ namespace Steins
 		if (renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
 		{
 			TextureDesc textureDesc;
-			textureDesc.width = _desc.width;
-			textureDesc.height = _desc.height;
+			textureDesc.width = width;
+			textureDesc.height = height;
 			textureDesc.format = renderPassDesc.depthAttachment.format;
 			textureDesc.bindFlags = RenderBindFlags::DepthStencil;
 
@@ -83,6 +88,18 @@ namespace Steins
 	{
 		STEINS_CORE_ASSERT(_index < colorAttachments.size(), "index out of range");
 		return colorAttachments[_index];
+	}
+	void D3D11Framebuffer::Resize(UInt32 _width, UInt32 _height)
+	{
+		width = _width;
+		height = _height;
+
+		colorAttachments.clear();
+		rtvs.clear();
+		depthStencilView = nullptr;
+		depthAttachment = nullptr;
+
+		CreateAttachments();
 	}
 	//Shared<Texture2D> D3D11Framebuffer::GetDepthAttachemntTexture(UInt32 _index)
 	//{

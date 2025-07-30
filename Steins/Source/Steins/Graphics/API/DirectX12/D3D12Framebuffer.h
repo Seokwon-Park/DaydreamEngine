@@ -18,10 +18,12 @@ namespace Steins
 
 		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) override;
 		virtual bool HasDepthAttachment() override { return depthAttachment != nullptr; };
+		virtual void Resize(UInt32 _width, UInt32 _height) override;
 
 		Array<Shared<D3D12Texture2D>>& GetColorAttachments() { return colorAttachments; }
 		const D3D12_CPU_DESCRIPTOR_HANDLE& GetDepthStencilView() { return depthAttachment->GetDSVCPUHandle(); }
 		Array<D3D12_CPU_DESCRIPTOR_HANDLE> GetRenderTargetHandles() { return renderTargetHandles; }
+		void CreateAttachments();
 
 	private:
 		D3D12RenderDevice* device;
@@ -29,6 +31,8 @@ namespace Steins
 		D3D12_CPU_DESCRIPTOR_HANDLE depthStencilHandle; 
 		Array<Shared<D3D12Texture2D>> colorAttachments;
 		Shared<D3D12Texture2D> depthAttachment;
+
+		
 	};
 }
 

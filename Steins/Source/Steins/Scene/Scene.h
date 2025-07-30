@@ -5,7 +5,7 @@ namespace Steins
 	class Scene
 	{
 	public:
-		Scene(const std::string& _name);
+		Scene(const String& _name);
 	private:
 
 	};

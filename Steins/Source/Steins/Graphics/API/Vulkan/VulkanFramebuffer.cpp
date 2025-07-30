@@ -14,12 +14,13 @@ namespace Steins
 		height = _desc.height;
 		extent.width = _desc.width;
 		extent.height = _desc.height;
-		const RenderPassDesc& renderPassDesc = _renderPass->GetDesc();
+		renderPass = _renderPass;
+		const RenderPassDesc& renderPassDesc = renderPass->GetDesc();
 		for (const auto& colorAttachmentDesc : renderPassDesc.colorAttachments)
 		{
 			TextureDesc textureDesc;
-			textureDesc.width = _desc.width;
-			textureDesc.height = _desc.height;
+			textureDesc.width = width;
+			textureDesc.height = height;
 			textureDesc.format = colorAttachmentDesc.format;
 			textureDesc.bindFlags = RenderBindFlags::RenderTarget | RenderBindFlags::ShaderResource;
 
@@ -31,8 +32,8 @@ namespace Steins
 		if(renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
 		{
 			TextureDesc textureDesc;
-			textureDesc.width = _desc.width;
-			textureDesc.height = _desc.height;
+			textureDesc.width = width;
+			textureDesc.height = height;
 			textureDesc.format = renderPassDesc.depthAttachment.format;
 			textureDesc.bindFlags = RenderBindFlags::DepthStencil;
 
@@ -40,7 +41,6 @@ namespace Steins
 			depthAttachment = depthTexture;
 			depthStencilView = depthTexture->GetImageView();
 			AttachmentImageViews.push_back(depthAttachment->GetImageView());
-
 		}
 
 		VkFramebufferCreateInfo framebufferInfo{};
@@ -115,12 +115,16 @@ namespace Steins
 	VulkanFramebuffer::~VulkanFramebuffer()
 	{
 		colorAttachments.clear();
-		AttachmentImageViews.clear();
 		if(framebuffer != VK_NULL_HANDLE) vkDestroyFramebuffer(device->GetDevice(), framebuffer, nullptr);
 	}
 
 	Shared<Texture2D> VulkanFramebuffer::GetColorAttachmentTexture(UInt32 _index)
 	{
 		return colorAttachments[_index];
+	}
+
+	void VulkanFramebuffer::Resize(UInt32 _width, UInt32 _height)
+	{
+		colorAttachments.clear();
 	}
 }

@@ -16,10 +16,12 @@ namespace Steins
 
 		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) override;
 		virtual inline bool HasDepthAttachment() override { return depthAttachment != nullptr; }
+		virtual void Resize(UInt32 _width, UInt32 _height) override;
 
 		void AttachTextures();
 		bool IsBackbuffer() { return isBackbuffer; }
 		UInt32 GetFramebufferID() { return framebufferID; }
+		void CreateAttachments();
 	private:
 		UInt32 framebufferID;
 		Array<Shared<OpenGLTexture2D>> colorAttachments;

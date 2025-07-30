@@ -189,8 +189,7 @@ namespace Steins
 		//STEINS_CORE_INFO("Window Resized : [ {0} , {1} ]", _event.GetWidth(), _event.GetHeight());
 		isMinimized = false;
 		Renderer::OnWindowResize(_event.GetWidth(), _event.GetHeight());
-		mainWindow->GetSwapchain()->ResizeSwapchain(_event.GetWidth(), _event.GetHeight());
-
+		
 		return false;
 	}
 	bool Application::OnWindowFocused(WindowFocusEvent& _e)

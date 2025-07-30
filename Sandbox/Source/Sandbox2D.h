@@ -16,15 +16,15 @@ private:
 	Steins::Shared<Steins::VertexBuffer> squareVB2;
 	Steins::Shared<Steins::IndexBuffer> squareIB;
 	Steins::Shared<Steins::IndexBuffer> squareIB2;
+	Steins::Shared<Steins::ConstantBuffer> viewProjMat;
+	Steins::Shared<Steins::Texture2D> texture;
+	Steins::Shared<Steins::Texture2D> texture2;
 
 	Steins::Shared<Steins::Shader> vs;
 	Steins::Shared<Steins::Shader> ps;
 
 	Steins::Shared<Steins::PipelineState> pso;
 	Steins::Shared<Steins::RenderPass> renderPass;
-	Steins::Shared<Steins::ConstantBuffer> viewProjMat;
-	Steins::Shared<Steins::Texture2D> texture;
-	Steins::Shared<Steins::Texture2D> texture2;
 
 	Steins::Shared<Steins::Material> material;
 	Steins::Shared<Steins::Framebuffer> framebuffer;
