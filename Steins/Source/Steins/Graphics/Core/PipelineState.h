@@ -47,7 +47,7 @@ namespace Steins
 		Shared<Shader> pixelShader = nullptr;
 		//Shared<Shader> computeShader; //??
 
-		BufferLayout inputLayout;
+		//BufferLayout inputLayout;
 		//InputLayoutDesc inputLayout;
 		//Shared<ResourceBindingLayout> resourceBindingLayout; // RootSignature/PipelineLayout
 		Shared<RenderPass> renderPass;

@@ -122,13 +122,36 @@ namespace Steins
 
 		device->GetCommandList()->CopyTextureRegion(&dstLocation, 0, 0, 0, &srcLocation, NULL);
 		device->GetCommandList()->ResourceBarrier(1, &barrier);
-
-		
 	}
 	D3D12Texture2D::D3D12Texture2D(D3D12RenderDevice* _device, ComPtr<ID3D12Resource> _texture)
 	{
 		device = _device;
 		texture = _texture;
+	}
+	D3D12Texture2D::~D3D12Texture2D()
+	{
+		if (rtvCpuHandle.ptr != 0)
+		{
+			device->GetRTVHeapAlloc().Free(rtvCpuHandle);
+			rtvCpuHandle.ptr = 0;
+		}
+		if (dsvCpuHandle.ptr != 0)
+		{
+			device->GetDSVHeapAlloc().Free(dsvCpuHandle);
+			rtvCpuHandle.ptr = 0;
+		}
+		if (srvCpuHandle.ptr != 0)
+		{
+			device->GetCBVSRVUAVHeapAlloc().Free(srvCpuHandle, srvGpuHandle);
+			srvCpuHandle.ptr = 0;
+			srvGpuHandle.ptr = 0;
+		}
+		if (uavCpuHandle.ptr != 0)
+		{
+			device->GetCBVSRVUAVHeapAlloc().Free(uavCpuHandle, uavGpuHandle);
+			uavCpuHandle.ptr = 0;
+			uavGpuHandle.ptr = 0;
+		}
 	}
 	D3D12_CPU_DESCRIPTOR_HANDLE D3D12Texture2D::GetSRVCPUHandle()
 	{
@@ -217,7 +240,7 @@ namespace Steins
 			return dsvCpuHandle;
 		}
 		STEINS_CORE_ASSERT(false, "This texture was not created with the Depth Stencil View (DSV) bind flag.");
-		return {};
+		return dsvCpuHandle;
 	}
 
 	D3D12_CPU_DESCRIPTOR_HANDLE D3D12Texture2D::GetUAVCPUHandle()

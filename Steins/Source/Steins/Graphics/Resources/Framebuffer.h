@@ -19,7 +19,8 @@ namespace Steins
 		virtual ~Framebuffer() = default;
 
 		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) = 0;
-		virtual bool HasDepthAttachment() { return false; }
+		virtual bool HasDepthAttachment() = 0;
+		virtual void ResizeFramebuffer() {};
 		//virtual Shared<Texture2D> GetDepthAttachemntTexture(UInt32 _index) = 0;
 
 		UInt32 GetWidth() { return width; }

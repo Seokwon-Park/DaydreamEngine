@@ -19,6 +19,6 @@ namespace Steins
 		virtual Shared<Framebuffer> CreateFramebuffer(const FramebufferDesc& _desc) override;
 	private:
 		D3D11RenderDevice* device;
-		Shared<D3D11Framebuffer> currentFramebuffer;
+		D3D11Framebuffer* currentFramebuffer;
 	};
 }

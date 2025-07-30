@@ -466,6 +466,10 @@ namespace Steins
 			dstAccess = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 			dstStage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
 			break;
+		case VK_IMAGE_LAYOUT_PRESENT_SRC_KHR:
+			dstAccess = 0; // 또는 VK_ACCESS_NONE (Vulkan 1.3 이상)
+			dstStage = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT; // 또는 VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT
+			break;
 		default:
 			throw std::invalid_argument("Unsupported new layout!");
 		}

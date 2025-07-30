@@ -22,13 +22,13 @@ namespace Steins
 	{
 	public:
 		VulkanSwapchain(VulkanRenderDevice* _device, SteinsWindow* _window, const SwapchainDesc& _desc);
-		void CreateSwapchain(GLFWwindow* window, const Steins::SwapchainDesc& _desc);
+		void CreateSwapchain();
 		void CreateCommandBuffers();
 		virtual ~VulkanSwapchain() override;
 
 		virtual void SetVSync(bool _enabled) override;
 		virtual void SwapBuffers() override;
-		virtual void ResizeSwapchain(UInt32 _width, UInt32 height) override;
+		virtual void ResizeSwapchain(UInt32 _width, UInt32 _height) override;
 
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
@@ -51,7 +51,9 @@ namespace Steins
 		Shared<VulkanRenderPass> renderPass;
 
 		VkSurfaceKHR surface; // Vulkan window surface
-		VkSwapchainKHR swapchain;
+		VkSurfaceFormatKHR surfaceFormat;
+		VkSwapchainKHR swapchain = VK_NULL_HANDLE;
+		VkPresentModeKHR presentMode;
 		VkFormat format; // swapchain image format
 		VkExtent2D extent;
 		Array<VkSemaphore> imageAvailableSemaphores;

@@ -11,7 +11,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImGui", "Steins\Vendor\imgu
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Steins", "Steins\Steins.vcxproj", "{FB7AE7D1-E71C-12A8-D0D7-25FCBC1899F8}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SteinsGate", "SteinsGate\SteinsGate.vcxproj", "{5C1BFB1E-48D3-3C6C-B1DA-15C89DB1D75C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SteinsEditor", "SteinsEditor\SteinsEditor.vcxproj", "{02A1B5C5-EE03-456A-9789-7D2083CB10ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,10 +39,10 @@ Global
 		{FB7AE7D1-E71C-12A8-D0D7-25FCBC1899F8}.Debug|x64.Build.0 = Debug|x64
 		{FB7AE7D1-E71C-12A8-D0D7-25FCBC1899F8}.Release|x64.ActiveCfg = Release|x64
 		{FB7AE7D1-E71C-12A8-D0D7-25FCBC1899F8}.Release|x64.Build.0 = Release|x64
-		{5C1BFB1E-48D3-3C6C-B1DA-15C89DB1D75C}.Debug|x64.ActiveCfg = Debug|x64
-		{5C1BFB1E-48D3-3C6C-B1DA-15C89DB1D75C}.Debug|x64.Build.0 = Debug|x64
-		{5C1BFB1E-48D3-3C6C-B1DA-15C89DB1D75C}.Release|x64.ActiveCfg = Release|x64
-		{5C1BFB1E-48D3-3C6C-B1DA-15C89DB1D75C}.Release|x64.Build.0 = Release|x64
+		{02A1B5C5-EE03-456A-9789-7D2083CB10ED}.Debug|x64.ActiveCfg = Debug|x64
+		{02A1B5C5-EE03-456A-9789-7D2083CB10ED}.Debug|x64.Build.0 = Debug|x64
+		{02A1B5C5-EE03-456A-9789-7D2083CB10ED}.Release|x64.ActiveCfg = Release|x64
+		{02A1B5C5-EE03-456A-9789-7D2083CB10ED}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

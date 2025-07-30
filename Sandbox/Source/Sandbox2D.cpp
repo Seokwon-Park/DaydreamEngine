@@ -90,7 +90,6 @@ Sandbox2D::Sandbox2D()
 	Steins::PipelineStateDesc desc;
 	desc.vertexShader = vs;
 	desc.pixelShader = ps;
-	desc.inputLayout = inputlayout;
 	desc.renderPass = renderPass;
 
 	pso = Steins::PipelineState::Create(desc);

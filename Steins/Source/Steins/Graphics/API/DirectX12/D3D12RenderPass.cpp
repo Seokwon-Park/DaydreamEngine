@@ -15,7 +15,7 @@ namespace Steins
 	}
 	void D3D12RenderPass::Begin(Shared<Framebuffer> _framebuffer)
 	{
-		currentFramebuffer = static_pointer_cast<D3D12Framebuffer>(_framebuffer);
+		currentFramebuffer = static_cast<D3D12Framebuffer*>(_framebuffer.get());
 		Array<D3D12_CPU_DESCRIPTOR_HANDLE> rtHandles = currentFramebuffer->GetRenderTargetHandles();
 		for (auto rtHandle : rtHandles)
 		{
@@ -25,11 +25,11 @@ namespace Steins
 		{
 			
 			device->GetCommandList()->ClearDepthStencilView(currentFramebuffer->GetDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
-			device->GetCommandList()->OMSetRenderTargets(rtHandles.size(), rtHandles.data(), false, &currentFramebuffer->GetDepthStencilView());
+			device->GetCommandList()->OMSetRenderTargets((UINT)rtHandles.size(), rtHandles.data(), false, &currentFramebuffer->GetDepthStencilView());
 		}
 		else
 		{
-			device->GetCommandList()->OMSetRenderTargets(rtHandles.size(), rtHandles.data(), false, nullptr);
+			device->GetCommandList()->OMSetRenderTargets((UINT)rtHandles.size(), rtHandles.data(), false, nullptr);
 		}
 
 		D3D12_VIEWPORT viewport = {};

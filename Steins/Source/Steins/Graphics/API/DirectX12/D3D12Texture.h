@@ -11,6 +11,7 @@ namespace Steins
 		D3D12Texture2D(D3D12RenderDevice* _device, const TextureDesc& _desc);
 		D3D12Texture2D(D3D12RenderDevice* _device, const FilePath& _path, const TextureDesc& _desc);
 		D3D12Texture2D(D3D12RenderDevice* _device, ComPtr<ID3D12Resource> _texture);
+		virtual ~D3D12Texture2D();
 
 		virtual inline void* GetNativeHandle() override { return texture.Get(); }
 

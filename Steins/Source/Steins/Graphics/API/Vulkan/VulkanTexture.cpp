@@ -91,6 +91,7 @@ namespace Steins
 		textureImage = _image;
 		isSwapchainImage = true;
 
+		device->TransitionTextureLayout(textureImage, imageFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 		device->CreateImageView(textureImage, _format, textureImageView, VK_IMAGE_ASPECT_COLOR_BIT);
 
 		CreateSampler();

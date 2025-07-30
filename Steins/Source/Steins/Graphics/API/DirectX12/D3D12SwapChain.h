@@ -36,6 +36,8 @@ namespace Steins
 		Array<ComPtr<ID3D12CommandAllocator>> commandAllocators;
 
 		Int32 frameIndex = 0;
+		UInt32 bufferCount = 0;
+		DXGI_FORMAT format;
 
 		ComPtr<ID3D12Fence> fence;
 		Array<UINT64> fenceValues;

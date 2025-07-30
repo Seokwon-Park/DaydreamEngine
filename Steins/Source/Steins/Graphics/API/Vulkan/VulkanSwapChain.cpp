@@ -16,10 +16,15 @@ namespace Steins
 		//		createInfo.hwnd = glfwGetWin32Window(window);
 		//		createInfo.hinstance = GetModuleHandle(nullptr);
 		//#endif
-		CreateSwapchain(window, _desc);
+		VkResult result = glfwCreateWindowSurface(device->GetInstance(), window, nullptr, &surface);
+		if (result != VK_SUCCESS) {
+			STEINS_CORE_ERROR("Failed to create window surface!");
+		}
+
+		CreateSwapchain();
 		CreateCommandBuffers();
 
-		VkResult result;
+		result;
 
 		VkSemaphoreCreateInfo semaphoreInfo{};
 		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -40,7 +45,7 @@ namespace Steins
 			result = vkCreateFence(device->GetDevice(), &fenceInfo, nullptr, &inFlightFences[i]);
 			STEINS_CORE_ASSERT(VK_SUCCEEDED(result), "Failed to create fence!");
 		}
-		
+
 		RenderPassAttachmentDesc colorDesc;
 		colorDesc.format = _desc.format;
 
@@ -59,60 +64,57 @@ namespace Steins
 		BeginFrame();
 		//framebuffers[imageIndex]->Begin();
 	}
-	void VulkanSwapchain::CreateSwapchain(GLFWwindow* window, const Steins::SwapchainDesc& _desc)
+	void VulkanSwapchain::CreateSwapchain()
 	{
+		SwapchainSupportDetails SwapchainSupport = device->QuerySwapchainSupport(surface);
+		if (SwapchainSupport.formats.empty() || SwapchainSupport.presentModes.empty())
 		{
-			VkResult result = glfwCreateWindowSurface(device->GetInstance(), window, nullptr, &surface);
-			if (result != VK_SUCCESS) {
-				STEINS_CORE_ERROR("Failed to create window surface!");
-			}
-
-			SwapchainSupportDetails SwapchainSupport = device->QuerySwapchainSupport(surface);
-			if (SwapchainSupport.formats.empty() || SwapchainSupport.presentModes.empty())
-			{
-				STEINS_CORE_ERROR("GPU has no supported formats or presentmodes");
-			}
-
-
-			VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(SwapchainSupport.formats, _desc.format);
-			VkPresentModeKHR presentMode = ChooseSwapPresentMode(SwapchainSupport.presentModes);
-			format = surfaceFormat.format;
-			extent = ChooseSwapExtent(SwapchainSupport.capabilities);
-
-			imageCount = desc.bufferCount;
-
-			// 서피스 제한 확인
-			if (imageCount < SwapchainSupport.capabilities.minImageCount)
-			{
-				imageCount = SwapchainSupport.capabilities.minImageCount;
-			}
-
-			if (SwapchainSupport.capabilities.maxImageCount > 0 && imageCount > SwapchainSupport.capabilities.maxImageCount)
-			{
-				imageCount = SwapchainSupport.capabilities.maxImageCount;
-			}
-
-
-			VkSwapchainCreateInfoKHR createInfo{};
-			createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-			createInfo.surface = surface;
-			createInfo.minImageCount = imageCount;
-			createInfo.imageFormat = format;
-			createInfo.imageColorSpace = surfaceFormat.colorSpace;
-			createInfo.imageExtent = extent;
-			createInfo.imageArrayLayers = 1;
-			createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-			createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-			createInfo.preTransform = SwapchainSupport.capabilities.currentTransform;
-			createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-			createInfo.presentMode = presentMode;
-			createInfo.clipped = VK_TRUE;
-
-			createInfo.oldSwapchain = VK_NULL_HANDLE;
-
-			result = vkCreateSwapchainKHR(device->GetDevice(), &createInfo, nullptr, &swapchain);
-			STEINS_CORE_ASSERT(VK_SUCCEEDED(result), "Failed to create Swapchain");
+			STEINS_CORE_ERROR("GPU has no supported formats or presentmodes");
 		}
+
+		surfaceFormat = ChooseSwapSurfaceFormat(SwapchainSupport.formats, desc.format);
+		presentMode = ChooseSwapPresentMode(SwapchainSupport.presentModes);
+		format = surfaceFormat.format;
+		extent = ChooseSwapExtent(SwapchainSupport.capabilities);
+
+		imageCount = desc.bufferCount;
+
+		// 서피스 제한 확인
+		if (imageCount < SwapchainSupport.capabilities.minImageCount)
+		{
+			imageCount = SwapchainSupport.capabilities.minImageCount;
+		}
+
+		if (SwapchainSupport.capabilities.maxImageCount > 0 && imageCount > SwapchainSupport.capabilities.maxImageCount)
+		{
+			imageCount = SwapchainSupport.capabilities.maxImageCount;
+		}
+
+		VkSwapchainCreateInfoKHR createInfo{};
+		createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+		createInfo.surface = surface;
+		createInfo.minImageCount = imageCount;
+		createInfo.imageFormat = format;
+		createInfo.imageColorSpace = surfaceFormat.colorSpace;
+		createInfo.imageExtent = extent;
+		createInfo.imageArrayLayers = 1;
+		createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+		createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		createInfo.preTransform = SwapchainSupport.capabilities.currentTransform;
+		createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+		createInfo.presentMode = presentMode;
+		createInfo.clipped = VK_TRUE;
+		createInfo.oldSwapchain = swapchain;
+
+		VkSwapchainKHR newSwapchain;
+
+		VkResult result = vkCreateSwapchainKHR(device->GetDevice(), &createInfo, nullptr, &newSwapchain);
+		STEINS_CORE_ASSERT(VK_SUCCEEDED(result), "Failed to create Swapchain");
+
+		if (swapchain != VK_NULL_HANDLE)
+			vkDestroySwapchainKHR(device->GetDevice(), swapchain, nullptr);
+
+		swapchain = newSwapchain;
 	}
 	void VulkanSwapchain::CreateCommandBuffers()
 	{
@@ -167,6 +169,65 @@ namespace Steins
 		//vkCmdEndRenderPass(cmdbuf);
 		EndFrame();
 
+
+
+		currentFrame = (currentFrame + 1) % imageCount;
+
+		BeginFrame();
+		//framebuffers[currentFrame]->Begin();
+	}
+
+	void VulkanSwapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
+	{
+		// 1. 모든 GPU 작업 완료 대기
+		vkDeviceWaitIdle(device->GetDevice());
+
+		EndFrame();
+
+		desc.width = _width;
+		desc.height = _height;
+		framebuffers.clear();
+
+		CreateSwapchain();
+
+		framebuffers.resize(desc.bufferCount);
+		for (UInt32 i = 0; i < desc.bufferCount; i++)
+		{
+			framebuffers[i] = MakeShared<VulkanFramebuffer>(device, renderPass.get(), this, i);
+		}
+
+		currentFrame = (currentFrame + 1) % imageCount;
+
+		BeginFrame();
+	}
+
+	void VulkanSwapchain::BeginFrame()
+	{
+		//이전 프레임의 GPU 작업 완료됐다는 신호를 inFlightFence로 받기로 하고 대기
+		vkWaitForFences(device->GetDevice(), 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
+		//완료 됐으면 펜스 상태는 신호받기 전으로
+		vkResetFences(device->GetDevice(), 1, &inFlightFences[currentFrame]);
+
+		//이미지를 GPU에 요청. 사용가능한 이미지의 인덱스를 imageIndex로 전달하고 imageAvailableSemaphore에 신호를 전달하라는 명령
+		VkResult e = vkAcquireNextImageKHR(device->GetDevice(), swapchain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+		//이미지 요청만 해놓고 일단 커맨드 받기 시작
+		device->SetCommandBuffer(commandBuffers[currentFrame]);
+		vkResetCommandBuffer(commandBuffers[currentFrame], 0);
+		//fb->Bind();
+
+		VkCommandBufferBeginInfo beginInfo{};
+		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+		VkResult result = vkBeginCommandBuffer(commandBuffers[currentFrame], &beginInfo);
+		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to begin recording command buffer!");
+	}
+
+	void VulkanSwapchain::EndFrame()
+	{
+		if (vkEndCommandBuffer(commandBuffers[currentFrame]) != VK_SUCCESS) {
+			throw std::runtime_error("failed to record command buffer!");
+		}
+
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
@@ -200,44 +261,6 @@ namespace Steins
 		presentInfo.pImageIndices = &imageIndex;
 
 		vkQueuePresentKHR(device->GetQueue(), &presentInfo);
-
-		currentFrame = (currentFrame + 1) % imageCount;
-
-		BeginFrame();
-		//framebuffers[currentFrame]->Begin();
-	}
-
-	void VulkanSwapchain::ResizeSwapchain(UInt32 _width, UInt32 height)
-	{
-	}
-
-	void VulkanSwapchain::BeginFrame()
-	{
-		//이전 프레임의 GPU 작업 완료됐다는 신호를 inFlightFence로 받기로 하고 대기
-		vkWaitForFences(device->GetDevice(), 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
-		//완료 됐으면 펜스 상태는 신호받기 전으로
-		vkResetFences(device->GetDevice(), 1, &inFlightFences[currentFrame]);
-
-		//이미지를 GPU에 요청. 사용가능한 이미지의 인덱스를 imageIndex로 전달하고 imageAvailableSemaphore에 신호를 전달하라는 명령
-		vkAcquireNextImageKHR(device->GetDevice(), swapchain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
-
-		//이미지 요청만 해놓고 일단 커맨드 받기 시작
-		device->SetCommandBuffer(commandBuffers[currentFrame]);
-		vkResetCommandBuffer(commandBuffers[currentFrame], 0);
-		//fb->Bind();
-
-		VkCommandBufferBeginInfo beginInfo{};
-		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-
-		VkResult result = vkBeginCommandBuffer(commandBuffers[currentFrame], &beginInfo);
-		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to begin recording command buffer!");
-	}
-
-	void VulkanSwapchain::EndFrame()
-	{
-		if (vkEndCommandBuffer(commandBuffers[currentFrame]) != VK_SUCCESS) {
-			throw std::runtime_error("failed to record command buffer!");
-		}
 	}
 
 	VkSurfaceFormatKHR VulkanSwapchain::ChooseSwapSurfaceFormat(const Array<VkSurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat)
@@ -282,47 +305,4 @@ namespace Steins
 			return actualExtent;
 		}
 	}
-	//	void VulkanSwapchain::recordCommandBuffer(VkCommandBuffer _commandBuffer, UInt32 _imageIndex)
-	//	{
-	//		VkCommandBufferBeginInfo beginInfo{};
-	//		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-	//
-	//		VkResult result = vkBeginCommandBuffer(_commandBuffer, &beginInfo);
-	//		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to begin recording command buffer!");
-	//
-	//		//VkFramebuffer buf = ((VulkanFramebuffer*)backFramebuffer.get())->GetFrameBuffers()[_imageIndex];
-	//
-	//		//VkRenderPassBeginInfo renderPassInfo{};
-	//		//renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-	//		//renderPassInfo.renderPass = device->GetMainRenderPass();
-	//		//renderPassInfo.framebuffer = buf;
-	//		//renderPassInfo.renderArea.offset = { 0, 0 };
-	//		//renderPassInfo.renderArea.extent = extent;
-	//
-	//		//VkClearValue clearColor = { {1.0f, 1.0f, 1.0f, 1.0f} };
-	//		//renderPassInfo.clearValueCount = 1;
-	//		//renderPassInfo.pClearValues = &clearColor;
-	//
-	//		//vkCmdBeginRenderPass(_commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-	//
-	//		framebuffers[_imageIndex]->Begin();
-	//
-	//		VkViewport viewport{};
-	//		viewport.x = 0.0f;
-	//		viewport.y = (float)extent.height;
-	//		viewport.width = (float)extent.width;
-	//		viewport.height = -(float)extent.height;
-	//		viewport.minDepth = 0.0f;
-	//		viewport.maxDepth = 1.0f;
-	//		vkCmdSetViewport(_commandBuffer, 0, 1, &viewport);
-	//
-	//		VkRect2D scissor{};
-	//		scissor.offset = { 0, 0 };
-	//		scissor.extent = extent;
-	//		vkCmdSetScissor(_commandBuffer, 0, 1, &scissor);
-	//
-	////		vkCmdDraw(_commandBuffer, 3, 1, 0, 0);
-	//
-	//
-	//	}
 }

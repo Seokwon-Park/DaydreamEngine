@@ -15,7 +15,7 @@ namespace Steins
 	}
 	void D3D11RenderPass::Begin(Shared<Framebuffer> _framebuffer)
 	{
-		currentFramebuffer = static_pointer_cast<D3D11Framebuffer>(_framebuffer);
+		currentFramebuffer = static_cast<D3D11Framebuffer*>(_framebuffer.get());
 		Array<ID3D11RenderTargetView*> rtvs = currentFramebuffer->GetRenderTargetViews();
 		for (auto rtv : rtvs)
 		{
@@ -24,11 +24,11 @@ namespace Steins
 		if (currentFramebuffer->HasDepthAttachment())
 		{
 			device->GetContext()->ClearDepthStencilView(currentFramebuffer->GetDepthStencilView().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-			device->GetContext()->OMSetRenderTargets(rtvs.size(), rtvs.data(), currentFramebuffer->GetDepthStencilView().Get());
+			device->GetContext()->OMSetRenderTargets((UInt32)rtvs.size(), rtvs.data(), currentFramebuffer->GetDepthStencilView().Get());
 		}
 		else
 		{
-			device->GetContext()->OMSetRenderTargets(rtvs.size(), rtvs.data(), nullptr);
+			device->GetContext()->OMSetRenderTargets((UInt32)rtvs.size(), rtvs.data(), nullptr);
 		}
 
 		D3D11_VIEWPORT viewport;

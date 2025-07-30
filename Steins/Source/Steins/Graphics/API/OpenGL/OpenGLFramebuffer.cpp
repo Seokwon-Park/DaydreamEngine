@@ -72,7 +72,7 @@ namespace Steins
 			drawBuffers.push_back(GL_COLOR_ATTACHMENT0 + i);
 		}
 		glNamedFramebufferDrawBuffers(framebufferID,
-			drawBuffers.size(),
+			(UInt32)drawBuffers.size(),
 			drawBuffers.data());
 
 		//glNamedFramebufferDrawBuffer(framebufferID, GL_COLOR_ATTACHMENT0);

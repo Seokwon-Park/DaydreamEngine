@@ -31,7 +31,6 @@ namespace Steins
 		:PipelineState(_desc)
 	{
 		glCreateVertexArrays(1, &vao);
-		const BufferLayout& layout = _desc.inputLayout;
 		//for (const BufferElement& element : layout)
 		UInt32 offset = 0;
 		for(const auto& info : vertexShader->GetReflectionInfo())

@@ -8,7 +8,7 @@ namespace Steins
 	D3D11Framebuffer::D3D11Framebuffer(D3D11RenderDevice* _device, RenderPass* _renderPass, const FramebufferDesc& _desc)
 	{
 		device = _device;
-		
+
 		width = _desc.width;
 		height = _desc.height;
 
@@ -42,9 +42,15 @@ namespace Steins
 	D3D11Framebuffer::D3D11Framebuffer(D3D11RenderDevice* _device, RenderPass* _renderPass, D3D11Swapchain* _swapChain)
 	{
 		device = _device;
+
 		IDXGISwapChain* dxgiSwapchain = _swapChain->GetDXGISwapchain();
 		ComPtr<ID3D11Texture2D> backBuffer;
 		dxgiSwapchain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
+		D3D11_TEXTURE2D_DESC backBufferDesc;
+		backBuffer->GetDesc(&backBufferDesc);
+
+		width = backBufferDesc.Width;
+		height = backBufferDesc.Height;
 
 		Shared<D3D11Texture2D> backBufferTexture = MakeShared<D3D11Texture2D>(device, backBuffer);
 		colorAttachments.push_back(backBufferTexture);
@@ -57,6 +63,11 @@ namespace Steins
 	}
 	D3D11Framebuffer::~D3D11Framebuffer()
 	{
+		device = nullptr;
+		colorAttachments.clear();
+		rtvs.clear();
+		depthStencilView = nullptr;
+		depthAttachment = nullptr;
 	}
 	//void D3D11Framebuffer::Begin() const
 	//{

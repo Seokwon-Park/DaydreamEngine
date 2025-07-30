@@ -15,6 +15,8 @@ namespace Steins
 	{
 		device = Cast<D3D12RenderDevice>(_device);
 		desc = _desc;
+		bufferCount = _desc.bufferCount;
+		format = GraphicsUtil::ConvertRenderFormatToDXGIFormat(_desc.format);;
 		DXGI_SAMPLE_DESC sampleDesc = {};
 		sampleDesc.Count = 1;    // 샘플 수 (1이면 MSAA 비활성화)
 		sampleDesc.Quality = 0;  // 품질 레벨 (0이면 기본값)
@@ -23,7 +25,7 @@ namespace Steins
 		ZeroMemory(&swapchainDesc, sizeof(swapchainDesc));
 		swapchainDesc.Width = _desc.width;
 		swapchainDesc.Height = _desc.height;
-		swapchainDesc.Format = GraphicsUtil::ConvertRenderFormatToDXGIFormat(_desc.format);
+		swapchainDesc.Format = format;
 		swapchainDesc.Stereo = 0;
 		swapchainDesc.SampleDesc = sampleDesc;
 		swapchainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
@@ -125,8 +127,33 @@ namespace Steins
 		scissorRect.bottom = static_cast<LONG>(desc.height);
 		device->GetCommandList()->RSSetScissorRects(1, &scissorRect);
 	}
-	void D3D12Swapchain::ResizeSwapchain(UInt32 _width, UInt32 height)
+	void D3D12Swapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
 	{
+		EndFrame();
+		WaitForGPU();
+
+		framebuffers.clear();
+
+		//// Command list들도 참조를 가지고 있을 수 있으니 reset
+		//for (auto& cmdList : commandLists) {
+		//	cmdList->Reset(commandAllocators[frameIndex].Get(), nullptr);
+		//}
+
+		HRESULT hr = swapChain->ResizeBuffers(
+			bufferCount,
+			_width, _height,
+			format,
+			DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH
+		);
+
+		framebuffers.resize(desc.bufferCount);
+		for (UInt32 i = 0; i < desc.bufferCount; i++)
+		{
+			frameIndex = i;
+			framebuffers[i] = MakeShared<D3D12Framebuffer>(device, mainRenderPass.get(), this);
+		}
+		frameIndex = swapChain->GetCurrentBackBufferIndex();
+		BeginFrame();
 	}
 
 	void D3D12Swapchain::BeginFrame()

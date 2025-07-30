@@ -39,8 +39,9 @@ namespace Steins
 	{
 		glfwSwapBuffers(window);
 	}
-	void OpenGLSwapchain::ResizeSwapchain(UInt32 _width, UInt32 height)
+	void OpenGLSwapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
 	{
+		glViewport(0, 0, _width, _height);
 	}
 	void OpenGLSwapchain::BeginFrame()
 	{

@@ -26,9 +26,9 @@ namespace Steins
 
 	private:
 		D3D11RenderDevice* device;
-		ComPtr<ID3D11DepthStencilView> depthStencilView;
 		Array<Shared<D3D11Texture2D>> colorAttachments;
-		Array<ID3D11RenderTargetView*> rtvs;
 		Shared<D3D11Texture2D> depthAttachment;
+		Array<ID3D11RenderTargetView*> rtvs;
+		ComPtr<ID3D11DepthStencilView> depthStencilView;
 	};
 }

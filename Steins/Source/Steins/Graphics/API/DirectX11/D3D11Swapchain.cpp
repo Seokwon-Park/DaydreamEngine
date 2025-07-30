@@ -80,10 +80,10 @@ namespace Steins
 	void D3D11Swapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
 	{
 		framebuffer.reset();
+		mainRenderPass->End();
 		swapChain->ResizeBuffers(0, _width, _height, DXGI_FORMAT_UNKNOWN, 0);
 
-		//framebuffer = MakeShared<D3D11Framebuffer>(device, this);
-		//framebuffer->Begin();
+		framebuffer = MakeShared<D3D11Framebuffer>(device, mainRenderPass.get(), this);
 
 		D3D11_VIEWPORT viewport;
 		viewport.TopLeftX = 0;
@@ -94,6 +94,7 @@ namespace Steins
 		viewport.MaxDepth = 1.0f;
 
 		device->GetContext()->RSSetViewports(1, &viewport);
+		
 	}
 
 	void D3D11Swapchain::BeginFrame()

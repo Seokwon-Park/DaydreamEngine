@@ -114,6 +114,7 @@ namespace Steins
 	} 
 	VulkanFramebuffer::~VulkanFramebuffer()
 	{
+		colorAttachments.clear();
 		AttachmentImageViews.clear();
 		if(framebuffer != VK_NULL_HANDLE) vkDestroyFramebuffer(device->GetDevice(), framebuffer, nullptr);
 	}

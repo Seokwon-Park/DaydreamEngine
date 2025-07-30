@@ -4,11 +4,11 @@ namespace Steins
 {
 	class Component;
 
-	class GameObject
+	class GameEntity
 	{
 	public:
-		GameObject();
-		~GameObject();
+		GameEntity();
+		~GameEntity();
 
 		inline void SetName(const std::string& _name) { name = _name; }
 
@@ -19,10 +19,11 @@ namespace Steins
 	private:
 		Array<Shared<Component>> components;
 
-		GameObject* parent;
-		Array<GameObject*> children;
+		GameEntity* parent;
+		Array<GameEntity*> children;
 
 		std::string name;
+
 	};
 }
 

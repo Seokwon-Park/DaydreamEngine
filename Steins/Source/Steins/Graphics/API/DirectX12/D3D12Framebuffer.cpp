@@ -64,7 +64,11 @@ namespace Steins
 	}
 	D3D12Framebuffer::~D3D12Framebuffer()
 	{
-
+		device = nullptr;
+		renderTargetHandles.clear();
+		depthStencilHandle;
+		colorAttachments.clear();
+		depthAttachment = nullptr;
 	}
 
 	Shared<Texture2D> D3D12Framebuffer::GetColorAttachmentTexture(UInt32 _index)

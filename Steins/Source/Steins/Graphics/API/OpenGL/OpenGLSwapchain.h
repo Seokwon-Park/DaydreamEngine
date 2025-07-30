@@ -15,7 +15,7 @@ namespace Steins
 
 		virtual void SetVSync(bool _enabled) override;
 		virtual void SwapBuffers() override;
-		virtual void ResizeSwapchain(UInt32 _width, UInt32 height) override;
+		virtual void ResizeSwapchain(UInt32 _width, UInt32 _height) override;
 
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;

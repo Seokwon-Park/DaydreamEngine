@@ -25,6 +25,10 @@ namespace Steins
 			{
 				heapStartGpu = heap->GetGPUDescriptorHandleForHeapStart();
 			}
+			else
+			{
+				heapStartGpu.ptr = 0;
+			}
 			heapHandleIncrement = _device->GetDescriptorHandleIncrementSize(heapType);
 			freeIndices.reserve((int)desc.NumDescriptors);
 			for (int n = desc.NumDescriptors; n > 0; n--)
@@ -52,6 +56,11 @@ namespace Steins
 			freeIndices.pop_back();
 			_outCpuDescriptorHandle->ptr = heapStartCpu.ptr + (idx * heapHandleIncrement);
 			_outGpuDescriptorHandle->ptr = heapStartGpu.ptr + (idx * heapHandleIncrement);
+		}
+		void Free(D3D12_CPU_DESCRIPTOR_HANDLE _outCpuDescriptorHandle)
+		{
+			int cpuIndex = (int)((_outCpuDescriptorHandle.ptr - heapStartCpu.ptr) / heapHandleIncrement);
+			freeIndices.push_back(cpuIndex);
 		}
 		void Free(D3D12_CPU_DESCRIPTOR_HANDLE _outCpuDescriptorHandle, D3D12_GPU_DESCRIPTOR_HANDLE _outGpuDescriptorHandle)
 		{
