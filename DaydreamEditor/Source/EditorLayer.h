@@ -36,6 +36,8 @@ namespace Daydream
 
 		Daydream::Shared<Daydream::Material> material;
 
+		Shared<Scene> activeScene
+
 		Camera camera = Camera();
 		Matrix4x4 cameraPos;
 	};

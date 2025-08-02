@@ -15,8 +15,9 @@ namespace Daydream
 	GameEntity* Scene::CreateGameEntity()
 	{
 		Unique<GameEntity> entity = MakeUnique<GameEntity>();
+		GameEntity* rawPtr = entity.get();
 		entities.emplace_back(std::move(entity));
-		return entity.get();
+		return rawPtr;
 	}
 	void Scene::Update(Float32 _deltaTime)
 	{
