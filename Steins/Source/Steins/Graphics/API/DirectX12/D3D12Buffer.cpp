@@ -228,6 +228,5 @@ namespace Steins
 		constantBuffer->Map(0, nullptr, &data);
 		memcpy(data, _data, _size);
 		constantBuffer->Unmap(0, nullptr);
-
 	}
 }

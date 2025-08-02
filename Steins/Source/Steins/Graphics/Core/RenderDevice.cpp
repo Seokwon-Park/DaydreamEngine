@@ -24,12 +24,12 @@ namespace Steins
 		default: return nullptr;
 		}
 	}
-	void RenderDevice::CreateSwapchainForWnd(SteinsWindow* _window)
+	void RenderDevice::CreateSwapchainForWindow(SteinsWindow* _window)
 	{
 		SwapchainDesc desc;
 		desc.width = _window->GetWidth();
 		desc.height = _window->GetHeight();
-		desc.bufferCount = 2;
+		desc.bufferCount = 3;
 		desc.format = RenderFormat::R8G8B8A8_UNORM;
 		desc.isFullscreen = false;
 		desc.isVSync = _window->IsVSync();

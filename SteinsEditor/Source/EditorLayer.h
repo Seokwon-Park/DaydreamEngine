@@ -11,10 +11,13 @@ namespace Steins
 
 		virtual void OnUpdate(Float32 _deltaTime) override;
 		virtual void OnImGuiRender() override;
+		virtual void OnDetach() override;
 		void CreateDockspace();
+		void UpdateViewportSize(); 
 	private:
-
+		Vector2 mainWindowSize;
 		Vector2 viewportSize;
+		bool viewportSizeInit= false;
 
 		Steins::Shared<Steins::VertexBuffer> squareVB;
 		Steins::Shared<Steins::VertexBuffer> squareVB2;
@@ -33,7 +36,7 @@ namespace Steins
 
 		Steins::Shared<Steins::Material> material;
 
-		OrthographicCamera camera = Steins::OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f);
+		Camera camera = Camera();
 		Matrix4x4 cameraPos;
 	};
 }

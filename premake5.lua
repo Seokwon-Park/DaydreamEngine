@@ -61,7 +61,6 @@ project "Steins"
         "$(VULKAN_SDK)/Lib",
 		"Steins/Vendor/assimp/bin/%{cfg.buildcfg}",
 		"Steins/Vendor/dxcompiler",
-
     }
 	links
 	{
@@ -133,7 +132,7 @@ project "Sandbox"
 
 	targetdir ("Build/Bin/%{cfg.buildcfg}/%{prj.name}")
 	objdir ("Build/Intermediate/%{cfg.buildcfg}/%{prj.name}")
-
+	postbuildcommands { "{COPYFILE} %[Steins/Vendor/assimp/bin/%{cfg.buildcfg}] %[Build/Bin/%{cfg.buildcfg}/%{prj.name}]" }
 	files
 	{
 		"%{prj.name}/Source/**.h",
@@ -176,6 +175,7 @@ project "SteinsEditor"
 
 	targetdir ("Build/Bin/%{cfg.buildcfg}/%{prj.name}")
 	objdir ("Build/Intermediate/%{cfg.buildcfg}/%{prj.name}")
+	postbuildcommands { "{COPYFILE} %[Steins/Vendor/assimp/bin/%{cfg.buildcfg}] %[Build/Bin/%{cfg.buildcfg}/%{prj.name}]" }
 
 	files
 	{

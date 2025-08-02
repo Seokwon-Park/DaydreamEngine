@@ -27,8 +27,6 @@ namespace Steins
 		D3D12_GPU_DESCRIPTOR_HANDLE GetSamplerGPUHandle();
 		virtual inline void* GetImGuiHandle() { return reinterpret_cast<void*>(GetSRVGPUHandle().ptr); }
 		//const D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() const { return gpuHandle; };
-
-
 	private:
 		D3D12RenderDevice* device;
 		ComPtr<ID3D12Resource> uploadBuffer;

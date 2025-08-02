@@ -189,15 +189,14 @@ namespace Steins
 
 		// 예시: 씬 뷰포트 (실제 렌더링 결과가 여기에 표시될 영역)
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 }); // 뷰포트 창 패딩 제거
-		ImGui::Begin("Viewport");
-		ImVec2 ImGuiViewportSize = ImGui::GetContentRegionAvail();
+
+
+		ImGui::Begin("Viewport", nullptr,
+			ImGuiWindowFlags_NoScrollbar |
+			ImGuiWindowFlags_NoScrollWithMouse);
 		//STEINS_INFO("{0}, {1}", viewportSize.x, viewportSize.y);
-		if (viewportSize != Vector2(ImGuiViewportSize.x, ImGuiViewportSize.y) && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
-		{
-			viewportFramebuffer->Resize(ImGuiViewportSize.x, ImGuiViewportSize.y);
-			viewportSize = Vector2(ImGuiViewportSize.x, ImGuiViewportSize.y);
-		}
-		ImGui::Image((ImTextureID)viewportFramebuffer->GetColorAttachmentTexture(0)->GetImGuiHandle(), ImGuiViewportSize, ImVec2{0,1}, ImVec2{1,0});
+		UpdateViewportSize();
+		ImGui::Image((ImTextureID)viewportFramebuffer->GetColorAttachmentTexture(0)->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y }, ImVec2{ 0,1 }, ImVec2{ 1,0 });
 		//ImGui::Text("Rendered Scene will go here!");
 		ImGui::End();
 		ImGui::PopStyleVar();
@@ -226,6 +225,66 @@ namespace Steins
 		ImGui::Text("Engine Logs and Messages");
 		// 엔진의 로그 메시지를 출력
 		ImGui::End();
+	}
+
+	void EditorLayer::UpdateViewportSize()
+	{
+		ImVec2 ImGuiViewportSize = ImGui::GetContentRegionAvail();
+		bool currentActive = ImGui::IsAnyItemActive();
+		static bool isResizing = true;
+		bool isWindowResized = mainWindowSize.x != ImGui::GetMainViewport()->Size.x || mainWindowSize.y != ImGui::GetMainViewport()->Size.y;
+		bool isViewportResized = viewportSize.x != ImGuiViewportSize.x || viewportSize.y != ImGuiViewportSize.y;
+		// 이전 프레임에는 활성화 상태였는데, 현재는 비활성화 상태가 되었다면 리사이즈가 끝
+		if ((isResizing != currentActive && isViewportResized) || isWindowResized)
+		{
+			if (ImGui::GetMainViewport()->Size.x == ImGuiViewportSize.x &&
+				ImGui::GetMainViewport()->Size.y == ImGuiViewportSize.y) return;
+
+				// 2. 리사이즈 완료 시점
+				// 이 로직은 마우스 버튼이 떼어졌을 때 한 번만 실행됩니다.
+				// 여기에 최종 리사이즈 처리를 넣으면 됩니다.
+
+				// 최종 크기로 카메라 및 프레임버퍼 업데이트
+				// 이 시점에는 이미 currentContentRegionSize가 최종 크기를 담고 있습니다.
+				if (ImGuiViewportSize.x > 1.0f && ImGuiViewportSize.y > 1.0f)
+				{
+
+					// 리사이즈 완료 메시지 로깅
+					STEINS_CORE_INFO("Viewport final resized to: {0}, {1}", ImGuiViewportSize.x, ImGuiViewportSize.y);
+
+					Renderer::EndSwapchainFramebuffer();
+					// D3D12Framebuffer 리사이즈 (GPU 동기화 로직 포함)
+					viewportFramebuffer->Resize(static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
+					Renderer::BeginSwapchainFramebuffer();
+
+					// 카메라의 뷰포트 크기 업데이트
+					// camera->SetViewportSize(currentContentRegionSize.x, currentContentRegionSize.y);
+
+					// 다음 프레임 비교를 위해 최종 크기 저장
+					viewportSize.x = ImGuiViewportSize.x;
+					viewportSize.y = ImGuiViewportSize.y;
+					mainWindowSize.x = ImGui::GetMainViewport()->Size.x;
+					mainWindowSize.y = ImGui::GetMainViewport()->Size.y;
+					camera.UpdateAspectRatio(ImGuiViewportSize.x, ImGuiViewportSize.y);
+					viewProjMat->Update(&camera.GetViewProjectionMatrix(), sizeof(Steins::Matrix4x4));
+				}
+		}
+
+		isResizing = currentActive;
+		//if (viewportSize != Vector2(ImGuiViewportSize.x, ImGuiViewportSize.y))
+		//{
+		//	Renderer::EndSwapchainFramebuffer();
+		//	viewportFramebuffer->Resize(ImGuiViewportSize.x, ImGuiViewportSize.y);
+		//	viewportSize = Vector2(ImGuiViewportSize.x, ImGuiViewportSize.y);
+		//	camera.UpdateAspectRatio(ImGuiViewportSize.x, ImGuiViewportSize.y);
+		//	viewProjMat->Update(&camera.GetViewProjectionMatrix(), sizeof(Steins::Matrix4x4));
+		//	Renderer::BeginSwapchainFramebuffer();
+		//}
+	}
+
+	void EditorLayer::OnDetach()
+	{
+		viewportFramebuffer = nullptr;
 	}
 
 	void EditorLayer::CreateDockspace()

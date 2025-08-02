@@ -71,7 +71,12 @@ namespace Steins
 	{
 		width = _width;
 		height = _height;
+
+		colorAttachments.clear();
+		depthAttachment = nullptr;
+
 		CreateAttachments();
+		AttachTextures();
 	}
 	void OpenGLFramebuffer::CreateAttachments()
 	{

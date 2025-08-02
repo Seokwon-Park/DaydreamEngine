@@ -55,7 +55,7 @@ namespace Steins
 		
 		virtual void* GetImGuiTextureID(Shared<Texture2D> _texture) { return nullptr; };
 		
-		void CreateSwapchainForWnd(SteinsWindow* _window);
+		void CreateSwapchainForWindow(SteinsWindow* _window);
 
 		inline RendererAPIType GetAPI() const { return API; }
 		inline Swapchain* GetSwapchain(UInt32 _index)

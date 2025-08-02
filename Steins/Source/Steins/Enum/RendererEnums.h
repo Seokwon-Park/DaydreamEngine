@@ -32,6 +32,12 @@ namespace Steins
 		return static_cast<RenderBindFlags>(static_cast<int>(a) | static_cast<int>(b));
 	}
 
+	inline RenderBindFlags operator&(RenderBindFlags a, RenderBindFlags b)
+	{
+		return static_cast<RenderBindFlags>(static_cast<int>(a) & static_cast<int>(b));
+	}
+
+
 	enum class ShaderType
 	{
 		None,

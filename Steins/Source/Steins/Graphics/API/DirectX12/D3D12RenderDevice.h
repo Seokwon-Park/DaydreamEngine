@@ -97,7 +97,9 @@ namespace Steins
 
 		ID3D12Device* GetDevice() const { return device.Get(); }
 		ID3D12CommandQueue* GetCommandQueue() const { return commandQueue.Get(); }
-		void SetCommandList(ID3D12GraphicsCommandList* _commandList) { commandList = _commandList; }
+		void SetCommandList(ComPtr<ID3D12GraphicsCommandList> _commandList) { commandList = _commandList; }
+		ID3D12CommandAllocator* GetCommandAlloc() const { return allocator.Get(); }
+		void SetCommandAlloc(ComPtr<ID3D12CommandAllocator> _commandAlloc) { allocator = _commandAlloc; }
 		ID3D12GraphicsCommandList* GetCommandList() const { return commandList.Get(); }
 		ID3D12DescriptorHeap* GetRTVHeap() const { return rtvHeap.Get(); }
 		ID3D12DescriptorHeap* GetDSVHeap() const { return dsvHeap.Get(); }
@@ -117,6 +119,7 @@ namespace Steins
 	private:
 		ComPtr<ID3D12Device> device;
 		ComPtr<ID3D12CommandQueue> commandQueue;
+		ComPtr<ID3D12CommandAllocator> allocator;
 
 		ComPtr<ID3D12RootSignature> rootSignature;
 		ComPtr<ID3D12DescriptorHeap> rtvHeap;
@@ -133,9 +136,9 @@ namespace Steins
 
 		ComPtr<IDXGIFactory7> dxgiFactory;
 		ComPtr<IDXGIAdapter4> dxgiAdapter;
-		ComPtr<ID3D12Debug5> debugLayer;
+		ComPtr<ID3D12Debug> debugLayer;
 
-
+		Array<std::function<void()>> framebufferDelegate;
 
 	};
 }

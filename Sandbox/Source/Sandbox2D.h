@@ -2,36 +2,40 @@
 
 #include <Steins.h>
 
-class Sandbox2D : public Steins::Layer
+namespace Steins
 {
-public:
-	Sandbox2D();
-	virtual ~Sandbox2D() = default;
+	class Sandbox2D : public Layer
+	{
+	public:
+		Sandbox2D();
+		virtual ~Sandbox2D() = default;
 
-	virtual void OnUpdate(Float32 _deltaTime) override;
-	virtual void OnImGuiRender() override;
+		virtual void OnUpdate(Float32 _deltaTime) override;
+		virtual void OnImGuiRender() override;
 
-private:
-	Steins::Shared<Steins::VertexBuffer> squareVB;
-	Steins::Shared<Steins::VertexBuffer> squareVB2;
-	Steins::Shared<Steins::IndexBuffer> squareIB;
-	Steins::Shared<Steins::IndexBuffer> squareIB2;
-	Steins::Shared<Steins::ConstantBuffer> viewProjMat;
-	Steins::Shared<Steins::Texture2D> texture;
-	Steins::Shared<Steins::Texture2D> texture2;
+	private:
+		Shared<VertexBuffer> squareVB;
+		Shared<VertexBuffer> squareVB2;
+		Shared<IndexBuffer> squareIB;
+		Shared<IndexBuffer> squareIB2;
+		Shared<ConstantBuffer> viewProjMat;
+		Shared<Texture2D> texture;
+		Shared<Texture2D> texture2;
 
-	Steins::Shared<Steins::Shader> vs;
-	Steins::Shared<Steins::Shader> ps;
+		Shared<Shader> vs;
+		Shared<Shader> ps;
 
-	Steins::Shared<Steins::PipelineState> pso;
-	Steins::Shared<Steins::RenderPass> renderPass;
+		Shared<PipelineState> pso;
+		Shared<RenderPass> renderPass;
 
-	Steins::Shared<Steins::Material> material;
-	Steins::Shared<Steins::Framebuffer> framebuffer;
+		Shared<Material> material;
+		Shared<Framebuffer> framebuffer;
 
-	//Steins::OrthographicCamera camera = Steins::OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f);
-	Steins::Camera camera = Steins::Camera();
-	Steins::Matrix4x4 cameraPos;
+		Shared<Mesh> mesh;
 
-};
+		//OrthographicCamera camera = OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f);
+		Camera camera = Camera();
+		Matrix4x4 cameraPos;
+	};
+}
 

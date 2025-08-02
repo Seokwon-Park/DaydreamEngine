@@ -43,8 +43,6 @@ namespace Steins
 		ComPtr<IDXGIDevice> dxgiDevice = nullptr;
 		ComPtr<IDXGIAdapter> dxgiAdapter = nullptr;
 		ComPtr<IDXGIFactory7> dxgiFactory = nullptr;
-
-
 	};
 }
 

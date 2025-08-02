@@ -27,6 +27,7 @@
 #include "Steins/Graphics/Resources/Framebuffer.h"
 #include "Steins/Graphics/Resources/Texture.h"
 #include "Steins/Graphics/Resources/Material.h"
+#include "Steins/Graphics/Resources/Mesh.h"
 
 #include "Steins/Graphics/Core/Camera.h"
 #include "Steins/Graphics/Core/OrthographicCamera.h"

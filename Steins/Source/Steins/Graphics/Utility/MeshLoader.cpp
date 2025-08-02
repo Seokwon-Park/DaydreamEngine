@@ -7,15 +7,17 @@ namespace Steins
 	{
 		Assimp::Importer importer;
 
-		UInt32 flags = aiProcess_Triangulate |           // 모든 면을 삼각형으로 변환
+		UInt32 flags = aiProcess_Triangulate;// |           // 모든 면을 삼각형으로 변환
 			//aiProcess_FlipUVs |              // UV 좌표 뒤집기 (OpenGL용)
-			aiProcess_GenNormals |           // 노말 벡터 생성
-			aiProcess_CalcTangentSpace |     // 탄젠트/바이탄젠트 계산
-			aiProcess_JoinIdenticalVertices | // 중복 정점 제거
-			aiProcess_OptimizeMeshes |       // 메시 최적화
-			aiProcess_ValidateDataStructure;  // 데이터 유효성 검사
+			//aiProcess_GenNormals |           // 노말 벡터 생성
+			//aiProcess_CalcTangentSpace |     // 탄젠트/바이탄젠트 계산
+			//aiProcess_JoinIdenticalVertices | // 중복 정점 제거
+			//aiProcess_OptimizeMeshes |       // 메시 최적화
+			//aiProcess_ValidateDataStructure;  // 데이터 유효성 검사
 
-		const aiScene* scene = importer.ReadFile(_filepath.GetCurrentPath().c_str(), flags);
+		STEINS_INFO(_filepath.IsExist());
+
+		const aiScene* scene = importer.ReadFile(_filepath.ToString(), flags);
 
 		bool result = !scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode;
 		STEINS_CORE_ASSERT(nullptr != scene, "{0}", importer.GetErrorString());
@@ -32,9 +34,13 @@ namespace Steins
 	{
 		for (UInt32 i = 0; i < _node->mNumMeshes; i++)
 		{
-			//node->mMeshes[i]는 scene에서의 node의 Mesh인덱스
 			aiMesh* mesh = _scene->mMeshes[_node->mMeshes[i]];
 			_meshes.push_back(ProcessMesh(mesh, _scene));
+		}
+
+		for (UInt32 i = 0; i < _node->mNumChildren; i++)
+		{
+			ProcessNode(_node->mChildren[i], _scene, _meshes);
 		}
 	}
 	MeshData MeshLoader::ProcessMesh(aiMesh* _mesh, const aiScene* _scene)
@@ -80,6 +86,6 @@ namespace Steins
 			}
 
 		}
-		return MeshData();
+		return meshData;
 	}
 }

@@ -32,7 +32,32 @@ namespace Steins
 		textureDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 		textureDesc.Flags = GraphicsUtil::ConvertToD3D12BindFlags(_desc.bindFlags);
 
-		device->GetDevice()->CreateCommittedResource(&props, D3D12_HEAP_FLAG_NONE, &textureDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(texture.GetAddressOf()));
+		D3D12_CLEAR_VALUE clearValue;
+		clearValue.Format = textureDesc.Format;
+
+		D3D12_RESOURCE_STATES initialState;
+		if ((_desc.bindFlags & RenderBindFlags::RenderTarget) != RenderBindFlags::Unknown) {
+			initialState = D3D12_RESOURCE_STATE_RENDER_TARGET;
+			memcpy(clearValue.Color, &Color::White, sizeof(Color));
+		}
+		else if ((_desc.bindFlags & RenderBindFlags::DepthStencil) != RenderBindFlags::Unknown) {
+			initialState = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+			clearValue.DepthStencil.Depth = 1.0f;
+			clearValue.DepthStencil.Stencil = 0;
+
+		}
+		else {
+			initialState = D3D12_RESOURCE_STATE_COMMON;
+		}
+
+		device->GetDevice()->CreateCommittedResource(&props, 
+			D3D12_HEAP_FLAG_NONE,
+			&textureDesc, 
+			initialState,
+			&clearValue,
+			IID_PPV_ARGS(texture.GetAddressOf()));
+
+		texture->SetName(L"framebuffer texture");
 
 	}
 	D3D12Texture2D::D3D12Texture2D(D3D12RenderDevice* _device, const FilePath& _path, const TextureDesc& _desc)
@@ -127,6 +152,7 @@ namespace Steins
 	{
 		device = _device;
 		texture = _texture;
+		texture->SetName(L"swapchain texture");
 	}
 	D3D12Texture2D::~D3D12Texture2D()
 	{

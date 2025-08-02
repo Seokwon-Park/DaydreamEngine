@@ -26,8 +26,8 @@ namespace Steins
 		bufferDesc.Width = _desc.width;
 		bufferDesc.Height = _desc.height;
 		//bufferDesc.RefreshRate 
-		bufferDesc.Scaling = DXGI_MODE_SCALING_STRETCHED;
-		bufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED; // 프로그레시브로 설정
+		//bufferDesc.Scaling = DXGI_MODE_SCALING_STRETCHED;
+		//bufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED; // 프로그레시브로 설정
 		bufferDesc.Format = GraphicsUtil::ConvertRenderFormatToDXGIFormat(_desc.format);
 
 		DXGI_SWAP_CHAIN_DESC desc;
@@ -38,7 +38,7 @@ namespace Steins
 		desc.OutputWindow = glfwGetWin32Window((GLFWwindow*)_window->GetNativeWindow());
 		desc.Windowed = true;
 		desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-		desc.Flags = 0;
+		desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 		HRESULT hr = device->GetFactory()->CreateSwapChain(device->GetDevice(), &desc, swapChain.GetAddressOf());
 		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed To Create Swapchain!");
@@ -80,21 +80,9 @@ namespace Steins
 	void D3D11Swapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
 	{
 		framebuffer.reset();
-		mainRenderPass->End();
-		swapChain->ResizeBuffers(0, _width, _height, DXGI_FORMAT_UNKNOWN, 0);
+		swapChain->ResizeBuffers(0, _width, _height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
 
 		framebuffer = MakeShared<D3D11Framebuffer>(device, mainRenderPass.get(), this);
-
-		D3D11_VIEWPORT viewport;
-		viewport.TopLeftX = 0;
-		viewport.TopLeftY = 0;
-		viewport.Width = Cast<Float32>(_width);
-		viewport.Height = Cast<Float32>(_height);
-		viewport.MinDepth = 0.0f;
-		viewport.MaxDepth = 1.0f;
-
-		device->GetContext()->RSSetViewports(1, &viewport);
-		
 	}
 
 	void D3D11Swapchain::BeginFrame()

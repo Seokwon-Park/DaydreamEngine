@@ -54,13 +54,17 @@ namespace Steins
 
 	void D3D12Framebuffer::Resize(UInt32 _width, UInt32 _height)
 	{
-		renderTargetHandles.clear();
-		depthStencilHandle;
-		colorAttachments.clear();
-		depthAttachment = nullptr;
-
 		width = _width;
 		height = _height;
+
+		oldAttachments.clear();
+		oldAttachments = colorAttachments;
+		colorAttachments.clear();
+		oldAttachments.push_back(depthAttachment);
+		depthAttachment = nullptr;
+		renderTargetHandles.clear();
+		depthStencilHandle.ptr = 0;
+
 		CreateAttachments();
 	}
 

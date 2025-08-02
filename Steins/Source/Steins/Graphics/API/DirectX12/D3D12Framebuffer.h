@@ -22,7 +22,7 @@ namespace Steins
 
 		Array<Shared<D3D12Texture2D>>& GetColorAttachments() { return colorAttachments; }
 		const D3D12_CPU_DESCRIPTOR_HANDLE& GetDepthStencilView() { return depthAttachment->GetDSVCPUHandle(); }
-		Array<D3D12_CPU_DESCRIPTOR_HANDLE> GetRenderTargetHandles() { return renderTargetHandles; }
+		Array<D3D12_CPU_DESCRIPTOR_HANDLE>& GetRenderTargetHandles() { return renderTargetHandles; }
 		void CreateAttachments();
 
 	private:
@@ -32,6 +32,7 @@ namespace Steins
 		Array<Shared<D3D12Texture2D>> colorAttachments;
 		Shared<D3D12Texture2D> depthAttachment;
 
+		Array<Shared<D3D12Texture2D>> oldAttachments;
 		
 	};
 }

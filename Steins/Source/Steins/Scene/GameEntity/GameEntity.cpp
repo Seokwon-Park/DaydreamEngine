@@ -9,5 +9,9 @@ namespace Steins
 
 	GameEntity::~GameEntity()
 	{
+		for (auto component : components)
+		{
+			delete component;
+		}
 	}
 }

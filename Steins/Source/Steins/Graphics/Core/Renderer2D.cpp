@@ -63,7 +63,7 @@ namespace Steins
 		data.quadVertexBuffer.reset();
 		data.quadIndexBuffer.reset();
 	}
-	void Renderer2D::BeginScene(const OrthographicCamera& _camera)
+	void Renderer2D::BeginScene(const Camera& _camera)
 	{
 	}
 	void Renderer2D::EndScene()

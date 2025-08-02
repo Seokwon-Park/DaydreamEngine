@@ -16,7 +16,7 @@ namespace Steins
 	void D3D12RenderPass::Begin(Shared<Framebuffer> _framebuffer)
 	{
 		currentFramebuffer = static_cast<D3D12Framebuffer*>(_framebuffer.get());
-		Array<D3D12_CPU_DESCRIPTOR_HANDLE> rtHandles = currentFramebuffer->GetRenderTargetHandles();
+		Array<D3D12_CPU_DESCRIPTOR_HANDLE>& rtHandles = currentFramebuffer->GetRenderTargetHandles();
 		for (auto rtHandle : rtHandles)
 		{
 			device->GetCommandList()->ClearRenderTargetView(rtHandle, clearColor.color, 0, nullptr);
@@ -31,6 +31,14 @@ namespace Steins
 		{
 			device->GetCommandList()->OMSetRenderTargets((UINT)rtHandles.size(), rtHandles.data(), false, nullptr);
 		}
+
+		D3D12_RECT rect;
+		rect.left = 0;
+		rect.top = 0;
+		rect.right = _framebuffer->GetWidth();
+		rect.bottom = _framebuffer->GetHeight();
+
+		device->GetCommandList()->RSSetScissorRects(1, &rect);
 
 		D3D12_VIEWPORT viewport = {};
 		viewport.Width = static_cast<float>(_framebuffer->GetWidth());

@@ -15,47 +15,11 @@ namespace Steins
 		extent.width = _desc.width;
 		extent.height = _desc.height;
 		renderPass = _renderPass;
-		const RenderPassDesc& renderPassDesc = renderPass->GetDesc();
-		for (const auto& colorAttachmentDesc : renderPassDesc.colorAttachments)
-		{
-			TextureDesc textureDesc;
-			textureDesc.width = width;
-			textureDesc.height = height;
-			textureDesc.format = colorAttachmentDesc.format;
-			textureDesc.bindFlags = RenderBindFlags::RenderTarget | RenderBindFlags::ShaderResource;
+		vkRenderPass = _renderPass;
 
-			Shared<VulkanTexture2D> colorTexture = MakeShared<VulkanTexture2D>(device, textureDesc);
-			colorAttachments.push_back(colorTexture);
-			AttachmentImageViews.push_back(colorTexture->GetImageView());
-		}
-
-		if(renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
-		{
-			TextureDesc textureDesc;
-			textureDesc.width = width;
-			textureDesc.height = height;
-			textureDesc.format = renderPassDesc.depthAttachment.format;
-			textureDesc.bindFlags = RenderBindFlags::DepthStencil;
-
-			Shared<VulkanTexture2D> depthTexture = MakeShared<VulkanTexture2D>(device, textureDesc);
-			depthAttachment = depthTexture;
-			depthStencilView = depthTexture->GetImageView();
-			AttachmentImageViews.push_back(depthAttachment->GetImageView());
-		}
-
-		VkFramebufferCreateInfo framebufferInfo{};
-		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-		framebufferInfo.renderPass = _renderPass->GetVkRenderPass();
-		framebufferInfo.attachmentCount = AttachmentImageViews.size();
-		framebufferInfo.pAttachments = AttachmentImageViews.data();
-		framebufferInfo.width = _desc.width;
-		framebufferInfo.height = _desc.height;
-		framebufferInfo.layers = 1;
-
-		VkResult result = vkCreateFramebuffer(device->GetDevice(), &framebufferInfo, nullptr, &framebuffer);
-		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create framebuffer!");
-
+		CreateAttachments();
 	}
+
 	VulkanFramebuffer::VulkanFramebuffer(VulkanRenderDevice* _device, VulkanRenderPass* _renderPass, VulkanSwapchain* _swapchain, UInt32 _frameIndex)
 	{
 		device = _device;
@@ -99,7 +63,7 @@ namespace Steins
 		colorAttachments.push_back(backBufferTexture);
 		AttachmentImageViews.push_back(backBufferTexture->GetImageView());
 		//device->CreateImageView(colorImages[_frameIndex], _swapchain->GetFormat(), colorImageViews[0]);
-		
+
 		VkFramebufferCreateInfo framebufferInfo{};
 		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 		framebufferInfo.renderPass = _renderPass->GetVkRenderPass();
@@ -111,11 +75,11 @@ namespace Steins
 
 		VkResult result = vkCreateFramebuffer(device->GetDevice(), &framebufferInfo, nullptr, &framebuffer);
 		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create framebuffer!");
-	} 
+	}
 	VulkanFramebuffer::~VulkanFramebuffer()
 	{
 		colorAttachments.clear();
-		if(framebuffer != VK_NULL_HANDLE) vkDestroyFramebuffer(device->GetDevice(), framebuffer, nullptr);
+		if (framebuffer != VK_NULL_HANDLE) vkDestroyFramebuffer(device->GetDevice(), framebuffer, nullptr);
 	}
 
 	Shared<Texture2D> VulkanFramebuffer::GetColorAttachmentTexture(UInt32 _index)
@@ -125,6 +89,65 @@ namespace Steins
 
 	void VulkanFramebuffer::Resize(UInt32 _width, UInt32 _height)
 	{
+		vkDeviceWaitIdle(device->GetDevice());
+
+		AttachmentImageViews.clear();
+		oldAttachments.clear();
+		oldAttachments = std::move(colorAttachments);
 		colorAttachments.clear();
+		oldAttachments.push_back(depthAttachment);
+		depthAttachment = nullptr;
+		depthStencilView = VK_NULL_HANDLE;
+		if (framebuffer != VK_NULL_HANDLE) vkDestroyFramebuffer(device->GetDevice(), framebuffer, nullptr);
+
+		VkCommandBufferBeginInfo beginInfo{};
+		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		vkResetCommandBuffer(device->GetCommandBuffer(), 0);
+		vkBeginCommandBuffer(device->GetCommandBuffer(), &beginInfo);
+		CreateAttachments();
+	}
+
+	void VulkanFramebuffer::CreateAttachments()
+	{
+		const RenderPassDesc& renderPassDesc = renderPass->GetDesc();
+		for (const auto& colorAttachmentDesc : renderPassDesc.colorAttachments)
+		{
+			TextureDesc textureDesc;
+			textureDesc.width = width;
+			textureDesc.height = height;
+			textureDesc.format = colorAttachmentDesc.format;
+			textureDesc.bindFlags = RenderBindFlags::RenderTarget | RenderBindFlags::ShaderResource;
+
+			Shared<VulkanTexture2D> colorTexture = MakeShared<VulkanTexture2D>(device, textureDesc);
+			colorAttachments.push_back(colorTexture);
+			AttachmentImageViews.push_back(colorTexture->GetImageView());
+		}
+
+		if (renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
+		{
+			TextureDesc textureDesc;
+			textureDesc.width = width;
+			textureDesc.height = height;
+			textureDesc.format = renderPassDesc.depthAttachment.format;
+			textureDesc.bindFlags = RenderBindFlags::DepthStencil;
+
+			Shared<VulkanTexture2D> depthTexture = MakeShared<VulkanTexture2D>(device, textureDesc);
+			depthAttachment = depthTexture;
+			depthStencilView = depthTexture->GetImageView();
+			AttachmentImageViews.push_back(depthAttachment->GetImageView());
+		}
+
+		VkFramebufferCreateInfo framebufferInfo{};
+		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+		framebufferInfo.renderPass = vkRenderPass->GetVkRenderPass();
+		framebufferInfo.attachmentCount = AttachmentImageViews.size();
+		framebufferInfo.pAttachments = AttachmentImageViews.data();
+		framebufferInfo.width = width;
+		framebufferInfo.height = height;
+		framebufferInfo.layers = 1;
+
+		VkResult result = vkCreateFramebuffer(device->GetDevice(), &framebufferInfo, nullptr, &framebuffer);
+		STEINS_CORE_ASSERT(result == VK_SUCCESS, "Failed to create framebuffer!");
+
 	}
 }

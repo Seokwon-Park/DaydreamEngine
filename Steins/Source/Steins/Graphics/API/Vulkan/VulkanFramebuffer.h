@@ -24,9 +24,11 @@ namespace Steins
 
 		VkFramebuffer GetFramebuffer() { return framebuffer; }
 		VkExtent2D GetExtent() { return extent; }
+		void CreateAttachments();
 
 	private:
 		VulkanRenderDevice* device;
+		VulkanRenderPass* vkRenderPass;
 		VkFramebuffer framebuffer;
 		VkExtent2D extent;
 		Array<VkImage> colorImages;
@@ -34,5 +36,7 @@ namespace Steins
 		Array<Shared<VulkanTexture2D>> colorAttachments;
 		Shared<VulkanTexture2D> depthAttachment;
 		VkImageView depthStencilView;
+
+		Array<Shared<VulkanTexture2D>> oldAttachments;
 	};
 }

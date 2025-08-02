@@ -82,8 +82,11 @@
     <Filter Include="Source\Steins\Scene\Components">
       <UniqueIdentifier>{ADCF7601-99F5-4068-823B-C6336E006634}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Steins\Scene\Entity">
-      <UniqueIdentifier>{E46A7959-D07A-252A-3934-8A48256314C3}</UniqueIdentifier>
+    <Filter Include="Source\Steins\Scene\GameEntity">
+      <UniqueIdentifier>{DEC32102-CAE9-EB68-B32F-71349FF41035}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Steins\Sound">
+      <UniqueIdentifier>{33F232A3-9F53-10B1-28C1-566394214770}</UniqueIdentifier>
     </Filter>
     <Filter Include="Vendor">
       <UniqueIdentifier>{935FDCD7-7F01-07AE-68BC-1A0254FD8DFE}</UniqueIdentifier>
@@ -142,6 +145,9 @@
       <Filter>Source\Base\Math</Filter>
     </ClInclude>
     <ClInclude Include="Source\Base\Math\Quaternion.h">
+      <Filter>Source\Base\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Base\Math\Transform.h">
       <Filter>Source\Base\Math</Filter>
     </ClInclude>
     <ClInclude Include="Source\Base\Math\TypeTraits.h">
@@ -300,7 +306,7 @@
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Shader.h">
       <Filter>Source\Steins\Graphics\API\DirectX12</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12SwapChain.h">
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Swapchain.h">
       <Filter>Source\Steins\Graphics\API\DirectX12</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Texture.h">
@@ -369,7 +375,7 @@
     <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanShader.h">
       <Filter>Source\Steins\Graphics\API\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapChain.h">
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapchain.h">
       <Filter>Source\Steins\Graphics\API\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanTexture.h">
@@ -456,11 +462,17 @@
     <ClInclude Include="Source\Steins\Scene\Components\Component.h">
       <Filter>Source\Steins\Scene\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Scene\Entity\GameEntity.h">
-      <Filter>Source\Steins\Scene\Entity</Filter>
+    <ClInclude Include="Source\Steins\Scene\Components\TransformComponent.h">
+      <Filter>Source\Steins\Scene\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Scene\GameEntity\GameEntity.h">
+      <Filter>Source\Steins\Scene\GameEntity</Filter>
     </ClInclude>
     <ClInclude Include="Source\Steins\Scene\Scene.h">
       <Filter>Source\Steins\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Steins\Sound\Sound.h">
+      <Filter>Source\Steins\Sound</Filter>
     </ClInclude>
     <ClInclude Include="Source\SteinsPCH.h">
       <Filter>Source</Filter>
@@ -1722,8 +1734,7 @@
     <ClInclude Include="Vendor\stb\stb_image.h">
       <Filter>Vendor\stb</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Steins\Scene\Components\TransformComponent.h" />
-    <ClInclude Include="Source\Base\Math\Transform.h" />
+    <ClInclude Include="Source\Steins\Graphics\Resources\Model.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -1739,6 +1750,9 @@
       <Filter>Source\Base\Math</Filter>
     </ClCompile>
     <ClCompile Include="Source\Base\Math\Quaternion.cpp">
+      <Filter>Source\Base\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Base\Math\Transform.cpp">
       <Filter>Source\Base\Math</Filter>
     </ClCompile>
     <ClCompile Include="Source\Base\Math\Vector2.cpp">
@@ -1846,7 +1860,7 @@
     <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Shader.cpp">
       <Filter>Source\Steins\Graphics\API\DirectX12</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12SwapChain.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Swapchain.cpp">
       <Filter>Source\Steins\Graphics\API\DirectX12</Filter>
     </ClCompile>
     <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Texture.cpp">
@@ -1915,7 +1929,7 @@
     <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanShader.cpp">
       <Filter>Source\Steins\Graphics\API\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapChain.cpp">
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapchain.cpp">
       <Filter>Source\Steins\Graphics\API\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanTexture.cpp">
@@ -1993,8 +2007,8 @@
     <ClCompile Include="Source\Steins\ImGui\ImGuiRenderer.cpp">
       <Filter>Source\Steins\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Steins\Scene\Entity\GameEntity.cpp">
-      <Filter>Source\Steins\Scene\Entity</Filter>
+    <ClCompile Include="Source\Steins\Scene\GameEntity\GameEntity.cpp">
+      <Filter>Source\Steins\Scene\GameEntity</Filter>
     </ClCompile>
     <ClCompile Include="Source\Steins\Scene\Scene.cpp">
       <Filter>Source\Steins\Scene</Filter>
@@ -2005,6 +2019,5 @@
     <ClCompile Include="Vendor\stb\stb_image.cpp">
       <Filter>Vendor\stb</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Base\Math\Transform.cpp" />
   </ItemGroup>
 </Project>

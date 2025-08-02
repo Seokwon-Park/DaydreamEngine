@@ -49,6 +49,9 @@ namespace Steins
 			glfwSetErrorCallback(GLFWErrorCallback);
 			sIsGLFWInitialized = true;
 		}
+
+		//glfwWindowHint(GLFW_TITLEBAR, false);
+
 		if (_props.rendererAPI != RendererAPIType::OpenGL)
 		{
 			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -78,6 +81,7 @@ namespace Steins
 				WindowCloseEvent event;
 				data.eventCallbackFn(event);
 			});
+		
 		glfwSetKeyCallback(glfwWindow, [](GLFWwindow* _window, int _key, int _scancode, int _action, int _mods)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(_window);

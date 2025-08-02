@@ -32,7 +32,7 @@ namespace Steins
 
 	void Renderer::CreateSwapchainFor(SteinsWindow* _window)
 	{
-		instance->renderDevice->CreateSwapchainForWnd(_window);
+		instance->renderDevice->CreateSwapchainForWindow(_window);
 	}
 
 	void Renderer::RegisterWindow(String _name, SteinsWindow* _window)
@@ -56,9 +56,9 @@ namespace Steins
 		instance->currentWindow->GetSwapchain()->EndRenderPass();
 	}
 
-	void Renderer::BeginScene(const OrthographicCamera& camera)
+	void Renderer::BeginScene(const Camera& _camera)
 	{
-		m_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
+		m_SceneData->ViewProjectionMatrix = _camera.GetViewProjectionMatrix();
 	}
 
 	void Renderer::EndScene()

@@ -37,6 +37,7 @@ namespace Steins
 		mainWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
 		mainWindow->SetVSync(true);
 
+		
 		//prop.width = 960;
 		//prop.height = 540;
 		//prop.title = "TestWindow";

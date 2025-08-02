@@ -46,7 +46,6 @@ namespace Steins
 	void ImGuiRenderer::Shutdown()
 	{
 		ImGui_ImplGlfw_Shutdown();
-
 	}
 
 	void ImGuiRenderer::NewFrame()

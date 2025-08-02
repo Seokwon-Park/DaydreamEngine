@@ -75,6 +75,13 @@ namespace Steins
 	
 	D3D11Texture2D::~D3D11Texture2D()
 	{
+		device = nullptr;
+		texture.Reset();
+		textureSampler.Reset();
+		rtv.Reset();
+		dsv.Reset();
+		srv.Reset();
+		uav.Reset();
 	}
 	ComPtr<ID3D11ShaderResourceView> D3D11Texture2D::GetSRV()
 	{

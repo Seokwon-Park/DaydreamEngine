@@ -23,7 +23,7 @@ namespace Steins
 		static void BeginSwapchainFramebuffer();
 		static void EndSwapchainFramebuffer();
 
-		static void BeginScene(const OrthographicCamera& camera);
+		static void BeginScene(const Camera& _camera);
 		static void EndScene();
 
 		static void Submit(UInt32 _indexCount, const Matrix4x4 _transform = Matrix4x4());

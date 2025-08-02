@@ -9,7 +9,7 @@ namespace Steins
 		static void Init();
 		static void Shutdown();
 
-		static void BeginScene(const OrthographicCamera& _camera);
+		static void BeginScene(const Camera& _camera);
 		static void EndScene();
 		static void Flush();
 

@@ -168,7 +168,7 @@
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12RenderDevice.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12RenderPass.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Shader.h" />
-    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12SwapChain.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Swapchain.h" />
     <ClInclude Include="Source\Steins\Graphics\API\DirectX12\D3D12Texture.h" />
     <ClInclude Include="Source\Steins\Graphics\API\Metal\MetalRenderDevice.h" />
     <ClInclude Include="Source\Steins\Graphics\API\OpenGL\OpenGLBuffer.h" />
@@ -191,7 +191,7 @@
     <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanRenderDevice.h" />
     <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanRenderPass.h" />
     <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanShader.h" />
-    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapChain.h" />
+    <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapchain.h" />
     <ClInclude Include="Source\Steins\Graphics\API\Vulkan\VulkanTexture.h" />
     <ClInclude Include="Source\Steins\Graphics\Core\Camera.h" />
     <ClInclude Include="Source\Steins\Graphics\Core\EditorCamera.h" />
@@ -209,6 +209,7 @@
     <ClInclude Include="Source\Steins\Graphics\Resources\Framebuffer.h" />
     <ClInclude Include="Source\Steins\Graphics\Resources\Material.h" />
     <ClInclude Include="Source\Steins\Graphics\Resources\Mesh.h" />
+    <ClInclude Include="Source\Steins\Graphics\Resources\Model.h" />
     <ClInclude Include="Source\Steins\Graphics\Resources\Resource.h" />
     <ClInclude Include="Source\Steins\Graphics\Resources\Shader.h" />
     <ClInclude Include="Source\Steins\Graphics\Resources\Texture.h" />
@@ -221,8 +222,9 @@
     <ClInclude Include="Source\Steins\Scene\Components\CameraComponent.h" />
     <ClInclude Include="Source\Steins\Scene\Components\Component.h" />
     <ClInclude Include="Source\Steins\Scene\Components\TransformComponent.h" />
-    <ClInclude Include="Source\Steins\Scene\Entity\GameEntity.h" />
+    <ClInclude Include="Source\Steins\Scene\GameEntity\GameEntity.h" />
     <ClInclude Include="Source\Steins\Scene\Scene.h" />
+    <ClInclude Include="Source\Steins\Sound\Sound.h" />
     <ClInclude Include="Source\SteinsPCH.h" />
     <ClInclude Include="Vendor\glm\glm\common.hpp" />
     <ClInclude Include="Vendor\glm\glm\detail\_features.hpp" />
@@ -686,7 +688,7 @@
     <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12RenderDevice.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12RenderPass.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Shader.cpp" />
-    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12SwapChain.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Swapchain.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\DirectX12\D3D12Texture.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\Metal\MetalRenderDevice.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\OpenGL\OpenGLBuffer.cpp" />
@@ -709,7 +711,7 @@
     <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanRenderDevice.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanRenderPass.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanShader.cpp" />
-    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapChain.cpp" />
+    <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanSwapchain.cpp" />
     <ClCompile Include="Source\Steins\Graphics\API\Vulkan\VulkanTexture.cpp" />
     <ClCompile Include="Source\Steins\Graphics\Core\Camera.cpp" />
     <ClCompile Include="Source\Steins\Graphics\Core\OrthographicCamera.cpp" />
@@ -735,7 +737,7 @@
     <ClCompile Include="Source\Steins\ImGui\ImGuiBackends.cpp" />
     <ClCompile Include="Source\Steins\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="Source\Steins\ImGui\ImGuiRenderer.cpp" />
-    <ClCompile Include="Source\Steins\Scene\Entity\GameEntity.cpp" />
+    <ClCompile Include="Source\Steins\Scene\GameEntity\GameEntity.cpp" />
     <ClCompile Include="Source\Steins\Scene\Scene.cpp" />
     <ClCompile Include="Source\SteinsPCH.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

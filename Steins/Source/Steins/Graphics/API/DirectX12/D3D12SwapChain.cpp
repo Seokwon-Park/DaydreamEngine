@@ -30,15 +30,17 @@ namespace Steins
 		swapchainDesc.SampleDesc = sampleDesc;
 		swapchainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		swapchainDesc.BufferCount = _desc.bufferCount;
-		swapchainDesc.Scaling = DXGI_SCALING_NONE;
+		//swapchainDesc.Scaling = DXGI_SCALING_STRETCH;
 		swapchainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 		swapchainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
-		swapchainDesc.Flags = 0;
+		swapchainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH | DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
+
+		windowHandle = glfwGetWin32Window((GLFWwindow*)_window->GetNativeWindow());
 
 		ComPtr<IDXGISwapChain1> swapChain1;
 		HRESULT hr = device->GetFactory()->CreateSwapChainForHwnd(
 			device->GetCommandQueue(),
-			glfwGetWin32Window((GLFWwindow*)_window->GetNativeWindow()),
+			windowHandle,
 			&swapchainDesc,
 			nullptr, nullptr,
 			swapChain1.GetAddressOf()
@@ -82,7 +84,8 @@ namespace Steins
 		hr = device->GetDevice()->CreateFence(fenceValues[frameIndex], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fence.GetAddressOf()));
 		//다음 펜스값은 1을 보내야함
 		fenceValues[frameIndex]++;
-		fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+		//fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+		fenceEvent.Attach(CreateEventEx(nullptr, nullptr, 0, EVENT_MODIFY_STATE | SYNCHRONIZE));
 		if (fenceEvent == nullptr)
 		{
 			STEINS_CORE_ERROR("Failed to Create FenceEvent!");
@@ -103,70 +106,52 @@ namespace Steins
 	{
 		EndFrame();
 
+		MoveToNextFrame();
+
 		BeginFrame();
-
-		D3D12_VIEWPORT viewport = {};
-		viewport.Width = static_cast<float>(desc.width);
-		viewport.Height = static_cast<float>(desc.height);
-		viewport.MinDepth = 0.0f;
-		viewport.MaxDepth = 1.0f;
-		viewport.TopLeftX = 0;
-		viewport.TopLeftY = 0;
-		device->GetCommandList()->RSSetViewports(1, &viewport);
-
-		D3D12_RECT scissorRect = {};
-		scissorRect.left = 0;
-		scissorRect.top = 0;
-		scissorRect.right = static_cast<LONG>(desc.width);
-		scissorRect.bottom = static_cast<LONG>(desc.height);
-		device->GetCommandList()->RSSetScissorRects(1, &scissorRect);
 	}
 	void D3D12Swapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
 	{
 		EndFrame();
 
+		WaitForGPU();
+
 		framebuffers.clear();
+		for (UInt32 i = 0; i < desc.bufferCount; i++)
+		{
+			fenceValues[i] = fenceValues[frameIndex];
+		}
 
-		//// Command list들도 참조를 가지고 있을 수 있으니 reset
-		//for (auto& cmdList : commandLists) {
-		//	cmdList->Reset(commandAllocators[frameIndex].Get(), nullptr);
-		//}
-
-		HRESULT hr = swapChain->ResizeBuffers(
-			bufferCount,
-			_width, _height,
-			format,
-			DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH
-		);
-		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to resize swapchain!");
+		swapChain->ResizeBuffers(desc.bufferCount, _width, _height, DXGI_FORMAT_UNKNOWN, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH | DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING);
 
 		framebuffers.resize(desc.bufferCount);
 		for (UInt32 i = 0; i < desc.bufferCount; i++)
 		{
 			frameIndex = i;
 			framebuffers[i] = MakeShared<D3D12Framebuffer>(device, mainRenderPass.get(), this);
+			//framebuffers[i]->Resize(_width, _height);
 		}
 		frameIndex = swapChain->GetCurrentBackBufferIndex();
 		fenceValues[frameIndex]++;
 
 		BeginFrame();
-
-
 	}
 
 	void D3D12Swapchain::BeginFrame()
 	{
+		device->SetCommandAlloc(commandAllocators[frameIndex]);
 		commandAllocators[frameIndex]->Reset();
-		device->SetCommandList(commandLists[frameIndex].Get());
+		device->SetCommandList(commandLists[frameIndex]);
 		device->GetCommandList()->Reset(commandAllocators[frameIndex].Get(), nullptr);
-		ID3D12DescriptorHeap* heaps[] = { device->GetCBVSRVUAVHeap(), device->GetSamplerHeap()};
+
+		ID3D12DescriptorHeap* heaps[] = { device->GetCBVSRVUAVHeap(), device->GetSamplerHeap() };
 		device->GetCommandList()->SetDescriptorHeaps(2, heaps);
 
 		D3D12_RESOURCE_BARRIER barr{};
 
 		barr.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 		barr.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barr.Transition.pResource = framebuffers[frameIndex]->GetColorAttachments()[0]->GetTexture().Get();
+		barr.Transition.pResource = (ID3D12Resource*)framebuffers[frameIndex]->GetColorAttachmentTexture(0)->GetNativeHandle();
 		barr.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 		barr.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
@@ -179,7 +164,7 @@ namespace Steins
 
 		barr.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 		barr.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barr.Transition.pResource = framebuffers[frameIndex]->GetColorAttachments()[0]->GetTexture().Get();
+		barr.Transition.pResource = (ID3D12Resource*)framebuffers[frameIndex]->GetColorAttachmentTexture(0)->GetNativeHandle();
 		barr.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 		barr.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
@@ -189,9 +174,8 @@ namespace Steins
 
 		Array<ID3D12CommandList*> execCommandLists = { commandLists[frameIndex].Get() };
 		device->GetCommandQueue()->ExecuteCommandLists((UInt32)execCommandLists.size(), execCommandLists.data());
+		
 		swapChain->Present(desc.isVSync, 0);
-
-		MoveToNextFrame();
 	}
 
 	//모든 GPU작업이 끝날때까지 대기
@@ -202,8 +186,8 @@ namespace Steins
 
 		// 2. CPU가 이벤트 대기: GPU가 위에서 요청한 펜스 값을 시그널할 때까지 기다림
 		//    이벤트가 시그널되면 WaitForSingleObjectEx가 반환됩니다.
-		fence->SetEventOnCompletion(fenceValues[frameIndex], fenceEvent);
-		WaitForSingleObjectEx(fenceEvent, INFINITE, FALSE);
+		fence->SetEventOnCompletion(fenceValues[frameIndex], fenceEvent.Get());
+		WaitForSingleObjectEx(fenceEvent.Get(), INFINITE, FALSE);
 
 		// 3. 펜스 값 증가: 다음 번 Signal을 위해 현재 펜스 값을 1 증가시킴.
 		//    이 펜스 값은 이후 commandQueue->Signal에서 사용될 예정.
@@ -215,7 +199,8 @@ namespace Steins
 	{
 		// 1. 현재 프레임의 커맨드 제출 완료를 위한 펜스 값 기록 요청
 		const UINT64 currentFenceValue = fenceValues[frameIndex]; // 현재 프레임의 '고유한' 펜스 값
-		HRESULT hr = device->GetCommandQueue()->Signal(fence.Get(), currentFenceValue); // GPU에게 이 값으로 펜스 시그널 요청
+		HRESULT hr = device->GetCommandQueue()->Signal(fence.Get(), currentFenceValue);
+		// fence값 1로 만들어
 		STEINS_CORE_ASSERT(SUCCEEDED(hr), "Failed to signal!");
 
 		// 2. 다음 백 버퍼 인덱스 획득 (GPU가 렌더링을 마친 버퍼를 가져옴) Present이후 호출이므로 바뀜
@@ -226,8 +211,8 @@ namespace Steins
 		if (fence->GetCompletedValue() < fenceValues[frameIndex]) // 현재 프레임 인덱스(새로 갱신된)의 펜스 값과 비교
 		{
 			// 완료되지 않았다면, 해당 펜스 값이 시그널될 때까지 CPU 대기
-			fence->SetEventOnCompletion(fenceValues[frameIndex], fenceEvent);
-			WaitForSingleObjectEx(fenceEvent, INFINITE, FALSE);
+			fence->SetEventOnCompletion(fenceValues[frameIndex], fenceEvent.Get());
+			WaitForSingleObjectEx(fenceEvent.Get(), INFINITE, FALSE);
 		}
 		fenceValues[frameIndex] = currentFenceValue + 1;
 	}

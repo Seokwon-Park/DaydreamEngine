@@ -83,6 +83,7 @@ namespace Steins
 	}
 	VulkanRenderPass::~VulkanRenderPass()
 	{
+		currentFramebuffer.reset();
 		if (renderPass != VK_NULL_HANDLE) vkDestroyRenderPass(device->GetDevice(), renderPass, nullptr);
 	}
 	void VulkanRenderPass::Begin(Shared<Framebuffer> _framebuffer)

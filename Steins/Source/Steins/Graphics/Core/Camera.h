@@ -17,6 +17,8 @@ namespace Steins
 		void SetPosition(Vector3 _position);
 		inline Vector3 GetPosition() const { return position; }
 
+		void UpdateAspectRatio(UInt32 _width, UInt32 _height);
+
 		void SetProjectionType(ProjectionType _type) { projectionType = _type; }
 
 	private:
@@ -31,6 +33,7 @@ namespace Steins
 		Float32 nearPlane, farPlane;
 		Float32 fovy;
 		Float32 orthoSize;
+		Float32 aspectRatio;
 		ProjectionType projectionType = ProjectionType::Perspective;
 	};
 }

@@ -11,7 +11,7 @@ namespace Steins
 		EditorApplication(const Steins::ApplicationSpecification& _spec)
 			:Steins::Application(_spec)
 		{
-			AttachOverlay(new EditorLayer());
+			AttachLayer(new EditorLayer());
 		}
 	};
 
@@ -20,7 +20,7 @@ namespace Steins
 		ApplicationSpecification spec;
 		spec.Name = "Steins Engine Editor";
 		spec.WorkingDirectory = "../Lab";
-		spec.rendererAPI = RendererAPIType::OpenGL;
+		spec.rendererAPI = RendererAPIType::DirectX12;
 
 		return new EditorApplication(spec);
 	}

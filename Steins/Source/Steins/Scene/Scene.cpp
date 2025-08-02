@@ -7,4 +7,21 @@ namespace Steins
 	{
 
 	}
+
+	Scene::~Scene()
+	{
+		for (auto entity : entities)
+		{
+			delete entity;
+		}
+	}
+
+	GameEntity* Scene::CreateGameEntity()
+	{
+		GameEntity* entity = new GameEntity();
+
+		entities.push_back(entity);
+
+		return entity;
+	}
 }

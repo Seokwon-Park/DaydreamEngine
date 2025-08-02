@@ -23,7 +23,7 @@ namespace Steins
 		inline std::wstring ToWString() const { return path.wstring(); }
 		inline std::string GetNameFromPath() const { return path.filename().string(); }
 		std::string GetFileName() const;
-		inline std::string GetCurrentPath() const { return std::filesystem::current_path().string(); }
+		//inline std::string GetCurrentPath() const { return std::filesystem::current_path().string(); }
 		inline std::string GetFileNameWithoutExtension() const { return path.stem().string(); }
 		inline bool IsDirectory () const { return std::filesystem::is_directory(path); }
 		inline bool IsFile() const { return std::filesystem::is_regular_file(path); }

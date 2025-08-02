@@ -25,16 +25,19 @@ namespace Steins
 
 	void D3D12RenderDevice::Init()
 	{
+		UINT dxgiFactoryFlags = 0;
 #if defined(_DEBUG)
 		// Enable the D3D12 debug layer.
-		if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugLayer))))
+		if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(debugLayer.GetAddressOf()))))
 		{
 			debugLayer->EnableDebugLayer();
-			debugLayer->SetEnableGPUBasedValidation(TRUE);
+
+			// Enable additional debug layers.
+			dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
 		}
 #endif
 		// DXGI ÆÑÅä¸® »ý¼º
-		HRESULT hr = CreateDXGIFactory2(0, IID_PPV_ARGS(dxgiFactory.GetAddressOf()));
+		HRESULT hr = CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(dxgiFactory.GetAddressOf()));
 		if (FAILED(hr))
 		{
 			STEINS_CORE_ERROR("Failed to create dxgiFactory!");

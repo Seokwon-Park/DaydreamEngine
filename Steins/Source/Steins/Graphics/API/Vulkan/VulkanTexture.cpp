@@ -34,6 +34,7 @@ namespace Steins
 		}
 		else
 		{
+			device->TransitionTextureLayout(textureImage, imageFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 			device->CreateImageView(textureImage, imageFormat, textureImageView, VK_IMAGE_ASPECT_COLOR_BIT);
 
 		}
@@ -128,6 +129,7 @@ namespace Steins
 
 	VulkanTexture2D::~VulkanTexture2D()
 	{
+		ImGui_ImplVulkan_RemoveTexture(ImGuiDescriptorSet);
 		if (textureSampler != VK_NULL_HANDLE) vkDestroySampler(device->GetDevice(), textureSampler, nullptr);
 		if (textureImageView != VK_NULL_HANDLE) vkDestroyImageView(device->GetDevice(), textureImageView, nullptr);
 		if (!isSwapchainImage && textureImage != VK_NULL_HANDLE)
