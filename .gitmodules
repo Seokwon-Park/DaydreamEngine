@@ -1,12 +1,12 @@
-[submodule "Steins/Vendor/spdlog"]
-	path = Steins/Vendor/spdlog
+[submodule "Daydream/Vendor/spdlog"]
+	path = Daydream/Vendor/spdlog
 	url = https://github.com/gabime/spdlog
-[submodule "Steins/Vendor/imgui"]
-	path = Steins/Vendor/imgui
+[submodule "Daydream/Vendor/imgui"]
+	path = "Daydream/Vendor/imgui
 	url = https://github.com/Seokwon-Park/imgui
-[submodule "Steins/Vendor/glfw"]
-	path = Steins/Vendor/glfw
+[submodule "Daydream/Vendor/glfw"]
+	path = "Daydream/Vendor/glfw
 	url = https://github.com/Seokwon-Park/glfw
-[submodule "Steins/Vendor/glm"]
-	path = Steins/Vendor/glm
+[submodule ""Daydream/Vendor/glm"]
+	path = Daydream/Vendor/glm
 	url = https://github.com/g-truc/glm
