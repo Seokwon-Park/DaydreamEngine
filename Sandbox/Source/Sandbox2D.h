@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Steins.h>
+#include <Daydream.h>
 
-namespace Steins
+namespace Daydream
 {
 	class Sandbox2D : public Layer
 	{

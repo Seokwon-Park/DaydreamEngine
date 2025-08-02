@@ -1,18 +1,18 @@
-#include <Steins.h>
-#include "Steins/Core/EntryPoint.h"
+#include <Daydream.h>
+#include "Daydream/Core/EntryPoint.h"
 
 #include "imgui/imgui.h"
 
 #include "Sandbox2D.h"
 
-class Sandbox : public Steins::Application
+class Sandbox : public Daydream::Application
 {
 public:
-	Sandbox(const Steins::ApplicationSpecification& _specification)
-		:Steins::Application(_specification)
+	Sandbox(const Daydream::ApplicationSpecification& _specification)
+		:Daydream::Application(_specification)
 	{
 		//AttachLayer(new ExampleLayer());
-		AttachOverlay(new Steins::Sandbox2D());
+		AttachOverlay(new Daydream::Sandbox2D());
 	}
 
 	virtual ~Sandbox() override
@@ -21,7 +21,7 @@ public:
 	}
 };
 
-Steins::Application* Steins::CreateApplication()
+Daydream::Application* Daydream::CreateApplication()
 {
 	ApplicationSpecification spec;
 	spec.Name = "Sandbox";

@@ -61,8 +61,8 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>STEINS_PLATFORM_WINDOWS;STEINS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Steins\Vendor\spdlog\include;..\Steins\Source;..\Steins\Vendor;..\Steins\Vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>Daydream_PLATFORM_WINDOWS;Daydream_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\Daydream\Vendor\spdlog\include;..\Daydream\Source;..\Daydream\Vendor;..\Daydream\Vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -76,15 +76,15 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy /B /Y "..\Steins\Vendor\assimp\bin\Debug" "..\Build\Bin\Debug\$(ProjectName)"</Command>
+      <Command>copy /B /Y "..\Daydream\Vendor\assimp\bin\Debug" "..\Build\Bin\Debug\$(ProjectName)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>STEINS_PLATFORM_WINDOWS;STEINS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Steins\Vendor\spdlog\include;..\Steins\Source;..\Steins\Vendor;..\Steins\Vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>Daydream_PLATFORM_WINDOWS;Daydream_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\Daydream\Vendor\spdlog\include;..\Daydream\Source;..\Daydream\Vendor;..\Daydream\Vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -98,7 +98,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy /B /Y "..\Steins\Vendor\assimp\bin\Release" "..\Build\Bin\Release\$(ProjectName)"</Command>
+      <Command>copy /B /Y "..\Daydream\Vendor\assimp\bin\Release" "..\Build\Bin\Release\$(ProjectName)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -109,8 +109,8 @@
     <ClCompile Include="Source\SandboxApp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Steins\Steins.vcxproj">
-      <Project>{FB7AE7D1-E71C-12A8-D0D7-25FCBC1899F8}</Project>
+    <ProjectReference Include="..\Daydream\Daydream.vcxproj">
+      <Project>{2CDF9289-18AC-ED94-41C5-DB3C2DF12223}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

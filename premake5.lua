@@ -1,4 +1,4 @@
-workspace "Steins"
+workspace "Daydream"
 	architecture "x64"
 	startproject "Sandbox"
 	
@@ -9,20 +9,20 @@ workspace "Steins"
 	}
 
 	IncludeDir = {}
-	IncludeDir["GLFW"] = "Steins/Vendor/glfw/include"
-	IncludeDir["glad"] = "Steins/Vendor/glad/include"
-	IncludeDir["ImGui"] = "Steins/Vendor/imgui"
-	IncludeDir["glm"] = "Steins/Vendor/glm"
-	IncludeDir["stb"] = "Steins/Vendor/stb"
-	IncludeDir["assimp"] = "Steins/Vendor/assimp/include"
-	IncludeDir["dxcompiler"] = "Steins/Vendor/dxcompiler/include"
+	IncludeDir["GLFW"] = "Daydream/Vendor/glfw/include"
+	IncludeDir["glad"] = "Daydream/Vendor/glad/include"
+	IncludeDir["ImGui"] = "Daydream/Vendor/imgui"
+	IncludeDir["glm"] = "Daydream/Vendor/glm"
+	IncludeDir["stb"] = "Daydream/Vendor/stb"
+	IncludeDir["assimp"] = "Daydream/Vendor/assimp/include"
+	IncludeDir["dxcompiler"] = "Daydream/Vendor/dxcompiler/include"
 
-	include "Steins/Vendor/glfw"
-	include "Steins/Vendor/glad"
-	include "Steins/Vendor/imgui"
+	include "Daydream/Vendor/glfw"
+	include "Daydream/Vendor/glad"
+	include "Daydream/Vendor/imgui"
 	
-project "Steins"
-	location "Steins"
+project "Daydream"
+	location "Daydream"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++20"
@@ -31,8 +31,8 @@ project "Steins"
 	targetdir ("Build/Bin/%{cfg.buildcfg}/%{prj.name}")
 	objdir ("Build/Intermediate/%{cfg.buildcfg}/%{prj.name}")
 
-	pchheader "SteinsPCH.h"
-	pchsource "%{prj.name}/Source/SteinsPCH.cpp"
+	pchheader "DaydreamPCH.h"
+	pchsource "%{prj.name}/Source/DaydreamPCH.cpp"
 
 	files
 	{
@@ -59,8 +59,8 @@ project "Steins"
 	libdirs 
 	{
         "$(VULKAN_SDK)/Lib",
-		"Steins/Vendor/assimp/bin/%{cfg.buildcfg}",
-		"Steins/Vendor/dxcompiler",
+		"Daydream/Vendor/assimp/bin/%{cfg.buildcfg}",
+		"Daydream/Vendor/dxcompiler",
     }
 	links
 	{
@@ -84,14 +84,14 @@ project "Steins"
 		systemversion "latest"
 		defines
 		{
-			"STEINS_PLATFORM_WINDOWS",
+			"Daydream_PLATFORM_WINDOWS",
 			"GLFW_INCLUDE_NONE"
 		}
 		flags { "MultiProcessorCompile" }
 
 
 	filter "configurations:Debug"
-		defines "STEINS_DEBUG"
+		defines "Daydream_DEBUG"
 		symbols "On"
 		runtime "Debug"
 		links 
@@ -107,7 +107,7 @@ project "Steins"
             "assimp-vc143-mtd.lib" -- Assimp Debug 버전 라이브러리 이름 (필요 시 주석 해제)
         }
 	filter "configurations:Release"
-		defines "STEINS_RELEASE"
+		defines "Daydream_RELEASE"
 		symbols "On"
 		runtime "Release"
 		links 
@@ -132,7 +132,7 @@ project "Sandbox"
 
 	targetdir ("Build/Bin/%{cfg.buildcfg}/%{prj.name}")
 	objdir ("Build/Intermediate/%{cfg.buildcfg}/%{prj.name}")
-	postbuildcommands { "{COPYFILE} %[Steins/Vendor/assimp/bin/%{cfg.buildcfg}] %[Build/Bin/%{cfg.buildcfg}/%{prj.name}]" }
+	postbuildcommands { "{COPYFILE} %[Daydream/Vendor/assimp/bin/%{cfg.buildcfg}] %[Build/Bin/%{cfg.buildcfg}/%{prj.name}]" }
 	files
 	{
 		"%{prj.name}/Source/**.h",
@@ -140,34 +140,34 @@ project "Sandbox"
 	}
 	includedirs
 	{
-		"Steins/Vendor/spdlog/include",
-		"Steins/Source",
-		"Steins/Vendor",
+		"Daydream/Vendor/spdlog/include",
+		"Daydream/Source",
+		"Daydream/Vendor",
 		"%{IncludeDir.glm}"
 	}
 	links
 	{
-		"Steins"
+		"Daydream"
 	}
 	filter "system:windows"
 		cppdialect "C++20"
 		systemversion "latest"
 		defines
 		{
-			"STEINS_PLATFORM_WINDOWS",
+			"Daydream_PLATFORM_WINDOWS",
 		}
 		flags { "MultiProcessorCompile" }
 	filter "configurations:Debug"
-		defines "STEINS_DEBUG"
+		defines "Daydream_DEBUG"
 		symbols "On"
 		runtime "Debug"
 	filter "configurations:Release"
-		defines "STEINS_RELEASE"
+		defines "Daydream_RELEASE"
 		symbols "On"
 		runtime "Release"
 
-project "SteinsEditor"
-	location "SteinsEditor"
+project "DaydreamEditor"
+	location "DaydreamEditor"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++20"
@@ -175,7 +175,7 @@ project "SteinsEditor"
 
 	targetdir ("Build/Bin/%{cfg.buildcfg}/%{prj.name}")
 	objdir ("Build/Intermediate/%{cfg.buildcfg}/%{prj.name}")
-	postbuildcommands { "{COPYFILE} %[Steins/Vendor/assimp/bin/%{cfg.buildcfg}] %[Build/Bin/%{cfg.buildcfg}/%{prj.name}]" }
+	postbuildcommands { "{COPYFILE} %[Daydream/Vendor/assimp/bin/%{cfg.buildcfg}] %[Build/Bin/%{cfg.buildcfg}/%{prj.name}]" }
 
 	files
 	{
@@ -184,28 +184,28 @@ project "SteinsEditor"
 	}
 	includedirs
 	{
-		"Steins/Vendor/spdlog/include",
-		"Steins/Source",
-		"Steins/Vendor",
+		"Daydream/Vendor/spdlog/include",
+		"Daydream/Source",
+		"Daydream/Vendor",
 		"%{IncludeDir.glm}"
 	}
 	links
 	{
-		"Steins"
+		"Daydream"
 	}
 	filter "system:windows"
 		cppdialect "C++20"
 		systemversion "latest"
 		defines
 		{
-			"STEINS_PLATFORM_WINDOWS",
+			"Daydream_PLATFORM_WINDOWS",
 		}
 		flags { "MultiProcessorCompile" }
 	filter "configurations:Debug"
-		defines "STEINS_DEBUG"
+		defines "Daydream_DEBUG"
 		symbols "On"
 		runtime "Debug"
 	filter "configurations:Release"
-		defines "STEINS_RELEASE"
+		defines "Daydream_RELEASE"
 		symbols "On"
 		runtime "Release"
