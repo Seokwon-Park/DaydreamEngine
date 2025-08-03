@@ -11,12 +11,12 @@ namespace Daydream
 	{
 		currentWindow = nullptr;
 		renderDevice = RenderDevice::Create(_API);
-		Daydream_CORE_ASSERT(renderDevice, "Failed to create graphics device!");
+		DAYDREAM_CORE_ASSERT(renderDevice, "Failed to create graphics device!");
 	}
 
 	void Renderer::Init(RendererAPIType _API)
 	{
-		Daydream_CORE_ASSERT(instance == nullptr, "Renderer Already Initialized!");
+		DAYDREAM_CORE_ASSERT(instance == nullptr, "Renderer Already Initialized!");
 		instance = new Renderer(_API);
 		instance->renderDevice->Init();
 		RenderCommand::Init(instance->renderDevice.get());

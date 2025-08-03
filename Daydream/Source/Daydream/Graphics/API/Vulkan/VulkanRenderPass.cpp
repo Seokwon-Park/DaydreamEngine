@@ -79,7 +79,7 @@ namespace Daydream
 		renderPassInfo.pDependencies = &dependency;
 
 		VkResult result = vkCreateRenderPass(device->GetDevice(), &renderPassInfo, nullptr, &renderPass);
-		Daydream_CORE_ASSERT(result == VK_SUCCESS, "Failed to create renderpass!");
+		DAYDREAM_CORE_ASSERT(result == VK_SUCCESS, "Failed to create renderpass!");
 	}
 	VulkanRenderPass::~VulkanRenderPass()
 	{
@@ -88,7 +88,7 @@ namespace Daydream
 	}
 	void VulkanRenderPass::Begin(Shared<Framebuffer> _framebuffer)
 	{
-		Daydream_CORE_ASSERT(device->GetAPI() == RendererAPIType::Vulkan, "Wrong API");
+		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::Vulkan, "Wrong API");
 		currentFramebuffer = static_pointer_cast<VulkanFramebuffer>(_framebuffer);
 
 		VkRenderPassBeginInfo renderPassInfo{};

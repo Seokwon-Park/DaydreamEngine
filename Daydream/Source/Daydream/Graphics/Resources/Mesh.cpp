@@ -1,6 +1,6 @@
 #include "DaydreamPCH.h"
 #include "Mesh.h"
-#include <Daydream/Graphics/Utility/MeshLoader.h>
+#include "Daydream/Graphics/Utility/ModelLoader.h"
 
 #include "Daydream/Graphics/Core/Renderer.h"
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Daydream/Graphics/Core/Swapchain.h"
-#if defined(Daydream_PLATFORM_WINDOWS)
+#if defined(DAYDREAM_PLATFORM_WINDOWS)
 #define VK_USE_PLATFORM_WIN32_KHR
 #endif
 #include "Daydream/Graphics/Core/RenderDevice.h"

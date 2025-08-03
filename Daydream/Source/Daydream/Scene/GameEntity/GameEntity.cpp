@@ -13,5 +13,6 @@ namespace Daydream
 
 	void GameEntity::Update(Float32 _deltaTime)
 	{
+		DAYDREAM_CORE_TRACE("{0} is Updated", name);
 	}
 }

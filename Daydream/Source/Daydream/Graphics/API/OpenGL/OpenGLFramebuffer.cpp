@@ -54,7 +54,7 @@ namespace Daydream
 
 		//glNamedFramebufferDrawBuffer(framebufferID, GL_COLOR_ATTACHMENT0);
 
-		Daydream_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
+		DAYDREAM_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
 	}
 
 	OpenGLFramebuffer::~OpenGLFramebuffer()

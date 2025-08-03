@@ -57,7 +57,7 @@ namespace Daydream
 		viewProjMat = Daydream::ConstantBuffer::Create(sizeof(Daydream::Matrix4x4));
 		viewProjMat->Update(&cameraPos.mat, sizeof(Daydream::Matrix4x4));
 
-		auto path = Daydream::FilePath("F:/DaydreamReboot/Sandbox/Asset/Texture/Checkerboard.png");
+		auto path = Daydream::FilePath("Asset/Texture/Checkerboard.png");
 		Daydream::TextureDesc textureDesc{};
 		textureDesc.bindFlags = Daydream::RenderBindFlags::ShaderResource;
 		textureDesc.format = Daydream::RenderFormat::R8G8B8A8_UNORM_SRGB;
@@ -102,9 +102,11 @@ namespace Daydream
 		material->SetTexture2D("Texture", texture);
 		material->SetConstantBuffer("Camera", viewProjMat);
 
-		//mesh = Mesh::Create(squareVB, squareIB, material);
-		mesh = Mesh::Create();
+		mesh = Mesh::Create(squareVB, squareIB, material);
+		//mesh = Mesh::Create();
 		//mesh->Load("F:/DaydreamReboot/Sandbox/Asset/Model/Lowpoly_tree_sample.fbx");
+		model = MakeShared<Model>();
+		model->Load("Asset/Model/Lowpoly_tree_sample.fbx");
 	}
 
 	void Sandbox2D::OnUpdate(Float32 _deltaTime)

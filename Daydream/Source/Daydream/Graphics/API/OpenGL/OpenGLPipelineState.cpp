@@ -21,7 +21,7 @@ namespace Daydream
 		case RenderFormat::R32G32B32A32_SINT:     return GL_INT;
 		}
 
-		Daydream_CORE_ASSERT(false, "Unknown ShaderDataType!");
+		DAYDREAM_CORE_ASSERT(false, "Unknown ShaderDataType!");
 		return 0;
 	}
 
@@ -85,7 +85,7 @@ namespace Daydream
 		glGetProgramPipelineiv(pipeline, GL_VALIDATE_STATUS, &success);
 		if (!success) {
 			glGetProgramPipelineInfoLog(pipeline, 512, NULL, infoLog);
-			Daydream_CORE_ERROR("pipeline validation failed!\n {0}", infoLog);
+			DAYDREAM_CORE_ERROR("pipeline validation failed!\n {0}", infoLog);
 		}
 
 		//GLuint samplerID;
@@ -124,8 +124,8 @@ namespace Daydream
 			//		// We don't need the shader anymore.
 			//		glDeleteShader(shader);
 
-			//		Daydream_CORE_ERROR("{0}", infoLog.data());
-			//		Daydream_CORE_ASSERT(false, "Shader compilation failure!");
+			//		DAYDREAM_CORE_ERROR("{0}", infoLog.data());
+			//		DAYDREAM_CORE_ASSERT(false, "Shader compilation failure!");
 			//		return;
 			//	}
 			//	glAttachShader(rendererID, shader);
@@ -155,8 +155,8 @@ namespace Daydream
 			//		glDeleteShader(id);
 			//	}
 
-			//	Daydream_CORE_ERROR("{0}", infoLog.data());
-			//	Daydream_CORE_ASSERT(false, "Shader link failure!");
+			//	DAYDREAM_CORE_ERROR("{0}", infoLog.data());
+			//	DAYDREAM_CORE_ASSERT(false, "Shader link failure!");
 			//	return;
 			//}
 

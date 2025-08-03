@@ -31,7 +31,7 @@ namespace Daydream
 	{
 		ComPtr<IDxcBlobEncoding> sourceBlob;
 		HRESULT hr = utils->LoadFile(_filepath.ToWString().c_str(), nullptr, sourceBlob.GetAddressOf());
-		Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to load File! {0}", _filepath.ToString());
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to load File! {0}", _filepath.ToString());
 
 		// 2. DxcBuffer 설정
 		DxcBuffer sourceBuffer{};
@@ -57,7 +57,7 @@ namespace Daydream
 			nullptr,  // 인클루드 핸들러 없음
 			IID_PPV_ARGS(&result));
 
-		Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
 
 		// 에러 확인
 		ComPtr<IDxcBlobUtf8> errors;
@@ -66,7 +66,7 @@ namespace Daydream
 		{
 			String errorMsg = errors->GetStringPointer();
 
-			Daydream_CORE_ERROR("{0}", errorMsg);
+			DAYDREAM_CORE_ERROR("{0}", errorMsg);
 
 			HRESULT status;
 			result->GetStatus(&status);
@@ -75,7 +75,7 @@ namespace Daydream
 
 		// SPIR-V 결과
 		hr = result->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(_shaderBlob.GetAddressOf()), nullptr);
-		Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
 	}
 
 	void ShaderCompileHelper::GetDX12Reflection(ComPtr<IDxcBlob>& _shaderBlob, ComPtr<ID3D12ShaderReflection>& _reflection)
@@ -85,14 +85,14 @@ namespace Daydream
 		reflectionBuffer.Size = _shaderBlob->GetBufferSize();
 
 		HRESULT hr = utils->CreateReflection(&reflectionBuffer, IID_PPV_ARGS(_reflection.GetAddressOf()));
-		Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to create reflection!");
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create reflection!");
 	}
 
 	void ShaderCompileHelper::ConvertHLSLtoSPIRV(const FilePath& _filepath, ShaderType _type, Array<UInt32>& _output)
 	{
 		ComPtr<IDxcBlobEncoding> sourceBlob;
 		HRESULT hr = utils->LoadFile(_filepath.ToWString().c_str(), nullptr, sourceBlob.GetAddressOf());
-		Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to load File! {0}", _filepath.ToString());
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to load File! {0}", _filepath.ToString());
 
 		// 2. DxcBuffer 설정
 		DxcBuffer sourceBuffer;
@@ -136,7 +136,7 @@ namespace Daydream
 		{
 			String errorMsg = errors->GetStringPointer();
 
-			Daydream_CORE_ERROR("{0}", errorMsg);
+			DAYDREAM_CORE_ERROR("{0}", errorMsg);
 
 			HRESULT status;
 			result->GetStatus(&status);

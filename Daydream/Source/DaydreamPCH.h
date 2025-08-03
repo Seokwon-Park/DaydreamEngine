@@ -30,7 +30,7 @@
 
 
 
-#if defined(Daydream_PLATFORM_WINDOWS)
+#if defined(DAYDREAM_PLATFORM_WINDOWS)
 	#define GLFW_EXPOSE_NATIVE_WIN32
 	#ifndef NOMINMAX
 		#define NOMINMAX

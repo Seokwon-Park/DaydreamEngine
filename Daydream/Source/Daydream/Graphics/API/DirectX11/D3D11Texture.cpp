@@ -26,7 +26,7 @@ namespace Daydream
 		textureDesc.CPUAccessFlags = 0;
 
 		HRESULT hr = device->GetDevice()->CreateTexture2D(&textureDesc, nullptr, texture.GetAddressOf());
-		Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to create Texture!");
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create Texture!");
 	}
 	D3D11Texture2D::D3D11Texture2D(D3D11RenderDevice* _device, const FilePath& _path, const TextureDesc& _desc)
 		:Texture2D(_path)
@@ -93,7 +93,7 @@ namespace Daydream
 			device->GetDevice()->CreateShaderResourceView(texture.Get(), nullptr, srv.GetAddressOf());
 			return srv;
 		}
-		Daydream_CORE_ASSERT(srv, "This texture was not created with the Shader Resource View (SRV) bind flag.");
+		DAYDREAM_CORE_ASSERT(srv, "This texture was not created with the Shader Resource View (SRV) bind flag.");
 		return nullptr;
 	}
 	ComPtr<ID3D11DepthStencilView> D3D11Texture2D::GetDSV()
@@ -106,7 +106,7 @@ namespace Daydream
 			device->GetDevice()->CreateDepthStencilView(texture.Get(), nullptr, dsv.GetAddressOf());
 			return dsv;
 		}
-		Daydream_CORE_ASSERT(dsv, "This texture was not created with the Depth Stencil View (DSV) bind flag.");
+		DAYDREAM_CORE_ASSERT(dsv, "This texture was not created with the Depth Stencil View (DSV) bind flag.");
 		return nullptr;
 	}
 	ComPtr<ID3D11RenderTargetView> D3D11Texture2D::GetRTV()
@@ -119,7 +119,7 @@ namespace Daydream
 			device->GetDevice()->CreateRenderTargetView(texture.Get(), nullptr, rtv.GetAddressOf());
 			return rtv;
 		}
-		Daydream_CORE_ASSERT(rtv, "This texture was not created with the Render Target View (RTV) bind flag.");
+		DAYDREAM_CORE_ASSERT(rtv, "This texture was not created with the Render Target View (RTV) bind flag.");
 		return nullptr;
 	}
 	ComPtr<ID3D11UnorderedAccessView> D3D11Texture2D::GetUAV()
@@ -132,7 +132,7 @@ namespace Daydream
 			device->GetDevice()->CreateUnorderedAccessView(texture.Get(), nullptr, uav.GetAddressOf());
 			return uav;
 		}
-		Daydream_CORE_ASSERT(uav, "This texture was not created with the Unordered Access View (UAV) bind flag.");
+		DAYDREAM_CORE_ASSERT(uav, "This texture was not created with the Unordered Access View (UAV) bind flag.");
 		return nullptr;
 	}
 }

@@ -40,7 +40,7 @@ namespace Daydream
 		HRESULT hr = CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(dxgiFactory.GetAddressOf()));
 		if (FAILED(hr))
 		{
-			Daydream_CORE_ERROR("Failed to create dxgiFactory!");
+			DAYDREAM_CORE_ERROR("Failed to create dxgiFactory!");
 		}
 
 		// 디바이스 생성
@@ -72,10 +72,10 @@ namespace Daydream
 			}
 		}
 
-		Daydream_CORE_ASSERT(isAdapterFound, "Failed to find Adapter!");
+		DAYDREAM_CORE_ASSERT(isAdapterFound, "Failed to find Adapter!");
 
 		hr = D3D12CreateDevice(dxgiAdapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(device.GetAddressOf()));
-		Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to Create Device!");
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to Create Device!");
 
 #if defined(DEBUG) || defined(_DEBUG)
 		Microsoft::WRL::ComPtr<ID3D12InfoQueue> infoQueue;
@@ -112,7 +112,7 @@ namespace Daydream
 			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(rtvHeap.GetAddressOf()));
-			Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to create RTV descriptor heap");
+			DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create RTV descriptor heap");
 			rtvHeapAlloc.Create(device.Get(), rtvHeap.Get());
 		}
 
@@ -122,7 +122,7 @@ namespace Daydream
 			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
 			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(dsvHeap.GetAddressOf()));
-			Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to create DSV descriptor heap");
+			DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create DSV descriptor heap");
 			dsvHeapAlloc.Create(device.Get(), dsvHeap.Get());
 
 		}
@@ -133,7 +133,7 @@ namespace Daydream
 			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER;
 			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(samplerHeap.GetAddressOf()));
-			Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to create sampler descriptor heap");
+			DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create sampler descriptor heap");
 			samplerHeapAlloc.Create(device.Get(), samplerHeap.Get());
 
 		}
@@ -144,7 +144,7 @@ namespace Daydream
 			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(cbvSrvUavHeap.GetAddressOf()));
-			Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to create cbvSrvUav descriptor heap");
+			DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create cbvSrvUav descriptor heap");
 			cbvSrvUavHeapAlloc.Create(device.Get(), cbvSrvUavHeap.Get());
 
 		}
@@ -172,10 +172,10 @@ namespace Daydream
 		std::string version;
 		version = major + "." + minor + "." + release + "." + build;
 
-		Daydream_CORE_INFO("DirectX12 Info:");
-		Daydream_CORE_INFO("  Vendor: {0}", GraphicsUtil::GetVendor(adapterDescription.VendorId));
-		Daydream_CORE_INFO("  Renderer: {0} {1} GB", videoCardDescription, std::round((double)adapterDescription.DedicatedVideoMemory / (1 << 30)));
-		Daydream_CORE_INFO("  Version: {0}", version);
+		DAYDREAM_CORE_INFO("DirectX12 Info:");
+		DAYDREAM_CORE_INFO("  Vendor: {0}", GraphicsUtil::GetVendor(adapterDescription.VendorId));
+		DAYDREAM_CORE_INFO("  Renderer: {0} {1} GB", videoCardDescription, std::round((double)adapterDescription.DedicatedVideoMemory / (1 << 30)));
+		DAYDREAM_CORE_INFO("  Version: {0}", version);
 
 		//device->CreateDescriptorHeap()
 		//// 스왑 체인 생성
@@ -209,7 +209,7 @@ namespace Daydream
 		return MakeShared<D3D12VertexBuffer>(this, _bufferSize, _stride);
 	}
 
-	Shared<VertexBuffer> D3D12RenderDevice::CreateStaticVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
+	Shared<VertexBuffer> Daydream::D3D12RenderDevice::CreateStaticVertexBuffer(void* _vertices, UInt32 _size, UInt32 _stride)
 	{
 		return MakeShared<D3D12VertexBuffer>(this, _vertices, _size, _stride);
 	}

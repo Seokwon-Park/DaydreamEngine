@@ -33,19 +33,19 @@ namespace Daydream
 		{
 			if (_messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
 			{
-				Daydream_CORE_ERROR("Validation layer: {0}", _pCallbackData->pMessage);
+				DAYDREAM_CORE_ERROR("Validation layer: {0}", _pCallbackData->pMessage);
 			}
 			else if (_messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
 			{
-				Daydream_CORE_WARN("Validation layer: {0}", _pCallbackData->pMessage);
+				DAYDREAM_CORE_WARN("Validation layer: {0}", _pCallbackData->pMessage);
 			}
 			else if (_messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
 			{
-				Daydream_CORE_INFO("Validation layer: {0}", _pCallbackData->pMessage);
+				DAYDREAM_CORE_INFO("Validation layer: {0}", _pCallbackData->pMessage);
 			}
 			else if (_messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT)
 			{
-				Daydream_CORE_TRACE("Validation layer: {0}", _pCallbackData->pMessage);
+				DAYDREAM_CORE_TRACE("Validation layer: {0}", _pCallbackData->pMessage);
 			}
 
 			return VK_FALSE;
@@ -124,16 +124,16 @@ namespace Daydream
 			poolInfo.poolSizeCount = (uint32_t)poolSizes.size();
 			poolInfo.pPoolSizes = poolSizes.data();
 			VkResult result = vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool);
-			Daydream_CORE_ASSERT(result == VK_SUCCESS, "Failed to create descriptor heap")
+			DAYDREAM_CORE_ASSERT(result == VK_SUCCESS, "Failed to create descriptor heap")
 		}
 
 
 		VkPhysicalDeviceProperties deviceProperties;
 		vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
-		Daydream_CORE_INFO("Vulkan Info:");
-		Daydream_CORE_INFO("  Vendor: {0}", GraphicsUtil::GetVendor(deviceProperties.vendorID));
-		Daydream_CORE_INFO("  Renderer: {0}", deviceProperties.deviceName);
-		Daydream_CORE_INFO("  Version: {0}.{1}.{2}",
+		DAYDREAM_CORE_INFO("Vulkan Info:");
+		DAYDREAM_CORE_INFO("  Vendor: {0}", GraphicsUtil::GetVendor(deviceProperties.vendorID));
+		DAYDREAM_CORE_INFO("  Renderer: {0}", deviceProperties.deviceName);
+		DAYDREAM_CORE_INFO("  Version: {0}.{1}.{2}",
 			VK_API_VERSION_MAJOR(deviceProperties.apiVersion),
 			VK_API_VERSION_MINOR(deviceProperties.apiVersion),
 			VK_API_VERSION_PATCH(deviceProperties.apiVersion));
@@ -157,7 +157,7 @@ namespace Daydream
 		return MakeShared<VulkanVertexBuffer>(this, _bufferSize, _stride);
 	}
 
-	Shared<VertexBuffer> VulkanRenderDevice::CreateStaticVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
+	Shared<VertexBuffer> Daydream::VulkanRenderDevice::CreateStaticVertexBuffer(void* _vertices, UInt32 _size, UInt32 _stride)
 	{
 		return MakeShared<VulkanVertexBuffer>(this, _vertices, _size, _stride);
 	}
@@ -297,7 +297,7 @@ namespace Daydream
 		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
 		VkResult vr = vkCreateBuffer(device, &bufferInfo, nullptr, &_buffer);
-		Daydream_CORE_ASSERT(VK_SUCCEEDED(vr), "failed to create buffer!");
+		DAYDREAM_CORE_ASSERT(VK_SUCCEEDED(vr), "failed to create buffer!");
 
 		VkMemoryRequirements memRequirements;
 		vkGetBufferMemoryRequirements(device, _buffer, &memRequirements);
@@ -308,7 +308,7 @@ namespace Daydream
 		allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, _properties);
 
 		vr = vkAllocateMemory(device, &allocInfo, nullptr, &_bufferMemory);
-		Daydream_CORE_ASSERT(VK_SUCCEEDED(vr), "Failed to allocate buffer memory!");
+		DAYDREAM_CORE_ASSERT(VK_SUCCEEDED(vr), "Failed to allocate buffer memory!");
 
 		vkBindBufferMemory(device, _buffer, _bufferMemory, 0);
 	}
@@ -359,7 +359,7 @@ namespace Daydream
 		viewInfo.subresourceRange.layerCount = 1;
 
 		VkResult vr = vkCreateImageView(device, &viewInfo, nullptr, &_imageView);
-		Daydream_CORE_ASSERT(VK_SUCCEEDED(vr), "Failed to create texture image view!");
+		DAYDREAM_CORE_ASSERT(VK_SUCCEEDED(vr), "Failed to create texture image view!");
 	}
 
 	void VulkanRenderDevice::CopyBuffer(VkBuffer _src, VkBuffer _dst, VkDeviceSize _size)
@@ -494,7 +494,7 @@ namespace Daydream
 	{
 		if (enableValidationLayers == true && CheckValidationLayerSupport() == false)
 		{
-			Daydream_CORE_ERROR("Validation layers requested, but not available!");
+			DAYDREAM_CORE_ERROR("Validation layers requested, but not available!");
 			return;
 		}
 
@@ -530,7 +530,7 @@ namespace Daydream
 		createInfo.ppEnabledExtensionNames = extensions.data();
 
 		VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
-		Daydream_CORE_ASSERT(result == VK_SUCCESS, "Failed to create vkInstance!");
+		DAYDREAM_CORE_ASSERT(result == VK_SUCCESS, "Failed to create vkInstance!");
 	}
 	void VulkanRenderDevice::SetupDebugMessenger()
 	{
@@ -542,7 +542,7 @@ namespace Daydream
 		VkResult result = CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger);
 		if (result != VK_SUCCESS)
 		{
-			Daydream_CORE_ERROR("Failed to set up debug messenger!");
+			DAYDREAM_CORE_ERROR("Failed to set up debug messenger!");
 		}
 	}
 	void VulkanRenderDevice::PickPhysicalDevice()
@@ -551,7 +551,7 @@ namespace Daydream
 		vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
 		if (deviceCount == 0)
 		{
-			Daydream_CORE_ERROR("Failed to find GPUs with Vulkan support!");
+			DAYDREAM_CORE_ERROR("Failed to find GPUs with Vulkan support!");
 		}
 
 		Array<VkPhysicalDevice> devices(deviceCount);
@@ -568,7 +568,7 @@ namespace Daydream
 
 		if (physicalDevice == VK_NULL_HANDLE)
 		{
-			Daydream_CORE_ERROR("Failed to find a suitable GPU!");
+			DAYDREAM_CORE_ERROR("Failed to find a suitable GPU!");
 		}
 	}
 	void VulkanRenderDevice::CreateLogicalDevice()
@@ -604,7 +604,7 @@ namespace Daydream
 		VkResult result = vkCreateDevice(physicalDevice, &createInfo, nullptr, &device);
 		if (result != VK_SUCCESS)
 		{
-			Daydream_CORE_ERROR("Failed to create logical device!");
+			DAYDREAM_CORE_ERROR("Failed to create logical device!");
 		}
 		vkGetDeviceQueue(device, queueFamilyIndices.graphicsFamily.value(), 0, &graphicsQueue);
 	}

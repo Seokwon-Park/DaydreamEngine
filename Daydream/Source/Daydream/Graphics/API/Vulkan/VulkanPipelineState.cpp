@@ -22,7 +22,7 @@ namespace Daydream
 		default:
 			break;
 		}
-		Daydream_CORE_ASSERT(false, "Wrong type")
+		DAYDREAM_CORE_ASSERT(false, "Wrong type")
 			return VK_DESCRIPTOR_TYPE_MAX_ENUM;
 	}
 
@@ -236,7 +236,7 @@ namespace Daydream
 		pipelineInfo.basePipelineIndex = -1; // Optional
 
 		VkResult result = vkCreateGraphicsPipelines(device->GetDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline);
-		Daydream_CORE_ASSERT(result == VK_SUCCESS, "Failed to create pipeline!");
+		DAYDREAM_CORE_ASSERT(result == VK_SUCCESS, "Failed to create pipeline!");
 
 		//VkDescriptorBufferInfo bufferInfo{};
 		//bufferInfo.buffer = (VkBuffer)_desc.constantBuffers[0].constantBuffer->GetNativeHandle();

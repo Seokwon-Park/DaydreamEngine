@@ -20,7 +20,7 @@ namespace Daydream
 		std::string name;
 	};
 
-	class MeshLoader
+	class ModelLoader
 	{
 	public:
 		static Array<MeshData> LoadFromFile(const FilePath& _filepath);

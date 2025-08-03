@@ -47,17 +47,17 @@ namespace Daydream
 		);
 
 		swapChain1->QueryInterface(swapChain.GetAddressOf());
-		Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to create swapChain!");
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create swapChain!");
 
 		commandLists.resize(_desc.bufferCount);
 		commandAllocators.resize(_desc.bufferCount);
 		for (UInt32 i = 0; i < _desc.bufferCount; i++)
 		{
 			HRESULT hr = device->GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(commandAllocators[i].GetAddressOf()));
-			Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to create command allocator {0}", i);
+			DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create command allocator {0}", i);
 
 			hr = device->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocators[i].Get(), nullptr, IID_PPV_ARGS(commandLists[i].GetAddressOf()));
-			Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to create commandlist");
+			DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create commandlist");
 
 			commandLists[i]->Close();
 		}
@@ -88,7 +88,7 @@ namespace Daydream
 		fenceEvent.Attach(CreateEventEx(nullptr, nullptr, 0, EVENT_MODIFY_STATE | SYNCHRONIZE));
 		if (fenceEvent == nullptr)
 		{
-			Daydream_CORE_ERROR("Failed to Create FenceEvent!");
+			DAYDREAM_CORE_ERROR("Failed to Create FenceEvent!");
 		}
 
 		BeginFrame();
@@ -201,7 +201,7 @@ namespace Daydream
 		const UINT64 currentFenceValue = fenceValues[frameIndex]; // 현재 프레임의 '고유한' 펜스 값
 		HRESULT hr = device->GetCommandQueue()->Signal(fence.Get(), currentFenceValue);
 		// fence값 1로 만들어
-		Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to signal!");
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to signal!");
 
 		// 2. 다음 백 버퍼 인덱스 획득 (GPU가 렌더링을 마친 버퍼를 가져옴) Present이후 호출이므로 바뀜
 		frameIndex = swapChain->GetCurrentBackBufferIndex();

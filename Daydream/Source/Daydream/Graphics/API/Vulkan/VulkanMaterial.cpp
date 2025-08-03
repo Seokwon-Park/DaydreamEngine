@@ -22,8 +22,8 @@ namespace Daydream
 
 		sets.resize(layouts.size());
 		VkResult result = vkAllocateDescriptorSets(_device->GetDevice(), &allocInfo, sets.data());
-		Daydream_CORE_ASSERT(result == VK_SUCCESS, "Failed to allocate descriptor sets!");
-		Daydream_CORE_INFO("Allocated {0} descriptor sets", sets.size());
+		DAYDREAM_CORE_ASSERT(result == VK_SUCCESS, "Failed to allocate descriptor sets!");
+		DAYDREAM_CORE_INFO("Allocated {0} descriptor sets", sets.size());
 
 		for (auto shader : _pso->GetShaders())
 		{

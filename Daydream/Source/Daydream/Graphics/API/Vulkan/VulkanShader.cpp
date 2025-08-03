@@ -20,14 +20,14 @@ namespace Daydream
 		{
 		case Daydream::ShaderLoadMode::Source:
 		{
-			Daydream_CORE_ERROR("Daydream Vulkan API runtime compile is not supported!");
+			DAYDREAM_CORE_ERROR("Daydream Vulkan API runtime compile is not supported!");
 			break;
 		}
 		case Daydream::ShaderLoadMode::File:
 		{
 			std::ifstream file(_src, std::ios::ate | std::ios::binary);
 
-			Daydream_CORE_ASSERT(file.is_open() == true, "Failed to open file! Check directory");
+			DAYDREAM_CORE_ASSERT(file.is_open() == true, "Failed to open file! Check directory");
 
 
 			//tellg->파일의 입력위치 지정자를 리턴(사실상 size?)
@@ -104,7 +104,7 @@ namespace Daydream
 			}
 
 			VkResult result = vkCreateShaderModule(device->GetDevice(), &createInfo, nullptr, &shader);
-			Daydream_CORE_ASSERT(result == VK_SUCCESS, "Failed to create shader module!");
+			DAYDREAM_CORE_ASSERT(result == VK_SUCCESS, "Failed to create shader module!");
 			break;
 		}
 		default:

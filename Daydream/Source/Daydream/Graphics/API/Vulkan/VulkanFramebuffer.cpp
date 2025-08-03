@@ -52,7 +52,7 @@ namespace Daydream
 		renderPassInfo.pSubpasses = &subpass;
 
 		VkResult result = vkCreateRenderPass(_device->GetDevice(), &renderPassInfo, nullptr, &renderPass);
-		Daydream_CORE_ASSERT(result == VK_SUCCESS, "Failed to create renderpass!");*/
+		DAYDREAM_CORE_ASSERT(result == VK_SUCCESS, "Failed to create renderpass!");*/
 
 		UInt32 swapChainImageCount = 0;
 		vkGetSwapchainImagesKHR(device->GetDevice(), _swapchain->GetVKSwapchain(), &swapChainImageCount, nullptr);
@@ -74,7 +74,7 @@ namespace Daydream
 		framebufferInfo.layers = 1;
 
 		VkResult result = vkCreateFramebuffer(device->GetDevice(), &framebufferInfo, nullptr, &framebuffer);
-		Daydream_CORE_ASSERT(result == VK_SUCCESS, "Failed to create framebuffer!");
+		DAYDREAM_CORE_ASSERT(result == VK_SUCCESS, "Failed to create framebuffer!");
 	}
 	VulkanFramebuffer::~VulkanFramebuffer()
 	{
@@ -147,7 +147,7 @@ namespace Daydream
 		framebufferInfo.layers = 1;
 
 		VkResult result = vkCreateFramebuffer(device->GetDevice(), &framebufferInfo, nullptr, &framebuffer);
-		Daydream_CORE_ASSERT(result == VK_SUCCESS, "Failed to create framebuffer!");
+		DAYDREAM_CORE_ASSERT(result == VK_SUCCESS, "Failed to create framebuffer!");
 
 	}
 }

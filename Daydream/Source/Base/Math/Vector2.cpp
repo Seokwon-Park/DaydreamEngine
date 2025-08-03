@@ -23,7 +23,7 @@ namespace Daydream
 	{
 		if (_other.x == 0.0f || _other.y == 0.0f)
 		{
-			Daydream_CORE_ASSERT(false, "Can't divide by zero!");
+			DAYDREAM_CORE_ASSERT(false, "Can't divide by zero!");
 			return Vector2();
 		}
 		return Vector2(x / _other.x, y / _other.y);
@@ -39,7 +39,7 @@ namespace Daydream
 	{
 		if (_scalar == 0.0f)
 		{
-			Daydream_CORE_ASSERT(false, "Can't divide by zero!");
+			DAYDREAM_CORE_ASSERT(false, "Can't divide by zero!");
 			return Vector2();
 		}
 		return Vector2(x / _scalar, y / _scalar);

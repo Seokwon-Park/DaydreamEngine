@@ -37,7 +37,7 @@ namespace Daydream
 
 		virtual Shared<RenderContext> CreateContext() override;
 		virtual Shared<VertexBuffer> CreateDynamicVertexBuffer(UInt32 _bufferSize, UInt32 _stride)override;
-		virtual Shared<VertexBuffer> CreateStaticVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride) override;
+		virtual Shared<VertexBuffer> CreateStaticVertexBuffer(void* _vertices, UInt32 _size, UInt32 _stride) override;
 		virtual Shared<IndexBuffer> CreateIndexBuffer(UInt32* _indices, UInt32 _count) override;
 		virtual Shared<RenderPass> CreateRenderPass(const RenderPassDesc& _desc) override;
 		virtual Shared<Framebuffer> CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc) override;
@@ -89,7 +89,7 @@ namespace Daydream
 		QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice _physicalDevice);
 		bool CheckDeviceExtensionSupport(VkPhysicalDevice _physicalDevice);
 
-#if defined(Daydream_DEBUG) || defined(_DEBUG)
+#if defined(DAYDREAM_DEBUG) || defined(_DEBUG)
 		const bool enableValidationLayers = true;
 		const Array<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation" };
 #else

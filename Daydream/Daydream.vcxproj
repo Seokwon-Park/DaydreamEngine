@@ -52,12 +52,15 @@
     <TargetName>Daydream</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>DaydreamPCH.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>GLM_FORCE_LEFT_HANDED;GLM_FORCE_DEPTH_ZERO_TO_ONE;Daydream_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;Daydream_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLM_FORCE_LEFT_HANDED;GLM_FORCE_DEPTH_ZERO_TO_ONE;DAYDREAM_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;DAYDREAM_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>Source;Vendor\spdlog\include;Vendor\glfw\include;Vendor\glad\include;Vendor\imgui;Vendor\glm;Vendor\stb;Vendor\assimp\include;Vendor\dxcompiler\include;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -81,7 +84,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>DaydreamPCH.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>GLM_FORCE_LEFT_HANDED;GLM_FORCE_DEPTH_ZERO_TO_ONE;Daydream_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;Daydream_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLM_FORCE_LEFT_HANDED;GLM_FORCE_DEPTH_ZERO_TO_ONE;DAYDREAM_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;DAYDREAM_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>Source;Vendor\spdlog\include;Vendor\glfw\include;Vendor\glad\include;Vendor\imgui;Vendor\glm;Vendor\stb;Vendor\assimp\include;Vendor\dxcompiler\include;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -206,15 +209,18 @@
     <ClInclude Include="Source\Daydream\Graphics\Resources\Model.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Resource.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Shader.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Resources\Sprite.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Texture.h" />
     <ClInclude Include="Source\Daydream\Graphics\Utility\GraphicsUtil.h" />
     <ClInclude Include="Source\Daydream\Graphics\Utility\ImageLoader.h" />
-    <ClInclude Include="Source\Daydream\Graphics\Utility\MeshLoader.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Utility\ModelLoader.h" />
     <ClInclude Include="Source\Daydream\Graphics\Utility\ShaderCompileHelper.h" />
     <ClInclude Include="Source\Daydream\ImGui\ImGuiLayer.h" />
     <ClInclude Include="Source\Daydream\ImGui\ImGuiRenderer.h" />
     <ClInclude Include="Source\Daydream\Scene\Components\CameraComponent.h" />
     <ClInclude Include="Source\Daydream\Scene\Components\Component.h" />
+    <ClInclude Include="Source\Daydream\Scene\Components\ModelRendererComponent.h" />
+    <ClInclude Include="Source\Daydream\Scene\Components\SpriteRendererComponent.h" />
     <ClInclude Include="Source\Daydream\Scene\Components\TransformComponent.h" />
     <ClInclude Include="Source\Daydream\Scene\GameEntity\GameEntity.h" />
     <ClInclude Include="Source\Daydream\Scene\Scene.h" />
@@ -727,7 +733,7 @@
     <ClCompile Include="Source\Daydream\Graphics\Resources\Texture.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Utility\GraphicsUtil.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Utility\ImageLoader.cpp" />
-    <ClCompile Include="Source\Daydream\Graphics\Utility\MeshLoader.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Utility\ModelLoader.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Utility\ShaderCompileHelper.cpp" />
     <ClCompile Include="Source\Daydream\ImGui\ImGuiBackends.cpp" />
     <ClCompile Include="Source\Daydream\ImGui\ImGuiLayer.cpp" />

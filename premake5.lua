@@ -84,14 +84,14 @@ project "Daydream"
 		systemversion "latest"
 		defines
 		{
-			"Daydream_PLATFORM_WINDOWS",
+			"DAYDREAM_PLATFORM_WINDOWS",
 			"GLFW_INCLUDE_NONE"
 		}
 		flags { "MultiProcessorCompile" }
 
 
 	filter "configurations:Debug"
-		defines "Daydream_DEBUG"
+		defines "DAYDREAM_DEBUG"
 		symbols "On"
 		runtime "Debug"
 		links 
@@ -107,7 +107,7 @@ project "Daydream"
             "assimp-vc143-mtd.lib" -- Assimp Debug 버전 라이브러리 이름 (필요 시 주석 해제)
         }
 	filter "configurations:Release"
-		defines "Daydream_RELEASE"
+		defines "DAYDREAM_RELEASE"
 		symbols "On"
 		runtime "Release"
 		links 
@@ -154,15 +154,15 @@ project "Sandbox"
 		systemversion "latest"
 		defines
 		{
-			"Daydream_PLATFORM_WINDOWS",
+			"DAYDREAM_PLATFORM_WINDOWS",
 		}
 		flags { "MultiProcessorCompile" }
 	filter "configurations:Debug"
-		defines "Daydream_DEBUG"
+		defines "DAYDREAM_DEBUG"
 		symbols "On"
 		runtime "Debug"
 	filter "configurations:Release"
-		defines "Daydream_RELEASE"
+		defines "DAYDREAM_RELEASE"
 		symbols "On"
 		runtime "Release"
 
@@ -198,14 +198,14 @@ project "DaydreamEditor"
 		systemversion "latest"
 		defines
 		{
-			"Daydream_PLATFORM_WINDOWS",
+			"DAYDREAM_PLATFORM_WINDOWS",
 		}
 		flags { "MultiProcessorCompile" }
 	filter "configurations:Debug"
-		defines "Daydream_DEBUG"
+		defines "DAYDREAM_DEBUG"
 		symbols "On"
 		runtime "Debug"
 	filter "configurations:Release"
-		defines "Daydream_RELEASE"
+		defines "DAYDREAM_RELEASE"
 		symbols "On"
 		runtime "Release"

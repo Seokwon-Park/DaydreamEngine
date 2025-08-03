@@ -58,21 +58,21 @@ namespace Daydream
 		ShaderCompileHelper::ConvertSPIRVtoDXBC(spirvData, _type, src);
 
 		hr = D3DCompile(src.c_str(), src.size(), nullptr, nullptr, nullptr, entryPoint.c_str(), target.c_str(), 0, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
-		Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
 		//switch (_mode)
 		//{
 		//case ShaderLoadMode::Source:
 		//{
 		//	hr = D3DCompile(_src.c_str(), _src.size(), nullptr, nullptr, nullptr, entryPoint.c_str(), target.c_str(), 0, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
-		//	Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
+		//	DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
 		//	break;
 		//}
 		//case ShaderLoadMode::File:
 		//{
 		//	FilePath path = FilePath(_src);
-		//	//Daydream_CORE_INFO(path.GetCurrentPath());
+		//	//DAYDREAM_CORE_INFO(path.GetCurrentPath());
 		//	hr = D3DCompileFromFile(path.ToWString().c_str(), nullptr, nullptr, entryPoint.c_str(), target.c_str(), 0, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
-		//	Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
+		//	DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
 		//	break;
 		//}
 		//default:
@@ -82,7 +82,7 @@ namespace Daydream
 
 
 		hr = D3DReflect(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), IID_PPV_ARGS(reflection.GetAddressOf()));
-		Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to reflection");
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to reflection");
 
 		//// 셰이더 입력 시그니처 정보 얻기
 		//D3D11_SHADER_DESC shaderDesc;

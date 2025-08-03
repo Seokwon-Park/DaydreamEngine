@@ -59,7 +59,7 @@ namespace Daydream
 
 		Shared<D3D11Texture2D> backBufferTexture = MakeShared<D3D11Texture2D>(device, backBuffer);
 		colorAttachments.push_back(backBufferTexture);
-		Daydream_CORE_ASSERT(backBuffer, "Backbuffer is nullptr!");
+		DAYDREAM_CORE_ASSERT(backBuffer, "Backbuffer is nullptr!");
 
 		for (auto texture : colorAttachments)
 		{
@@ -86,7 +86,7 @@ namespace Daydream
 
 	Shared<Texture2D> Daydream::D3D11Framebuffer::GetColorAttachmentTexture(UInt32 _index)
 	{
-		Daydream_CORE_ASSERT(_index < colorAttachments.size(), "index out of range");
+		DAYDREAM_CORE_ASSERT(_index < colorAttachments.size(), "index out of range");
 		return colorAttachments[_index];
 	}
 	void D3D11Framebuffer::Resize(UInt32 _width, UInt32 _height)
@@ -105,7 +105,7 @@ namespace Daydream
 	//{
 	//	if (depthAttachment == nullptr)
 	//	{
-	//		Daydream_CORE_WARN("depthAttachment is nullptr");
+	//		DAYDREAM_CORE_WARN("depthAttachment is nullptr");
 	//	}
 	//	return depthAttachment;
 	//}

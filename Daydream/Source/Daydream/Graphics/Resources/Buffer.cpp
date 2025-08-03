@@ -11,7 +11,7 @@ namespace Daydream
 	{
 		return Renderer::GetRenderDevice()->CreateDynamicVertexBuffer(_bufferSize, _stride);
 	}
-	Shared<VertexBuffer> VertexBuffer::CreateStatic(Float32* _vertices, UInt32 _size, UInt32 _stride)
+	Shared<VertexBuffer> Daydream::VertexBuffer::CreateStatic(void* _vertices, UInt32 _size, UInt32 _stride)
 	{
 		return Renderer::GetRenderDevice()->CreateStaticVertexBuffer(_vertices, _size, _stride);
 	}

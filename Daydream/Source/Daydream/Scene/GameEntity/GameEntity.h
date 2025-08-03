@@ -12,7 +12,7 @@ namespace Daydream
 		GameEntity();
 		~GameEntity();
 
-		inline void SetName(const std::string& _name) { name = _name; }
+		inline void SetName(const String& _name) { name = _name; }
 		void Update(Float32 _deltaTime);
 
 		void SetParent(GameEntity* _parent)

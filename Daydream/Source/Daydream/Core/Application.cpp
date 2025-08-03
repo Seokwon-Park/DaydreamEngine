@@ -19,7 +19,7 @@ namespace Daydream
 
 	Application::Application(ApplicationSpecification _specification)
 	{
-		Daydream_CORE_ASSERT(!instance, "Application already exists!");
+		DAYDREAM_CORE_ASSERT(!instance, "Application already exists!");
 		instance = this;
 
 		WindowProps prop;
@@ -32,7 +32,7 @@ namespace Daydream
 		mainWindow = DaydreamWindow::Create(prop);
 		if (mainWindow == nullptr)
 		{
-			Daydream_CORE_ASSERT(false, "No Main Window")
+			DAYDREAM_CORE_ASSERT(false, "No Main Window")
 		}
 		mainWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
 		mainWindow->SetVSync(true);
@@ -81,7 +81,7 @@ namespace Daydream
 	void Application::ReadConfig(std::string_view _fileName)
 	{
 		std::ifstream file(_fileName.data());
-		Daydream_CORE_ASSERT(!file.is_open(), "Cannot Open Configuration File!")
+		DAYDREAM_CORE_ASSERT(!file.is_open(), "Cannot Open Configuration File!")
 
 			std::string line;
 
@@ -122,26 +122,26 @@ namespace Daydream
 
 			Renderer::EndSwapchainFramebuffer();
 			//auto [x, y] = Input::GetMousePosition();
-			////Daydream_CORE_TRACE("{0}, {1}", x, y);
+			////DAYDREAM_CORE_TRACE("{0}, {1}", x, y);
 
 			//if (Input::GetMouseButtonPress(Mouse::ButtonLeft))
 			//{
-			//	Daydream_CORE_TRACE("MOUSE BUTTON DOWN TEST");
+			//	DAYDREAM_CORE_TRACE("MOUSE BUTTON DOWN TEST");
 			//}
 
 			if (Input::GetKeyDown(Key::A))
 			{
-				Daydream_CORE_TRACE("KEY DOWN TEST");
+				DAYDREAM_CORE_TRACE("KEY DOWN TEST");
 			}
 
 			//if (Input::GetKeyPress(Key::B))
 			//{
-			//	Daydream_CORE_TRACE("KEY PRESS TEST");
+			//	DAYDREAM_CORE_TRACE("KEY PRESS TEST");
 			//}
 
 			//if (Input::GetKeyUp(Key::C))
 			//{
-			//	Daydream_CORE_TRACE("KEY UP TEST");
+			//	DAYDREAM_CORE_TRACE("KEY UP TEST");
 			//}
 
 			mainWindow->OnUpdateKeyState();
@@ -171,7 +171,7 @@ namespace Daydream
 			(*--itr)->OnEvent(_event);
 		}
 
-		//Daydream_CORE_TRACE("{0}", _event.ToString());
+		//DAYDREAM_CORE_TRACE("{0}", _event.ToString());
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& _event)
@@ -187,7 +187,7 @@ namespace Daydream
 			return false; 
 		}
 
-		//Daydream_CORE_INFO("Window Resized : [ {0} , {1} ]", _event.GetWidth(), _event.GetHeight());
+		//DAYDREAM_CORE_INFO("Window Resized : [ {0} , {1} ]", _event.GetWidth(), _event.GetHeight());
 		isMinimized = false;
 		Renderer::OnWindowResize(_event.GetWidth(), _event.GetHeight());
 		
@@ -197,7 +197,7 @@ namespace Daydream
 	{
 		if (_e.GetIsFocused() == true)
 		{
-			Daydream_CORE_INFO("{0} Window is now focused", _e.GetWindowName());
+			DAYDREAM_CORE_INFO("{0} Window is now focused", _e.GetWindowName());
 			//	Renderer::SetWindow(_e.GetWindowName());
 		}
 		return false;

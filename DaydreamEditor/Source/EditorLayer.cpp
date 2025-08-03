@@ -55,7 +55,7 @@ namespace Daydream
 		viewProjMat = Daydream::ConstantBuffer::Create(sizeof(Daydream::Matrix4x4));
 		viewProjMat->Update(&cameraPos.mat, sizeof(Daydream::Matrix4x4));
 
-		auto path = Daydream::FilePath("F:/DaydreamReboot/Sandbox/Asset/Texture/Checkerboard.png");
+		auto path = Daydream::FilePath("Asset/Texture/Checkerboard.png");
 		Daydream::TextureDesc textureDesc{};
 		textureDesc.bindFlags = Daydream::RenderBindFlags::ShaderResource;
 		textureDesc.format = Daydream::RenderFormat::R8G8B8A8_UNORM_SRGB;
@@ -97,6 +97,10 @@ namespace Daydream
 
 		material->SetTexture2D("Texture", texture);
 		material->SetConstantBuffer("Camera", viewProjMat);
+
+		activeScene = MakeShared<Scene>("MainScene");
+		auto entity = activeScene->CreateGameEntity();
+		entity->SetName("Test");
 	}
 
 	void EditorLayer::OnUpdate(Float32 _deltaTime)
@@ -153,6 +157,8 @@ namespace Daydream
 
 		renderPass->End();
 
+		activeScene->Update(_deltaTime);
+
 
 	}
 
@@ -194,7 +200,7 @@ namespace Daydream
 		ImGui::Begin("Viewport", nullptr,
 			ImGuiWindowFlags_NoScrollbar |
 			ImGuiWindowFlags_NoScrollWithMouse);
-		//Daydream_INFO("{0}, {1}", viewportSize.x, viewportSize.y);
+		//DAYDREAM_INFO("{0}, {1}", viewportSize.x, viewportSize.y);
 		UpdateViewportSize();
 		ImGui::Image((ImTextureID)viewportFramebuffer->GetColorAttachmentTexture(0)->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y }, ImVec2{ 0,1 }, ImVec2{ 1,0 });
 		//ImGui::Text("Rendered Scene will go here!");
@@ -250,7 +256,7 @@ namespace Daydream
 				{
 
 					// 리사이즈 완료 메시지 로깅
-					Daydream_CORE_INFO("Viewport final resized to: {0}, {1}", ImGuiViewportSize.x, ImGuiViewportSize.y);
+					DAYDREAM_CORE_INFO("Viewport final resized to: {0}, {1}", ImGuiViewportSize.x, ImGuiViewportSize.y);
 
 					Renderer::EndSwapchainFramebuffer();
 					// D3D12Framebuffer 리사이즈 (GPU 동기화 로직 포함)
@@ -351,7 +357,7 @@ namespace Daydream
 		style.WindowMinSize.x = 370.0f;
 		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 		{
-			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+			ImGuiID dockspace_id = ImGui::GetID("EngineDockingSpace");
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspaceFlags);
 		}
 

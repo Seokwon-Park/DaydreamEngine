@@ -91,7 +91,7 @@ namespace Daydream
 		//{
 		//	src = "";
 		//	std::ifstream file(_src);
-		//	Daydream_CORE_ASSERT(file.is_open() == true, "Failed to open file!");
+		//	DAYDREAM_CORE_ASSERT(file.is_open() == true, "Failed to open file!");
 		//	std::string readline;
 		//	std::stringstream stringStream;
 
@@ -306,8 +306,8 @@ namespace Daydream
 			glGetShaderInfoLog(shaderID, maxLength, &maxLength, &infoLog[0]);
 			glDeleteShader(shaderID);
 
-			Daydream_CORE_ERROR("{0}", infoLog.data());
-			Daydream_CORE_ASSERT(false, "Shader compilation failure!");
+			DAYDREAM_CORE_ERROR("{0}", infoLog.data());
+			DAYDREAM_CORE_ASSERT(false, "Shader compilation failure!");
 			return;
 		}
 
@@ -329,8 +329,8 @@ namespace Daydream
 			// Don't leak shaders either.
 			glDeleteShader(shaderID);
 
-			Daydream_CORE_ERROR("{0}", infoLog.data());
-			Daydream_CORE_ASSERT(false, "Shader link failure!");
+			DAYDREAM_CORE_ERROR("{0}", infoLog.data());
+			DAYDREAM_CORE_ASSERT(false, "Shader link failure!");
 			return;
 		}
 

@@ -133,10 +133,10 @@ namespace Daydream
 		ComPtr<ID3DBlob> signature;
 		ComPtr<ID3DBlob> error;
 		HRESULT hr = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error);
-		Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to serialize root signature");
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to serialize root signature");
 
 		hr = _device->GetDevice()->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(rootSignature.GetAddressOf()));
-		Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to create root signature");
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create root signature");
 
 		D3D12_RASTERIZER_DESC rasterizerDesc{};
 		rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
@@ -211,11 +211,11 @@ namespace Daydream
 		if (FAILED(hr))
 		{
 			// 에러 코드 출력
-			Daydream_CORE_ERROR("PSO creation failed with HRESULT: 0x{:x}", hr);
+			DAYDREAM_CORE_ERROR("PSO creation failed with HRESULT: 0x{:x}", hr);
 
 			// D3D12 디버그 레이어 활성화했다면 더 자세한 정보가 출력됨
 		}
-		Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to create pipeline!");
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create pipeline!");
 	}
 
 	D3D12PipelineState::~D3D12PipelineState()

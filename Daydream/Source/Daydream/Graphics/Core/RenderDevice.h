@@ -40,7 +40,7 @@ namespace Daydream
 
 		virtual Shared<RenderContext> CreateContext() = 0;
 		virtual Shared<VertexBuffer> CreateDynamicVertexBuffer(UInt32 _bufferSize, UInt32 _stride) = 0;
-		virtual Shared<VertexBuffer> CreateStaticVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride) = 0;
+		virtual Shared<VertexBuffer> CreateStaticVertexBuffer(void* _vertices, UInt32 _size, UInt32 _stride) = 0;
 		virtual Shared<IndexBuffer> CreateIndexBuffer(UInt32* _indices, UInt32 _count) = 0;
 		virtual Shared<RenderPass> CreateRenderPass(const RenderPassDesc& _desc) = 0;
 		virtual Shared<Framebuffer> CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc & _desc) = 0;
@@ -60,7 +60,7 @@ namespace Daydream
 		inline RendererAPIType GetAPI() const { return API; }
 		inline Swapchain* GetSwapchain(UInt32 _index)
 		{
-			Daydream_CORE_ASSERT(swapChains.size() > _index, "Not valid index!");
+			DAYDREAM_CORE_ASSERT(swapChains.size() > _index, "Not valid index!");
 			return swapChains[_index];
 		};
 		inline void AddSwapchain(Swapchain* _swapChain) { swapChains.push_back(_swapChain); }

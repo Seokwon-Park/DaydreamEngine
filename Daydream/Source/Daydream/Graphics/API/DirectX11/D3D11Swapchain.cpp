@@ -16,7 +16,7 @@ namespace Daydream
 	{
 		device = _device;
 		desc = _desc;
-		Daydream_CORE_ASSERT(device, "Device is nullptr");
+		DAYDREAM_CORE_ASSERT(device, "Device is nullptr");
 
 		DXGI_SAMPLE_DESC sampleDesc = {};
 		sampleDesc.Count = 1;    // 샘플 수 (1이면 MSAA 비활성화)
@@ -41,7 +41,7 @@ namespace Daydream
 		desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 		HRESULT hr = device->GetFactory()->CreateSwapChain(device->GetDevice(), &desc, swapChain.GetAddressOf());
-		Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed To Create Swapchain!");
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed To Create Swapchain!");
 
 		RenderPassAttachmentDesc colorDesc;
 		colorDesc.format = _desc.format;

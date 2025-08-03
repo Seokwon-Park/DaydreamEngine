@@ -8,7 +8,7 @@ namespace Daydream
 	{
 		
 		stbi_uc* data = stbi_load(_path.ToString().c_str(), &_width, &_height, &_channels, 0);
-		Daydream_CORE_ASSERT(data, "Failed to load image!");
+		DAYDREAM_CORE_ASSERT(data, "Failed to load image!");
 
 		Array<UInt8> newPixels(_width * _height * 4);
 		if (_channels == 3)

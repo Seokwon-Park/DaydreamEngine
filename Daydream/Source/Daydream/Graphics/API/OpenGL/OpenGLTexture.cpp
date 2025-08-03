@@ -18,7 +18,7 @@ namespace Daydream
 		internalFormat = GraphicsUtil::ConvertRenderFormatToGLFormat(_desc.format);
 		dataFormat = GraphicsUtil::ConvertRenderFormatToGLDataFormat(_desc.format);
 
-		Daydream_CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");
+		DAYDREAM_CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");
 
 		// 텍스처 저장공간 할당 (데이터는 nullptr)
 		glTextureStorage2D(textureID, 1, internalFormat, width, height);
@@ -48,7 +48,7 @@ namespace Daydream
 	{
 		//stbi_set_flip_vertically_on_load(1);
 		Array<UInt8> imageData = ImageLoader::LoadImageFile(_path, width, height, channels);
-		Daydream_CORE_ASSERT(!imageData.empty(), "Failed to load image!");
+		DAYDREAM_CORE_ASSERT(!imageData.empty(), "Failed to load image!");
 
 		GLenum internalFormat = 0, dataFormat = 0;
 		internalFormat = GraphicsUtil::ConvertRenderFormatToGLFormat(_desc.format);
@@ -61,7 +61,7 @@ namespace Daydream
 		//	imageData[i * 4 + 3] = 255;   // A
 		//}
 
-		Daydream_CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");
+		DAYDREAM_CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");
 
 		glCreateTextures(GL_TEXTURE_2D, 1, &textureID);
 		glTextureStorage2D(textureID, 1, internalFormat, width, height);

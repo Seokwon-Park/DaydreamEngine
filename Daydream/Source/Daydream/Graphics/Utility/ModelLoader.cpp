@@ -1,9 +1,9 @@
 #include "DaydreamPCH.h"
-#include "MeshLoader.h"
+#include "ModelLoader.h"
 
 namespace Daydream
 {
-	Array<MeshData> MeshLoader::LoadFromFile(const FilePath& _filepath)
+	Array<MeshData> ModelLoader::LoadFromFile(const FilePath& _filepath)
 	{
 		Assimp::Importer importer;
 
@@ -15,22 +15,22 @@ namespace Daydream
 			//aiProcess_OptimizeMeshes |       // 메시 최적화
 			//aiProcess_ValidateDataStructure;  // 데이터 유효성 검사
 
-		Daydream_INFO(_filepath.IsExist());
+		DAYDREAM_INFO(_filepath.IsExist());
 
 		const aiScene* scene = importer.ReadFile(_filepath.ToString(), flags);
 
 		bool result = !scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode;
-		Daydream_CORE_ASSERT(nullptr != scene, "{0}", importer.GetErrorString());
+		DAYDREAM_CORE_ASSERT(nullptr != scene, "{0}", importer.GetErrorString());
 		return ProcessScene(scene);
 	}
-	Array<MeshData> MeshLoader::ProcessScene(const aiScene* _scene)
+	Array<MeshData> ModelLoader::ProcessScene(const aiScene* _scene)
 	{
 		Array<MeshData> meshes;
 		//Start form root node
 		ProcessNode(_scene->mRootNode, _scene, meshes);
 		return meshes;
 	}
-	void MeshLoader::ProcessNode(aiNode* _node, const aiScene* _scene, Array<MeshData>& _meshes)
+	void ModelLoader::ProcessNode(aiNode* _node, const aiScene* _scene, Array<MeshData>& _meshes)
 	{
 		for (UInt32 i = 0; i < _node->mNumMeshes; i++)
 		{
@@ -43,7 +43,7 @@ namespace Daydream
 			ProcessNode(_node->mChildren[i], _scene, _meshes);
 		}
 	}
-	MeshData MeshLoader::ProcessMesh(aiMesh* _mesh, const aiScene* _scene)
+	MeshData ModelLoader::ProcessMesh(aiMesh* _mesh, const aiScene* _scene)
 	{
 		MeshData meshData;
 		meshData.name = _mesh->mName.C_Str();

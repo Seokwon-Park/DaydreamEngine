@@ -44,12 +44,12 @@ namespace Daydream
 		{
 			if (texture == nullptr) continue;
 			auto resourceInfo = bindingMap[name];
-			Daydream_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX11, "Wrong API!");
+			DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX11, "Wrong API!");
 			Shared<D3D11Texture2D> d3d11Tex = static_pointer_cast<D3D11Texture2D>(texture);
 			switch (bindingMap[name].shaderType)
 			{
 			case Daydream::ShaderType::None:
-				Daydream_CORE_ASSERT(false, "ERROR");
+				DAYDREAM_CORE_ASSERT(false, "ERROR");
 				break;
 			case Daydream::ShaderType::Vertex:
 				device->GetContext()->VSSetShaderResources(resourceInfo.binding, 1, d3d11Tex->GetSRV().GetAddressOf());
@@ -76,7 +76,7 @@ namespace Daydream
 			if (cbuffer == nullptr) continue;
 			auto resourceInfo = bindingMap[name];
 			//ID3D11Buffer* buffer = Cast<ID3D11Buffer>(cbuffer->GetNativeHandle());
-			Daydream_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX11, "Wrong API!");
+			DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX11, "Wrong API!");
 			auto d3d11Buffer = static_pointer_cast<D3D11ConstantBuffer>(cbuffer);
 			switch (bindingMap[name].shaderType)
 			{

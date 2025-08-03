@@ -21,7 +21,7 @@ namespace Daydream
 		case ShaderDataType::Bool:     return 1;
 		}
 
-		Daydream_CORE_ASSERT(false, "Unknown ShaderDataType!");
+		DAYDREAM_CORE_ASSERT(false, "Unknown ShaderDataType!");
 		return 0;
 	}
 
@@ -58,7 +58,7 @@ namespace Daydream
 			case ShaderDataType::Bool:    return 1;
 			}
 
-			Daydream_CORE_ASSERT(false, "Unknown ShaderDataType!");
+			DAYDREAM_CORE_ASSERT(false, "Unknown ShaderDataType!");
 			return 0;
 		}
 	};
@@ -113,7 +113,7 @@ namespace Daydream
 		void SetSlot(UInt32 _slot = 0) { slot = _slot; }
 
 		static Shared<VertexBuffer> CreateDynamic(UInt32 _size, UInt32 _stride);
-		static Shared<VertexBuffer> CreateStatic(Float32* _vertices, UInt32 _size, UInt32 _stride);
+		static Shared<VertexBuffer> CreateStatic(void* _vertices, UInt32 _size, UInt32 _stride);
 	protected:
 		UInt32 slot = 0;
 	};

@@ -37,7 +37,7 @@ namespace Daydream
 			static_cast<ID3DBlob*>(vertexShader->GetNativeHandle())->GetBufferSize(),
 			inputLayout.GetAddressOf()
 		);
-		Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to create inputlayout!");
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create inputlayout!");
 
 		//CW
 		D3D11_RASTERIZER_DESC desc{};

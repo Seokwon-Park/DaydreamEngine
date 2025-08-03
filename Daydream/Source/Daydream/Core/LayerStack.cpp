@@ -35,7 +35,7 @@ namespace Daydream
 		}
 		else
 		{
-			Daydream_CORE_WARN("{0} is Not Found In Layers", _layer->GetName());
+			DAYDREAM_CORE_WARN("{0} is Not Found In Layers", _layer->GetName());
 		}
 	}
 	void LayerStack::PopOverlay(Layer* _overlay)
@@ -49,7 +49,7 @@ namespace Daydream
 		}
 		else
 		{
-			Daydream_CORE_WARN("{0} is Not Found In Overlays", _overlay->GetName());
+			DAYDREAM_CORE_WARN("{0} is Not Found In Overlays", _overlay->GetName());
 		}
 	}
 	void LayerStack::Release()

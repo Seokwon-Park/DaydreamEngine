@@ -16,7 +16,7 @@ namespace Daydream
 
 		static void GLFWErrorCallback(int _error, const char* _description)
 		{
-			Daydream_CORE_ERROR("GLFW Error ({0}): {1}", _error, _description);
+			DAYDREAM_CORE_ERROR("GLFW Error ({0}): {1}", _error, _description);
 		}
 	}
 
@@ -40,12 +40,12 @@ namespace Daydream
 
 		//std::wstring title(windowData.title.begin(), windowData.title.end());
 
-		Daydream_CORE_INFO("Create Window {0} ({1}, {2})", _props.title, _props.width, _props.height);
+		DAYDREAM_CORE_INFO("Create Window {0} ({1}, {2})", _props.title, _props.width, _props.height);
 
 		if (false == sIsGLFWInitialized)
 		{
 			Int32 success = glfwInit();
-			Daydream_CORE_ASSERT(success, "Could not initialize GLFW!");
+			DAYDREAM_CORE_ASSERT(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
 			sIsGLFWInitialized = true;
 		}
@@ -91,14 +91,14 @@ namespace Daydream
 				{
 					KeyPressedEvent event(_key, 0);
 					data.eventCallbackFn(event);
-					data.keyStates[_key] = Daydream_PRESS;
+					data.keyStates[_key] = DAYDREAM_PRESS;
 					break;
 				}
 				case GLFW_RELEASE:
 				{
 					KeyReleasedEvent event(_key);
 					data.eventCallbackFn(event);
-					data.keyStates[_key] = Daydream_RELEASE;
+					data.keyStates[_key] = DAYDREAM_RELEASE;
 					data.keyDownChecker[_key] = false;
 					break;
 				}
@@ -106,7 +106,7 @@ namespace Daydream
 				{
 					KeyPressedEvent event(_key, 1);
 					data.eventCallbackFn(event);
-					data.keyStates[_key] = Daydream_REPEAT;
+					data.keyStates[_key] = DAYDREAM_REPEAT;
 					break;
 				}
 				}
@@ -183,9 +183,9 @@ namespace Daydream
 	{
 		for (int i = 0; i < GLFW_KEY_LAST; i++)
 		{
-			if (windowData.keyStates[i] == Daydream_RELEASE)
+			if (windowData.keyStates[i] == DAYDREAM_RELEASE)
 			{
-				windowData.keyStates[i] = Daydream_IDLE;
+				windowData.keyStates[i] = DAYDREAM_IDLE;
 			}
 		}
 	}

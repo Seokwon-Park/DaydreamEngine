@@ -43,7 +43,7 @@ namespace Daydream
 		for (auto [name, texture] : textures)
 		{
 			if (texture == nullptr) continue;
-			Daydream_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
+			DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
 			Shared<D3D12Texture2D> d3d12Tex = static_pointer_cast<D3D12Texture2D>(texture);
 			device->GetCommandList()->SetGraphicsRootDescriptorTable(bindingMap[name].set, d3d12Tex->GetSRVGPUHandle());
 			String samplerName = name + "Sampler";
@@ -53,7 +53,7 @@ namespace Daydream
 		for (auto [name, cbuffer] : cbuffers)
 		{
 			if (cbuffer== nullptr) continue;
-			Daydream_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
+			DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
 			Shared<D3D12ConstantBuffer> d3d12Buffer= static_pointer_cast<D3D12ConstantBuffer>(cbuffer);
 			device->GetCommandList()->SetGraphicsRootConstantBufferView(bindingMap[name].set, d3d12Buffer->GetGPUVirtualAddress());
 		}

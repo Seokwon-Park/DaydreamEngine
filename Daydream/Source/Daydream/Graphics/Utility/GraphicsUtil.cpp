@@ -126,7 +126,7 @@ namespace Daydream
 			case ShaderDataType::Bool:     return DXGI_FORMAT_UNKNOWN;
 			}
 
-			Daydream_CORE_ASSERT(false, "Unknown ShaderDataType!");
+			DAYDREAM_CORE_ASSERT(false, "Unknown ShaderDataType!");
 			return DXGI_FORMAT_UNKNOWN;
 		}
 		DXGI_FORMAT GraphicsUtil::ConvertRenderFormatToDXGIFormat(RenderFormat _format)
@@ -436,7 +436,7 @@ namespace Daydream
 
 			case RenderFormat::UNKNOWN:
 			default:
-				Daydream_CORE_ERROR("Unsupported or unknown render format: {0}", static_cast<int>(_format));
+				DAYDREAM_CORE_ERROR("Unsupported or unknown render format: {0}", static_cast<int>(_format));
 				return GL_RGBA8; // ±âº»°ª
 			}
 		}
@@ -485,7 +485,7 @@ namespace Daydream
 			case RenderFormat::BC7_UNORM_SRGB:         return GL_RGBA;
 			case RenderFormat::UNKNOWN:
 			default:
-				Daydream_CORE_ERROR("Unsupported or unknown render format for data format: {0}", static_cast<int>(_format));
+				DAYDREAM_CORE_ERROR("Unsupported or unknown render format for data format: {0}", static_cast<int>(_format));
 				return GL_RGBA;
 			}
 		}
@@ -531,7 +531,7 @@ namespace Daydream
 			{
 			case ShaderType::None:
 			{
-				Daydream_CORE_ASSERT(false, "Invalid type");
+				DAYDREAM_CORE_ASSERT(false, "Invalid type");
 				return nullptr;
 			}
 			case ShaderType::Vertex:	return "VSMain";
@@ -543,7 +543,7 @@ namespace Daydream
 			default:
 				break;
 			}
-			Daydream_CORE_ASSERT(false, "Invalid type");
+			DAYDREAM_CORE_ASSERT(false, "Invalid type");
 			return nullptr;
 		}
 
@@ -553,7 +553,7 @@ namespace Daydream
 			{
 			case ShaderType::None:
 			{
-				Daydream_CORE_ASSERT(false, "Invalid type");
+				DAYDREAM_CORE_ASSERT(false, "Invalid type");
 				return nullptr;
 			}
 			case ShaderType::Vertex:	return L"VSMain";
@@ -565,7 +565,7 @@ namespace Daydream
 			default:
 				break;
 			}
-			Daydream_CORE_ASSERT(false, "Invalid type");
+			DAYDREAM_CORE_ASSERT(false, "Invalid type");
 			return nullptr;
 		}
 
@@ -575,7 +575,7 @@ namespace Daydream
 			{
 			case ShaderType::None:
 			{
-				Daydream_CORE_ASSERT(false, "Invalid type");
+				DAYDREAM_CORE_ASSERT(false, "Invalid type");
 				return nullptr;
 			}
 			case ShaderType::Vertex:	return "vs_" + _version;
@@ -587,7 +587,7 @@ namespace Daydream
 			default:
 				break;
 			}
-			Daydream_CORE_ASSERT(false, "Invalid type");
+			DAYDREAM_CORE_ASSERT(false, "Invalid type");
 			return nullptr;
 		}
 
@@ -597,7 +597,7 @@ namespace Daydream
 			{
 			case ShaderType::None:
 			{
-				Daydream_CORE_ASSERT(false, "Invalid type");
+				DAYDREAM_CORE_ASSERT(false, "Invalid type");
 				return nullptr;
 			}
 			case ShaderType::Vertex:	return L"vs_" + _version;
@@ -609,7 +609,7 @@ namespace Daydream
 			default:
 				break;
 			}
-			Daydream_CORE_ASSERT(false, "Invalid type");
+			DAYDREAM_CORE_ASSERT(false, "Invalid type");
 			return nullptr;
 		}
 
@@ -805,7 +805,7 @@ namespace Daydream
 			case 0x8086: return "Intel";
 			case 0x1414: return "Microsoft";
 			}
-			Daydream_CORE_ERROR("Not a valid VendorID");
+			DAYDREAM_CORE_ERROR("Not a valid VendorID");
 			return "";
 		}
 

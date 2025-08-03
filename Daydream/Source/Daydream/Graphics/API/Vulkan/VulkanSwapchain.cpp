@@ -10,7 +10,7 @@ namespace Daydream
 		device = _device;
 		desc = _desc;
 		GLFWwindow* window = Cast<GLFWwindow>(_window->GetNativeWindow());
-		//#if defined(Daydream_PLATFORM_WINDOWS)
+		//#if defined(DAYDREAM_PLATFORM_WINDOWS)
 		//		VkWin32SurfaceCreateInfoKHR createInfo{};
 		//		createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
 		//		createInfo.hwnd = glfwGetWin32Window(window);
@@ -18,7 +18,7 @@ namespace Daydream
 		//#endif
 		VkResult result = glfwCreateWindowSurface(device->GetInstance(), window, nullptr, &surface);
 		if (result != VK_SUCCESS) {
-			Daydream_CORE_ERROR("Failed to create window surface!");
+			DAYDREAM_CORE_ERROR("Failed to create window surface!");
 		}
 
 		CreateSwapchain();
@@ -39,11 +39,11 @@ namespace Daydream
 		for (UInt32 i = 0; i < imageCount; i++)
 		{
 			result = vkCreateSemaphore(device->GetDevice(), &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]);
-			Daydream_CORE_ASSERT(VK_SUCCEEDED(result), "Failed to create semaphore!");
+			DAYDREAM_CORE_ASSERT(VK_SUCCEEDED(result), "Failed to create semaphore!");
 			result = vkCreateSemaphore(device->GetDevice(), &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]);
-			Daydream_CORE_ASSERT(VK_SUCCEEDED(result), "Failed to create semaphore!");
+			DAYDREAM_CORE_ASSERT(VK_SUCCEEDED(result), "Failed to create semaphore!");
 			result = vkCreateFence(device->GetDevice(), &fenceInfo, nullptr, &inFlightFences[i]);
-			Daydream_CORE_ASSERT(VK_SUCCEEDED(result), "Failed to create fence!");
+			DAYDREAM_CORE_ASSERT(VK_SUCCEEDED(result), "Failed to create fence!");
 		}
 
 		RenderPassAttachmentDesc colorDesc;
@@ -69,7 +69,7 @@ namespace Daydream
 		SwapchainSupportDetails SwapchainSupport = device->QuerySwapchainSupport(surface);
 		if (SwapchainSupport.formats.empty() || SwapchainSupport.presentModes.empty())
 		{
-			Daydream_CORE_ERROR("GPU has no supported formats or presentmodes");
+			DAYDREAM_CORE_ERROR("GPU has no supported formats or presentmodes");
 		}
 
 		surfaceFormat = ChooseSwapSurfaceFormat(SwapchainSupport.formats, desc.format);
@@ -109,7 +109,7 @@ namespace Daydream
 		VkSwapchainKHR newSwapchain;
 
 		VkResult result = vkCreateSwapchainKHR(device->GetDevice(), &createInfo, nullptr, &newSwapchain);
-		Daydream_CORE_ASSERT(VK_SUCCEEDED(result), "Failed to create Swapchain");
+		DAYDREAM_CORE_ASSERT(VK_SUCCEEDED(result), "Failed to create Swapchain");
 
 		if (swapchain != VK_NULL_HANDLE)
 			vkDestroySwapchainKHR(device->GetDevice(), swapchain, nullptr);
@@ -235,7 +235,7 @@ namespace Daydream
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
 		VkResult result = vkBeginCommandBuffer(commandBuffers[currentFrame], &beginInfo);
-		Daydream_CORE_ASSERT(result == VK_SUCCESS, "Failed to begin recording command buffer!");
+		DAYDREAM_CORE_ASSERT(result == VK_SUCCESS, "Failed to begin recording command buffer!");
 	}
 
 	void VulkanSwapchain::EndFrame()

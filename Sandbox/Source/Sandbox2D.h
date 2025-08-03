@@ -32,6 +32,7 @@ namespace Daydream
 		Shared<Framebuffer> framebuffer;
 
 		Shared<Mesh> mesh;
+		Shared<Model> model;
 
 		//OrthographicCamera camera = OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f);
 		Camera camera = Camera();

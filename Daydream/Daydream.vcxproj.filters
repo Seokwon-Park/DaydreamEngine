@@ -438,7 +438,7 @@
     <ClInclude Include="Source\Daydream\Graphics\Utility\ImageLoader.h">
       <Filter>Source\Daydream\Graphics\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\Utility\MeshLoader.h">
+    <ClInclude Include="Source\Daydream\Graphics\Utility\ModelLoader.h">
       <Filter>Source\Daydream\Graphics\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\Utility\ShaderCompileHelper.h">
@@ -1737,6 +1737,9 @@
     <ClInclude Include="Vendor\stb\stb_image.h">
       <Filter>Vendor\stb</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Daydream\Scene\Components\SpriteRendererComponent.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Resources\Sprite.h" />
+    <ClInclude Include="Source\Daydream\Scene\Components\ModelRendererComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -1988,7 +1991,7 @@
     <ClCompile Include="Source\Daydream\Graphics\Utility\ImageLoader.cpp">
       <Filter>Source\Daydream\Graphics\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Daydream\Graphics\Utility\MeshLoader.cpp">
+    <ClCompile Include="Source\Daydream\Graphics\Utility\ModelLoader.cpp">
       <Filter>Source\Daydream\Graphics\Utility</Filter>
     </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\Utility\ShaderCompileHelper.cpp">

@@ -26,7 +26,7 @@ namespace Daydream
 		//	device->GetRTVHeapAlloc().Alloc(&cpuHandle);
 
 		//	dxgiSwapchain->GetBuffer(_swapChain->GetBackbufferIndex(), IID_PPV_ARGS(renderTargets[i].GetAddressOf()));
-		//	Daydream_CORE_ASSERT(renderTargets[i].Get(), "Backbuffer is nullptr!");
+		//	DAYDREAM_CORE_ASSERT(renderTargets[i].Get(), "Backbuffer is nullptr!");
 		//	device->GetDevice()->CreateRenderTargetView(renderTargets[i].Get(), nullptr, cpuHandle);
 		//	renderTargetHandles.push_back(cpuHandle);
 		//}
@@ -36,7 +36,7 @@ namespace Daydream
 		Shared<D3D12Texture2D> backBufferTexture = MakeShared<D3D12Texture2D>(device, backBuffer);
 		colorAttachments.push_back(backBufferTexture);
 		renderTargetHandles.push_back(backBufferTexture->GetRTVCPUHandle());
-		Daydream_CORE_ASSERT(backBuffer, "Backbuffer is nullptr!");
+		DAYDREAM_CORE_ASSERT(backBuffer, "Backbuffer is nullptr!");
 	}
 	D3D12Framebuffer::~D3D12Framebuffer()
 	{

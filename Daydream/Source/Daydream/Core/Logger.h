@@ -22,17 +22,17 @@ namespace Daydream
 }
 
 // Core log macros
-#define Daydream_CORE_TRACE(...)		::Daydream::Logger::GetCoreLogger()->trace(__VA_ARGS__)
-#define Daydream_CORE_INFO(...)		::Daydream::Logger::GetCoreLogger()->info(__VA_ARGS__)
-#define Daydream_CORE_WARN(...)		::Daydream::Logger::GetCoreLogger()->warn(__VA_ARGS__)
-#define Daydream_CORE_ERROR(...)		::Daydream::Logger::GetCoreLogger()->error(__VA_ARGS__)
-#define Daydream_CORE_FATAL(...)		::Daydream::Logger::GetCoreLogger()->critical(__VA_ARGS__)
+#define DAYDREAM_CORE_TRACE(...)		::Daydream::Logger::GetCoreLogger()->trace(__VA_ARGS__)
+#define DAYDREAM_CORE_INFO(...)		::Daydream::Logger::GetCoreLogger()->info(__VA_ARGS__)
+#define DAYDREAM_CORE_WARN(...)		::Daydream::Logger::GetCoreLogger()->warn(__VA_ARGS__)
+#define DAYDREAM_CORE_ERROR(...)		::Daydream::Logger::GetCoreLogger()->error(__VA_ARGS__)
+#define DAYDREAM_CORE_FATAL(...)		::Daydream::Logger::GetCoreLogger()->critical(__VA_ARGS__)
 
 // Client log macros
-#define Daydream_TRACE(...)			::Daydream::Logger::GetClientLogger()->trace(__VA_ARGS__)
-#define Daydream_INFO(...)			::Daydream::Logger::GetClientLogger()->info(__VA_ARGS__)
-#define Daydream_WARN(...)			::Daydream::Logger::GetClientLogger()->warn(__VA_ARGS__)
-#define Daydream_ERROR(...)			::Daydream::Logger::GetClientLogger()->error(__VA_ARGS__)
-#define Daydream_FATAL(...)			::Daydream::Logger::GetClientLogger()->critical(__VA_ARGS__)
+#define DAYDREAM_TRACE(...)			::Daydream::Logger::GetClientLogger()->trace(__VA_ARGS__)
+#define DAYDREAM_INFO(...)			::Daydream::Logger::GetClientLogger()->info(__VA_ARGS__)
+#define DAYDREAM_WARN(...)			::Daydream::Logger::GetClientLogger()->warn(__VA_ARGS__)
+#define DAYDREAM_ERROR(...)			::Daydream::Logger::GetClientLogger()->error(__VA_ARGS__)
+#define DAYDREAM_FATAL(...)			::Daydream::Logger::GetClientLogger()->critical(__VA_ARGS__)
 
 

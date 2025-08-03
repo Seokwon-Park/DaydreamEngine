@@ -28,7 +28,7 @@ namespace Daydream
 	{
 		//int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		Daydream_CORE_ASSERT(status, "Failed to initialize Glad!");
+		DAYDREAM_CORE_ASSERT(status, "Failed to initialize Glad!");
 
 		//GLint count;
 		//glGetIntegerv(GL_NUM_EXTENSIONS, &count);
@@ -40,10 +40,10 @@ namespace Daydream
 		//		printf("%d: %s\n", i, extension);
 		//}
 		
-		Daydream_CORE_INFO("OpenGL Info:");
-		Daydream_CORE_INFO("  Vendor: {0}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
-		Daydream_CORE_INFO("  Renderer: {0}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
-		Daydream_CORE_INFO("  Version: {0}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+		DAYDREAM_CORE_INFO("OpenGL Info:");
+		DAYDREAM_CORE_INFO("  Vendor: {0}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
+		DAYDREAM_CORE_INFO("  Renderer: {0}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
+		DAYDREAM_CORE_INFO("  Version: {0}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
 	}
 	void OpenGLRenderDevice::Shutdown()
 	{
@@ -63,7 +63,7 @@ namespace Daydream
 		return MakeShared<OpenGLVertexBuffer>(_bufferSize, _stride);
 	}
 
-	Shared<VertexBuffer> OpenGLRenderDevice::CreateStaticVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
+	Shared<VertexBuffer> Daydream::OpenGLRenderDevice::CreateStaticVertexBuffer(void* _vertices, UInt32 _size, UInt32 _stride)
 	{
 		return MakeShared<OpenGLVertexBuffer>(_vertices, _size, _stride);
 	}

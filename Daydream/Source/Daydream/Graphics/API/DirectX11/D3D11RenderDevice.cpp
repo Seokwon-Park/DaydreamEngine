@@ -74,7 +74,7 @@ namespace Daydream
 
 		if (FAILED(hr))
 		{
-			Daydream_CORE_ERROR("Failed to Create m_D3DDevice!");
+			DAYDREAM_CORE_ERROR("Failed to Create m_D3DDevice!");
 		}
 
 		device->QueryInterface(IID_PPV_ARGS(dxgiDevice.GetAddressOf()));
@@ -123,10 +123,10 @@ namespace Daydream
 		//	infoQueue->AddStorageFilterEntries(&filter);
 		//}
 
-		Daydream_CORE_INFO("DirectX11 Info:");
-		Daydream_CORE_INFO("  Vendor: {0}", GraphicsUtil::GetVendor(adapterDescription.VendorId));
-		Daydream_CORE_INFO("  Renderer: {0}", videoCardDescription);
-		Daydream_CORE_INFO("  Version: {0}", version);
+		DAYDREAM_CORE_INFO("DirectX11 Info:");
+		DAYDREAM_CORE_INFO("  Vendor: {0}", GraphicsUtil::GetVendor(adapterDescription.VendorId));
+		DAYDREAM_CORE_INFO("  Renderer: {0}", videoCardDescription);
+		DAYDREAM_CORE_INFO("  Version: {0}", version);
 	}
 
 	void D3D11RenderDevice::Shutdown()
@@ -148,7 +148,7 @@ namespace Daydream
 		return MakeShared<D3D11VertexBuffer>(this, _bufferSize, _stride);
 	}
 
-	Shared<VertexBuffer> D3D11RenderDevice::CreateStaticVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
+	Shared<VertexBuffer> Daydream::D3D11RenderDevice::CreateStaticVertexBuffer(void* _vertices, UInt32 _size, UInt32 _stride)
 	{
 		return MakeShared<D3D11VertexBuffer>(this, _vertices, _size, _stride);
 	}

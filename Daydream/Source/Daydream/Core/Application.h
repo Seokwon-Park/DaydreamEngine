@@ -20,7 +20,7 @@ namespace Daydream
 
 		const char* operator[](int _index) const
 		{
-			Daydream_CORE_ASSERT(_index < count, "Out of index");
+			DAYDREAM_CORE_ASSERT(_index < count, "Out of index");
 			return args[_index];
 		}
 	};
@@ -34,7 +34,7 @@ namespace Daydream
 		RendererAPIType rendererAPI = RendererAPIType::OpenGL;
 	};
 
-	class Daydream_API Application
+	class DAYDREAM_API Application
 	{
 	public:
 		Application(ApplicationSpecification _specification);

@@ -4,7 +4,7 @@
 
 namespace Daydream
 {
-	class Daydream_API ImGuiRenderer
+	class DAYDREAM_API ImGuiRenderer
 	{
 	public:
 		virtual void Init(DaydreamWindow* _window);

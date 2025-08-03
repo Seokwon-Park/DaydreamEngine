@@ -78,7 +78,7 @@ namespace Daydream
 
 		void* data;
 		HRESULT hr = uploadBuffer->Map(0, nullptr, &data);
-		Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to map uploadBuffer");
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to map uploadBuffer");
 		memcpy(data, _vertices, _size);
 		uploadBuffer->Unmap(0, nullptr);
 
@@ -110,7 +110,7 @@ namespace Daydream
 	{
 		void* data;
 		HRESULT hr = vertexBuffer->Map(0, nullptr, &data);
-		Daydream_CORE_ASSERT(SUCCEEDED(hr), "Failed to map uploadBuffer");
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to map uploadBuffer");
 		memcpy(data, _data, _dataSize);
 		vertexBuffer->Unmap(0, nullptr);
 

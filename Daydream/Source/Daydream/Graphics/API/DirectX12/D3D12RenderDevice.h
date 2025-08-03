@@ -15,7 +15,7 @@ namespace Daydream
 
 		void Create(ID3D12Device* _device, ID3D12DescriptorHeap* _heap)
 		{
-			Daydream_CORE_ASSERT(heap == nullptr && freeIndices.empty(), "Can't Create Heap Allocator");
+			DAYDREAM_CORE_ASSERT(heap == nullptr && freeIndices.empty(), "Can't Create Heap Allocator");
 			heap = _heap;
 			D3D12_DESCRIPTOR_HEAP_DESC desc = heap->GetDesc();
 			heapType = desc.Type;
@@ -42,7 +42,7 @@ namespace Daydream
 
 		void Alloc(D3D12_CPU_DESCRIPTOR_HANDLE* _outCpuDescriptorHandle)
 		{
-			Daydream_CORE_ASSERT(freeIndices.size() > 0, "");
+			DAYDREAM_CORE_ASSERT(freeIndices.size() > 0, "");
 			int idx = freeIndices.back();
 			freeIndices.pop_back();
 			_outCpuDescriptorHandle->ptr = heapStartCpu.ptr + (idx * heapHandleIncrement);
@@ -50,8 +50,8 @@ namespace Daydream
 
 		void Alloc(D3D12_CPU_DESCRIPTOR_HANDLE* _outCpuDescriptorHandle, D3D12_GPU_DESCRIPTOR_HANDLE* _outGpuDescriptorHandle)
 		{
-			Daydream_CORE_ASSERT(freeIndices.size() > 0, "");
-			Daydream_CORE_ASSERT(heapType != D3D12_DESCRIPTOR_HEAP_TYPE_RTV, "");
+			DAYDREAM_CORE_ASSERT(freeIndices.size() > 0, "");
+			DAYDREAM_CORE_ASSERT(heapType != D3D12_DESCRIPTOR_HEAP_TYPE_RTV, "");
 			int idx = freeIndices.back();
 			freeIndices.pop_back();
 			_outCpuDescriptorHandle->ptr = heapStartCpu.ptr + (idx * heapHandleIncrement);
@@ -66,7 +66,7 @@ namespace Daydream
 		{
 			int cpuIndex = (int)((_outCpuDescriptorHandle.ptr - heapStartCpu.ptr) / heapHandleIncrement);
 			int gpuIndex = (int)((_outGpuDescriptorHandle.ptr - heapStartGpu.ptr) / heapHandleIncrement);
-			Daydream_CORE_ASSERT(cpuIndex == gpuIndex, "");
+			DAYDREAM_CORE_ASSERT(cpuIndex == gpuIndex, "");
 			freeIndices.push_back(cpuIndex);
 		}
 	};
@@ -83,7 +83,7 @@ namespace Daydream
 
 		virtual Shared<RenderContext> CreateContext() override;
 		virtual Shared<VertexBuffer> CreateDynamicVertexBuffer(UInt32 _bufferSize, UInt32 _stride) override;
-		virtual Shared<VertexBuffer> CreateStaticVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride) override;
+		virtual Shared<VertexBuffer> CreateStaticVertexBuffer(void* _vertices, UInt32 _size, UInt32 _stride) override;
 		virtual Shared<IndexBuffer> CreateIndexBuffer(UInt32* _indices, UInt32 _count) override;
 		virtual Shared<RenderPass> CreateRenderPass(const RenderPassDesc& _desc) override;
 		virtual Shared<Framebuffer> CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc & _desc) override;

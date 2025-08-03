@@ -15,7 +15,7 @@ namespace Daydream
 		geometryShader = _desc.geometryShader;
 		pixelShader = _desc.pixelShader;
 
-		Daydream_CORE_ASSERT(vertexShader != nullptr && pixelShader != nullptr, "VS and PS are necessary!");
+		DAYDREAM_CORE_ASSERT(vertexShader != nullptr && pixelShader != nullptr, "VS and PS are necessary!");
 		shaders.push_back(vertexShader);
 		shaders.push_back(pixelShader);
 		if (hullShader != nullptr)shaders.push_back(hullShader);

@@ -12,7 +12,7 @@ namespace Daydream
 		DaydreamWindow& window = Application::GetInstance().GetMainWindow();
 		int state = window.GetKeyState(_key);
 		//_key가 눌려 있지 않으면
-		if (state == Daydream_PRESS && window.GetIsKeyDown(_key) == false)
+		if (state == DAYDREAM_PRESS && window.GetIsKeyDown(_key) == false)
 		{
 			//_key를 누른 것으로 설정한다. -> 다음 틱에서도 누르고 있으면 false 리턴
 			window.SetKeyDown(_key);
@@ -24,13 +24,13 @@ namespace Daydream
 	{
 		DaydreamWindow& window = Application::GetInstance().GetMainWindow();
 		int state = window.GetKeyState(_key);
-		return state == Daydream_PRESS || state == Daydream_REPEAT;
+		return state == DAYDREAM_PRESS || state == DAYDREAM_REPEAT;
 	}
 	bool Input::GetKeyUp(KeyCode _key)
 	{
 		DaydreamWindow& window = Application::GetInstance().GetMainWindow();
 		int state = window.GetKeyState(_key);
-		if (state == Daydream_RELEASE)
+		if (state == DAYDREAM_RELEASE)
 		{
 			return true;
 		}
@@ -40,7 +40,7 @@ namespace Daydream
 	{
 		DaydreamWindow& window = Application::GetInstance().GetMainWindow();
 		int state = window.GetMouseState(_button);
-		return state == Daydream_PRESS;
+		return state == DAYDREAM_PRESS;
 	}
 	Pair<Float32, Float32> Input::GetMousePosition()
 	{

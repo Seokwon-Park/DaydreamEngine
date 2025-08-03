@@ -194,7 +194,7 @@ namespace Daydream
 			device->GetDevice()->CreateShaderResourceView(texture.Get(), &srvDesc, srvCpuHandle);
 			return srvCpuHandle;
 		}
-		Daydream_CORE_ASSERT(srvCpuHandle.ptr == 0, "This texture was not created with the Shader Resourc View (SRV) bind flag.");
+		DAYDREAM_CORE_ASSERT(srvCpuHandle.ptr == 0, "This texture was not created with the Shader Resourc View (SRV) bind flag.");
 		return {};
 	}
 	D3D12_GPU_DESCRIPTOR_HANDLE D3D12Texture2D::GetSRVGPUHandle()
@@ -233,7 +233,7 @@ namespace Daydream
 			device->GetDevice()->CreateRenderTargetView(texture.Get(), &rtvDesc, rtvCpuHandle);
 			return rtvCpuHandle;
 		}
-		Daydream_CORE_ASSERT(rtvCpuHandle.ptr == 0, "This texture was not created with the Render Target View (RTV) bind flag.");
+		DAYDREAM_CORE_ASSERT(rtvCpuHandle.ptr == 0, "This texture was not created with the Render Target View (RTV) bind flag.");
 		return {};
 	}
 	const D3D12_CPU_DESCRIPTOR_HANDLE& D3D12Texture2D::GetDSVCPUHandle()
@@ -265,7 +265,7 @@ namespace Daydream
 			device->GetDevice()->CreateDepthStencilView(texture.Get(), &dsvDesc, dsvCpuHandle);
 			return dsvCpuHandle;
 		}
-		Daydream_CORE_ASSERT(false, "This texture was not created with the Depth Stencil View (DSV) bind flag.");
+		DAYDREAM_CORE_ASSERT(false, "This texture was not created with the Depth Stencil View (DSV) bind flag.");
 		return dsvCpuHandle;
 	}
 
@@ -305,7 +305,7 @@ namespace Daydream
 			device->GetDevice()->CreateUnorderedAccessView(texture.Get(), nullptr, &uavDesc, uavCpuHandle);
 			return uavCpuHandle;
 		}
-		Daydream_CORE_ASSERT(false, "This texture was not created with the Unordered Access View (UAV) bind flag.");
+		DAYDREAM_CORE_ASSERT(false, "This texture was not created with the Unordered Access View (UAV) bind flag.");
 		return {};
 	}
 	D3D12_GPU_DESCRIPTOR_HANDLE D3D12Texture2D::GetUAVGPUHandle()
@@ -340,7 +340,7 @@ namespace Daydream
 			device->GetSamplerHeapAlloc().Alloc(&samplerCpuHandle, &samplerGpuHandle);
 
 			device->GetDevice()->CreateSampler(&samplerDesc, samplerCpuHandle);
-			//Daydream_CORE_ASSERT(srvCpuHandle.ptr == 0, "This texture was not created with the Shader Resourc View (SRV) bind flag.");
+			//DAYDREAM_CORE_ASSERT(srvCpuHandle.ptr == 0, "This texture was not created with the Shader Resourc View (SRV) bind flag.");
 		return samplerCpuHandle;
 		}
 	}

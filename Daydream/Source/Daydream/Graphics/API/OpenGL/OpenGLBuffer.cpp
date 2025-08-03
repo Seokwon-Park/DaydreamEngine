@@ -18,7 +18,7 @@ namespace Daydream {
 		glNamedBufferData(bufferID, _bufferSize, nullptr, GL_DYNAMIC_DRAW);
 	}
 
-	OpenGLVertexBuffer::OpenGLVertexBuffer(Float32* _vertices, UInt32 _size, UInt32 _stride)
+	OpenGLVertexBuffer::OpenGLVertexBuffer(void* _vertices, UInt32 _size, UInt32 _stride)
 	{
 		stride = _stride;
 		glCreateBuffers(1, &bufferID);

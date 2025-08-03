@@ -48,7 +48,7 @@ namespace Daydream
 		device = _device;
 
 		Array<UInt8> imageData = ImageLoader::LoadImageFile(_path, width, height, channels);
-		Daydream_CORE_ASSERT(!imageData.empty(), "Failed to load image!");
+		DAYDREAM_CORE_ASSERT(!imageData.empty(), "Failed to load image!");
 		imageSize = width * height * 4;
 
 		device->CreateBuffer(
@@ -124,7 +124,7 @@ namespace Daydream
 		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
 
 		VkResult vr = vkCreateSampler(device->GetDevice(), &samplerInfo, nullptr, &textureSampler);
-		Daydream_CORE_ASSERT(vr == VK_SUCCESS, "failed to create texture sampler!");
+		DAYDREAM_CORE_ASSERT(vr == VK_SUCCESS, "failed to create texture sampler!");
 	}
 
 	VulkanTexture2D::~VulkanTexture2D()

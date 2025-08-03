@@ -13,7 +13,7 @@ namespace Daydream
 	{
 		if (mainWindow != nullptr)
 		{
-			Daydream_CORE_WARN("You Already Initialized Imgui Renderer!");
+			DAYDREAM_CORE_WARN("You Already Initialized Imgui Renderer!");
 			return;
 		}
 		mainWindow = _window;
@@ -21,7 +21,7 @@ namespace Daydream
 		switch (Renderer::GetRenderDevice()->GetAPI())
 		{
 		case RendererAPIType::None:
-			Daydream_CORE_ERROR("None API is not supported");
+			DAYDREAM_CORE_ERROR("None API is not supported");
 			break;
 		case RendererAPIType::OpenGL:
 			ImGui_ImplGlfw_InitForOpenGL(window, true);

@@ -30,6 +30,7 @@
 #include "Daydream/Graphics/Resources/Texture.h"
 #include "Daydream/Graphics/Resources/Material.h"
 #include "Daydream/Graphics/Resources/Mesh.h"
+#include "Daydream/Graphics/Resources/Model.h"
 
 #include "Daydream/Graphics/Core/Camera.h"
 #include "Daydream/Graphics/Core/OrthographicCamera.h"
