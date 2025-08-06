@@ -42,8 +42,12 @@ namespace Daydream
 		squareIB2 = Daydream::IndexBuffer::Create(squareIndices2, sizeof(squareIndices2) / sizeof(uint32_t));
 
 
-		vs = Daydream::Shader::Create("Asset/Shader/VertexShader.hlsl", Daydream::ShaderType::Vertex, Daydream::ShaderLoadMode::File);
-		ps = Daydream::Shader::Create("Asset/Shader/PixelShader.hlsl", Daydream::ShaderType::Pixel, Daydream::ShaderLoadMode::File);
+		vs = Daydream::Shader::Create("Asset/Shader/SpriteVS.hlsl", Daydream::ShaderType::Vertex, Daydream::ShaderLoadMode::File);
+		ps = Daydream::Shader::Create("Asset/Shader/SpritePS.hlsl", Daydream::ShaderType::Pixel, Daydream::ShaderLoadMode::File);
+
+
+		vs3d = Daydream::Shader::Create("Asset/Shader/ModelVS.hlsl", Daydream::ShaderType::Vertex, Daydream::ShaderLoadMode::File);
+		ps3d = Daydream::Shader::Create("Asset/Shader/ModelPS.hlsl", Daydream::ShaderType::Pixel, Daydream::ShaderLoadMode::File);
 
 
 		Daydream::BufferLayout inputlayout = {
@@ -52,7 +56,7 @@ namespace Daydream
 		{ Daydream::ShaderDataType::Float2, "a_TexCoord", "TEXCOORD"}
 		};
 
-		camera.SetPosition({ 0.0f,0.0f,-1.0f });
+		camera.SetPosition({ 0.0f,0.0f,-2.0f });
 		cameraPos = camera.GetViewProjectionMatrix();
 		viewProjMat = Daydream::ConstantBuffer::Create(sizeof(Daydream::Matrix4x4));
 		viewProjMat->Update(&cameraPos.mat, sizeof(Daydream::Matrix4x4));
@@ -79,7 +83,7 @@ namespace Daydream
 		rpDesc.depthAttachment = attach;
 
 		renderPass = Daydream::RenderPass::Create(rpDesc);
-		renderPass->SetClearColor(Daydream::Color::White);
+		renderPass->SetClearColor(Daydream::Color::Blue);
 
 		Daydream::FramebufferDesc fbDesc;
 		fbDesc.width = 320;
@@ -96,13 +100,23 @@ namespace Daydream
 
 		pso = Daydream::PipelineState::Create(desc);
 
+		desc.vertexShader = vs3d;
+		desc.pixelShader = ps3d;
+		desc.renderPass = renderPass;
+
+		pso3d = Daydream::PipelineState::Create(desc);
+
+		material3d = Daydream::Material::Create(pso3d);
+
+		material3d->SetConstantBuffer("Camera", viewProjMat);
+
 		material = Daydream::Material::Create(pso);
 		//material = pso->CreateMaterial(); // 이것도 가능
 
 		material->SetTexture2D("Texture", texture);
 		material->SetConstantBuffer("Camera", viewProjMat);
 
-		mesh = Mesh::Create(squareVB, squareIB, material);
+		mesh = Mesh::Create(squareVB, squareIB);
 		//mesh = Mesh::Create();
 		//mesh->Load("F:/DaydreamReboot/Sandbox/Asset/Model/Lowpoly_tree_sample.fbx");
 		model = MakeShared<Model>();
@@ -154,13 +168,23 @@ namespace Daydream
 			cameraPos = camera.GetViewProjectionMatrix();
 			viewProjMat->Update(&cameraPos.mat, sizeof(Daydream::Matrix4x4));
 		}
-
+		 
 		renderPass->Begin(framebuffer);
 		////camera.SetPosition({ 0.5f, 0.5f, 0.0f });
 
+		pso3d->Bind();
+
 		//Daydream::Renderer::BeginScene(camera);
+		material3d->Bind();
+
+
 		pso->Bind();
-		mesh->Draw();
+		mesh->Bind();
+		material->Bind();
+		Daydream::Renderer::Submit(mesh->GetIndexCount());
+		
+
+
 		//squareVB->Bind();
 		//squareIB->Bind();
 

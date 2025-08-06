@@ -7,7 +7,7 @@ namespace Daydream
 	{
 		Assimp::Importer importer;
 
-		UInt32 flags = aiProcess_Triangulate;// |           // 모든 면을 삼각형으로 변환
+		UInt32 flags = aiProcess_Triangulate | aiProcess_ConvertToLeftHanded;// |           // 모든 면을 삼각형으로 변환
 			//aiProcess_FlipUVs |              // UV 좌표 뒤집기 (OpenGL용)
 			//aiProcess_GenNormals |           // 노말 벡터 생성
 			//aiProcess_CalcTangentSpace |     // 탄젠트/바이탄젠트 계산

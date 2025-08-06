@@ -7,6 +7,5 @@ namespace Daydream
 	Shared<RenderContext> RenderContext::Create(RenderDevice* _device)
 	{
 		return Renderer::GetRenderDevice()->CreateContext();
-
 	}
 }

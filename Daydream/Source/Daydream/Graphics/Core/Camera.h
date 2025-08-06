@@ -23,6 +23,7 @@ namespace Daydream
 
 	private:
 		void UpdateMatrix();
+		void UpdateViewMatrix();
 
 		Matrix4x4 projectionMatrix;
 		Matrix4x4 viewMatrix;

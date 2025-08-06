@@ -36,7 +36,7 @@ namespace Daydream
 		}
 		return false;
 	}
-	bool Input::GetMouseButtonPress(MouseCode _button)
+	bool Input::GetMousePressed(MouseCode _button)
 	{
 		DaydreamWindow& window = Application::GetInstance().GetMainWindow();
 		int state = window.GetMouseState(_button);

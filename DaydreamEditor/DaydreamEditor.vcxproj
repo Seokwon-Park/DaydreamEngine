@@ -103,6 +103,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Source\EditorLayer.h" />
+    <ClInclude Include="Source\EditorPanels\HierarchyPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\EditorApp.cpp" />

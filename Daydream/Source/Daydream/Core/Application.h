@@ -3,6 +3,7 @@
 #include "Base/Time/TimeStep.h"
 
 #include "Daydream/Core/Window.h"
+#include "Daydream/Core/WindowManager.h"
 #include "Daydream/Core/LayerStack.h"
 #include "Daydream/Event/KeyEvent.h"
 #include "Daydream/Event/ApplicationEvent.h"
@@ -62,7 +63,7 @@ namespace Daydream
 		bool OnWindowFocused(WindowFocusEvent& _e);
 
 		Unique<DaydreamWindow> mainWindow;
-		Unique<DaydreamWindow> testWindow;
+		//Unique<DaydreamWindow> testWindow;
 
 		bool isRunning = false;
 		bool isMinimized = false;

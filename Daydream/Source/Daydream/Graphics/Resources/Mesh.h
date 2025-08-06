@@ -9,20 +9,20 @@ namespace Daydream
 	{
 	public:
 		Mesh() {};
-		Mesh(Shared<VertexBuffer> _vertexBuffer, Shared<IndexBuffer> _indexBuffer, Shared<Material> _material);
+		Mesh(Shared<VertexBuffer> _vertexBuffer, Shared<IndexBuffer> _indexBuffer);
 
 		void SetVertexBuffer(Shared<VertexBuffer> _vertexBuffer);
+		void GetVertexBuffer(Shared<VertexBuffer> _vertexBuffer) {};
 		void SetIndexBuffer(Shared<IndexBuffer> _indexBuffer);
-		void SetMaterial(Shared<Material> _material) { material = _material; }
-		Shared<Material> GetMaterial() { return material; }
+		UInt32 GetIndexCount() { return indexBuffer->GetCount(); }
 
-		void Draw();
+		void Bind();
 
 		static Shared<Mesh> Create();
-		static Shared<Mesh> Create(Shared<VertexBuffer> _vertexBuffer, Shared<IndexBuffer> _indexBuffer, Shared<Material> _material);
+		static Shared<Mesh> Create(Shared<VertexBuffer> _vertexBuffer, Shared<IndexBuffer> _indexBuffer);
+
 	private:
 		Shared<VertexBuffer> vertexBuffer;
 		Shared<IndexBuffer> indexBuffer;
-		Shared<Material> material;
 	};
 }

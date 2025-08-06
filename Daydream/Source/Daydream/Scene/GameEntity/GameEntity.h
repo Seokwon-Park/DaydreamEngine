@@ -1,12 +1,12 @@
 #pragma once
 
-#include "../Components/Component.h"
+#include "Daydream/Scene/Components/Component.h"
 
 namespace Daydream
 {
 	class Component;
 
-	class GameEntity
+	class GameEntity : public std::enable_shared_from_this<GameEntity>
 	{
 	public:
 		GameEntity();
@@ -24,9 +24,9 @@ namespace Daydream
 		ComponentType AddComponent()
 		{
 			Unique<ComponentType> newComponent = MakeUnique<ComponentType>();
-
 			static_assert(std::is_base_of<Component, ComponentType>::value, "Template argument must inherit from Component!");
-
+			Component* temp = static_cast<Component*>(newComponent.get());
+			temp->SetOwner(this);
 			components.emplace_back(newComponent);
 			return newComponent.get();
 		};

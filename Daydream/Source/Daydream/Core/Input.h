@@ -12,7 +12,7 @@ namespace Daydream
 		static bool GetKeyPressed(KeyCode _key);
 		static bool GetKeyUp(KeyCode _key);
 
-		static bool GetMouseButtonPress(MouseCode button);
+		static bool GetMousePressed(MouseCode button);
 		static Pair<Float32, Float32> GetMousePosition();
 		static Float32 GetMouseX();
 		static Float32 GetMouseY();

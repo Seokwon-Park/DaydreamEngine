@@ -25,10 +25,16 @@ namespace Daydream
 		Shared<Shader> vs;
 		Shared<Shader> ps;
 
+		Shared<Shader> vs3d;
+		Shared<Shader> ps3d;
+
+
 		Shared<PipelineState> pso;
+		Shared<PipelineState> pso3d;
 		Shared<RenderPass> renderPass;
 
 		Shared<Material> material;
+		Shared<Material> material3d;
 		Shared<Framebuffer> framebuffer;
 
 		Shared<Mesh> mesh;

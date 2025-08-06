@@ -6,11 +6,10 @@
 
 namespace Daydream
 {
-	Mesh::Mesh(Shared<VertexBuffer> _vertexBuffer, Shared<IndexBuffer> _indexBuffer, Shared<Material> _material)
+	Mesh::Mesh(Shared<VertexBuffer> _vertexBuffer, Shared<IndexBuffer> _indexBuffer)
 	{
 		vertexBuffer = _vertexBuffer;
 		indexBuffer = _indexBuffer;
-		material = _material;
 	}
 
 	void Mesh::SetVertexBuffer(Shared<VertexBuffer> _vertexBuffer)
@@ -22,21 +21,18 @@ namespace Daydream
 		indexBuffer = _indexBuffer;
 	}
 
-	void Mesh::Draw()
+	void Mesh::Bind()
 	{
 		vertexBuffer->Bind();
 		indexBuffer->Bind();
-		material->Bind();
-
-		Renderer::Submit(indexBuffer->GetCount());
 	}
 	Shared<Mesh> Mesh::Create()
 	{
 		return MakeShared<Mesh>();
 	}
 
-	Shared<Mesh> Mesh::Create(Shared<VertexBuffer> _vertexBuffer, Shared<IndexBuffer> _indexBuffer, Shared<Material> _material)
+	Shared<Mesh> Mesh::Create(Shared<VertexBuffer> _vertexBuffer, Shared<IndexBuffer> _indexBuffer)
 	{
-		return MakeShared<Mesh>(_vertexBuffer, _indexBuffer, _material);
+		return MakeShared<Mesh>(_vertexBuffer, _indexBuffer);
 	}
 }

@@ -11,6 +11,8 @@ namespace Daydream
 		fovy = 70.0f;
 		aspectRatio = 1.6f/ 0.9f;
 		orthoSize = 5.0f;
+		nearPlane = 0.1f;
+		farPlane = 1000.0f;
 		UpdateMatrix();
 	}
 	Camera::~Camera()
@@ -45,11 +47,11 @@ namespace Daydream
 		switch (projectionType)
 		{
 		case ProjectionType::Perspective:
-			projectionMatrix = Matrix4x4::Perspective(fovy, aspectRatio, 0.1f, 10.0f);
+			projectionMatrix = Matrix4x4::Perspective(glm::radians(fovy), aspectRatio, nearPlane, farPlane);
 			break;
 		case ProjectionType::Orthographic:
 		{
-			projectionMatrix = Matrix4x4::Orthographic(-orthoSize*aspectRatio, orthoSize * aspectRatio, -orthoSize, orthoSize, 0.1f, 100.0f);
+			projectionMatrix = Matrix4x4::Orthographic(-orthoSize* aspectRatio, orthoSize * aspectRatio, -orthoSize, orthoSize, nearPlane, farPlane);
 			break;
 		}
 		default:

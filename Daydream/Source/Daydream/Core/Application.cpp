@@ -45,11 +45,12 @@ namespace Daydream
 
 		//testWindow = DaydreamWindow::Create(prop);
 		//testWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
+		WindowManager::Init();
+		WindowManager::RegisterWindow(prop.title, mainWindow.get());
 		
 		//렌더러 초기화
 		Renderer::Init(_specification.rendererAPI);
 		//렌더러에 윈도우 
-		Renderer::RegisterWindow(prop.title, mainWindow.get());
 		Renderer::CreateSwapchainFor(mainWindow.get());
 		Renderer::SetCurrentWindow(mainWindow.get());
 		//Renderer::RegisterWindow("TestWindow", testWindow.get());
@@ -111,7 +112,7 @@ namespace Daydream
 				layer->OnUpdate(deltaTime);
 			}
 
-			Renderer::BeginSwapchainFramebuffer();
+			Renderer::BeginSwapchainRenderPass(mainWindow.get());
 
 			imGuiLayer->BeginImGui();
 			{
@@ -120,7 +121,7 @@ namespace Daydream
 			}
 			imGuiLayer->EndImGui();
 
-			Renderer::EndSwapchainFramebuffer();
+			Renderer::EndSwapchainRenderPass(mainWindow.get());
 			//auto [x, y] = Input::GetMousePosition();
 			////DAYDREAM_CORE_TRACE("{0}, {1}", x, y);
 
@@ -129,10 +130,10 @@ namespace Daydream
 			//	DAYDREAM_CORE_TRACE("MOUSE BUTTON DOWN TEST");
 			//}
 
-			if (Input::GetKeyDown(Key::A))
-			{
-				DAYDREAM_CORE_TRACE("KEY DOWN TEST");
-			}
+			//if (Input::GetMousePressed(Mouse::ButtonLeft))
+			//{
+			//	DAYDREAM_CORE_TRACE("MOUSE DOWN TEST");
+			//}
 
 			//if (Input::GetKeyPress(Key::B))
 			//{

@@ -1740,6 +1740,9 @@
     <ClInclude Include="Source\Daydream\Scene\Components\SpriteRendererComponent.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Sprite.h" />
     <ClInclude Include="Source\Daydream\Scene\Components\ModelRendererComponent.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Managers\ShaderManager.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Managers\PSOManager.h" />
+    <ClInclude Include="Source\Daydream\Core\WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -2027,5 +2030,10 @@
     <ClCompile Include="Vendor\stb\stb_image.cpp">
       <Filter>Vendor\stb</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Daydream\Scene\Components\ModelRendererComponent.cpp" />
+    <ClCompile Include="Source\Daydream\Scene\Components\Component.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Core\EditorCamera.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Managers\PSOManager.cpp" />
+    <ClCompile Include="Source\Daydream\Core\WindowManager.cpp" />
   </ItemGroup>
 </Project>

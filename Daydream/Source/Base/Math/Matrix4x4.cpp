@@ -31,13 +31,18 @@ namespace Daydream
 
 	Matrix4x4 Matrix4x4::operator*(Matrix4x4 _matrix)
 	{
-		glmMat *= _matrix.glmMat;
+		glmMat = glmMat * _matrix.glmMat;
 		return *this;
 	}
 
 	Vector4 Matrix4x4::operator*(Vector4 _vector) const
 	{
 		return glmMat * _vector;
+	}
+
+	Vector4 Matrix4x4::operator*(Vector3 _vector) const
+	{
+		return glmMat * Vector4(_vector, 1.0f);
 	}
 
 	Matrix4x4 Matrix4x4::Translate(Vector3 _translate)
@@ -88,5 +93,11 @@ namespace Daydream
 		Matrix4x4 out;
 		out.glmMat = glm::lookAt(_eye, _eye + glm::normalize(_direction), _up);
 		return out;
+	}
+	Matrix4x4 Matrix4x4::QuatToMatrix(Quaternion _quat)
+	{
+		Matrix4x4 mat;
+		mat.glmMat = glm::toMat4(_quat);
+		return mat;
 	}
 }

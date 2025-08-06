@@ -18,6 +18,7 @@ namespace Daydream
 		Vector2 mainWindowSize;
 		Vector2 viewportSize;
 		bool viewportSizeInit= false;
+		bool viewportShouldResize = true;
 
 		Daydream::Shared<Daydream::VertexBuffer> squareVB;
 		Daydream::Shared<Daydream::VertexBuffer> squareVB2;
@@ -40,7 +41,7 @@ namespace Daydream
 
 		Shared<Scene> activeScene;
 
-		Camera camera = Camera();
+		Shared<Camera> camera;
 		Matrix4x4 cameraPos;
 	};
 }

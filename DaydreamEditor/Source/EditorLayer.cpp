@@ -6,6 +6,8 @@ namespace Daydream
 	EditorLayer::EditorLayer()
 		:Layer("Editor Layer")
 	{
+		camera = MakeShared<Camera>();
+		
 		float squareVertices[4 * 9] = {
 		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
 		-0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f,
@@ -50,8 +52,8 @@ namespace Daydream
 		{ Daydream::ShaderDataType::Float2, "a_TexCoord", "TEXCOORD"}
 		};
 
-		camera.SetPosition({ 0.0f,0.0f,-1.0f });
-		cameraPos = camera.GetViewProjectionMatrix();
+		camera->SetPosition({ 0.0f,0.0f,-1.0f });
+		cameraPos = camera->GetViewProjectionMatrix();
 		viewProjMat = Daydream::ConstantBuffer::Create(sizeof(Daydream::Matrix4x4));
 		viewProjMat->Update(&cameraPos.mat, sizeof(Daydream::Matrix4x4));
 
@@ -107,44 +109,46 @@ namespace Daydream
 	{
 		if (Daydream::Input::GetKeyPressed(Daydream::Key::Q))
 		{
-			camera.SetPosition(camera.GetPosition() + Daydream::Vector3(0.0f, 0.0f, 1.0f) * _deltaTime);
-			cameraPos = camera.GetViewProjectionMatrix();
+			camera->SetPosition(camera->GetPosition() + Daydream::Vector3(0.0f, 0.0f, 1.0f) * _deltaTime);
+			cameraPos = camera->GetViewProjectionMatrix();
 			viewProjMat->Update(&cameraPos.mat, sizeof(Daydream::Matrix4x4));
 		}
 		if (Daydream::Input::GetKeyPressed(Daydream::Key::E))
 		{
-			camera.SetPosition(camera.GetPosition() + Daydream::Vector3(0.0f, 0.0f, -1.0f) * _deltaTime);
-			cameraPos = camera.GetViewProjectionMatrix();
+			camera->SetPosition(camera->GetPosition() + Daydream::Vector3(0.0f, 0.0f, -1.0f) * _deltaTime);
+			cameraPos = camera->GetViewProjectionMatrix();
 			viewProjMat->Update(&cameraPos.mat, sizeof(Daydream::Matrix4x4));
 		}
 
 		if (Daydream::Input::GetKeyPressed(Daydream::Key::W))
 		{
-			camera.SetPosition(camera.GetPosition() + Daydream::Vector3(0.0f, 1.0f, 0.0f) * _deltaTime);
-			cameraPos = camera.GetViewProjectionMatrix();
+			camera->SetPosition(camera->GetPosition() + Daydream::Vector3(0.0f, 1.0f, 0.0f) * _deltaTime);
+			cameraPos = camera->GetViewProjectionMatrix();
 			viewProjMat->Update(&cameraPos.mat, sizeof(Daydream::Matrix4x4));
 		}
 
 		if (Daydream::Input::GetKeyPressed(Daydream::Key::A))
 		{
-			camera.SetPosition(camera.GetPosition() + Daydream::Vector3(-1.0f, 0.0f, 0.0f) * _deltaTime);
-			cameraPos = camera.GetViewProjectionMatrix();
+			camera->SetPosition(camera->GetPosition() + Daydream::Vector3(-1.0f, 0.0f, 0.0f) * _deltaTime);
+			cameraPos = camera->GetViewProjectionMatrix();
 			viewProjMat->Update(&cameraPos.mat, sizeof(Daydream::Matrix4x4));
 		}
 
 		if (Daydream::Input::GetKeyPressed(Daydream::Key::S))
 		{
-			camera.SetPosition(camera.GetPosition() + Daydream::Vector3(0.0f, -1.0f, 0.0f) * _deltaTime);
-			cameraPos = camera.GetViewProjectionMatrix();
+			camera->SetPosition(camera->GetPosition() + Daydream::Vector3(0.0f, -1.0f, 0.0f) * _deltaTime);
+			cameraPos = camera->GetViewProjectionMatrix();
 			viewProjMat->Update(&cameraPos.mat, sizeof(Daydream::Matrix4x4));
 		}
 
 		if (Daydream::Input::GetKeyPressed(Daydream::Key::D))
 		{
-			camera.SetPosition(camera.GetPosition() + Daydream::Vector3(1.0f, 0.0f, 0.0f) * _deltaTime);
-			cameraPos = camera.GetViewProjectionMatrix();
+			camera->SetPosition(camera->GetPosition() + Daydream::Vector3(1.0f, 0.0f, 0.0f) * _deltaTime);
+			cameraPos = camera->GetViewProjectionMatrix();
 			viewProjMat->Update(&cameraPos.mat, sizeof(Daydream::Matrix4x4));
 		}
+
+		DAYDREAM_CORE_INFO("{}, {}, {}", camera->GetPosition().x, camera->GetPosition().y, camera->GetPosition().z);
 
 		renderPass->Begin(viewportFramebuffer);
 
@@ -237,19 +241,13 @@ namespace Daydream
 	{
 		ImVec2 ImGuiViewportSize = ImGui::GetContentRegionAvail();
 		bool currentActive = ImGui::IsAnyItemActive();
-		static bool isResizing = true;
+		//static bool isResizing = true;
+		ImVec2 CurWindowSize = ImGui::GetMainViewport()->Size;
 		bool isWindowResized = mainWindowSize.x != ImGui::GetMainViewport()->Size.x || mainWindowSize.y != ImGui::GetMainViewport()->Size.y;
-		bool isViewportResized = viewportSize.x != ImGuiViewportSize.x || viewportSize.y != ImGuiViewportSize.y;
-		// 이전 프레임에는 활성화 상태였는데, 현재는 비활성화 상태가 되었다면 리사이즈가 끝
-		if ((isResizing != currentActive && isViewportResized) || isWindowResized)
+		bool isViewportResized = viewportFramebuffer->GetWidth() != ImGuiViewportSize.x || viewportFramebuffer->GetHeight()!= ImGuiViewportSize.y;
+		if (currentActive) return; // 그냥 활성화 상태면 일단 크기조절하지마.
+		if (isViewportResized || isWindowResized) // 윈도우 크기가 저장된 값과 다르거나 Imgui 윈도우 크기가 framebuffer크기와 다르면 리사이즈 된거임
 		{
-			if (ImGui::GetMainViewport()->Size.x == ImGuiViewportSize.x &&
-				ImGui::GetMainViewport()->Size.y == ImGuiViewportSize.y) return;
-
-				// 2. 리사이즈 완료 시점
-				// 이 로직은 마우스 버튼이 떼어졌을 때 한 번만 실행됩니다.
-				// 여기에 최종 리사이즈 처리를 넣으면 됩니다.
-
 				// 최종 크기로 카메라 및 프레임버퍼 업데이트
 				// 이 시점에는 이미 currentContentRegionSize가 최종 크기를 담고 있습니다.
 				if (ImGuiViewportSize.x > 1.0f && ImGuiViewportSize.y > 1.0f)
@@ -258,10 +256,10 @@ namespace Daydream
 					// 리사이즈 완료 메시지 로깅
 					DAYDREAM_CORE_INFO("Viewport final resized to: {0}, {1}", ImGuiViewportSize.x, ImGuiViewportSize.y);
 
-					Renderer::EndSwapchainFramebuffer();
+					Renderer::EndSwapchainRenderPass(Renderer::GetCurrentWindow());
 					// D3D12Framebuffer 리사이즈 (GPU 동기화 로직 포함)
 					viewportFramebuffer->Resize(static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
-					Renderer::BeginSwapchainFramebuffer();
+					Renderer::BeginSwapchainRenderPass(Renderer::GetCurrentWindow());
 
 					// 카메라의 뷰포트 크기 업데이트
 					// camera->SetViewportSize(currentContentRegionSize.x, currentContentRegionSize.y);
@@ -271,19 +269,19 @@ namespace Daydream
 					viewportSize.y = ImGuiViewportSize.y;
 					mainWindowSize.x = ImGui::GetMainViewport()->Size.x;
 					mainWindowSize.y = ImGui::GetMainViewport()->Size.y;
-					camera.UpdateAspectRatio(ImGuiViewportSize.x, ImGuiViewportSize.y);
-					viewProjMat->Update(&camera.GetViewProjectionMatrix(), sizeof(Daydream::Matrix4x4));
+					camera->UpdateAspectRatio(ImGuiViewportSize.x, ImGuiViewportSize.y);
+					viewProjMat->Update(&camera->GetViewProjectionMatrix(), sizeof(Daydream::Matrix4x4));
 				}
 		}
 
-		isResizing = currentActive;
+		//isResizing = currentActive;
 		//if (viewportSize != Vector2(ImGuiViewportSize.x, ImGuiViewportSize.y))
 		//{
 		//	Renderer::EndSwapchainFramebuffer();
 		//	viewportFramebuffer->Resize(ImGuiViewportSize.x, ImGuiViewportSize.y);
 		//	viewportSize = Vector2(ImGuiViewportSize.x, ImGuiViewportSize.y);
-		//	camera.UpdateAspectRatio(ImGuiViewportSize.x, ImGuiViewportSize.y);
-		//	viewProjMat->Update(&camera.GetViewProjectionMatrix(), sizeof(Daydream::Matrix4x4));
+		//	camera->UpdateAspectRatio(ImGuiViewportSize.x, ImGuiViewportSize.y);
+		//	viewProjMat->Update(&camera->GetViewProjectionMatrix(), sizeof(Daydream::Matrix4x4));
 		//	Renderer::BeginSwapchainFramebuffer();
 		//}
 	}

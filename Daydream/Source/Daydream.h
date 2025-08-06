@@ -33,6 +33,7 @@
 #include "Daydream/Graphics/Resources/Model.h"
 
 #include "Daydream/Graphics/Core/Camera.h"
+#include "Daydream/Graphics/Core/EditorCamera.h"
 #include "Daydream/Graphics/Core/OrthographicCamera.h"
 // -----------------------------------------------
 
