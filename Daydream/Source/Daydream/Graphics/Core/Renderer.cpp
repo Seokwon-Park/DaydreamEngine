@@ -31,7 +31,7 @@ namespace Daydream
 		instance = nullptr;
 	}
 
-	void Renderer::CreateSwapchainFor(DaydreamWindow* _window)
+	void Renderer::CreateSwapchainForWindow(DaydreamWindow* _window)
 	{
 		instance->renderDevice->CreateSwapchainForWindow(_window);
 	}

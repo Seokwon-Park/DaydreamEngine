@@ -28,7 +28,6 @@ namespace Daydream
 		Shared<Shader> vs3d;
 		Shared<Shader> ps3d;
 
-
 		Shared<PipelineState> pso;
 		Shared<PipelineState> pso3d;
 		Shared<RenderPass> renderPass;

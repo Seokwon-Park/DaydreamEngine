@@ -8,10 +8,14 @@ namespace Daydream
 	{
 	public:
 		Component();
+		virtual ~Component();
 
 		inline void SetOwner(GameEntity* _entity) { owner = _entity; }
 		inline GameEntity* GetOwner() const { return owner; }
-	private:
+
+		virtual void Init();
+		virtual void Update(Float32 _deltaTime);
+	protected:
 		GameEntity* owner = nullptr;
 	};
 }

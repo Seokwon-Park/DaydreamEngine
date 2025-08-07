@@ -4,7 +4,7 @@
 namespace Daydream
 {
 	Camera::Camera()
-		:viewMatrix(Matrix4x4())
+		:viewMatrix(Matrix4x4()), projectionMatrix(Matrix4x4())
 	{
 		dir= Vector3(0.0f, 0.0f, 1.0f);
 		up = Vector3(0.0f, 1.0f, 0.0f);
@@ -13,11 +13,17 @@ namespace Daydream
 		orthoSize = 5.0f;
 		nearPlane = 0.1f;
 		farPlane = 1000.0f;
-		UpdateMatrix();
+		UpdateProjectionMatrix();
 	}
 	Camera::~Camera()
 	{
 	}
+
+	void Camera::Update(Float32 _deltaTime)
+	{
+
+	}
+
 	const Matrix4x4& Camera::GetViewMatrix() const
 	{
 		return viewMatrix;
@@ -26,24 +32,33 @@ namespace Daydream
 	{
 		return projectionMatrix;
 	}
-	const Matrix4x4& Camera::GetViewProjectionMatrix() const
+	const Matrix4x4& Camera::GetViewProjectionMatrix()
 	{
 		return viewProjectionMatrix;
 	}
 	void Camera::SetPosition(Vector3 _position)
 	{
 		position = _position;
-		UpdateMatrix();
+		UpdateViewMatrix();
 	}
 	void Camera::UpdateAspectRatio(UInt32 _width, UInt32 _height)
 	{
 		aspectRatio = static_cast<Float32>(_width) / _height;
-		UpdateMatrix();
+		UpdateProjectionMatrix();
 	}
 	void Camera::UpdateMatrix()
 	{
+		viewProjectionMatrix = projectionMatrix * viewMatrix;
+		viewProjectionMatrix.MatrixTranspose();
+	}
+	void Camera::UpdateViewMatrix()
+	{
 		viewMatrix = Matrix4x4::LookTo(position, dir, up);
-		//viewMatrix = Matrix4x4::Inverse(Matrix4x4::Translate({ -position.x, -position.y, -position.z }));
+
+		UpdateMatrix();
+	}
+	void Camera::UpdateProjectionMatrix()
+	{
 		switch (projectionType)
 		{
 		case ProjectionType::Perspective:
@@ -51,13 +66,12 @@ namespace Daydream
 			break;
 		case ProjectionType::Orthographic:
 		{
-			projectionMatrix = Matrix4x4::Orthographic(-orthoSize* aspectRatio, orthoSize * aspectRatio, -orthoSize, orthoSize, nearPlane, farPlane);
+			projectionMatrix = Matrix4x4::Orthographic(-orthoSize * aspectRatio, orthoSize * aspectRatio, -orthoSize, orthoSize, nearPlane, farPlane);
 			break;
 		}
 		default:
 			break;
 		}
-		viewProjectionMatrix = projectionMatrix * viewMatrix;
-		viewProjectionMatrix.MatrixTranspose();
+		UpdateMatrix();
 	}
 }

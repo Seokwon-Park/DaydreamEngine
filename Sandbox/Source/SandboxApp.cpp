@@ -12,7 +12,7 @@ public:
 		:Daydream::Application(_specification)
 	{
 		//AttachLayer(new ExampleLayer());
-		AttachOverlay(new Daydream::Sandbox2D());
+		AttachLayer(new Daydream::Sandbox2D());
 	}
 
 	virtual ~Sandbox() override

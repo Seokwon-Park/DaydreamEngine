@@ -130,6 +130,7 @@ namespace Daydream
 	VulkanTexture2D::~VulkanTexture2D()
 	{
 		ImGui_ImplVulkan_RemoveTexture(ImGuiDescriptorSet);
+		ImGuiDescriptorSet = VK_NULL_HANDLE;
 		if (textureSampler != VK_NULL_HANDLE) vkDestroySampler(device->GetDevice(), textureSampler, nullptr);
 		if (textureImageView != VK_NULL_HANDLE) vkDestroyImageView(device->GetDevice(), textureImageView, nullptr);
 		if (!isSwapchainImage && textureImage != VK_NULL_HANDLE)

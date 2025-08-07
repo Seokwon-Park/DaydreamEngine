@@ -11,6 +11,8 @@ namespace Daydream
 		Mesh() {};
 		Mesh(Shared<VertexBuffer> _vertexBuffer, Shared<IndexBuffer> _indexBuffer);
 
+		~Mesh();
+
 		void SetVertexBuffer(Shared<VertexBuffer> _vertexBuffer);
 		void GetVertexBuffer(Shared<VertexBuffer> _vertexBuffer) {};
 		void SetIndexBuffer(Shared<IndexBuffer> _indexBuffer);

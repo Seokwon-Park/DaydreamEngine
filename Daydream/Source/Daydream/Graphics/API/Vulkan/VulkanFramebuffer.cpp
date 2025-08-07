@@ -91,6 +91,11 @@ namespace Daydream
 	{
 		vkDeviceWaitIdle(device->GetDevice());
 
+		width = _width;
+		height = _height;
+		extent.width = _width;
+		extent.height = _height;
+
 		AttachmentImageViews.clear();
 		oldAttachments.clear();
 		oldAttachments = std::move(colorAttachments);

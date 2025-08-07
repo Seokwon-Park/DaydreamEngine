@@ -22,6 +22,7 @@ namespace Daydream
 	{
 		Unique<GameEntity> entity = MakeUnique<GameEntity>();
 		entity->SetName(_name);
+		entity->SetScene(this);
 		GameEntity* rawPtr = entity.get();
 		entities.emplace_back(std::move(entity));
 		return rawPtr;
@@ -32,6 +33,11 @@ namespace Daydream
 		for (const auto& entity : entities)
 		{
 			entity->Update(_deltaTime);
+		}
+
+		for (const auto& renderer : modelRenderers)
+		{
+			renderer->Render();
 		}
 	}
 }

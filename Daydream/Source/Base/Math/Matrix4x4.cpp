@@ -31,8 +31,9 @@ namespace Daydream
 
 	Matrix4x4 Matrix4x4::operator*(Matrix4x4 _matrix)
 	{
-		glmMat = glmMat * _matrix.glmMat;
-		return *this;
+		Matrix4x4 result;
+		result.glmMat = glmMat * _matrix.glmMat;
+		return result;
 	}
 
 	Vector4 Matrix4x4::operator*(Vector4 _vector) const
@@ -77,7 +78,6 @@ namespace Daydream
 	Matrix4x4 Matrix4x4::Perspective(Float32 _fovy, Float32 _aspect, Float32 _near, Float32 _far)
 	{
 		Matrix4x4 out;
-		out.glmMat = glm::perspectiveRH_NO(_fovy, _aspect, _near, _far);
 		out.glmMat = glm::perspectiveLH_ZO(_fovy, _aspect, _near, _far);
 		return out;
 	}

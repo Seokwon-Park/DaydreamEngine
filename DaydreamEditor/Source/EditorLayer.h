@@ -17,25 +17,30 @@ namespace Daydream
 	private:
 		Vector2 mainWindowSize;
 		Vector2 viewportSize;
-		bool viewportSizeInit= false;
+		bool isViewportFocused = false;
 		bool viewportShouldResize = true;
 
-		Daydream::Shared<Daydream::VertexBuffer> squareVB;
-		Daydream::Shared<Daydream::VertexBuffer> squareVB2;
-		Daydream::Shared<Daydream::IndexBuffer> squareIB;
-		Daydream::Shared<Daydream::IndexBuffer> squareIB2;
-		Daydream::Shared<Daydream::ConstantBuffer> viewProjMat;
-		Daydream::Shared<Daydream::Texture2D> texture;
-		Daydream::Shared<Daydream::Texture2D> texture2;
+		Shared<VertexBuffer> squareVB;
+		Shared<VertexBuffer> squareVB2;
+		Shared<IndexBuffer> squareIB;
+		Shared<IndexBuffer> squareIB2;
+		Shared<ConstantBuffer> viewProjMat;
+		Shared<Texture2D> texture;
+		Shared<Texture2D> texture2;
 
 		Shared<Shader> vs;
 		Shared<Shader> ps;
-		//Daydream::Shared<Daydream::MouseScrolledEvent>
+
+		Shared<Shader> vs3d;
+		Shared<Shader> ps3d;
+		//Shared<MouseScrolledEvent>
 		Shared<RenderPass> renderPass;
 		Shared<Framebuffer> viewportFramebuffer;
 		Shared<PipelineState> pso;
+		Shared<PipelineState> pso3d;
 
-		Daydream::Shared<Daydream::Material> material;
+		Shared<Material> material;
+		Shared<Material> material3d;
 
 		Shared<Model> model;
 

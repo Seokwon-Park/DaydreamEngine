@@ -9,9 +9,12 @@ namespace Daydream
 	{
 	public:
 		ModelRendererComponent();
-		virtual ~ModelRendererComponent() {};
+		virtual ~ModelRendererComponent();
 
-		void SetModel(Shared<Model> _model) { model = _model; };
+		virtual void Init() override;
+
+		void SetModel(Shared<Model> _model);
+		void SetMaterial(Shared<Material> _material) { material = _material; }
 		void Render();
 	private:
 		Shared<Model> model;

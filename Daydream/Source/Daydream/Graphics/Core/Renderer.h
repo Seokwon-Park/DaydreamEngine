@@ -15,7 +15,7 @@ namespace Daydream
 		//Do Not Call twice
 		static void Init(RendererAPIType _API);
 		static void Shutdown();
-		static void CreateSwapchainFor(DaydreamWindow* _window);
+		static void CreateSwapchainForWindow(DaydreamWindow* _window);
 		static void SetCurrentWindow(DaydreamWindow* _window) { instance->currentWindow = _window; }
 		static DaydreamWindow* GetCurrentWindow() { return instance->currentWindow; }
 		static void OnWindowResize(UInt32 _width, UInt32 _height);

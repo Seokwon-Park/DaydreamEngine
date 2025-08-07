@@ -51,7 +51,7 @@ namespace Daydream
 		//렌더러 초기화
 		Renderer::Init(_specification.rendererAPI);
 		//렌더러에 윈도우 
-		Renderer::CreateSwapchainFor(mainWindow.get());
+		Renderer::CreateSwapchainForWindow(mainWindow.get());
 		Renderer::SetCurrentWindow(mainWindow.get());
 		//Renderer::RegisterWindow("TestWindow", testWindow.get());
 

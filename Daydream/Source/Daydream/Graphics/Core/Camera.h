@@ -10,9 +10,11 @@ namespace Daydream
 		Camera();
 		~Camera();
 
+		virtual void Update(Float32 _deltaTime);
+
 		const Matrix4x4& GetViewMatrix() const;
 		const Matrix4x4& GetProjectionMatrix() const;
-		const Matrix4x4& GetViewProjectionMatrix() const;
+		const Matrix4x4& GetViewProjectionMatrix();
 
 		void SetPosition(Vector3 _position);
 		inline Vector3 GetPosition() const { return position; }
@@ -21,9 +23,10 @@ namespace Daydream
 
 		void SetProjectionType(ProjectionType _type) { projectionType = _type; }
 
-	private:
-		void UpdateMatrix();
-		void UpdateViewMatrix();
+	protected:
+		virtual void UpdateMatrix();
+		virtual void UpdateViewMatrix();
+		virtual void UpdateProjectionMatrix();
 
 		Matrix4x4 projectionMatrix;
 		Matrix4x4 viewMatrix;

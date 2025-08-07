@@ -1,18 +1,23 @@
 #pragma once
 
 #include "Daydream/Scene/Components/Component.h"
+#include "Daydream/Scene/Components/ModelRendererComponent.h"
 
 namespace Daydream
 {
+	class Scene;
 	class Component;
 
-	class GameEntity : public std::enable_shared_from_this<GameEntity>
+	class GameEntity
 	{
 	public:
 		GameEntity();
 		~GameEntity();
 
 		inline void SetName(const String& _name) { name = _name; }
+		inline void SetScene(Scene* _scene) { scene = _scene; }
+		Scene* GetScene() { return scene; }
+		void Init();
 		void Update(Float32 _deltaTime);
 
 		void SetParent(GameEntity* _parent)
@@ -21,19 +26,22 @@ namespace Daydream
 		}
 
 		template <class ComponentType>
-		ComponentType AddComponent()
+		ComponentType* AddComponent()
 		{
-			Unique<ComponentType> newComponent = MakeUnique<ComponentType>();
+			ComponentType* newComponent = new ComponentType();
 			static_assert(std::is_base_of<Component, ComponentType>::value, "Template argument must inherit from Component!");
-			Component* temp = static_cast<Component*>(newComponent.get());
-			temp->SetOwner(this);
-			components.emplace_back(newComponent);
-			return newComponent.get();
+			newComponent->SetOwner(this);
+			newComponent->Init();
+			Component* temp = static_cast<Component*>(newComponent);
+			components.push_back(newComponent);
+			return newComponent;
 		};
 	protected:
 
 	private:
-		Array<Unique<Component>> components;
+		Array<Component*> components;
+
+		Scene* scene;
 
 		GameEntity* parent = nullptr;
 		Array<GameEntity*> children;

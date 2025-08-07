@@ -16,6 +16,8 @@
 #include "Daydream/Enum/RendererEnums.h"
 
 #include "Daydream/Scene/Scene.h"
+#include "Daydream/Scene/Components/Component.h"
+
 
 // ---Renderer------------------------------------
 #include "Daydream/Graphics/Core/Renderer.h"

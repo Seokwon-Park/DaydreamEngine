@@ -9,6 +9,20 @@ namespace Daydream
 	{
 	}
 
+	ModelRendererComponent::~ModelRendererComponent()
+	{
+	}
+
+	void ModelRendererComponent::Init()
+	{
+		GetOwner()->GetScene()->GetModelRenderers().push_back(this);
+	}
+
+	void ModelRendererComponent::SetModel(Shared<Model> _model)
+	{
+		model = _model;
+	}
+
 	void ModelRendererComponent::Render()
 	{
 		material->Bind();

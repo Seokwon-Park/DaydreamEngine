@@ -12,6 +12,12 @@ namespace Daydream
 		indexBuffer = _indexBuffer;
 	}
 
+	Mesh::~Mesh()
+	{
+		vertexBuffer.reset();
+		indexBuffer.reset();
+	}
+
 	void Mesh::SetVertexBuffer(Shared<VertexBuffer> _vertexBuffer)
 	{
 		vertexBuffer = _vertexBuffer;
