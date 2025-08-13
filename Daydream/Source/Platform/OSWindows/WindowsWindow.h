@@ -27,7 +27,7 @@ namespace Daydream
 		bool IsVSync() const override;
 
 		inline int GetKeyState(int _key) const override { return windowData.keyStates[_key]; }
-		inline int GetMouseState(int _mousebutton) const override { return glfwGetMouseButton(glfwWindow, _mousebutton); }
+		inline int GetMouseState(int _button) const override { return windowData.mouseStates[_button]; }
 
 		inline Pair<Float32, Float32> GetMousePos() const override
 		{
@@ -38,10 +38,13 @@ namespace Daydream
 		void* GetNativeWindow() const override { return glfwWindow; }
 
 		inline void SetKeyState(int _key, int _state)override { windowData.keyStates[_key] = _state; }
-		// 이 함수는 window에서 releas
+		//// 이 함수는 window에서 releas
 		inline bool GetIsKeyDown(int _key) const override { return windowData.keyDownChecker[_key]; }
 		inline void SetKeyDown(int _key) override { windowData.keyDownChecker[_key] = true; }
-		void OnUpdateKeyState() override;
+
+		inline bool GetIsMouseDown(int _key) const override { return windowData.mouseDownChecker[_key]; }
+		inline void SetMouseDown(int _key) override { windowData.mouseDownChecker[_key] = true; }
+		void OnUpdateInputState() override;
 
 	private:
 		virtual void Init(const WindowProps& _props);
@@ -59,7 +62,9 @@ namespace Daydream
 			bool isVSync;
 			EventCallbackFn eventCallbackFn;
 			Array<UInt16> keyStates;
+			Array<UInt16> mouseStates;
 			Array<bool> keyDownChecker;
+			Array<bool> mouseDownChecker;
 		};
 		WindowData windowData;
 	};

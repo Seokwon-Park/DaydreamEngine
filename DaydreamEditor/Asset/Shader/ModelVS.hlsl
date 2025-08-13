@@ -5,7 +5,13 @@ struct VSInput
     float2 uv : TEXCOORD0;
 };
 
-cbuffer Camera : register(b0)
+cbuffer World : register(b0)
+{
+    matrix world;
+    matrix invTranspose;
+};
+
+cbuffer Camera : register(b1)
 {
     matrix viewProjection;
 };
@@ -20,8 +26,13 @@ struct VSOutput
 VSOutput VSMain(VSInput input)
 {
     VSOutput output = (VSOutput) 0;
-    output.position = mul(float4(input.position, 1.0), viewProjection); // 월드 변환 생략
-    output.normal = input.normal;
+    float4 position = float4(input.position, 1.0f);
+    position = mul(position, world);
+    output.position = mul(position, viewProjection);
+    
+    float4 normal = float4(input.normal, 1.0f);
+    output.normal = mul(normal, invTranspose).xyz;
+    output.normal = normalize(output.normal);
     output.uv = input.uv;
     return output;
 }

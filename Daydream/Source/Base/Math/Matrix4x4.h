@@ -3,6 +3,7 @@
 #include "Vector3.h"
 #include "Vector4.h"
 #include "Quaternion.h"
+#include "Transform.h"
 
 #include "glm/glm.hpp"
 
@@ -42,6 +43,7 @@ namespace Daydream
 		static Matrix4x4 LookTo(Vector3 _eye, Vector3 _direction, Vector3 _up);
 
 		static Matrix4x4 QuatToMatrix(Quaternion _quat);
+		static Matrix4x4 TransformToWorldMatrix(Transform _transform);
 
 
 

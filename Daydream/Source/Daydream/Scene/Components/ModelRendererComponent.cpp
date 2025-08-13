@@ -1,12 +1,15 @@
 #include "DaydreamPCH.h"
 #include "ModelRendererComponent.h"
 
+#include "TransformComponent.h"
+
 #include "Daydream/Graphics/Core/Renderer.h"
 
 namespace Daydream
 {
 	ModelRendererComponent::ModelRendererComponent()
 	{
+		worldMatrix = ConstantBuffer::Create(sizeof(WorldCosntantBuffer));
 	}
 
 	ModelRendererComponent::~ModelRendererComponent()
@@ -15,16 +18,24 @@ namespace Daydream
 
 	void ModelRendererComponent::Init()
 	{
-		GetOwner()->GetScene()->GetModelRenderers().push_back(this);
+		GetOwner()->GetScene()->AddModelRenderer(this);
 	}
 
 	void ModelRendererComponent::SetModel(Shared<Model> _model)
 	{
-		model = _model;
+		model = _model.get();
 	}
 
 	void ModelRendererComponent::Render()
 	{
+		Transform transform = GetOwner()->GetComponent<TransformComponent>()->GetTransform();
+		WorldCosntantBuffer data;
+		data.world = transform.GetWorldMatrix();
+		data.invTranspose = data.world;
+		data.invTranspose.MatrixInverse();
+		data.invTranspose.MatrixTranspose();
+		worldMatrix->Update(&data, sizeof(data));
+		material->SetConstantBuffer("World", worldMatrix);
 		material->Bind();
 		for (auto mesh : model->GetMeshes())
 		{

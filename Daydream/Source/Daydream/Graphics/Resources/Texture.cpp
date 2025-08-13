@@ -6,6 +6,7 @@
 #include "Daydream/Graphics/Core/Renderer.h"
 
 #include "stb_image.h"
+#include "TextureCube.h"
 
 namespace Daydream
 {

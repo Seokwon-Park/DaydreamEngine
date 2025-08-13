@@ -16,6 +16,11 @@ namespace Daydream
 		const Matrix4x4& GetProjectionMatrix() const;
 		const Matrix4x4& GetViewProjectionMatrix();
 
+		Vector3 GetForward();
+		Vector3 GetUp();
+		Vector3 GetRight();
+		Quaternion GetOrientation();
+
 		void SetPosition(Vector3 _position);
 		inline Vector3 GetPosition() const { return position; }
 
@@ -24,9 +29,9 @@ namespace Daydream
 		void SetProjectionType(ProjectionType _type) { projectionType = _type; }
 
 	protected:
-		virtual void UpdateMatrix();
-		virtual void UpdateViewMatrix();
-		virtual void UpdateProjectionMatrix();
+		void UpdateMatrix();
+		void UpdateViewMatrix();
+		void UpdateProjectionMatrix();
 
 		Matrix4x4 projectionMatrix;
 		Matrix4x4 viewMatrix;
@@ -34,10 +39,13 @@ namespace Daydream
 
 		Vector3 position, rotation;
 		Vector3 dir, up;
+		Quaternion orientation;
 		Float32 nearPlane, farPlane;
 		Float32 fovy;
 		Float32 orthoSize;
 		Float32 aspectRatio;
+
+
 		ProjectionType projectionType = ProjectionType::Perspective;
 	};
 }

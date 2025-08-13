@@ -38,6 +38,7 @@ namespace Daydream
 	void OpenGLSwapchain::SwapBuffers()
 	{
 		glfwSwapBuffers(window);
+		ResizeFramebuffers();
 	}
 	void OpenGLSwapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
 	{

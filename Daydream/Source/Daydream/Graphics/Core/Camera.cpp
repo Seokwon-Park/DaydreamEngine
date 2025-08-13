@@ -36,6 +36,25 @@ namespace Daydream
 	{
 		return viewProjectionMatrix;
 	}
+
+	Quaternion Camera::GetOrientation()
+	{
+		return orientation;
+	}
+
+	Vector3 Camera::GetForward()
+	{
+		return dir;
+	}
+	Vector3 Camera::GetUp()
+	{
+		return glm::rotate(GetOrientation(), Vector3(0.0f, 1.0f, 0.0f));
+	}
+	Vector3 Camera::GetRight()
+	{
+		return glm::cross(GetUp(), GetForward());
+	}
+
 	void Camera::SetPosition(Vector3 _position)
 	{
 		position = _position;

@@ -20,12 +20,22 @@ namespace Daydream
 
 	GameEntity* Scene::CreateGameEntity(const String& _name)
 	{
-		Unique<GameEntity> entity = MakeUnique<GameEntity>();
-		entity->SetName(_name);
-		entity->SetScene(this);
-		GameEntity* rawPtr = entity.get();
-		entities.emplace_back(std::move(entity));
+		Unique<GameEntity> newEntity = MakeUnique<GameEntity>();
+		newEntity->SetName(_name);
+		newEntity->SetScene(this);
+		GameEntity* rawPtr = newEntity.get();
+		entities.push_back(std::move(newEntity));
 		return rawPtr;
+	}
+
+	void Scene::AddLight(LightComponent* _light)
+	{
+		lights.push_back(_light);
+	}
+
+	void Scene::AddModelRenderer(ModelRendererComponent* _modelRenderer)
+	{
+		modelRenderers.push_back(_modelRenderer);
 	}
 
 	void Scene::Update(Float32 _deltaTime)

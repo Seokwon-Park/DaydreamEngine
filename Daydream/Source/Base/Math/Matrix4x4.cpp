@@ -100,4 +100,12 @@ namespace Daydream
 		mat.glmMat = glm::toMat4(_quat);
 		return mat;
 	}
+	Matrix4x4 Matrix4x4::TransformToWorldMatrix(Transform _transform)
+	{
+		Matrix4x4 world = Matrix4x4();
+		world.glmMat = glm::translate(world.glmMat, _transform.position);
+		world.glmMat *= QuatToMatrix(Quaternion(glm::radians(_transform.rotation))).glmMat;
+		world.glmMat = glm::scale(world.glmMat, _transform.scale);
+		return world;
+	}
 }

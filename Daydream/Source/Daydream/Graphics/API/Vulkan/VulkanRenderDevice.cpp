@@ -117,7 +117,7 @@ namespace Daydream
 
 			VkDescriptorPoolCreateInfo poolInfo = {};
 			poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-			poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+			poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT | VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT;
 			poolInfo.maxSets = 0;
 			for (VkDescriptorPoolSize& poolSize : poolSizes)
 				poolInfo.maxSets += poolSize.descriptorCount;
@@ -581,14 +581,25 @@ namespace Daydream
 		Float32 queuePriority = 1.0f;
 		queueCreateInfo.pQueuePriorities = &queuePriority;
 
-		VkPhysicalDeviceFeatures deviceFeatures{};
-		deviceFeatures.samplerAnisotropy = VK_TRUE;
+		VkPhysicalDeviceDescriptorIndexingFeatures descriptorIndexingFeatures{};
+		descriptorIndexingFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES;
+		descriptorIndexingFeatures.runtimeDescriptorArray = VK_TRUE;
+		descriptorIndexingFeatures.descriptorBindingPartiallyBound = VK_TRUE;
+		descriptorIndexingFeatures.descriptorBindingUniformBufferUpdateAfterBind = VK_TRUE; // 이 기능을 활성화!
+		descriptorIndexingFeatures.descriptorBindingSampledImageUpdateAfterBind = VK_TRUE; // 이 기능을 활성화!
+
+		// 2. 기존에 활성화하던 기본 기능들을 VkPhysicalDeviceFeatures2에 담습니다.
+		VkPhysicalDeviceFeatures2 deviceFeatures{};
+		deviceFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+		deviceFeatures.features.samplerAnisotropy = VK_TRUE; // 기존 deviceFeatures 내용을 여기로 옮김
+		deviceFeatures.pNext = &descriptorIndexingFeatures; // pNext 체인으로 세부 기능 연결
 
 		VkDeviceCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 		createInfo.pQueueCreateInfos = &queueCreateInfo;
 		createInfo.queueCreateInfoCount = 1;
-		createInfo.pEnabledFeatures = &deviceFeatures;
+		createInfo.pEnabledFeatures = nullptr;
+		createInfo.pNext = &deviceFeatures;
 		createInfo.enabledExtensionCount = Cast<UInt32>(deviceExtensions.size());
 		createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 		if (enableValidationLayers)

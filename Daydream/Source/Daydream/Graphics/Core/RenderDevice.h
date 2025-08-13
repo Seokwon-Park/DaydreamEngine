@@ -56,18 +56,15 @@ namespace Daydream
 		virtual void* GetImGuiTextureID(Shared<Texture2D> _texture) { return nullptr; };
 		
 		void CreateSwapchainForWindow(DaydreamWindow* _window);
+		void AddFramebufferResizeRequest(Framebuffer* _framebuffer, Vector2 _size) { framebufferResizeInfo.push_back({ _framebuffer, _size }); };
+		Array<Pair<Framebuffer*, Vector2>>& GetFramebufferResizeRequest() { return framebufferResizeInfo; }
 
 		inline RendererAPIType GetAPI() const { return API; }
-		inline Swapchain* GetSwapchain(UInt32 _index)
-		{
-			DAYDREAM_CORE_ASSERT(swapChains.size() > _index, "Not valid index!");
-			return swapChains[_index];
-		};
-		inline void AddSwapchain(Swapchain* _swapChain) { swapChains.push_back(_swapChain); }
 
 		static Unique<RenderDevice> Create(RendererAPIType _API);
 	protected:
-		Array<Swapchain*> swapChains;
 		RendererAPIType API = RendererAPIType::None;
+		Array<Pair<Framebuffer*, Vector2>> framebufferResizeInfo;
+		
 	};
 }

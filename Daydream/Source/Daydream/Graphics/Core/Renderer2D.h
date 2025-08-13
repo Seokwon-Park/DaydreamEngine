@@ -1,5 +1,5 @@
 #pragma once
-#include "OrthographicCamera.h"
+#include "Camera.h"
 
 namespace Daydream
 {

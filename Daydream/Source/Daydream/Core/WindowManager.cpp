@@ -1,4 +1,4 @@
-#include "DaydreamPCH.h";
+#include "DaydreamPCH.h"
 #include "WindowManager.h"
 
 namespace Daydream

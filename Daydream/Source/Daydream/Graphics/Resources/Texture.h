@@ -76,4 +76,6 @@ namespace Daydream
 		Int32 height = 0;
 		Int32 channels = 0;
 	};
+
+
 }

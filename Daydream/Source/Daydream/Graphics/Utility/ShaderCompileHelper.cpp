@@ -176,7 +176,7 @@ namespace Daydream
 		spirv_cross::CompilerGLSL::Options options{};
 		options.version = 450;  
 		options.separate_shader_objects = true;
-		options.vertex.flip_vert_y = true;
+		//options.vertex.flip_vert_y = true;
 				
 		compilerGLSL.set_common_options(options);
 		// GLSL 코드 생성

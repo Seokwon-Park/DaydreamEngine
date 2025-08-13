@@ -378,7 +378,7 @@
     <ClInclude Include="Source\Daydream\Graphics\Core\EditorCamera.h">
       <Filter>Source\Daydream\Graphics\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\Core\OrthographicCamera.h">
+    <ClInclude Include="Source\Daydream\Graphics\Core\CameraController.h">
       <Filter>Source\Daydream\Graphics\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\Core\PipelineState.h">
@@ -1743,6 +1743,12 @@
     <ClInclude Include="Source\Daydream\Graphics\Managers\ShaderManager.h" />
     <ClInclude Include="Source\Daydream\Graphics\Managers\PSOManager.h" />
     <ClInclude Include="Source\Daydream\Core\WindowManager.h" />
+    <ClInclude Include="Source\Daydream\Scene\Components\PropertyType.h" />
+    <ClInclude Include="Source\Daydream\ImGui\ImGuiWidgets.h" />
+    <ClInclude Include="Source\Daydream\Scene\Components\LightComponent.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Resources\Light.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Resources\TextureCube.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Utility\DDSLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -2035,5 +2041,11 @@
     <ClCompile Include="Source\Daydream\Graphics\Core\EditorCamera.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Managers\PSOManager.cpp" />
     <ClCompile Include="Source\Daydream\Core\WindowManager.cpp" />
+    <ClCompile Include="Source\Daydream\Scene\Components\TransformComponent.cpp" />
+    <ClCompile Include="Source\Daydream\ImGui\ImGuiWidgets.cpp" />
+    <ClCompile Include="Source\Daydream\Scene\Components\LightComponent.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Resources\Light.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Resources\TextureCube.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Utility\DDSLoader.cpp" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,4 @@
 #include "DaydreamPCH.h"
-#include "OrthographicCamera.h"
 
 //namespace Daydream
 //{

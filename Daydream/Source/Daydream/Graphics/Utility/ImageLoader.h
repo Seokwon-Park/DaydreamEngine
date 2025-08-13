@@ -2,10 +2,7 @@
 
 #include "stb_image.h"
 
-namespace Daydream
+namespace Daydream::ImageLoader
 {
-	namespace ImageLoader
-	{
-		Array<UInt8> LoadImageFile(const Daydream::FilePath& _path, Int32& _width, Int32& _height, Int32& _channels);
-	}
+	Array<UInt8> LoadImageFile(const Daydream::FilePath& _path, Int32& _width, Int32& _height, Int32& _channels);
 }

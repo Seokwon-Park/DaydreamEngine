@@ -24,8 +24,6 @@ namespace Daydream
 		CreateSwapchain();
 		CreateCommandBuffers();
 
-		result;
-
 		VkSemaphoreCreateInfo semaphoreInfo{};
 		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
@@ -148,30 +146,12 @@ namespace Daydream
 	}
 	void VulkanSwapchain::SwapBuffers()
 	{
-		VkViewport viewport{};
-		//viewport.x = 0.0f;
-		//viewport.y = (float)extent.height;
-		//viewport.width = (float)extent.width;
-		//viewport.height = -(float)extent.height;
-		viewport.x = 0.0f;
-		viewport.y = 0.0f;
-		viewport.width = (float)extent.width;
-		viewport.height = (float)extent.height;
-		viewport.minDepth = 0.0f;
-		viewport.maxDepth = 1.0f;
-		vkCmdSetViewport(device->GetCommandBuffer(), 0, 1, &viewport);
-
-		VkRect2D scissor{};
-		scissor.offset = { 0, 0 };
-		scissor.extent = extent;
-		vkCmdSetScissor(device->GetCommandBuffer(), 0, 1, &scissor);
-		//framebuffers[imageIndex]->End();
-		//vkCmdEndRenderPass(cmdbuf);
 		EndFrame();
 
-		currentFrame = (currentFrame + 1) % imageCount;
-
 		BeginFrame();
+		
+		ResizeFramebuffers();
+
 		//framebuffers[currentFrame]->Begin();
 	}
 
@@ -221,11 +201,14 @@ namespace Daydream
 	{
 		//이전 프레임의 GPU 작업 완료됐다는 신호를 inFlightFence로 받기로 하고 대기
 		vkWaitForFences(device->GetDevice(), 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
+
 		//완료 됐으면 펜스 상태는 신호받기 전으로
 		vkResetFences(device->GetDevice(), 1, &inFlightFences[currentFrame]);
 
 		//이미지를 GPU에 요청. 사용가능한 이미지의 인덱스를 imageIndex로 전달하고 imageAvailableSemaphore에 신호를 전달하라는 명령
-		VkResult e = vkAcquireNextImageKHR(device->GetDevice(), swapchain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+		VkResult result = vkAcquireNextImageKHR(device->GetDevice(), swapchain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
+		DAYDREAM_CORE_ASSERT(result == VK_SUCCESS, "Failed to Aquire Next Image!");
+
 		//이미지 요청만 해놓고 일단 커맨드 받기 시작
 		device->SetCommandBuffer(commandBuffers[currentFrame]);
 		vkResetCommandBuffer(commandBuffers[currentFrame], 0);
@@ -234,7 +217,7 @@ namespace Daydream
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-		VkResult result = vkBeginCommandBuffer(commandBuffers[currentFrame], &beginInfo);
+		result = vkBeginCommandBuffer(commandBuffers[currentFrame], &beginInfo);
 		DAYDREAM_CORE_ASSERT(result == VK_SUCCESS, "Failed to begin recording command buffer!");
 	}
 
@@ -277,6 +260,8 @@ namespace Daydream
 		presentInfo.pImageIndices = &imageIndex;
 
 		vkQueuePresentKHR(device->GetQueue(), &presentInfo);
+
+		currentFrame = (currentFrame + 1) % imageCount;
 	}
 
 	VkSurfaceFormatKHR VulkanSwapchain::ChooseSwapSurfaceFormat(const Array<VkSurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat)

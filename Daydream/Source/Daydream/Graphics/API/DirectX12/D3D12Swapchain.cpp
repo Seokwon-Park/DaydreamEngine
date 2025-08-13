@@ -106,9 +106,9 @@ namespace Daydream
 	{
 		EndFrame();
 
-		MoveToNextFrame();
-
 		BeginFrame();
+
+		ResizeFramebuffers();
 	}
 	void D3D12Swapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
 	{
@@ -174,8 +174,10 @@ namespace Daydream
 
 		Array<ID3D12CommandList*> execCommandLists = { commandLists[frameIndex].Get() };
 		device->GetCommandQueue()->ExecuteCommandLists((UInt32)execCommandLists.size(), execCommandLists.data());
-		
+
 		swapChain->Present(desc.isVSync, 0);
+
+		MoveToNextFrame();
 	}
 
 	//모든 GPU작업이 끝날때까지 대기

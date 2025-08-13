@@ -15,7 +15,7 @@ namespace Daydream
 		ImGui_ImplDX12_InitInfo info{};
 		info.Device = device->GetDevice();
 		info.CommandQueue = device->GetCommandQueue();
-		info.NumFramesInFlight = 2;
+		info.NumFramesInFlight = 3;
 		info.RTVFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 		info.DSVFormat = DXGI_FORMAT_UNKNOWN;
 		info.UserData = device;

@@ -15,6 +15,7 @@ namespace Daydream
 		~GameEntity();
 
 		inline void SetName(const String& _name) { name = _name; }
+		inline const String& GetName() { return name; }
 		inline void SetScene(Scene* _scene) { scene = _scene; }
 		Scene* GetScene() { return scene; }
 		void Init();
@@ -26,25 +27,46 @@ namespace Daydream
 		}
 
 		template <class ComponentType>
+		ComponentType* GetComponent()
+		{
+			auto it = componentMap.find(std::type_index(typeid(ComponentType)));
+			if (it == componentMap.end())
+			{
+				return nullptr; // 해당 타입의 컴포넌트가 없음
+			}
+
+			return static_cast<ComponentType*>(it->second);
+		}
+
+		template <class ComponentType>
 		ComponentType* AddComponent()
 		{
-			ComponentType* newComponent = new ComponentType();
 			static_assert(std::is_base_of<Component, ComponentType>::value, "Template argument must inherit from Component!");
+			Unique<ComponentType> newComponent = MakeUnique<ComponentType>();
 			newComponent->SetOwner(this);
 			newComponent->Init();
-			Component* temp = static_cast<Component*>(newComponent);
-			components.push_back(newComponent);
-			return newComponent;
+			ComponentType* rawPtr = newComponent.get();
+			std::type_index id = std::type_index(typeid(ComponentType));
+			if (componentMap.find(id) != componentMap.end())
+			{
+				return nullptr;
+			}
+			componentMap[id] = rawPtr;
+			components.push_back(std::move(newComponent));
+			return rawPtr;
 		};
+
+		Array<Unique<Component>>& GetAllComponents() { return components; };
 	protected:
 
 	private:
-		Array<Component*> components;
+		Array<Unique<Component>> components;
+		HashMap<std::type_index, Component*> componentMap;
 
 		Scene* scene;
 
 		GameEntity* parent = nullptr;
-		Array<GameEntity*> children;
+		Array<GameEntity*> childrens;
 
 		std::string name;
 	};

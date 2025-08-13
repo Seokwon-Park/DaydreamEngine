@@ -29,6 +29,9 @@ namespace Daydream
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
+		ImFont* font1 = io.Fonts->AddFontFromFileTTF("Asset/Font/NotoSansKR-Regular.ttf", 20.0f);
+		io.FontDefault = font1;
+
 		//if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		//{
 		//	ImGui::UpdatePlatformWindows();

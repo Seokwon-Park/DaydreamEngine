@@ -26,7 +26,6 @@ namespace Daydream
 		ComPtr<ID3D11ShaderReflection> reflection;
 	private:
 	};
-
 	
 
 	class D3D11PixelShader : public D3D11Shader

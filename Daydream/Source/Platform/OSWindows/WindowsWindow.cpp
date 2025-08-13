@@ -37,6 +37,8 @@ namespace Daydream
 		windowData.height = _props.height;
 		windowData.keyStates.resize(GLFW_KEY_LAST + 1, 0);
 		windowData.keyDownChecker.resize(GLFW_KEY_LAST + 1, 0);
+		windowData.mouseStates.resize(GLFW_MOUSE_BUTTON_LAST + 1, 0);
+		windowData.mouseDownChecker.resize(GLFW_MOUSE_BUTTON_LAST + 1, 0);
 
 		//std::wstring title(windowData.title.begin(), windowData.title.end());
 
@@ -128,12 +130,15 @@ namespace Daydream
 				case GLFW_PRESS:
 				{
 					MouseButtonPressedEvent event(_button);
+					data.mouseStates[_button] = DAYDREAM_PRESS;
 					data.eventCallbackFn(event);
 					break;
 				}
 				case GLFW_RELEASE:
 				{
 					MouseButtonReleasedEvent event(_button);
+					data.mouseStates[_button] = DAYDREAM_RELEASE;
+					data.mouseDownChecker[_button] = false;
 					data.eventCallbackFn(event);
 					break;
 				}
@@ -179,13 +184,21 @@ namespace Daydream
 	{
 		return windowData.isVSync;
 	}
-	void WindowsWindow::OnUpdateKeyState()
+	void WindowsWindow::OnUpdateInputState()
 	{
 		for (int i = 0; i < GLFW_KEY_LAST; i++)
 		{
 			if (windowData.keyStates[i] == DAYDREAM_RELEASE)
 			{
 				windowData.keyStates[i] = DAYDREAM_IDLE;
+			}
+		}
+
+		for (int i = 0; i < GLFW_MOUSE_BUTTON_LAST; i++)
+		{
+			if (windowData.mouseStates[i] == DAYDREAM_RELEASE)
+			{
+				windowData.mouseStates[i] = DAYDREAM_IDLE;
 			}
 		}
 	}

@@ -99,7 +99,8 @@ namespace Daydream
 		const Array<const char*> deviceExtensions = {
 			VK_KHR_SWAPCHAIN_EXTENSION_NAME,
 			VK_GOOGLE_HLSL_FUNCTIONALITY_1_EXTENSION_NAME,
-			VK_GOOGLE_USER_TYPE_EXTENSION_NAME
+			VK_GOOGLE_USER_TYPE_EXTENSION_NAME,
+			VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME
 		};
 		VkInstance instance; // Vulkan library handle
 		VkDebugUtilsMessengerEXT debugMessenger;

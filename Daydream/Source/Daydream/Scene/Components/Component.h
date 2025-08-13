@@ -1,10 +1,19 @@
 #pragma once
 
+#include "PropertyType.h"
+
+#define DEFINE_COMPONENT_NAME(className)                            \
+public:                                                             \
+    const char* GetName() const override							\
+	{																\
+        return #className;                                          \
+    }
+
 namespace Daydream
 {
 	class GameEntity;
 
-	class Component
+	class Component : public IReflectable
 	{
 	public:
 		Component();
@@ -13,9 +22,14 @@ namespace Daydream
 		inline void SetOwner(GameEntity* _entity) { owner = _entity; }
 		inline GameEntity* GetOwner() const { return owner; }
 
-		virtual void Init();
-		virtual void Update(Float32 _deltaTime);
+		virtual void Init() = 0;
+		virtual void Update(Float32 _deltaTime) = 0;
+
+		virtual const char* GetName() const = 0;
+
 	protected:
 		GameEntity* owner = nullptr;
+		
 	};
 }
+

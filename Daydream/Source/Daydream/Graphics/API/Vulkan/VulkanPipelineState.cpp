@@ -76,16 +76,27 @@ namespace Daydream
 				binding.stageFlags = GraphicsUtil::GetVKShaderStage(shader->GetType());
 				binding.pImmutableSamplers = nullptr;
 				setBindings[info.set].push_back(binding);
+
+				VkDescriptorBindingFlags bindingFlags = VK_DESCRIPTOR_BINDING_UPDATE_AFTER_BIND_BIT;
 			}
 
 		}
 
 		for (const auto& [setIndex, bindings] : setBindings)
 		{
+			Array<VkDescriptorBindingFlags> bindingFlags(bindings.size(), VK_DESCRIPTOR_BINDING_UPDATE_AFTER_BIND_BIT);
+
+			VkDescriptorSetLayoutBindingFlagsCreateInfo extendedInfo{};
+			extendedInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_BINDING_FLAGS_CREATE_INFO;
+			extendedInfo.bindingCount = bindingFlags.size();
+			extendedInfo.pBindingFlags = bindingFlags.data();
+
 			VkDescriptorSetLayoutCreateInfo layoutCreateInfo{};
 			layoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+			layoutCreateInfo.pNext = &extendedInfo; // 확장 정보 연결!
 			layoutCreateInfo.bindingCount = Cast<UInt32>(bindings.size());
 			layoutCreateInfo.pBindings = bindings.data();
+			layoutCreateInfo.flags = VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT;
 
 			VkDescriptorSetLayout layout;
 			if (vkCreateDescriptorSetLayout(device->GetDevice(), &layoutCreateInfo, nullptr, &layout) != VK_SUCCESS) {

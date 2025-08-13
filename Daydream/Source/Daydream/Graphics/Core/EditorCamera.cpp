@@ -13,39 +13,23 @@ namespace Daydream
 	void EditorCamera::Update(Float32 _deltaTime)
 	{
 		const Vector2& mouse{ Input::GetMouseX(), Input::GetMouseY() };
-		if (Input::GetMousePressed(Mouse::ButtonRight))
-		{
-			Vector2 delta = (mouse - prevMousePos);
-			//DAYDREAM_CORE_INFO("{}, {}", delta.x, delta.y);
+		delta = (mouse - prevMousePos);
+		//DAYDREAM_CORE_INFO("{}, {}", delta.x, delta.y);
 
-			CameraRotate(delta);
-			CameraMove(_deltaTime);
-		}
+		orientation = Quaternion(Vector3(pitch, yaw, 0.0f));
+		dir = glm::rotate(orientation, Vector3(0.0f, 0.0f, 1.0f));
+		up = glm::rotate(orientation, Vector3(0.0f, 1.0f, 0.0f));
+
+		UpdateViewMatrix();
 
 		prevMousePos = mouse;
 	}
-	Quaternion EditorCamera::GetOrientation()
-	{
-		return Quaternion(Vector3(pitch, yaw, 0.0f));
-	}
-	Vector3 EditorCamera::GetForward()
-	{
-		return glm::rotate(GetOrientation(), dir);
-	}
-	Vector3 EditorCamera::GetUp()
-	{
-		return glm::rotate(GetOrientation(), up);
-	}
-	Vector3 EditorCamera::GetRight()
-	{
-		return glm::cross(GetUp(), GetForward());
-	}
-	void EditorCamera::CameraRotate(Vector2 _delta)
-	{
-		yaw += _delta.x * rotationSpeed;
-		pitch -= _delta.y * rotationSpeed;
 
-		UpdateViewMatrix();
+	void EditorCamera::CameraRotate()
+	{
+		yaw += delta.x * rotationSpeed;
+		pitch += delta.y * rotationSpeed;
+
 	}
 
 	void EditorCamera::CameraMove(Float32 _deltaTime)
@@ -79,11 +63,9 @@ namespace Daydream
 			SetPosition(position + GetRight() * _deltaTime);
 		}
 	}
-
-	void EditorCamera::UpdateViewMatrix()
+	void EditorCamera::ControlCameraView(Float32 _deltaTime)
 	{
-
-		viewMatrix = Matrix4x4::LookTo(position, GetForward(), GetUp());
-		Camera::UpdateMatrix();
+		CameraRotate();
+		CameraMove(_deltaTime);
 	}
 }

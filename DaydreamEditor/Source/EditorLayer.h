@@ -1,6 +1,9 @@
 #pragma once
 
 #include <Daydream.h>
+#include "EditorPanels/SceneHierarchyPanel.h"
+#include "EditorPanels/ViewportPanel.h"
+#include "EditorPanels/PropertyPanel.h"
 
 namespace Daydream
 {
@@ -13,20 +16,22 @@ namespace Daydream
 		virtual void OnImGuiRender() override;
 		virtual void OnDetach() override;
 		void CreateDockspace();
-		void UpdateViewportSize(); 
+		void UpdateViewportSize();
 	private:
 		Vector2 mainWindowSize;
 		Vector2 viewportSize;
-		bool isViewportFocused = false;
+		bool isViewportHovered = false;
 		bool viewportShouldResize = true;
 
 		Shared<VertexBuffer> squareVB;
 		Shared<VertexBuffer> squareVB2;
 		Shared<IndexBuffer> squareIB;
 		Shared<IndexBuffer> squareIB2;
-		Shared<ConstantBuffer> viewProjMat;
 		Shared<Texture2D> texture;
 		Shared<Texture2D> texture2;
+
+		Shared<ConstantBuffer> viewProjMat;
+		Shared<ConstantBuffer> lightBuffer;
 
 		Shared<Shader> vs;
 		Shared<Shader> ps;
@@ -46,7 +51,13 @@ namespace Daydream
 
 		Shared<Scene> activeScene;
 
-		Shared<Camera> camera;
-		Matrix4x4 cameraPos;
+		Shared<EditorCamera> editorCamera;
+
+		LightData lightData;
+
+		ViewportPanel viewportPanel;
+		PropertyPanel propertyPanel;
+		SceneHierarchyPanel sceneHierarchyPanel;
+		
 	};
 }

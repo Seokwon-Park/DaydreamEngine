@@ -75,6 +75,7 @@ namespace Daydream
 	void D3D11Swapchain::SwapBuffers()
 	{
 		swapChain->Present(desc.isVSync, 0);
+		ResizeFramebuffers();
 	}
 
 	void D3D11Swapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)

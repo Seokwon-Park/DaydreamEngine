@@ -29,6 +29,7 @@ namespace Daydream
 		virtual void BeginFrame() = 0;
 		virtual void EndFrame() = 0;
 
+		void ResizeFramebuffers();
 		void BeginRenderPass() { return mainRenderPass->Begin(GetBackFramebuffer()); }
 		void EndRenderPass() { return mainRenderPass->End(); }
 

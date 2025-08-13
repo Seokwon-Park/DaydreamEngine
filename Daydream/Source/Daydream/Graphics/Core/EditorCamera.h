@@ -12,21 +12,23 @@ namespace Daydream
 
 		virtual void Update(Float32 _deltaTime) override;
 		void OnEvent(Event& e);
-		Quaternion GetOrientation();
 
-		Vector3 GetForward();
-		Vector3 GetUp();
-		Vector3 GetRight();
-	private:
-		virtual void UpdateViewMatrix() override;
-
-		void CameraRotate(Vector2 _delta);
+		void CameraRotate();
 		void CameraMove(Float32 _deltaTime);
 
+		void ControlCameraView(Float32 _deltaTime);
+	private:
+
+		//virtual void UpdateViewMatrix() override;
+
+		Vector2 delta;
 		Vector2 prevMousePos{ 0, 0 };
-		float pitch = 0.0f;
-		float yaw = 0.0f;
+
+		Float32 pitch = 0.0f;
+		Float32 yaw = 0.0f;
+
 		float rotationSpeed = 0.01f;
 		float moveSpeed = 0.01f;
+		bool isDragging = false;
 	};
 }

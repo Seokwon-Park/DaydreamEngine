@@ -1,6 +1,7 @@
 #include "EditorLayer.h"
 #include "imgui/imgui.h"
 
+#include "Daydream/Scene/Components/LightComponent.h"
 #include "Daydream/Scene/Components/ModelRendererComponent.h"
 
 namespace Daydream
@@ -9,7 +10,7 @@ namespace Daydream
 		:Layer("Editor Layer")
 	{
 		//camera = MakeShared<EditorCamera>();
-		camera = MakeShared<Camera>();
+		editorCamera = MakeShared<EditorCamera>();
 
 		float squareVertices[4 * 9] = {
 		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
@@ -51,10 +52,9 @@ namespace Daydream
 		vs3d = Daydream::Shader::Create("Asset/Shader/ModelVS.hlsl", Daydream::ShaderType::Vertex, Daydream::ShaderLoadMode::File);
 		ps3d = Daydream::Shader::Create("Asset/Shader/ModelPS.hlsl", Daydream::ShaderType::Pixel, Daydream::ShaderLoadMode::File);
 
-		camera->SetPosition({ 0.0f,0.0f,-2.0f });
-		cameraPos = camera->GetViewProjectionMatrix();
+		editorCamera->SetPosition({ 0.0f,0.0f,-2.0f });
 		viewProjMat = Daydream::ConstantBuffer::Create(sizeof(Daydream::Matrix4x4));
-		viewProjMat->Update(&cameraPos.mat, sizeof(Daydream::Matrix4x4));
+		viewProjMat->Update(&editorCamera->GetViewProjectionMatrix(), sizeof(Daydream::Matrix4x4));
 
 		auto path = Daydream::FilePath("Asset/Texture/Checkerboarduv.png");
 		Daydream::TextureDesc textureDesc{};
@@ -108,26 +108,55 @@ namespace Daydream
 
 		material3d->SetConstantBuffer("Camera", viewProjMat);
 
-
-
 		activeScene = MakeShared<Scene>("MainScene");
+
+		///////////////////////////////////////////////////////
 		auto entity = activeScene->CreateGameEntity();
 		entity->SetName("Test");
 
-		Shared<Model> model = MakeShared<Model>();
+		model = MakeShared<Model>();
 		model->Load("Asset/Model/Lowpoly_tree_sample.fbx");
 
 		ModelRendererComponent* component = entity->AddComponent<ModelRendererComponent>();
 		component->SetModel(model);
 		component->SetMaterial(material3d);
+
+		sceneHierarchyPanel.SetCurrentScene(activeScene.get());
+
+		////////////////////////Light////////////////////////////
+		auto lightEntity = activeScene->CreateGameEntity("Directional Light");
+		lightEntity->AddComponent<LightComponent>();
+		lightBuffer = Daydream::ConstantBuffer::Create(sizeof(LightData));
+
+		material3d->SetConstantBuffer("Lights", lightBuffer);
 	}
 
 	void EditorLayer::OnUpdate(Float32 _deltaTime)
 	{
-		camera->Update(_deltaTime);
-		viewProjMat->Update(&camera->GetViewProjectionMatrix(), sizeof(Daydream::Matrix4x4));
+		editorCamera->Update(_deltaTime);
+		viewProjMat->Update(&editorCamera->GetViewProjectionMatrix(), sizeof(Daydream::Matrix4x4));
+
+		static bool isViewControlled = false;
+		if (isViewportHovered && Input::GetMouseDown(Mouse::ButtonRight))
+		{
+			isViewControlled = true;
+		}
+		if  (Input::GetMouseReleased(Mouse::ButtonRight))
+		{
+			isViewControlled = false;
+		}
+		if (isViewControlled)
+		{
+			editorCamera->ControlCameraView(_deltaTime);
+		}
 
 
+		lightData.lightCount = 0;
+		for (auto* lightComponent : activeScene->GetLights())
+		{
+			lightData.lights[lightData.lightCount++] = lightComponent->GetLight();
+		}
+		lightBuffer->Update(&lightData, sizeof(LightData));
 		//for (int i = 0; i < 4; i++)
 		//{
 		//	DAYDREAM_CORE_INFO("{}, {}, {}, {}", camera->GetProjectionMatrix().mat[i][0]
@@ -147,6 +176,10 @@ namespace Daydream
 
 		pso3d->Bind();
 		activeScene->Update(_deltaTime);
+		
+
+
+		
 
 		renderPass->End();
 
@@ -192,24 +225,17 @@ namespace Daydream
 			ImGuiWindowFlags_NoScrollWithMouse);
 		//DAYDREAM_INFO("{0}, {1}", viewportSize.x, viewportSize.y);
 		UpdateViewportSize();
-		isViewportFocused = ImGui::IsWindowHovered();
-		ImGui::Image((ImTextureID)viewportFramebuffer->GetColorAttachmentTexture(0)->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y }, ImVec2{ 0,1 }, ImVec2{ 1,0 });
+		isViewportHovered = ImGui::IsWindowHovered();
+
+
+		ImGui::Image((ImTextureID)viewportFramebuffer->GetColorAttachmentTexture(0)->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
 		//ImGui::Text("Rendered Scene will go here!");
 		ImGui::End();
 		ImGui::PopStyleVar();
 
-
-		// 예시: 속성 패널
-		ImGui::Begin("Properties");
-		ImGui::Text("Selected Object Properties");
-		// 나중에 선택된 객체의 트랜스폼, 머티리얼 속성 등을 표시
-		ImGui::End();
-
-		// 예시: 씬 계층 구조 패널
-		ImGui::Begin("Scene Hierarchy");
-		ImGui::Text("Scene Graph/Hierarchy");
-		// 나중에 씬 내의 객체들을 트리 형태로 표시
-		ImGui::End();
+		sceneHierarchyPanel.OnImGuiRender();
+		propertyPanel.SetSelectedEntity(sceneHierarchyPanel.GetSelectedEntity());
+		propertyPanel.OnImGuiRender();
 
 		// 예시: 자산 브라우저 패널
 		ImGui::Begin("Asset Browser");
@@ -233,7 +259,7 @@ namespace Daydream
 		bool isWindowResized = mainWindowSize.x != ImGui::GetMainViewport()->Size.x || mainWindowSize.y != ImGui::GetMainViewport()->Size.y;
 		bool isViewportResized = viewportFramebuffer->GetWidth() != ImGuiViewportSize.x || viewportFramebuffer->GetHeight() != ImGuiViewportSize.y;
 		if (currentActive) return; // 그냥 활성화 상태면 일단 크기조절하지마.
-		if (isViewportResized || isWindowResized) // 윈도우 크기가 저장된 값과 다르거나 Imgui 윈도우 크기가 framebuffer크기와 다르면 리사이즈 된거임
+		if (isViewportResized) // 윈도우 크기가 저장된 값과 다르거나 Imgui 윈도우 크기가 framebuffer크기와 다르면 리사이즈 된거임
 		{
 			// 최종 크기로 카메라 및 프레임버퍼 업데이트
 			// 이 시점에는 이미 currentContentRegionSize가 최종 크기를 담고 있습니다.
@@ -243,10 +269,11 @@ namespace Daydream
 				// 리사이즈 완료 메시지 로깅
 				DAYDREAM_CORE_INFO("Viewport final resized to: {0}, {1}", ImGuiViewportSize.x, ImGuiViewportSize.y);
 
-				Renderer::EndSwapchainRenderPass(Renderer::GetCurrentWindow());
-				// D3D12Framebuffer 리사이즈 (GPU 동기화 로직 포함)
-				viewportFramebuffer->Resize(static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
-				Renderer::BeginSwapchainRenderPass(Renderer::GetCurrentWindow());
+				//Renderer::EndSwapchainRenderPass(Renderer::GetCurrentWindow());
+				//// D3D12Framebuffer 리사이즈 (GPU 동기화 로직 포함)
+				//viewportFramebuffer->Resize(static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
+				//Renderer::BeginSwapchainRenderPass(Renderer::GetCurrentWindow());
+				viewportFramebuffer->RequestResize(static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
 
 				// 카메라의 뷰포트 크기 업데이트
 				// camera->SetViewportSize(currentContentRegionSize.x, currentContentRegionSize.y);
@@ -256,8 +283,8 @@ namespace Daydream
 				viewportSize.y = ImGuiViewportSize.y;
 				mainWindowSize.x = ImGui::GetMainViewport()->Size.x;
 				mainWindowSize.y = ImGui::GetMainViewport()->Size.y;
-				camera->UpdateAspectRatio(ImGuiViewportSize.x, ImGuiViewportSize.y);
-				viewProjMat->Update(&camera->GetViewProjectionMatrix(), sizeof(Daydream::Matrix4x4));
+				editorCamera->UpdateAspectRatio(ImGuiViewportSize.x, ImGuiViewportSize.y);
+				viewProjMat->Update(&editorCamera->GetViewProjectionMatrix(), sizeof(Daydream::Matrix4x4));
 			}
 		}
 

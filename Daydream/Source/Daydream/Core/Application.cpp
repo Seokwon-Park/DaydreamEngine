@@ -125,9 +125,14 @@ namespace Daydream
 			//auto [x, y] = Input::GetMousePosition();
 			////DAYDREAM_CORE_TRACE("{0}, {1}", x, y);
 
-			//if (Input::GetMouseButtonPress(Mouse::ButtonLeft))
+			//if (Input::GetMouseDown(Mouse::ButtonLeft))
 			//{
 			//	DAYDREAM_CORE_TRACE("MOUSE BUTTON DOWN TEST");
+			//}
+
+			//if (Input::GetMouseReleased(Mouse::ButtonLeft))
+			//{
+			//	DAYDREAM_CORE_TRACE("MOUSE BUTTON RELEASE TEST");
 			//}
 
 			//if (Input::GetMousePressed(Mouse::ButtonLeft))
@@ -145,7 +150,7 @@ namespace Daydream
 			//	DAYDREAM_CORE_TRACE("KEY UP TEST");
 			//}
 
-			mainWindow->OnUpdateKeyState();
+			mainWindow->OnUpdateInputState();
 			mainWindow->OnUpdate();
 			//testWindow->OnUpdate();
 		}

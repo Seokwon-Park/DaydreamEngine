@@ -14,6 +14,7 @@
 #include <set>
 #include <unordered_map>
 #include <variant>
+#include <typeindex>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>

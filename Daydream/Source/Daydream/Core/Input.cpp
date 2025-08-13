@@ -36,11 +36,33 @@ namespace Daydream
 		}
 		return false;
 	}
+
+	bool Input::GetMouseDown(MouseCode _button)
+	{
+		DaydreamWindow& window = Application::GetInstance().GetMainWindow();
+		int state = window.GetMouseState(_button);
+		//_key가 눌려 있지 않으면
+		if (state == DAYDREAM_PRESS && window.GetIsMouseDown(_button) == false)
+		{
+			//_key를 누른 것으로 설정한다. -> 다음 틱에서도 누르고 있으면 false 리턴
+			window.SetMouseDown(_button);
+			return true;
+		}
+		return false;
+	}
+
 	bool Input::GetMousePressed(MouseCode _button)
 	{
 		DaydreamWindow& window = Application::GetInstance().GetMainWindow();
 		int state = window.GetMouseState(_button);
 		return state == DAYDREAM_PRESS;
+	}
+
+	bool Input::GetMouseReleased(MouseCode _button)
+	{
+		DaydreamWindow& window = Application::GetInstance().GetMainWindow();
+		int state = window.GetMouseState(_button);
+		return state == DAYDREAM_RELEASE;
 	}
 	Pair<Float32, Float32> Input::GetMousePosition()
 	{

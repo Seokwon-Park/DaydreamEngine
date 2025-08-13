@@ -51,7 +51,9 @@ namespace Daydream
 		virtual void SetKeyState(int _key, int _state) = 0;
 		virtual bool GetIsKeyDown(int _key) const = 0;
 		virtual void SetKeyDown(int _key) = 0;
-		virtual void OnUpdateKeyState() = 0;
+		virtual bool GetIsMouseDown(int _key) const = 0;
+		virtual void SetMouseDown(int _key) = 0;
+		virtual void OnUpdateInputState() = 0;
 
 		void SetSwapchain(Shared<Swapchain> _swapchain) { swapChain = _swapchain; }
 		Swapchain* GetSwapchain() const { return swapChain.get(); }

@@ -23,8 +23,8 @@ namespace Daydream
 		info.Queue = device->GetQueue();
 		info.DescriptorPool = device->GetDescriptorPool();
 		info.RenderPass = static_cast<VulkanSwapchain*>(_window->GetSwapchain())->GetVkRenderPass();
-		info.MinImageCount = 2;
-		info.ImageCount = 2;
+		info.MinImageCount = 3;
+		info.ImageCount = 3;
 		info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
 
 		ImGui_ImplVulkan_Init(&info);
