@@ -27,6 +27,7 @@ namespace Daydream
 		TransferDestination = 1 << 9,
 	};
 
+
 	inline RenderBindFlags operator|(RenderBindFlags a, RenderBindFlags b)
 	{
 		return static_cast<RenderBindFlags>(static_cast<int>(a) | static_cast<int>(b));
@@ -37,6 +38,11 @@ namespace Daydream
 		return static_cast<RenderBindFlags>(static_cast<int>(a) & static_cast<int>(b));
 	}
 
+	enum class BufferUsage
+	{
+		Static,
+		Dynamic
+	};
 
 	enum class ShaderType
 	{

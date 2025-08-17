@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Daydream/Enum/RendererEnums.h"
-#include "vulkan/vulkan.h"
+#include "vulkan/vulkan.hpp"
 #include "glad/glad.h"
 #include "spirv_cross/spirv_cross.hpp"
 
@@ -31,7 +31,8 @@ namespace Daydream
 
 		//RenderFormat
 		DXGI_FORMAT ConvertRenderFormatToDXGIFormat(RenderFormat _format);
-		VkFormat ConvertRenderFormatToVkFormat(RenderFormat _format);
+		//VkFormat ConvertRenderFormatToVkFormat(RenderFormat _format);
+		vk::Format ConvertRenderFormatToVkFormat(RenderFormat _format);
 		UInt32 ConvertRenderFormatToGLFormat(RenderFormat _format);
 		UInt32 ConvertRenderFormatToGLDataFormat(RenderFormat _format);
 		RenderFormat ConvertSPIRVTypeToRenderFormat(spirv_cross::SPIRType::BaseType _baseType, UInt32 _componentCount);
@@ -47,13 +48,13 @@ namespace Daydream
 		GLenum GetGLShaderStage(ShaderType _type);
 		GLenum GetGLShaderType(ShaderType _type);
 		D3D12_SHADER_VISIBILITY GetDX12ShaderVisibility(ShaderType _type);
-		VkShaderStageFlagBits GetVKShaderStage(ShaderType _type);
+		vk::ShaderStageFlagBits GetVKShaderStage(ShaderType _type);
 
 		UInt32 ConvertToD3D11BindFlags(RenderBindFlags _flags);
 		D3D12_RESOURCE_FLAGS ConvertToD3D12BindFlags(RenderBindFlags flags);
 		D3D12_RESOURCE_STATES ConvertToD3D12ResourceStates(RenderBindFlags flags);
 
-		VkImageUsageFlags ConvertToVkImageUsageFlags(RenderBindFlags usageFlags);
+		vk::ImageUsageFlags ConvertToVkImageUsageFlags(RenderBindFlags usageFlags);
 
 		String GetVendor(UInt32 _vendorCode);
 	}

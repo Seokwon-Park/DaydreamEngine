@@ -108,14 +108,12 @@ namespace Daydream
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
-		virtual void SetData(void* _data, UInt32 _dataSize) = 0;
+		virtual void SetData(const void* _data, UInt32 _dataSize) = 0;
 
-		void SetSlot(UInt32 _slot = 0) { slot = _slot; }
-
-		static Shared<VertexBuffer> CreateDynamic(UInt32 _size, UInt32 _stride);
-		static Shared<VertexBuffer> CreateStatic(void* _vertices, UInt32 _size, UInt32 _stride);
+		static Shared<VertexBuffer> CreateDynamic(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize = 0, const void* _initialData = nullptr);
+		static Shared<VertexBuffer> CreateStatic(UInt32 _size, UInt32 _stride, const void* _initialData);
 	protected:
-		UInt32 slot = 0;
+		BufferUsage usage;
 	};
 
 	class IndexBuffer

@@ -18,10 +18,10 @@ namespace Daydream
 
 		virtual Shared<Framebuffer> CreateFramebuffer(const FramebufferDesc& _desc) override;
 
-		VkRenderPass GetVkRenderPass() const { return renderPass; }
+		vk::RenderPass GetVkRenderPass() const { return renderPass.get(); }
 	private:
 		VulkanRenderDevice* device;
-		VkRenderPass renderPass;
+		vk::UniqueRenderPass renderPass;
 		Shared<VulkanFramebuffer> currentFramebuffer;
 	};
 }

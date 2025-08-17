@@ -28,9 +28,6 @@
 #include "Daydream/Enum/RendererEnums.h"
 #include "Base/Base.h"
 
-
-
-
 #if defined(DAYDREAM_PLATFORM_WINDOWS)
 	#define GLFW_EXPOSE_NATIVE_WIN32
 	#ifndef NOMINMAX

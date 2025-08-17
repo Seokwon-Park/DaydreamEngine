@@ -10,67 +10,66 @@ namespace Daydream
 	{
 		device = _device;
 		desc = _desc;
-		std::vector<VkAttachmentDescription> attachments;
-		std::vector<VkAttachmentReference> colorAttachmentRefs;
+		std::vector<vk::AttachmentDescription> attachments;
+		std::vector<vk::AttachmentReference> colorAttachmentRefs;
 
 		// 컬러 attachment들
 		for (size_t i = 0; i < _desc.colorAttachments.size(); ++i)
 		{
-			VkAttachmentDescription colorAttachment{};
+			vk::AttachmentDescription colorAttachment{};
 			colorAttachment.format = GraphicsUtil::ConvertRenderFormatToVkFormat(_desc.colorAttachments[i].format);
-			colorAttachment.samples = static_cast<VkSampleCountFlagBits>(_desc.samples);
-			colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-			colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-			colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-			colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-			colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-			colorAttachment.finalLayout = _desc.isSwapchain? VK_IMAGE_LAYOUT_PRESENT_SRC_KHR : VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			colorAttachment.samples = static_cast<vk::SampleCountFlagBits>(_desc.samples);
+			colorAttachment.loadOp = vk::AttachmentLoadOp::eClear;
+			colorAttachment.storeOp = vk::AttachmentStoreOp::eStore;
+			colorAttachment.stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
+			colorAttachment.stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
+			colorAttachment.initialLayout = vk::ImageLayout::eUndefined;
+			colorAttachment.finalLayout =_desc.colorAttachments[i].isSwapchain ? vk::ImageLayout::ePresentSrcKHR : vk::ImageLayout::eShaderReadOnlyOptimal;
 
 			attachments.push_back(colorAttachment);
 
-			VkAttachmentReference colorAttachmentRef{};
+			vk::AttachmentReference colorAttachmentRef{};
 			colorAttachmentRef.attachment = static_cast<uint32_t>(i);
-			colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+			colorAttachmentRef.layout = vk::ImageLayout::eColorAttachmentOptimal;
 			colorAttachmentRefs.push_back(colorAttachmentRef);
 		}
 
 		// 깊이 attachment
-		VkAttachmentReference depthAttachmentRef{};
+		vk::AttachmentReference depthAttachmentRef{};
 		bool hasDepth = (_desc.depthAttachment.format != RenderFormat::UNKNOWN);
 		if (hasDepth)
 		{
-			VkAttachmentDescription depthAttachment{};
+			vk::AttachmentDescription depthAttachment{};
 			depthAttachment.format = GraphicsUtil::ConvertRenderFormatToVkFormat(_desc.depthAttachment.format);
-			depthAttachment.samples = static_cast<VkSampleCountFlagBits>(_desc.samples);
-			depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-			depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-			depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-			depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-			depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-			depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+			depthAttachment.samples = static_cast<vk::SampleCountFlagBits>(_desc.samples);
+			depthAttachment.loadOp = vk::AttachmentLoadOp::eClear;
+			depthAttachment.storeOp = vk::AttachmentStoreOp::eDontCare;
+			depthAttachment.stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
+			depthAttachment.stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
+			depthAttachment.initialLayout = vk::ImageLayout::eUndefined;
+			depthAttachment.finalLayout = vk::ImageLayout::eDepthStencilAttachmentOptimal;
 
 			attachments.push_back(depthAttachment);
 
 			depthAttachmentRef.attachment = static_cast<uint32_t>(attachments.size() - 1);
-			depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+			depthAttachmentRef.layout = vk::ImageLayout::eDepthStencilAttachmentOptimal;
 		}
 
-		VkSubpassDescription subpass{};
-		subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+		vk::SubpassDescription subpass{};
+		subpass.pipelineBindPoint = vk::PipelineBindPoint::eGraphics;
 		subpass.colorAttachmentCount = static_cast<uint32_t>(colorAttachmentRefs.size());
 		subpass.pColorAttachments = colorAttachmentRefs.data();
 		subpass.pDepthStencilAttachment = hasDepth ? &depthAttachmentRef : nullptr;
 
-		VkSubpassDependency dependency{};
+		vk::SubpassDependency dependency{};
 		dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
 		dependency.dstSubpass = 0;
-		dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-		dependency.srcAccessMask = 0;
-		dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-		dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+		dependency.srcStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
+		dependency.srcAccessMask = {};
+		dependency.dstStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
+		dependency.dstAccessMask = vk::AccessFlagBits::eColorAttachmentWrite;
 
-		VkRenderPassCreateInfo renderPassInfo{};
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+		vk::RenderPassCreateInfo renderPassInfo{};
 		renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
 		renderPassInfo.pAttachments = attachments.data();
 		renderPassInfo.subpassCount = 1;
@@ -78,37 +77,34 @@ namespace Daydream
 		renderPassInfo.dependencyCount = 1;
 		renderPassInfo.pDependencies = &dependency;
 
-		VkResult result = vkCreateRenderPass(device->GetDevice(), &renderPassInfo, nullptr, &renderPass);
-		DAYDREAM_CORE_ASSERT(result == VK_SUCCESS, "Failed to create renderpass!");
+		renderPass = device->GetDevice().createRenderPassUnique(renderPassInfo);
 	}
 	VulkanRenderPass::~VulkanRenderPass()
 	{
 		currentFramebuffer.reset();
-		if (renderPass != VK_NULL_HANDLE) vkDestroyRenderPass(device->GetDevice(), renderPass, nullptr);
 	}
 	void VulkanRenderPass::Begin(Shared<Framebuffer> _framebuffer)
 	{
 		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::Vulkan, "Wrong API");
 		currentFramebuffer = static_pointer_cast<VulkanFramebuffer>(_framebuffer);
 
-		VkRenderPassBeginInfo renderPassInfo{};
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = renderPass;
+		vk::RenderPassBeginInfo renderPassInfo{};
+		renderPassInfo.renderPass = renderPass.get();
 		renderPassInfo.framebuffer = currentFramebuffer->GetFramebuffer();
-		renderPassInfo.renderArea.offset = { 0, 0 };
+		renderPassInfo.renderArea.offset = vk::Offset2D(0, 0);
 		renderPassInfo.renderArea.extent = currentFramebuffer->GetExtent();
 
-		Array<VkClearValue> colors;
+		Array<vk::ClearValue> colors;
 		for (int i = 0; i < desc.colorAttachments.size(); i++)
 		{
-			VkClearValue vulkanClearColor;
+			vk::ClearValue vulkanClearColor;
 			memcpy(vulkanClearColor.color.float32, clearColor.color, sizeof(clearColor));
 			colors.push_back(vulkanClearColor);
 		}
 
 		if (currentFramebuffer->HasDepthAttachment())
 		{
-			VkClearValue vulkanClearDepthStencil;
+			vk::ClearValue vulkanClearDepthStencil;
 			vulkanClearDepthStencil.depthStencil.depth = 1.0f; // 또는 0.0f
 			vulkanClearDepthStencil.depthStencil.stencil = 0;   // 스텐실 값도 함께 초기화
 			colors.push_back(vulkanClearDepthStencil);
@@ -117,9 +113,9 @@ namespace Daydream
 		renderPassInfo.clearValueCount = colors.size();
 		renderPassInfo.pClearValues = colors.data();
 
-		vkCmdBeginRenderPass(device->GetCommandBuffer(), &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-		device->SetCurrentRenderPass(renderPass);
-		VkViewport viewport{};
+		device->GetCommandBuffer().beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
+		device->SetCurrentRenderPass(renderPass.get());
+		vk::Viewport viewport{};
 		//viewport.x = 0.0f;
 		//viewport.y = (float)extent.height;
 		//viewport.width = (float)extent.width;
@@ -130,16 +126,16 @@ namespace Daydream
 		viewport.height = (float)currentFramebuffer->GetExtent().height;
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
-		vkCmdSetViewport(device->GetCommandBuffer(), 0, 1, &viewport);
+		device->GetCommandBuffer().setViewport(0, 1, &viewport);
 
-		VkRect2D scissor{};
-		scissor.offset = { 0, 0 };
+		vk::Rect2D scissor{};
+		scissor.offset = vk::Offset2D(0, 0);
 		scissor.extent = currentFramebuffer->GetExtent();
-		vkCmdSetScissor(device->GetCommandBuffer(), 0, 1, &scissor);
+		device->GetCommandBuffer().setScissor(0, 1, &scissor);
 	}
 	void VulkanRenderPass::End()
 	{
-		vkCmdEndRenderPass(device->GetCommandBuffer());
+		device->GetCommandBuffer().endRenderPass();
 	}
 	Shared<Framebuffer> VulkanRenderPass::CreateFramebuffer(const FramebufferDesc& _desc)
 	{

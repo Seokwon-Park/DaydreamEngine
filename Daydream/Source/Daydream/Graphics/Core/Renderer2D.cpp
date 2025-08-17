@@ -6,6 +6,7 @@
 #include "Daydream/Graphics/Resources/Buffer.h"
 #include "Daydream/Graphics/Resources/Texture.h"
 
+
 namespace Daydream
 {
 	struct QuadVertex
@@ -35,7 +36,7 @@ namespace Daydream
 
 	void Renderer2D::Init()
 	{
-		data.quadVertexBuffer = VertexBuffer::CreateDynamic(data.maxVertices * sizeof(QuadVertex), sizeof(QuadVertex));
+		data.quadVertexBuffer = VertexBuffer::CreateDynamic(data.maxVertices * sizeof(QuadVertex), sizeof(QuadVertex), 0, nullptr);
 
 		data.quadVertexBufferBase = new QuadVertex[data.maxVertices];
 		data.quadVertexBufferPtr = data.quadVertexBufferBase;

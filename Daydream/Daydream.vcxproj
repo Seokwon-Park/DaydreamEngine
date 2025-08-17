@@ -61,7 +61,7 @@
       <PrecompiledHeaderFile>DaydreamPCH.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>GLM_FORCE_LEFT_HANDED;GLM_FORCE_DEPTH_ZERO_TO_ONE;DAYDREAM_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;DAYDREAM_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>Source;Vendor\spdlog\include;Vendor\glfw\include;Vendor\glad\include;Vendor\imgui;Vendor\glm;Vendor\stb;Vendor\assimp\include;Vendor\dxcompiler\include;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source;Vendor\spdlog\include;Vendor\glfw\include;Vendor\glad\include;Vendor\imgui;Vendor\glm;Vendor\stb;Vendor\assimp\include;Vendor\dxcompiler\include;Vendor\VulkanMemoryAllocator;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -85,7 +85,7 @@
       <PrecompiledHeaderFile>DaydreamPCH.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>GLM_FORCE_LEFT_HANDED;GLM_FORCE_DEPTH_ZERO_TO_ONE;DAYDREAM_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;DAYDREAM_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>Source;Vendor\spdlog\include;Vendor\glfw\include;Vendor\glad\include;Vendor\imgui;Vendor\glm;Vendor\stb;Vendor\assimp\include;Vendor\dxcompiler\include;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Source;Vendor\spdlog\include;Vendor\glfw\include;Vendor\glad\include;Vendor\imgui;Vendor\glm;Vendor\stb;Vendor\assimp\include;Vendor\dxcompiler\include;Vendor\VulkanMemoryAllocator;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -156,6 +156,7 @@
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Shader.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Swapchain.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Texture.h" />
+    <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11TextureCube.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11VertexShader.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12Buffer.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12Framebuffer.h" />
@@ -192,8 +193,8 @@
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanSwapchain.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanTexture.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\Camera.h" />
-    <ClInclude Include="Source\Daydream\Graphics\Core\EditorCamera.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\CameraController.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Core\EditorCamera.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\PipelineState.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderCommand.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderContext.h" />
@@ -688,6 +689,7 @@
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Shader.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Swapchain.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Texture.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11TextureCube.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11VertexShader.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Buffer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Framebuffer.cpp" />
@@ -766,6 +768,7 @@
     <ClCompile Include="Source\Platform\OSLinux\LinuxWindow.cpp" />
     <ClCompile Include="Source\Platform\OSMac\MacOSWindow.cpp" />
     <ClCompile Include="Source\Platform\OSWindows\WindowsWindow.cpp" />
+    <ClCompile Include="Vendor\VulkanMemoryAllocator\vk_mem_alloc.cpp" />
     <ClCompile Include="Vendor\stb\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>

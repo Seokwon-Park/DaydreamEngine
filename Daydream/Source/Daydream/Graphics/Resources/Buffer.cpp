@@ -7,14 +7,16 @@
 
 namespace Daydream
 {
-	Shared<VertexBuffer> VertexBuffer::CreateDynamic(UInt32 _bufferSize, UInt32 _stride)
+	Shared<VertexBuffer> VertexBuffer::CreateDynamic(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
 	{
-		return Renderer::GetRenderDevice()->CreateDynamicVertexBuffer(_bufferSize, _stride);
+		return Renderer::GetRenderDevice()->CreateDynamicVertexBuffer(_size, _stride, 0, _initialData);
 	}
-	Shared<VertexBuffer> Daydream::VertexBuffer::CreateStatic(void* _vertices, UInt32 _size, UInt32 _stride)
+	Shared<VertexBuffer> VertexBuffer::CreateStatic(UInt32 _size, UInt32 _stride, const void* _initialData)
 	{
-		return Renderer::GetRenderDevice()->CreateStaticVertexBuffer(_vertices, _size, _stride);
+		DAYDREAM_CORE_ASSERT(_initialData, "Static Vertex Buffer must have initial data!");
+		return Renderer::GetRenderDevice()->CreateStaticVertexBuffer(_size, _stride, _initialData);
 	}
+
 	Shared<IndexBuffer> IndexBuffer::Create(UInt32* _indices, UInt32 _size)
 	{
 		return Renderer::GetRenderDevice()->CreateIndexBuffer(_indices, _size);

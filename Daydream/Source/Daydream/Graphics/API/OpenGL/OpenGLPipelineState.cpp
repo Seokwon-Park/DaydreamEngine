@@ -53,7 +53,7 @@ namespace Daydream
 		glBindProgramPipeline(pipeline);
 
 		GLint textureIndex = 0;
-		GLint uboIndex = 0;
+		//static GLint uboIndex = 0;
 		for (auto shader : shaders)
 		{
 			GLenum type = GraphicsUtil::GetGLShaderStage(shader->GetType());
@@ -65,8 +65,8 @@ namespace Daydream
 				{
 				case ShaderResourceType::ConstantBuffer:
 				{
-					info.set = uboIndex;
-					glUniformBlockBinding(shaderID, info.binding, uboIndex++);
+					//info.set = uboIndex;
+					//glUniformBlockBinding(shaderID, info.binding, uboIndex++);
 					break;
 				}
 				case ShaderResourceType::Texture2D:
@@ -74,9 +74,7 @@ namespace Daydream
 					break;
 				}
 				}
-
 			}
-
 		}
 
 		glValidateProgramPipeline(pipeline);

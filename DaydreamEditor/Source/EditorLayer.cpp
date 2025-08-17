@@ -33,10 +33,10 @@ namespace Daydream
 			{ Daydream::ShaderDataType::Float2, "a_TexCoord", "TEXCOORD"}
 		};
 		//squareVB = Daydream::VertexBuffer::CreateStatic(squareVertices, sizeof(squareVertices), layout.GetStride());
-		squareVB = Daydream::VertexBuffer::CreateDynamic(sizeof(squareVertices), layout.GetStride());
+		squareVB = VertexBuffer::CreateDynamic(sizeof(squareVertices), layout.GetStride(), 0, nullptr);
 		squareVB->SetData(squareVertices, sizeof(squareVertices));
 
-		squareVB2 = Daydream::VertexBuffer::CreateDynamic(sizeof(squareVertices2), layout.GetStride());
+		squareVB2 = VertexBuffer::CreateDynamic(sizeof(squareVertices2), layout.GetStride(), 0, nullptr);
 		squareVB2->SetData(squareVertices2, sizeof(squareVertices2));
 
 		uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
@@ -152,6 +152,7 @@ namespace Daydream
 
 
 		lightData.lightCount = 0;
+		lightData.eyePos = editorCamera->GetPosition();
 		for (auto* lightComponent : activeScene->GetLights())
 		{
 			lightData.lights[lightData.lightCount++] = lightComponent->GetLight();

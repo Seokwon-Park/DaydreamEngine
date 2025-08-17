@@ -26,6 +26,7 @@ namespace Daydream
 		AttachmentStoreOp storeOp = AttachmentStoreOp::Store;
 		// loadOp가 Clear일 경우 사용할 값
 		Color clearValue = Color(0.0f, 0.0f, 0.0f, 1.0f);
+		bool isSwapchain = false;
 	};
 
 	struct RenderPassDesc
@@ -33,7 +34,6 @@ namespace Daydream
 		Array<RenderPassAttachmentDesc> colorAttachments;
 		RenderPassAttachmentDesc depthAttachment;
 		UInt32 samples = 1;
-		bool isSwapchain = false;
 	};
 
 	//TODO : Framebuffer와의 Validation 추가할 것.

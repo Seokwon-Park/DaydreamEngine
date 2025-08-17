@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Daydream/Graphics/Resources/Buffer.h"
+
 #include "D3D11RenderDevice.h"
 
 namespace Daydream
@@ -8,14 +9,13 @@ namespace Daydream
 	class D3D11VertexBuffer : public VertexBuffer
 	{
 	public:
-		D3D11VertexBuffer(D3D11RenderDevice* _device, UInt32 _bufferSize, UInt32 _stride);
-		D3D11VertexBuffer(D3D11RenderDevice* _device, void* _vertices, UInt32 _size, UInt32 _stride);
+		D3D11VertexBuffer(D3D11RenderDevice* _device, BufferUsage _usage, UInt32 _size, UInt32 _stride, const void* _initialData);
 		virtual ~D3D11VertexBuffer();
 
 		virtual void Bind() const;
 		virtual void Unbind() const;
 
-		virtual void SetData(void* _data, UInt32 _dataSize) override;
+		virtual void SetData(const void * _data, UInt32 _dataSize) override;
 	private:
 		UInt32 stride;
 		D3D11RenderDevice* device;

@@ -14,7 +14,7 @@ namespace Daydream
 	{
 	public:
 		VulkanFramebuffer(VulkanRenderDevice* _device, VulkanRenderPass* _renderPass, const FramebufferDesc& _desc);
-		VulkanFramebuffer(VulkanRenderDevice* _device, VulkanRenderPass* _renderPass, VulkanSwapchain* _swapChain, UInt32 _frameIndex);
+		VulkanFramebuffer(VulkanRenderDevice* _device, VulkanSwapchain* _swapchain, VulkanRenderPass* _renderPass, vk::Image _swapchainImage);
 
 		virtual ~VulkanFramebuffer() override;
 
@@ -22,20 +22,20 @@ namespace Daydream
 		virtual inline bool HasDepthAttachment() override { return depthAttachment != nullptr; }
 		virtual void Resize(UInt32 _width, UInt32 _height) override;
 
-		VkFramebuffer GetFramebuffer() { return framebuffer; }
-		VkExtent2D GetExtent() { return extent; }
+		vk::Framebuffer GetFramebuffer() { return framebuffer.get(); }
+		vk::Extent2D GetExtent() { return extent; }
 		void CreateAttachments();
 
 	private:
 		VulkanRenderDevice* device;
 		VulkanRenderPass* vkRenderPass;
-		VkFramebuffer framebuffer;
-		VkExtent2D extent;
-		Array<VkImage> colorImages;
-		Array<VkImageView> AttachmentImageViews;
+		vk::UniqueFramebuffer framebuffer;
+		vk::Extent2D extent;
+		vk::UniqueImageView swapchainImageView;
+		Array<vk::ImageView> attachmentImageViews;
+		vk::ImageView depthStencilView;
 		Array<Shared<VulkanTexture2D>> colorAttachments;
 		Shared<VulkanTexture2D> depthAttachment;
-		VkImageView depthStencilView;
 
 		Array<Shared<VulkanTexture2D>> oldAttachments;
 	};

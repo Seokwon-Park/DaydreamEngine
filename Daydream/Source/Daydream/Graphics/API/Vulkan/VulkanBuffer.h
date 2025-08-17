@@ -9,38 +9,36 @@ namespace Daydream
 	class VulkanVertexBuffer : public VertexBuffer
 	{
 	public:
-		VulkanVertexBuffer(VulkanRenderDevice* _device, UInt32 _bufferSize, UInt32 _stride);
-		VulkanVertexBuffer(VulkanRenderDevice* _device, void* _vertices, UInt32 _size, UInt32 _stride);
+		VulkanVertexBuffer(VulkanRenderDevice* _device, BufferUsage _usage, UInt32 _size);
 		virtual ~VulkanVertexBuffer() override;
 
 		virtual void Bind() const;
-		virtual void Unbind() const;
-		virtual void SetData(void* _data, UInt32 _dataSize) override;
+		virtual void Unbind() const {};
+		virtual void SetData(const void* _data, UInt32 _dataSize) override;
+
+		vk::Buffer GetVkBuffer() { return vertexBuffer.get(); }
 	private:
 		VulkanRenderDevice* device;
-		VkBuffer uploadBuffer;
-		VkDeviceMemory uploadBufferMemory;
-		VkBuffer vertexBuffer;
-		VkDeviceMemory vertexBufferMemory;
-
+		vma::UniqueBuffer vertexBuffer;
+		vma::UniqueAllocation vertexBufferAllocation;
+		vk::DeviceSize size;
+		void* mappedData;
 	};
 
 	class VulkanIndexBuffer : public IndexBuffer
 	{
 	public:
-		VulkanIndexBuffer(VulkanRenderDevice* _device, UInt32* _indices, UInt32 _indexCount);
-		virtual ~VulkanIndexBuffer() override;
+		VulkanIndexBuffer(VulkanRenderDevice* _device, UInt32 _indexCount);
+		virtual ~VulkanIndexBuffer() override {};
 
 		virtual void Bind() const;
-		virtual void Unbind() const;
+		virtual void Unbind() const {};
 
+		vk::Buffer GetVkBuffer() { return indexBuffer.get(); }
 	private:
 		VulkanRenderDevice* device;
-		VkBuffer uploadBuffer;
-		VkDeviceMemory uploadBufferMemory;
-		VkBuffer indexBuffer;
-		VkDeviceMemory indexBufferMemory;
-
+		vma::UniqueBuffer indexBuffer;
+		vma::UniqueAllocation indexBufferAllocation;
 	};
 
 	class VulkanConstantBuffer : public ConstantBuffer
@@ -52,12 +50,12 @@ namespace Daydream
 		//virtual void Bind(UInt32 _slot) const override;
 		virtual void Update(const void* _data, UInt32 _size);
 
-		virtual void* GetNativeHandle() override { return constantBuffer; }
+		virtual void* GetNativeHandle() override { return constantBuffer.get(); }
 	private:
 		VulkanRenderDevice* device;
-		VkBuffer constantBuffer;
-		VkDeviceMemory constantBufferMemory;
-
+		vma::UniqueBuffer constantBuffer;
+		vma::UniqueAllocation constantBufferAllocation;
+		void* mappedData;
 	};
 }
 

@@ -58,14 +58,14 @@ namespace Daydream
 		return MakeShared<OpenGLGraphicsContext>();
 	}
 
-	Shared<VertexBuffer> OpenGLRenderDevice::CreateDynamicVertexBuffer(UInt32 _bufferSize, UInt32 _stride)
+	Shared<VertexBuffer> Daydream::OpenGLRenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
 	{
-		return MakeShared<OpenGLVertexBuffer>(_bufferSize, _stride);
+		return Shared<VertexBuffer>();
 	}
 
-	Shared<VertexBuffer> Daydream::OpenGLRenderDevice::CreateStaticVertexBuffer(void* _vertices, UInt32 _size, UInt32 _stride)
+	Shared<VertexBuffer> OpenGLRenderDevice::CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData)
 	{
-		return MakeShared<OpenGLVertexBuffer>(_vertices, _size, _stride);
+		return Shared<VertexBuffer>();
 	}
 
 	Shared<IndexBuffer> OpenGLRenderDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
@@ -104,9 +104,10 @@ namespace Daydream
 		return MakeShared<OpenGLTexture2D>(_desc);
 	}
 
-	Shared<Texture2D> OpenGLRenderDevice::CreateTexture2D(const FilePath& _path, const TextureDesc& _desc)
+	Shared<Texture2D> Daydream::OpenGLRenderDevice::CreateTexture2D(const void* _imageData, const TextureDesc& _desc)
 	{
-		return MakeShared<OpenGLTexture2D>(_path, _desc);
+		//return MakeShared<OpenGLTexture2D>(_path, _desc);
+		return nullptr;
 	}
 
 	Unique<ImGuiRenderer> OpenGLRenderDevice::CreateImGuiRenderer()

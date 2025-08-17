@@ -9,77 +9,36 @@ namespace Daydream
 	VulkanFramebuffer::VulkanFramebuffer(VulkanRenderDevice* _device, VulkanRenderPass* _renderPass, const FramebufferDesc& _desc)
 	{
 		device = _device;
-
+		extent = vk::Extent2D(_desc.width, _desc.height);
 		width = _desc.width;
 		height = _desc.height;
-		extent.width = _desc.width;
-		extent.height = _desc.height;
 		renderPass = _renderPass;
 		vkRenderPass = _renderPass;
 
 		CreateAttachments();
 	}
 
-	VulkanFramebuffer::VulkanFramebuffer(VulkanRenderDevice* _device, VulkanRenderPass* _renderPass, VulkanSwapchain* _swapchain, UInt32 _frameIndex)
+	VulkanFramebuffer::VulkanFramebuffer(VulkanRenderDevice* _device, VulkanSwapchain* _swapchain, VulkanRenderPass* _renderPass, vk::Image _swapchainImage)
 	{
 		device = _device;
 		extent = _swapchain->GetExtent();
+		width = extent.width;
+		height = extent.height;
+		renderPass = _renderPass;
+		vkRenderPass = _renderPass;
 
-		/*	VkAttachmentDescription colorAttachment{};
-		colorAttachment.format = _swapchain->GetFormat();
-		colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-		colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-		colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-		colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-		colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-		colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+		swapchainImageView = vk::UniqueImageView(device->CreateImageView(_swapchainImage, 
+			_swapchain->GetFormat(), 
+			vk::ImageAspectFlagBits::eColor),
+			vk::detail::ObjectDestroy<vk::Device, vk::detail::DispatchLoaderDynamic>(device->GetDevice()));
+		attachmentImageViews.push_back(swapchainImageView.get());
 
-		VkAttachmentReference colorAttachmentRef{};
-		colorAttachmentRef.attachment = 0;
-		colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-		VkSubpassDescription subpass{};
-		subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-		subpass.colorAttachmentCount = 1;
-		subpass.pColorAttachments = &colorAttachmentRef;
-
-		VkRenderPassCreateInfo renderPassInfo{};
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-		renderPassInfo.attachmentCount = 1;
-		renderPassInfo.pAttachments = &colorAttachment;
-		renderPassInfo.subpassCount = 1;
-		renderPassInfo.pSubpasses = &subpass;
-
-		VkResult result = vkCreateRenderPass(_device->GetDevice(), &renderPassInfo, nullptr, &renderPass);
-		DAYDREAM_CORE_ASSERT(result == VK_SUCCESS, "Failed to create renderpass!");*/
-
-		UInt32 swapChainImageCount = 0;
-		vkGetSwapchainImagesKHR(device->GetDevice(), _swapchain->GetVKSwapchain(), &swapChainImageCount, nullptr);
-		colorImages.resize(swapChainImageCount);
-		vkGetSwapchainImagesKHR(device->GetDevice(), _swapchain->GetVKSwapchain(), &swapChainImageCount, colorImages.data());
-
-		Shared<VulkanTexture2D> backBufferTexture = MakeShared<VulkanTexture2D>(device, colorImages[_frameIndex], _swapchain->GetFormat());
-		colorAttachments.push_back(backBufferTexture);
-		AttachmentImageViews.push_back(backBufferTexture->GetImageView());
-		//device->CreateImageView(colorImages[_frameIndex], _swapchain->GetFormat(), colorImageViews[0]);
-
-		VkFramebufferCreateInfo framebufferInfo{};
-		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-		framebufferInfo.renderPass = _renderPass->GetVkRenderPass();
-		framebufferInfo.attachmentCount = AttachmentImageViews.size();
-		framebufferInfo.pAttachments = AttachmentImageViews.data();
-		framebufferInfo.width = extent.width;
-		framebufferInfo.height = extent.height;
-		framebufferInfo.layers = 1;
-
-		VkResult result = vkCreateFramebuffer(device->GetDevice(), &framebufferInfo, nullptr, &framebuffer);
-		DAYDREAM_CORE_ASSERT(result == VK_SUCCESS, "Failed to create framebuffer!");
+		CreateAttachments();
 	}
+	
 	VulkanFramebuffer::~VulkanFramebuffer()
 	{
 		colorAttachments.clear();
-		if (framebuffer != VK_NULL_HANDLE) vkDestroyFramebuffer(device->GetDevice(), framebuffer, nullptr);
 	}
 
 	Shared<Texture2D> VulkanFramebuffer::GetColorAttachmentTexture(UInt32 _index)
@@ -96,19 +55,17 @@ namespace Daydream
 		extent.width = _width;
 		extent.height = _height;
 
-		AttachmentImageViews.clear();
+		attachmentImageViews.clear();
 		oldAttachments.clear();
 		oldAttachments = std::move(colorAttachments);
 		colorAttachments.clear();
 		oldAttachments.push_back(depthAttachment);
 		depthAttachment = nullptr;
 		depthStencilView = VK_NULL_HANDLE;
-		if (framebuffer != VK_NULL_HANDLE) vkDestroyFramebuffer(device->GetDevice(), framebuffer, nullptr);
 
-		VkCommandBufferBeginInfo beginInfo{};
-		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-		vkResetCommandBuffer(device->GetCommandBuffer(), 0);
-		vkBeginCommandBuffer(device->GetCommandBuffer(), &beginInfo);
+		vk::CommandBufferBeginInfo beginInfo{};
+		device->GetCommandBuffer().reset({});
+		device->GetCommandBuffer().begin(beginInfo);
 		CreateAttachments();
 	}
 
@@ -117,6 +74,7 @@ namespace Daydream
 		const RenderPassDesc& renderPassDesc = renderPass->GetDesc();
 		for (const auto& colorAttachmentDesc : renderPassDesc.colorAttachments)
 		{
+			if (colorAttachmentDesc.isSwapchain) continue;
 			TextureDesc textureDesc;
 			textureDesc.width = width;
 			textureDesc.height = height;
@@ -125,7 +83,7 @@ namespace Daydream
 
 			Shared<VulkanTexture2D> colorTexture = MakeShared<VulkanTexture2D>(device, textureDesc);
 			colorAttachments.push_back(colorTexture);
-			AttachmentImageViews.push_back(colorTexture->GetImageView());
+			attachmentImageViews.push_back(colorTexture->GetImageView());
 		}
 
 		if (renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
@@ -139,20 +97,17 @@ namespace Daydream
 			Shared<VulkanTexture2D> depthTexture = MakeShared<VulkanTexture2D>(device, textureDesc);
 			depthAttachment = depthTexture;
 			depthStencilView = depthTexture->GetImageView();
-			AttachmentImageViews.push_back(depthAttachment->GetImageView());
+			attachmentImageViews.push_back(depthAttachment->GetImageView());
 		}
 
-		VkFramebufferCreateInfo framebufferInfo{};
-		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+		vk::FramebufferCreateInfo framebufferInfo{};
 		framebufferInfo.renderPass = vkRenderPass->GetVkRenderPass();
-		framebufferInfo.attachmentCount = AttachmentImageViews.size();
-		framebufferInfo.pAttachments = AttachmentImageViews.data();
+		framebufferInfo.attachmentCount = attachmentImageViews.size();
+		framebufferInfo.pAttachments = attachmentImageViews.data();
 		framebufferInfo.width = width;
 		framebufferInfo.height = height;
 		framebufferInfo.layers = 1;
 
-		VkResult result = vkCreateFramebuffer(device->GetDevice(), &framebufferInfo, nullptr, &framebuffer);
-		DAYDREAM_CORE_ASSERT(result == VK_SUCCESS, "Failed to create framebuffer!");
-
+		framebuffer = device->GetDevice().createFramebufferUnique(framebufferInfo);
 	}
 }

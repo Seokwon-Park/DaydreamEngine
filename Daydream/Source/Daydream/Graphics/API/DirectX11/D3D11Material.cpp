@@ -92,6 +92,7 @@ namespace Daydream
 			case Daydream::ShaderType::Geometry:
 				break;
 			case Daydream::ShaderType::Pixel:
+				device->GetContext()->PSSetConstantBuffers(resourceInfo.binding, 1, d3d11Buffer->GetBuffer().GetAddressOf());
 				break;
 			case Daydream::ShaderType::Compute:
 				break;

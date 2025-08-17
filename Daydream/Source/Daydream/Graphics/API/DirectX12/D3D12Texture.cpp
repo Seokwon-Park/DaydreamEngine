@@ -65,7 +65,7 @@ namespace Daydream
 	{
 		device = _device;
 
-		Array<UInt8> imageData = ImageLoader::LoadImageFile(_path, width, height, channels);
+		auto imageData = ImageLoader::LoadImageFile(_path);
 
 		//texture
 		D3D12_HEAP_PROPERTIES props{};
@@ -122,7 +122,7 @@ namespace Daydream
 		void* pixelData;
 		D3D12_RANGE range = { 0, uploadSize };
 		uploadBuffer->Map(0, &range, &pixelData);
-		memcpy(pixelData, imageData.data(), width * height * 4);
+		memcpy(pixelData, imageData.data.data(), width * height * 4);
 		uploadBuffer->Unmap(0, &range);
 
 		// 업로드 버퍼의 정보를 텍스쳐 처럼 해석하기 위해서

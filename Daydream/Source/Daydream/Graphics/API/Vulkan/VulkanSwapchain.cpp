@@ -16,40 +16,39 @@ namespace Daydream
 		//		createInfo.hwnd = glfwGetWin32Window(window);
 		//		createInfo.hinstance = GetModuleHandle(nullptr);
 		//#endif
-		VkResult result = glfwCreateWindowSurface(device->GetInstance(), window, nullptr, &surface);
-		if (result != VK_SUCCESS) {
+		VkSurfaceKHR tempSurface;
+		VkResult result = glfwCreateWindowSurface(device->GetInstance(), window, nullptr, &tempSurface);
+		if (result != VK_SUCCESS)
+		{
 			DAYDREAM_CORE_ERROR("Failed to create window surface!");
 		}
+
+		surface = vk::UniqueSurfaceKHR(tempSurface, vk::detail::ObjectDestroy<vk::Instance, vk::detail::DispatchLoaderDynamic>(device->GetInstance()));
 
 		CreateSwapchain();
 		CreateCommandBuffers();
 
-		VkSemaphoreCreateInfo semaphoreInfo{};
-		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+		vk::SemaphoreCreateInfo semaphoreInfo{};
 
-		VkFenceCreateInfo fenceInfo{};
-		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+		vk::FenceCreateInfo fenceInfo{};
+		fenceInfo.flags = vk::FenceCreateFlagBits::eSignaled;
 
 		imageAvailableSemaphores.resize(imageCount);
 		renderFinishedSemaphores.resize(imageCount);
 		inFlightFences.resize(imageCount);
 		for (UInt32 i = 0; i < imageCount; i++)
 		{
-			result = vkCreateSemaphore(device->GetDevice(), &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]);
-			DAYDREAM_CORE_ASSERT(VK_SUCCEEDED(result), "Failed to create semaphore!");
-			result = vkCreateSemaphore(device->GetDevice(), &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]);
-			DAYDREAM_CORE_ASSERT(VK_SUCCEEDED(result), "Failed to create semaphore!");
-			result = vkCreateFence(device->GetDevice(), &fenceInfo, nullptr, &inFlightFences[i]);
-			DAYDREAM_CORE_ASSERT(VK_SUCCEEDED(result), "Failed to create fence!");
+			imageAvailableSemaphores[i] = device->GetDevice().createSemaphoreUnique(semaphoreInfo);
+			renderFinishedSemaphores[i] = device->GetDevice().createSemaphoreUnique(semaphoreInfo);
+			inFlightFences[i] = device->GetDevice().createFenceUnique(fenceInfo);
 		}
 
 		RenderPassAttachmentDesc colorDesc;
 		colorDesc.format = _desc.format;
+		colorDesc.isSwapchain = true;
 
 		RenderPassDesc rpDesc{};
 		rpDesc.colorAttachments.push_back(colorDesc);
-		rpDesc.isSwapchain = true;
 
 		renderPass = MakeShared<VulkanRenderPass>(device, rpDesc);
 		mainRenderPass = renderPass;
@@ -57,14 +56,14 @@ namespace Daydream
 		framebuffers.resize(desc.bufferCount);
 		for (UInt32 i = 0; i < desc.bufferCount; i++)
 		{
-			framebuffers[i] = MakeShared<VulkanFramebuffer>(device, renderPass.get(), this, i);
+			framebuffers[i] = MakeShared<VulkanFramebuffer>(device, this, renderPass.get(), swapchainImages[i]);
 		}
 		BeginFrame();
 		//framebuffers[imageIndex]->Begin();
 	}
 	void VulkanSwapchain::CreateSwapchain()
 	{
-		SwapchainSupportDetails SwapchainSupport = device->QuerySwapchainSupport(surface);
+		SwapchainSupportDetails SwapchainSupport = device->QuerySwapchainSupport(*surface);
 		if (SwapchainSupport.formats.empty() || SwapchainSupport.presentModes.empty())
 		{
 			DAYDREAM_CORE_ERROR("GPU has no supported formats or presentmodes");
@@ -88,58 +87,54 @@ namespace Daydream
 			imageCount = SwapchainSupport.capabilities.maxImageCount;
 		}
 
-		VkSwapchainCreateInfoKHR createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-		createInfo.surface = surface;
+		vk::SwapchainCreateInfoKHR createInfo{};
+		createInfo.surface = *surface;
 		createInfo.minImageCount = imageCount;
 		createInfo.imageFormat = format;
 		createInfo.imageColorSpace = surfaceFormat.colorSpace;
 		createInfo.imageExtent = extent;
 		createInfo.imageArrayLayers = 1;
-		createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-		createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		createInfo.imageUsage = vk::ImageUsageFlagBits::eColorAttachment;
+		createInfo.imageSharingMode = vk::SharingMode::eExclusive;
 		createInfo.preTransform = SwapchainSupport.capabilities.currentTransform;
-		createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+		createInfo.compositeAlpha = vk::CompositeAlphaFlagBitsKHR::eOpaque;
 		createInfo.presentMode = presentMode;
 		createInfo.clipped = VK_TRUE;
-		createInfo.oldSwapchain = swapchain;
+		createInfo.oldSwapchain = *swapchain;
 
-		VkSwapchainKHR newSwapchain;
+		vk::SwapchainKHR newSwapchain;
 
-		VkResult result = vkCreateSwapchainKHR(device->GetDevice(), &createInfo, nullptr, &newSwapchain);
-		DAYDREAM_CORE_ASSERT(VK_SUCCEEDED(result), "Failed to create Swapchain");
+		newSwapchain = device->GetDevice().createSwapchainKHR(createInfo);
+		
+		swapchain.release();
 
-		if (swapchain != VK_NULL_HANDLE)
-			vkDestroySwapchainKHR(device->GetDevice(), swapchain, nullptr);
+		swapchain = vk::UniqueSwapchainKHR(newSwapchain, vk::detail::ObjectDestroy<vk::Device, vk::detail::DispatchLoaderDynamic>(device->GetDevice()));
 
-		swapchain = newSwapchain;
+		swapchainImages = device->GetDevice().getSwapchainImagesKHR(swapchain.get());
+
 	}
 	void VulkanSwapchain::CreateCommandBuffers()
 	{
-
 		commandBuffers.resize(imageCount);
-		VkCommandBufferAllocateInfo allocInfo{};
-		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+		vk::CommandBufferAllocateInfo allocInfo{};
 		allocInfo.commandPool = device->GetCommandPool();
-		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+		allocInfo.level = vk::CommandBufferLevel::ePrimary;
 		allocInfo.commandBufferCount = commandBuffers.size();
 
-		if (vkAllocateCommandBuffers(device->GetDevice(), &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
-			throw std::runtime_error("failed to allocate command buffers!");
-		}
+		commandBuffers = device->GetDevice().allocateCommandBuffersUnique(allocInfo);
 	}
 	VulkanSwapchain::~VulkanSwapchain()
 	{
 		vkDeviceWaitIdle(device->GetDevice());
-		for (UInt32 i = 0; i < imageCount; i++)
-		{
-			vkDestroySemaphore(device->GetDevice(), imageAvailableSemaphores[i], nullptr);
-			vkDestroySemaphore(device->GetDevice(), renderFinishedSemaphores[i], nullptr);
-			vkDestroyFence(device->GetDevice(), inFlightFences[i], nullptr);
-		}
+		//for (UInt32 i = 0; i < imageCount; i++)
+		//{
+		//	vkDestroySemaphore(device->GetDevice(), imageAvailableSemaphores[i], nullptr);
+		//	vkDestroySemaphore(device->GetDevice(), renderFinishedSemaphores[i], nullptr);
+		//	vkDestroyFence(device->GetDevice(), inFlightFences[i], nullptr);
+		//}
 
-		vkDestroySwapchainKHR(device->GetDevice(), swapchain, nullptr);
-		vkDestroySurfaceKHR(device->GetInstance(), surface, nullptr);
+		//vkDestroySwapchainKHR(device->GetDevice(), swapchain, nullptr);
+		//vkDestroySurfaceKHR(device->GetInstance(), surface, nullptr);
 	}
 	void VulkanSwapchain::SetVSync(bool _enabled)
 	{
@@ -171,105 +166,96 @@ namespace Daydream
 		framebuffers.resize(desc.bufferCount);
 		for (UInt32 i = 0; i < desc.bufferCount; i++)
 		{
-			framebuffers[i] = MakeShared<VulkanFramebuffer>(device, renderPass.get(), this, i);
+			framebuffers[i] = MakeShared<VulkanFramebuffer>(device, this, renderPass.get(), swapchainImages[i]);
 		}
 
 		currentFrame = (currentFrame + 1) % imageCount;
 
 		BeginFrame();
 
-		VkViewport viewport{};
+		//VkViewport viewport{};
+		////viewport.x = 0.0f;
+		////viewport.y = (float)extent.height;
+		////viewport.width = (float)extent.width;
+		////viewport.height = -(float)extent.height;
 		//viewport.x = 0.0f;
-		//viewport.y = (float)extent.height;
+		//viewport.y = 0.0f;
 		//viewport.width = (float)extent.width;
-		//viewport.height = -(float)extent.height;
-		viewport.x = 0.0f;
-		viewport.y = 0.0f;
-		viewport.width = (float)extent.width;
-		viewport.height = (float)extent.height;
-		viewport.minDepth = 0.0f;
-		viewport.maxDepth = 1.0f;
-		vkCmdSetViewport(device->GetCommandBuffer(), 0, 1, &viewport);
+		//viewport.height = (float)extent.height;
+		//viewport.minDepth = 0.0f;
+		//viewport.maxDepth = 1.0f;
+		//vkCmdSetViewport(device->GetCommandBuffer(), 0, 1, &viewport);
 
-		VkRect2D scissor{};
-		scissor.offset = { 0, 0 };
-		scissor.extent = extent;
-		vkCmdSetScissor(device->GetCommandBuffer(), 0, 1, &scissor);
+		//VkRect2D scissor{};
+		//scissor.offset = { 0, 0 };
+		//scissor.extent = extent;
+		//vkCmdSetScissor(device->GetCommandBuffer(), 0, 1, &scissor);
 	}
 
 	void VulkanSwapchain::BeginFrame()
 	{
 		//이전 프레임의 GPU 작업 완료됐다는 신호를 inFlightFence로 받기로 하고 대기
-		vkWaitForFences(device->GetDevice(), 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
+		auto result = device->GetDevice().waitForFences(1, &inFlightFences[currentFrame].get(), VK_FALSE, UINT64_MAX);
 
 		//완료 됐으면 펜스 상태는 신호받기 전으로
-		vkResetFences(device->GetDevice(), 1, &inFlightFences[currentFrame]);
+		result = device->GetDevice().resetFences(1, &inFlightFences[currentFrame].get());
 
 		//이미지를 GPU에 요청. 사용가능한 이미지의 인덱스를 imageIndex로 전달하고 imageAvailableSemaphore에 신호를 전달하라는 명령
-		VkResult result = vkAcquireNextImageKHR(device->GetDevice(), swapchain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
-		DAYDREAM_CORE_ASSERT(result == VK_SUCCESS, "Failed to Aquire Next Image!");
+		result = device->GetDevice().acquireNextImageKHR(swapchain.get(), UINT64_MAX, imageAvailableSemaphores[currentFrame].get(), VK_NULL_HANDLE, &imageIndex);
 
 		//이미지 요청만 해놓고 일단 커맨드 받기 시작
-		device->SetCommandBuffer(commandBuffers[currentFrame]);
-		vkResetCommandBuffer(commandBuffers[currentFrame], 0);
+		device->SetCommandBuffer(commandBuffers[currentFrame].get());
+		commandBuffers[currentFrame]->reset({});
 		//fb->Bind();
 
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-		result = vkBeginCommandBuffer(commandBuffers[currentFrame], &beginInfo);
-		DAYDREAM_CORE_ASSERT(result == VK_SUCCESS, "Failed to begin recording command buffer!");
+		commandBuffers[currentFrame]->begin(beginInfo);
 	}
 
 	void VulkanSwapchain::EndFrame()
 	{
-		if (vkEndCommandBuffer(commandBuffers[currentFrame]) != VK_SUCCESS) {
-			throw std::runtime_error("failed to record command buffer!");
-		}
+		commandBuffers[currentFrame]->end();
 
-		VkSubmitInfo submitInfo{};
-		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+		vk::SubmitInfo submitInfo{};
 
-		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+		vk::PipelineStageFlags waitStages[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
 		submitInfo.waitSemaphoreCount = 1;
 		//이 세마포어들에 신호가 다 와야 Submit을 한다.
-		submitInfo.pWaitSemaphores = &imageAvailableSemaphores[currentFrame];
+		submitInfo.pWaitSemaphores = &imageAvailableSemaphores[currentFrame].get();
 		submitInfo.pWaitDstStageMask = waitStages;
 		submitInfo.commandBufferCount = 1;
 
-		VkCommandBuffer buffers[] = { device->GetCommandBuffer() };
-		submitInfo.pCommandBuffers = buffers;
+		submitInfo.pCommandBuffers = &commandBuffers[currentFrame].get();
 
 		//렌더링이 끝나면 여기다가 신호를 보내라.
 		//VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
 		submitInfo.signalSemaphoreCount = 1;
-		submitInfo.pSignalSemaphores = &renderFinishedSemaphores[currentFrame];
+		submitInfo.pSignalSemaphores = &renderFinishedSemaphores[currentFrame].get();
 
-		if (vkQueueSubmit(device->GetQueue(), 1, &submitInfo, inFlightFences[currentFrame]) != VK_SUCCESS) {
-			throw std::runtime_error("failed to submit draw command buffer!");
-		}
+		vk::Result result = device->GetGraphicsQueue().submit(1, &submitInfo, inFlightFences[currentFrame].get());
 
-		VkPresentInfoKHR presentInfo{};
-		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+		vk::PresentInfoKHR presentInfo{};
 		presentInfo.waitSemaphoreCount = 1;
-		presentInfo.pWaitSemaphores = &renderFinishedSemaphores[currentFrame];
+		presentInfo.pWaitSemaphores = &renderFinishedSemaphores[currentFrame].get();
 
-		VkSwapchainKHR Swapchains[] = { swapchain };
+		//vk::SwapchainKHR Swapchains[] = { swapchain };
 		presentInfo.swapchainCount = 1;
-		presentInfo.pSwapchains = &swapchain;
+		presentInfo.pSwapchains = &swapchain.get();
 		presentInfo.pImageIndices = &imageIndex;
 
-		vkQueuePresentKHR(device->GetQueue(), &presentInfo);
+		result = device->GetGraphicsQueue().presentKHR(presentInfo);
 
 		currentFrame = (currentFrame + 1) % imageCount;
 	}
 
-	VkSurfaceFormatKHR VulkanSwapchain::ChooseSwapSurfaceFormat(const Array<VkSurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat)
+	vk::SurfaceFormatKHR VulkanSwapchain::ChooseSwapSurfaceFormat(const Array<vk::SurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat)
 	{
-		VkFormat desiredFormat = GraphicsUtil::ConvertRenderFormatToVkFormat(_desiredFormat);
-		for (const VkSurfaceFormatKHR& availableFormat : _availableFormats)
+		vk::Format desiredFormat = GraphicsUtil::ConvertRenderFormatToVkFormat(_desiredFormat);
+		for (const vk::SurfaceFormatKHR& availableFormat : _availableFormats)
 		{
-			if (availableFormat.format == desiredFormat && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+			if (availableFormat.format == desiredFormat && availableFormat.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear)
 			{
 				return availableFormat;
 			}
@@ -277,25 +263,25 @@ namespace Daydream
 
 		return _availableFormats[0];
 	}
-	VkPresentModeKHR VulkanSwapchain::ChooseSwapPresentMode(const Array<VkPresentModeKHR>& _availablePresentModes)
+	vk::PresentModeKHR VulkanSwapchain::ChooseSwapPresentMode(const Array<vk::PresentModeKHR>& _availablePresentModes)
 	{
-		for (const VkPresentModeKHR& availablePresentMode : _availablePresentModes)
+		for (const vk::PresentModeKHR& availablePresentMode : _availablePresentModes)
 		{
-			if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR)
+			if (availablePresentMode == vk::PresentModeKHR::eMailbox)
 			{
 				return availablePresentMode;
 			}
 		}
 
-		return VK_PRESENT_MODE_FIFO_KHR;
+		return vk::PresentModeKHR::eFifo;
 	}
-	VkExtent2D VulkanSwapchain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& _capabilities)
+	vk::Extent2D VulkanSwapchain::ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& _capabilities)
 	{
 		if (_capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
 			return _capabilities.currentExtent;
 		}
 		else {
-			VkExtent2D actualExtent = {
+			vk::Extent2D actualExtent = {
 				Cast<UInt32>(desc.width),
 				Cast<UInt32>(desc.height)
 			};

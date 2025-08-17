@@ -106,7 +106,7 @@ namespace Daydream
 	{
 	}
 
-	void D3D12VertexBuffer::SetData(void* _data, UInt32 _dataSize)
+	void Daydream::D3D12VertexBuffer::SetData(const void* _data, UInt32 _dataSize)
 	{
 		void* data;
 		HRESULT hr = vertexBuffer->Map(0, nullptr, &data);

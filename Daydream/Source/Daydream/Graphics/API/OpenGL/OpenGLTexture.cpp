@@ -47,8 +47,8 @@ namespace Daydream
 		:Texture2D(_path)
 	{
 		//stbi_set_flip_vertically_on_load(1);
-		Array<UInt8> imageData = ImageLoader::LoadImageFile(_path, width, height, channels);
-		DAYDREAM_CORE_ASSERT(!imageData.empty(), "Failed to load image!");
+		ImageLoader::ImageData imageData = ImageLoader::LoadImageFile(_path);
+		DAYDREAM_CORE_ASSERT(!imageData.data.empty(), "Failed to load image!");
 
 		GLenum internalFormat = 0, dataFormat = 0;
 		internalFormat = GraphicsUtil::ConvertRenderFormatToGLFormat(_desc.format);
@@ -73,7 +73,7 @@ namespace Daydream
 		glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-		glTextureSubImage2D(textureID, 0, 0, 0, width, height, dataFormat, GL_UNSIGNED_BYTE, imageData.data());
+		glTextureSubImage2D(textureID, 0, 0, 0, width, height, dataFormat, GL_UNSIGNED_BYTE, imageData.data.data());
 	}
 	OpenGLTexture2D::~OpenGLTexture2D()
 	{

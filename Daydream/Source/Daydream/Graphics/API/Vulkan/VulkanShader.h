@@ -16,11 +16,13 @@ namespace Daydream
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
 
-		virtual void* GetNativeHandle() override { return shader; }
+		virtual void* GetNativeHandle() override { return shader.get(); }
+
+		const vk::ShaderModule& GetShaderHandle() { return shader.get(); }
 	private:
 		VulkanRenderDevice* device;
-		VkShaderModule shader;
-		VkShaderStageFlagBits stageBit;
+		vk::UniqueShaderModule shader;
+		vk::ShaderStageFlagBits stageBit;
 
 
 		// Inherited via Shader

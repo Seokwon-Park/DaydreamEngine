@@ -16,6 +16,7 @@ workspace "Daydream"
 	IncludeDir["stb"] = "Daydream/Vendor/stb"
 	IncludeDir["assimp"] = "Daydream/Vendor/assimp/include"
 	IncludeDir["dxcompiler"] = "Daydream/Vendor/dxcompiler/include"
+	IncludeDir["VulkanMemoryAllocator"] = "Daydream/Vendor/VulkanMemoryAllocator"
 
 	include "Daydream/Vendor/glfw"
 	include "Daydream/Vendor/glad"
@@ -42,6 +43,7 @@ project "Daydream"
 		"%{prj.name}/Vendor/stb/**.cpp",
 		"%{prj.name}/Vendor/glm/glm/**.hpp",
  		"%{prj.name}/Vendor/glm/glm/**.inl",
+ 		"%{prj.name}/Vendor/VulkanMemoryAllocator/**.cpp",
 	}
 	includedirs
 	{
@@ -54,6 +56,7 @@ project "Daydream"
 		"%{IncludeDir.stb}",
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.dxcompiler}",
+		"%{IncludeDir.VulkanMemoryAllocator}",
 		"$(VULKAN_SDK)/Include",
 	}
 	libdirs 
@@ -147,7 +150,7 @@ project "Sandbox"
 	}
 	links
 	{
-		"Daydream"
+		"Daydream",
 	}
 	filter "system:windows"
 		cppdialect "C++20"
@@ -191,7 +194,7 @@ project "DaydreamEditor"
 	}
 	links
 	{
-		"Daydream"
+		"Daydream",
 	}
 	filter "system:windows"
 		cppdialect "C++20"

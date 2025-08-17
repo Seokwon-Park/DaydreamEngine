@@ -15,20 +15,19 @@ namespace Daydream
 		virtual Shared<Material> CreateMaterial() override;
 
 		void CreateShaderStageInfo(const Shared<Shader>& _shader);
-		Array<VkDescriptorSetLayout> GetLayout() { return descriptorSetLayouts; };
-		VkPipelineLayout GetPipelineLayout() { return pipelineLayout; }
+		Array<vk::DescriptorSetLayout> GetLayout() { return rawDescriptorSetLayouts; };
+		vk::PipelineLayout GetPipelineLayout() { return pipelineLayout.get(); }
 	private:
 
 		VulkanRenderDevice* device;
-		Array<VkPipelineShaderStageCreateInfo> shaderStages;
+		Array<vk::PipelineShaderStageCreateInfo> shaderStages;
 
-		VkPipeline pipeline;
-		VkPipelineLayout pipelineLayout; // root signature
-		Array<VkDescriptorSetLayout> descriptorSetLayouts;
+		vk::UniquePipeline pipeline;
+		vk::UniquePipelineLayout pipelineLayout; // root signature
+		Array<vk::UniqueDescriptorSetLayout> descriptorSetLayouts;
+		Array<vk::DescriptorSetLayout> rawDescriptorSetLayouts;
 
-		VkDescriptorPool descriptorPool;
-		Array<VkDescriptorSet> descriptorSets;
-		Array<VkWriteDescriptorSet> descriptorWriteSets;
+		vk::DescriptorPool descriptorPool;
 
 		HashMap<ShaderType, String> entryPoints;
 

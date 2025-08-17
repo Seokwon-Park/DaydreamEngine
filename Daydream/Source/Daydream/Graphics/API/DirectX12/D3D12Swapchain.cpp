@@ -64,10 +64,10 @@ namespace Daydream
 
 		RenderPassAttachmentDesc colorDesc;
 		colorDesc.format = _desc.format;
+		colorDesc.isSwapchain = true;
 
 		RenderPassDesc rpDesc{};
 		rpDesc.colorAttachments.push_back(colorDesc);
-		rpDesc.isSwapchain = true;
 
 		mainRenderPass = MakeShared<D3D12RenderPass>(device, rpDesc);
 

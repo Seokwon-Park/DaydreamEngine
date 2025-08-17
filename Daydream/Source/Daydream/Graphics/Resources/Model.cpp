@@ -3,7 +3,7 @@
 
 #include "Daydream/Graphics/Utility/ModelLoader.h"
 #include "Daydream/Graphics/Resources/Buffer.h"
-
+#include "Daydream/Graphics/Resources/Mesh.h"
 #include "Daydream/Graphics/Core/Renderer.h"
 
 namespace Daydream
@@ -42,7 +42,7 @@ namespace Daydream
 				v.position.z = (v.position.z - cz) / dl;
 			}
 
-			Shared<VertexBuffer> vertexBuffer = VertexBuffer::CreateStatic(meshData.vertices.data(), meshData.vertices.size() * sizeof(Vertex), sizeof(Vertex));
+			Shared<VertexBuffer> vertexBuffer = VertexBuffer::CreateStatic(meshData.vertices.size() * sizeof(Vertex), sizeof(Vertex), meshData.vertices.data());
 			Shared<IndexBuffer> indexBuffer = IndexBuffer::Create(meshData.indices.data(), meshData.indices.size());
 
 			Shared<Mesh> mesh = MakeShared<Mesh>();

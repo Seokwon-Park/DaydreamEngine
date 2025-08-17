@@ -8,42 +8,42 @@ namespace Daydream
 	class VulkanTexture2D :public Texture2D
 	{
 	public:
-		VulkanTexture2D(VulkanRenderDevice* _device, const TextureDesc& _desc);
-		VulkanTexture2D(VulkanRenderDevice* _device, const FilePath& _path, const TextureDesc& _desc);
-		VulkanTexture2D(VulkanRenderDevice* _device, VkImage _image, VkFormat _format);
+		VulkanTexture2D(VulkanRenderDevice* _device, const TextureDesc& _desc); // Dynamic(RenderTarget, ShaderResource...)
+		//VulkanTexture2D(VulkanRenderDevice* _device, const FilePath& _path, const TextureDesc& _desc); // FileLoad
+		//VulkanTexture2D(VulkanRenderDevice* _device, VkImage _image, VkFormat _format); // ForSwapchain
 		void CreateSampler();
 		virtual ~VulkanTexture2D();
 
-		virtual void* GetNativeHandle() override { return textureImage; }
+		virtual void* GetNativeHandle() override { return textureImage.get(); }
 		virtual void* GetImGuiHandle() override;
 
-		VkImage GetImage() { return textureImage; }
-		VkImageView GetImageView();
-		VkSampler GetSampler() { return textureSampler; }
+		vk::Image GetImage() { return textureImage.get(); }
+		vk::ImageView GetImageView() { return textureImageView.get(); }
+		vk::Sampler GetSampler() { return textureSampler.get(); }
 
-		void TransitionLayout(VkImageLayout _targetLayout);
+		void TransitionLayout(vk::ImageLayout _targetLayout);
 
 	protected:
 
 	private:
 		bool isSwapchainImage = false;
 		VulkanRenderDevice* device;
-		VkDeviceSize imageSize;
-		VkBuffer uploadBuffer;
-		VkDeviceMemory uploadBufferMemory;
+		vk::DeviceSize imageSize;
+		vk::Buffer uploadBuffer;
+		vk::DeviceMemory uploadBufferMemory;
 
-		VkFormat imageFormat = VK_FORMAT_R8G8B8A8_SRGB;
+		vk::Format imageFormat = vk::Format::eR8G8B8A8Srgb;
 
-		VkImage textureImage;
-		VkImageView textureImageView = VK_NULL_HANDLE;
-		VkDeviceMemory textureImageMemory;
+		vk::UniqueImage textureImage;
+		vk::UniqueImageView textureImageView;
+		vk::UniqueDeviceMemory textureImageMemory;
 
 		//ImGui Image¿ë
 		VkDescriptorSet ImGuiDescriptorSet = VK_NULL_HANDLE;
 
-		VkSampler textureSampler;
+		vk::UniqueSampler textureSampler;
 
-		VkImageLayout currentLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		vk::ImageLayout currentLayout = vk::ImageLayout::eUndefined;
 	};
 }
 

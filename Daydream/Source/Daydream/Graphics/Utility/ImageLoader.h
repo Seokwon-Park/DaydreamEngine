@@ -4,5 +4,20 @@
 
 namespace Daydream::ImageLoader
 {
-	Array<UInt8> LoadImageFile(const Daydream::FilePath& _path, Int32& _width, Int32& _height, Int32& _channels);
+	struct ImageData
+	{
+		Int32 width;
+		Int32 height;
+		Array<UInt8> data;
+	};
+
+	struct HDRIImageData
+	{
+		Int32 width;
+		Int32 height;
+		Array<Float32> data;
+	};
+
+	ImageData LoadImageFile(const FilePath& _path);
+	HDRIImageData LoadHDRIFile(const FilePath& _path);
 }

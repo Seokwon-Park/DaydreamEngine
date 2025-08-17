@@ -35,31 +35,33 @@ namespace Daydream
 
 		virtual Shared<Framebuffer> GetBackFramebuffer() { return framebuffers[imageIndex]; };
 
-		VkFormat GetFormat() const { return format; }
-		VkSwapchainKHR GetVKSwapchain() const { return swapchain; }
-		VkExtent2D GetExtent() const { return extent; }
-		VkRenderPass GetVkRenderPass() const { return renderPass->GetVkRenderPass(); }
 
+		inline vk::Format GetFormat() const { return format; }
+		inline vk::SwapchainKHR GetVkSwapchain() const { return swapchain.get(); }
+		inline vk::Extent2D GetExtent() const { return extent; }
+		inline vk::RenderPass GetVkRenderPass() const { return renderPass->GetVkRenderPass(); }
+		inline Array<vk::Image> GetSwapchainImages() const { return swapchainImages; };
 	private:
-		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const Array<VkSurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat);
-		VkPresentModeKHR ChooseSwapPresentMode(const Array<VkPresentModeKHR>& _availablePresentModes);
-		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& _capabilities);
+		vk::SurfaceFormatKHR ChooseSwapSurfaceFormat(const Array<vk::SurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat);
+		vk::PresentModeKHR ChooseSwapPresentMode(const Array<vk::PresentModeKHR>& _availablePresentModes);
+		vk::Extent2D ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& _capabilities);
 
 		VulkanRenderDevice* device;
-		Array<VkCommandBuffer> commandBuffers;
+		Array<vk::UniqueCommandBuffer> commandBuffers;
 		Array<Shared<VulkanFramebuffer>> framebuffers;
 		Shared<VulkanRenderPass> renderPass;
 
-		VkSurfaceKHR surface; // Vulkan window surface
-		VkSurfaceFormatKHR surfaceFormat;
-		VkSwapchainKHR swapchain = VK_NULL_HANDLE;
-		VkPresentModeKHR presentMode;
-		VkFormat format; // swapchain image format
-		VkExtent2D extent;
-		Array<VkSemaphore> imageAvailableSemaphores;
-		Array<VkSemaphore> renderFinishedSemaphores;
-		Array<VkFence> inFlightFences;
-		UInt32 imageCount;
+		vk::UniqueSurfaceKHR surface; // Vulkan window surface
+		vk::UniqueSwapchainKHR swapchain;
+		vk::SurfaceFormatKHR surfaceFormat;
+		vk::PresentModeKHR presentMode;
+		vk::Format format; // swapchain image format
+		vk::Extent2D extent;
+		Array<vk::UniqueSemaphore> imageAvailableSemaphores;
+		Array<vk::UniqueSemaphore> renderFinishedSemaphores;
+		Array<vk::UniqueFence> inFlightFences;
+		Array<vk::Image> swapchainImages;
+		UInt32 imageCount = 0;
 
 		UInt32 currentFrame = 0;
 		UInt32 imageIndex = 0;

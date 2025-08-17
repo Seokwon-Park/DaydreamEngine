@@ -1,10 +1,27 @@
 #pragma once
 
 #include "vulkan/vulkan.h"
+
+#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
+#include "vulkan/vulkan.hpp"
+
 #include "Daydream/Graphics/Core/RenderDevice.h"
+
+#include "vk_mem_alloc.hpp"
 
 namespace Daydream
 {
+	struct VulkanBufferResource
+	{
+
+	};
+
+	struct VulkanImageResource
+	{
+		vk::Image image;
+		vk::DeviceMemory memory;
+	};
+
 	struct QueueFamilyIndices
 	{
 		std::optional<UInt32> graphicsFamily;
@@ -18,11 +35,11 @@ namespace Daydream
 	struct SwapchainSupportDetails
 	{
 		//gpu와 surface 조합에서 지원되는 최소/최대 이미지 크기정보
-		VkSurfaceCapabilitiesKHR capabilities;
+		vk::SurfaceCapabilitiesKHR capabilities;
 		//색상 format
-		Array<VkSurfaceFormatKHR> formats;
+		Array<vk::SurfaceFormatKHR> formats;
 		//present 방식
-		Array<VkPresentModeKHR> presentModes;
+		Array<vk::PresentModeKHR> presentModes;
 	};
 
 	class VulkanRenderDevice :public RenderDevice
@@ -36,44 +53,45 @@ namespace Daydream
 		virtual void Render() override;
 
 		virtual Shared<RenderContext> CreateContext() override;
-		virtual Shared<VertexBuffer> CreateDynamicVertexBuffer(UInt32 _bufferSize, UInt32 _stride)override;
-		virtual Shared<VertexBuffer> CreateStaticVertexBuffer(void* _vertices, UInt32 _size, UInt32 _stride) override;
+		virtual Shared<VertexBuffer> CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize = 0, const void* _initialData = nullptr) override;
+		virtual Shared<VertexBuffer> CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void * _initialData) override;
 		virtual Shared<IndexBuffer> CreateIndexBuffer(UInt32* _indices, UInt32 _count) override;
 		virtual Shared<RenderPass> CreateRenderPass(const RenderPassDesc& _desc) override;
 		virtual Shared<Framebuffer> CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc) override;
 		virtual Shared<PipelineState> CreatePipelineState(const PipelineStateDesc& _desc)override;
 		virtual Shared<Shader> CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode) override;
 		virtual Shared<Swapchain> CreateSwapchain(DaydreamWindow* _window, const SwapchainDesc& _desc)override;
-		virtual Shared<Texture2D> CreateTexture2D(const FilePath& _path, const TextureDesc& _desc)override;
+		virtual Shared<Texture2D> CreateTexture2D(const void* _imageData, const TextureDesc& _desc)override;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() override;
 		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) override;
 		virtual Shared<Material> CreateMaterial(Shared<PipelineState> _pipeline) override;
 
-		VkInstance GetInstance() const { return instance; }
-		VkPhysicalDevice GetGPU() const { return physicalDevice; }
-		VkDevice GetDevice() const { return device; }
+		vk::Instance GetInstance() const { return instance.get(); }
+		vk::PhysicalDevice GetPhysicalDevice() const { return physicalDevice; }
+		vk::Device GetDevice() const { return device.get(); }
+		vma::Allocator GetAllocator() const { return allocator.get(); }
 		UInt32 GetGraphicsFamilyIndex() const { return queueFamilyIndices.graphicsFamily.value(); }
-		VkQueue GetQueue() const { return graphicsQueue; }
-		VkDescriptorPool GetDescriptorPool() const { return descriptorPool; }
-		VkCommandBuffer GetCommandBuffer() const { return currentCommandBuffer; }
-		void SetCommandBuffer(const VkCommandBuffer& _commandBuffer) { currentCommandBuffer = _commandBuffer; }
-		VkCommandPool GetCommandPool() const { return commandPool; }
+		vk::Queue GetGraphicsQueue() const { return graphicsQueue; }
+		vk::DescriptorPool GetDescriptorPool() const { return descriptorPool.get(); }
+		vk::CommandBuffer GetCommandBuffer() const { return currentCommandBuffer; }
+		void SetCommandBuffer(const vk::CommandBuffer& _commandBuffer) { currentCommandBuffer = _commandBuffer; }
+		vk::CommandPool GetCommandPool() const { return commandPool.get(); }
+		void SetCurrentRenderPass(vk::RenderPass _renderPass) { currentRenderPass = _renderPass; }
+		vk::RenderPass GetCurrentRenderPass() const { return currentRenderPass; }
 
-		void SetCurrentRenderPass(VkRenderPass _renderPass) { renderPass = _renderPass; }
-		VkRenderPass GetCurrentRenderPass() const { return renderPass; }
+		vk::CommandBuffer BeginSingleTimeCommands();
+		void EndSingleTimeCommands(vk::CommandBuffer _commandBuffer);
 
-		VkCommandBuffer BeginSingleTimeCommands();
-		void EndSingleTimeCommands(VkCommandBuffer _commandBuffer);
-
-		SwapchainSupportDetails QuerySwapchainSupport(VkSurfaceKHR _surface);
-		UInt32 FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+		SwapchainSupportDetails QuerySwapchainSupport(vk::SurfaceKHR _surface);
+		UInt32 FindMemoryType(UInt32 _typeFilter, vk::MemoryPropertyFlags _properties);
 		//Create a VkBuffer
-		void CreateBuffer(VkDeviceSize _size, VkBufferUsageFlags _usage, VkMemoryPropertyFlags _properties, VkBuffer& _buffer, VkDeviceMemory& _bufferMemory);
-		void CreateImage(UInt32 _width, UInt32 _height, VkFormat _format, VkImageTiling tiling, VkImageUsageFlags _usage, VkMemoryPropertyFlags _properties, VkImage& _image, VkDeviceMemory& _imageMemory);
-		void CreateImageView(VkImage _image, VkFormat _format, VkImageView& _imageView, VkImageAspectFlags _aspectMask);
-		void CopyBuffer(VkBuffer _src, VkBuffer _dst, VkDeviceSize _size);
-		void CopyBufferToImage(VkBuffer _src, VkImage _dst, UInt32 _width, UInt32 _height);
-		void TransitionTextureLayout(VkImage _image, VkFormat _format, VkImageLayout _oldLayout, VkImageLayout _newLayout);
+		Pair<vma::UniqueBuffer, vma::UniqueAllocation> CreateBuffer(vk::DeviceSize _size, vk::BufferUsageFlags _usage,
+			vma::MemoryUsage _memoryUsage, vma::AllocationCreateFlags _flags);
+		VulkanImageResource CreateImage(UInt32 _width, UInt32 _height, vk::Format _format, vk::ImageTiling _tiling, vk::ImageUsageFlags _usage, vk::MemoryPropertyFlags _properties);
+		vk::ImageView CreateImageView(vk::Image _image, vk::Format _format, vk::ImageAspectFlags _aspectMask);
+		void CopyBuffer(vk::Buffer _src, vk::Buffer _dst, vk::DeviceSize _size);
+		void CopyBufferToImage(vk::Buffer _src, vk::Image _dst, UInt32 _width, UInt32 _height);
+		void TransitionImageLayout(vk::Image _image, vk::Format _format, vk::ImageLayout _oldLayout, vk::ImageLayout _newLayout);
 
 		//SwapchainSupportDetails QuerySwapchainSupport(VkPhysicalDevice _physicalDevice, VkSurfaceKHR _surface);
 	private:
@@ -84,10 +102,10 @@ namespace Daydream
 
 		bool CheckValidationLayerSupport();
 		Array<const char*> GetRequiredExtensions();
-		void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& _createInfo);
-		bool IsDeviceSuitable(VkPhysicalDevice _physicalDevice);
-		QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice _physicalDevice);
-		bool CheckDeviceExtensionSupport(VkPhysicalDevice _physicalDevice);
+		void PopulateDebugMessengerCreateInfo(vk::DebugUtilsMessengerCreateInfoEXT& _createInfo);
+		bool IsDeviceSuitable(vk::PhysicalDevice _physicalDevice);
+		QueueFamilyIndices FindQueueFamilies(vk::PhysicalDevice _physicalDevice);
+		bool CheckDeviceExtensionSupport(vk::PhysicalDevice _physicalDevice);
 
 #if defined(DAYDREAM_DEBUG) || defined(_DEBUG)
 		const bool enableValidationLayers = true;
@@ -102,17 +120,19 @@ namespace Daydream
 			VK_GOOGLE_USER_TYPE_EXTENSION_NAME,
 			VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME
 		};
-		VkInstance instance; // Vulkan library handle
-		VkDebugUtilsMessengerEXT debugMessenger;
-		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE; // GPU chosen as the default device
-		VkDevice device; // Vulkan device for commands
+		vk::UniqueInstance instance; // Vulkan library handle
+		vk::UniqueDebugUtilsMessengerEXT debugMessenger;
+		vk::PhysicalDevice physicalDevice = VK_NULL_HANDLE; // GPU chosen as the default device
+		vk::UniqueDevice device; // Vulkan device for commands
 		QueueFamilyIndices queueFamilyIndices;
-		VkQueue graphicsQueue; // vulkan graphics Queue
-		VkCommandPool commandPool;
-		VkCommandBuffer currentCommandBuffer;
-		VkDescriptorPool descriptorPool;
+		vk::Queue graphicsQueue; // vulkan graphics Queue
+		vk::UniqueCommandPool commandPool;
+		vk::CommandBuffer currentCommandBuffer;
+		vk::UniqueDescriptorPool descriptorPool;
 
-		VkRenderPass renderPass;
+		vk::RenderPass currentRenderPass;
+
+		vma::UniqueAllocator allocator;
 
 	};
 }

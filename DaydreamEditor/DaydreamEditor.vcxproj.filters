@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="EditorPanels">
+      <UniqueIdentifier>{6FDCDA8C-5B3F-6A31-04C5-A2E7F00636B4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\EditorLayer.h" />
+    <ClInclude Include="Source\EditorPanels\PropertyPanel.h">
+      <Filter>EditorPanels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\EditorPanels\SceneHierarchyPanel.h">
+      <Filter>EditorPanels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\EditorPanels\UIPanel.h">
+      <Filter>EditorPanels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\EditorPanels\ViewportPanel.h">
+      <Filter>EditorPanels</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\EditorApp.cpp" />
+    <ClCompile Include="Source\EditorLayer.cpp" />
+    <ClCompile Include="Source\EditorPanels\PropertyPanel.cpp">
+      <Filter>EditorPanels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\EditorPanels\SceneHierarchyPanel.cpp">
+      <Filter>EditorPanels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\EditorPanels\ViewportPanel.cpp">
+      <Filter>EditorPanels</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

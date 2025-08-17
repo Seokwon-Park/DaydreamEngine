@@ -2,31 +2,62 @@
 #include "ImageLoader.h"
 #include "stb_image.h"
 
-namespace Daydream
+namespace Daydream::ImageLoader
 {
-	Array<UInt8> ImageLoader::LoadImageFile(const Daydream::FilePath& _path, Int32& _width, Int32& _height, Int32& _channels)
+	ImageData LoadImageFile(const FilePath& _path)
 	{
-		
-		stbi_uc* data = stbi_load(_path.ToString().c_str(), &_width, &_height, &_channels, 0);
-		DAYDREAM_CORE_ASSERT(data, "Failed to load image!");
+		ImageData imageData;
 
-		Array<UInt8> newPixels(_width * _height * 4);
-		if (_channels == 3)
+		int channel;
+		stbi_uc* pixels = stbi_load(_path.ToString().c_str(), &imageData.width, &imageData.height, &channel, 0);
+		DAYDREAM_CORE_ASSERT(pixels, "Failed to load image!");
+
+		UInt32 imageSize = imageData.width * imageData.height;
+		imageData.data.resize(imageSize*4);
+		if (channel == 3)
 		{
-			for (int i = 0; i < _width * _height; i++)
+			for (int i = 0; i < imageSize; i++)
 			{
-				newPixels[i * 4] = data[i * 3];
-				newPixels[i * 4 + 1] = data[i * 3 + 1];
-				newPixels[i * 4 + 2] = data[i * 3 + 2];
-				newPixels[i * 4 + 3] = 255;
+				imageData.data[i * 4] = pixels[i * 3];
+				imageData.data[i * 4 + 1] = pixels[i * 3 + 1];
+				imageData.data[i * 4 + 2] = pixels[i * 3 + 2];
+				imageData.data[i * 4 + 3] = 255;
 			}
 		}
-		else if (_channels == 4)
+		else if (channel == 4)
 		{
-			memcpy(newPixels.data(), data, _width * _height * 4);
+			memcpy(imageData.data.data(), pixels, imageSize * 4);
 		}
-		stbi_image_free(data);
+		stbi_image_free(pixels);
 
-		return newPixels;
+		return imageData;
+	}
+	HDRIImageData LoadHDRIFile(const FilePath& _path)
+	{
+		HDRIImageData imageData;
+
+		int channel;
+		Float32* pixels = stbi_loadf(_path.ToString().c_str(), &imageData.width, &imageData.height, &channel, 0);
+		DAYDREAM_CORE_ASSERT(pixels, "Failed to load image!");
+
+		UInt32 imageSize = imageData.width * imageData.height;
+		imageData.data.resize(imageSize * 4);
+		if (channel == 3)
+		{
+			for (int i = 0; i < imageSize; i++)
+			{
+				imageData.data[i * 4] = pixels[i * 3];
+				imageData.data[i * 4 + 1] = pixels[i * 3 + 1];
+				imageData.data[i * 4 + 2] = pixels[i * 3 + 2];
+				imageData.data[i * 4 + 3] = 1.0f;
+			}
+		}
+		else if (channel == 4)
+		{
+			memcpy(imageData.data.data(), pixels, imageSize * 4);
+		}
+		stbi_image_free(pixels);
+
+		return imageData;
 	}
 }

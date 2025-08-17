@@ -42,8 +42,7 @@ namespace Daydream
 
 			ShaderCompileHelper::ConvertHLSLtoSPIRV(path, _type, reflect);
 
-			VkShaderModuleCreateInfo createInfo{};
-			createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+			vk::ShaderModuleCreateInfo createInfo{};
 			createInfo.codeSize = reflect.size()*sizeof(UInt32);
 			createInfo.pCode = reflect.data();
 
@@ -103,8 +102,7 @@ namespace Daydream
 				reflectionInfo.push_back(sr);
 			}
 
-			VkResult result = vkCreateShaderModule(device->GetDevice(), &createInfo, nullptr, &shader);
-			DAYDREAM_CORE_ASSERT(result == VK_SUCCESS, "Failed to create shader module!");
+			shader = device->GetDevice().createShaderModuleUnique(createInfo);
 			break;
 		}
 		default:
@@ -115,7 +113,6 @@ namespace Daydream
 
 	VulkanShader::~VulkanShader()
 	{
-		vkDestroyShaderModule(device->GetDevice(), shader, nullptr);
 	}
 	void VulkanShader::Bind() const
 	{

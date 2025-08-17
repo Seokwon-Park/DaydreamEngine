@@ -12,8 +12,8 @@ namespace Daydream
 	struct LightData
 	{
 		Light lights[32]; // 최대 32개 라이트
+		Vector3 eyePos;
 		int lightCount;
-		Vector3 padding;
 	};
 
 	class Scene

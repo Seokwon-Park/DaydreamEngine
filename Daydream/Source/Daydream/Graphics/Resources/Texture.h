@@ -71,7 +71,7 @@ namespace Daydream
 		static Shared<Texture2D> CreateEmpty(const TextureDesc& _desc);
 	protected:
 		FilePath path;
-		TextureDesc desc;
+		TextureDesc desc = TextureDesc();
 		Int32 width = 0;
 		Int32 height = 0;
 		Int32 channels = 0;

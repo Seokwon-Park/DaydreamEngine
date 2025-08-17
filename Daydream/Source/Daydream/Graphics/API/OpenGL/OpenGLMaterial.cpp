@@ -41,14 +41,12 @@ namespace Daydream
 		{
 			if (texture == nullptr) continue;
 			glBindTextureUnit(bindingMap[name].binding, static_cast<UInt32>(reinterpret_cast<uintptr_t>(texture->GetNativeHandle())));
-
 		}
 
 		for (auto [name, cbuffer] : cbuffers)
 		{
 			if (cbuffer == nullptr) continue;
-			glBindBufferBase(GL_UNIFORM_BUFFER, bindingMap[name].set, static_cast<UInt32>(reinterpret_cast<uintptr_t>(cbuffer->GetNativeHandle())));
-
+			glBindBufferBase(GL_UNIFORM_BUFFER, bindingMap[name].binding, static_cast<UInt32>(reinterpret_cast<uintptr_t>(cbuffer->GetNativeHandle())));
 		}
 	}
 	void OpenGLMaterial::SetTexture2D(const std::string& _name, Shared<Texture2D> _texture)

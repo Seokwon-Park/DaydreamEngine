@@ -5,7 +5,7 @@
 
 #include "Daydream/Graphics/Core/Renderer.h"
 
-#include "stb_image.h"
+#include "Daydream/Graphics/Utility/ImageLoader.h"
 #include "TextureCube.h"
 
 namespace Daydream
@@ -17,7 +17,11 @@ namespace Daydream
 
     Shared<Texture2D> Texture2D::Create(const FilePath& _path, const TextureDesc& _desc)
     {
-        return Renderer::GetRenderDevice()->CreateTexture2D(_path, _desc);
+        TextureDesc finalDesc = _desc;
+        auto imageData = ImageLoader::LoadImageFile(_path);
+        finalDesc.width = imageData.width;
+        finalDesc.height = imageData.height;
+        return Renderer::GetRenderDevice()->CreateTexture2D(imageData.data.data(), finalDesc);
     }
 
     Shared<Texture2D> Texture2D::CreateEmpty(const TextureDesc& _desc)

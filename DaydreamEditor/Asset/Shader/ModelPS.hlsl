@@ -7,19 +7,19 @@ struct PSInput
     
 struct Light
 {
-    int type;
     float3 color;
+    int type;
     float3 position;
     float intensity;
     float3 direction;
     float padding;
 };
 
-cbuffer Lights : register(b0)
+cbuffer Lights : register(b2)
 {
     Light lights[32]; // 최대 32개 라이트
+    float3 eyePosition;
     int lightCount;
-    float3 padding;
 };
 
 struct PSOutput
@@ -36,16 +36,21 @@ PSOutput PSMain(PSInput input)
 {
     PSOutput output = (PSOutput) 0;
     
-    float4 color = float4(0.0f, 0.0f, 0.0f, 1.0f);
+    float3 color = float3(0.0f, 0.0f, 0.0f);
     [unroll]
     for (int i = 0; i < 1; i++)
     {
     //output.color = Texture.Sample(TextureSampler, input.uv) + input.color;
-        float3 lightVec = -lights[i].direction;
-        float ndotl = max(dot(normalize(lightVec), input.normal), 0.0f);
+        float3 lightDir = -lights[i].direction;
+        float ndotl = max(dot(normalize(lightDir), input.normal), 0.0f);
         
-        color += float4(lights[i].color, 1.0f) * ndotl;
+        float3 viewDirection = normalize(eyePosition - input.position.xyz);
+        float3 reflectDir = reflect(-lightDir, input.normal);
+        float3 halfway = normalize(viewDirection + lightDir);
+        float specularPower = pow(max(dot(input.normal, halfway), 0.0f), 20.0f);
+        
+        color += lights[i].color * ndotl + float3(1.0f, 1.0f, 1.0f) * specularPower;
     }
-    output.color = color;
+    output.color = float4(color, 1.0f);
     return output;
 }

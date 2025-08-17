@@ -17,144 +17,68 @@ namespace Daydream
 		imageSize = width * height * 4;
 		imageFormat = GraphicsUtil::ConvertRenderFormatToVkFormat(_desc.format);
 
-		device->CreateImage(
-			width,
-			height,
-			imageFormat,
-			VK_IMAGE_TILING_OPTIMAL,
-			GraphicsUtil::ConvertToVkImageUsageFlags(_desc.bindFlags),
-			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-			textureImage,
-			textureImageMemory);
+		auto imageResource = device->CreateImage(width, height, imageFormat, vk::ImageTiling::eOptimal,
+			GraphicsUtil::ConvertToVkImageUsageFlags(_desc.bindFlags), vk::MemoryPropertyFlagBits::eDeviceLocal);
 
-		//device->TransitionTextureLayout(textureImage, imageFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
-		if (imageFormat == VK_FORMAT_D24_UNORM_S8_UINT)
+		textureImage = vk::UniqueImage(imageResource.image, vk::detail::ObjectDestroy<vk::Device, vk::detail::DispatchLoaderDynamic>(device->GetDevice()));
+		textureImageMemory = vk::UniqueDeviceMemory(imageResource.memory, vk::detail::ObjectFree<vk::Device, vk::detail::DispatchLoaderDynamic>(device->GetDevice()));
+
+		device->TransitionImageLayout(textureImage.get(), imageFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
+		if (imageFormat == vk::Format::eD24UnormS8Uint)
 		{
-			device->CreateImageView(textureImage, imageFormat, textureImageView, VK_IMAGE_ASPECT_DEPTH_BIT| VK_IMAGE_ASPECT_STENCIL_BIT);
+			auto imageView = device->CreateImageView(textureImage.get(), imageFormat,
+				vk::ImageAspectFlagBits::eDepth | vk::ImageAspectFlagBits::eStencil);
+			textureImageView = vk::UniqueImageView(imageView, vk::detail::ObjectDestroy<vk::Device, vk::detail::DispatchLoaderDynamic>(device->GetDevice()));
 		}
 		else
 		{
-			device->TransitionTextureLayout(textureImage, imageFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-			device->CreateImageView(textureImage, imageFormat, textureImageView, VK_IMAGE_ASPECT_COLOR_BIT);
-
+			auto imageView = device->CreateImageView(textureImage.get(), imageFormat,
+				vk::ImageAspectFlagBits::eColor);
+			textureImageView = vk::UniqueImageView(imageView, vk::detail::ObjectDestroy<vk::Device, vk::detail::DispatchLoaderDynamic>(device->GetDevice()));
 		}
 
 		CreateSampler();
-	}
-
-	VulkanTexture2D::VulkanTexture2D(VulkanRenderDevice* _device, const FilePath& _path, const TextureDesc& _desc)
-		:Texture2D(_path)
-	{
-		device = _device;
-
-		Array<UInt8> imageData = ImageLoader::LoadImageFile(_path, width, height, channels);
-		DAYDREAM_CORE_ASSERT(!imageData.empty(), "Failed to load image!");
-		imageSize = width * height * 4;
-
-		device->CreateBuffer(
-			imageSize,
-			VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-			uploadBuffer,
-			uploadBufferMemory);
-
-		void* pixelData;
-		vkMapMemory(device->GetDevice(), uploadBufferMemory, 0, imageSize, 0, &pixelData);
-		memcpy(pixelData, imageData.data(), imageSize);
-		vkUnmapMemory(device->GetDevice(), uploadBufferMemory);
-
-		imageFormat = GraphicsUtil::ConvertRenderFormatToVkFormat(_desc.format);
-		device->CreateImage(
-			width,
-			height,
-			imageFormat,
-			VK_IMAGE_TILING_OPTIMAL,
-			GraphicsUtil::ConvertToVkImageUsageFlags(_desc.bindFlags),
-			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-			textureImage,
-			textureImageMemory);
-
-		device->TransitionTextureLayout(textureImage, imageFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-		device->CopyBufferToImage(uploadBuffer, textureImage, width, height);
-		device->TransitionTextureLayout(textureImage, imageFormat, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-		currentLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		device->CreateImageView(textureImage, imageFormat, textureImageView, VK_IMAGE_ASPECT_COLOR_BIT);
-
-		vkDestroyBuffer(device->GetDevice(), uploadBuffer, nullptr);
-		vkFreeMemory(device->GetDevice(), uploadBufferMemory, nullptr);
-
-		CreateSampler();
-	}
-	
-	VulkanTexture2D::VulkanTexture2D(VulkanRenderDevice* _device, VkImage _image, VkFormat _format)
-	{
-		device = _device;
-		textureImage = _image;
-		isSwapchainImage = true;
-
-		device->TransitionTextureLayout(textureImage, imageFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
-		device->CreateImageView(textureImage, _format, textureImageView, VK_IMAGE_ASPECT_COLOR_BIT);
-
-		CreateSampler();
-
-		//ImGuiDescriptorSet = ImGui_ImplVulkan_AddTexture(textureSampler, textureImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 	}
 
 	void VulkanTexture2D::CreateSampler()
 	{
-		// sampler
-		VkPhysicalDeviceProperties properties{};
-		vkGetPhysicalDeviceProperties(device->GetGPU(), &properties);
+		vk::PhysicalDeviceProperties properties = device->GetPhysicalDevice().getProperties();
 
-		VkSamplerCreateInfo samplerInfo{};
-		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-		samplerInfo.magFilter = VK_FILTER_LINEAR;
-		samplerInfo.minFilter = VK_FILTER_LINEAR;
-		samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-		samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-		samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		vk::SamplerCreateInfo samplerInfo{};
+		samplerInfo.magFilter = vk::Filter::eLinear;
+		samplerInfo.minFilter = vk::Filter::eLinear;
+		samplerInfo.addressModeU = vk::SamplerAddressMode::eRepeat;
+		samplerInfo.addressModeV = vk::SamplerAddressMode::eRepeat;
+		samplerInfo.addressModeW = vk::SamplerAddressMode::eRepeat;
 		samplerInfo.anisotropyEnable = VK_TRUE;
 		samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
 		//samplerInfo.anisotropyEnable = VK_FALSE;
 		//samplerInfo.maxAnisotropy = 1.0f;
-		samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+		samplerInfo.borderColor = vk::BorderColor::eIntOpaqueBlack;
 		samplerInfo.unnormalizedCoordinates = VK_FALSE;
 		samplerInfo.compareEnable = VK_FALSE;
-		samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
-		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+		samplerInfo.compareOp = vk::CompareOp::eAlways;
+		samplerInfo.mipmapMode = vk::SamplerMipmapMode::eLinear;
 
-		VkResult vr = vkCreateSampler(device->GetDevice(), &samplerInfo, nullptr, &textureSampler);
-		DAYDREAM_CORE_ASSERT(vr == VK_SUCCESS, "failed to create texture sampler!");
+		textureSampler = device->GetDevice().createSamplerUnique(samplerInfo);
 	}
 
 	VulkanTexture2D::~VulkanTexture2D()
 	{
 		ImGui_ImplVulkan_RemoveTexture(ImGuiDescriptorSet);
 		ImGuiDescriptorSet = VK_NULL_HANDLE;
-		if (textureSampler != VK_NULL_HANDLE) vkDestroySampler(device->GetDevice(), textureSampler, nullptr);
-		if (textureImageView != VK_NULL_HANDLE) vkDestroyImageView(device->GetDevice(), textureImageView, nullptr);
-		if (!isSwapchainImage && textureImage != VK_NULL_HANDLE)
-		{
-			vkDestroyImage(device->GetDevice(), textureImage, nullptr);
-		}
-		if (!isSwapchainImage && textureImageMemory != VK_NULL_HANDLE) vkFreeMemory(device->GetDevice(), textureImageMemory, nullptr);
 	}
 
 	void* VulkanTexture2D::GetImGuiHandle()
 	{
 		if (ImGuiDescriptorSet != VK_NULL_HANDLE) return ImGuiDescriptorSet;
-		return ImGuiDescriptorSet = ImGui_ImplVulkan_AddTexture(textureSampler, textureImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		return ImGuiDescriptorSet = ImGui_ImplVulkan_AddTexture(textureSampler.get(), textureImageView.get(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 	}
 
-	VkImageView VulkanTexture2D::GetImageView()
-	{
-		return textureImageView;
-	}
-
-	void VulkanTexture2D::TransitionLayout(VkImageLayout _targetLayout)
+	void VulkanTexture2D::TransitionLayout(vk::ImageLayout _targetLayout)
 	{
 		if (currentLayout == _targetLayout) return;
-		device->TransitionTextureLayout(textureImage, imageFormat, currentLayout, _targetLayout);
+		//device->TransitionTextureLayout(textureImage, imageFormat, currentLayout, _targetLayout);
 		currentLayout = _targetLayout;
 	}
 

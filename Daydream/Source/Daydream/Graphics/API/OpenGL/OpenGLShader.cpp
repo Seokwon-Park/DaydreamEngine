@@ -279,6 +279,7 @@ namespace Daydream
 
 	OpenGLShader::~OpenGLShader()
 	{
+		glDeleteProgram(shaderProgramID);
 	}
 	void OpenGLShader::Bind() const
 	{

@@ -18,6 +18,6 @@ namespace Daydream
 	private:
 		VulkanRenderDevice* device;
 		VulkanPipelineState* pso;
-		Array<VkDescriptorSet> sets;
+		Array<vk::UniqueDescriptorSet> sets;
 	};
 }

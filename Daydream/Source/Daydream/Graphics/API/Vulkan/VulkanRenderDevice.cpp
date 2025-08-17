@@ -11,39 +11,45 @@
 #include "VulkanTexture.h"
 #include "VulkanMaterial.h"
 #include "Daydream/Graphics/Utility/GraphicsUtil.h"
+#include "Daydream/Graphics/Utility/ImageLoader.h"
 
 #include "GLFW/glfw3.h"
 #include "GLFW/glfw3native.h"
 
 #include "backends/imgui_impl_vulkan.h"
 
+namespace vk
+{
+	namespace detail
+	{
+		DispatchLoaderDynamic defaultDispatchLoaderDynamic;
+	}
+}
 
-
-
-//Ref - https://vulkan-tutorial.com/
 namespace Daydream
 {
 	namespace
 	{
-		static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
-			VkDebugUtilsMessageSeverityFlagBitsEXT _messageSeverity,
-			VkDebugUtilsMessageTypeFlagsEXT _messageType,
-			const VkDebugUtilsMessengerCallbackDataEXT* _pCallbackData,
+
+		static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(
+			vk::DebugUtilsMessageSeverityFlagBitsEXT _messageSeverity,
+			vk::DebugUtilsMessageTypeFlagsEXT _messageType,
+			const vk::DebugUtilsMessengerCallbackDataEXT* _pCallbackData,
 			void* _pUserData)
 		{
-			if (_messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
+			if (_messageSeverity & vk::DebugUtilsMessageSeverityFlagBitsEXT::eError)
 			{
 				DAYDREAM_CORE_ERROR("Validation layer: {0}", _pCallbackData->pMessage);
 			}
-			else if (_messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
+			else if (_messageSeverity & vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning)
 			{
 				DAYDREAM_CORE_WARN("Validation layer: {0}", _pCallbackData->pMessage);
 			}
-			else if (_messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
+			else if (_messageSeverity & vk::DebugUtilsMessageSeverityFlagBitsEXT::eInfo)
 			{
 				DAYDREAM_CORE_INFO("Validation layer: {0}", _pCallbackData->pMessage);
 			}
-			else if (_messageSeverity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT)
+			else if (_messageSeverity & vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose)
 			{
 				DAYDREAM_CORE_TRACE("Validation layer: {0}", _pCallbackData->pMessage);
 			}
@@ -51,7 +57,7 @@ namespace Daydream
 			return VK_FALSE;
 		}
 
-		VkResult CreateDebugUtilsMessengerEXT(VkInstance _instance, const VkDebugUtilsMessengerCreateInfoEXT* _pCreateInfo, const VkAllocationCallbacks* _pAllocator, VkDebugUtilsMessengerEXT* _pDebugMessenger)
+		static VkResult CreateDebugUtilsMessengerEXT(VkInstance _instance, const VkDebugUtilsMessengerCreateInfoEXT* _pCreateInfo, const VkAllocationCallbacks* _pAllocator, VkDebugUtilsMessengerEXT* _pDebugMessenger)
 		{
 			auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(_instance, "vkCreateDebugUtilsMessengerEXT");
 			if (func != nullptr)
@@ -64,7 +70,7 @@ namespace Daydream
 			}
 		}
 
-		void DestroyDebugUtilsMessengerEXT(VkInstance _instance, VkDebugUtilsMessengerEXT _debugMessenger, const VkAllocationCallbacks* _pAllocator)
+		static void DestroyDebugUtilsMessengerEXT(VkInstance _instance, VkDebugUtilsMessengerEXT _debugMessenger, const VkAllocationCallbacks* _pAllocator)
 		{
 			auto func = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(_instance, "vkDestroyDebugUtilsMessengerEXT");
 			if (func != nullptr)
@@ -81,14 +87,7 @@ namespace Daydream
 
 	VulkanRenderDevice::~VulkanRenderDevice()
 	{
-		vkDestroyDescriptorPool(device, descriptorPool, nullptr);
-		vkDestroyCommandPool(device, commandPool, nullptr);
-		vkDestroyDevice(device, nullptr);
-		if (enableValidationLayers == true)
-		{
-			DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
-		}
-		vkDestroyInstance(instance, nullptr);
+
 	}
 	void VulkanRenderDevice::Init()
 	{
@@ -97,46 +96,47 @@ namespace Daydream
 		PickPhysicalDevice();
 		CreateLogicalDevice();
 
-		VkCommandPoolCreateInfo poolInfo{};
-		poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-		poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-		poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+		vk::CommandPoolCreateInfo poolCreateInfo{};
+		poolCreateInfo.flags = vk::CommandPoolCreateFlagBits::eResetCommandBuffer;
+		poolCreateInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
 
-		if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
-			throw std::runtime_error("failed to create command pool!");
-		}
+		commandPool = device->createCommandPoolUnique(poolCreateInfo, nullptr);
 
 		{
-			Array<VkDescriptorPoolSize> poolSizes =
+			Array<vk::DescriptorPoolSize> poolSizes =
 			{
-				{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER , IMGUI_IMPL_VULKAN_MINIMUM_IMAGE_SAMPLER_POOL_SIZE },
-				{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER , 2 },
-				{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER , 2 },
+				{ vk::DescriptorType::eCombinedImageSampler , IMGUI_IMPL_VULKAN_MINIMUM_IMAGE_SAMPLER_POOL_SIZE },
+				{ vk::DescriptorType::eUniformBuffer , 3 },
+				{ vk::DescriptorType::eCombinedImageSampler , 2 },
 			};
 
 
-			VkDescriptorPoolCreateInfo poolInfo = {};
-			poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-			poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT | VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT;
+			vk::DescriptorPoolCreateInfo poolInfo = {};
+			poolInfo.flags = vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet | vk::DescriptorPoolCreateFlagBits::eUpdateAfterBind;
 			poolInfo.maxSets = 0;
-			for (VkDescriptorPoolSize& poolSize : poolSizes)
+			for (vk::DescriptorPoolSize& poolSize : poolSizes)
 				poolInfo.maxSets += poolSize.descriptorCount;
 			poolInfo.poolSizeCount = (uint32_t)poolSizes.size();
 			poolInfo.pPoolSizes = poolSizes.data();
-			VkResult result = vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool);
-			DAYDREAM_CORE_ASSERT(result == VK_SUCCESS, "Failed to create descriptor heap")
+			descriptorPool = device->createDescriptorPoolUnique(poolInfo, nullptr);
 		}
 
+		vma::AllocatorCreateInfo allocatorInfo;
+		allocatorInfo.physicalDevice = physicalDevice; // vk::PhysicalDevice
+		allocatorInfo.device = device.get();             // vk::Device
+		allocatorInfo.instance = instance.get();           // vk::Instance
+		allocatorInfo.vulkanApiVersion = VK_API_VERSION_1_4; // 사용 중인 Vulkan 버전
 
-		VkPhysicalDeviceProperties deviceProperties;
-		vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
+		allocator = vma::createAllocatorUnique(allocatorInfo);
+
+		vk::PhysicalDeviceProperties properties = physicalDevice.getProperties();
 		DAYDREAM_CORE_INFO("Vulkan Info:");
-		DAYDREAM_CORE_INFO("  Vendor: {0}", GraphicsUtil::GetVendor(deviceProperties.vendorID));
-		DAYDREAM_CORE_INFO("  Renderer: {0}", deviceProperties.deviceName);
+		DAYDREAM_CORE_INFO("  Vendor: {0}", GraphicsUtil::GetVendor(properties.vendorID));
+		DAYDREAM_CORE_INFO("  Renderer: {0}", properties.deviceName.data());
 		DAYDREAM_CORE_INFO("  Version: {0}.{1}.{2}",
-			VK_API_VERSION_MAJOR(deviceProperties.apiVersion),
-			VK_API_VERSION_MINOR(deviceProperties.apiVersion),
-			VK_API_VERSION_PATCH(deviceProperties.apiVersion));
+			VK_API_VERSION_MAJOR(properties.apiVersion),
+			VK_API_VERSION_MINOR(properties.apiVersion),
+			VK_API_VERSION_PATCH(properties.apiVersion));
 	}
 
 	void VulkanRenderDevice::Shutdown()
@@ -152,19 +152,55 @@ namespace Daydream
 		return MakeShared<VulkanGraphicsContext>(this);
 	}
 
-	Shared<VertexBuffer> VulkanRenderDevice::CreateDynamicVertexBuffer(UInt32 _bufferSize, UInt32 _stride)
+	Shared<VertexBuffer> VulkanRenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
 	{
-		return MakeShared<VulkanVertexBuffer>(this, _bufferSize, _stride);
+		auto vertexBuffer = MakeShared<VulkanVertexBuffer>(this, BufferUsage::Dynamic, _size);
+		if (_initialData)
+		{
+			vertexBuffer->SetData(_initialData, _initialDataSize);
+		}
+		return vertexBuffer;
 	}
 
-	Shared<VertexBuffer> Daydream::VulkanRenderDevice::CreateStaticVertexBuffer(void* _vertices, UInt32 _size, UInt32 _stride)
+	Shared<VertexBuffer> VulkanRenderDevice::CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData)
 	{
-		return MakeShared<VulkanVertexBuffer>(this, _vertices, _size, _stride);
+		auto vertexBuffer = MakeShared<VulkanVertexBuffer>(this, BufferUsage::Static, _size);
+
+		auto [uploadBuffer, uploadBufferAllocation] = CreateBuffer(
+			_size,
+			vk::BufferUsageFlagBits::eTransferSrc,
+			vma::MemoryUsage::eCpuOnly,
+			vma::AllocationCreateFlagBits::eMapped);
+
+		vma::AllocationInfo allocationInfo;
+		// GetAllocator()는 VmaAllocator 핸들을 반환하는 함수라고 가정합니다.
+		allocator->getAllocationInfo(uploadBufferAllocation.get(), &allocationInfo);
+		memcpy(allocationInfo.pMappedData, _initialData, _size);
+		// GPU로 복사 명령
+		this->CopyBuffer(uploadBuffer.get(), vertexBuffer->GetVkBuffer(), _size);
+
+		return vertexBuffer;
 	}
 
 	Shared<IndexBuffer> VulkanRenderDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
 	{
-		return MakeShared<VulkanIndexBuffer>(this, _indices, _count);
+		auto indexBuffer = MakeShared<VulkanIndexBuffer>(this, _count);
+
+		UInt32 bufferSize = sizeof(UInt32) * _count;
+		auto [uploadBuffer, uploadBufferAllocation] = CreateBuffer(
+			bufferSize,
+			vk::BufferUsageFlagBits::eTransferSrc,
+			vma::MemoryUsage::eCpuOnly,
+			vma::AllocationCreateFlagBits::eMapped);
+
+		vma::AllocationInfo allocationInfo;
+		// GetAllocator()는 VmaAllocator 핸들을 반환하는 함수라고 가정합니다.
+		allocator->getAllocationInfo(uploadBufferAllocation.get(), &allocationInfo);
+		memcpy(allocationInfo.pMappedData, _indices, bufferSize);
+
+		CopyBuffer(uploadBuffer.get(), indexBuffer->GetVkBuffer(), bufferSize); // CopyBuffer는 vkCmdCopyBuffer를 호출하는 헬퍼 함수
+
+		return indexBuffer;
 	}
 
 	Shared<RenderPass> VulkanRenderDevice::CreateRenderPass(const RenderPassDesc& _desc)
@@ -172,12 +208,12 @@ namespace Daydream
 		return MakeShared<VulkanRenderPass>(this, _desc);
 	}
 
-	Shared<Framebuffer> Daydream::VulkanRenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc & _desc)
+	Shared<Framebuffer> VulkanRenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc)
 	{
 		return _renderPass->CreateFramebuffer(_desc);
 	}
 
-	Shared<PipelineState> Daydream::VulkanRenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)
+	Shared<PipelineState> VulkanRenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)
 	{
 		return MakeShared<VulkanPipelineState>(this, _desc);
 	}
@@ -187,14 +223,31 @@ namespace Daydream
 		return MakeShared<VulkanShader>(this, _src, _type, _mode);
 	}
 
-	Shared<Swapchain> Daydream::VulkanRenderDevice::CreateSwapchain(DaydreamWindow* _window, const SwapchainDesc& _desc)
+	Shared<Swapchain> VulkanRenderDevice::CreateSwapchain(DaydreamWindow* _window, const SwapchainDesc& _desc)
 	{
 		return MakeShared<VulkanSwapchain>(this, _window, _desc);
 	}
 
-	Shared<Texture2D> Daydream::VulkanRenderDevice::CreateTexture2D(const FilePath& _path, const TextureDesc& _desc)
+	Shared<Texture2D> VulkanRenderDevice::CreateTexture2D(const void* _imageData, const TextureDesc& _desc)
 	{
-		return MakeShared<VulkanTexture2D>(this, _path, _desc);
+		auto texture = MakeShared<VulkanTexture2D>(this, _desc);
+
+		if (_imageData != nullptr)
+		{
+			UInt32 imageSize = _desc.width * _desc.height * 4;
+			auto [uploadBuffer, uploadBufferAllocation] = CreateBuffer(
+				imageSize,
+				vk::BufferUsageFlagBits::eTransferSrc,
+				vma::MemoryUsage::eCpuOnly,
+				vma::AllocationCreateFlagBits::eMapped);
+			
+			vma::AllocationInfo allocationInfo;
+			allocator->getAllocationInfo(uploadBufferAllocation.get(), &allocationInfo);
+			memcpy(allocationInfo.pMappedData, _imageData, imageSize);
+
+			CopyBufferToImage(uploadBuffer.get(), texture->GetImage(), _desc.width, _desc.height);
+		}
+		return texture;
 	}
 
 	Unique<ImGuiRenderer> VulkanRenderDevice::CreateImGuiRenderer()
@@ -213,74 +266,55 @@ namespace Daydream
 	}
 
 
-	VkCommandBuffer VulkanRenderDevice::BeginSingleTimeCommands()
+	vk::CommandBuffer VulkanRenderDevice::BeginSingleTimeCommands()
 	{
-		VkCommandBufferAllocateInfo allocInfo{};
-		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		allocInfo.commandPool = commandPool;
+		vk::CommandBufferAllocateInfo allocInfo{};
+		allocInfo.level = vk::CommandBufferLevel::ePrimary;
+		allocInfo.commandPool = commandPool.get();
 		allocInfo.commandBufferCount = 1;
 
-		VkCommandBuffer commandBuffer;
-		vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
+		std::vector<vk::CommandBuffer> commandBuffers(1);
+		commandBuffers = device->allocateCommandBuffers(allocInfo);
 
-		VkCommandBufferBeginInfo beginInfo{};
-		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+		vk::CommandBufferBeginInfo beginInfo{};
+		beginInfo.flags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit;
 
-		vkBeginCommandBuffer(commandBuffer, &beginInfo);
+		commandBuffers[0].begin(beginInfo);
 
-		return commandBuffer;
+		return commandBuffers[0];
 	}
 
-	void VulkanRenderDevice::EndSingleTimeCommands(VkCommandBuffer _commandBuffer)
+	void VulkanRenderDevice::EndSingleTimeCommands(vk::CommandBuffer _commandBuffer)
 	{
-		vkEndCommandBuffer(_commandBuffer);
+		_commandBuffer.end();
 
-		VkSubmitInfo submitInfo{};
-		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+		vk::SubmitInfo submitInfo{};
 		submitInfo.commandBufferCount = 1;
 		submitInfo.pCommandBuffers = &_commandBuffer;
 
-		vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+		vk::Result result = graphicsQueue.submit(1, &submitInfo, {});
 		vkQueueWaitIdle(graphicsQueue);
 
-		vkFreeCommandBuffers(device, commandPool, 1, &_commandBuffer);
+		device->freeCommandBuffers(commandPool.get(), 1, &_commandBuffer);
 	}
 
-	SwapchainSupportDetails VulkanRenderDevice::QuerySwapchainSupport(VkSurfaceKHR _surface)
+	SwapchainSupportDetails VulkanRenderDevice::QuerySwapchainSupport(vk::SurfaceKHR _surface)
 	{
 		SwapchainSupportDetails details;
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, _surface, &details.capabilities);
-
-		UInt32 formatCount = 0;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, _surface, &formatCount, nullptr);
-
-		if (formatCount != 0)
-		{
-			details.formats.resize(formatCount);
-			vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, _surface, &formatCount, details.formats.data());
-		}
-
-		UInt32 presentModeCount = 0;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, _surface, &presentModeCount, nullptr);
-
-		if (presentModeCount != 0)
-		{
-			details.presentModes.resize(presentModeCount);
-			vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, _surface, &presentModeCount, details.presentModes.data());
-		}
+		details.capabilities = physicalDevice.getSurfaceCapabilitiesKHR(_surface);
+		details.formats = physicalDevice.getSurfaceFormatsKHR(_surface);
+		details.presentModes = physicalDevice.getSurfacePresentModesKHR(_surface);
 
 		return details;
 	}
 
-	UInt32 VulkanRenderDevice::FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
+	UInt32 VulkanRenderDevice::FindMemoryType(UInt32 _typeFilter, vk::MemoryPropertyFlags _properties)
 	{
-		VkPhysicalDeviceMemoryProperties memProperties;
-		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
+		vk::PhysicalDeviceMemoryProperties memProperties;
+		memProperties = physicalDevice.getMemoryProperties();
 
-		for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
-			if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties)
+		for (UInt32 i = 0; i < memProperties.memoryTypeCount; i++) {
+			if ((_typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & _properties) == _properties)
 			{
 				return i;
 			}
@@ -288,36 +322,34 @@ namespace Daydream
 		return 0;
 	}
 
-	void VulkanRenderDevice::CreateBuffer(VkDeviceSize _size, VkBufferUsageFlags _usage, VkMemoryPropertyFlags _properties, VkBuffer& _buffer, VkDeviceMemory& _bufferMemory)
+	Pair<vma::UniqueBuffer, vma::UniqueAllocation> VulkanRenderDevice::CreateBuffer(vk::DeviceSize _size, vk::BufferUsageFlags _usage,
+		vma::MemoryUsage _memoryUsage, vma::AllocationCreateFlags _flags)
 	{
-		VkBufferCreateInfo bufferInfo{};
-		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+		vk::BufferCreateInfo bufferInfo{};
 		bufferInfo.size = _size;
 		bufferInfo.usage = _usage;
-		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		bufferInfo.sharingMode = vk::SharingMode::eExclusive;
 
-		VkResult vr = vkCreateBuffer(device, &bufferInfo, nullptr, &_buffer);
-		DAYDREAM_CORE_ASSERT(VK_SUCCEEDED(vr), "failed to create buffer!");
+		vma::AllocationCreateInfo allocInfo{};
+		allocInfo.usage = _memoryUsage;
+		allocInfo.flags = _flags;
 
-		VkMemoryRequirements memRequirements;
-		vkGetBufferMemoryRequirements(device, _buffer, &memRequirements);
+		//vk::MemoryRequirements memRequirements = device->getBufferMemoryRequirements(buffer);
 
-		VkMemoryAllocateInfo allocInfo{};
-		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-		allocInfo.allocationSize = memRequirements.size;
-		allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, _properties);
+		//vk::MemoryAllocateInfo allocInfo{};
+		//allocInfo.allocationSize = memRequirements.size;
+		//allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, _properties);
 
-		vr = vkAllocateMemory(device, &allocInfo, nullptr, &_bufferMemory);
-		DAYDREAM_CORE_ASSERT(VK_SUCCEEDED(vr), "Failed to allocate buffer memory!");
+		//vk::DeviceMemory bufferMemory = device->allocateMemory(allocInfo);
+		//device->bindBufferMemory(buffer, bufferMemory, 0);
 
-		vkBindBufferMemory(device, _buffer, _bufferMemory, 0);
+		return allocator->createBufferUnique(bufferInfo, allocInfo);
 	}
 
-	void VulkanRenderDevice::CreateImage(UInt32 _width, UInt32 _height, VkFormat _format, VkImageTiling _tiling, VkImageUsageFlags _usage, VkMemoryPropertyFlags _properties, VkImage& _image, VkDeviceMemory& _imageMemory)
+	VulkanImageResource VulkanRenderDevice::CreateImage(UInt32 _width, UInt32 _height, vk::Format _format, vk::ImageTiling _tiling, vk::ImageUsageFlags _usage, vk::MemoryPropertyFlags _properties)
 	{
-		VkImageCreateInfo imageInfo{};
-		imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-		imageInfo.imageType = VK_IMAGE_TYPE_2D;
+		vk::ImageCreateInfo imageInfo{};
+		imageInfo.imageType = vk::ImageType::e2D;
 		imageInfo.extent.width = static_cast<UInt32>(_width);
 		imageInfo.extent.height = static_cast<UInt32>(_height);
 		imageInfo.extent.depth = 1;
@@ -325,32 +357,30 @@ namespace Daydream
 		imageInfo.arrayLayers = 1;
 		imageInfo.format = _format;
 		imageInfo.tiling = _tiling;
-		imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		imageInfo.initialLayout = vk::ImageLayout::eUndefined;
 		imageInfo.usage = _usage;
-		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-		imageInfo.flags = 0;
+		imageInfo.sharingMode = vk::SharingMode::eExclusive;
+		imageInfo.samples = vk::SampleCountFlagBits::e1;
 
-		vkCreateImage(device, &imageInfo, nullptr, &_image);
+		vk::Image image = device->createImage(imageInfo);
 
-		VkMemoryRequirements memRequirements;
-		vkGetImageMemoryRequirements(device, _image, &memRequirements);
+		vk::MemoryRequirements memRequirements = device->getImageMemoryRequirements(image);
 
-		VkMemoryAllocateInfo allocInfo{};
-		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+		vk::MemoryAllocateInfo allocInfo{};
 		allocInfo.allocationSize = memRequirements.size;
 		allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, _properties);
 
-		vkAllocateMemory(device, &allocInfo, nullptr, &_imageMemory);
-		vkBindImageMemory(device, _image, _imageMemory, 0);
+		vk::DeviceMemory imageMemory = device->allocateMemory(allocInfo);
+		device->bindImageMemory(image, imageMemory, 0);
+
+		return { image, imageMemory };
 	}
 
-	void VulkanRenderDevice::CreateImageView(VkImage _image, VkFormat _format, VkImageView& _imageView, VkImageAspectFlags _aspectMask)
+	vk::ImageView VulkanRenderDevice::CreateImageView(vk::Image _image, vk::Format _format, vk::ImageAspectFlags _aspectMask)
 	{
-		VkImageViewCreateInfo viewInfo{};
-		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		vk::ImageViewCreateInfo viewInfo{};
 		viewInfo.image = _image;
-		viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		viewInfo.viewType = vk::ImageViewType::e2D;
 		viewInfo.format = _format;
 		viewInfo.subresourceRange.aspectMask = _aspectMask;
 		viewInfo.subresourceRange.baseMipLevel = 0;
@@ -358,91 +388,99 @@ namespace Daydream
 		viewInfo.subresourceRange.baseArrayLayer = 0;
 		viewInfo.subresourceRange.layerCount = 1;
 
-		VkResult vr = vkCreateImageView(device, &viewInfo, nullptr, &_imageView);
-		DAYDREAM_CORE_ASSERT(VK_SUCCEEDED(vr), "Failed to create texture image view!");
+		vk::ImageView imageView = device->createImageView(viewInfo);
+
+		return imageView;
 	}
 
-	void VulkanRenderDevice::CopyBuffer(VkBuffer _src, VkBuffer _dst, VkDeviceSize _size)
+	void VulkanRenderDevice::CopyBuffer(vk::Buffer _src, vk::Buffer _dst, vk::DeviceSize _size)
 	{
-		VkCommandBuffer copyCommandBuffer = BeginSingleTimeCommands();
+		vk::CommandBuffer copyCommandBuffer = BeginSingleTimeCommands();
 
-		VkBufferCopy copyRegion{};
+		vk::BufferCopy copyRegion{};
 		copyRegion.srcOffset = 0; // Optional
 		copyRegion.dstOffset = 0; // Optional
 		copyRegion.size = _size;
 
-		vkCmdCopyBuffer(copyCommandBuffer, _src, _dst, 1, &copyRegion);
+		copyCommandBuffer.copyBuffer(_src, _dst, 1, &copyRegion);
 
 		EndSingleTimeCommands(copyCommandBuffer);
 	}
 
-	void VulkanRenderDevice::CopyBufferToImage(VkBuffer _src, VkImage _dst, UInt32 _width, UInt32 _height)
+	void VulkanRenderDevice::CopyBufferToImage(vk::Buffer _src, vk::Image _dst, UInt32 _width, UInt32 _height)
 	{
-		VkCommandBuffer copyCommandBuffer = BeginSingleTimeCommands();
+		vk::CommandBuffer copyCommandBuffer = BeginSingleTimeCommands();
 
-		VkBufferImageCopy region{};
+		vk::BufferImageCopy region{};
 		region.bufferOffset = 0;
 		region.bufferRowLength = 0;
 		region.bufferImageHeight = 0;
 
-		region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		region.imageSubresource.aspectMask = vk::ImageAspectFlagBits::eColor;
 		region.imageSubresource.mipLevel = 0;
 		region.imageSubresource.baseArrayLayer = 0;
 		region.imageSubresource.layerCount = 1;
 
-		region.imageOffset = { 0, 0, 0 };
-		region.imageExtent = {
+		region.imageOffset = vk::Offset3D();
+		region.imageExtent = vk::Extent3D(
 			_width,
 			_height,
 			1
-		};
+		);
 
-		vkCmdCopyBufferToImage(copyCommandBuffer, _src, _dst, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+		copyCommandBuffer.copyBufferToImage(_src, _dst, vk::ImageLayout::eTransferDstOptimal, 1, &region);
 
 		EndSingleTimeCommands(copyCommandBuffer);
 	}
 
-	void VulkanRenderDevice::TransitionTextureLayout(VkImage _image, VkFormat _format, VkImageLayout _oldLayout, VkImageLayout _newLayout)
+	void VulkanRenderDevice::TransitionImageLayout(vk::Image _image, vk::Format _format, vk::ImageLayout _oldLayout, vk::ImageLayout _newLayout)
 	{
-		VkCommandBuffer transCommandBuffer = BeginSingleTimeCommands();
+		vk::CommandBuffer transCommandBuffer = BeginSingleTimeCommands();
 
-		VkImageMemoryBarrier barrier{};
-		barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+		vk::ImageMemoryBarrier barrier{};
 		barrier.oldLayout = _oldLayout;
 		barrier.newLayout = _newLayout;
 		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barrier.image = _image;
-		barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		if (_format == vk::Format::eD32SfloatS8Uint || _format == vk::Format::eD24UnormS8Uint)
+		{
+			barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eDepth | vk::ImageAspectFlagBits::eStencil;
+		}
+		else
+		{
+			barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+		}
 		barrier.subresourceRange.baseArrayLayer = 0;
 		barrier.subresourceRange.baseMipLevel = 0;
 		barrier.subresourceRange.layerCount = 1;
 		barrier.subresourceRange.levelCount = 1;
 
-		VkAccessFlags srcAccess;
-		VkAccessFlags dstAccess;
+		vk::AccessFlags srcAccess;
+		vk::AccessFlags dstAccess;
 
-		VkPipelineStageFlags srcStage;
-		VkPipelineStageFlags dstStage;
+		vk::PipelineStageFlags srcStage{};
+		vk::PipelineStageFlags dstStage{};
 
+		using enum vk::PipelineStageFlagBits;
 		// 패턴별로 그룹화
 		switch (_oldLayout)
 		{
-		case VK_IMAGE_LAYOUT_UNDEFINED:
-			srcAccess = 0;
-			srcStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+		case vk::ImageLayout::eUndefined:
+			srcAccess = {};
+			srcStage = vk::PipelineStageFlagBits::eTopOfPipe;
 			break;
-		case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
-			srcAccess = VK_ACCESS_TRANSFER_WRITE_BIT;
-			srcStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+		case vk::ImageLayout::eTransferDstOptimal:
+			srcAccess = vk::AccessFlagBits::eTransferWrite;
+			srcStage = vk::PipelineStageFlagBits::eTransfer;
 			break;
-		case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
-			srcAccess = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-			srcStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+		case vk::ImageLayout::eColorAttachmentOptimal:
+			srcAccess = vk::AccessFlagBits::eColorAttachmentWrite;
+			srcStage = vk::PipelineStageFlagBits::eColorAttachmentOutput;
 			break;
-		case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
-			srcAccess = VK_ACCESS_SHADER_READ_BIT;
-			srcStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+		case vk::ImageLayout::eShaderReadOnlyOptimal:
+			srcAccess = vk::AccessFlagBits::eShaderRead;
+			srcStage = vk::PipelineStageFlagBits::eFragmentShader;
 			break;
 		default:
 			throw std::invalid_argument("Unsupported old layout!");
@@ -450,25 +488,25 @@ namespace Daydream
 
 		switch (_newLayout)
 		{
-		case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
-			dstAccess = VK_ACCESS_TRANSFER_WRITE_BIT;
-			dstStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+		case vk::ImageLayout::eTransferDstOptimal:
+			dstAccess = vk::AccessFlagBits::eTransferWrite;
+			dstStage = vk::PipelineStageFlagBits::eTransfer;
 			break;
-		case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
-			dstAccess = VK_ACCESS_SHADER_READ_BIT;
-			dstStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+		case vk::ImageLayout::eShaderReadOnlyOptimal:
+			dstAccess = vk::AccessFlagBits::eShaderRead;
+			dstStage = vk::PipelineStageFlagBits::eFragmentShader;
 			break;
-		case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
-			dstAccess = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-			dstStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+		case vk::ImageLayout::eColorAttachmentOptimal:
+			dstAccess = vk::AccessFlagBits::eColorAttachmentWrite;
+			dstStage = vk::PipelineStageFlagBits::eColorAttachmentOutput;
 			break;
-		case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
-			dstAccess = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
-			dstStage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+		case vk::ImageLayout::eDepthStencilAttachmentOptimal:
+			dstAccess = vk::AccessFlagBits::eDepthStencilAttachmentRead | vk::AccessFlagBits::eDepthStencilAttachmentWrite;
+			dstStage = vk::PipelineStageFlagBits::eEarlyFragmentTests;
 			break;
-		case VK_IMAGE_LAYOUT_PRESENT_SRC_KHR:
-			dstAccess = 0; // 또는 VK_ACCESS_NONE (Vulkan 1.3 이상)
-			dstStage = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT; // 또는 VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT
+		case vk::ImageLayout::ePresentSrcKHR:
+			dstAccess = {}; // 또는 VK_ACCESS_NONE (Vulkan 1.3 이상)
+			dstStage = vk::PipelineStageFlagBits::eBottomOfPipe; // 또는 VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT
 			break;
 		default:
 			throw std::invalid_argument("Unsupported new layout!");
@@ -477,10 +515,9 @@ namespace Daydream
 		barrier.srcAccessMask = srcAccess;
 		barrier.dstAccessMask = dstAccess;
 
-		vkCmdPipelineBarrier(
-			transCommandBuffer,
+		transCommandBuffer.pipelineBarrier(
 			srcStage, dstStage,
-			0,
+			{},
 			0, nullptr,
 			0, nullptr,
 			1, &barrier
@@ -492,72 +529,62 @@ namespace Daydream
 
 	void VulkanRenderDevice::CreateInstance()
 	{
+		vk::detail::defaultDispatchLoaderDynamic.init();
 		if (enableValidationLayers == true && CheckValidationLayerSupport() == false)
 		{
 			DAYDREAM_CORE_ERROR("Validation layers requested, but not available!");
-			return;
+			throw std::runtime_error("Validation layers not supported!");
 		}
 
-		VkApplicationInfo appInfo{};
-		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-		appInfo.pApplicationName = "My Vulkan App";
-		appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-		appInfo.pEngineName = "No Engine";
-		appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-		appInfo.apiVersion = VK_API_VERSION_1_3;
+		vk::ApplicationInfo appInfo(
+			"My Vulkan App",
+			VK_VERSION_1_4,
+			"DaydreamEngine",
+			VK_VERSION_1_4,
+			VK_API_VERSION_1_3
+		);
 
-		VkInstanceCreateInfo createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-		createInfo.pApplicationInfo = &appInfo;
+		Array<const char*> extensions = GetRequiredExtensions();
 
+		vk::InstanceCreateInfo createInfo(
+			{},
+			&appInfo,
+			0,
+			{},
+			(UInt32)extensions.size(),
+			extensions.data()
+		);
 
-		VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
+		vk::DebugUtilsMessengerCreateInfoEXT debugCreateInfo;
 		if (enableValidationLayers)
 		{
 			createInfo.enabledLayerCount = static_cast<UInt32>(validationLayers.size());
 			createInfo.ppEnabledLayerNames = validationLayers.data();
 			PopulateDebugMessengerCreateInfo(debugCreateInfo);
-			createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
-		}
-		else
-		{
-			createInfo.enabledLayerCount = 0;
-			createInfo.pNext = nullptr;
+			createInfo.pNext = &debugCreateInfo;
 		}
 
-		Array<const char*> extensions = GetRequiredExtensions();
-		createInfo.enabledExtensionCount = static_cast<UInt32>(extensions.size());
-		createInfo.ppEnabledExtensionNames = extensions.data();
-
-		VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
-		DAYDREAM_CORE_ASSERT(result == VK_SUCCESS, "Failed to create vkInstance!");
+		instance = vk::createInstanceUnique(createInfo);
+		vk::detail::defaultDispatchLoaderDynamic.init(*instance);
 	}
 	void VulkanRenderDevice::SetupDebugMessenger()
 	{
 		if (!enableValidationLayers) return;
 
-		VkDebugUtilsMessengerCreateInfoEXT createInfo;
+		vk::DebugUtilsMessengerCreateInfoEXT createInfo;
 		PopulateDebugMessengerCreateInfo(createInfo);
 
-		VkResult result = CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger);
-		if (result != VK_SUCCESS)
-		{
-			DAYDREAM_CORE_ERROR("Failed to set up debug messenger!");
-		}
+		debugMessenger = instance->createDebugUtilsMessengerEXTUnique(createInfo);
 	}
 	void VulkanRenderDevice::PickPhysicalDevice()
 	{
-		UInt32 deviceCount = 0;
-		vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
-		if (deviceCount == 0)
+		auto physicalDevices = instance->enumeratePhysicalDevices();
+		if (physicalDevices.empty())
 		{
 			DAYDREAM_CORE_ERROR("Failed to find GPUs with Vulkan support!");
 		}
 
-		Array<VkPhysicalDevice> devices(deviceCount);
-		vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
-
-		for (const VkPhysicalDevice& device : devices)
+		for (const vk::PhysicalDevice& device : physicalDevices)
 		{
 			if (IsDeviceSuitable(device))
 			{
@@ -573,59 +600,42 @@ namespace Daydream
 	}
 	void VulkanRenderDevice::CreateLogicalDevice()
 	{
-		queueFamilyIndices = FindQueueFamilies(physicalDevice);
-		VkDeviceQueueCreateInfo queueCreateInfo{};
-		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-		queueCreateInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
-		queueCreateInfo.queueCount = 1;
 		Float32 queuePriority = 1.0f;
-		queueCreateInfo.pQueuePriorities = &queuePriority;
+		queueFamilyIndices = FindQueueFamilies(physicalDevice);
+		vk::DeviceQueueCreateInfo queueCreateInfo(
+			{},
+			queueFamilyIndices.graphicsFamily.value(),
+			1,
+			&queuePriority
+		);
 
-		VkPhysicalDeviceDescriptorIndexingFeatures descriptorIndexingFeatures{};
-		descriptorIndexingFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_FEATURES;
+		vk::PhysicalDeviceDescriptorIndexingFeatures descriptorIndexingFeatures;
 		descriptorIndexingFeatures.runtimeDescriptorArray = VK_TRUE;
 		descriptorIndexingFeatures.descriptorBindingPartiallyBound = VK_TRUE;
-		descriptorIndexingFeatures.descriptorBindingUniformBufferUpdateAfterBind = VK_TRUE; // 이 기능을 활성화!
-		descriptorIndexingFeatures.descriptorBindingSampledImageUpdateAfterBind = VK_TRUE; // 이 기능을 활성화!
+		descriptorIndexingFeatures.descriptorBindingUniformBufferUpdateAfterBind = VK_TRUE;
+		descriptorIndexingFeatures.descriptorBindingSampledImageUpdateAfterBind = VK_TRUE;
 
-		// 2. 기존에 활성화하던 기본 기능들을 VkPhysicalDeviceFeatures2에 담습니다.
-		VkPhysicalDeviceFeatures2 deviceFeatures{};
-		deviceFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
-		deviceFeatures.features.samplerAnisotropy = VK_TRUE; // 기존 deviceFeatures 내용을 여기로 옮김
-		deviceFeatures.pNext = &descriptorIndexingFeatures; // pNext 체인으로 세부 기능 연결
+		vk::PhysicalDeviceFeatures2 deviceFeatures{};
+		deviceFeatures.features.samplerAnisotropy = VK_TRUE;
+		deviceFeatures.pNext = &descriptorIndexingFeatures;
 
-		VkDeviceCreateInfo createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-		createInfo.pQueueCreateInfos = &queueCreateInfo;
+		vk::DeviceCreateInfo createInfo{};
 		createInfo.queueCreateInfoCount = 1;
+		createInfo.pQueueCreateInfos = &queueCreateInfo;
+		createInfo.enabledLayerCount = Cast<UInt32>(validationLayers.size());
+		createInfo.ppEnabledLayerNames = validationLayers.empty() ? nullptr : validationLayers.data();
+		createInfo.enabledExtensionCount = Cast<UInt32>(deviceExtensions.size());
+		createInfo.ppEnabledExtensionNames = deviceExtensions.empty() ? nullptr : deviceExtensions.data();
 		createInfo.pEnabledFeatures = nullptr;
 		createInfo.pNext = &deviceFeatures;
-		createInfo.enabledExtensionCount = Cast<UInt32>(deviceExtensions.size());
-		createInfo.ppEnabledExtensionNames = deviceExtensions.data();
-		if (enableValidationLayers)
-		{
-			createInfo.enabledLayerCount = Cast<UInt32>(validationLayers.size());
-			createInfo.ppEnabledLayerNames = validationLayers.data();
-		}
-		else
-		{
-			createInfo.enabledLayerCount = 0;
-		}
 
-		VkResult result = vkCreateDevice(physicalDevice, &createInfo, nullptr, &device);
-		if (result != VK_SUCCESS)
-		{
-			DAYDREAM_CORE_ERROR("Failed to create logical device!");
-		}
-		vkGetDeviceQueue(device, queueFamilyIndices.graphicsFamily.value(), 0, &graphicsQueue);
+		device = physicalDevice.createDeviceUnique(createInfo);
+		graphicsQueue = device->getQueue(queueFamilyIndices.graphicsFamily.value(), 0);
 	}
 
 	bool VulkanRenderDevice::CheckValidationLayerSupport()
 	{
-		UInt32 layerCount = 0;
-		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
-		Array<VkLayerProperties> availableLayers(layerCount);
-		vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+		Array<vk::LayerProperties> availableLayers = vk::enumerateInstanceLayerProperties();
 
 		for (const char* layerName : validationLayers) {
 			bool layerFound = false;
@@ -646,7 +656,7 @@ namespace Daydream
 	}
 	Array<const char*> VulkanRenderDevice::GetRequiredExtensions()
 	{
-		uint32_t glfwExtensionCount = 0;
+		UInt32 glfwExtensionCount = 0;
 		const char** glfwExtensions;
 		glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
@@ -658,20 +668,22 @@ namespace Daydream
 
 		return extensions;
 	}
-	void VulkanRenderDevice::PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& _createInfo)
+	void VulkanRenderDevice::PopulateDebugMessengerCreateInfo(vk::DebugUtilsMessengerCreateInfoEXT& _createInfo)
 	{
-		_createInfo = {};
-		_createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-		_createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-		_createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+		using enum vk::DebugUtilsMessageSeverityFlagBitsEXT;
+		using enum vk::DebugUtilsMessageTypeFlagBitsEXT;
+
+		_createInfo.messageSeverity = eVerbose | eWarning | eError;
+		_createInfo.messageType = eGeneral | eValidation | ePerformance;
 		_createInfo.pfnUserCallback = DebugCallback;
+		_createInfo.pUserData = nullptr; // 원한다면 this 포인터 등을 전달할 수 있음
 	}
-	bool VulkanRenderDevice::IsDeviceSuitable(VkPhysicalDevice _physicalDevice)
+	bool VulkanRenderDevice::IsDeviceSuitable(vk::PhysicalDevice _physicalDevice)
 	{
-		VkPhysicalDeviceProperties deviceProperties;
-		VkPhysicalDeviceFeatures deviceFeatures;
-		vkGetPhysicalDeviceProperties(_physicalDevice, &deviceProperties);
-		vkGetPhysicalDeviceFeatures(_physicalDevice, &deviceFeatures);
+		vk::PhysicalDeviceProperties deviceProperties;
+		vk::PhysicalDeviceFeatures deviceFeatures;
+		vk::PhysicalDeviceProperties properties = _physicalDevice.getProperties();
+		auto feautures = _physicalDevice.getFeatures();
 
 		//이 GPU가 swapchain을 지원할 수 있는지 확인?
 		bool extensionSupported = CheckDeviceExtensionSupport(_physicalDevice);
@@ -679,24 +691,21 @@ namespace Daydream
 		QueueFamilyIndices indices = FindQueueFamilies(_physicalDevice);
 		//return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU &&
 		//	deviceFeatures.geometryShader;
-		VkPhysicalDeviceFeatures supportedFeatures;
-		vkGetPhysicalDeviceFeatures(_physicalDevice, &supportedFeatures);
+		vk::PhysicalDeviceFeatures supportedFeatures = _physicalDevice.getFeatures();
 
 		return indices.IsComplete() && extensionSupported && supportedFeatures.samplerAnisotropy;
 	}
-	QueueFamilyIndices VulkanRenderDevice::FindQueueFamilies(VkPhysicalDevice _physicalDevice)
+	QueueFamilyIndices VulkanRenderDevice::FindQueueFamilies(vk::PhysicalDevice _physicalDevice)
 	{
 		QueueFamilyIndices indices;
 
 		UInt32 queueFamilyCount = 0;
-		vkGetPhysicalDeviceQueueFamilyProperties(_physicalDevice, &queueFamilyCount, nullptr);
-		Array<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-		vkGetPhysicalDeviceQueueFamilyProperties(_physicalDevice, &queueFamilyCount, queueFamilies.data());
+		Array<vk::QueueFamilyProperties> queueFamilies = _physicalDevice.getQueueFamilyProperties();
 
 		int i = 0;
-		for (const auto& queueFamily : queueFamilies)
+		for (UInt32 i = 0; i < (UInt32)queueFamilies.size(); i++)
 		{
-			if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+			if (queueFamilies[i].queueFlags & vk::QueueFlagBits::eGraphics)
 			{
 				indices.graphicsFamily = i;
 			}
@@ -704,22 +713,19 @@ namespace Daydream
 			{
 				break;
 			}
-			i++;
 		}
 
 		return indices;
 	}
 
-	bool VulkanRenderDevice::CheckDeviceExtensionSupport(VkPhysicalDevice _physicalDevice)
+	bool VulkanRenderDevice::CheckDeviceExtensionSupport(vk::PhysicalDevice _physicalDevice)
 	{
 		UInt32 extensionCount = 0;
-		vkEnumerateDeviceExtensionProperties(_physicalDevice, nullptr, &extensionCount, nullptr);
-		Array<VkExtensionProperties> availableExtensions(extensionCount);
-		vkEnumerateDeviceExtensionProperties(_physicalDevice, nullptr, &extensionCount, availableExtensions.data());
+		Array<vk::ExtensionProperties> availableExtensions = _physicalDevice.enumerateDeviceExtensionProperties();
 
 		std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
 
-		for (const VkExtensionProperties& extension : availableExtensions)
+		for (const vk::ExtensionProperties& extension : availableExtensions)
 		{
 			requiredExtensions.erase(extension.extensionName);
 		}

@@ -33,11 +33,11 @@ namespace Daydream
 	{
 		device = _device;
 
-		Array<UInt8> imageData = ImageLoader::LoadImageFile(_path, width, height, channels);
+		auto imageData = ImageLoader::LoadImageFile(_path);
 
 		D3D11_TEXTURE2D_DESC textureDesc;
-		textureDesc.Width = width;
-		textureDesc.Height = height;
+		textureDesc.Width = imageData.width;
+		textureDesc.Height = imageData.height;
 		textureDesc.MipLevels = 1;
 		textureDesc.ArraySize = 1;
 		textureDesc.Format = GraphicsUtil::ConvertRenderFormatToDXGIFormat(_desc.format);
@@ -49,7 +49,7 @@ namespace Daydream
 		textureDesc.MiscFlags = 0;
 
 		D3D11_SUBRESOURCE_DATA pixelData{};
-		pixelData.pSysMem = imageData.data();
+		pixelData.pSysMem = imageData.data.data();
 		pixelData.SysMemPitch = textureDesc.Width * sizeof(UInt8) * 4; //RGBA
 
 		device->GetDevice()->CreateTexture2D(&textureDesc, &pixelData, texture.GetAddressOf());

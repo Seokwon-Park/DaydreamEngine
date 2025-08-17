@@ -9,7 +9,7 @@ namespace Daydream
 	public:
         FilePath() = default;
 
-        explicit FilePath(std::string _path) noexcept
+        FilePath(std::string _path) noexcept
             : path(_path)
         {}
 
@@ -25,6 +25,7 @@ namespace Daydream
 		std::string GetFileName() const;
 		//inline std::string GetCurrentPath() const { return std::filesystem::current_path().string(); }
 		inline std::string GetFileNameWithoutExtension() const { return path.stem().string(); }
+		inline String GetExtension() const { return path.extension().string(); }
 		inline bool IsDirectory () const { return std::filesystem::is_directory(path); }
 		inline bool IsFile() const { return std::filesystem::is_regular_file(path); }
 		inline bool IsExist() const { return std::filesystem::exists(path); }

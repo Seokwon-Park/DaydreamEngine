@@ -17,10 +17,10 @@ namespace Daydream
 		ImGui_ImplVulkan_InitInfo info{};
 		//info.ApiVersion =;
 		info.Instance = device->GetInstance();
-		info.PhysicalDevice = device->GetGPU();
+		info.PhysicalDevice = device->GetPhysicalDevice();
 		info.Device = device->GetDevice();
 		info.QueueFamily = device->GetGraphicsFamilyIndex();
-		info.Queue = device->GetQueue();
+		info.Queue = device->GetGraphicsQueue();
 		info.DescriptorPool = device->GetDescriptorPool();
 		info.RenderPass = static_cast<VulkanSwapchain*>(_window->GetSwapchain())->GetVkRenderPass();
 		info.MinImageCount = 3;
