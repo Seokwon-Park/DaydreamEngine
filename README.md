@@ -1,13 +1,14 @@
 # DaydreamEngine
+<img width="1024" height="1024" alt="Daydream Icon" src="https://github.com/user-attachments/assets/ab7b46c6-c115-482a-bb7c-4e57d9e7350c" />
+
+## Configuring the dependencies
+Test Environment - Windows 10, Visual Studio 2022   
+API - OpenGL(4.5), DX11, DX12, Vulkan(1.4)
 
 ## Getting Started
-IDE - Visual Studio 2022   
-Test - Windows 10
-
-<ins>**1. Downloading the repository:**</ins>
 
 Clone the repository   
-`git clone --recursive https://github.com/Seokwon-Park/Steins`.
+`git clone --recursive https://github.com/Seokwon-Park/DaydreamEngine`.
 
 If the repository was cloned non-recursively previously, use    
 `git submodule update --init` to clone the necessary submodules.
@@ -15,11 +16,5 @@ If the repository was cloned non-recursively previously, use
 Then update the submodule with    
 `git submodule update command`
 
-<ins>**2. Configuring the dependencies:**</ins>
 
-Requirement   
-Vulkan SDK(1.4.xxx)
-
-Test Environment   
-Windows 10
 
