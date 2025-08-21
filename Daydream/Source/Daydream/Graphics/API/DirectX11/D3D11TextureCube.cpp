@@ -6,9 +6,9 @@
 
 namespace Daydream
 {
-	D3D11TextureCube::D3D11TextureCube(const FilePath& _path)
-	{
-		DDSLoader::LoadDDS(_path);
-	}
+    D3D11TextureCube::D3D11TextureCube(D3D11RenderDevice* _device, const TextureDesc& _desc)
+    {
+
+    }
 
 }

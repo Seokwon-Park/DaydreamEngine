@@ -9,19 +9,19 @@ namespace Daydream
 	class D3D12VertexBuffer : public VertexBuffer
 	{
 	public:
-		D3D12VertexBuffer(D3D12RenderDevice* _device, UInt32 _bufferSize, UInt32 _stride);
-		D3D12VertexBuffer(D3D12RenderDevice* _device, void* _vertices, UInt32 _size, UInt32 _stride);
+		D3D12VertexBuffer(D3D12RenderDevice* _device, BufferUsage _usage, UInt32 _size, UInt32 _stride);
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
 		virtual void SetData(const void * _data, UInt32 _dataSize) override;
+		
+		ID3D12Resource* GetDX12Buffer() { return vertexBuffer.Get(); }
 	private:
+		UInt32 bufferSize;
 		UInt32 stride;
 		D3D12RenderDevice* device;
 		ComPtr<ID3D12Resource> vertexBuffer;
-		ComPtr<ID3D12Resource> uploadBuffer;
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
-
 	};
 
 	class D3D12IndexBuffer : public IndexBuffer

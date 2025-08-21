@@ -7,8 +7,7 @@ namespace Daydream
 	class OpenGLVertexBuffer : public VertexBuffer
 	{
 	public:
-		OpenGLVertexBuffer(UInt32 _bufferSize, UInt32 _stride);
-		OpenGLVertexBuffer(void* _vertices, UInt32 _size, UInt32 _stride);
+		OpenGLVertexBuffer(UInt32 _size, UInt32 _stride, const void* _vertices);
 		virtual ~OpenGLVertexBuffer();
 
 		virtual void Bind() const;

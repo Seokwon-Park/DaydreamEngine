@@ -11,18 +11,18 @@ namespace Daydream {
 	// VertexBuffer /////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////
 
-	OpenGLVertexBuffer::OpenGLVertexBuffer(UInt32 _bufferSize, UInt32 _stride)
+	OpenGLVertexBuffer::OpenGLVertexBuffer(UInt32 _size, UInt32 _stride, const void* _vertices)
 	{
 		stride = _stride;
 		glCreateBuffers(1, &bufferID);
-		glNamedBufferData(bufferID, _bufferSize, nullptr, GL_DYNAMIC_DRAW);
-	}
-
-	OpenGLVertexBuffer::OpenGLVertexBuffer(void* _vertices, UInt32 _size, UInt32 _stride)
-	{
-		stride = _stride;
-		glCreateBuffers(1, &bufferID);
-		glNamedBufferData(bufferID, _size, _vertices, GL_STATIC_DRAW);
+		if (_vertices)
+		{
+			glNamedBufferData(bufferID, _size, _vertices, GL_STATIC_DRAW);
+		}
+		else
+		{
+			glNamedBufferData(bufferID, _size, nullptr, GL_DYNAMIC_DRAW);
+		}
 	}
 
 	OpenGLVertexBuffer::~OpenGLVertexBuffer()
@@ -32,8 +32,7 @@ namespace Daydream {
 
 	void OpenGLVertexBuffer::Bind() const
 	{
-		//glBindBuffer(GL_ARRAY_BUFFER, bufferID);
-		GLint currentVAO = 0; // 결과를 저장할 변수
+		GLint currentVAO = 0; 
 		glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &currentVAO);
 		glVertexArrayVertexBuffer(currentVAO, 0, bufferID, 0, stride);
 	}

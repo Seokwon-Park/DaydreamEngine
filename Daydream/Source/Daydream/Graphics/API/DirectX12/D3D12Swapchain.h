@@ -27,10 +27,10 @@ namespace Daydream
 
 		UInt32 GetBackbufferIndex() { return frameIndex; }
 
-		inline IDXGISwapChain3* GetDXGISwapchain() { return swapChain.Get(); }
+		inline IDXGISwapChain3* GetDXGISwapchain() { return swapchain.Get(); }
 	private:
 		D3D12RenderDevice* device;
-		ComPtr<IDXGISwapChain3> swapChain;
+		ComPtr<IDXGISwapChain3> swapchain;
 		Array<Shared<D3D12Framebuffer>> framebuffers;
 		Array<Shared<D3D12Framebuffer>> oldFramebuffers;
 		Array<ComPtr<ID3D12GraphicsCommandList>> commandLists;
@@ -40,9 +40,11 @@ namespace Daydream
 		UInt32 bufferCount = 0;
 		DXGI_FORMAT format;
 
+		Array<ComPtr<ID3D12Resource>> backBuffers;
+
 		ComPtr<ID3D12Fence> fence;
 		Array<UINT64> fenceValues;
-		Wrappers::Event fenceEvent; // a handle to an event when our fence is unlocked by the gpu
+		Wrappers::Event fenceEvent;
 
 		HWND windowHandle;
 	};

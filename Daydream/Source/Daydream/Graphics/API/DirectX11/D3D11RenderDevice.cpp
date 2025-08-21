@@ -145,13 +145,18 @@ namespace Daydream
 
 	Shared<VertexBuffer> D3D11RenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
 	{
-		return MakeShared<D3D11VertexBuffer>(this, BufferUsage::Dynamic, _size, _stride, nullptr);
+		Shared<D3D11VertexBuffer> buffer = MakeShared<D3D11VertexBuffer>(this, BufferUsage::Dynamic, _size, _stride, nullptr);
+		if (_initialData != nullptr)
+		{
+			buffer->SetData(_initialData, _initialDataSize);
+		}
+		return buffer;
 	}
 
 	Shared<VertexBuffer> D3D11RenderDevice::CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData)
 	{
 		//return MakeShared<D3D11VertexBuffer>();
-		return nullptr;
+		return MakeShared<D3D11VertexBuffer>(this, BufferUsage::Static, _size, _stride, _initialData);
 	}
 
 	Shared<IndexBuffer> D3D11RenderDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
@@ -199,7 +204,7 @@ namespace Daydream
 	Shared<Texture2D> D3D11RenderDevice::CreateTexture2D(const void* _imageData, const TextureDesc& _desc)
 	{
 		//return MakeShared<D3D11Texture2D>(this, _path, _desc);
-		return nullptr;
+		return MakeShared<D3D11Texture2D>(this, _desc, _imageData);
 	}
 
 	Unique<ImGuiRenderer> D3D11RenderDevice::CreateImGuiRenderer()

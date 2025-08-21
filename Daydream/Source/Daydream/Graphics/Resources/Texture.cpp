@@ -10,11 +10,6 @@
 
 namespace Daydream
 {
-    Texture2D::Texture2D(const FilePath& _path)
-    {
-        path = _path;
-    }
-
     Shared<Texture2D> Texture2D::Create(const FilePath& _path, const TextureDesc& _desc)
     {
         TextureDesc finalDesc = _desc;

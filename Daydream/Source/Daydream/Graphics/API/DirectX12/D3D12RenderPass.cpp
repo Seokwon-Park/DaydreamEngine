@@ -17,13 +17,23 @@ namespace Daydream
 	{
 		currentFramebuffer = static_cast<D3D12Framebuffer*>(_framebuffer.get());
 		Array<D3D12_CPU_DESCRIPTOR_HANDLE>& rtHandles = currentFramebuffer->GetRenderTargetHandles();
+		//
+		//for (auto texture : currentFramebuffer->GetColorAttachments())
+		//{
+		//	device->TransitionResourceState(texture->GetID3D12Resource(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_RENDER_TARGET);
+		//}
+		//if (currentFramebuffer->HasDepthAttachment())
+		//{
+		//	device->TransitionResourceState(currentFramebuffer->GetDepthAttachment()->GetID3D12Resource(), D3D12_RESOURCE_STATE_COMMON,
+		//		D3D12_RESOURCE_STATE_DEPTH_WRITE);
+		//}
+
 		for (auto rtHandle : rtHandles)
 		{
 			device->GetCommandList()->ClearRenderTargetView(rtHandle, clearColor.color, 0, nullptr);
 		}
 		if (currentFramebuffer->HasDepthAttachment())
 		{
-			
 			device->GetCommandList()->ClearDepthStencilView(currentFramebuffer->GetDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 			device->GetCommandList()->OMSetRenderTargets((UINT)rtHandles.size(), rtHandles.data(), false, &currentFramebuffer->GetDepthStencilView());
 		}
@@ -52,6 +62,18 @@ namespace Daydream
 	}
 	void D3D12RenderPass::End()
 	{
+		//for (auto texture : currentFramebuffer->GetColorAttachments())
+		//{
+		//	device->TransitionResourceState(texture->GetID3D12Resource(), D3D12_RESOURCE_STATE_RENDER_TARGET, 
+		//		D3D12_RESOURCE_STATE_COMMON);
+		//}
+		//if (currentFramebuffer->HasDepthAttachment())
+		//{
+		//	device->TransitionResourceState(currentFramebuffer->GetDepthAttachment()->GetID3D12Resource(), 
+		//		D3D12_RESOURCE_STATE_DEPTH_WRITE,
+		//		D3D12_RESOURCE_STATE_COMMON);
+		//}
+
 	}
 	Shared<Framebuffer> D3D12RenderPass::CreateFramebuffer(const FramebufferDesc& _desc)
 	{

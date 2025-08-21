@@ -20,6 +20,7 @@ namespace Daydream
 		const RenderPassDesc& renderPassDesc = renderPass->GetDesc();
 		for (const auto& colorAttachmentDesc : renderPassDesc.colorAttachments)
 		{
+			if (colorAttachmentDesc.isSwapchain) continue;
 			TextureDesc textureDesc;
 			textureDesc.width = width;
 			textureDesc.height = height;
@@ -28,7 +29,7 @@ namespace Daydream
 
 			Shared<D3D11Texture2D> colorTexture = MakeShared<D3D11Texture2D>(device, textureDesc);
 			colorAttachments.push_back(colorTexture);
-			rtvs.push_back(colorTexture->GetRTV().Get());
+			renderTargetViews.push_back(colorTexture->GetRTV().Get());
 		}
 
 		if (renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
@@ -47,6 +48,7 @@ namespace Daydream
 	D3D11Framebuffer::D3D11Framebuffer(D3D11RenderDevice* _device, RenderPass* _renderPass, D3D11Swapchain* _swapChain)
 	{
 		device = _device;
+		renderPass = _renderPass;
 
 		IDXGISwapChain* dxgiSwapchain = _swapChain->GetDXGISwapchain();
 		ComPtr<ID3D11Texture2D> backBuffer;
@@ -57,20 +59,20 @@ namespace Daydream
 		width = backBufferDesc.Width;
 		height = backBufferDesc.Height;
 
-		Shared<D3D11Texture2D> backBufferTexture = MakeShared<D3D11Texture2D>(device, backBuffer);
-		colorAttachments.push_back(backBufferTexture);
-		DAYDREAM_CORE_ASSERT(backBuffer, "Backbuffer is nullptr!");
 
-		for (auto texture : colorAttachments)
-		{
-			rtvs.push_back(texture->GetRTV().Get());
-		}
+		device->GetDevice()->CreateRenderTargetView(backBuffer.Get(), nullptr, swapchainRTV.GetAddressOf());
+		renderTargetViews.push_back(swapchainRTV.Get());
+		//Shared<D3D11Texture2D> backBufferTexture = MakeShared<D3D11Texture2D>(device, backBuffer);
+		//colorAttachments.push_back(swapchainRTV.Get());
+		//DAYDREAM_CORE_ASSERT(backBuffer, "Backbuffer is nullptr!");
+
+		CreateAttachments();
 	}
 	D3D11Framebuffer::~D3D11Framebuffer()
 	{
 		device = nullptr;
 		colorAttachments.clear();
-		rtvs.clear();
+		renderTargetViews.clear();
 		depthStencilView = nullptr;
 		depthAttachment = nullptr;
 	}
@@ -95,7 +97,7 @@ namespace Daydream
 		height = _height;
 
 		colorAttachments.clear();
-		rtvs.clear();
+		renderTargetViews.clear();
 		depthStencilView = nullptr;
 		depthAttachment = nullptr;
 

@@ -57,8 +57,6 @@ namespace Daydream
 	class Texture2D : public Texture
 	{
 	public:
-		Texture2D() {};
-		Texture2D(const FilePath& _path);
 		virtual ~Texture2D() = default;
 
 		virtual UInt32 GetWidth() const { return width; }

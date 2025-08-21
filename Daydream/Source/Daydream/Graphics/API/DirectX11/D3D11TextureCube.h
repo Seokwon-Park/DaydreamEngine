@@ -3,6 +3,7 @@
 #pragma once
 
 #include "D3D11Texture.h"
+#include "D3D11RenderDevice.h"
 #include "Daydream/Graphics/Resources/TextureCube.h"
 
 
@@ -11,8 +12,7 @@ namespace Daydream
 	class D3D11TextureCube : public TextureCube
 	{
 	public:
-		D3D11TextureCube(const FilePath& _path);
-		D3D11TextureCube(const Array<FilePath>& _paths);
+		D3D11TextureCube(D3D11RenderDevice* _device, const TextureDesc& _desc);
 
 		virtual ~D3D11TextureCube() = default;
 

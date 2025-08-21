@@ -11,7 +11,7 @@ namespace Daydream::DDSLoader
         DDSHeader hdr{};
         f.read((char*)&hdr, sizeof(hdr));
         if (hdr.magic != DDS_MAGIC) throw std::runtime_error("Not a DDS");
-
+        
         DDSImage img{};
         img.width = hdr.width;
         img.height = hdr.height;
@@ -21,15 +21,18 @@ namespace Daydream::DDSLoader
         img.arraySize = isCube ? 6 : 1;
 
         // 포맷 판별
-        if (hdr.pixelFormat.flags & 0x4) { // DDPF_FOURCC
-            switch (hdr.pixelFormat.fourCC) {
-            case '1TXD': img.format = DDSFormat::BC1; break; // DXT1
+        if (hdr.pixelFormat.flags & 0x4)
+        { // DDPF_FOURCC
+            switch (hdr.pixelFormat.fourCC) 
+            {
+            case 'DXT1': img.format = DDSFormat::BC1; break; // DXT1
             case '3TXD': img.format = DDSFormat::BC2; break; // DXT3
             case '5TXD': img.format = DDSFormat::BC3; break; // DXT5
             default: throw std::runtime_error("Unsupported FOURCC");
             }
         }
-        else {
+        else 
+        {
             img.format = DDSFormat::RGBA8;
         }
 

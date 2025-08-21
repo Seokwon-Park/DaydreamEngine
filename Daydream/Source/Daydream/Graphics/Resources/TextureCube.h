@@ -7,10 +7,6 @@ namespace Daydream
 	class TextureCube : public Texture
 	{
 	public:
-		TextureCube() {};
-		TextureCube(const FilePath& _path);
-		TextureCube(const Array<FilePath>& _paths);
-
 		virtual ~TextureCube() = default;
 
 		virtual UInt32 GetWidth() const { return width; }

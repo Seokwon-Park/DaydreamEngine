@@ -13,147 +13,28 @@ namespace Daydream
 		width = _desc.width;
 		height = _desc.height;
 
-		//texture
-		D3D12_HEAP_PROPERTIES props{};
-		props.Type = D3D12_HEAP_TYPE_DEFAULT;
-		props.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-		props.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
-
-		D3D12_RESOURCE_DESC textureDesc{};
-		textureDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-		textureDesc.Alignment = 0;
-		textureDesc.Width = width;
-		textureDesc.Height = height;
-		textureDesc.DepthOrArraySize = 1;
-		textureDesc.MipLevels = 1;
-		textureDesc.Format = GraphicsUtil::ConvertRenderFormatToDXGIFormat(_desc.format);
-		textureDesc.SampleDesc.Count = 1;
-		textureDesc.SampleDesc.Quality = 0;
-		textureDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-		textureDesc.Flags = GraphicsUtil::ConvertToD3D12BindFlags(_desc.bindFlags);
-
-		D3D12_CLEAR_VALUE clearValue;
-		clearValue.Format = textureDesc.Format;
-
-		D3D12_RESOURCE_STATES initialState;
-		if ((_desc.bindFlags & RenderBindFlags::RenderTarget) != RenderBindFlags::Unknown) {
-			initialState = D3D12_RESOURCE_STATE_RENDER_TARGET;
-			memcpy(clearValue.Color, &Color::White, sizeof(Color));
+		if (GraphicsUtil::HasFlag(_desc.bindFlags, RenderBindFlags::RenderTarget))
+		{
+			texture = device->CreateTexture2D(width, height,
+				GraphicsUtil::ConvertRenderFormatToDXGIFormat(_desc.format),
+				GraphicsUtil::ConvertToD3D12BindFlags(_desc.bindFlags), D3D12_RESOURCE_STATE_RENDER_TARGET);
 		}
-		else if ((_desc.bindFlags & RenderBindFlags::DepthStencil) != RenderBindFlags::Unknown) {
-			initialState = D3D12_RESOURCE_STATE_DEPTH_WRITE;
-			clearValue.DepthStencil.Depth = 1.0f;
-			clearValue.DepthStencil.Stencil = 0;
+		else if (GraphicsUtil::HasFlag(_desc.bindFlags, RenderBindFlags::DepthStencil))
+		{
+			texture = device->CreateTexture2D(width, height,
+				GraphicsUtil::ConvertRenderFormatToDXGIFormat(_desc.format),
+				GraphicsUtil::ConvertToD3D12BindFlags(_desc.bindFlags), D3D12_RESOURCE_STATE_DEPTH_WRITE);
+		}
+		else
+		{
+			texture = device->CreateTexture2D(width, height,
+				GraphicsUtil::ConvertRenderFormatToDXGIFormat(_desc.format),
+				GraphicsUtil::ConvertToD3D12BindFlags(_desc.bindFlags), D3D12_RESOURCE_STATE_COPY_DEST);
 
 		}
-		else {
-			initialState = D3D12_RESOURCE_STATE_COMMON;
-		}
+			}
+	
 
-		device->GetDevice()->CreateCommittedResource(&props, 
-			D3D12_HEAP_FLAG_NONE,
-			&textureDesc, 
-			initialState,
-			&clearValue,
-			IID_PPV_ARGS(texture.GetAddressOf()));
-
-		texture->SetName(L"framebuffer texture");
-
-	}
-	D3D12Texture2D::D3D12Texture2D(D3D12RenderDevice* _device, const FilePath& _path, const TextureDesc& _desc)
-		:Texture2D(_path)
-	{
-		device = _device;
-
-		auto imageData = ImageLoader::LoadImageFile(_path);
-
-		//texture
-		D3D12_HEAP_PROPERTIES props{};
-		props.Type = D3D12_HEAP_TYPE_DEFAULT;
-		props.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-		props.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
-
-		D3D12_RESOURCE_DESC textureDesc{};
-		textureDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-		textureDesc.Alignment = 0;
-		textureDesc.Width = width;
-		textureDesc.Height = height;
-		textureDesc.DepthOrArraySize = 1;
-		textureDesc.MipLevels = 1;
-		textureDesc.Format = GraphicsUtil::ConvertRenderFormatToDXGIFormat(_desc.format);
-		textureDesc.SampleDesc.Count = 1;
-		textureDesc.SampleDesc.Quality = 0;
-		textureDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-		textureDesc.Flags = GraphicsUtil::ConvertToD3D12BindFlags(_desc.bindFlags);
-
-		device->GetDevice()->CreateCommittedResource(&props, D3D12_HEAP_FLAG_NONE, &textureDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(texture.GetAddressOf()));
-
-		D3D12_RESOURCE_DESC uploadBufferDesc{};
-		D3D12_PLACED_SUBRESOURCE_FOOTPRINT placedFootprint;
-		UINT numRows;
-		UINT64 rowSizeInBytes;
-		UINT64 totalBytes;
-
-		device->GetDevice()->GetCopyableFootprints(
-			&textureDesc,
-			0,
-			1,
-			0,
-			&placedFootprint,
-			&numRows,
-			&rowSizeInBytes,
-			&totalBytes
-		);
-		UInt32 uploadPitch = static_cast<UInt32>(placedFootprint.Footprint.RowPitch); // This will be aligned
-		UInt32 uploadSize = static_cast<UInt32>(totalBytes); // Total bytes for the subresource
-		//UInt32 uploadPitch = (width * 4 + D3D12_TEXTURE_DATA_PITCH_ALIGNMENT - 1u) & ~(D3D12_TEXTURE_DATA_PITCH_ALIGNMENT - 1u);
-		//UInt32 uploadSize = height * uploadPitch;
-		textureDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-		textureDesc.Width = uploadSize;
-		textureDesc.Height = 1;
-		textureDesc.Format = DXGI_FORMAT_UNKNOWN;
-		textureDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-
-		props.Type = D3D12_HEAP_TYPE_UPLOAD;
-
-		device->GetDevice()->CreateCommittedResource(&props, D3D12_HEAP_FLAG_NONE, &textureDesc,
-			D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(uploadBuffer.GetAddressOf()));
-
-		void* pixelData;
-		D3D12_RANGE range = { 0, uploadSize };
-		uploadBuffer->Map(0, &range, &pixelData);
-		memcpy(pixelData, imageData.data.data(), width * height * 4);
-		uploadBuffer->Unmap(0, &range);
-
-		// 업로드 버퍼의 정보를 텍스쳐 처럼 해석하기 위해서
-		D3D12_TEXTURE_COPY_LOCATION srcLocation = {};
-		srcLocation.pResource = uploadBuffer.Get();
-		srcLocation.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
-		srcLocation.PlacedFootprint = placedFootprint;
-
-		//이미 위에서 texture2d로 desc를 설정하고 만들었기 때문에 괜찮
-		D3D12_TEXTURE_COPY_LOCATION dstLocation = {};
-		dstLocation.pResource = texture.Get();
-		dstLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
-		dstLocation.SubresourceIndex = 0;
-
-		D3D12_RESOURCE_BARRIER barrier = {};
-		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barrier.Transition.pResource = texture.Get();
-		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-
-		device->GetCommandList()->CopyTextureRegion(&dstLocation, 0, 0, 0, &srcLocation, NULL);
-		device->GetCommandList()->ResourceBarrier(1, &barrier);
-	}
-	D3D12Texture2D::D3D12Texture2D(D3D12RenderDevice* _device, ComPtr<ID3D12Resource> _texture)
-	{
-		device = _device;
-		texture = _texture;
-		texture->SetName(L"swapchain texture");
-	}
 	D3D12Texture2D::~D3D12Texture2D()
 	{
 		if (rtvCpuHandle.ptr != 0)
@@ -341,7 +222,7 @@ namespace Daydream
 
 			device->GetDevice()->CreateSampler(&samplerDesc, samplerCpuHandle);
 			//DAYDREAM_CORE_ASSERT(srvCpuHandle.ptr == 0, "This texture was not created with the Shader Resourc View (SRV) bind flag.");
-		return samplerCpuHandle;
+			return samplerCpuHandle;
 		}
 	}
 

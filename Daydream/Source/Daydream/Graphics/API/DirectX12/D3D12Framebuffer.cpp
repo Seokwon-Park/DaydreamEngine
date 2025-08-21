@@ -15,36 +15,36 @@ namespace Daydream
 		CreateAttachments();
 	}
 
-	D3D12Framebuffer::D3D12Framebuffer(D3D12RenderDevice* _device, RenderPass* _renderPass, D3D12Swapchain* _swapChain)
+	D3D12Framebuffer::D3D12Framebuffer(D3D12RenderDevice* _device, RenderPass* _renderPass, D3D12Swapchain* _swapChain, ID3D12Resource* _swapchainImage)
 	{
 		device = _device;
+		auto desc = _swapchainImage->GetDesc();
+		width = desc.Width;
+		height = desc.Height;
+		renderPass = _renderPass;
 
-		IDXGISwapChain* dxgiSwapchain = _swapChain->GetDXGISwapchain();
-		//for (int i = 0; i < renderTargets.size(); i++)
-		//{
-		//	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle;
-		//	device->GetRTVHeapAlloc().Alloc(&cpuHandle);
+		D3D12_RESOURCE_DESC textureDesc = _swapchainImage->GetDesc();
 
-		//	dxgiSwapchain->GetBuffer(_swapChain->GetBackbufferIndex(), IID_PPV_ARGS(renderTargets[i].GetAddressOf()));
-		//	DAYDREAM_CORE_ASSERT(renderTargets[i].Get(), "Backbuffer is nullptr!");
-		//	device->GetDevice()->CreateRenderTargetView(renderTargets[i].Get(), nullptr, cpuHandle);
-		//	renderTargetHandles.push_back(cpuHandle);
-		//}
-		ComPtr<ID3D12Resource> backBuffer;
-		dxgiSwapchain->GetBuffer(_swapChain->GetBackbufferIndex(), IID_PPV_ARGS(backBuffer.GetAddressOf()));
+		device->GetRTVHeapAlloc().Alloc(&swapchainRTVHandle);
+		D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
+		rtvDesc.Format = textureDesc.Format;
+		rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 
-		Shared<D3D12Texture2D> backBufferTexture = MakeShared<D3D12Texture2D>(device, backBuffer);
-		colorAttachments.push_back(backBufferTexture);
-		renderTargetHandles.push_back(backBufferTexture->GetRTVCPUHandle());
-		DAYDREAM_CORE_ASSERT(backBuffer, "Backbuffer is nullptr!");
+		device->GetDevice()->CreateRenderTargetView(_swapchainImage, &rtvDesc, swapchainRTVHandle);
+
+		renderTargetHandles.push_back(swapchainRTVHandle);
+
+		CreateAttachments();
 	}
+
 	D3D12Framebuffer::~D3D12Framebuffer()
 	{
-		device = nullptr;
+		device->GetRTVHeapAlloc().Free(swapchainRTVHandle);
 		renderTargetHandles.clear();
 		depthStencilHandle;
 		colorAttachments.clear();
 		depthAttachment = nullptr;
+		device = nullptr;
 	}
 
 	Shared<Texture2D> D3D12Framebuffer::GetColorAttachmentTexture(UInt32 _index)
@@ -73,6 +73,7 @@ namespace Daydream
 		const RenderPassDesc& renderPassDesc = renderPass->GetDesc();
 		for (const auto& colorAttachmentDesc : renderPassDesc.colorAttachments)
 		{
+			if (colorAttachmentDesc.isSwapchain) continue;
 			TextureDesc textureDesc;
 			textureDesc.width = width;
 			textureDesc.height = height;

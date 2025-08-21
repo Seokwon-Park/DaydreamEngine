@@ -46,7 +46,7 @@ namespace Daydream
 			swapChain1.GetAddressOf()
 		);
 
-		swapChain1->QueryInterface(swapChain.GetAddressOf());
+		swapChain1->QueryInterface(swapchain.GetAddressOf());
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create swapChain!");
 
 		commandLists.resize(_desc.bufferCount);
@@ -74,10 +74,12 @@ namespace Daydream
 		framebuffers.resize(desc.bufferCount);
 		for (UInt32 i = 0; i < desc.bufferCount; i++)
 		{
-			frameIndex = i;
-			framebuffers[i] = MakeShared<D3D12Framebuffer>(device, mainRenderPass.get(), this);
+			ComPtr<ID3D12Resource> backBuffer;
+			swapchain->GetBuffer(i, IID_PPV_ARGS(backBuffer.GetAddressOf()));
+			framebuffers[i] = MakeShared<D3D12Framebuffer>(device, mainRenderPass.get(), this, backBuffer.Get());
+			backBuffers.push_back(backBuffer);
 		}
-		frameIndex = swapChain->GetCurrentBackBufferIndex();
+		frameIndex = swapchain->GetCurrentBackBufferIndex();
 
 		fenceValues.resize(_desc.bufferCount);
 		//fence가 0까지는 완료된 상태로 생성
@@ -116,22 +118,23 @@ namespace Daydream
 
 		WaitForGPU();
 
+		backBuffers.clear();
 		framebuffers.clear();
 		for (UInt32 i = 0; i < desc.bufferCount; i++)
 		{
 			fenceValues[i] = fenceValues[frameIndex];
 		}
-
-		swapChain->ResizeBuffers(desc.bufferCount, _width, _height, DXGI_FORMAT_UNKNOWN, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH | DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING);
+		swapchain->ResizeBuffers(desc.bufferCount, _width, _height, DXGI_FORMAT_UNKNOWN, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH | DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING);
 
 		framebuffers.resize(desc.bufferCount);
 		for (UInt32 i = 0; i < desc.bufferCount; i++)
 		{
-			frameIndex = i;
-			framebuffers[i] = MakeShared<D3D12Framebuffer>(device, mainRenderPass.get(), this);
-			//framebuffers[i]->Resize(_width, _height);
+			ComPtr<ID3D12Resource> backBuffer;
+			swapchain->GetBuffer(i, IID_PPV_ARGS(backBuffer.GetAddressOf()));
+			framebuffers[i] = MakeShared<D3D12Framebuffer>(device, mainRenderPass.get(), this, backBuffer.Get());
+			backBuffers.push_back(backBuffer);
 		}
-		frameIndex = swapChain->GetCurrentBackBufferIndex();
+		frameIndex = swapchain->GetCurrentBackBufferIndex();
 		fenceValues[frameIndex]++;
 
 		BeginFrame();
@@ -151,7 +154,7 @@ namespace Daydream
 
 		barr.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 		barr.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barr.Transition.pResource = (ID3D12Resource*)framebuffers[frameIndex]->GetColorAttachmentTexture(0)->GetNativeHandle();
+		barr.Transition.pResource = backBuffers[frameIndex].Get();
 		barr.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 		barr.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
@@ -164,7 +167,7 @@ namespace Daydream
 
 		barr.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 		barr.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barr.Transition.pResource = (ID3D12Resource*)framebuffers[frameIndex]->GetColorAttachmentTexture(0)->GetNativeHandle();
+		barr.Transition.pResource = backBuffers[frameIndex].Get();
 		barr.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 		barr.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
@@ -175,7 +178,7 @@ namespace Daydream
 		Array<ID3D12CommandList*> execCommandLists = { commandLists[frameIndex].Get() };
 		device->GetCommandQueue()->ExecuteCommandLists((UInt32)execCommandLists.size(), execCommandLists.data());
 
-		swapChain->Present(desc.isVSync, 0);
+		swapchain->Present(desc.isVSync, 0);
 
 		MoveToNextFrame();
 	}
@@ -206,7 +209,7 @@ namespace Daydream
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to signal!");
 
 		// 2. 다음 백 버퍼 인덱스 획득 (GPU가 렌더링을 마친 버퍼를 가져옴) Present이후 호출이므로 바뀜
-		frameIndex = swapChain->GetCurrentBackBufferIndex();
+		frameIndex = swapchain->GetCurrentBackBufferIndex();
 
 		// 3. 다음 프레임에 사용될 백 버퍼의 펜스 값 확인 및 대기
 		 //    GPU가 이전에 (이 'frameIndex'에 해당하는 백 버퍼를 사용했던) 작업을 완료했는지 확인

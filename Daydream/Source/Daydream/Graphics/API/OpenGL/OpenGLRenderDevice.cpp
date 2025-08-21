@@ -58,14 +58,19 @@ namespace Daydream
 		return MakeShared<OpenGLGraphicsContext>();
 	}
 
-	Shared<VertexBuffer> Daydream::OpenGLRenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
+	Shared<VertexBuffer> OpenGLRenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
 	{
-		return Shared<VertexBuffer>();
+		auto texture = MakeShared<OpenGLVertexBuffer>(_size, _stride, nullptr);
+		if (_initialData)
+		{
+			texture->SetData(_initialData, _initialDataSize);
+		}
+		return texture;
 	}
 
 	Shared<VertexBuffer> OpenGLRenderDevice::CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData)
 	{
-		return Shared<VertexBuffer>();
+		return MakeShared<OpenGLVertexBuffer>(_size, _stride, _initialData);
 	}
 
 	Shared<IndexBuffer> OpenGLRenderDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
@@ -78,12 +83,12 @@ namespace Daydream
 		return MakeShared<OpenGLRenderPass>(_desc);
 	}
 
-	Shared<Framebuffer> Daydream::OpenGLRenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc &_desc)
+	Shared<Framebuffer> OpenGLRenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc &_desc)
 	{
 		return _renderPass->CreateFramebuffer(_desc);
 	}
 
-	Shared<PipelineState> Daydream::OpenGLRenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)
+	Shared<PipelineState> OpenGLRenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)
 	{
 		return MakeShared<OpenGLPipelineState>(_desc);
 	}
@@ -104,10 +109,10 @@ namespace Daydream
 		return MakeShared<OpenGLTexture2D>(_desc);
 	}
 
-	Shared<Texture2D> Daydream::OpenGLRenderDevice::CreateTexture2D(const void* _imageData, const TextureDesc& _desc)
+	Shared<Texture2D> OpenGLRenderDevice::CreateTexture2D(const void* _imageData, const TextureDesc& _desc)
 	{
-		//return MakeShared<OpenGLTexture2D>(_path, _desc);
-		return nullptr;
+		return MakeShared<OpenGLTexture2D>(_desc, _imageData);
+		
 	}
 
 	Unique<ImGuiRenderer> OpenGLRenderDevice::CreateImGuiRenderer()

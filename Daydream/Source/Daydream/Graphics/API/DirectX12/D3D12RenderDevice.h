@@ -86,7 +86,7 @@ namespace Daydream
 		virtual Shared<VertexBuffer> CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData) override;
 		virtual Shared<IndexBuffer> CreateIndexBuffer(UInt32* _indices, UInt32 _count) override;
 		virtual Shared<RenderPass> CreateRenderPass(const RenderPassDesc& _desc) override;
-		virtual Shared<Framebuffer> CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc & _desc) override;
+		virtual Shared<Framebuffer> CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc) override;
 		virtual Shared<PipelineState> CreatePipelineState(const PipelineStateDesc& _desc)override;
 		virtual Shared<Shader> CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode) override;
 		virtual Shared<Swapchain> CreateSwapchain(DaydreamWindow* _window, const SwapchainDesc& _desc)override;
@@ -111,8 +111,27 @@ namespace Daydream
 		DescriptorHeapAllocator& GetCBVSRVUAVHeapAlloc() { return cbvSrvUavHeapAlloc; }
 		IDXGIFactory7* GetFactory() const { return dxgiFactory.Get(); }
 
-		ComPtr<ID3D12GraphicsCommandList> BeginSingleTimeCommands();
-		void EndSingleTimeCommands(ComPtr<ID3D12GraphicsCommandList> _commandBuffer);
+		void ExecuteSingleTimeCommands(std::function<void(ID3D12GraphicsCommandList*)> commands);
+		ComPtr<ID3D12Resource> CreateBuffer(UINT64 _size,
+			D3D12_HEAP_TYPE _heapType,
+			D3D12_RESOURCE_STATES _initialState,
+			D3D12_RESOURCE_FLAGS _flags = D3D12_RESOURCE_FLAG_NONE);
+		void CopyBuffer(ID3D12Resource* _src, ID3D12Resource* _dst, UInt32 _dataSize);
+
+		ComPtr<ID3D12Resource> CreateTexture2D(
+			UINT _width, 
+			UINT _height,
+			DXGI_FORMAT _format,
+			D3D12_RESOURCE_FLAGS _flags, // vk::ImageUsageFlags¿¡ ÇØ´ç
+			D3D12_RESOURCE_STATES _initialState
+		);
+		void CopyBufferToImage(ID3D12Resource* _src, ID3D12Resource* _dst);
+
+		void TransitionResourceState(
+			ID3D12Resource* _resource,
+			D3D12_RESOURCE_STATES _stateBefore,
+			D3D12_RESOURCE_STATES _stateAfter);
+
 
 		//void WaitForGPU(IDXGISwapChain3* _swapChain);
 
@@ -120,6 +139,8 @@ namespace Daydream
 		ComPtr<ID3D12Device> device;
 		ComPtr<ID3D12CommandQueue> commandQueue;
 		ComPtr<ID3D12CommandAllocator> allocator;
+
+
 
 		ComPtr<ID3D12RootSignature> rootSignature;
 		ComPtr<ID3D12DescriptorHeap> rtvHeap;
@@ -130,15 +151,20 @@ namespace Daydream
 		ComPtr<ID3D12GraphicsCommandList> commandList;
 
 		DescriptorHeapAllocator rtvHeapAlloc;
-		DescriptorHeapAllocator dsvHeapAlloc;      
-		DescriptorHeapAllocator samplerHeapAlloc;      
+		DescriptorHeapAllocator dsvHeapAlloc;
+		DescriptorHeapAllocator samplerHeapAlloc;
 		DescriptorHeapAllocator cbvSrvUavHeapAlloc;
 
 		ComPtr<IDXGIFactory7> dxgiFactory;
 		ComPtr<IDXGIAdapter4> dxgiAdapter;
 		ComPtr<ID3D12Debug> debugLayer;
 
-		Array<std::function<void()>> framebufferDelegate;
+		ComPtr<ID3D12CommandAllocator> uploadCommandAllocator;
+		ComPtr<ID3D12GraphicsCommandList> uploadCommandList;
+		ComPtr<ID3D12Fence> uploadFence;
+		UInt64 uploadFenceValue;
+		HANDLE uploadFenceEvent;
+
 
 	};
 }

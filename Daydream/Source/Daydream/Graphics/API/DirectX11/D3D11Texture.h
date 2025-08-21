@@ -9,9 +9,9 @@ namespace Daydream
 	{
 	public:
 		// constrcuter destructer
-		D3D11Texture2D(D3D11RenderDevice* _device, const TextureDesc& _desc);
-		D3D11Texture2D(D3D11RenderDevice* _device, const FilePath& _path, const TextureDesc& _desc);
-		D3D11Texture2D(D3D11RenderDevice* _device, ComPtr<ID3D11Texture2D> _texture);
+		D3D11Texture2D(D3D11RenderDevice* _device, const TextureDesc& _desc, const void* _initialData = nullptr);
+		//D3D11Texture2D(D3D11RenderDevice* _device, const FilePath& _path, const TextureDesc& _desc);
+		//D3D11Texture2D(D3D11RenderDevice* _device, ComPtr<ID3D11Texture2D> _texture);
 		
 		virtual ~D3D11Texture2D();
 

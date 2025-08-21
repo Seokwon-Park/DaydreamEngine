@@ -23,14 +23,15 @@ namespace Daydream
 		virtual void Resize(UInt32 _width, UInt32 _height) override;
 		//virtual Shared<Texture2D> GetDepthAttachemntTexture(UInt32 _index) override;
 
-		Array<ID3D11RenderTargetView*> GetRenderTargetViews() { return rtvs; }
+		Array<ID3D11RenderTargetView*> GetRenderTargetViews() { return renderTargetViews; }
 		ComPtr<ID3D11DepthStencilView> GetDepthStencilView() { return depthAttachment->GetDSV(); }
 
 	private:
 		D3D11RenderDevice* device;
+		ComPtr<ID3D11RenderTargetView> swapchainRTV;
 		Array<Shared<D3D11Texture2D>> colorAttachments;
+		Array<ID3D11RenderTargetView*> renderTargetViews;
 		Shared<D3D11Texture2D> depthAttachment;
-		Array<ID3D11RenderTargetView*> rtvs;
 		ComPtr<ID3D11DepthStencilView> depthStencilView;
 	};
 }

@@ -9,14 +9,16 @@ namespace Daydream
 	{
 	public:
 		D3D12Texture2D(D3D12RenderDevice* _device, const TextureDesc& _desc);
-		D3D12Texture2D(D3D12RenderDevice* _device, const FilePath& _path, const TextureDesc& _desc);
-		D3D12Texture2D(D3D12RenderDevice* _device, ComPtr<ID3D12Resource> _texture);
+		//D3D12Texture2D(D3D12RenderDevice* _device, const FilePath& _path, const TextureDesc& _desc);
+		//D3D12Texture2D(D3D12RenderDevice* _device, ComPtr<ID3D12Resource> _texture);
 		virtual ~D3D12Texture2D();
 
 		virtual inline void* GetNativeHandle() override { return texture.Get(); }
+		virtual inline void* GetImGuiHandle() { return reinterpret_cast<void*>(GetSRVGPUHandle().ptr); }
 
 		// ºä »ý¼º ¹× Ä³½Ì
-		ComPtr<ID3D12Resource> GetTexture() { return texture; }
+		ID3D12Resource* GetID3D12Resource() { return texture.Get(); }
+		D3D12_RESOURCE_STATES GetCurrentState() { return currentState; }
 		D3D12_CPU_DESCRIPTOR_HANDLE GetSRVCPUHandle();
 		D3D12_GPU_DESCRIPTOR_HANDLE GetSRVGPUHandle();
 		D3D12_CPU_DESCRIPTOR_HANDLE GetRTVCPUHandle();
@@ -25,12 +27,12 @@ namespace Daydream
 		D3D12_GPU_DESCRIPTOR_HANDLE GetUAVGPUHandle();
 		D3D12_CPU_DESCRIPTOR_HANDLE GetSamplerCPUHandle();
 		D3D12_GPU_DESCRIPTOR_HANDLE GetSamplerGPUHandle();
-		virtual inline void* GetImGuiHandle() { return reinterpret_cast<void*>(GetSRVGPUHandle().ptr); }
 		//const D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() const { return gpuHandle; };
 	private:
 		D3D12RenderDevice* device;
 		ComPtr<ID3D12Resource> uploadBuffer;
 		ComPtr<ID3D12Resource> texture;
+		D3D12_RESOURCE_STATES currentState;
 		D3D12_CPU_DESCRIPTOR_HANDLE samplerCpuHandle = {};
 		D3D12_GPU_DESCRIPTOR_HANDLE samplerGpuHandle = {};
 
