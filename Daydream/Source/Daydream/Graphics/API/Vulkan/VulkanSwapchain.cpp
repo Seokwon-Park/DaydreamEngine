@@ -1,7 +1,7 @@
 #include "DaydreamPCH.h"
 #include "VulkanSwapchain.h"
 
-#include "Daydream/Graphics/Utility/GraphicsUtil.h"
+#include "VulkanUtility.h"
 
 namespace Daydream
 {
@@ -252,7 +252,7 @@ namespace Daydream
 
 	vk::SurfaceFormatKHR VulkanSwapchain::ChooseSwapSurfaceFormat(const Array<vk::SurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat)
 	{
-		vk::Format desiredFormat = GraphicsUtil::ConvertRenderFormatToVkFormat(_desiredFormat);
+		vk::Format desiredFormat = GraphicsUtility::Vulkan::ConvertRenderFormatToVkFormat(_desiredFormat);
 		for (const vk::SurfaceFormatKHR& availableFormat : _availableFormats)
 		{
 			if (availableFormat.format == desiredFormat && availableFormat.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear)

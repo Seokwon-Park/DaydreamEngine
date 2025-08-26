@@ -2,7 +2,7 @@
 #include "D3D11Shader.h"
 
 #include "D3D11RenderDevice.h"
-#include "Daydream/Graphics/Utility/GraphicsUtil.h"
+#include "Daydream/Graphics/Utility/GraphicsUtility.h"
 #include "Daydream/Graphics/Utility/ShaderCompileHelper.h"
 
 #include <spirv_cross/spirv_hlsl.hpp>
@@ -13,8 +13,8 @@ namespace Daydream
 	{
 		device = _device;
 		shaderType = _type;
-		String target = GraphicsUtil::GetShaderTargetName(_type, "5_0");
-		String entryPoint = GraphicsUtil::GetShaderEntryPointName(_type);
+		String target = GraphicsUtility::GetShaderTargetName(_type, "5_0");
+		String entryPoint = GraphicsUtility::GetShaderEntryPointName(_type);
 		HRESULT hr;
 
 		FilePath path(_src);
@@ -41,7 +41,7 @@ namespace Daydream
 		{
 			ShaderReflectionInfo sr{};
 			sr.name = compiler->get_name(resource.id);
-			sr.shaderResourceType = ShaderResourceType::Texture2D;
+			sr.shaderResourceType = ShaderResourceType::Texture;
 			sr.set = compiler->get_decoration(resource.id, spv::DecorationDescriptorSet);
 			sr.binding = compiler->get_decoration(resource.id, spv::DecorationBinding);
 			sr.shaderType = _type;

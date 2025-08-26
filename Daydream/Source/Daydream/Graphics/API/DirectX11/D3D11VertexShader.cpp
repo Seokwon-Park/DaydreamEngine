@@ -1,7 +1,7 @@
 #include "DaydreamPCH.h"
 #include "D3D11VertexShader.h"
 
-#include "Daydream/Graphics/Utility/GraphicsUtil.h"
+#include "Daydream/Graphics/Utility/GraphicsUtility.h"
 
 namespace Daydream
 {
@@ -76,7 +76,7 @@ namespace Daydream
 			sr.binding = paramDesc.SemanticIndex;
 			sr.shaderResourceType = ShaderResourceType::Input;
 			sr.format = ConvertToRenderFormat(paramDesc);
-			sr.size = GraphicsUtil::GetRenderFormatSize(sr.format);
+			sr.size = GraphicsUtility::GetRenderFormatSize(sr.format);
 			sr.shaderType = shaderType;
 
 			reflectionInfo.push_back(sr);

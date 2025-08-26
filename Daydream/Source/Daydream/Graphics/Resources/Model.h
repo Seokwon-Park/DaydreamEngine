@@ -8,15 +8,10 @@ namespace Daydream
 	{
 	public:
 		Model();
+		Model(Shared<Mesh> _mesh);
 		
 		void Load(const String& _path);
-		Array<Shared<Mesh>>& GetMeshes() { return meshes; }
-
-		static void CreateBasicModels();
-		static Shared<Mesh> Plane;
-		static Shared<Mesh> Cube;
-		static Shared<Mesh> Sphere;
-		static Shared<Mesh> Cone;
+		const Array<Shared<Mesh>>& GetMeshes() { return meshes; }
 	private:
 		Array<Shared<Mesh>> meshes;
 	};

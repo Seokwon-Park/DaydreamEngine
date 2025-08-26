@@ -12,23 +12,14 @@ namespace Daydream
 	class D3D11TextureCube : public TextureCube
 	{
 	public:
-		D3D11TextureCube(D3D11RenderDevice* _device, const TextureDesc& _desc);
+		D3D11TextureCube(D3D11RenderDevice* _device, const TextureDesc& _desc, Array<const void*> _initialData);
 
 		virtual ~D3D11TextureCube() = default;
 
-		virtual UInt32 GetWidth() const { return width; }
-		virtual UInt32 GetHeight() const { return height; }
+		virtual void* GetNativeHandle() { return nullptr; };
 
-		virtual void* GetNativeHandle() override = 0;
-		virtual void* GetImGuiHandle() override = 0;
-
-		static Shared<TextureCube> Create(const FilePath& _path, const TextureDesc& _desc);
-		static Shared<TextureCube> CreateEmpty(const TextureDesc& _desc);
 	protected:
-		FilePath path;
-		TextureDesc desc;
-		Int32 width = 0;
-		Int32 height = 0;
-		Int32 channels = 0;
+		D3D11RenderDevice* device;
+		ComPtr<ID3D11Texture2D> texture;
 	};
 }

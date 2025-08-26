@@ -4,22 +4,10 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "Daydream/Graphics/Resources/Mesh.h"
+
 namespace Daydream
 {
-	struct Vertex
-	{
-		Vector3 position;
-		Vector3 normal;
-		Vector2 texCoord;
-	};
-
-	struct MeshData
-	{
-		Array<Vertex> vertices;
-		Array<UInt32> indices;
-		std::string name;
-	};
-
 	class ModelLoader
 	{
 	public:

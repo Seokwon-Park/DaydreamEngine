@@ -36,21 +36,18 @@ namespace Daydream
 		squareVB = VertexBuffer::CreateDynamic(sizeof(squareVertices), layout.GetStride(), 0, nullptr);
 		squareVB->SetData(squareVertices, sizeof(squareVertices));
 
-		squareVB2 = VertexBuffer::CreateDynamic(sizeof(squareVertices2), layout.GetStride(), 0, nullptr);
-		squareVB2->SetData(squareVertices2, sizeof(squareVertices2));
 
 		uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
 		squareIB = Daydream::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
-
-		uint32_t squareIndices2[6] = { 0, 1, 2, 2, 3, 0 };
-		squareIB2 = Daydream::IndexBuffer::Create(squareIndices2, sizeof(squareIndices2) / sizeof(uint32_t));
-
 
 		vs = Daydream::Shader::Create("Asset/Shader/SpriteVS.hlsl", Daydream::ShaderType::Vertex, Daydream::ShaderLoadMode::File);
 		ps = Daydream::Shader::Create("Asset/Shader/SpritePS.hlsl", Daydream::ShaderType::Pixel, Daydream::ShaderLoadMode::File);
 
 		vs3d = Daydream::Shader::Create("Asset/Shader/ModelVS.hlsl", Daydream::ShaderType::Vertex, Daydream::ShaderLoadMode::File);
 		ps3d = Daydream::Shader::Create("Asset/Shader/ModelPS.hlsl", Daydream::ShaderType::Pixel, Daydream::ShaderLoadMode::File);
+
+		vscube = Daydream::Shader::Create("Asset/Shader/CubemapVS.hlsl", Daydream::ShaderType::Vertex, Daydream::ShaderLoadMode::File);
+		pscube = Daydream::Shader::Create("Asset/Shader/CubemapPS.hlsl", Daydream::ShaderType::Pixel, Daydream::ShaderLoadMode::File);
 
 		editorCamera->SetPosition({ 0.0f,0.0f,-2.0f });
 		viewProjMat = Daydream::ConstantBuffer::Create(sizeof(Daydream::Matrix4x4));
@@ -60,7 +57,16 @@ namespace Daydream
 		Daydream::TextureDesc textureDesc{};
 		textureDesc.bindFlags = Daydream::RenderBindFlags::ShaderResource;
 		textureDesc.format = Daydream::RenderFormat::R8G8B8A8_UNORM_SRGB;
-		texture = Daydream::Texture2D::Create(path, textureDesc);
+		texture = Daydream::Texture2D::Create("Asset/Texture/Checkerboarduv.png", textureDesc);
+
+		textureCube = TextureCube::Create({ "Asset/Texture/Skybox/right.jpg",
+			"Asset/Texture/Skybox/left.jpg",
+			"Asset/Texture/Skybox/top.jpg",
+			"Asset/Texture/Skybox/bottom.jpg",
+			"Asset/Texture/Skybox/front.jpg",
+			"Asset/Texture/Skybox/back.jpg" },
+			textureDesc
+		);
 		///////////////////////////////////////////////////////
 		Daydream::RenderPassDesc rpDesc;
 
@@ -76,7 +82,7 @@ namespace Daydream
 		rpDesc.depthAttachment = attach;
 
 		renderPass = Daydream::RenderPass::Create(rpDesc);
-		renderPass->SetClearColor(Daydream::Color::White);
+		renderPass->SetClearColor(Daydream::Color::Blue);
 
 		Daydream::FramebufferDesc fbDesc;
 		fbDesc.width = 320;
@@ -86,7 +92,13 @@ namespace Daydream
 
 		viewportFramebuffer = Daydream::Framebuffer::Create(renderPass, fbDesc);
 
+		RasterizerStateDesc rastDesc;
+		rastDesc.frontCounterClockwise = false;
+		rastDesc.cullMode = CullMode::Front;
+		rastDesc.fillMode = FillMode::Wireframe;
+
 		Daydream::PipelineStateDesc desc;
+		desc.rasterizerState = rastDesc;
 		desc.vertexShader = vs;
 		desc.pixelShader = ps;
 		desc.renderPass = renderPass;
@@ -99,6 +111,14 @@ namespace Daydream
 
 		pso3d = Daydream::PipelineState::Create(desc);
 
+		desc.vertexShader = vs3d;
+		desc.pixelShader = ps3d;
+		desc.renderPass = renderPass;
+
+		
+		cubemapPipeline = Daydream::PipelineState::Create(desc);
+
+
 		material = Daydream::Material::Create(pso);
 		//material = pso->CreateMaterial(); // 이것도 가?능?
 		material->SetTexture2D("Texture", texture);
@@ -108,14 +128,25 @@ namespace Daydream
 
 		material3d->SetConstantBuffer("Camera", viewProjMat);
 
+		materialcube = Material::Create(cubemapPipeline);
+
+		material3d->SetConstantBuffer("Camera", viewProjMat);
+
 		activeScene = MakeShared<Scene>("MainScene");
 
 		///////////////////////////////////////////////////////
 		auto entity = activeScene->CreateGameEntity();
 		entity->SetName("Test");
 
-		model = MakeShared<Model>();
-		model->Load("Asset/Model/Lowpoly_tree_sample.fbx");
+		auto meshData = MeshGenerator::CreateCube(3.0f);
+		mesh = Mesh::Create(meshData);
+		model = MakeShared<Model>(mesh);
+		//model = MakeShared<Model>();
+		//model->Load("Asset/Model/Lowpoly_tree_sample.fbx");
+
+		cubeVBO = VertexBuffer::CreateDynamic(sizeof(squareVertices2), layout.GetStride(), 0, nullptr);
+		//cubeIBO = IndexBuffer::Create(squareIndices2, sizeof(squareIndices2) / sizeof(uint32_t));
+
 
 		ModelRendererComponent* component = entity->AddComponent<ModelRendererComponent>();
 		component->SetModel(model);

@@ -7,7 +7,7 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include "GLFW/glfw3native.h"
 
-#include "Daydream/Graphics/Utility/GraphicsUtil.h"
+#include "D3D11Utility.h"
 
 namespace Daydream
 {
@@ -28,7 +28,7 @@ namespace Daydream
 		//bufferDesc.RefreshRate 
 		//bufferDesc.Scaling = DXGI_MODE_SCALING_STRETCHED;
 		//bufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED; // 프로그레시브로 설정
-		bufferDesc.Format = GraphicsUtil::ConvertRenderFormatToDXGIFormat(_desc.format);
+		bufferDesc.Format = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(_desc.format);
 
 		DXGI_SWAP_CHAIN_DESC desc;
 		desc.BufferDesc = bufferDesc;

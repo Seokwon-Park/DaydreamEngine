@@ -10,6 +10,7 @@ namespace Daydream
 	{
 	public:
 		D3D12VertexBuffer(D3D12RenderDevice* _device, BufferUsage _usage, UInt32 _size, UInt32 _stride);
+		virtual ~D3D12VertexBuffer();
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
@@ -22,19 +23,21 @@ namespace Daydream
 		D3D12RenderDevice* device;
 		ComPtr<ID3D12Resource> vertexBuffer;
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
+		void* mappedData;
 	};
 
 	class D3D12IndexBuffer : public IndexBuffer
 	{
 	public:
-		D3D12IndexBuffer(D3D12RenderDevice* _device, UInt32* _indices, UInt32 _indexCount);
+		D3D12IndexBuffer(D3D12RenderDevice* _device, UInt32 _indexCount);
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
+
+		ID3D12Resource* GetDX12Buffer() { return indexBuffer.Get(); }
 	private :
 		D3D12RenderDevice* device;
 		ComPtr<ID3D12Resource> indexBuffer;
-		ComPtr<ID3D12Resource> uploadBuffer;
 		D3D12_INDEX_BUFFER_VIEW indexBufferView;
 	};
 
@@ -42,6 +45,8 @@ namespace Daydream
 	{
 	public:
 		D3D12ConstantBuffer(D3D12RenderDevice* _device, UInt32 _size);
+		virtual ~D3D12ConstantBuffer();
+
 
 		//virtual void Bind(UInt32 _slot) const override;
 
@@ -54,5 +59,7 @@ namespace Daydream
 		D3D12RenderDevice* device;
 		ComPtr<ID3D12Resource> constantBuffer;
 		D3D12_CONSTANT_BUFFER_VIEW_DESC constantBufferView;
+		void* mappedData;
+
 	};
 }

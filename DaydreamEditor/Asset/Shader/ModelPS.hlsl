@@ -27,6 +27,7 @@ struct PSOutput
     float4 color : SV_Target0;
 };
 
+
 //[[vk::combinedImageSampler]][[vk::binding(1)]]
 //Texture2D Texture : register(t0);
 //[[vk::combinedImageSampler]][[vk::binding(1)]]
@@ -49,8 +50,12 @@ PSOutput PSMain(PSInput input)
         float3 halfway = normalize(viewDirection + lightDir);
         float specularPower = pow(max(dot(input.normal, halfway), 0.0f), 20.0f);
         
-        color += lights[i].color * ndotl + float3(1.0f, 1.0f, 1.0f) * specularPower;
+        //color += lights[i].color * ndotl + float3(1.0f, 1.0f, 1.0f) * specularPower;
+        color += lights[i].color * ndotl + input.normal * specularPower;
     }
-    output.color = float4(color, 1.0f);
+    float2 uv = input.uv - input.uv;
+    
+    
+    output.color = float4(color, 1.0f) + float4(uv, 0.0f, 0.0f);
     return output;
 }

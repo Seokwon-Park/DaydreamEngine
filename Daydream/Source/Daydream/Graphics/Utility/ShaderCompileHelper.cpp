@@ -5,7 +5,7 @@
 #include <spirv_cross/spirv_glsl.hpp>
 #include <spirv_cross/spirv_hlsl.hpp>
 
-#include <Daydream/Graphics/Utility/GraphicsUtil.h>
+#include <Daydream/Graphics/Utility/GraphicsUtility.h>
 
 #include <Daydream/Graphics/Resources/Shader.h>
 
@@ -40,8 +40,8 @@ namespace Daydream
 		// 3. 컴파일 인자 구성
 		std::vector<LPCWSTR> args;
 
-		WideString target = GraphicsUtil::GetShaderTargetNameW(_type, L"6_0");
-		WideString entryPoint = GraphicsUtil::GetShaderEntryPointNameW(_type);
+		WideString target = GraphicsUtility::GetShaderTargetNameW(_type, L"6_0");
+		WideString entryPoint = GraphicsUtility::GetShaderEntryPointNameW(_type);
 
 		// 기본 옵션
 		args.push_back(L"-T");
@@ -103,8 +103,8 @@ namespace Daydream
 		// 3. 컴파일 인자 구성
 		std::vector<LPCWSTR> args;
 
-		WideString target = GraphicsUtil::GetShaderTargetNameW(_type, L"6_0");
-		WideString entryPoint = GraphicsUtil::GetShaderEntryPointNameW(_type);
+		WideString target = GraphicsUtility::GetShaderTargetNameW(_type, L"6_0");
+		WideString entryPoint = GraphicsUtility::GetShaderEntryPointNameW(_type);
 
 		// 기본 옵션
 		args.push_back(L"-T");

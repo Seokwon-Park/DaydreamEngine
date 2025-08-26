@@ -9,10 +9,11 @@
 #include "D3D11PipelineState.h"
 #include "D3D11ImGuiRenderer.h"
 #include "D3D11Texture.h"
+#include "D3D11TextureCube.h"
 #include "D3D11Material.h"
 #include "D3D11RenderPass.h"
 
-#include "Daydream/Graphics/Utility/GraphicsUtil.h"
+#include "Daydream/Graphics/Utility/GraphicsUtility.h"
 
 namespace Daydream
 {
@@ -124,7 +125,7 @@ namespace Daydream
 		//}
 
 		DAYDREAM_CORE_INFO("DirectX11 Info:");
-		DAYDREAM_CORE_INFO("  Vendor: {0}", GraphicsUtil::GetVendor(adapterDescription.VendorId));
+		DAYDREAM_CORE_INFO("  Vendor: {0}", GraphicsUtility::GetVendor(adapterDescription.VendorId));
 		DAYDREAM_CORE_INFO("  Renderer: {0}", videoCardDescription);
 		DAYDREAM_CORE_INFO("  Version: {0}", version);
 	}
@@ -159,7 +160,7 @@ namespace Daydream
 		return MakeShared<D3D11VertexBuffer>(this, BufferUsage::Static, _size, _stride, _initialData);
 	}
 
-	Shared<IndexBuffer> D3D11RenderDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
+	Shared<IndexBuffer> Daydream::D3D11RenderDevice::CreateIndexBuffer(const UInt32* _indices, UInt32 _count)
 	{
 		return MakeShared<D3D11IndexBuffer>(this, _indices, _count);
 	}
@@ -205,6 +206,11 @@ namespace Daydream
 	{
 		//return MakeShared<D3D11Texture2D>(this, _path, _desc);
 		return MakeShared<D3D11Texture2D>(this, _desc, _imageData);
+	}
+
+	Shared<TextureCube> D3D11RenderDevice::CreateTextureCube(Array<const void*> _imageData, const TextureDesc& _desc)
+	{
+		return MakeShared<D3D11TextureCube>(this, _desc, _imageData);
 	}
 
 	Unique<ImGuiRenderer> D3D11RenderDevice::CreateImGuiRenderer()

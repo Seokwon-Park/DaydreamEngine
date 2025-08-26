@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Daydream/Graphics/Resources/Resource.h"
+#include "Daydream/Core/Resource.h"
 #include "Daydream/Graphics/Resources/Shader.h"
 
 

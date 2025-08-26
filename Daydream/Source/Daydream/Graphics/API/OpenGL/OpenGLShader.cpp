@@ -4,7 +4,9 @@
 
 #include "spirv_cross/spirv_cross.hpp"
 
-#include "Daydream/Graphics/Utility/GraphicsUtil.h"
+#include "OpenGLUtility.h"
+
+#include "Daydream/Graphics/Utility/GraphicsUtility.h"
 #include "Daydream/Graphics/Utility/ShaderCompileHelper.h"
 
 namespace Daydream
@@ -121,9 +123,9 @@ namespace Daydream
 
 				UInt32 componentCount = spirType.vecsize;
 				spirv_cross::SPIRType::BaseType baseType = spirType.basetype;
-				sr.format = GraphicsUtil::ConvertSPIRVTypeToRenderFormat(baseType, componentCount);
+				sr.format = GraphicsUtility::ConvertSPIRVTypeToRenderFormat(baseType, componentCount);
 				sr.count = componentCount;
-				sr.size = GraphicsUtil::GetRenderFormatSize(sr.format);
+				sr.size = GraphicsUtility::GetRenderFormatSize(sr.format);
 				sr.shaderType = shaderType;
 
 				reflectionInfo.push_back(sr);
@@ -146,7 +148,7 @@ namespace Daydream
 		{
 			ShaderReflectionInfo sr{};
 			sr.name = compiler.get_name(resource.id);
-			sr.shaderResourceType = ShaderResourceType::Texture2D;
+			sr.shaderResourceType = ShaderResourceType::Texture;
 			sr.set = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
 			sr.binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
 
@@ -218,7 +220,7 @@ namespace Daydream
 			if (type == GL_SAMPLER_2D) {
 				ShaderReflectionInfo desc{};
 				desc.name = name;
-				desc.shaderResourceType = ShaderResourceType::Texture2D;
+				desc.shaderResourceType = ShaderResourceType::Texture;
 				desc.set = 0;
 				desc.binding = location;
 				desc.count = size;
@@ -290,7 +292,8 @@ namespace Daydream
 
 	void OpenGLShader::Compile(const std::string& _src)
 	{
-		GLuint shaderID = glCreateShader(GraphicsUtil::GetGLShaderType(shaderType));
+		GLenum GLShaderType = GraphicsUtility::OpenGL::ConvertToGLShaderType(shaderType);
+		GLuint shaderID = glCreateShader(GLShaderType);
 		const GLchar* source = _src.c_str();
 
 		glShaderSource(shaderID, 1, &source, nullptr);
@@ -312,7 +315,7 @@ namespace Daydream
 			return;
 		}
 
-		shaderProgramID = glCreateShaderProgramv(GraphicsUtil::GetGLShaderType(shaderType), 1, &source);
+		shaderProgramID = glCreateShaderProgramv(GLShaderType, 1, &source);
 
 		GLint isLinked = 0;
 		glGetProgramiv(shaderProgramID, GL_LINK_STATUS, &isLinked);

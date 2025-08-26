@@ -1,7 +1,7 @@
 #include "DaydreamPCH.h"
 #include "D3D11Texture.h"
 
-#include "Daydream/Graphics/Utility/GraphicsUtil.h"
+#include "D3D11Utility.h"
 #include "Daydream/Graphics/Utility/ImageLoader.h"
 
 namespace Daydream
@@ -85,11 +85,11 @@ namespace Daydream
 		textureDesc.Height = height;
 		textureDesc.MipLevels = 1;
 		textureDesc.ArraySize = 1;
-		textureDesc.Format = GraphicsUtil::ConvertRenderFormatToDXGIFormat(_desc.format);
+		textureDesc.Format = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(_desc.format);
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.SampleDesc.Quality = 0;
 		textureDesc.Usage = D3D11_USAGE_DEFAULT;
-		textureDesc.BindFlags = GraphicsUtil::ConvertToD3D11BindFlags(_desc.bindFlags);
+		textureDesc.BindFlags = GraphicsUtility::DirectX11::ConvertToD3D11BindFlags(_desc.bindFlags);
 		textureDesc.CPUAccessFlags = 0;
 
 		HRESULT hr;

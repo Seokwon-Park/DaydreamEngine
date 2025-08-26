@@ -2,7 +2,7 @@
 #include "OpenGLTexture.h"
 
 #include "glad/glad.h"
-#include "Daydream/Graphics/Utility/GraphicsUtil.h"
+#include "OpenGLUtility.h"
 #include "Daydream/Graphics/Utility/ImageLoader.h"
 
 namespace Daydream
@@ -15,8 +15,8 @@ namespace Daydream
 		height = _desc.height;
 
 		GLenum internalFormat = 0, dataFormat = 0;
-		internalFormat = GraphicsUtil::ConvertRenderFormatToGLFormat(_desc.format);
-		dataFormat = GraphicsUtil::ConvertRenderFormatToGLDataFormat(_desc.format);
+		internalFormat = GraphicsUtility::OpenGL::ConvertRenderFormatToGLFormat(_desc.format);
+		dataFormat = GraphicsUtility::OpenGL::ConvertRenderFormatToGLDataFormat(_desc.format);
 
 		DAYDREAM_CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");
 

@@ -9,7 +9,7 @@
 #include "D3D12PipelineState.h"
 #include "D3D12ImGuiRenderer.h"
 #include "D3D12Texture.h"
-#include "Daydream/Graphics/Utility/GraphicsUtil.h"
+#include "Daydream/Graphics/Utility/GraphicsUtility.h"
 
 namespace Daydream
 {
@@ -187,7 +187,7 @@ namespace Daydream
 		version = major + "." + minor + "." + release + "." + build;
 
 		DAYDREAM_CORE_INFO("DirectX12 Info:");
-		DAYDREAM_CORE_INFO("  Vendor: {0}", GraphicsUtil::GetVendor(adapterDescription.VendorId));
+		DAYDREAM_CORE_INFO("  Vendor: {0}", GraphicsUtility::GetVendor(adapterDescription.VendorId));
 		DAYDREAM_CORE_INFO("  Renderer: {0} {1} GB", videoCardDescription, std::round((double)adapterDescription.DedicatedVideoMemory / (1 << 30)));
 		DAYDREAM_CORE_INFO("  Version: {0}", version);
 
@@ -241,22 +241,32 @@ namespace Daydream
 
 		CopyBuffer(uploadBuffer.Get(), vertexBuffer->GetDX12Buffer(), _size);
 
-		D3D12_RESOURCE_BARRIER barrier;
-		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barrier.Transition.pResource = vertexBuffer->GetDX12Buffer(); // 전이시킬 리소스
-		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
-		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-		commandList->ResourceBarrier(1, &barrier);
+		TransitionResourceState(vertexBuffer->GetDX12Buffer(), D3D12_RESOURCE_STATE_COPY_DEST,
+			D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
 
 		return vertexBuffer;
 	}
 
 
-	Shared<IndexBuffer> D3D12RenderDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
-	{
-		return MakeShared<D3D12IndexBuffer>(this, _indices, _count);
+	Shared<IndexBuffer> Daydream::D3D12RenderDevice::CreateIndexBuffer(const UInt32* _indices, UInt32 _count)
+	{ 
+		auto indexBuffer = MakeShared<D3D12IndexBuffer>(this, _count);
+		
+		UInt32 bufferSize = sizeof(UInt32) * _count;
+		auto uploadBuffer = CreateBuffer(bufferSize, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
+
+		void* bufferData;
+		HRESULT hr = uploadBuffer->Map(0, nullptr, &bufferData);
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to map uploadBuffer");
+		memcpy(bufferData, _indices, bufferSize);
+		uploadBuffer->Unmap(0, nullptr);
+
+		CopyBuffer(uploadBuffer.Get(), indexBuffer->GetDX12Buffer(), bufferSize);
+
+		TransitionResourceState(indexBuffer->GetDX12Buffer(), D3D12_RESOURCE_STATE_COPY_DEST,
+			D3D12_RESOURCE_STATE_INDEX_BUFFER);
+
+		return indexBuffer;
 	}
 
 	Shared<RenderPass> D3D12RenderDevice::CreateRenderPass(const RenderPassDesc& _desc)

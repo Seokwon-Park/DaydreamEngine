@@ -10,7 +10,7 @@
 #include "VulkanImGuiRenderer.h"
 #include "VulkanTexture.h"
 #include "VulkanMaterial.h"
-#include "Daydream/Graphics/Utility/GraphicsUtil.h"
+#include "Daydream/Graphics/Utility/GraphicsUtility.h"
 #include "Daydream/Graphics/Utility/ImageLoader.h"
 
 #include "GLFW/glfw3.h"
@@ -131,7 +131,7 @@ namespace Daydream
 
 		vk::PhysicalDeviceProperties properties = physicalDevice.getProperties();
 		DAYDREAM_CORE_INFO("Vulkan Info:");
-		DAYDREAM_CORE_INFO("  Vendor: {0}", GraphicsUtil::GetVendor(properties.vendorID));
+		DAYDREAM_CORE_INFO("  Vendor: {0}", GraphicsUtility::GetVendor(properties.vendorID));
 		DAYDREAM_CORE_INFO("  Renderer: {0}", properties.deviceName.data());
 		DAYDREAM_CORE_INFO("  Version: {0}.{1}.{2}",
 			VK_API_VERSION_MAJOR(properties.apiVersion),
@@ -173,16 +173,14 @@ namespace Daydream
 			vma::AllocationCreateFlagBits::eMapped);
 
 		vma::AllocationInfo allocationInfo;
-		// GetAllocator()는 VmaAllocator 핸들을 반환하는 함수라고 가정합니다.
 		allocator->getAllocationInfo(uploadBufferAllocation.get(), &allocationInfo);
 		memcpy(allocationInfo.pMappedData, _initialData, _size);
-		// GPU로 복사 명령
 		this->CopyBuffer(uploadBuffer.get(), vertexBuffer->GetVkBuffer(), _size);
 
 		return vertexBuffer;
 	}
 
-	Shared<IndexBuffer> VulkanRenderDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
+	Shared<IndexBuffer> Daydream::VulkanRenderDevice::CreateIndexBuffer(const UInt32 * _indices, UInt32 _count)
 	{
 		auto indexBuffer = MakeShared<VulkanIndexBuffer>(this, _count);
 

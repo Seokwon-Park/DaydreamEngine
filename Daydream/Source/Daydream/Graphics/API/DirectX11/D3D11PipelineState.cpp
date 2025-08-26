@@ -2,7 +2,7 @@
 #include "D3D11PipelineState.h"
 #include "D3D11Material.h"
 
-#include <Daydream/Graphics/Utility/GraphicsUtil.h>
+#include "D3D11Utility.h"
 
 namespace Daydream
 {
@@ -21,7 +21,7 @@ namespace Daydream
 			elementDesc.SemanticName = info.name.c_str();
 			elementDesc.SemanticIndex = info.binding;
 			elementDesc.InputSlot = 0;
-			elementDesc.Format = GraphicsUtil::ConvertRenderFormatToDXGIFormat(info.format);
+			elementDesc.Format = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(info.format);
 			elementDesc.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 			elementDesc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 			elementDesc.InstanceDataStepRate = 0;
@@ -40,11 +40,11 @@ namespace Daydream
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create inputlayout!");
 
 		//CW
-		D3D11_RASTERIZER_DESC desc{};
-		desc.FrontCounterClockwise = false;
-		desc.CullMode = D3D11_CULL_BACK;
-		desc.FillMode = D3D11_FILL_SOLID;
-		_device->GetDevice()->CreateRasterizerState(&desc, rasterizer.GetAddressOf());
+
+		D3D11_RASTERIZER_DESC rastDesc = GraphicsUtility::DirectX11::TranslateToD3D11RasterizerDesc(_desc.rasterizerState);
+		
+		
+		_device->GetDevice()->CreateRasterizerState(&rastDesc, rasterizer.GetAddressOf());
 
 
 	}

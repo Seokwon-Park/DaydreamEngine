@@ -4,38 +4,17 @@
 #include "Daydream/Graphics/Resources/Buffer.h"
 #include "Daydream/Graphics/Resources/Texture.h"
 #include "Daydream/Graphics/Resources/Material.h"
-#include "Daydream/Graphics/Core/RenderPass.h"
+#include "Daydream/Graphics/States/BlendState.h"
+#include "Daydream/Graphics/States/RasterizerState.h"
+#include "Daydream/Graphics/States/DepthStencilState.h"
+#include "RenderPass.h"
+
 
 namespace Daydream
 {
 	enum class PrimitiveTopologyType
 	{
 		TriangleList,
-	};
-
-	struct RasterizerStateDesc
-	{
-		enum class FillMode {
-			Solid,
-			Wireframe
-		};
-
-		enum class CullMode {
-			None,
-			Front,
-			Back
-		};
-
-		FillMode fillMode = FillMode::Solid;
-		CullMode cullMode = CullMode::Back;
-		bool frontCounterClockwise = false;
-		bool depthClipEnable = true;
-		bool scissorEnable = false;
-		bool multisampleEnable = false;
-		bool antialiasedLineEnable = false;
-		int depthBias = 0;
-		float depthBiasClamp = 0.0f;
-		float slopeScaledDepthBias = 0.0f;
 	};
 
 	struct PipelineStateDesc

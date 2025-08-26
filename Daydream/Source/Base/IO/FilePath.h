@@ -9,9 +9,13 @@ namespace Daydream
 	public:
         FilePath() = default;
 
-        FilePath(std::string _path) noexcept
+        FilePath(const std::string& _path) noexcept
             : path(_path)
         {}
+
+		FilePath(const char* _path) noexcept
+			:path(_path)
+		{}
 
         FilePath(const FilePath& other) noexcept = default;
         FilePath& operator=(const FilePath& other) noexcept = default;

@@ -17,7 +17,7 @@ namespace Daydream
 		return Renderer::GetRenderDevice()->CreateStaticVertexBuffer(_size, _stride, _initialData);
 	}
 
-	Shared<IndexBuffer> IndexBuffer::Create(UInt32* _indices, UInt32 _size)
+	Shared<IndexBuffer> IndexBuffer::Create(const UInt32* _indices, UInt32 _size)
 	{
 		return Renderer::GetRenderDevice()->CreateIndexBuffer(_indices, _size);
 	}

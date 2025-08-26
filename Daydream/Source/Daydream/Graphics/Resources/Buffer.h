@@ -126,7 +126,7 @@ namespace Daydream
 
 		UInt32 GetCount() const { return indexCount; }
 
-		static Shared<IndexBuffer> Create(UInt32* _indices, UInt32 _count);
+		static Shared<IndexBuffer> Create(const UInt32* _indices, UInt32 _count);
 	protected:
 		UInt32 indexCount;
 

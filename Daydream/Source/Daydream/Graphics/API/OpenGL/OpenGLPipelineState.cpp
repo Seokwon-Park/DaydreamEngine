@@ -1,7 +1,9 @@
 #include "DaydreamPCH.h"
 #include "OpenGLPipelineState.h"
-#include "Daydream/Graphics/Utility/GraphicsUtil.h"
+#include "Daydream/Graphics/Utility/GraphicsUtility.h"
 #include "OpenGLMaterial.h"
+
+#include "OpenGLUtility.h"
 
 #include "glm/gtc/type_ptr.hpp"
 
@@ -56,7 +58,7 @@ namespace Daydream
 		//static GLint uboIndex = 0;
 		for (auto shader : shaders)
 		{
-			GLenum type = GraphicsUtil::GetGLShaderStage(shader->GetType());
+			GLenum type = GraphicsUtility::OpenGL::ConvertToGLShaderType(shader->GetType());
 			GLuint shaderID = static_cast<GLuint>(reinterpret_cast<uintptr_t>(shader->GetNativeHandle()));
 			glUseProgramStages(pipeline, type, shaderID);
 			for (auto& info : shader->GetReflectionInfo())
@@ -69,7 +71,7 @@ namespace Daydream
 					//glUniformBlockBinding(shaderID, info.binding, uboIndex++);
 					break;
 				}
-				case ShaderResourceType::Texture2D:
+				case ShaderResourceType::Texture:
 				{
 					break;
 				}

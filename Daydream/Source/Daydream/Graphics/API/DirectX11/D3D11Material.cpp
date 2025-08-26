@@ -21,7 +21,7 @@ namespace Daydream
 					cbuffers[info.name] = nullptr;
 					break;
 				}
-				case ShaderResourceType::Texture2D:
+				case ShaderResourceType::Texture:
 				{
 					textures[info.name] = nullptr;
 					break;

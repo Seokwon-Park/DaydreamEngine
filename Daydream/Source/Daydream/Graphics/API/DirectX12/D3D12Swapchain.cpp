@@ -1,7 +1,7 @@
 #include "DaydreamPCH.h"
 #include "D3D12Swapchain.h"
 
-#include "Daydream/Graphics/Utility/GraphicsUtil.h"
+#include "D3D12Utility.h"
 
 #include "Daydream/Graphics/Core/Renderer2D.h"
 
@@ -16,7 +16,7 @@ namespace Daydream
 		device = Cast<D3D12RenderDevice>(_device);
 		desc = _desc;
 		bufferCount = _desc.bufferCount;
-		format = GraphicsUtil::ConvertRenderFormatToDXGIFormat(_desc.format);;
+		format = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(_desc.format);;
 		DXGI_SAMPLE_DESC sampleDesc = {};
 		sampleDesc.Count = 1;    // 샘플 수 (1이면 MSAA 비활성화)
 		sampleDesc.Quality = 0;  // 품질 레벨 (0이면 기본값)

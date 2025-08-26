@@ -63,7 +63,7 @@ namespace Daydream
 		memcpy(sub.pData, _data, _dataSize);
 		device->GetContext()->Unmap(vertexBuffer.Get(), 0);
 	}
-	D3D11IndexBuffer::D3D11IndexBuffer(D3D11RenderDevice* _device, UInt32* _indices, UInt32 _indexCount)
+	D3D11IndexBuffer::D3D11IndexBuffer(D3D11RenderDevice* _device, const UInt32* _indices, UInt32 _indexCount)
 	{
 		device = _device;
 		indexCount = _indexCount;

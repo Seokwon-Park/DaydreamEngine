@@ -3,7 +3,7 @@
 
 #include "spirv_cross/spirv_cross.hpp"
 
-#include "Daydream/Graphics/Utility/GraphicsUtil.h"
+#include "VulkanUtility.h"
 #include "Daydream/Graphics/Utility/ShaderCompileHelper.h"
 
 
@@ -13,7 +13,7 @@ namespace Daydream
 	{
 		device = _device;
 		shaderType = _type;
-		stageBit = GraphicsUtil::GetVKShaderStage(_type);
+		stageBit = GraphicsUtility::Vulkan::ConvertToShaderStageFlagBit(_type);
 
 		FilePath path(_src);
 		switch (_mode)
@@ -63,8 +63,8 @@ namespace Daydream
 					 
 					UInt32 componentCount = spirType.vecsize;
 					spirv_cross::SPIRType::BaseType baseType = spirType.basetype;
-					sr.format = GraphicsUtil::ConvertSPIRVTypeToRenderFormat(baseType, componentCount);
-					sr.size = GraphicsUtil::GetRenderFormatSize(sr.format);
+					sr.format = GraphicsUtility::ConvertSPIRVTypeToRenderFormat(baseType, componentCount);
+					sr.size = GraphicsUtility::GetRenderFormatSize(sr.format);
 					sr.shaderType = shaderType;
 
 					reflectionInfo.push_back(sr);
@@ -88,7 +88,7 @@ namespace Daydream
 			{
 				ShaderReflectionInfo sr{};
 				sr.name = compiler.get_name(resource.id);
-				sr.shaderResourceType = ShaderResourceType::Texture2D;
+				sr.shaderResourceType = ShaderResourceType::Texture;
 				sr.set = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
 				sr.binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
 

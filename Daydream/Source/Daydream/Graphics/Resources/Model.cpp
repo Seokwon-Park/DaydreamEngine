@@ -11,8 +11,14 @@ namespace Daydream
 	Model::Model()
 	{
 	}
+	Model::Model(Shared<Mesh> _mesh)
+	{
+		meshes.push_back(_mesh);
+	}
 	void Model::Load(const String& _path)
 	{
+		meshes.clear();
+		
 		FilePath filepath(_path);
 
 		Array<MeshData> meshDatas = ModelLoader::LoadFromFile(filepath);
@@ -42,17 +48,8 @@ namespace Daydream
 				v.position.z = (v.position.z - cz) / dl;
 			}
 
-			Shared<VertexBuffer> vertexBuffer = VertexBuffer::CreateStatic(meshData.vertices.size() * sizeof(Vertex), sizeof(Vertex), meshData.vertices.data());
-			Shared<IndexBuffer> indexBuffer = IndexBuffer::Create(meshData.indices.data(), meshData.indices.size());
-
-			Shared<Mesh> mesh = MakeShared<Mesh>();
-			mesh->SetVertexBuffer(vertexBuffer);
-			mesh->SetIndexBuffer(indexBuffer);
+			Shared<Mesh> mesh = Mesh::Create(meshData);
 			meshes.push_back(mesh);
 		}
-	}
-	void Model::CreateBasicModels()
-	{
-
 	}
 }

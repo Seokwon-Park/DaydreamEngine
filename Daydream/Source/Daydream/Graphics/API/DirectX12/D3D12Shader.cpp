@@ -1,7 +1,7 @@
 #include "DaydreamPCH.h"
 #include "D3D12Shader.h"
 
-#include "Daydream/Graphics/Utility/GraphicsUtil.h"
+#include "Daydream/Graphics/Utility/GraphicsUtility.h"
 #include "Daydream/Graphics/Utility/ShaderCompileHelper.h"
 
 namespace Daydream
@@ -60,8 +60,8 @@ namespace Daydream
     {
         device = _device;
         shaderType = _type;
-		String target = GraphicsUtil::GetShaderTargetName(_type, "6_0");
-		String entryPoint = GraphicsUtil::GetShaderEntryPointName(_type);
+		String target = GraphicsUtility::GetShaderTargetName(_type, "6_0");
+		String entryPoint = GraphicsUtility::GetShaderEntryPointName(_type);
 		HRESULT hr;
 		//ComPtr<ID3DBlob> errorBlob;
 		//switch (_mode)
@@ -123,7 +123,7 @@ namespace Daydream
 				sr.binding = paramDesc.SemanticIndex;
 				sr.shaderResourceType = ShaderResourceType::Input;
 				sr.format = ConvertToRenderFormat(paramDesc);
-				sr.size = GraphicsUtil::GetRenderFormatSize(sr.format);
+				sr.size = GraphicsUtility::GetRenderFormatSize(sr.format);
 				sr.shaderType = shaderType;
 
 				reflectionInfo.push_back(sr);
@@ -162,7 +162,7 @@ namespace Daydream
 			{
 				ShaderReflectionInfo sr{};
 				sr.name = name;
-				sr.shaderResourceType = ShaderResourceType::Texture2D;
+				sr.shaderResourceType = ShaderResourceType::Texture;
 				sr.set = 0; // D3D11에서는 set 개념이 없음
 				sr.binding = bindDesc.BindPoint;
 				sr.count = bindDesc.BindCount;

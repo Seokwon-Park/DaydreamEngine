@@ -230,5 +230,15 @@ namespace Daydream
 		File,
 	};
 
+	enum class FillMode {
+		Solid,
+		Wireframe
+	};
+
+	enum class CullMode {
+		None,
+		Front,
+		Back
+	};
 
 }

@@ -25,7 +25,7 @@ namespace Daydream
 	class D3D11IndexBuffer : public IndexBuffer
 	{
 	public:
-		D3D11IndexBuffer(D3D11RenderDevice* _device, UInt32* _indices, UInt32 _indexCount);
+		D3D11IndexBuffer(D3D11RenderDevice* _device, const UInt32* _indices, UInt32 _indexCount);
 		virtual ~D3D11IndexBuffer();
 
 		virtual void Bind() const;

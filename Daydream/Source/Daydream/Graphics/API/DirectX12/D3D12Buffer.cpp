@@ -108,12 +108,23 @@ namespace Daydream
 		else if (usage == BufferUsage::Dynamic)
 		{
 			vertexBuffer = _device->CreateBuffer(_size, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
+
+			HRESULT hr = vertexBuffer->Map(0, nullptr, &mappedData);
+			DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to map uploadBuffer");
+
 		}
 
 		vertexBufferView.BufferLocation = vertexBuffer->GetGPUVirtualAddress();
 		vertexBufferView.SizeInBytes = (UINT)_size;
 		vertexBufferView.StrideInBytes = stride;
 	}
+
+	D3D12VertexBuffer::~D3D12VertexBuffer()
+	{
+		
+	}
+
+
 	void D3D12VertexBuffer::Bind() const
 	{
 		device->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);
@@ -124,71 +135,18 @@ namespace Daydream
 
 	void D3D12VertexBuffer::SetData(const void* _data, UInt32 _dataSize)
 	{
-		void* data;
-		HRESULT hr = vertexBuffer->Map(0, nullptr, &data);
-		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to map uploadBuffer");
-		memcpy(data, _data, _dataSize);
-		vertexBuffer->Unmap(0, nullptr);
-
+		memcpy(mappedData, _data, _dataSize);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	D3D12IndexBuffer::D3D12IndexBuffer(D3D12RenderDevice* _device, UInt32* _indices, UInt32 _indexCount)
+	D3D12IndexBuffer::D3D12IndexBuffer(D3D12RenderDevice* _device, UInt32 _indexCount)
 	{
+		device = _device;
 		indexCount = _indexCount;
 
-		device = _device;
-		D3D12_HEAP_PROPERTIES props{};
-		props.Type = D3D12_HEAP_TYPE_UPLOAD;
+		UInt32 bufferSize = sizeof(UInt32) * _indexCount;
+		indexBuffer = _device->CreateBuffer(bufferSize, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_COPY_DEST);
 
-		D3D12_RESOURCE_DESC desc{};
-		desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-		desc.Alignment = 0;
-		desc.Width = sizeof(UInt32) * _indexCount;
-		desc.Height = 1;
-		desc.DepthOrArraySize = 1;
-		desc.MipLevels = 1;
-		desc.Format = DXGI_FORMAT_UNKNOWN;
-		desc.SampleDesc.Count = 1;
-		desc.SampleDesc.Quality = 0;
-		desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-		desc.Flags = D3D12_RESOURCE_FLAG_NONE;
-
-		device->GetDevice()->CreateCommittedResource(&props,
-			D3D12_HEAP_FLAG_NONE,
-			&desc,
-			D3D12_RESOURCE_STATE_GENERIC_READ,
-			nullptr,
-			IID_PPV_ARGS(uploadBuffer.GetAddressOf())
-		);
-
-		props.Type = D3D12_HEAP_TYPE_DEFAULT;
-
-		device->GetDevice()->CreateCommittedResource(&props,
-			D3D12_HEAP_FLAG_NONE,
-			&desc,
-			D3D12_RESOURCE_STATE_COPY_DEST,
-			nullptr,
-			IID_PPV_ARGS(indexBuffer.GetAddressOf())
-		);
-
-		void* data;
-		uploadBuffer.Get()->Map(0, nullptr, &data);
-		memcpy(data, _indices, sizeof(UInt32) * _indexCount);
-		uploadBuffer.Get()->Unmap(0, nullptr);
-
-		device->GetCommandList()->CopyBufferRegion(indexBuffer.Get(), 0, uploadBuffer.Get(), 0, sizeof(UInt32) * _indexCount);
-
-		D3D12_RESOURCE_BARRIER barrier;
-		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barrier.Transition.pResource = indexBuffer.Get(); // 전이시킬 리소스
-		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_INDEX_BUFFER;
-		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-		device->GetCommandList()->ResourceBarrier(1, &barrier);
-
-		// (4) VB 뷰 생성
 		indexBufferView.BufferLocation = indexBuffer->GetGPUVirtualAddress();
 		indexBufferView.Format = DXGI_FORMAT_R32_UINT;
 		indexBufferView.SizeInBytes = sizeof(UInt32) * _indexCount;
@@ -205,30 +163,8 @@ namespace Daydream
 	D3D12ConstantBuffer::D3D12ConstantBuffer(D3D12RenderDevice* _device, UInt32 _size)
 	{
 		device = _device;
-		D3D12_HEAP_PROPERTIES props{};
-		props.Type = D3D12_HEAP_TYPE_UPLOAD;
-
-		D3D12_RESOURCE_DESC desc{};
-		desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-		desc.Alignment = 0;
-		desc.Width = (_size + 255) & ~255;
-		desc.Height = 1;
-		desc.DepthOrArraySize = 1;
-		desc.MipLevels = 1;
-		desc.Format = DXGI_FORMAT_UNKNOWN;
-		desc.SampleDesc.Count = 1;
-		desc.SampleDesc.Quality = 0;
-		desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-		desc.Flags = D3D12_RESOURCE_FLAG_NONE;
-
-		device->GetDevice()->CreateCommittedResource(
-			&props,
-			D3D12_HEAP_FLAG_NONE,
-			&desc,
-			D3D12_RESOURCE_STATE_GENERIC_READ,
-			nullptr,
-			IID_PPV_ARGS(constantBuffer.GetAddressOf())
-		);
+		
+		constantBuffer = _device->CreateBuffer((_size + 255) & ~255, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
 
 		constantBufferView.BufferLocation = constantBuffer->GetGPUVirtualAddress();
 		constantBufferView.SizeInBytes = (_size + 255) & ~255;//static_cast<UINT>(_size);
@@ -237,12 +173,17 @@ namespace Daydream
 		D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle;
 		device->GetCBVSRVUAVHeapAlloc().Alloc(&cpuHandle, &gpuHandle);
 		device->GetDevice()->CreateConstantBufferView(&constantBufferView, cpuHandle);
+
+		constantBuffer->Map(0, nullptr, &mappedData);
 	}
+
+	D3D12ConstantBuffer::~D3D12ConstantBuffer()
+	{
+	
+	}
+
 	void D3D12ConstantBuffer::Update(const void* _data, UInt32 _size)
 	{
-		void* data;
-		constantBuffer->Map(0, nullptr, &data);
-		memcpy(data, _data, _size);
-		constantBuffer->Unmap(0, nullptr);
+		memcpy(mappedData, _data, _size);
 	}
 }

@@ -2,7 +2,8 @@
 #include "VulkanPipelineState.h"
 
 #include "VulkanSwapchain.h"
-#include "Daydream/Graphics/Utility/GraphicsUtil.h"
+#include "VulkanUtility.h"
+#include "Daydream/Graphics/Utility/GraphicsUtility.h"
 
 #include "VulkanTexture.h"
 #include "VulkanMaterial.h"
@@ -18,7 +19,7 @@ namespace Daydream
 		case ShaderResourceType::ConstantBuffer:
 			return vk::DescriptorType::eUniformBuffer;
 			break;
-		case ShaderResourceType::Texture2D:
+		case ShaderResourceType::Texture:
 			return vk::DescriptorType::eCombinedImageSampler;
 			break;
 		default:
@@ -45,14 +46,14 @@ namespace Daydream
 		Array<vk::VertexInputAttributeDescription> attribDescArray;
 		for (const Shared<Shader>& shader : shaders)
 		{
-			entryPoints[shader->GetType()] = GraphicsUtil::GetShaderEntryPointName(shader->GetType());
+			entryPoints[shader->GetType()] = GraphicsUtility::GetShaderEntryPointName(shader->GetType());
 
 			Shared<VulkanShader> vulkanShader = static_pointer_cast<VulkanShader>(shader);
 
 			vk::PipelineShaderStageCreateInfo shaderStageInfo{};
 			shaderStageInfo.module = vulkanShader->GetShaderHandle();
 			shaderStageInfo.pName = entryPoints[shader->GetType()].c_str();
-			shaderStageInfo.stage = GraphicsUtil::GetVKShaderStage(shader->GetType());
+			shaderStageInfo.stage = GraphicsUtility::Vulkan::ConvertToShaderStageFlagBit(shader->GetType());
 
 			shaderStages.push_back(shaderStageInfo);
 			for (const auto& info : shader->GetReflectionInfo())
@@ -62,7 +63,7 @@ namespace Daydream
 					vk::VertexInputAttributeDescription attribDesc{};
 					attribDesc.location = info.set;
 					attribDesc.binding = info.binding;
-					attribDesc.format = GraphicsUtil::ConvertRenderFormatToVkFormat(info.format);
+					attribDesc.format = GraphicsUtility::Vulkan::ConvertRenderFormatToVkFormat(info.format);
 					attribDesc.offset = offset;
 
 					offset += info.size;
@@ -75,7 +76,7 @@ namespace Daydream
 				binding.binding = info.binding;
 				binding.descriptorType = ToVkDescType(info.shaderResourceType);
 				binding.descriptorCount = 1;
-				binding.stageFlags = GraphicsUtil::GetVKShaderStage(shader->GetType());
+				binding.stageFlags = GraphicsUtility::Vulkan::ConvertToShaderStageFlagBit(shader->GetType());
 				binding.pImmutableSamplers = nullptr;
 				setBindings[info.set].push_back(binding);
 			}

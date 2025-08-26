@@ -2,8 +2,6 @@
 #include "VulkanFramebuffer.h"
 #include "VulkanSwapchain.h"
 
-#include "Daydream/Graphics/Utility/GraphicsUtil.h"
-
 namespace Daydream
 {
 	VulkanFramebuffer::VulkanFramebuffer(VulkanRenderDevice* _device, VulkanRenderPass* _renderPass, const FramebufferDesc& _desc)

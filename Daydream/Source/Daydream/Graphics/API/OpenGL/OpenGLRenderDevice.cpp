@@ -73,7 +73,7 @@ namespace Daydream
 		return MakeShared<OpenGLVertexBuffer>(_size, _stride, _initialData);
 	}
 
-	Shared<IndexBuffer> OpenGLRenderDevice::CreateIndexBuffer(UInt32* _indices, UInt32 _count)
+	Shared<IndexBuffer> Daydream::OpenGLRenderDevice::CreateIndexBuffer(const UInt32 * _indices, UInt32 _count)
 	{
 		return MakeShared<OpenGLIndexBuffer>(_indices, _count);
 	}

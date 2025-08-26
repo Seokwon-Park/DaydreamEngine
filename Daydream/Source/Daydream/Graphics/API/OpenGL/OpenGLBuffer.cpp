@@ -51,7 +51,7 @@ namespace Daydream {
 	// IndexBuffer //////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////
 
-	OpenGLIndexBuffer::OpenGLIndexBuffer(UInt32* _indices, UInt32 _indexCount)
+	OpenGLIndexBuffer::OpenGLIndexBuffer(const UInt32* _indices, UInt32 _indexCount)
 	{
 		indexCount = _indexCount;
 		glCreateBuffers(1, &bufferID);

@@ -1,7 +1,7 @@
 #include "DaydreamPCH.h"
 #include "D3D12PipelineState.h"
 
-#include "Daydream/Graphics/Utility/GraphicsUtil.h"
+#include "D3D12Utility.h"
 #include "D3D12Shader.h"
 #include "D3D12Material.h"
 
@@ -22,7 +22,7 @@ namespace Daydream
 			D3D12_INPUT_ELEMENT_DESC elementDesc;
 			elementDesc.SemanticName = info.name.c_str();
 			elementDesc.SemanticIndex = info.binding;
-			elementDesc.Format = GraphicsUtil::ConvertRenderFormatToDXGIFormat(info.format);
+			elementDesc.Format = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(info.format);
 			elementDesc.InputSlot = 0;
 			elementDesc.AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 			elementDesc.InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
@@ -44,11 +44,11 @@ namespace Daydream
 					rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 					rootParam.Descriptor.ShaderRegister = info.binding;
 					rootParam.Descriptor.RegisterSpace = 0;
-					rootParam.ShaderVisibility = GraphicsUtil::GetDX12ShaderVisibility(shader->GetType());
+					rootParam.ShaderVisibility = GraphicsUtility::DirectX12::GetDX12ShaderVisibility(shader->GetType());
 					rootParameters.push_back(rootParam);
 					break;
 				}
-				case ShaderResourceType::Texture2D:
+				case ShaderResourceType::Texture:
 				{
 					D3D12_DESCRIPTOR_RANGE srvRange{};
 					srvRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;

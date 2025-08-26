@@ -1,8 +1,9 @@
 #include "DaydreamPCH.h"
 #include "D3D12Texture.h"
 
+#include "D3D12Utility.h"
 #include "Daydream/Graphics/Utility/ImageLoader.h"
-#include "Daydream/Graphics/Utility/GraphicsUtil.h"
+
 
 namespace Daydream
 {
@@ -13,27 +14,27 @@ namespace Daydream
 		width = _desc.width;
 		height = _desc.height;
 
-		if (GraphicsUtil::HasFlag(_desc.bindFlags, RenderBindFlags::RenderTarget))
+		if (GraphicsUtility::HasFlag(_desc.bindFlags, RenderBindFlags::RenderTarget))
 		{
 			texture = device->CreateTexture2D(width, height,
-				GraphicsUtil::ConvertRenderFormatToDXGIFormat(_desc.format),
-				GraphicsUtil::ConvertToD3D12BindFlags(_desc.bindFlags), D3D12_RESOURCE_STATE_RENDER_TARGET);
+				GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(_desc.format),
+				GraphicsUtility::DirectX12::ConvertToD3D12BindFlags(_desc.bindFlags), D3D12_RESOURCE_STATE_RENDER_TARGET);
 		}
-		else if (GraphicsUtil::HasFlag(_desc.bindFlags, RenderBindFlags::DepthStencil))
+		else if (GraphicsUtility::HasFlag(_desc.bindFlags, RenderBindFlags::DepthStencil))
 		{
 			texture = device->CreateTexture2D(width, height,
-				GraphicsUtil::ConvertRenderFormatToDXGIFormat(_desc.format),
-				GraphicsUtil::ConvertToD3D12BindFlags(_desc.bindFlags), D3D12_RESOURCE_STATE_DEPTH_WRITE);
+				GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(_desc.format),
+				GraphicsUtility::DirectX12::ConvertToD3D12BindFlags(_desc.bindFlags), D3D12_RESOURCE_STATE_DEPTH_WRITE);
 		}
 		else
 		{
 			texture = device->CreateTexture2D(width, height,
-				GraphicsUtil::ConvertRenderFormatToDXGIFormat(_desc.format),
-				GraphicsUtil::ConvertToD3D12BindFlags(_desc.bindFlags), D3D12_RESOURCE_STATE_COPY_DEST);
+				GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(_desc.format),
+				GraphicsUtility::DirectX12::ConvertToD3D12BindFlags(_desc.bindFlags), D3D12_RESOURCE_STATE_COPY_DEST);
 
 		}
-			}
-	
+	}
+
 
 	D3D12Texture2D::~D3D12Texture2D()
 	{

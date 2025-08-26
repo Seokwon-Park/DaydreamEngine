@@ -21,7 +21,7 @@ namespace Daydream
 	class OpenGLIndexBuffer : public IndexBuffer
 	{
 	public:
-		OpenGLIndexBuffer(UInt32* _indices, UInt32 _IndexCount);
+		OpenGLIndexBuffer(const UInt32* _indices, UInt32 _IndexCount);
 		virtual ~OpenGLIndexBuffer();
 
 		virtual void Bind() const;

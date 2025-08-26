@@ -1,7 +1,7 @@
 #include "DaydreamPCH.h"
 #include "VulkanTexture.h"
 
-#include "Daydream/Graphics/Utility/GraphicsUtil.h"
+#include "VulkanUtility.h"
 #include "Daydream/Graphics/Utility/ImageLoader.h"
 #include "backends/imgui_impl_vulkan.h"
 
@@ -15,10 +15,10 @@ namespace Daydream
 		width = _desc.width;
 		height = _desc.height;
 		imageSize = width * height * 4;
-		imageFormat = GraphicsUtil::ConvertRenderFormatToVkFormat(_desc.format);
+		imageFormat = GraphicsUtility::Vulkan::ConvertRenderFormatToVkFormat(_desc.format);
 
 		auto imageResource = device->CreateImage(width, height, imageFormat, vk::ImageTiling::eOptimal,
-			GraphicsUtil::ConvertToVkImageUsageFlags(_desc.bindFlags), vk::MemoryPropertyFlagBits::eDeviceLocal);
+			GraphicsUtility::Vulkan::ConvertToVkImageUsageFlags(_desc.bindFlags), vk::MemoryPropertyFlagBits::eDeviceLocal);
 
 		textureImage = vk::UniqueImage(imageResource.image, vk::detail::ObjectDestroy<vk::Device, vk::detail::DispatchLoaderDynamic>(device->GetDevice()));
 		textureImageMemory = vk::UniqueDeviceMemory(imageResource.memory, vk::detail::ObjectFree<vk::Device, vk::detail::DispatchLoaderDynamic>(device->GetDevice()));

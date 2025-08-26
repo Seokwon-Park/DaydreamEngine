@@ -24,11 +24,12 @@ namespace Daydream
 		bool viewportShouldResize = true;
 
 		Shared<VertexBuffer> squareVB;
-		Shared<VertexBuffer> squareVB2;
+		Shared<VertexBuffer> cubeVBO;
 		Shared<IndexBuffer> squareIB;
-		Shared<IndexBuffer> squareIB2;
+		Shared<IndexBuffer> cubeIBO;
 		Shared<Texture2D> texture;
 		Shared<Texture2D> texture2;
+		Shared<TextureCube> textureCube;
 
 		Shared<ConstantBuffer> viewProjMat;
 		Shared<ConstantBuffer> lightBuffer;
@@ -38,15 +39,21 @@ namespace Daydream
 
 		Shared<Shader> vs3d;
 		Shared<Shader> ps3d;
+
+		Shared<Shader> vscube;
+		Shared<Shader> pscube;
 		//Shared<MouseScrolledEvent>
 		Shared<RenderPass> renderPass;
 		Shared<Framebuffer> viewportFramebuffer;
 		Shared<PipelineState> pso;
 		Shared<PipelineState> pso3d;
+		Shared<PipelineState> cubemapPipeline;
 
 		Shared<Material> material;
 		Shared<Material> material3d;
+		Shared<Material> materialcube;
 
+		Shared<Mesh> mesh;
 		Shared<Model> model;
 
 		Shared<Scene> activeScene;

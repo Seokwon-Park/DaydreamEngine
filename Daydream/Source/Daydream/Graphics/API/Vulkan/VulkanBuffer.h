@@ -16,7 +16,7 @@ namespace Daydream
 		virtual void Unbind() const {};
 		virtual void SetData(const void* _data, UInt32 _dataSize) override;
 
-		vk::Buffer GetVkBuffer() { return vertexBuffer.get(); }
+		const vk::Buffer GetVkBuffer() const { return vertexBuffer.get(); }
 	private:
 		VulkanRenderDevice* device;
 		vma::UniqueBuffer vertexBuffer;

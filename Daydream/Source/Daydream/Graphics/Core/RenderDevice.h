@@ -22,8 +22,8 @@ namespace Daydream
 	class PipelineState;
 	class Shader;
 	class Swapchain;
-	class Texture;
 	class Texture2D;
+	class TextureCube;
 	class ImGuiRenderer;
 	class VertexArray;
 	class BufferLayout;
@@ -41,7 +41,7 @@ namespace Daydream
 		virtual Shared<RenderContext> CreateContext() = 0;
 		virtual Shared<VertexBuffer> CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize = 0, const void* _initialData = nullptr) = 0;
 		virtual Shared<VertexBuffer> CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void * _initialData) = 0;
-		virtual Shared<IndexBuffer> CreateIndexBuffer(UInt32* _indices, UInt32 _count) = 0;
+		virtual Shared<IndexBuffer> CreateIndexBuffer(const UInt32 * _indices, UInt32 _count) = 0;
 		virtual Shared<RenderPass> CreateRenderPass(const RenderPassDesc& _desc) = 0;
 		virtual Shared<Framebuffer> CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc) = 0;
 		virtual Shared<PipelineState> CreatePipelineState(const PipelineStateDesc& _desc) = 0;
@@ -49,6 +49,7 @@ namespace Daydream
 		virtual Shared<Swapchain> CreateSwapchain(DaydreamWindow* _window, const SwapchainDesc& _desc) = 0;
 		virtual Shared<Texture2D> CreateEmptyTexture2D(const TextureDesc& _desc) { return nullptr; }; // TODO : 이 기능이 필요한지 아닌지 모름
 		virtual Shared<Texture2D> CreateTexture2D(const void* _imageData, const TextureDesc& _desc) = 0;
+		virtual Shared<TextureCube> CreateTextureCube(Array<const void*> _imageData, const TextureDesc& _desc) { return nullptr; };
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() = 0;
 		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) = 0;
 		virtual Shared<Material> CreateMaterial(Shared<PipelineState> _pipeline) = 0;

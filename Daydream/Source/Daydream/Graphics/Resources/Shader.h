@@ -8,7 +8,7 @@ namespace Daydream
 	{
 		Input,
 		ConstantBuffer,
-		Texture2D,
+		Texture,
 		Sampler,
 	};
 	struct ShaderReflectionInfo
