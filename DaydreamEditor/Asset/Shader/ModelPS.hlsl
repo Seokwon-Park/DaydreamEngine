@@ -22,11 +22,18 @@ cbuffer Lights : register(b2)
     int lightCount;
 };
 
+//cbuffer MaterialConstants : register(b3)
+//{
+//    int useAlbedoTexture;
+//    int useNormalMap;
+//    int useAOMap;
+//    int padding;
+//}
+
 struct PSOutput
 {
     float4 color : SV_Target0;
 };
-
 
 //[[vk::combinedImageSampler]][[vk::binding(1)]]
 //Texture2D Texture : register(t0);

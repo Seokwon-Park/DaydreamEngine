@@ -119,6 +119,31 @@ namespace Daydream
 
 		hr = device->GetDevice()->CreateSamplerState(&samplerDesc, textureSampler.GetAddressOf());
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create Sampler!");
+
+		if (textureDesc.BindFlags & D3D11_BIND_SHADER_RESOURCE)
+		{
+			device->GetDevice()->CreateShaderResourceView(texture.Get(), nullptr, views.srv.GetAddressOf());
+			DAYDREAM_CORE_ASSERT(views.srv, "This texture was not created with the Shader Resource View (SRV) bind flag.");
+		}
+
+		if (textureDesc.BindFlags & D3D11_BIND_DEPTH_STENCIL)
+		{
+			device->GetDevice()->CreateDepthStencilView(texture.Get(), nullptr, views.dsv.GetAddressOf());
+			DAYDREAM_CORE_ASSERT(views.dsv, "This texture was not created with the Depth Stencil View (DSV) bind flag.");
+		}
+
+		if (textureDesc.BindFlags & D3D11_BIND_RENDER_TARGET)
+		{
+			device->GetDevice()->CreateRenderTargetView(texture.Get(), nullptr, views.rtv.GetAddressOf());
+			DAYDREAM_CORE_ASSERT(views.rtv, "This texture was not created with the Render Target View (RTV) bind flag.");
+
+		}
+
+		if (textureDesc.BindFlags & D3D11_BIND_UNORDERED_ACCESS)
+		{
+			device->GetDevice()->CreateUnorderedAccessView(texture.Get(), nullptr, views.uav.GetAddressOf());
+			DAYDREAM_CORE_ASSERT(views.uav, "This texture was not created with the Unordered Access View (UAV) bind flag.");
+		}
 	}
 
 	D3D11Texture2D::~D3D11Texture2D()
@@ -126,61 +151,10 @@ namespace Daydream
 		device = nullptr;
 		texture.Reset();
 		textureSampler.Reset();
-		rtv.Reset();
-		dsv.Reset();
-		srv.Reset();
-		uav.Reset();
+		views.rtv.Reset();
+		views.dsv.Reset();
+		views.srv.Reset();
+		views.uav.Reset();
 	}
-	ComPtr<ID3D11ShaderResourceView> D3D11Texture2D::GetSRV()
-	{
-		if (srv != nullptr) return srv;
-		D3D11_TEXTURE2D_DESC textureDesc;
-		texture->GetDesc(&textureDesc);
-		if (textureDesc.BindFlags & D3D11_BIND_SHADER_RESOURCE)
-		{
-			device->GetDevice()->CreateShaderResourceView(texture.Get(), nullptr, srv.GetAddressOf());
-			return srv;
-		}
-		DAYDREAM_CORE_ASSERT(srv, "This texture was not created with the Shader Resource View (SRV) bind flag.");
-		return nullptr;
-	}
-	ComPtr<ID3D11DepthStencilView> D3D11Texture2D::GetDSV()
-	{
-		if (dsv != nullptr) return dsv;
-		D3D11_TEXTURE2D_DESC textureDesc;
-		texture->GetDesc(&textureDesc);
-		if (textureDesc.BindFlags & D3D11_BIND_DEPTH_STENCIL)
-		{
-			device->GetDevice()->CreateDepthStencilView(texture.Get(), nullptr, dsv.GetAddressOf());
-			return dsv;
-		}
-		DAYDREAM_CORE_ASSERT(dsv, "This texture was not created with the Depth Stencil View (DSV) bind flag.");
-		return nullptr;
-	}
-	ComPtr<ID3D11RenderTargetView> D3D11Texture2D::GetRTV()
-	{
-		if (rtv != nullptr) return rtv;
-		D3D11_TEXTURE2D_DESC textureDesc;
-		texture->GetDesc(&textureDesc);
-		if (textureDesc.BindFlags & D3D11_BIND_RENDER_TARGET)
-		{
-			device->GetDevice()->CreateRenderTargetView(texture.Get(), nullptr, rtv.GetAddressOf());
-			return rtv;
-		}
-		DAYDREAM_CORE_ASSERT(rtv, "This texture was not created with the Render Target View (RTV) bind flag.");
-		return nullptr;
-	}
-	ComPtr<ID3D11UnorderedAccessView> D3D11Texture2D::GetUAV()
-	{
-		if (uav != nullptr) return uav;
-		D3D11_TEXTURE2D_DESC textureDesc;
-		texture->GetDesc(&textureDesc);
-		if (textureDesc.BindFlags & D3D11_BIND_UNORDERED_ACCESS)
-		{
-			device->GetDevice()->CreateUnorderedAccessView(texture.Get(), nullptr, uav.GetAddressOf());
-			return uav;
-		}
-		DAYDREAM_CORE_ASSERT(uav, "This texture was not created with the Unordered Access View (UAV) bind flag.");
-		return nullptr;
-	}
+
 }

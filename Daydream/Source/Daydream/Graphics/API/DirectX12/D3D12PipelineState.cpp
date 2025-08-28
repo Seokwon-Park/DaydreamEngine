@@ -138,7 +138,7 @@ namespace Daydream
 		hr = _device->GetDevice()->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(rootSignature.GetAddressOf()));
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create root signature");
 
-		D3D12_RASTERIZER_DESC rasterizerDesc{};
+		/*D3D12_RASTERIZER_DESC rasterizerDesc{};
 		rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 		rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
 		rasterizerDesc.FrontCounterClockwise = false;
@@ -149,7 +149,9 @@ namespace Daydream
 		rasterizerDesc.MultisampleEnable = FALSE;
 		rasterizerDesc.AntialiasedLineEnable = FALSE;
 		rasterizerDesc.ForcedSampleCount = 0;
-		rasterizerDesc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+		rasterizerDesc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;*/
+
+		D3D12_RASTERIZER_DESC rasterizerDesc = GraphicsUtility::DirectX12::TranslateToD3D12RasterizerDesc(_desc.rasterizerState);
 
 		DXGI_SAMPLE_DESC sampleDesc{};
 		sampleDesc.Count = _desc.sampleCount;

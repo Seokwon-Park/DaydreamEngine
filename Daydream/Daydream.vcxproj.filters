@@ -138,7 +138,7 @@
     <ClInclude Include="Source\Base\IO\FilePath.h">
       <Filter>Source\Base\IO</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Base\Math.h">
+    <ClInclude Include="Source\Base\Math\Math.h">
       <Filter>Source\Base</Filter>
     </ClInclude>
     <ClInclude Include="Source\Base\Math\Color.h">
@@ -1792,6 +1792,10 @@
     <ClInclude Include="Source\Daydream\Graphics\States\RasterizerState.h" />
     <ClInclude Include="Source\Daydream\Graphics\States\BlendState.h" />
     <ClInclude Include="Source\Daydream\Graphics\States\DepthStencilState.h" />
+    <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Common.h" />
+    <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12TextureCube.h" />
+    <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanTextureCube.h" />
+    <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLTextureCube.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -2125,5 +2129,8 @@
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLUtility.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Utility.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Utility.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Common.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12TextureCube.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLTextureCube.cpp" />
   </ItemGroup>
 </Project>

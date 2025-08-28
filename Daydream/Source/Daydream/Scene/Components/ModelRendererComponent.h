@@ -5,7 +5,7 @@
 
 namespace Daydream
 {
-	struct WorldCosntantBuffer
+	struct WorldConstantBuffer
 	{
 		Matrix4x4 world;
 		Matrix4x4 invTranspose;

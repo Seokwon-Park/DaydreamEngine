@@ -1,6 +1,7 @@
 #include "DaydreamPCH.h"
 #include "OpenGLMaterial.h"
 #include "OpenGLTexture.h"
+#include "OpenGLTextureCube.h"
 #include "OpenGLBuffer.h"
 
 namespace Daydream
@@ -43,6 +44,12 @@ namespace Daydream
 			glBindTextureUnit(bindingMap[name].binding, static_cast<UInt32>(reinterpret_cast<uintptr_t>(texture->GetNativeHandle())));
 		}
 
+		for (auto [name, texture] : textureCubes)
+		{
+			if (texture == nullptr) continue;
+			glBindTextureUnit(bindingMap[name].binding, static_cast<UInt32>(reinterpret_cast<uintptr_t>(texture->GetNativeHandle())));
+		}
+
 		for (auto [name, cbuffer] : cbuffers)
 		{
 			if (cbuffer == nullptr) continue;
@@ -54,6 +61,13 @@ namespace Daydream
 		if (bindingMap.find(_name) != bindingMap.end() && textures.find(_name) != textures.end())
 		{
 			textures[_name] = _texture;
+		}
+	}
+	void OpenGLMaterial::SetTextureCube(const std::string& _name, Shared<TextureCube> _texture)
+	{
+		if (bindingMap.find(_name) != bindingMap.end())
+		{
+			textureCubes[_name] = _texture;
 		}
 	}
 	void OpenGLMaterial::SetConstantBuffer(const std::string& _name, Shared<ConstantBuffer> _buffer)

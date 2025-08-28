@@ -50,21 +50,22 @@ namespace Daydream
 		pscube = Daydream::Shader::Create("Asset/Shader/CubemapPS.hlsl", Daydream::ShaderType::Pixel, Daydream::ShaderLoadMode::File);
 
 		editorCamera->SetPosition({ 0.0f,0.0f,-2.0f });
-		viewProjMat = Daydream::ConstantBuffer::Create(sizeof(Daydream::Matrix4x4));
+		viewProjMat = ConstantBuffer::Create(sizeof(Daydream::Matrix4x4));
 		viewProjMat->Update(&editorCamera->GetViewProjectionMatrix(), sizeof(Daydream::Matrix4x4));
 
-		auto path = Daydream::FilePath("Asset/Texture/Checkerboarduv.png");
+		//auto path = Daydream::FilePath("Asset/Texture/Checkerboarduv.png");
+		//auto path = Daydream::FilePath("Asset/Texture/skybox/back.jpg");
 		Daydream::TextureDesc textureDesc{};
 		textureDesc.bindFlags = Daydream::RenderBindFlags::ShaderResource;
 		textureDesc.format = Daydream::RenderFormat::R8G8B8A8_UNORM_SRGB;
-		texture = Daydream::Texture2D::Create("Asset/Texture/Checkerboarduv.png", textureDesc);
+		texture = Daydream::Texture2D::Create("Asset/Texture/skybox/back.jpg", textureDesc);
 
-		textureCube = TextureCube::Create({ "Asset/Texture/Skybox/right.jpg",
-			"Asset/Texture/Skybox/left.jpg",
-			"Asset/Texture/Skybox/top.jpg",
-			"Asset/Texture/Skybox/bottom.jpg",
-			"Asset/Texture/Skybox/front.jpg",
-			"Asset/Texture/Skybox/back.jpg" },
+		textureCube = TextureCube::Create({ "Asset/Texture/skybox/right.jpg",
+			"Asset/Texture/skybox/left.jpg",
+			"Asset/Texture/skybox/top.jpg",
+			"Asset/Texture/skybox/bottom.jpg",
+			"Asset/Texture/skybox/front.jpg",
+			"Asset/Texture/skybox/back.jpg" },
 			textureDesc
 		);
 		///////////////////////////////////////////////////////
@@ -95,42 +96,40 @@ namespace Daydream
 		RasterizerStateDesc rastDesc;
 		rastDesc.frontCounterClockwise = false;
 		rastDesc.cullMode = CullMode::Front;
-		rastDesc.fillMode = FillMode::Wireframe;
+		rastDesc.fillMode = FillMode::Solid;
 
-		Daydream::PipelineStateDesc desc;
-		desc.rasterizerState = rastDesc;
-		desc.vertexShader = vs;
-		desc.pixelShader = ps;
-		desc.renderPass = renderPass;
+		PipelineStateDesc psoDesc;
+		psoDesc.vertexShader = vs;
+		psoDesc.pixelShader = ps;
+		psoDesc.renderPass = renderPass;
 
-		pso = Daydream::PipelineState::Create(desc);
+		pso = Daydream::PipelineState::Create(psoDesc);
 
-		desc.vertexShader = vs3d;
-		desc.pixelShader = ps3d;
-		desc.renderPass = renderPass;
+		psoDesc.vertexShader = vs3d;
+		psoDesc.pixelShader = ps3d;
+		psoDesc.renderPass = renderPass;
 
-		pso3d = Daydream::PipelineState::Create(desc);
+		pso3d = Daydream::PipelineState::Create(psoDesc);
 
-		desc.vertexShader = vs3d;
-		desc.pixelShader = ps3d;
-		desc.renderPass = renderPass;
-
+		psoDesc.rasterizerState = rastDesc;
+		psoDesc.vertexShader = vscube;
+		psoDesc.pixelShader = pscube;
+		psoDesc.renderPass = renderPass;
 		
-		cubemapPipeline = Daydream::PipelineState::Create(desc);
+		cubemapPipeline = Daydream::PipelineState::Create(psoDesc);
 
-
-		material = Daydream::Material::Create(pso);
+		material = Material::Create(pso);
 		//material = pso->CreateMaterial(); // 이것도 가?능?
 		material->SetTexture2D("Texture", texture);
 		material->SetConstantBuffer("Camera", viewProjMat);
 
-		material3d = Daydream::Material::Create(pso3d);
+		material3d = Material::Create(pso3d);
 
 		material3d->SetConstantBuffer("Camera", viewProjMat);
 
 		materialcube = Material::Create(cubemapPipeline);
-
-		material3d->SetConstantBuffer("Camera", viewProjMat);
+		materialcube->SetConstantBuffer("Camera", viewProjMat);
+		materialcube->SetTextureCube("TextureCubemap", textureCube);
 
 		activeScene = MakeShared<Scene>("MainScene");
 
@@ -138,15 +137,26 @@ namespace Daydream
 		auto entity = activeScene->CreateGameEntity();
 		entity->SetName("Test");
 
-		auto meshData = MeshGenerator::CreateCube(3.0f);
-		mesh = Mesh::Create(meshData);
-		model = MakeShared<Model>(mesh);
-		//model = MakeShared<Model>();
-		//model->Load("Asset/Model/Lowpoly_tree_sample.fbx");
+		//Cubemap Mesh
+		//auto meshData = MeshGenerator::CreateCube(5.0f);
+		auto meshData = MeshGenerator::CreateSphere(100.0f, 200, 200);
+		Array<Vector3> positions;
+		for (auto v : meshData.vertices)
+		{
+			positions.push_back(v.position);
+		}
+		
+		cubeVBO = VertexBuffer::CreateStatic(sizeof(Vector3)*positions.size(), 12, positions.data());
+		cubeIBO = IndexBuffer::Create(meshData.indices.data(), meshData.indices.size());
+		mesh = Mesh::Create(cubeVBO, cubeIBO);
+		/////////////////////////////////////////////////////////////////////////////////////
 
-		cubeVBO = VertexBuffer::CreateDynamic(sizeof(squareVertices2), layout.GetStride(), 0, nullptr);
+
+		//model = MakeShared<Model>(mesh);
+		model = MakeShared<Model>();
+		model->Load("Asset/Model/Lowpoly_tree_sample.fbx");
+
 		//cubeIBO = IndexBuffer::Create(squareIndices2, sizeof(squareIndices2) / sizeof(uint32_t));
-
 
 		ModelRendererComponent* component = entity->AddComponent<ModelRendererComponent>();
 		component->SetModel(model);
@@ -209,9 +219,10 @@ namespace Daydream
 		pso3d->Bind();
 		activeScene->Update(_deltaTime);
 		
-
-
-		
+		cubemapPipeline->Bind();
+		mesh->Bind();
+		materialcube->Bind();
+		Renderer::Submit(mesh->GetIndexCount());
 
 		renderPass->End();
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Base/Math.h"
+#include "Base/Math/Math.h"
 #include "Base/MathTypes.h"
 #include "Base/TypeCast.h"
 #include "Base/Wrappers.h"

@@ -2,6 +2,7 @@
 #include "OpenGLShader.h"
 #include "OpenGLBuffer.h"
 #include "OpenGLTexture.h"
+#include "OpenGLTextureCube.h"
 #include "OpenGLSwapchain.h"
 #include "OpenGLRenderPass.h"
 #include "OpenGLFramebuffer.h"
@@ -113,6 +114,11 @@ namespace Daydream
 	{
 		return MakeShared<OpenGLTexture2D>(_desc, _imageData);
 		
+	}
+
+	Shared<TextureCube> OpenGLRenderDevice::CreateTextureCube(Array<Array<UInt8>> _imagePixels, const TextureDesc& _desc)
+	{
+		return MakeShared<OpenGLTextureCube>(_desc, _imagePixels);
 	}
 
 	Unique<ImGuiRenderer> OpenGLRenderDevice::CreateImGuiRenderer()

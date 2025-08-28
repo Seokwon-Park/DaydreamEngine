@@ -24,6 +24,6 @@ namespace Daydream
 {
 	constexpr Float32 PI = static_cast<Float32>(std::numbers::pi);
 	constexpr Float32 halfPI = PI * 0.5f;
-	constexpr Float32 two = PI * 2.0f;
+	constexpr Float32 twoPI = PI * 2.0f;
 	constexpr Float32 epsilon = 1e-5f;
 }

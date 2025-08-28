@@ -9,7 +9,7 @@ namespace Daydream
 {
 	ModelRendererComponent::ModelRendererComponent()
 	{
-		worldMatrix = ConstantBuffer::Create(sizeof(WorldCosntantBuffer));
+		worldMatrix = ConstantBuffer::Create(sizeof(WorldConstantBuffer));
 	}
 
 	ModelRendererComponent::~ModelRendererComponent()
@@ -29,7 +29,7 @@ namespace Daydream
 	void ModelRendererComponent::Render()
 	{
 		Transform transform = GetOwner()->GetComponent<TransformComponent>()->GetTransform();
-		WorldCosntantBuffer data;
+		WorldConstantBuffer data;
 		data.world = transform.GetWorldMatrix();
 		data.invTranspose = data.world;
 		data.invTranspose.MatrixInverse();

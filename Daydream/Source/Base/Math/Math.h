@@ -5,14 +5,14 @@
 
 namespace Daydream
 {
-	class Math
+	namespace Math
 	{
-		inline static Float32 DegToRad(Float32 _degrees)
+		inline Float32 DegreeToRadian(Float32 _degrees)
 		{
 			return glm::radians(_degrees);
 		}
 
-		inline static Float32 RadToDeg(Float32 _radians)
+		inline Float32 RadianToDegree(Float32 _radians)
 		{
 			return glm::degrees(_radians);
 		}

@@ -110,7 +110,7 @@
     <ClInclude Include="Source\Base\Container\SortedMap.h" />
     <ClInclude Include="Source\Base\IO\File.h" />
     <ClInclude Include="Source\Base\IO\FilePath.h" />
-    <ClInclude Include="Source\Base\Math.h" />
+    <ClInclude Include="Source\Base\Math\Math.h" />
     <ClInclude Include="Source\Base\Math\Color.h" />
     <ClInclude Include="Source\Base\Math\MathUtil.h" />
     <ClInclude Include="Source\Base\Math\Matrix4x4.h" />
@@ -146,6 +146,7 @@
     <ClInclude Include="Source\Daydream\Event\KeyEvent.h" />
     <ClInclude Include="Source\Daydream\Event\MouseEvent.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Buffer.h" />
+    <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Common.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Framebuffer.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11ImGuiRenderer.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Material.h" />
@@ -170,6 +171,10 @@
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12Shader.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12Swapchain.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12Texture.h" />
+    <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12TextureCube.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12Utility.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX\D3DUtility.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Metal\MetalRenderDevice.h" />
@@ -184,10 +189,12 @@
     <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLShader.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLSwapchain.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLTexture.h" />
+    <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLTextureCube.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLUtility.h">
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanTextureCube.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanBuffer.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanFramebuffer.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanImGuiRenderer.h" />
@@ -691,6 +698,7 @@
     <ClCompile Include="Source\Daydream\Core\Window.cpp" />
     <ClCompile Include="Source\Daydream\Core\WindowManager.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Buffer.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Common.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Framebuffer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11ImGuiRenderer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Material.cpp" />
@@ -716,6 +724,10 @@
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Shader.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Swapchain.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Texture.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12TextureCube.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Utility.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX\D3DUtility.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\Metal\MetalRenderDevice.cpp" />
@@ -730,6 +742,7 @@
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLSwapchain.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLTexture.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLTextureCube.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLUtility.cpp">
       <SubType>
       </SubType>

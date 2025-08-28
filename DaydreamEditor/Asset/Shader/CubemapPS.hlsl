@@ -4,6 +4,11 @@ struct PSInput
     float3 worldPosition : POSITION;
 };
 
+struct PSOutput
+{
+    float4 color : SV_Target0;
+};
+
 [[vk::combinedImageSampler]][[vk::binding(1)]]
 TextureCube TextureCubemap : register(t0);
 [[vk::combinedImageSampler]][[vk::binding(1)]]
@@ -11,5 +16,9 @@ SamplerState TextureCubemapSampler : register(s0);
 
 float4 PSMain(PSInput input) : SV_TARGET
 {
-    return TextureCubemap.Sample(TextureCubemapSampler, input.worldPosition);
+    PSOutput output = (PSOutput) 0;
+    
+    output.color = TextureCubemap.Sample(TextureCubemapSampler, input.worldPosition);
+    return output.color;
+    //return float4(0.2f, 0.8f, 0.8f, 1.0f);
 }

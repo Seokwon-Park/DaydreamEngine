@@ -2,8 +2,6 @@
 #include "D3D12Texture.h"
 
 #include "D3D12Utility.h"
-#include "Daydream/Graphics/Utility/ImageLoader.h"
-
 
 namespace Daydream
 {
@@ -14,58 +12,54 @@ namespace Daydream
 		width = _desc.width;
 		height = _desc.height;
 
+		D3D12_RESOURCE_DESC textureDesc = {};
+		textureDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+		textureDesc.Width = width;
+		textureDesc.Height = height;
+		textureDesc.DepthOrArraySize = 1;
+		textureDesc.MipLevels = 1;
+		textureDesc.Format = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(_desc.format);
+		textureDesc.SampleDesc.Count = 1;
+		textureDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN; // vk::ImageTiling::eOptimal에 해당
+
 		if (GraphicsUtility::HasFlag(_desc.bindFlags, RenderBindFlags::RenderTarget))
 		{
-			texture = device->CreateTexture2D(width, height,
-				GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(_desc.format),
-				GraphicsUtility::DirectX12::ConvertToD3D12BindFlags(_desc.bindFlags), D3D12_RESOURCE_STATE_RENDER_TARGET);
+			textureDesc.Flags = GraphicsUtility::DirectX12::ConvertToD3D12BindFlags(_desc.bindFlags);
+			texture = device->CreateTexture(textureDesc, D3D12_RESOURCE_STATE_RENDER_TARGET);
 		}
 		else if (GraphicsUtility::HasFlag(_desc.bindFlags, RenderBindFlags::DepthStencil))
 		{
-			texture = device->CreateTexture2D(width, height,
-				GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(_desc.format),
-				GraphicsUtility::DirectX12::ConvertToD3D12BindFlags(_desc.bindFlags), D3D12_RESOURCE_STATE_DEPTH_WRITE);
+			textureDesc.Flags = GraphicsUtility::DirectX12::ConvertToD3D12BindFlags(_desc.bindFlags);
+			texture = device->CreateTexture(textureDesc, D3D12_RESOURCE_STATE_DEPTH_WRITE);
 		}
 		else
 		{
-			texture = device->CreateTexture2D(width, height,
-				GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(_desc.format),
-				GraphicsUtility::DirectX12::ConvertToD3D12BindFlags(_desc.bindFlags), D3D12_RESOURCE_STATE_COPY_DEST);
+			textureDesc.Flags = GraphicsUtility::DirectX12::ConvertToD3D12BindFlags(_desc.bindFlags);
+			texture = device->CreateTexture(textureDesc, D3D12_RESOURCE_STATE_COPY_DEST);
+		}
 
-		}
-	}
+		D3D12_SAMPLER_DESC samplerDesc = {};
+		samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // 선형 필터링
+		samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; // 텍스처 주소 모드 (반복)
+		samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		samplerDesc.MipLODBias = 0.0f;
+		samplerDesc.MaxAnisotropy = 1; // 비등방성 필터링 사용 안 함
+		samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; // 비교 함수 (그림자 맵 등에서 사용)
+		samplerDesc.BorderColor[0] = 0.0f; // 경계 색상
+		samplerDesc.BorderColor[1] = 0.0f;
+		samplerDesc.BorderColor[2] = 0.0f;
+		samplerDesc.BorderColor[3] = 0.0f;
+		samplerDesc.MinLOD = 0.0f;
+		samplerDesc.MaxLOD = D3D12_FLOAT32_MAX; // 모든 밉맵 레벨 사용
 
+		device->GetSamplerHeapAlloc().Alloc(&samplerCpuHandle, &samplerGpuHandle);
 
-	D3D12Texture2D::~D3D12Texture2D()
-	{
-		if (rtvCpuHandle.ptr != 0)
-		{
-			device->GetRTVHeapAlloc().Free(rtvCpuHandle);
-			rtvCpuHandle.ptr = 0;
-		}
-		if (dsvCpuHandle.ptr != 0)
-		{
-			device->GetDSVHeapAlloc().Free(dsvCpuHandle);
-			rtvCpuHandle.ptr = 0;
-		}
-		if (srvCpuHandle.ptr != 0)
-		{
-			device->GetCBVSRVUAVHeapAlloc().Free(srvCpuHandle, srvGpuHandle);
-			srvCpuHandle.ptr = 0;
-			srvGpuHandle.ptr = 0;
-		}
-		if (uavCpuHandle.ptr != 0)
-		{
-			device->GetCBVSRVUAVHeapAlloc().Free(uavCpuHandle, uavGpuHandle);
-			uavCpuHandle.ptr = 0;
-			uavGpuHandle.ptr = 0;
-		}
-	}
-	D3D12_CPU_DESCRIPTOR_HANDLE D3D12Texture2D::GetSRVCPUHandle()
-	{
-		D3D12_RESOURCE_DESC textureDesc = texture->GetDesc();
-		if (!(textureDesc.Flags & D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE))
-		{
+		device->GetDevice()->CreateSampler(&samplerDesc, samplerCpuHandle);
+
+		if (!(textureDesc.Flags & D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE) &&
+			GraphicsUtility::HasFlag(_desc.bindFlags, RenderBindFlags::ShaderResource))
+		{ 
 			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 			srvDesc.Format = textureDesc.Format;
 			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
@@ -74,25 +68,7 @@ namespace Daydream
 			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 			device->GetCBVSRVUAVHeapAlloc().Alloc(&srvCpuHandle, &srvGpuHandle);
 			device->GetDevice()->CreateShaderResourceView(texture.Get(), &srvDesc, srvCpuHandle);
-			return srvCpuHandle;
 		}
-		DAYDREAM_CORE_ASSERT(srvCpuHandle.ptr == 0, "This texture was not created with the Shader Resourc View (SRV) bind flag.");
-		return {};
-	}
-	D3D12_GPU_DESCRIPTOR_HANDLE D3D12Texture2D::GetSRVGPUHandle()
-	{
-		if (srvGpuHandle.ptr == 0)
-		{
-			GetSRVCPUHandle();
-		}
-		return srvGpuHandle;
-	}
-	D3D12_CPU_DESCRIPTOR_HANDLE D3D12Texture2D::GetRTVCPUHandle()
-	{
-		if (rtvCpuHandle.ptr != 0) return rtvCpuHandle;
-
-		D3D12_RESOURCE_DESC textureDesc = texture->GetDesc();
-
 		if (textureDesc.Flags & D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET)
 		{
 			device->GetRTVHeapAlloc().Alloc(&rtvCpuHandle);
@@ -113,17 +89,7 @@ namespace Daydream
 			// Handle 3D if needed, etc.
 
 			device->GetDevice()->CreateRenderTargetView(texture.Get(), &rtvDesc, rtvCpuHandle);
-			return rtvCpuHandle;
 		}
-		DAYDREAM_CORE_ASSERT(rtvCpuHandle.ptr == 0, "This texture was not created with the Render Target View (RTV) bind flag.");
-		return {};
-	}
-	const D3D12_CPU_DESCRIPTOR_HANDLE& D3D12Texture2D::GetDSVCPUHandle()
-	{
-		if (dsvCpuHandle.ptr != 0) return dsvCpuHandle;
-
-		D3D12_RESOURCE_DESC textureDesc = texture->GetDesc();
-
 		if (textureDesc.Flags & D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL)
 		{
 			device->GetDSVHeapAlloc().Alloc(&dsvCpuHandle); // DSVs only need CPU handle
@@ -145,17 +111,7 @@ namespace Daydream
 			//}
 
 			device->GetDevice()->CreateDepthStencilView(texture.Get(), &dsvDesc, dsvCpuHandle);
-			return dsvCpuHandle;
 		}
-		DAYDREAM_CORE_ASSERT(false, "This texture was not created with the Depth Stencil View (DSV) bind flag.");
-		return dsvCpuHandle;
-	}
-
-	D3D12_CPU_DESCRIPTOR_HANDLE D3D12Texture2D::GetUAVCPUHandle()
-	{
-		if (uavCpuHandle.ptr != 0) return uavCpuHandle;
-
-		D3D12_RESOURCE_DESC textureDesc = texture->GetDesc();
 
 		if (textureDesc.Flags & D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS)
 		{
@@ -185,55 +141,35 @@ namespace Daydream
 			//}
 
 			device->GetDevice()->CreateUnorderedAccessView(texture.Get(), nullptr, &uavDesc, uavCpuHandle);
-			return uavCpuHandle;
 		}
-		DAYDREAM_CORE_ASSERT(false, "This texture was not created with the Unordered Access View (UAV) bind flag.");
-		return {};
+
+
 	}
-	D3D12_GPU_DESCRIPTOR_HANDLE D3D12Texture2D::GetUAVGPUHandle()
+
+
+	D3D12Texture2D::~D3D12Texture2D()
 	{
-		if (uavCpuHandle.ptr == 0)
+		if (rtvCpuHandle.ptr != 0)
 		{
-			GetUAVCPUHandle();
+			device->GetRTVHeapAlloc().Free(rtvCpuHandle);
+			rtvCpuHandle.ptr = 0;
 		}
-		return uavGpuHandle;
-	}
-
-	D3D12_CPU_DESCRIPTOR_HANDLE D3D12Texture2D::GetSamplerCPUHandle()
-	{
-		if (samplerCpuHandle.ptr != 0) return samplerCpuHandle;
-		else
+		if (dsvCpuHandle.ptr != 0)
 		{
-			D3D12_SAMPLER_DESC samplerDesc = {};
-			samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // 선형 필터링
-			samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; // 텍스처 주소 모드 (반복)
-			samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-			samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-			samplerDesc.MipLODBias = 0.0f;
-			samplerDesc.MaxAnisotropy = 1; // 비등방성 필터링 사용 안 함
-			samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; // 비교 함수 (그림자 맵 등에서 사용)
-			samplerDesc.BorderColor[0] = 0.0f; // 경계 색상
-			samplerDesc.BorderColor[1] = 0.0f;
-			samplerDesc.BorderColor[2] = 0.0f;
-			samplerDesc.BorderColor[3] = 0.0f;
-			samplerDesc.MinLOD = 0.0f;
-			samplerDesc.MaxLOD = D3D12_FLOAT32_MAX; // 모든 밉맵 레벨 사용
-
-			device->GetSamplerHeapAlloc().Alloc(&samplerCpuHandle, &samplerGpuHandle);
-
-			device->GetDevice()->CreateSampler(&samplerDesc, samplerCpuHandle);
-			//DAYDREAM_CORE_ASSERT(srvCpuHandle.ptr == 0, "This texture was not created with the Shader Resourc View (SRV) bind flag.");
-			return samplerCpuHandle;
+			device->GetDSVHeapAlloc().Free(dsvCpuHandle);
+			rtvCpuHandle.ptr = 0;
+		}
+		if (srvCpuHandle.ptr != 0)
+		{
+			device->GetCBVSRVUAVHeapAlloc().Free(srvCpuHandle, srvGpuHandle);
+			srvCpuHandle.ptr = 0;
+			srvGpuHandle.ptr = 0;
+		}
+		if (uavCpuHandle.ptr != 0)
+		{
+			device->GetCBVSRVUAVHeapAlloc().Free(uavCpuHandle, uavGpuHandle);
+			uavCpuHandle.ptr = 0;
+			uavGpuHandle.ptr = 0;
 		}
 	}
-
-	D3D12_GPU_DESCRIPTOR_HANDLE D3D12Texture2D::GetSamplerGPUHandle()
-	{
-		if (samplerCpuHandle.ptr == 0)
-		{
-			GetSamplerCPUHandle();
-		}
-		return samplerGpuHandle;
-	}
-
 }

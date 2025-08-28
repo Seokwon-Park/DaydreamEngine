@@ -2,6 +2,7 @@
 
 #include "Daydream/Graphics/Resources/Texture.h"
 #include "D3D11RenderDevice.h"
+#include "D3D11Common.h"
 
 namespace Daydream
 {
@@ -15,23 +16,22 @@ namespace Daydream
 		
 		virtual ~D3D11Texture2D();
 
-		virtual void* GetNativeHandle() override { return texture.Get(); }
-		virtual void* GetImGuiHandle() { return GetSRV().Get(); };
-		ComPtr<ID3D11ShaderResourceView> GetSRV();
-		ComPtr<ID3D11DepthStencilView> GetDSV();
-		ComPtr<ID3D11RenderTargetView> GetRTV();
-		ComPtr<ID3D11UnorderedAccessView> GetUAV();
-		ComPtr<ID3D11SamplerState> GetSampler() { return textureSampler; }
+		inline virtual void* GetNativeHandle() override { return texture.Get(); }
+		inline virtual void* GetImGuiHandle() { return GetSRV().Get(); }
+		inline ComPtr<ID3D11ShaderResourceView> GetSRV() { return views.srv; }
+		inline ComPtr<ID3D11DepthStencilView> GetDSV() {return views.dsv;}
+		inline ComPtr<ID3D11RenderTargetView> GetRTV() {return views.rtv;}
+		inline ComPtr<ID3D11UnorderedAccessView> GetUAV() { return views.uav; };
+		inline ComPtr<ID3D11SamplerState> GetSampler() { return textureSampler; }
 	protected:
 
 	private:
 		D3D11RenderDevice* device;
+		D3D11ResourceViews views;
 		ComPtr<ID3D11Texture2D> texture;
 		ComPtr<ID3D11SamplerState> textureSampler;
-		ComPtr<ID3D11ShaderResourceView> srv;
-		ComPtr<ID3D11DepthStencilView> dsv;
-		ComPtr<ID3D11RenderTargetView> rtv;
-		ComPtr<ID3D11UnorderedAccessView> uav;
+		
+
 	};
 }
 

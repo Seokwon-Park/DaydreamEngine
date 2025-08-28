@@ -8,6 +8,7 @@ namespace Daydream
 {
 	class PipelineState;
 	class Texture2D;
+	class TextureCube;
 	class ConstantBuffer;
 
 	class Material : public Resource
@@ -17,6 +18,7 @@ namespace Daydream
 		virtual void Bind() = 0;
 
 		virtual void SetTexture2D(const std::string& _name, Shared<Texture2D> _texture) {};
+		virtual void SetTextureCube(const std::string& _name, Shared<TextureCube> _textureCube) {};
 		virtual void SetConstantBuffer(const std::string& _name, Shared<ConstantBuffer> _buffer) {};
 
 		static Shared<Material> Create(Shared<PipelineState> _pipeline);

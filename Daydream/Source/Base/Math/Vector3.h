@@ -9,6 +9,13 @@
 namespace Daydream
 {
 	using Vector3 = glm::vec3;
+
+	Vector3 RotateAxisXDegree(const Vector3& _vector, Float32 _degree);
+	Vector3 RotateAxisYDegree(const Vector3& _vector, Float32 _degree);
+	Vector3 RotateAxisZDegree(const Vector3& _vector, Float32 _degree);
+	Vector3 RotateAxisXRadian(const Vector3& _vector, Float32 _radian);
+	Vector3 RotateAxisYRadian(const Vector3& _vector, Float32 _radian);
+	Vector3 RotateAxisZRadian(const Vector3& _vector, Float32 _radian);
 	//class Vector3
 	//{
 	//public:

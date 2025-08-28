@@ -11,6 +11,7 @@ namespace Daydream
 {
     namespace 
     {
+
         //inline glm::mat3 toGlm(const Matrix3x3& m) {
         //    // Matrix3x3의 val이 column-major 순서라고 가정
         //    return glm::make_mat3(m.val);

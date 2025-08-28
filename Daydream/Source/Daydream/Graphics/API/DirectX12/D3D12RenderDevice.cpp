@@ -9,6 +9,7 @@
 #include "D3D12PipelineState.h"
 #include "D3D12ImGuiRenderer.h"
 #include "D3D12Texture.h"
+#include "D3D12TextureCube.h"
 #include "Daydream/Graphics/Utility/GraphicsUtility.h"
 
 namespace Daydream
@@ -249,9 +250,9 @@ namespace Daydream
 
 
 	Shared<IndexBuffer> Daydream::D3D12RenderDevice::CreateIndexBuffer(const UInt32* _indices, UInt32 _count)
-	{ 
+	{
 		auto indexBuffer = MakeShared<D3D12IndexBuffer>(this, _count);
-		
+
 		UInt32 bufferSize = sizeof(UInt32) * _count;
 		auto uploadBuffer = CreateBuffer(bufferSize, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
 
@@ -296,12 +297,18 @@ namespace Daydream
 
 	Shared<Texture2D> D3D12RenderDevice::CreateTexture2D(const void* _imageData, const TextureDesc& _desc)
 	{
-		auto texture = MakeShared<D3D12Texture2D>(this, _desc);
+		Shared<D3D12Texture2D> texture = MakeShared<D3D12Texture2D>(this, _desc);
 
 		if (_imageData != nullptr)
 		{
 			UInt32 imageSize = _desc.width * _desc.height * 4;
 			auto uploadBuffer = CreateBuffer(imageSize, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
+
+			D3D12_RESOURCE_DESC dstDesc = texture->GetID3D12Resource()->GetDesc();
+
+			D3D12_PLACED_SUBRESOURCE_FOOTPRINT placedFootprint;
+			UINT64 totalBytes;
+			device->GetCopyableFootprints(&dstDesc, 0, 1, 0, &placedFootprint, nullptr, nullptr, &totalBytes);
 
 			void* pixelData;
 			D3D12_RANGE range = { 0, imageSize };
@@ -311,7 +318,7 @@ namespace Daydream
 
 			uploadBuffer->SetName(L"Check");
 
-			CopyBufferToImage(uploadBuffer.Get(), texture->GetID3D12Resource());
+			CopyBufferToImage(uploadBuffer.Get(), texture->GetID3D12Resource(), { placedFootprint });
 		}
 		else
 		{
@@ -324,6 +331,52 @@ namespace Daydream
 			);
 		}
 
+
+		return texture;
+	}
+
+	Shared<TextureCube> D3D12RenderDevice::CreateTextureCube(Array<Array<UInt8>> _imagePixels, const TextureDesc& _desc)
+	{
+		auto texture = MakeShared<D3D12TextureCube>(this, _desc);
+
+		UInt32 imageSize = _desc.width * _desc.height * 4 * 6;
+		auto uploadBuffer = CreateBuffer(imageSize, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
+
+		D3D12_RESOURCE_DESC textureDesc = texture->GetID3D12Resource()->GetDesc();
+		std::vector<D3D12_PLACED_SUBRESOURCE_FOOTPRINT> layouts(6);
+		UINT64 totalBytes;
+		device->GetCopyableFootprints(&textureDesc, 0, 6, 0, layouts.data(), nullptr, nullptr, &totalBytes);
+
+		UInt8* pixelData;
+		uploadBuffer->Map(0, nullptr, reinterpret_cast<void**>(&pixelData));
+		for (int i = 0; i < 6; ++i)
+		{
+			const void* srcPixels = _imagePixels[i].data(); // i번째 이미지 데이터 포인터
+			const auto& destLayout = layouts[i];
+			UINT rowPitch = _desc.width * 4; // 픽셀당 4바이트(R8G8B8A8)라고 가정
+
+			// 메모리 레이아웃(row pitch)을 고려하여 한 줄씩 복사
+			for (UINT y = 0; y < _desc.height; ++y)
+			{
+				// 목적지 주소 = 버퍼 시작 주소 + 현재 면의 오프셋 + 현재 y 위치 오프셋
+				UInt8* dest = pixelData + destLayout.Offset + y * destLayout.Footprint.RowPitch;
+				// 소스 주소 = i번째 이미지 데이터 시작 주소 + 현재 y 위치 오프셋
+				const UINT8* src = static_cast<const UINT8*>(srcPixels) + y * rowPitch;
+
+				memcpy(dest, src, rowPitch);
+			}
+		}
+		uploadBuffer->Unmap(0, nullptr);
+
+
+		CopyBufferToImage(uploadBuffer.Get(), texture->GetID3D12Resource(), layouts);
+		//ExecuteSingleTimeCommands(
+		//	[&](ID3D12GraphicsCommandList* _commandList)
+		//	{
+		//		TransitionResourceState(texture->GetID3D12Resource(), D3D12_RESOURCE_STATE_COPY_DEST,
+		//			D3D12_RESOURCE_STATE_COMMON);
+		//	}
+		//);
 
 		return texture;
 	}
@@ -418,42 +471,24 @@ namespace Daydream
 			});
 	}
 
-	ComPtr<ID3D12Resource> D3D12RenderDevice::CreateTexture2D(
-		UINT _width,
-		UINT _height,
-		DXGI_FORMAT _format,
-		D3D12_RESOURCE_FLAGS _flags, // vk::ImageUsageFlags에 해당
-		D3D12_RESOURCE_STATES _initialState
-	)
+	ComPtr<ID3D12Resource> D3D12RenderDevice::CreateTexture(const D3D12_RESOURCE_DESC& _desc, D3D12_RESOURCE_STATES _initialState)
 	{
 		ComPtr<ID3D12Resource> texture;
 
-		// 1. 리소스(텍스처)의 속성을 정의합니다.
-		D3D12_RESOURCE_DESC textureDesc = {};
-		textureDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-		textureDesc.Width = _width;
-		textureDesc.Height = _height;
-		textureDesc.DepthOrArraySize = 1;
-		textureDesc.MipLevels = 1;
-		textureDesc.Format = _format;
-		textureDesc.SampleDesc.Count = 1;
-		textureDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN; // vk::ImageTiling::eOptimal에 해당
-		textureDesc.Flags = _flags;
-
 		D3D12_CLEAR_VALUE clearValue{};
-		bool isUseClearValue = _flags & D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET || _flags & D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+		bool isUseClearValue = _desc.Flags & D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET || _desc.Flags & D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 		if (isUseClearValue)
 		{
-			clearValue.Format = textureDesc.Format;
-			if (_format == DXGI_FORMAT_D24_UNORM_S8_UINT)
+			clearValue.Format = _desc.Format;
+			if (_desc.Format == DXGI_FORMAT_D24_UNORM_S8_UINT)
 			{
 				clearValue.DepthStencil.Depth = 1.0f;
 				clearValue.DepthStencil.Stencil = 0;
 			}
 			else
 			{
-				clearValue.Color[0] = 1.0f;
-				clearValue.Color[1] = 1.0f;
+				clearValue.Color[0] = 0.0f;
+				clearValue.Color[1] = 0.0f;
 				clearValue.Color[2] = 1.0f;
 				clearValue.Color[3] = 1.0f;
 			}
@@ -467,42 +502,33 @@ namespace Daydream
 		device->CreateCommittedResource(
 			&heapProperties,
 			D3D12_HEAP_FLAG_NONE,
-			&textureDesc,
+			&_desc,
 			_initialState,
 			isUseClearValue ? &clearValue : nullptr,
 			IID_PPV_ARGS(texture.GetAddressOf())
 		);
-
 		return texture;
 	}
 
-	void D3D12RenderDevice::CopyBufferToImage(ID3D12Resource* _src, ID3D12Resource* _dst)
+
+	void Daydream::D3D12RenderDevice::CopyBufferToImage(ID3D12Resource* _src, ID3D12Resource* _dst, Array<D3D12_PLACED_SUBRESOURCE_FOOTPRINT> _subresourceFootprint)
 	{
 		ExecuteSingleTimeCommands([&](ID3D12GraphicsCommandList* _commandList)
 			{
-				D3D12_RESOURCE_DESC dstDesc = _dst->GetDesc();
+				for (UInt32 i = 0; i < _subresourceFootprint.size(); ++i)
+				{
+					D3D12_TEXTURE_COPY_LOCATION srcLocation = {};
+					srcLocation.pResource = _src;
+					srcLocation.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+					srcLocation.PlacedFootprint = _subresourceFootprint[i];
 
-				D3D12_PLACED_SUBRESOURCE_FOOTPRINT placedFootprint;
-				UINT64 totalBytes;
-				device->GetCopyableFootprints(&dstDesc, 0, 1, 0, &placedFootprint, nullptr, nullptr, &totalBytes);
+					D3D12_TEXTURE_COPY_LOCATION dstLocation = {};
+					dstLocation.pResource = _dst;
+					dstLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+					dstLocation.SubresourceIndex = i;
 
-				D3D12_TEXTURE_COPY_LOCATION srcLocation = {};
-				srcLocation.pResource = _src;
-				srcLocation.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
-				srcLocation.PlacedFootprint = placedFootprint;
-
-				//이미 위에서 texture2d로 desc를 설정하고 만들었기 때문에 괜찮
-				D3D12_TEXTURE_COPY_LOCATION dstLocation = {};
-				dstLocation.pResource = _dst;
-				dstLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
-				dstLocation.SubresourceIndex = 0;
-
-				_commandList->CopyTextureRegion(
-					&dstLocation, // Destination
-					0, 0, 0,      // Destination X, Y, Z
-					&srcLocation, // Source
-					nullptr       // Source Box (nullptr은 전체 복사를 의미)
-				);
+					_commandList->CopyTextureRegion(&dstLocation, 0, 0, 0, &srcLocation, nullptr);
+				}
 
 				TransitionResourceState(_dst, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 			});
@@ -510,13 +536,11 @@ namespace Daydream
 
 	void D3D12RenderDevice::TransitionResourceState(ID3D12Resource* _resource, D3D12_RESOURCE_STATES _stateBefore, D3D12_RESOURCE_STATES _stateAfter)
 	{
-		// 이미 원하는 상태에 있다면 배리어를 추가할 필요가 없습니다.
 		if (_stateBefore == _stateAfter)
 		{
 			return;
 		}
 
-		// 리소스 배리어 구조체를 정의합니다.
 		D3D12_RESOURCE_BARRIER barrier = {};
 		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
@@ -525,8 +549,6 @@ namespace Daydream
 		barrier.Transition.StateBefore = _stateBefore;
 		barrier.Transition.StateAfter = _stateAfter;
 
-		// 커맨드 리스트에 리소스 배리어 명령을 기록합니다.
-		// DX12에서는 이 한 줄이 Vulkan의 복잡한 설정을 모두 대체합니다.
 		commandList->ResourceBarrier(1, &barrier);
 	}
 

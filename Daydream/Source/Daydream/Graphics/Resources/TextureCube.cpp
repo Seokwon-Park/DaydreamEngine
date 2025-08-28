@@ -11,18 +11,18 @@ namespace Daydream
 {
 	Shared<TextureCube> TextureCube::Create(const Array<FilePath>& _paths, const TextureDesc& _desc)
 	{
-        Array<const void*> imageDatas;
+        Array<Array<UInt8>> imageDatas;
         TextureDesc finalDesc = _desc;
         for (auto path : _paths)
         {
-            auto imageData = ImageLoader::LoadImageFile(path);
+            ImageLoader::ImageData imageData = ImageLoader::LoadImageFile(path);
 
             if (imageData.data.data() != nullptr)
             {
                 finalDesc.width = imageData.width;
                 finalDesc.height = imageData.height;
 
-                imageDatas.push_back(imageData.data.data());
+                imageDatas.push_back(imageData.data);
             }
         }
         return Renderer::GetRenderDevice()->CreateTextureCube(imageDatas, finalDesc);

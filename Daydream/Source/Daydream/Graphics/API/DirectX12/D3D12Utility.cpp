@@ -52,4 +52,47 @@ namespace Daydream::GraphicsUtility::DirectX12
 		if (HasFlag(flags, RenderBindFlags::UnorderedAccess)) return D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
 		return D3D12_RESOURCE_STATE_COMMON;
 	}
+	constexpr D3D12_CULL_MODE ConvertToD3D12CullMode(const CullMode& _cullmode)
+	{
+		switch (_cullmode)
+		{
+		case CullMode::None:
+			return D3D12_CULL_MODE_NONE;
+		case CullMode::Front:
+			return D3D12_CULL_MODE_FRONT;
+		case CullMode::Back:
+			return D3D12_CULL_MODE_BACK;
+		default:
+			return D3D12_CULL_MODE_NONE;
+		}
+		return D3D12_CULL_MODE_NONE;
+	}
+	constexpr D3D12_FILL_MODE ConvertToD3D12FillMode(const FillMode& fillMode)
+	{
+		switch (fillMode)
+		{
+		case FillMode::Solid:
+			return D3D12_FILL_MODE_SOLID;
+		case FillMode::Wireframe:
+			return D3D12_FILL_MODE_WIREFRAME;
+		default:
+			return D3D12_FILL_MODE_SOLID;
+		}
+		return D3D12_FILL_MODE_SOLID;
+	}
+
+	D3D12_RASTERIZER_DESC TranslateToD3D12RasterizerDesc(const RasterizerStateDesc& _desc)
+	{
+		D3D12_RASTERIZER_DESC desc{};
+		desc.FillMode = ConvertToD3D12FillMode(_desc.fillMode);
+		desc.CullMode = ConvertToD3D12CullMode(_desc.cullMode);
+		desc.FrontCounterClockwise = _desc.frontCounterClockwise;
+		desc.DepthBias = _desc.depthBias;
+		desc.DepthBiasClamp = _desc.depthBiasClamp;
+		desc.SlopeScaledDepthBias = _desc.slopeScaledDepthBias;
+		desc.DepthClipEnable = _desc.depthClipEnable;
+		desc.MultisampleEnable = _desc.multisampleEnable;
+		desc.AntialiasedLineEnable = _desc.antialiasedLineEnable;
+		return desc;
+	}
 }

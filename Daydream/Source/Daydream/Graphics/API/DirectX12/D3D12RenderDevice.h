@@ -91,6 +91,7 @@ namespace Daydream
 		virtual Shared<Shader> CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode) override;
 		virtual Shared<Swapchain> CreateSwapchain(DaydreamWindow* _window, const SwapchainDesc& _desc)override;
 		virtual Shared<Texture2D> CreateTexture2D(const void* _imageData, const TextureDesc& _desc)override;
+		virtual Shared<TextureCube> CreateTextureCube(Array<Array<UInt8>> _imagePixels, const TextureDesc& _desc)override;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() override;
 		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) override;
 		virtual Shared<Material> CreateMaterial(Shared<PipelineState> _pipeline) override;
@@ -118,14 +119,12 @@ namespace Daydream
 			D3D12_RESOURCE_FLAGS _flags = D3D12_RESOURCE_FLAG_NONE);
 		void CopyBuffer(ID3D12Resource* _src, ID3D12Resource* _dst, UInt32 _dataSize);
 
-		ComPtr<ID3D12Resource> CreateTexture2D(
-			UINT _width, 
-			UINT _height,
-			DXGI_FORMAT _format,
-			D3D12_RESOURCE_FLAGS _flags, // vk::ImageUsageFlags¿¡ ÇØ´ç
+		ComPtr<ID3D12Resource> CreateTexture(
+			const D3D12_RESOURCE_DESC& _desc,
 			D3D12_RESOURCE_STATES _initialState
 		);
-		void CopyBufferToImage(ID3D12Resource* _src, ID3D12Resource* _dst);
+
+		void CopyBufferToImage(ID3D12Resource* _src, ID3D12Resource* _dst, Array<D3D12_PLACED_SUBRESOURCE_FOOTPRINT> _subresourceFootprint);
 
 		void TransitionResourceState(
 			ID3D12Resource* _resource,

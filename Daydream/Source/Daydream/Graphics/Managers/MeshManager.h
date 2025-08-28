@@ -6,6 +6,9 @@ namespace Daydream
 {
 	class MeshManager
 	{
+	public:
 		MeshManager();
+	private:
+		HashMap<String, Shared<Mesh>> meshCache;
 	};
 }

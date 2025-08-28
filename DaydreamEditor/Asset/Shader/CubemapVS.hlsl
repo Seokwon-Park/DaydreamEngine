@@ -3,13 +3,13 @@ struct VSInput
     float3 position : POSITION;
 };
 
-cbuffer World : register(b0)
-{
-    matrix world;
-    matrix invTranspose;
-};
+//cbuffer World : register(b0)
+//{
+//    matrix world;
+//    matrix invTranspose;
+//};
 
-cbuffer Camera : register(b1)
+cbuffer Camera : register(b0)
 {
     matrix viewProjection;
 };
@@ -23,7 +23,7 @@ struct VSOutput
 VSOutput VSMain(VSInput input)
 {
     VSOutput output = (VSOutput) 0;
-    output.position = float4(input.position, 0.0f);
+    output.position = mul(float4(input.position, 1.0f),viewProjection);
     output.worldPosition = input.position;
 
     return output;

@@ -8,6 +8,11 @@ namespace Daydream
 		return MeshData();
 	}
 
+	MeshData MeshGenerator::CreatePlane(Float32 _width, Float32 _height, UInt32 _widthSegments, UInt32 _heightSegments)
+	{
+		return MeshData();
+	}
+
 	MeshData MeshGenerator::CreateCube(const Vector3& _dimension)
 	{
 
@@ -56,7 +61,7 @@ namespace Daydream
 			Vector2(1.0f, 0.0f),
 			Vector2(1.0f, 1.0f),
 		};
-		
+
 		MeshData cubeMeshData;
 
 		for (int i = 0; i < 6; i++)
@@ -69,7 +74,7 @@ namespace Daydream
 				vertex.texCoord = texCoords[j];
 				cubeMeshData.vertices.push_back(vertex);
 			}
-			
+
 			UInt32 baseVertexIndex = i * 4;
 
 			cubeMeshData.indices.push_back(baseVertexIndex + 0);
@@ -89,6 +94,45 @@ namespace Daydream
 	MeshData MeshGenerator::CreateCube(Float32 _scale)
 	{
 		return CreateCube(_scale, _scale, _scale);
+	}
+
+	MeshData MeshGenerator::CreateSphere(const Float32 _radius, const UInt32 _numSlices, const UInt32 _numStacks)
+	{
+		MeshData sphereMeshData;
+
+		const Float32 sectorStep = twoPI / _numSlices;
+		const Float32 stackStep = PI / _numStacks;
+
+		for (UInt32 i = 0; i <= _numStacks; i++)
+		{
+			Vector3 stackStartPoint = RotateAxisZRadian(Vector3(0.0f, -_radius, 0.0f), i * stackStep);
+			for (int j = 0; j <= _numSlices; j++)
+			{
+				Vertex vertex;
+				vertex.position = RotateAxisYRadian(stackStartPoint, -j * sectorStep);
+				vertex.normal = vertex.position;
+				vertex.normal = glm::normalize(vertex.normal);
+				vertex.texCoord = Vector2(Float32(i) / _numSlices, 1.0f - Float32(j) / _numStacks);
+
+				sphereMeshData.vertices.push_back(vertex);
+			}
+		}
+
+		for (int i = 0; i < _numStacks; i++) 
+		{
+			const int offset = (_numSlices + 1) * i; // 1줄에 numSlices보다 1개 더있음 왜냐하면 원래 있던 점을 넣어야 되기 때문에
+			for (int j = 0; j < _numSlices; j++) 
+			{
+				sphereMeshData.indices.push_back(offset + j);
+				sphereMeshData.indices.push_back(offset + _numSlices + 1 + j);
+				sphereMeshData.indices.push_back(offset + _numSlices + 1 + j + 1);
+
+				sphereMeshData.indices.push_back(offset + j);
+				sphereMeshData.indices.push_back(offset + _numSlices + 1 + j + 1);
+				sphereMeshData.indices.push_back(offset + j + 1);
+			}
+		}
+		return sphereMeshData;
 	}
 
 }

@@ -208,9 +208,9 @@ namespace Daydream
 		return MakeShared<D3D11Texture2D>(this, _desc, _imageData);
 	}
 
-	Shared<TextureCube> D3D11RenderDevice::CreateTextureCube(Array<const void*> _imageData, const TextureDesc& _desc)
+	Shared<TextureCube> D3D11RenderDevice::CreateTextureCube(Array<Array<UInt8>> _imagePixels, const TextureDesc& _desc)
 	{
-		return MakeShared<D3D11TextureCube>(this, _desc, _imageData);
+		return MakeShared<D3D11TextureCube>(this, _desc, _imagePixels);
 	}
 
 	Unique<ImGuiRenderer> D3D11RenderDevice::CreateImGuiRenderer()
