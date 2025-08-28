@@ -22,11 +22,13 @@ namespace Daydream
 		FilePath filepath(_path);
 
 		Array<MeshData> meshDatas = ModelLoader::LoadFromFile(filepath);
+
+		Vector3 vmin(1000, 1000, 1000);
+		Vector3 vmax(-1000, -1000, -1000);
 		for (auto meshData : meshDatas)
 		{
 			// Normalize vertices
-			Vector3 vmin(1000, 1000, 1000);
-			Vector3 vmax(-1000, -1000, -1000);
+
 			for (auto& v : meshData.vertices) {
 				vmin.x = std::min(vmin.x, v.position.x);
 				vmin.y = std::min(vmin.y, v.position.y);
@@ -35,7 +37,10 @@ namespace Daydream
 				vmax.y = std::max(vmax.y, v.position.y);
 				vmax.z = std::max(vmax.z, v.position.z);
 			}
+		}
 
+		for (auto meshData : meshDatas)
+		{
 			float dx = vmax.x - vmin.x, dy = vmax.y - vmin.y, dz = vmax.z - vmin.z;
 			float dl = std::max(std::max(dx, dy), dz);
 			float cx = (vmax.x + vmin.x) * 0.5f, cy = (vmax.y + vmin.y) * 0.5f,

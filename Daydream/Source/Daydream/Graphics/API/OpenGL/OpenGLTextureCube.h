@@ -9,7 +9,7 @@ namespace Daydream
 	public:
 		// Constrcuter Destructer
 		OpenGLTextureCube(const TextureDesc& _desc, const Array<Array<UInt8>>& _initialData);
-		virtual ~OpenGLTextureCube() {};
+		virtual ~OpenGLTextureCube();
 		virtual inline void* GetNativeHandle() override { return reinterpret_cast<void*>(textureID); }
 	private:
 		UInt32 textureID;

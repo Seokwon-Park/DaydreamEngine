@@ -58,7 +58,7 @@ namespace Daydream
 		//static GLint uboIndex = 0;
 		for (auto shader : shaders)
 		{
-			GLenum type = GraphicsUtility::OpenGL::ConvertToGLShaderType(shader->GetType());
+			GLenum type = GraphicsUtility::OpenGL::ConvertToShaderStageBit(shader->GetType());
 			GLuint shaderID = static_cast<GLuint>(reinterpret_cast<uintptr_t>(shader->GetNativeHandle()));
 			glUseProgramStages(pipeline, type, shaderID);
 			for (auto& info : shader->GetReflectionInfo())

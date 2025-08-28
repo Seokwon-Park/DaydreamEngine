@@ -154,7 +154,8 @@ namespace Daydream
 
 		//model = MakeShared<Model>(mesh);
 		model = MakeShared<Model>();
-		model->Load("Asset/Model/Lowpoly_tree_sample.fbx");
+		//model->Load("Asset/Model/Lowpoly_tree_sample.fbx");
+		model->Load("Asset/Model/scene.gltf");
 
 		//cubeIBO = IndexBuffer::Create(squareIndices2, sizeof(squareIndices2) / sizeof(uint32_t));
 
