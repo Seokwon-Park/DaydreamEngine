@@ -1,5 +1,6 @@
 # DaydreamEngine
 <img width="1024" height="1024" alt="Daydream Icon" src="https://github.com/user-attachments/assets/ab7b46c6-c115-482a-bb7c-4e57d9e7350c" />
+
 ## Features
 - Traditional Entity-Component architecture
 - Cross-platform support (GLFW, Currently Windows only)
