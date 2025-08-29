@@ -20,5 +20,4 @@ float4 PSMain(PSInput input) : SV_TARGET
     
     output.color = TextureCubemap.Sample(TextureCubemapSampler, input.worldPosition);
     return output.color;
-    //return float4(0.2f, 0.8f, 0.8f, 1.0f);
 }

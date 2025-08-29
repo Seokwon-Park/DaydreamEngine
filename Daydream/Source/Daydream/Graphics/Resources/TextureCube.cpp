@@ -9,7 +9,7 @@
 
 namespace Daydream
 {
-	Shared<TextureCube> TextureCube::Create(const Array<FilePath>& _paths, const TextureDesc& _desc)
+	Shared<TextureCube> TextureCube::Create(const Array<Path>& _paths, const TextureDesc& _desc)
 	{
         Array<Array<UInt8>> imageDatas;
         TextureDesc finalDesc = _desc;

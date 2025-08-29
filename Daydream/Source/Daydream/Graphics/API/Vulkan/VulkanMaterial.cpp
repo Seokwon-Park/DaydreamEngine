@@ -1,6 +1,7 @@
 #include "DaydreamPCH.h"
 #include "VulkanMaterial.h"
 #include "VulkanTexture.h"
+#include "VulkanTextureCube.h"
 #include "VulkanBuffer.h"
 
 namespace Daydream
@@ -40,6 +41,28 @@ namespace Daydream
 		{
 			auto resourceInfo = bindingMap[_name];
 			Shared<VulkanTexture2D> texture = static_pointer_cast<VulkanTexture2D>(_texture);
+			vk::DescriptorImageInfo imageInfo{};
+			imageInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+			imageInfo.imageView = texture->GetImageView();
+			imageInfo.sampler = texture->GetSampler();
+
+			vk::WriteDescriptorSet writeSet = {};
+			writeSet.dstSet = sets[resourceInfo.set].get();
+			writeSet.dstBinding = resourceInfo.binding;  // 특정 binding만 업데이트
+			writeSet.descriptorCount = 1;
+			writeSet.descriptorType = vk::DescriptorType::eCombinedImageSampler;
+			writeSet.pImageInfo = &imageInfo;
+
+			device->GetDevice().updateDescriptorSets(1, &writeSet, 0, nullptr);
+		}
+	}
+
+	void VulkanMaterial::SetTextureCube(const std::string& _name, Shared<TextureCube> _texture)
+	{
+		if (bindingMap.find(_name) != bindingMap.end())
+		{
+			auto resourceInfo = bindingMap[_name];
+			Shared<VulkanTextureCube> texture = static_pointer_cast<VulkanTextureCube>(_texture);
 			vk::DescriptorImageInfo imageInfo{};
 			imageInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 			imageInfo.imageView = texture->GetImageView();

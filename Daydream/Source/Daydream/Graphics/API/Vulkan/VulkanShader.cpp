@@ -15,7 +15,7 @@ namespace Daydream
 		shaderType = _type;
 		stageBit = GraphicsUtility::Vulkan::ConvertToShaderStageFlagBit(_type);
 
-		FilePath path(_src);
+		Path path(_src);
 		switch (_mode)
 		{
 		case Daydream::ShaderLoadMode::Source:

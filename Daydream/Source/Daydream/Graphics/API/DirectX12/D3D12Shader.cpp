@@ -98,7 +98,7 @@ namespace Daydream
 		//return blob;
 		ComPtr<ID3D12ShaderReflection> reflection = nullptr;
 
-		FilePath path(_src);
+		Path path(_src);
 		ShaderCompileHelper::GetDXIL(path, _type, shaderBlob);
 		ShaderCompileHelper::GetDX12Reflection(shaderBlob, reflection);
 

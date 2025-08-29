@@ -52,9 +52,9 @@ namespace Daydream::GraphicsUtility::DirectX12
 		if (HasFlag(flags, RenderBindFlags::UnorderedAccess)) return D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
 		return D3D12_RESOURCE_STATE_COMMON;
 	}
-	constexpr D3D12_CULL_MODE ConvertToD3D12CullMode(const CullMode& _cullmode)
+	constexpr D3D12_CULL_MODE ConvertToD3D12CullMode(const CullMode& _cullMode)
 	{
-		switch (_cullmode)
+		switch (_cullMode)
 		{
 		case CullMode::None:
 			return D3D12_CULL_MODE_NONE;
@@ -67,9 +67,9 @@ namespace Daydream::GraphicsUtility::DirectX12
 		}
 		return D3D12_CULL_MODE_NONE;
 	}
-	constexpr D3D12_FILL_MODE ConvertToD3D12FillMode(const FillMode& fillMode)
+	constexpr D3D12_FILL_MODE ConvertToD3D12FillMode(const FillMode& _fillMode)
 	{
-		switch (fillMode)
+		switch (_fillMode)
 		{
 		case FillMode::Solid:
 			return D3D12_FILL_MODE_SOLID;

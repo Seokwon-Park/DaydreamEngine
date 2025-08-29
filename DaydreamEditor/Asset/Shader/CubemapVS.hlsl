@@ -3,12 +3,6 @@ struct VSInput
     float3 position : POSITION;
 };
 
-//cbuffer World : register(b0)
-//{
-//    matrix world;
-//    matrix invTranspose;
-//};
-
 cbuffer Camera : register(b0)
 {
     matrix viewProjection;

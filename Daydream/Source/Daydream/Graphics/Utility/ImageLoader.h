@@ -18,6 +18,6 @@ namespace Daydream::ImageLoader
 		Array<Float32> data;
 	};
 
-	ImageData LoadImageFile(const FilePath& _path);
-	HDRIImageData LoadHDRIFile(const FilePath& _path);
+	ImageData LoadImageFile(const Path& _path);
+	HDRIImageData LoadHDRIFile(const Path& _path);
 }

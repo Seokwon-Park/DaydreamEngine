@@ -11,11 +11,23 @@ namespace Daydream
 	class ModelLoader
 	{
 	public:
-		static Array<MeshData> LoadFromFile(const FilePath& _filepath);
-	private:
-		static Array<MeshData> ProcessScene(const aiScene* _scene);
-		static void ProcessNode(aiNode* _node, const aiScene* _scene, Array<MeshData>& _meshes);
-		static MeshData ProcessMesh(aiMesh* _mesh, const aiScene* _scene);
+		static ModelLoader GetInstance()
+		{
+			static ModelLoader instance;
+			return instance;
+		}
 
+		static Array<MeshData> LoadFromFile(const Path& _filepath) { return GetInstance().LoadFromFileInternal(_filepath); }
+	private:
+		ModelLoader() = default;
+		Array<MeshData> LoadFromFileInternal(const Path& _filepath);
+		Array<MeshData> ProcessScene(const aiScene* _scene);
+		void ProcessNode(aiNode* _node, const aiScene* _scene, Array<MeshData>& _meshes);
+		MeshData ProcessMesh(aiMesh* _mesh, const aiScene* _scene);
+		void LoadMaterialTexture(aiMaterial* _mat, aiTextureType _type, std::string& _outPath);
+		void ProcessMaterial(aiMaterial* _material, MaterialData& _outMaterialData);
+		
+		Path baseDirectory;
+		
 	};
 }

@@ -25,10 +25,9 @@ namespace Daydream
 		renderPass = _renderPass;
 		vkRenderPass = _renderPass;
 
-		swapchainImageView = vk::UniqueImageView(device->CreateImageView(_swapchainImage, 
-			_swapchain->GetFormat(), 
-			vk::ImageAspectFlagBits::eColor),
-			vk::detail::ObjectDestroy<vk::Device, vk::detail::DispatchLoaderDynamic>(device->GetDevice()));
+		swapchainImageView = device->CreateImageView(_swapchainImage,
+			_swapchain->GetFormat(),
+			vk::ImageAspectFlagBits::eColor);
 		attachmentImageViews.push_back(swapchainImageView.get());
 
 		CreateAttachments();
@@ -100,7 +99,7 @@ namespace Daydream
 
 		vk::FramebufferCreateInfo framebufferInfo{};
 		framebufferInfo.renderPass = vkRenderPass->GetVkRenderPass();
-		framebufferInfo.attachmentCount = attachmentImageViews.size();
+		framebufferInfo.attachmentCount = (UInt32)attachmentImageViews.size();
 		framebufferInfo.pAttachments = attachmentImageViews.data();
 		framebufferInfo.width = width;
 		framebufferInfo.height = height;

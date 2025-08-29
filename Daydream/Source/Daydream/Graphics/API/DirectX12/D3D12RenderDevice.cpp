@@ -130,7 +130,7 @@ namespace Daydream
 
 		{
 			D3D12_DESCRIPTOR_HEAP_DESC desc{};
-			desc.NumDescriptors = 32;
+			desc.NumDescriptors = 128;
 			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER;
 			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(samplerHeap.GetAddressOf()));
@@ -301,19 +301,20 @@ namespace Daydream
 
 		if (_imageData != nullptr)
 		{
-			UInt32 imageSize = _desc.width * _desc.height * 4;
-			auto uploadBuffer = CreateBuffer(imageSize, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
-
 			D3D12_RESOURCE_DESC dstDesc = texture->GetID3D12Resource()->GetDesc();
 
 			D3D12_PLACED_SUBRESOURCE_FOOTPRINT placedFootprint;
 			UINT64 totalBytes;
 			device->GetCopyableFootprints(&dstDesc, 0, 1, 0, &placedFootprint, nullptr, nullptr, &totalBytes);
 
+			auto uploadBuffer = CreateBuffer(totalBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
+
+			UInt32 imageSize = _desc.width * _desc.height * 4;
+
 			void* pixelData;
-			D3D12_RANGE range = { 0, imageSize };
+			D3D12_RANGE range = { 0, totalBytes };
 			uploadBuffer->Map(0, &range, &pixelData);
-			memcpy(pixelData, _imageData, imageSize);
+			memcpy(pixelData, _imageData, totalBytes);
 			uploadBuffer->Unmap(0, &range);
 
 			uploadBuffer->SetName(L"Check");

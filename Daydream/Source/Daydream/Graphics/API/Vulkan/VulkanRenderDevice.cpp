@@ -9,6 +9,7 @@
 #include "VulkanSwapchain.h"
 #include "VulkanImGuiRenderer.h"
 #include "VulkanTexture.h"
+#include "VulkanTextureCube.h"
 #include "VulkanMaterial.h"
 #include "Daydream/Graphics/Utility/GraphicsUtility.h"
 #include "Daydream/Graphics/Utility/ImageLoader.h"
@@ -106,8 +107,8 @@ namespace Daydream
 			Array<vk::DescriptorPoolSize> poolSizes =
 			{
 				{ vk::DescriptorType::eCombinedImageSampler , IMGUI_IMPL_VULKAN_MINIMUM_IMAGE_SAMPLER_POOL_SIZE },
-				{ vk::DescriptorType::eUniformBuffer , 3 },
-				{ vk::DescriptorType::eCombinedImageSampler , 2 },
+				{ vk::DescriptorType::eUniformBuffer , 256 },
+				{ vk::DescriptorType::eCombinedImageSampler , 256 },
 			};
 
 
@@ -248,6 +249,46 @@ namespace Daydream
 		return texture;
 	}
 
+	Shared<TextureCube> VulkanRenderDevice::CreateTextureCube(Array<Array<UInt8>> _imagePixels, const TextureDesc& _desc)
+	{
+		auto textureCube = MakeShared<VulkanTextureCube>(this, _desc);
+
+		UInt32 imageSize = _desc.width * _desc.height * 4;
+		UInt32 bufferSize = imageSize * 6;
+		vk::BufferCreateInfo bufferInfo;
+		bufferInfo.size = bufferSize;
+		bufferInfo.usage = vk::BufferUsageFlagBits::eTransferSrc; // 복사 소스
+
+		vma::AllocationCreateInfo allocInfo = {};
+		allocInfo.usage = vma::MemoryUsage::eAuto;
+		allocInfo.flags = vma::AllocationCreateFlagBits::eHostAccessSequentialWrite |
+			vma::AllocationCreateFlagBits::eMapped;
+		auto [uploadBuffer, uploadBufferAllocation] = CreateBuffer(
+			bufferInfo, allocInfo);
+
+		char* mappedData = static_cast<char*>(allocator->getAllocationInfo(uploadBufferAllocation.get()).pMappedData);
+		for (int i = 0; i < 6; ++i) {
+			memcpy(mappedData + (imageSize * i), _imagePixels[i].data(), imageSize);
+		}
+
+		Array<vk::BufferImageCopy> bufferCopyRegions;
+		for (UInt32 i = 0; i < 6; i++)
+		{
+			VkBufferImageCopy region = {};
+			region.bufferOffset = imageSize*i;
+			region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			region.imageSubresource.mipLevel = 0;
+			region.imageSubresource.baseArrayLayer = i;
+			region.imageSubresource.layerCount = 1;
+			region.imageExtent = { _desc.width, _desc.height, 1 };
+			bufferCopyRegions.push_back(region);
+		}
+
+		CopyBufferToImage(uploadBuffer.get(), textureCube->GetImage(), bufferCopyRegions);
+
+		return textureCube;
+	}
+
 	Unique<ImGuiRenderer> VulkanRenderDevice::CreateImGuiRenderer()
 	{
 		return MakeUnique<VulkanImGuiRenderer>(this);
@@ -344,6 +385,16 @@ namespace Daydream
 		return allocator->createBufferUnique(bufferInfo, allocInfo);
 	}
 
+	Pair<vma::UniqueBuffer, vma::UniqueAllocation> VulkanRenderDevice::CreateBuffer(vk::BufferCreateInfo _bufferInfo, vma::AllocationCreateInfo _allocInfo)
+	{
+		return allocator->createBufferUnique(_bufferInfo, _allocInfo);
+	}
+
+	Pair<vma::UniqueImage, vma::UniqueAllocation> VulkanRenderDevice::CreateImage(vk::ImageCreateInfo _imageInfo, vma::AllocationCreateInfo _allocInfo)
+	{
+		return allocator->createImageUnique(_imageInfo, _allocInfo);
+	}
+
 	VulkanImageResource VulkanRenderDevice::CreateImage(UInt32 _width, UInt32 _height, vk::Format _format, vk::ImageTiling _tiling, vk::ImageUsageFlags _usage, vk::MemoryPropertyFlags _properties)
 	{
 		vk::ImageCreateInfo imageInfo{};
@@ -374,7 +425,7 @@ namespace Daydream
 		return { image, imageMemory };
 	}
 
-	vk::ImageView VulkanRenderDevice::CreateImageView(vk::Image _image, vk::Format _format, vk::ImageAspectFlags _aspectMask)
+	vk::UniqueImageView VulkanRenderDevice::CreateImageView(vk::Image _image, vk::Format _format, vk::ImageAspectFlags _aspectMask)
 	{
 		vk::ImageViewCreateInfo viewInfo{};
 		viewInfo.image = _image;
@@ -386,9 +437,12 @@ namespace Daydream
 		viewInfo.subresourceRange.baseArrayLayer = 0;
 		viewInfo.subresourceRange.layerCount = 1;
 
-		vk::ImageView imageView = device->createImageView(viewInfo);
+		return device->createImageViewUnique(viewInfo);
+	}
 
-		return imageView;
+	vk::UniqueImageView VulkanRenderDevice::CreateImageView(vk::ImageViewCreateInfo _viewCreateInfo)
+	{
+		return device->createImageViewUnique(_viewCreateInfo);
 	}
 
 	void VulkanRenderDevice::CopyBuffer(vk::Buffer _src, vk::Buffer _dst, vk::DeviceSize _size)
@@ -429,6 +483,16 @@ namespace Daydream
 		copyCommandBuffer.copyBufferToImage(_src, _dst, vk::ImageLayout::eTransferDstOptimal, 1, &region);
 
 		EndSingleTimeCommands(copyCommandBuffer);
+	}
+
+	void VulkanRenderDevice::CopyBufferToImage(vk::Buffer _src, vk::Image _dst, Array<vk::BufferImageCopy> _imageCopyRegion)
+	{
+		vk::CommandBuffer copyCommandBuffer = BeginSingleTimeCommands();
+
+		copyCommandBuffer.copyBufferToImage(_src, _dst, vk::ImageLayout::eTransferDstOptimal, _imageCopyRegion);
+
+		EndSingleTimeCommands(copyCommandBuffer);
+
 	}
 
 	void VulkanRenderDevice::TransitionImageLayout(vk::Image _image, vk::Format _format, vk::ImageLayout _oldLayout, vk::ImageLayout _newLayout)
@@ -522,6 +586,78 @@ namespace Daydream
 		);
 
 		EndSingleTimeCommands(transCommandBuffer);
+	}
+
+	void VulkanRenderDevice::TransitionImageLayout(vk::ImageMemoryBarrier _barrier)
+	{
+		vk::CommandBuffer transCommandBuffer = BeginSingleTimeCommands();
+
+		vk::AccessFlags srcAccess;
+		vk::AccessFlags dstAccess;
+
+		vk::PipelineStageFlags srcStage{};
+		vk::PipelineStageFlags dstStage{};
+
+		switch (_barrier.oldLayout)
+		{
+		case vk::ImageLayout::eUndefined:
+			srcAccess = {};
+			srcStage = vk::PipelineStageFlagBits::eTopOfPipe;
+			break;
+		case vk::ImageLayout::eTransferDstOptimal:
+			srcAccess = vk::AccessFlagBits::eTransferWrite;
+			srcStage = vk::PipelineStageFlagBits::eTransfer;
+			break;
+		case vk::ImageLayout::eColorAttachmentOptimal:
+			srcAccess = vk::AccessFlagBits::eColorAttachmentWrite;
+			srcStage = vk::PipelineStageFlagBits::eColorAttachmentOutput;
+			break;
+		case vk::ImageLayout::eShaderReadOnlyOptimal:
+			srcAccess = vk::AccessFlagBits::eShaderRead;
+			srcStage = vk::PipelineStageFlagBits::eFragmentShader;
+			break;
+		default:
+			throw std::invalid_argument("Unsupported old layout!");
+		}
+
+		switch (_barrier.newLayout)
+		{
+		case vk::ImageLayout::eTransferDstOptimal:
+			dstAccess = vk::AccessFlagBits::eTransferWrite;
+			dstStage = vk::PipelineStageFlagBits::eTransfer;
+			break;
+		case vk::ImageLayout::eShaderReadOnlyOptimal:
+			dstAccess = vk::AccessFlagBits::eShaderRead;
+			dstStage = vk::PipelineStageFlagBits::eFragmentShader;
+			break;
+		case vk::ImageLayout::eColorAttachmentOptimal:
+			dstAccess = vk::AccessFlagBits::eColorAttachmentWrite;
+			dstStage = vk::PipelineStageFlagBits::eColorAttachmentOutput;
+			break;
+		case vk::ImageLayout::eDepthStencilAttachmentOptimal:
+			dstAccess = vk::AccessFlagBits::eDepthStencilAttachmentRead | vk::AccessFlagBits::eDepthStencilAttachmentWrite;
+			dstStage = vk::PipelineStageFlagBits::eEarlyFragmentTests;
+			break;
+		case vk::ImageLayout::ePresentSrcKHR:
+			dstAccess = {}; // 또는 VK_ACCESS_NONE (Vulkan 1.3 이상)
+			dstStage = vk::PipelineStageFlagBits::eBottomOfPipe; // 또는 VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT
+			break;
+		default:
+			throw std::invalid_argument("Unsupported new layout!");
+		}
+		_barrier.srcAccessMask = srcAccess;
+		_barrier.dstAccessMask = dstAccess;
+
+		transCommandBuffer.pipelineBarrier(
+			srcStage, dstStage,
+			{},
+			0, nullptr,
+			0, nullptr,
+			1, &_barrier
+		);
+
+		EndSingleTimeCommands(transCommandBuffer);
+
 	}
 
 

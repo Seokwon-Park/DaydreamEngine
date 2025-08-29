@@ -27,7 +27,7 @@ namespace Daydream
 		compiler->Release();
 		compiler = nullptr;
 	}
-	void ShaderCompileHelper::GetDXIL(const FilePath& _filepath, ShaderType _type, ComPtr<IDxcBlob>& _shaderBlob)
+	void ShaderCompileHelper::GetDXIL(const Path& _filepath, ShaderType _type, ComPtr<IDxcBlob>& _shaderBlob)
 	{
 		ComPtr<IDxcBlobEncoding> sourceBlob;
 		HRESULT hr = utils->LoadFile(_filepath.ToWString().c_str(), nullptr, sourceBlob.GetAddressOf());
@@ -88,7 +88,7 @@ namespace Daydream
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create reflection!");
 	}
 
-	void ShaderCompileHelper::ConvertHLSLtoSPIRV(const FilePath& _filepath, ShaderType _type, Array<UInt32>& _output)
+	void ShaderCompileHelper::ConvertHLSLtoSPIRV(const Path& _filepath, ShaderType _type, Array<UInt32>& _output)
 	{
 		ComPtr<IDxcBlobEncoding> sourceBlob;
 		HRESULT hr = utils->LoadFile(_filepath.ToWString().c_str(), nullptr, sourceBlob.GetAddressOf());

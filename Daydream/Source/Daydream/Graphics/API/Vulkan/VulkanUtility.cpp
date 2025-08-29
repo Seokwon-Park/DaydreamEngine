@@ -184,4 +184,50 @@ namespace Daydream::GraphicsUtility::Vulkan
 		return vkFlags;
 	}
 
+	constexpr vk::CullModeFlags ConvertToVulkanCullMode(const CullMode& _cullMode)
+	{
+		switch (_cullMode)
+		{
+		case CullMode::None:
+			return vk::CullModeFlagBits::eNone;
+		case CullMode::Front:
+			return vk::CullModeFlagBits::eFront;
+		case CullMode::Back:
+			return vk::CullModeFlagBits::eBack;
+		default:
+			return vk::CullModeFlagBits::eNone;
+		}
+		return  vk::CullModeFlagBits::eFrontAndBack;
+	}
+
+	constexpr vk::PolygonMode ConvertToVulkanFillMode(const FillMode& _fillMode)
+	{
+		switch (_fillMode)
+		{
+		case FillMode::Solid:
+			return vk::PolygonMode::eFill;
+		case FillMode::Wireframe:
+			return vk::PolygonMode::eLine;
+		default:
+			return vk::PolygonMode::eFill;
+		}
+		return vk::PolygonMode::eFill;
+	}
+
+	vk::PipelineRasterizationStateCreateInfo TranslateToVulkanRasterizerCreateInfo(const RasterizerStateDesc& _desc)
+	{
+		vk::PipelineRasterizationStateCreateInfo rasterizer{};
+		rasterizer.depthClampEnable = VK_FALSE;
+		rasterizer.rasterizerDiscardEnable = VK_FALSE;
+		rasterizer.polygonMode = ConvertToVulkanFillMode(_desc.fillMode);
+		rasterizer.lineWidth = 1.0f;
+		rasterizer.cullMode = ConvertToVulkanCullMode(_desc.cullMode);
+		rasterizer.frontFace = _desc.frontCounterClockwise ? vk::FrontFace::eCounterClockwise : vk::FrontFace::eClockwise;
+		rasterizer.depthBiasEnable = VK_FALSE;
+		rasterizer.depthBiasConstantFactor = 0.0f; // Optional
+		rasterizer.depthBiasClamp = 0.0f; // Optional
+		rasterizer.depthBiasSlopeFactor = 0.0f; // Optional
+		return rasterizer;
+	}
+
 }

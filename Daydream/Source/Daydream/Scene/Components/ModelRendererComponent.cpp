@@ -36,11 +36,12 @@ namespace Daydream
 		data.invTranspose.MatrixTranspose();
 		worldMatrix->Update(&data, sizeof(data));
 		material->SetConstantBuffer("World", worldMatrix);
-		material->Bind();
+		
 		for (auto mesh : model->GetMeshes())
 		{
 			mesh->Bind();
-
+			material->SetTexture2D("Texture", mesh->GetDiffuseTexture());
+			material->Bind();
 			Renderer::Submit(mesh->GetIndexCount());
 		}
 	}

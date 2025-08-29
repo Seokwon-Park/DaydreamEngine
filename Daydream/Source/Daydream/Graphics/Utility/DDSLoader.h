@@ -45,5 +45,5 @@ namespace Daydream::DDSLoader
     constexpr UInt32 DDSCAPS2_CUBEMAP = 0x00000200;
     constexpr UInt32 DDSCAPS2_CUBEMAP_ALLFACES = 0x0000FC00;
 
-    DDSImage LoadDDS(const FilePath& _path);
+    DDSImage LoadDDS(const Path& _path);
 }

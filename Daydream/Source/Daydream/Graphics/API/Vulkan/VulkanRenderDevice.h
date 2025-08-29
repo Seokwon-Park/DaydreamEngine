@@ -62,6 +62,7 @@ namespace Daydream
 		virtual Shared<Shader> CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode) override;
 		virtual Shared<Swapchain> CreateSwapchain(DaydreamWindow* _window, const SwapchainDesc& _desc)override;
 		virtual Shared<Texture2D> CreateTexture2D(const void* _imageData, const TextureDesc& _desc)override;
+		virtual Shared<TextureCube> CreateTextureCube(Array<Array<UInt8>> _imagePixels, const TextureDesc& _desc)override;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() override;
 		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) override;
 		virtual Shared<Material> CreateMaterial(Shared<PipelineState> _pipeline) override;
@@ -87,11 +88,17 @@ namespace Daydream
 		//Create a VkBuffer
 		Pair<vma::UniqueBuffer, vma::UniqueAllocation> CreateBuffer(vk::DeviceSize _size, vk::BufferUsageFlags _usage,
 			vma::MemoryUsage _memoryUsage, vma::AllocationCreateFlags _flags);
+		Pair<vma::UniqueBuffer, vma::UniqueAllocation> CreateBuffer(vk::BufferCreateInfo _bufferInfo, vma::AllocationCreateInfo _allocInfo);
+		Pair<vma::UniqueImage, vma::UniqueAllocation> CreateImage(vk::ImageCreateInfo _imageInfo, vma::AllocationCreateInfo _allocInfo);
+
 		VulkanImageResource CreateImage(UInt32 _width, UInt32 _height, vk::Format _format, vk::ImageTiling _tiling, vk::ImageUsageFlags _usage, vk::MemoryPropertyFlags _properties);
-		vk::ImageView CreateImageView(vk::Image _image, vk::Format _format, vk::ImageAspectFlags _aspectMask);
+		vk::UniqueImageView CreateImageView(vk::Image _image, vk::Format _format, vk::ImageAspectFlags _aspectMask);
+		vk::UniqueImageView CreateImageView(vk::ImageViewCreateInfo _viewCreateInfo);
 		void CopyBuffer(vk::Buffer _src, vk::Buffer _dst, vk::DeviceSize _size);
 		void CopyBufferToImage(vk::Buffer _src, vk::Image _dst, UInt32 _width, UInt32 _height);
+		void CopyBufferToImage(vk::Buffer _src, vk::Image _dst, Array<vk::BufferImageCopy> _imageCopyRegion);
 		void TransitionImageLayout(vk::Image _image, vk::Format _format, vk::ImageLayout _oldLayout, vk::ImageLayout _newLayout);
+		void TransitionImageLayout(vk::ImageMemoryBarrier _barrier);
 
 		//SwapchainSupportDetails QuerySwapchainSupport(VkPhysicalDevice _physicalDevice, VkSurfaceKHR _surface);
 	private:

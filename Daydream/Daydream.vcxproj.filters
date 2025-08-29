@@ -135,7 +135,7 @@
     <ClInclude Include="Source\Base\IO\File.h">
       <Filter>Source\Base\IO</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Base\IO\FilePath.h">
+    <ClInclude Include="Source\Base\IO\Path.h">
       <Filter>Source\Base\IO</Filter>
     </ClInclude>
     <ClInclude Include="Source\Base\Math\Math.h">
@@ -1796,12 +1796,14 @@
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12TextureCube.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanTextureCube.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLTextureCube.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Managers\ModelManager.h" />
+    <ClInclude Include="Source\Base\IO\Directory.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
       <Filter>Source\Base\IO</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Base\IO\FilePath.cpp">
+    <ClCompile Include="Source\Base\IO\Path.cpp">
       <Filter>Source\Base\IO</Filter>
     </ClCompile>
     <ClCompile Include="Source\Base\Math\Color.cpp">
@@ -2132,5 +2134,8 @@
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Common.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12TextureCube.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLTextureCube.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Managers\ModelManager.cpp" />
+    <ClCompile Include="Source\Base\IO\Directory.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanTextureCube.cpp" />
   </ItemGroup>
 </Project>

@@ -17,7 +17,7 @@ namespace Daydream
 		String entryPoint = GraphicsUtility::GetShaderEntryPointName(_type);
 		HRESULT hr;
 
-		FilePath path(_src);
+		Path path(_src);
 		String src;
 		Array<UInt32> spirvData;
 		ShaderCompileHelper::ConvertHLSLtoSPIRV(path, _type, spirvData);

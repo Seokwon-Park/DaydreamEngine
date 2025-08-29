@@ -9,17 +9,30 @@ namespace Daydream
 		size = _size;
 		usage = _usage;
 
+		vk::BufferCreateInfo bufferInfo{};
+		vma::AllocationCreateInfo allocInfo{};
+
 		if (usage == BufferUsage::Static)
 		{
-			std::tie(vertexBuffer, vertexBufferAllocation) = device->CreateBuffer(_size,
-				vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer,
-				vma::MemoryUsage::eGpuOnly, {});
+			bufferInfo.size = _size;
+			bufferInfo.usage = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer;
+			bufferInfo.sharingMode = vk::SharingMode::eExclusive;
+
+			allocInfo.usage = vma::MemoryUsage::eGpuOnly;
+			allocInfo.flags = {};
+
+			std::tie(vertexBuffer, vertexBufferAllocation) = device->CreateBuffer(bufferInfo, allocInfo);
 		}
 		else if (usage == BufferUsage::Dynamic)
 		{
-			std::tie(vertexBuffer, vertexBufferAllocation) = device->CreateBuffer(_size,
-				vk::BufferUsageFlagBits::eVertexBuffer,
-				vma::MemoryUsage::eCpuToGpu, vma::AllocationCreateFlagBits::eMapped | vma::AllocationCreateFlagBits::eHostAccessSequentialWrite);
+			bufferInfo.size = _size;
+			bufferInfo.usage = vk::BufferUsageFlagBits::eVertexBuffer;
+			bufferInfo.sharingMode = vk::SharingMode::eExclusive;
+
+			allocInfo.usage = vma::MemoryUsage::eCpuToGpu;
+			allocInfo.flags = vma::AllocationCreateFlagBits::eMapped | vma::AllocationCreateFlagBits::eHostAccessSequentialWrite;
+
+			std::tie(vertexBuffer, vertexBufferAllocation) = device->CreateBuffer(bufferInfo, allocInfo);
 
 			vma::AllocationInfo allocationInfo;
 			device->GetAllocator().getAllocationInfo(vertexBufferAllocation.get(), &allocationInfo);
@@ -55,10 +68,19 @@ namespace Daydream
 		device = _device;
 		indexCount = _indexCount;
 
+		vk::BufferCreateInfo bufferInfo{};
+		vma::AllocationCreateInfo allocInfo{};
+
 		UInt32 bufferSize = sizeof(UInt32) * _indexCount;
-		std::tie(indexBuffer, indexBufferAllocation) = device->CreateBuffer(bufferSize,
-			vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer,
-			vma::MemoryUsage::eGpuOnly, {});
+
+		bufferInfo.size = bufferSize;
+		bufferInfo.usage = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer;
+		bufferInfo.sharingMode = vk::SharingMode::eExclusive;
+
+		allocInfo.usage = vma::MemoryUsage::eGpuOnly;
+		allocInfo.flags = {};
+
+		std::tie(indexBuffer, indexBufferAllocation) = device->CreateBuffer(bufferInfo, allocInfo);
 	}
 
 	void VulkanIndexBuffer::Bind() const
@@ -71,10 +93,19 @@ namespace Daydream
 	{
 		device = _device;
 		size = _size;
+
+		vk::BufferCreateInfo bufferInfo{};
+		vma::AllocationCreateInfo allocInfo{};
+
+		bufferInfo.size = _size;
+		bufferInfo.usage =  vk::BufferUsageFlagBits::eUniformBuffer;
+		bufferInfo.sharingMode = vk::SharingMode::eExclusive;
+
+		allocInfo.usage = vma::MemoryUsage::eCpuToGpu;
+		allocInfo.flags = vma::AllocationCreateFlagBits::eMapped | vma::AllocationCreateFlagBits::eHostAccessSequentialWrite;
+
 		//device->CreateBuffer(_size, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
-		std::tie(constantBuffer, constantBufferAllocation) = device->CreateBuffer(_size,
-			vk::BufferUsageFlagBits::eUniformBuffer,
-			vma::MemoryUsage::eCpuToGpu, vma::AllocationCreateFlagBits::eMapped | vma::AllocationCreateFlagBits::eHostAccessSequentialWrite);
+		std::tie(constantBuffer, constantBufferAllocation) = device->CreateBuffer(bufferInfo, allocInfo);
 
 		vma::AllocationInfo allocationInfo;
 		device->GetAllocator().getAllocationInfo(constantBufferAllocation.get(), &allocationInfo);

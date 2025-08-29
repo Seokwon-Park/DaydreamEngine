@@ -10,6 +10,18 @@ namespace Daydream
 	{
 		vertexBuffer = VertexBuffer::CreateStatic(_meshData.vertices.size() * sizeof(Vertex), sizeof(Vertex), _meshData.vertices.data());
 		indexBuffer = IndexBuffer::Create(_meshData.indices.data(), _meshData.indices.size());
+
+		TextureDesc textureDesc{};
+		textureDesc.bindFlags = Daydream::RenderBindFlags::ShaderResource;
+		textureDesc.format = Daydream::RenderFormat::R8G8B8A8_UNORM_SRGB;
+		if (!_meshData.materialData.diffuseTexturePath.empty())
+			diffuseTexture = Texture2D::Create(_meshData.materialData.diffuseTexturePath, textureDesc);
+		else
+		{
+			DAYDREAM_CORE_ASSERT(false, "Breakpoint");
+		}
+		//if (!_meshData.materialData.normalMapPath.empty())
+		//	normalTexture = Texture2D::Create(_meshData.materialData.normalMapPath, textureDesc);
 	}
 	Mesh::Mesh(Shared<VertexBuffer> _vertexBuffer, Shared<IndexBuffer> _indexBuffer)
 	{

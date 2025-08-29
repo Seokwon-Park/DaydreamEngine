@@ -33,9 +33,9 @@ namespace Daydream::GraphicsUtility::DirectX11
 		return d3d11Flags;
 	}
 
-	D3D11_CULL_MODE ConvertToD3D11CullMode(const CullMode& _cullmode)
+	D3D11_CULL_MODE ConvertToD3D11CullMode(const CullMode& _cullMode)
 	{
-		switch (_cullmode)
+		switch (_cullMode)
 		{
 		case CullMode::None:
 			return D3D11_CULL_NONE;
@@ -49,9 +49,9 @@ namespace Daydream::GraphicsUtility::DirectX11
 		return D3D11_CULL_NONE;
 	}
 
-	D3D11_FILL_MODE ConvertToD3D11FillMode(const FillMode& _cullmode)
+	D3D11_FILL_MODE ConvertToD3D11FillMode(const FillMode& _fillMode)
 	{
-		switch (_cullmode)
+		switch (_fillMode)
 		{
 		case FillMode::Solid:
 			return D3D11_FILL_SOLID;
@@ -66,9 +66,16 @@ namespace Daydream::GraphicsUtility::DirectX11
 	D3D11_RASTERIZER_DESC TranslateToD3D11RasterizerDesc(const RasterizerStateDesc& _desc)
 	{
 		D3D11_RASTERIZER_DESC desc{};
-		desc.FrontCounterClockwise = _desc.frontCounterClockwise;
 		desc.CullMode = ConvertToD3D11CullMode(_desc.cullMode);
 		desc.FillMode = ConvertToD3D11FillMode(_desc.fillMode);
+		desc.FrontCounterClockwise = _desc.frontCounterClockwise;
+		desc.DepthBias = _desc.depthBias;
+		desc.DepthBiasClamp = _desc.depthBiasClamp;
+		desc.SlopeScaledDepthBias= _desc.slopeScaledDepthBias;
+		desc.DepthClipEnable= _desc.depthClipEnable;
+		desc.ScissorEnable= _desc.scissorEnable;
+		desc.MultisampleEnable= _desc.multisampleEnable;
+		desc.AntialiasedLineEnable= _desc.antialiasedLineEnable;
 
 		return desc;
 	}

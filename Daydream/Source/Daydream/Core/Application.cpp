@@ -47,7 +47,7 @@ namespace Daydream
 		//testWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
 		WindowManager::Init();
 		WindowManager::RegisterWindow(prop.title, mainWindow.get());
-		
+
 		//렌더러 초기화
 		Renderer::Init(_specification.rendererAPI);
 		//렌더러에 윈도우 

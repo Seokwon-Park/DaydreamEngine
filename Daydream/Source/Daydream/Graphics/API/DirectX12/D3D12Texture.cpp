@@ -54,7 +54,7 @@ namespace Daydream
 		samplerDesc.MaxLOD = D3D12_FLOAT32_MAX; // ¸ðµç ¹Ó¸Ê ·¹º§ »ç¿ë
 
 		device->GetSamplerHeapAlloc().Alloc(&samplerCpuHandle, &samplerGpuHandle);
-
+		
 		device->GetDevice()->CreateSampler(&samplerDesc, samplerCpuHandle);
 
 		if (!(textureDesc.Flags & D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE) &&

@@ -45,7 +45,7 @@ namespace Daydream
 	class D3D11HullShader : public D3D11Shader
 	{
 	public:
-		D3D11HullShader(const FilePath& _filepath);
+		D3D11HullShader(const Path& _filepath);
 		D3D11HullShader(const std::string& _src);
 
 		virtual void Bind() const override;
@@ -60,7 +60,7 @@ namespace Daydream
 	class D3D11DomainShader : public D3D11Shader
 	{
 	public:
-		D3D11DomainShader(const FilePath& _filepath);
+		D3D11DomainShader(const Path& _filepath);
 		D3D11DomainShader(const std::string& _src);
 
 		virtual void Bind() const override;
@@ -75,7 +75,7 @@ namespace Daydream
 	class D3D11GeometryShader : public D3D11Shader
 	{
 	public:
-		D3D11GeometryShader(const FilePath& _filepath);
+		D3D11GeometryShader(const Path& _filepath);
 		D3D11GeometryShader(const std::string& _src);
 
 		virtual void Bind() const override;

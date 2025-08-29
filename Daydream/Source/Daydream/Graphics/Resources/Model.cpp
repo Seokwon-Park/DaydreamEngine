@@ -19,7 +19,7 @@ namespace Daydream
 	{
 		meshes.clear();
 		
-		FilePath filepath(_path);
+		Path filepath(_path);
 
 		Array<MeshData> meshDatas = ModelLoader::LoadFromFile(filepath);
 
@@ -52,7 +52,6 @@ namespace Daydream
 				v.position.y = (v.position.y - cy) / dl;
 				v.position.z = (v.position.z - cz) / dl;
 			}
-
 			Shared<Mesh> mesh = Mesh::Create(meshData);
 			meshes.push_back(mesh);
 		}

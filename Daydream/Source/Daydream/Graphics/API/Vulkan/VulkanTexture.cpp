@@ -17,24 +17,37 @@ namespace Daydream
 		imageSize = width * height * 4;
 		imageFormat = GraphicsUtility::Vulkan::ConvertRenderFormatToVkFormat(_desc.format);
 
-		auto imageResource = device->CreateImage(width, height, imageFormat, vk::ImageTiling::eOptimal,
-			GraphicsUtility::Vulkan::ConvertToVkImageUsageFlags(_desc.bindFlags), vk::MemoryPropertyFlagBits::eDeviceLocal);
+		vk::ImageCreateInfo imageInfo{};
+		vma::AllocationCreateInfo allocInfo{};
 
-		textureImage = vk::UniqueImage(imageResource.image, vk::detail::ObjectDestroy<vk::Device, vk::detail::DispatchLoaderDynamic>(device->GetDevice()));
-		textureImageMemory = vk::UniqueDeviceMemory(imageResource.memory, vk::detail::ObjectFree<vk::Device, vk::detail::DispatchLoaderDynamic>(device->GetDevice()));
+		imageInfo.imageType = vk::ImageType::e2D;
+		imageInfo.extent.width = static_cast<UInt32>(width);
+		imageInfo.extent.height = static_cast<UInt32>(height);
+		imageInfo.extent.depth = 1;
+		imageInfo.mipLevels = 1;
+		imageInfo.arrayLayers = 1;
+		imageInfo.format = imageFormat;
+		imageInfo.tiling = vk::ImageTiling::eOptimal;
+		imageInfo.initialLayout = vk::ImageLayout::eUndefined;
+		imageInfo.usage = GraphicsUtility::Vulkan::ConvertToVkImageUsageFlags(_desc.bindFlags);
+		imageInfo.sharingMode = vk::SharingMode::eExclusive;
+		imageInfo.samples = vk::SampleCountFlagBits::e1;
+
+		allocInfo.usage = vma::MemoryUsage::eGpuOnly;
+		allocInfo.flags = {};
+
+		std::tie(textureImage, textureImageAllocation) = device->CreateImage(imageInfo, allocInfo);
 
 		device->TransitionImageLayout(textureImage.get(), imageFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
 		if (imageFormat == vk::Format::eD24UnormS8Uint)
 		{
-			auto imageView = device->CreateImageView(textureImage.get(), imageFormat,
+			textureImageView = device->CreateImageView(textureImage.get(), imageFormat,
 				vk::ImageAspectFlagBits::eDepth | vk::ImageAspectFlagBits::eStencil);
-			textureImageView = vk::UniqueImageView(imageView, vk::detail::ObjectDestroy<vk::Device, vk::detail::DispatchLoaderDynamic>(device->GetDevice()));
 		}
 		else
 		{
-			auto imageView = device->CreateImageView(textureImage.get(), imageFormat,
+			textureImageView = device->CreateImageView(textureImage.get(), imageFormat,
 				vk::ImageAspectFlagBits::eColor);
-			textureImageView = vk::UniqueImageView(imageView, vk::detail::ObjectDestroy<vk::Device, vk::detail::DispatchLoaderDynamic>(device->GetDevice()));
 		}
 
 		CreateSampler();
@@ -74,13 +87,4 @@ namespace Daydream
 		if (ImGuiDescriptorSet != VK_NULL_HANDLE) return ImGuiDescriptorSet;
 		return ImGuiDescriptorSet = ImGui_ImplVulkan_AddTexture(textureSampler.get(), textureImageView.get(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 	}
-
-	void VulkanTexture2D::TransitionLayout(vk::ImageLayout _targetLayout)
-	{
-		if (currentLayout == _targetLayout) return;
-		//device->TransitionTextureLayout(textureImage, imageFormat, currentLayout, _targetLayout);
-		currentLayout = _targetLayout;
-	}
-
-
 }

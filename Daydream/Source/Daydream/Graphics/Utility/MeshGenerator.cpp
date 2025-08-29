@@ -106,10 +106,10 @@ namespace Daydream
 		for (UInt32 i = 0; i <= _numStacks; i++)
 		{
 			Vector3 stackStartPoint = RotateAxisZRadian(Vector3(0.0f, -_radius, 0.0f), i * stackStep);
-			for (int j = 0; j <= _numSlices; j++)
+			for (UInt32 j = 0; j <= _numSlices; j++)
 			{
 				Vertex vertex;
-				vertex.position = RotateAxisYRadian(stackStartPoint, -j * sectorStep);
+				vertex.position = RotateAxisYRadian(stackStartPoint, j * -sectorStep);
 				vertex.normal = vertex.position;
 				vertex.normal = glm::normalize(vertex.normal);
 				vertex.texCoord = Vector2(Float32(i) / _numSlices, 1.0f - Float32(j) / _numStacks);
@@ -118,10 +118,10 @@ namespace Daydream
 			}
 		}
 
-		for (int i = 0; i < _numStacks; i++) 
+		for (UInt32 i = 0; i < _numStacks; i++)
 		{
 			const int offset = (_numSlices + 1) * i; // 1줄에 numSlices보다 1개 더있음 왜냐하면 원래 있던 점을 넣어야 되기 때문에
-			for (int j = 0; j < _numSlices; j++) 
+			for (UInt32 j = 0; j < _numSlices; j++) 
 			{
 				sphereMeshData.indices.push_back(offset + j);
 				sphereMeshData.indices.push_back(offset + _numSlices + 1 + j);

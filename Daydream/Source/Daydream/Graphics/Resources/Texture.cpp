@@ -10,7 +10,7 @@
 
 namespace Daydream
 {
-    Shared<Texture2D> Texture2D::Create(const FilePath& _path, const TextureDesc& _desc)
+    Shared<Texture2D> Texture2D::Create(const Path& _path, const TextureDesc& _desc)
     {
         auto imageData = ImageLoader::LoadImageFile(_path);
         if (imageData.data.data() != nullptr)
@@ -18,6 +18,8 @@ namespace Daydream
             TextureDesc finalDesc = _desc;
             finalDesc.width = imageData.width;
             finalDesc.height = imageData.height;
+
+            DAYDREAM_CORE_TRACE("CREATE TEXTURE {}", _path.GetFileName());
 
             return Renderer::GetRenderDevice()->CreateTexture2D(imageData.data.data(), finalDesc);
         }

@@ -123,17 +123,18 @@ namespace Daydream
 		inputAssembly.topology = vk::PrimitiveTopology::eTriangleList;
 		inputAssembly.primitiveRestartEnable = VK_FALSE;
 
-		vk::PipelineRasterizationStateCreateInfo rasterizer{};
-		rasterizer.depthClampEnable = VK_FALSE;
-		rasterizer.rasterizerDiscardEnable = VK_FALSE;
-		rasterizer.polygonMode = vk::PolygonMode::eFill;
-		rasterizer.lineWidth = 1.0f;
-		rasterizer.cullMode = vk::CullModeFlagBits::eBack;
-		rasterizer.frontFace = vk::FrontFace::eClockwise;
-		rasterizer.depthBiasEnable = VK_FALSE;
-		rasterizer.depthBiasConstantFactor = 0.0f; // Optional
-		rasterizer.depthBiasClamp = 0.0f; // Optional
-		rasterizer.depthBiasSlopeFactor = 0.0f; // Optional
+		vk::PipelineRasterizationStateCreateInfo rasterizer = GraphicsUtility::Vulkan::TranslateToVulkanRasterizerCreateInfo(_desc.rasterizerState);
+		//vk::PipelineRasterizationStateCreateInfo rasterizer{};
+		//rasterizer.depthClampEnable = VK_FALSE;
+		//rasterizer.rasterizerDiscardEnable = VK_FALSE;
+		//rasterizer.polygonMode = vk::PolygonMode::eFill;
+		//rasterizer.lineWidth = 1.0f;
+		//rasterizer.cullMode = vk::CullModeFlagBits::eBack;
+		//rasterizer.frontFace = vk::FrontFace::eClockwise;
+		//rasterizer.depthBiasEnable = VK_FALSE;
+		//rasterizer.depthBiasConstantFactor = 0.0f; // Optional
+		//rasterizer.depthBiasClamp = 0.0f; // Optional
+		//rasterizer.depthBiasSlopeFactor = 0.0f; // Optional
 
 		vk::PipelineMultisampleStateCreateInfo multisampling{};
 		multisampling.sampleShadingEnable = VK_FALSE;

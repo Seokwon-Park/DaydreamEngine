@@ -66,7 +66,7 @@ namespace Daydream
 		virtual void* GetNativeHandle() = 0;
 		virtual void* GetImGuiHandle() = 0;
 
-		static Shared<Texture2D> Create(const FilePath& _path, const TextureDesc& _desc);
+		static Shared<Texture2D> Create(const Path& _path, const TextureDesc& _desc);
 		static Shared<Texture2D> CreateEmpty(const TextureDesc& _desc);
 	protected:
 		Texture2D() = default;

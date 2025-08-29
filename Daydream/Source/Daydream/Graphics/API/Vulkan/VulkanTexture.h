@@ -20,30 +20,24 @@ namespace Daydream
 		vk::Image GetImage() { return textureImage.get(); }
 		vk::ImageView GetImageView() { return textureImageView.get(); }
 		vk::Sampler GetSampler() { return textureSampler.get(); }
-
-		void TransitionLayout(vk::ImageLayout _targetLayout);
-
 	protected:
 
 	private:
 		bool isSwapchainImage = false;
 		VulkanRenderDevice* device;
 		vk::DeviceSize imageSize;
-		vk::Buffer uploadBuffer;
-		vk::DeviceMemory uploadBufferMemory;
 
 		vk::Format imageFormat = vk::Format::eR8G8B8A8Srgb;
 
-		vk::UniqueImage textureImage;
+		vma::UniqueImage textureImage;
+		vma::UniqueAllocation textureImageAllocation;
 		vk::UniqueImageView textureImageView;
-		vk::UniqueDeviceMemory textureImageMemory;
+
 
 		//ImGui Image¿ë
 		VkDescriptorSet ImGuiDescriptorSet = VK_NULL_HANDLE;
 
 		vk::UniqueSampler textureSampler;
-
-		vk::ImageLayout currentLayout = vk::ImageLayout::eUndefined;
 	};
 }
 
