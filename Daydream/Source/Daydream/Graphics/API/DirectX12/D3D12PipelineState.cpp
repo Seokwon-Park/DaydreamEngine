@@ -16,7 +16,7 @@ namespace Daydream
 		Array<D3D12_DESCRIPTOR_RANGE> descriptorRanges;
 		Array<D3D12_INPUT_ELEMENT_DESC> inputLayoutDesc;
 
-		for (const auto& info : vertexShader->GetReflectionInfo())
+		for (const auto& info : shaderGroup->GetInputData())
 		{
 			if (info.shaderResourceType != ShaderResourceType::Input) continue;
 			D3D12_INPUT_ELEMENT_DESC elementDesc;
@@ -32,9 +32,9 @@ namespace Daydream
 		}
 
 		UInt32 index = 0;
-		for (auto shader : shaders)
+		for (auto shader : shaderGroup->GetShaders())
 		{
-			for (auto& info : shader->GetReflectionInfo())
+			for (auto& info : shader->GetShaderReflectionData())
 			{
 				switch (info.shaderResourceType)
 				{
@@ -159,8 +159,8 @@ namespace Daydream
 
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC desc{};
 		desc.pRootSignature = rootSignature.Get();
-		desc.VS = static_cast<D3D12Shader*>(_desc.vertexShader.get())->GetShaderBytecode();
-		desc.PS = static_cast<D3D12Shader*>(_desc.pixelShader.get())->GetShaderBytecode();
+		desc.VS = static_cast<D3D12Shader*>(shaderGroup->GetShader(ShaderType::Vertex).get())->GetShaderBytecode();
+		desc.PS = static_cast<D3D12Shader*>(shaderGroup->GetShader(ShaderType::Vertex).get())->GetShaderBytecode();
 		desc.RasterizerState = rasterizerDesc;
 		desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 		desc.NumRenderTargets = 1;

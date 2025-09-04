@@ -11,7 +11,7 @@ namespace Daydream
 	public:
 		D3D12GraphicsContext(D3D12RenderDevice* _device);
 
-		virtual void Init() override;
+		virtual void Begin() override;
 		virtual void SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height) override {};
 		virtual void SetClearColor(const Color& _color) override;
 		virtual void Clear() override;

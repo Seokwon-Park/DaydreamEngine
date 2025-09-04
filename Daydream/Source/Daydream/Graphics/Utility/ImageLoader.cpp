@@ -9,7 +9,7 @@ namespace Daydream::ImageLoader
 		ImageData imageData;
 
 		int channel;
-		stbi_uc* pixels = stbi_load(_path.ToString().c_str(), &imageData.width, &imageData.height, &channel, 0);
+		stbi_uc* pixels = stbi_load(_path.string().c_str(), &imageData.width, &imageData.height, &channel, 0);
 		DAYDREAM_CORE_ASSERT(pixels, "Failed to load image!");
 
 		UInt32 imageSize = imageData.width * imageData.height;
@@ -37,7 +37,7 @@ namespace Daydream::ImageLoader
 		HDRIImageData imageData;
 
 		int channel;
-		Float32* pixels = stbi_loadf(_path.ToString().c_str(), &imageData.width, &imageData.height, &channel, 0);
+		Float32* pixels = stbi_loadf(_path.string().c_str(), &imageData.width, &imageData.height, &channel, 0);
 		DAYDREAM_CORE_ASSERT(pixels, "Failed to load image!");
 
 		UInt32 imageSize = imageData.width * imageData.height;

@@ -44,7 +44,7 @@ namespace Daydream
 		UInt32 offset = 0;
 
 		Array<vk::VertexInputAttributeDescription> attribDescArray;
-		for (const Shared<Shader>& shader : shaders)
+		for (const Shared<Shader>& shader : shaderGroup->GetShaders())
 		{
 			entryPoints[shader->GetType()] = GraphicsUtility::GetShaderEntryPointName(shader->GetType());
 
@@ -56,7 +56,7 @@ namespace Daydream
 			shaderStageInfo.stage = GraphicsUtility::Vulkan::ConvertToShaderStageFlagBit(shader->GetType());
 
 			shaderStages.push_back(shaderStageInfo);
-			for (const auto& info : shader->GetReflectionInfo())
+			for (const auto& info : shader->GetShaderReflectionData())
 			{
 				if (info.shaderResourceType == ShaderResourceType::Input && shader->GetType() == ShaderType::Vertex)
 				{

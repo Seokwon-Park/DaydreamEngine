@@ -49,7 +49,7 @@ namespace Daydream
 		virtual Shared<Swapchain> CreateSwapchain(DaydreamWindow* _window, const SwapchainDesc& _desc) = 0;
 		virtual Shared<Texture2D> CreateEmptyTexture2D(const TextureDesc& _desc) { return nullptr; }; // TODO : 이 기능이 필요한지 아닌지 모름
 		virtual Shared<Texture2D> CreateTexture2D(const void* _imageData, const TextureDesc& _desc) = 0;
-		virtual Shared<TextureCube> CreateTextureCube(Array<Array<UInt8>> _imagePixels, const TextureDesc& _desc) { return nullptr; };
+		virtual Shared<TextureCube> CreateTextureCube(Array<Array<UInt8>> _imagePixels, const TextureDesc& _desc) = 0;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() = 0;
 		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) = 0;
 		virtual Shared<Material> CreateMaterial(Shared<PipelineState> _pipeline) = 0;

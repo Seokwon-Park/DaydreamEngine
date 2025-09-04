@@ -55,7 +55,7 @@ namespace Daydream
 				{
 					const spirv_cross::SPIRType& spirType = compiler.get_type(resource.type_id);
 
-					ShaderReflectionInfo sr{};
+					ShaderReflectionData sr{};
 					sr.name = compiler.get_name(resource.id);
 					sr.set = compiler.get_decoration(resource.id, spv::DecorationLocation);
 					sr.binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
@@ -67,26 +67,26 @@ namespace Daydream
 					sr.size = GraphicsUtility::GetRenderFormatSize(sr.format);
 					sr.shaderType = shaderType;
 
-					reflectionInfo.push_back(sr);
+					reflectionDatas.push_back(sr);
 				}
 			}
 
 
 			for (const spirv_cross::Resource& resource : res.uniform_buffers)
 			{
-				ShaderReflectionInfo sr{};
+				ShaderReflectionData sr{};
 				sr.name = compiler.get_name(resource.id);
 				sr.shaderResourceType = ShaderResourceType::ConstantBuffer;
 				sr.set = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
 				sr.binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
 				sr.size = compiler.get_declared_struct_size(compiler.get_type(resource.type_id));
 
-				reflectionInfo.push_back(sr);
+				reflectionDatas.push_back(sr);
 			}
 
 			for (const spirv_cross::Resource& resource : res.sampled_images)
 			{
-				ShaderReflectionInfo sr{};
+				ShaderReflectionData sr{};
 				sr.name = compiler.get_name(resource.id);
 				sr.shaderResourceType = ShaderResourceType::Texture;
 				sr.set = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
@@ -99,7 +99,7 @@ namespace Daydream
 					count = type.array[0];
 				}
 
-				reflectionInfo.push_back(sr);
+				reflectionDatas.push_back(sr);
 			}
 
 			shader = device->GetDevice().createShaderModuleUnique(createInfo);

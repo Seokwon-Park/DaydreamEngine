@@ -23,7 +23,7 @@ namespace Daydream
 
 		static Shared<Material> Create(Shared<PipelineState> _pipeline);
 	protected:
-		HashMap<String, ShaderReflectionInfo> bindingMap;
+		HashMap<String, ShaderReflectionData> bindingMap;
 	private:
 
 	};

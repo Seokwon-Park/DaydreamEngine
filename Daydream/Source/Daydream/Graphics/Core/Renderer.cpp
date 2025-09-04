@@ -25,7 +25,7 @@ namespace Daydream
 
 	void Renderer::Shutdown()
 	{
-		Renderer2D::Shutdown();
+		//Renderer2D::Shutdown();
 		instance->renderDevice.reset();
 		delete instance;
 		instance = nullptr;

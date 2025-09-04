@@ -9,7 +9,7 @@ namespace Daydream
 	class RenderContext
 	{
 	public:
-		virtual void Init() = 0;
+		virtual void Begin() = 0;
 		virtual void SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height) = 0;
 		virtual void SetClearColor(const Color& _color) = 0;
 		virtual void Clear() = 0;

@@ -12,6 +12,7 @@
 #include "Base/Math/Transform.h"
 #include "Base/Math/Color.h"
 #include "Base/IO/Path.h"
+#include "Base/IO/Directory.h"
 #include "Base/Time/TimeStep.h"
 #include "Base/Container/Array.h"
 #include "Base/Container/HashMap.h"

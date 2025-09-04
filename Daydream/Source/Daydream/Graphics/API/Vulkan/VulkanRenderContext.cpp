@@ -8,7 +8,7 @@ namespace Daydream
 	{
 		device = _device;
 	}
-	void VulkanGraphicsContext::Init()
+	void VulkanGraphicsContext::Begin()
 	{
 	}
 	void VulkanGraphicsContext::SetClearColor(const Color& _color)

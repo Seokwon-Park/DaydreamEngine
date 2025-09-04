@@ -19,6 +19,7 @@
     <ClInclude Include="Source\EditorPanels\ViewportPanel.h">
       <Filter>EditorPanels</Filter>
     </ClInclude>
+    <ClInclude Include="Source\EditorPanels\AssetBrowserPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\EditorApp.cpp" />
@@ -32,5 +33,6 @@
     <ClCompile Include="Source\EditorPanels\ViewportPanel.cpp">
       <Filter>EditorPanels</Filter>
     </ClCompile>
+    <ClCompile Include="Source\EditorPanels\AssetBrowserPanel.cpp" />
   </ItemGroup>
 </Project>

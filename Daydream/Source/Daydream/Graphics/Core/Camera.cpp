@@ -11,7 +11,7 @@ namespace Daydream
 		fovy = 70.0f;
 		aspectRatio = 1.6f/ 0.9f;
 		orthoSize = 5.0f;
-		nearPlane = 0.1f;
+		nearPlane = 0.001f;
 		farPlane = 1000.0f;
 		UpdateProjectionMatrix();
 	}

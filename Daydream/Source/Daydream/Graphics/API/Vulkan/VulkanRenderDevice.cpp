@@ -107,8 +107,8 @@ namespace Daydream
 			Array<vk::DescriptorPoolSize> poolSizes =
 			{
 				{ vk::DescriptorType::eCombinedImageSampler , IMGUI_IMPL_VULKAN_MINIMUM_IMAGE_SAMPLER_POOL_SIZE },
-				{ vk::DescriptorType::eUniformBuffer , 256 },
 				{ vk::DescriptorType::eCombinedImageSampler , 256 },
+				{ vk::DescriptorType::eUniformBuffer , 256 },
 			};
 
 
@@ -181,7 +181,7 @@ namespace Daydream
 		return vertexBuffer;
 	}
 
-	Shared<IndexBuffer> Daydream::VulkanRenderDevice::CreateIndexBuffer(const UInt32 * _indices, UInt32 _count)
+	Shared<IndexBuffer> VulkanRenderDevice::CreateIndexBuffer(const UInt32 * _indices, UInt32 _count)
 	{
 		auto indexBuffer = MakeShared<VulkanIndexBuffer>(this, _count);
 
@@ -245,6 +245,20 @@ namespace Daydream
 			memcpy(allocationInfo.pMappedData, _imageData, imageSize);
 
 			CopyBufferToImage(uploadBuffer.get(), texture->GetImage(), _desc.width, _desc.height);
+
+			vk::ImageMemoryBarrier barrier{};
+			barrier.oldLayout = vk::ImageLayout::eTransferDstOptimal;
+			barrier.newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+			barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+			barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+			barrier.image = texture->GetImage();
+			barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+			barrier.subresourceRange.baseArrayLayer = 0;
+			barrier.subresourceRange.baseMipLevel = 0;
+			barrier.subresourceRange.layerCount = 1;
+			barrier.subresourceRange.levelCount = 1;
+
+			TransitionImageLayout(barrier);
 		}
 		return texture;
 	}

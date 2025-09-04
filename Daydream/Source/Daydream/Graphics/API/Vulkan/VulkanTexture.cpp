@@ -38,14 +38,32 @@ namespace Daydream
 
 		std::tie(textureImage, textureImageAllocation) = device->CreateImage(imageInfo, allocInfo);
 
-		device->TransitionImageLayout(textureImage.get(), imageFormat, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
+		vk::ImageMemoryBarrier barrier{};
+		barrier.oldLayout = vk::ImageLayout::eUndefined;
+		barrier.newLayout = vk::ImageLayout::eTransferDstOptimal;
+		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier.image = textureImage.get();
+		barrier.subresourceRange.baseArrayLayer = 0;
+		barrier.subresourceRange.baseMipLevel = 0;
+		barrier.subresourceRange.layerCount = 1;
+		barrier.subresourceRange.levelCount = 1;
+
 		if (imageFormat == vk::Format::eD24UnormS8Uint)
 		{
+			barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eDepth | vk::ImageAspectFlagBits::eStencil;
+
+			device->TransitionImageLayout(barrier);
+
 			textureImageView = device->CreateImageView(textureImage.get(), imageFormat,
 				vk::ImageAspectFlagBits::eDepth | vk::ImageAspectFlagBits::eStencil);
 		}
 		else
 		{
+			barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+
+			device->TransitionImageLayout(barrier);
+
 			textureImageView = device->CreateImageView(textureImage.get(), imageFormat,
 				vk::ImageAspectFlagBits::eColor);
 		}
@@ -63,14 +81,14 @@ namespace Daydream
 		samplerInfo.addressModeU = vk::SamplerAddressMode::eRepeat;
 		samplerInfo.addressModeV = vk::SamplerAddressMode::eRepeat;
 		samplerInfo.addressModeW = vk::SamplerAddressMode::eRepeat;
-		samplerInfo.anisotropyEnable = VK_TRUE;
-		samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
-		//samplerInfo.anisotropyEnable = VK_FALSE;
-		//samplerInfo.maxAnisotropy = 1.0f;
-		samplerInfo.borderColor = vk::BorderColor::eIntOpaqueBlack;
+		//samplerInfo.anisotropyEnable = VK_TRUE;
+		//samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
+		samplerInfo.anisotropyEnable = VK_FALSE;
+		samplerInfo.maxAnisotropy = 1.0f;
+		samplerInfo.borderColor = vk::BorderColor::eIntTransparentBlack;
 		samplerInfo.unnormalizedCoordinates = VK_FALSE;
 		samplerInfo.compareEnable = VK_FALSE;
-		samplerInfo.compareOp = vk::CompareOp::eAlways;
+		samplerInfo.compareOp = vk::CompareOp::eNever;
 		samplerInfo.mipmapMode = vk::SamplerMipmapMode::eLinear;
 
 		textureSampler = device->GetDevice().createSamplerUnique(samplerInfo);
@@ -87,4 +105,15 @@ namespace Daydream
 		if (ImGuiDescriptorSet != VK_NULL_HANDLE) return ImGuiDescriptorSet;
 		return ImGuiDescriptorSet = ImGui_ImplVulkan_AddTexture(textureSampler.get(), textureImageView.get(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 	}
+
+	void VulkanTexture2D::AllocateDescriptorSet(vk::DescriptorSetLayout _layout)
+	{
+		vk::DescriptorSetAllocateInfo allocInfo{};
+		allocInfo.descriptorPool = device->GetDescriptorPool();
+		allocInfo.descriptorSetCount = 1;
+		allocInfo.pSetLayouts = &_layout;
+
+		textureSet = device->GetDevice().allocateDescriptorSetsUnique(allocInfo);
+	}
+
 }

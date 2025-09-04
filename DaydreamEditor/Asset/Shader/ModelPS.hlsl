@@ -2,6 +2,7 @@ struct PSInput
 {
     float4 position : SV_Position;
     float3 normal : NORMAL;
+    float3 tangent : TANGENT;
     float2 uv : TEXCOORD0;
 };
     
@@ -35,32 +36,52 @@ struct PSOutput
     float4 color : SV_Target0;
 };
 
-[[vk::combinedImageSampler]][[vk::binding(4)]]
+[[vk::combinedImageSampler]][[vk::binding(4, 1)]]
 Texture2D Texture : register(t0);
-[[vk::combinedImageSampler]][[vk::binding(4)]]
+[[vk::combinedImageSampler]][[vk::binding(4, 1)]]
 SamplerState TextureSampler : register(s0);
+
+[[vk::combinedImageSampler]][[vk::binding(2, 1)]]
+Texture2D NormalTexture : register(t1);
+[[vk::combinedImageSampler]][[vk::binding(2, 1)]]
+SamplerState NormalTextureSampler : register(s1);
+
 
 PSOutput PSMain(PSInput input)
 {
     PSOutput output = (PSOutput) 0;
     
     float3 color = float3(0.0f, 0.0f, 0.0f);
+    
+    float3 normalWorld = input.normal;
+    
+    float3 normalTex = NormalTexture.Sample(NormalTextureSampler, input.uv).rgb;
+    normalTex = 2.0 * normalTex - 1.0; // 범위 조절 [-1.0, 1.0]
+    
+    float3 N = normalWorld;
+    float3 T = normalize(input.tangent - dot(input.tangent, N) * N);
+    float3 B = cross(N, T);
+        
+        // matrix는 float4x4, 여기서는 벡터 변환용이라서 3x3 사용
+    float3x3 TBN = float3x3(T, B, N);
+    normalWorld = normalize(mul(normalTex, TBN));
+    
     [unroll]
     for (int i = 0; i < 1; i++)
     {
     //output.color = Texture.Sample(TextureSampler, input.uv) + input.color;
         float3 lightDir = -lights[i].direction;
-        float ndotl = max(dot(normalize(lightDir), input.normal), 0.0f);
+        float ndotl = max(dot(normalize(lightDir), normalWorld), 0.0f);
         
         float3 viewDirection = normalize(eyePosition - input.position.xyz);
-        float3 reflectDir = reflect(-lightDir, input.normal);
+        float3 reflectDir = reflect(-lightDir, normalWorld);
         float3 halfway = normalize(viewDirection + lightDir);
-        float specularPower = pow(max(dot(input.normal, halfway), 0.0f), 20.0f);
+        float specularPower = pow(max(dot(normalWorld, halfway), 0.0f), 20.0f);
         
         color += lights[i].color * ndotl + float3(1.0f, 1.0f, 1.0f) * specularPower;
         //color += lights[i].color * ndotl + input.normal * specularPower;
     }
     
-    output.color = Texture.Sample(TextureSampler, input.uv) * float4(color, 1.0f) + float4(0.3f, 0.3f, 0.3f, 1.0f);
+    output.color = Texture.Sample(TextureSampler, input.uv) + float4(color, 1.0f) * 0.3f;
     return output;
 }

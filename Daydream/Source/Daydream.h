@@ -9,6 +9,7 @@
 #include "Daydream/Core/Input.h"
 #include "Daydream/Core/KeyCodes.h"
 #include "Daydream/Core/MouseCodes.h"
+#include "Daydream/Core/ResourceManager.h"
 
 #include "Daydream/ImGui/ImGuiLayer.h"
 #include "Daydream/ImGui/ImGuiRenderer.h"
@@ -33,6 +34,7 @@
 
 #include "Daydream/Graphics/Resources/Buffer.h"
 #include "Daydream/Graphics/Resources/Shader.h"
+#include "Daydream/Graphics/Resources/ShaderGroup.h"
 #include "Daydream/Graphics/Resources/Framebuffer.h"
 #include "Daydream/Graphics/Resources/Texture.h"
 #include "Daydream/Graphics/Resources/TextureCube.h"

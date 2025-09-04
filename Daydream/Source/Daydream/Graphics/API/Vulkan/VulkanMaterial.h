@@ -20,5 +20,12 @@ namespace Daydream
 		VulkanRenderDevice* device;
 		VulkanPipelineState* pso;
 		Array<vk::UniqueDescriptorSet> sets;
+		Array<vk::DescriptorSet> rawSets;
+
+		HashMap<String, Shared<ConstantBuffer>> cbuffers;
+		HashMap<String, Shared<Texture2D>> textures;
+		HashMap<String, Shared<TextureCube>> textureCubes; 
+
+		vk::UniqueDescriptorSet descriptorSet;
 	};
 }

@@ -11,10 +11,11 @@ namespace Daydream
 		Texture,
 		Sampler,
 	};
-	struct ShaderReflectionInfo
+	struct ShaderReflectionData
 	{
-		UInt32 set;
+		UInt32 set; // or location
 		UInt32 binding;
+		UInt32 descriptorTableIndex; // DX12;
 		UInt32 count;
 		UInt64 size;
 		ShaderType shaderType;
@@ -23,6 +24,11 @@ namespace Daydream
 		RenderFormat format; // only for input layouts
 	};
 
+	struct ShaderProgram
+	{
+
+	};
+	
 	class Shader
 	{
 	public:
@@ -34,13 +40,13 @@ namespace Daydream
 		virtual void* GetNativeHandle() = 0;
 
 		ShaderType GetType() const { return shaderType; }
-		Array<ShaderReflectionInfo>& GetReflectionInfo() { return reflectionInfo; }
+		Array<ShaderReflectionData>& GetShaderReflectionData() { return reflectionDatas; }
 
 		static Shared<Shader> Create(const String& _src, const ShaderType& _type, const ShaderLoadMode& _mode);
 	protected:
 		ShaderType shaderType;
 
-		Array<ShaderReflectionInfo> reflectionInfo;
+		Array<ShaderReflectionData> reflectionDatas;
 	};
 
 }

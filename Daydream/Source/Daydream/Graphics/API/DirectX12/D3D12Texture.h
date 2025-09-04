@@ -21,8 +21,11 @@ namespace Daydream
 		inline D3D12_RESOURCE_STATES GetCurrentState() { return currentState; }
 		inline D3D12_CPU_DESCRIPTOR_HANDLE GetSRVCPUHandle() { return srvCpuHandle; }
 		inline D3D12_GPU_DESCRIPTOR_HANDLE GetSRVGPUHandle() { return srvGpuHandle; }
+
 		inline D3D12_CPU_DESCRIPTOR_HANDLE GetRTVCPUHandle() { return rtvCpuHandle; }
+
 		inline const D3D12_CPU_DESCRIPTOR_HANDLE& GetDSVCPUHandle() { return dsvCpuHandle; }
+
 		inline D3D12_CPU_DESCRIPTOR_HANDLE GetUAVCPUHandle() { return uavCpuHandle; }
 		inline D3D12_GPU_DESCRIPTOR_HANDLE GetUAVGPUHandle() { return uavGpuHandle; }
 		inline D3D12_CPU_DESCRIPTOR_HANDLE GetSamplerCPUHandle() { return samplerCpuHandle; }
@@ -32,6 +35,7 @@ namespace Daydream
 		D3D12RenderDevice* device;
 		ComPtr<ID3D12Resource> texture;
 		D3D12_RESOURCE_STATES currentState;
+
 		D3D12_CPU_DESCRIPTOR_HANDLE samplerCpuHandle = {};
 		D3D12_GPU_DESCRIPTOR_HANDLE samplerGpuHandle = {};
 

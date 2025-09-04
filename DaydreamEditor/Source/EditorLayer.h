@@ -4,6 +4,7 @@
 #include "EditorPanels/SceneHierarchyPanel.h"
 #include "EditorPanels/ViewportPanel.h"
 #include "EditorPanels/PropertyPanel.h"
+#include "EditorPanels/AssetBrowserPanel.h"
 
 namespace Daydream
 {
@@ -62,9 +63,10 @@ namespace Daydream
 
 		LightData lightData;
 
-		ViewportPanel viewportPanel;
-		PropertyPanel propertyPanel;
-		SceneHierarchyPanel sceneHierarchyPanel;
+		Unique<ViewportPanel> viewportPanel;
+		Unique<PropertyPanel> propertyPanel;
+		Unique<SceneHierarchyPanel> sceneHierarchyPanel;
+		Unique<AssetBrowserPanel> assetBrowserPanel;
 		
 	};
 }

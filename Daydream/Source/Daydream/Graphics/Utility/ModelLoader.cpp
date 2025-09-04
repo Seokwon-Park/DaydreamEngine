@@ -9,46 +9,47 @@ namespace Daydream
 		Assimp::Importer importer;
 
 		Path basePath = _filepath;
-		basePath.MoveToParent();
+		basePath = basePath.parent_path();
 		baseDirectory = basePath;
 
+		modelData.clear();
+
 		UInt32 flags = aiProcess_Triangulate | aiProcess_ConvertToLeftHanded;// |           // 모든 면을 삼각형으로 변환
-		//aiProcess_FlipUVs |              // UV 좌표 뒤집기 (OpenGL용)
-		//aiProcess_GenNormals |           // 노말 벡터 생성
-		//aiProcess_CalcTangentSpace |     // 탄젠트/바이탄젠트 계산
+			//aiProcess_FlipUVs |				// UV 좌표 뒤집기 (OpenGL용)
+			//aiProcess_GenNormals |			// 노말 벡터 생성
+		//	aiProcess_CalcTangentSpace;			// | //탄젠트/바이탄젠트 계산
 		//aiProcess_JoinIdenticalVertices | // 중복 정점 제거
-		//aiProcess_OptimizeMeshes |       // 메시 최적화
+		//aiProcess_OptimizeMeshes |		// 메시 최적화
 		//aiProcess_ValidateDataStructure;  // 데이터 유효성 검사
 
-		DAYDREAM_INFO(_filepath.IsExistPath());
+		DAYDREAM_INFO(FileSystem::exists(_filepath));
 
-		const aiScene* scene = importer.ReadFile(_filepath.ToString(), flags);
+		const aiScene* scene = importer.ReadFile(_filepath.string(), flags);
 
 		bool result = !scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode;
 		DAYDREAM_CORE_ASSERT(nullptr != scene, "{0}", importer.GetErrorString());
-		return ProcessScene(scene);
+
+		ProcessScene(scene);
+		return modelData;
 	}
-	Array<MeshData> ModelLoader::ProcessScene(const aiScene* _scene)
+	void ModelLoader::ProcessScene(const aiScene* _scene)
 	{
-		Array<MeshData> meshes;
-		//Start form root node
-		ProcessNode(_scene->mRootNode, _scene, meshes);
-		return meshes;
+		ProcessNode(_scene->mRootNode, _scene);
 	}
-	void ModelLoader::ProcessNode(aiNode* _node, const aiScene* _scene, Array<MeshData>& _meshes)
+	void ModelLoader::ProcessNode(aiNode* _node, const aiScene* _scene)
 	{
 		for (UInt32 i = 0; i < _node->mNumMeshes; i++)
 		{
 			aiMesh* mesh = _scene->mMeshes[_node->mMeshes[i]];
-			_meshes.push_back(ProcessMesh(mesh, _scene));
+			ProcessMesh(mesh, _scene);
 		}
 
 		for (UInt32 i = 0; i < _node->mNumChildren; i++)
 		{
-			ProcessNode(_node->mChildren[i], _scene, _meshes);
+			ProcessNode(_node->mChildren[i], _scene);
 		}
 	}
-	MeshData ModelLoader::ProcessMesh(aiMesh* _mesh, const aiScene* _scene)
+	void ModelLoader::ProcessMesh(aiMesh* _mesh, const aiScene* _scene)
 	{
 		MeshData meshData;
 		meshData.name = _mesh->mName.C_Str();
@@ -66,6 +67,13 @@ namespace Daydream
 				vertex.normal.x = _mesh->mNormals[i].x;
 				vertex.normal.y = _mesh->mNormals[i].y;
 				vertex.normal.z = _mesh->mNormals[i].z;
+			}
+
+			if (_mesh->HasTangentsAndBitangents())
+			{
+				vertex.tangent.x = _mesh->mTangents[i].x;
+				vertex.tangent.y = _mesh->mTangents[i].y;
+				vertex.tangent.z = _mesh->mTangents[i].z;
 			}
 
 			if (_mesh->mTextureCoords[0])
@@ -89,45 +97,43 @@ namespace Daydream
 			{
 				meshData.indices.push_back(face.mIndices[j]);
 			}
-
 		}
+
+		modelData.push_back(meshData);
 
 		if (_mesh->mMaterialIndex >= 0)
 		{
 			aiMaterial* material = _scene->mMaterials[_mesh->mMaterialIndex];
 
-			ProcessMaterial(material, meshData.materialData);
+			ProcessMaterial(material);
 		}
-		return meshData;
 	}
-	void ModelLoader::ProcessMaterial(aiMaterial* _material, MaterialData& _outMaterialData)
+	void ModelLoader::ProcessMaterial(aiMaterial* _material)
 	{
-		// 1. 재질 이름 가져오기
+		MaterialData materialData;
 		aiString name;
 		_material->Get(AI_MATKEY_NAME, name);
-		_outMaterialData.name = name.C_Str();
+		materialData.name = name.C_Str();
 
-		// 2. 텍스처 경로들 가져오기
-		LoadMaterialTexture(_material, aiTextureType_DIFFUSE, _outMaterialData.diffuseTexturePath);
-		LoadMaterialTexture(_material, aiTextureType_SPECULAR, _outMaterialData.specularTexturePath);
-		LoadMaterialTexture(_material, aiTextureType_NORMALS, _outMaterialData.normalMapPath);
-		// ... 다른 PBR 텍스처들도 같은 방식으로 로드 ...
+		GetTexturePath(_material, aiTextureType_DIFFUSE, materialData.diffuseTexturePath);
+		GetTexturePath(_material, aiTextureType_SPECULAR, materialData.specularTexturePath);
+		GetTexturePath(_material, aiTextureType_NORMALS, materialData.normalMapPath);
 
-		// 3. 상수 값들 가져오기
 		aiColor4D diffuseColor;
 		if (aiGetMaterialColor(_material, AI_MATKEY_COLOR_DIFFUSE, &diffuseColor) == AI_SUCCESS)
 		{
-			_outMaterialData.diffuseColor = Vector3(diffuseColor.r, diffuseColor.g, diffuseColor.b);
+			materialData.diffuseColor = Vector3(diffuseColor.r, diffuseColor.g, diffuseColor.b);
 		}
 
 		float shininess;
 		if (aiGetMaterialFloat(_material, AI_MATKEY_SHININESS, &shininess) == AI_SUCCESS)
 		{
-			_outMaterialData.shininess = shininess;
+			materialData.shininess = shininess;
 		}
+		modelData.back().materialData = materialData;
 	}
 
-	void ModelLoader::LoadMaterialTexture(aiMaterial* _mat, aiTextureType _type, std::string& _outPath)
+	void ModelLoader::GetTexturePath(aiMaterial* _mat, aiTextureType _type, std::string& _outPath)
 	{
 		// 해당 타입의 텍스처가 1개 이상 있는지 확인하고, 첫 번째 텍스처 경로를 가져옴
 		if (_mat->GetTextureCount(_type) > 0)
@@ -135,7 +141,7 @@ namespace Daydream
 			aiString str;
 			if (_mat->GetTexture(_type, 0, &str) == AI_SUCCESS)
 			{
-				_outPath = (baseDirectory + str.C_Str()).ToString();
+				_outPath = (baseDirectory / str.C_Str()).string();
 			}
 		}
 	}

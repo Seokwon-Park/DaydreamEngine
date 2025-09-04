@@ -41,6 +41,7 @@ namespace Daydream
 		{
 			mesh->Bind();
 			material->SetTexture2D("Texture", mesh->GetDiffuseTexture());
+			material->SetTexture2D("NormalTexture", mesh->GetNormalTexture());
 			material->Bind();
 			Renderer::Submit(mesh->GetIndexCount());
 		}

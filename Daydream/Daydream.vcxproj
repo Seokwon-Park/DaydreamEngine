@@ -155,6 +155,7 @@
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11RenderContext.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11RenderDevice.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11RenderPass.h" />
+    <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Sampler.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Shader.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Swapchain.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Texture.h" />
@@ -162,6 +163,7 @@
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Utility.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11VertexShader.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12Buffer.h" />
+    <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12HeapAllocator.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12Framebuffer.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12ImGuiRenderer.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12Material.h" />
@@ -208,7 +210,14 @@
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanSwapchain.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanTexture.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanUtility.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Managers\MaterialManager.h" />
     <ClInclude Include="Source\Daydream\Graphics\Managers\ModelManager.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Managers\RenderPassManager.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Managers\TextureManager.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Resources\FrameParameters.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Resources\ObjectParameters.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Resources\Sampler.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Resources\ShaderGroup.h" />
     <ClInclude Include="Source\Daydream\Graphics\States\BlendState.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\Camera.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\CameraController.h" />
@@ -225,7 +234,7 @@
     <ClInclude Include="Source\Daydream\Core\ResourceManager.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\Swapchain.h" />
     <ClInclude Include="Source\Daydream\Graphics\Managers\MeshManager.h" />
-    <ClInclude Include="Source\Daydream\Graphics\Managers\PSOManager.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Managers\PipelineStateManager.h" />
     <ClInclude Include="Source\Daydream\Graphics\Managers\ShaderManager.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Buffer.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Framebuffer.h" />
@@ -698,6 +707,7 @@
     <ClCompile Include="Source\Daydream\Core\Layer.cpp" />
     <ClCompile Include="Source\Daydream\Core\LayerStack.cpp" />
     <ClCompile Include="Source\Daydream\Core\Logger.cpp" />
+    <ClCompile Include="Source\Daydream\Core\ResourceManager.cpp" />
     <ClCompile Include="Source\Daydream\Core\Window.cpp" />
     <ClCompile Include="Source\Daydream\Core\WindowManager.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Buffer.cpp" />
@@ -717,6 +727,7 @@
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Utility.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11VertexShader.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Buffer.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12HeapAllocator.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Framebuffer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12ImGuiRenderer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Material.cpp" />
@@ -776,7 +787,10 @@
     <ClCompile Include="Source\Daydream\Graphics\Core\Swapchain.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Managers\MeshManager.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Managers\ModelManager.cpp" />
-    <ClCompile Include="Source\Daydream\Graphics\Managers\PSOManager.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Managers\PipelineStateManager.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Managers\RenderPassManager.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Managers\ShaderManager.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Managers\TextureManager.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\Buffer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\Framebuffer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\Light.cpp" />
@@ -785,6 +799,7 @@
     <ClCompile Include="Source\Daydream\Graphics\Resources\Model.cpp" />
     <ClCompile Include="Source\Daydream\Core\Resource.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\Shader.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Resources\ShaderGroup.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\Texture.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\TextureCube.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Utility\DDSLoader.cpp" />

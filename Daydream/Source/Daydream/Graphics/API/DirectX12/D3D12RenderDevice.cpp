@@ -130,7 +130,7 @@ namespace Daydream
 
 		{
 			D3D12_DESCRIPTOR_HEAP_DESC desc{};
-			desc.NumDescriptors = 128;
+			desc.NumDescriptors = 512;
 			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER;
 			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(samplerHeap.GetAddressOf()));
@@ -141,13 +141,33 @@ namespace Daydream
 
 		{
 			D3D12_DESCRIPTOR_HEAP_DESC desc{};
-			desc.NumDescriptors = 256;
+			desc.NumDescriptors = 1024;
 			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(cbvSrvUavHeap.GetAddressOf()));
 			DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create cbvSrvUav descriptor heap");
 			cbvSrvUavHeapAlloc.Create(device.Get(), cbvSrvUavHeap.Get());
+		}
 
+		{
+			D3D12_DESCRIPTOR_HEAP_DESC desc{};
+			desc.NumDescriptors = 512;
+			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER;
+			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(dynamicSamplerHeap.GetAddressOf()));
+			DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create sampler descriptor heap");
+			dynamicSamplerHeapAlloc.Create(device.Get(), dynamicSamplerHeap.Get());
+
+		}
+
+		{
+			D3D12_DESCRIPTOR_HEAP_DESC desc{};
+			desc.NumDescriptors = 1024;
+			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(dynamicCbvSrvUavHeap.GetAddressOf()));
+			DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create cbvSrvUav descriptor heap");
+			dynamicCbvSrvUavHeapAlloc.Create(device.Get(), dynamicCbvSrvUavHeap.Get());
 		}
 
 		hr = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(uploadCommandAllocator.GetAddressOf()));

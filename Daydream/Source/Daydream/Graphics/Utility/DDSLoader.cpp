@@ -5,7 +5,7 @@ namespace Daydream::DDSLoader
 {
     DDSImage LoadDDS(const Path& _path)
     {
-        std::ifstream f(_path.ToString(), std::ios::binary);
+        std::ifstream f(_path.string(), std::ios::binary);
         if (!f) throw std::runtime_error("Failed to open DDS");
 
         DDSHeader hdr{};

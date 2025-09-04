@@ -20,6 +20,9 @@ namespace Daydream
 		vk::Image GetImage() { return textureImage.get(); }
 		vk::ImageView GetImageView() { return textureImageView.get(); }
 		vk::Sampler GetSampler() { return textureSampler.get(); }
+		vk::DescriptorSet GetDescriptorSet() { return textureSet[0].get(); }
+
+		void AllocateDescriptorSet(vk::DescriptorSetLayout _layout);
 	protected:
 
 	private:
@@ -32,7 +35,8 @@ namespace Daydream
 		vma::UniqueImage textureImage;
 		vma::UniqueAllocation textureImageAllocation;
 		vk::UniqueImageView textureImageView;
-
+		Array<vk::UniqueDescriptorSet> textureSet;
+		Array<vk::UniqueDescriptorSet> oldTextureSet;
 
 		//ImGui Image¿ë
 		VkDescriptorSet ImGuiDescriptorSet = VK_NULL_HANDLE;

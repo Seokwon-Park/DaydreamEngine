@@ -14,7 +14,7 @@ namespace Daydream
 		// 입력 파라미터 정보를 저장할 벡터
 		Array<D3D11_INPUT_ELEMENT_DESC> inputLayoutDesc;
 
-		for (const auto& info : vertexShader->GetReflectionInfo())
+		for (const auto& info : shaderGroup->GetShader(ShaderType::Vertex)->GetShaderReflectionData())
 		{
 			if (info.shaderResourceType != ShaderResourceType::Input) continue;
 			D3D11_INPUT_ELEMENT_DESC elementDesc;
@@ -33,8 +33,8 @@ namespace Daydream
 		HRESULT hr = device->GetDevice()->CreateInputLayout(
 			inputLayoutDesc.data(),
 			(UINT)inputLayoutDesc.size(),
-			static_cast<ID3DBlob*>(vertexShader->GetNativeHandle())->GetBufferPointer(),
-			static_cast<ID3DBlob*>(vertexShader->GetNativeHandle())->GetBufferSize(),
+			static_cast<ID3DBlob*>(shaderGroup->GetShader(ShaderType::Vertex)->GetNativeHandle())->GetBufferPointer(),
+			static_cast<ID3DBlob*>(shaderGroup->GetShader(ShaderType::Vertex)->GetNativeHandle())->GetBufferSize(),
 			inputLayout.GetAddressOf()
 		);
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create inputlayout!");
@@ -51,7 +51,7 @@ namespace Daydream
 
 	void D3D11PipelineState::Bind() const
 	{
-		for (auto shader : shaders)
+		for (auto shader : shaderGroup->GetShaders())
 		{
 			shader->Bind();
 		}

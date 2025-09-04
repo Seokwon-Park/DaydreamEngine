@@ -22,5 +22,9 @@ namespace Daydream
 		D3D12RenderDevice* device;
 		ComPtr<ID3D12RootSignature> rootSignature;
 		ComPtr<ID3D12PipelineState> pipeline;
+
+		Array<D3D12_ROOT_PARAMETER> rootParameters;
+		Array<D3D12_DESCRIPTOR_RANGE> srvRanges;
+		Array<D3D12_DESCRIPTOR_RANGE> samplerRanges;
 	};
 }

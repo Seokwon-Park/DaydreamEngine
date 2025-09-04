@@ -2,10 +2,10 @@
 
 namespace Daydream
 {
-	class PSOManager
+	class MaterialManager
 	{
 	public:
-		PSOManager();
+
 	private:
 	};
 }

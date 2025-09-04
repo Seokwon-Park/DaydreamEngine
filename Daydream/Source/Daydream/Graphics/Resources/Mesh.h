@@ -9,6 +9,7 @@ namespace Daydream
 	{
 		Vector3 position;
 		Vector3 normal;
+		Vector3 tangent;
 		Vector2 texCoord;
 	};
 
@@ -49,6 +50,7 @@ namespace Daydream
 		UInt32 GetIndexCount() { return indexBuffer->GetCount(); }
 
 		Shared<Texture2D> GetDiffuseTexture() { return diffuseTexture; }
+		Shared<Texture2D> GetNormalTexture() { return normalTexture; }
 
 		void Bind();
 

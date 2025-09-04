@@ -7,9 +7,7 @@
 #include "Daydream/ImGui/ImGuiLayer.h"
 #include "Daydream/Graphics/Core/Renderer.h"
 #include "Daydream/Graphics/Utility/ShaderCompileHelper.h"
-
-
-#include "glad/glad.h"
+#include "ResourceManager.h"
 
 namespace Daydream
 {
@@ -59,12 +57,14 @@ namespace Daydream
 		AttachOverlay(imGuiLayer);
 
 		ShaderCompileHelper::Init();
+		ResourceManager::Init();
 	}
 
 	Application::~Application()
 	{
 		mainWindow->SetSwapchain(nullptr);
 		mainWindow = nullptr;
+		ResourceManager::Shutdown();
 		layerStack.Release();
 		Renderer::Shutdown();
 	}

@@ -4,7 +4,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include "Daydream/Graphics/Resources/Mesh.h"
+#include "Daydream/Graphics/Resources/Model.h"
 
 namespace Daydream
 {
@@ -21,13 +21,13 @@ namespace Daydream
 	private:
 		ModelLoader() = default;
 		Array<MeshData> LoadFromFileInternal(const Path& _filepath);
-		Array<MeshData> ProcessScene(const aiScene* _scene);
-		void ProcessNode(aiNode* _node, const aiScene* _scene, Array<MeshData>& _meshes);
-		MeshData ProcessMesh(aiMesh* _mesh, const aiScene* _scene);
-		void LoadMaterialTexture(aiMaterial* _mat, aiTextureType _type, std::string& _outPath);
-		void ProcessMaterial(aiMaterial* _material, MaterialData& _outMaterialData);
+		void ProcessScene(const aiScene* _scene);
+		void ProcessNode(aiNode* _node, const aiScene* _scene);
+		void ProcessMesh(aiMesh* _mesh, const aiScene* _scene);
+		void GetTexturePath(aiMaterial* _mat, aiTextureType _type, std::string& _outPath);
+		void ProcessMaterial(aiMaterial* _material);
 		
 		Path baseDirectory;
-		
+		Array<MeshData> modelData;
 	};
 }

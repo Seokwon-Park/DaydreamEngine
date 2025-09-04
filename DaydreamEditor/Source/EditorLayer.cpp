@@ -82,7 +82,7 @@ namespace Daydream
 		attach.storeOp = Daydream::AttachmentStoreOp::Store;
 		rpDesc.depthAttachment = attach;
 
-		renderPass = Daydream::RenderPass::Create(rpDesc);
+		renderPass = RenderPass::Create(rpDesc);
 		renderPass->SetClearColor(Daydream::Color::Blue);
 
 		Daydream::FramebufferDesc fbDesc;
@@ -91,35 +91,16 @@ namespace Daydream
 		//fbDesc.width = 1600;
 		//fbDesc.height = 900;
 
-		viewportFramebuffer = Daydream::Framebuffer::Create(renderPass, fbDesc);
+		viewportFramebuffer = Framebuffer::Create(renderPass, fbDesc);
 
-		RasterizerStateDesc rastDesc;
-		rastDesc.frontCounterClockwise = false;
-		rastDesc.cullMode = CullMode::Front;
-		rastDesc.fillMode = FillMode::Solid;
+		pso = ResourceManager::GetResource<PipelineState>("SpritePSO");
 
-		PipelineStateDesc psoDesc;
-		psoDesc.vertexShader = vs;
-		psoDesc.pixelShader = ps;
-		psoDesc.renderPass = renderPass;
-
-		pso = Daydream::PipelineState::Create(psoDesc);
-
-		psoDesc.vertexShader = vs3d;
-		psoDesc.pixelShader = ps3d;
-		psoDesc.renderPass = renderPass;
-
-		pso3d = Daydream::PipelineState::Create(psoDesc);
-
-		psoDesc.rasterizerState = rastDesc;
-		psoDesc.vertexShader = vscube;
-		psoDesc.pixelShader = pscube;
-		psoDesc.renderPass = renderPass;
+		pso3d = ResourceManager::GetResource<PipelineState>("ForwardPSO");
 		
-		cubemapPipeline = Daydream::PipelineState::Create(psoDesc);
+		cubemapPipeline = ResourceManager::GetResource<PipelineState>("CubemapPSO");
 
 		material = Material::Create(pso);
-		//material = pso->CreateMaterial(); // 이것도 가?능?
+		
 		material->SetTexture2D("Texture", texture);
 		material->SetConstantBuffer("Camera", viewProjMat);
 
@@ -163,7 +144,6 @@ namespace Daydream
 		component->SetModel(model);
 		component->SetMaterial(material3d);
 
-		sceneHierarchyPanel.SetCurrentScene(activeScene.get());
 
 		////////////////////////Light////////////////////////////
 		auto lightEntity = activeScene->CreateGameEntity("Directional Light");
@@ -171,6 +151,13 @@ namespace Daydream
 		lightBuffer = Daydream::ConstantBuffer::Create(sizeof(LightData));
 
 		material3d->SetConstantBuffer("Lights", lightBuffer);
+
+		viewportPanel = MakeUnique<ViewportPanel>();
+		propertyPanel = MakeUnique<PropertyPanel>();
+		sceneHierarchyPanel = MakeUnique<SceneHierarchyPanel>();
+		sceneHierarchyPanel->SetCurrentScene(activeScene.get());
+
+		assetBrowserPanel = MakeUnique<AssetBrowserPanel>();
 	}
 
 	void EditorLayer::OnUpdate(Float32 _deltaTime)
@@ -210,12 +197,12 @@ namespace Daydream
 
 		renderPass->Begin(viewportFramebuffer);
 
-		pso->Bind();
-		squareVB->Bind();
-		squareIB->Bind();
-		material->Bind();
+		//pso->Bind();
+		//squareVB->Bind();
+		//squareIB->Bind();
+		//material->Bind();
 
-		Renderer::Submit(squareIB->GetCount());
+		//Renderer::Submit(squareIB->GetCount());
 
 		pso3d->Bind();
 		activeScene->Update(_deltaTime);
@@ -277,15 +264,11 @@ namespace Daydream
 		ImGui::End();
 		ImGui::PopStyleVar();
 
-		sceneHierarchyPanel.OnImGuiRender();
-		propertyPanel.SetSelectedEntity(sceneHierarchyPanel.GetSelectedEntity());
-		propertyPanel.OnImGuiRender();
+		sceneHierarchyPanel->OnImGuiRender();
+		propertyPanel->SetSelectedEntity(sceneHierarchyPanel->GetSelectedEntity());
+		propertyPanel->OnImGuiRender();
+		assetBrowserPanel->OnImGuiRender();
 
-		// 예시: 자산 브라우저 패널
-		ImGui::Begin("Asset Browser");
-		ImGui::Text("Project Assets");
-		// 나중에 파일 시스템 탐색 및 자산 미리보기
-		ImGui::End();
 
 		// 예시: 콘솔/로그 패널
 		ImGui::Begin("Console");

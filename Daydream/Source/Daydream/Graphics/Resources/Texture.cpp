@@ -19,8 +19,6 @@ namespace Daydream
             finalDesc.width = imageData.width;
             finalDesc.height = imageData.height;
 
-            DAYDREAM_CORE_TRACE("CREATE TEXTURE {}", _path.GetFileName());
-
             return Renderer::GetRenderDevice()->CreateTexture2D(imageData.data.data(), finalDesc);
         }
         else

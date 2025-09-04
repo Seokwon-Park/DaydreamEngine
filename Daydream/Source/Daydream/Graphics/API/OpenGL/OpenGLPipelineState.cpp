@@ -35,7 +35,7 @@ namespace Daydream
 		glCreateVertexArrays(1, &vao);
 		//for (const BufferElement& element : layout)
 		UInt32 offset = 0;
-		for(const auto& info : vertexShader->GetReflectionInfo())
+		for(const auto& info : shaderGroup->GetShader(ShaderType::Vertex)->GetShaderReflectionData())
 		{
 			if (info.shaderResourceType != ShaderResourceType::Input) continue;
 			glEnableVertexArrayAttrib(vao, inputDataIndex);
@@ -56,12 +56,12 @@ namespace Daydream
 
 		GLint textureIndex = 0;
 		//static GLint uboIndex = 0;
-		for (auto shader : shaders)
+		for (auto shader : GetShaders())
 		{
 			GLenum type = GraphicsUtility::OpenGL::ConvertToShaderStageBit(shader->GetType());
 			GLuint shaderID = static_cast<GLuint>(reinterpret_cast<uintptr_t>(shader->GetNativeHandle()));
 			glUseProgramStages(pipeline, type, shaderID);
-			for (auto& info : shader->GetReflectionInfo())
+			for (auto& info : shader->GetShaderReflectionData())
 			{
 				switch (info.shaderResourceType)
 				{

@@ -26,7 +26,7 @@ namespace Daydream
 		Unique<spirv_cross::ShaderResources> res = MakeUnique <spirv_cross::ShaderResources>(compiler->get_shader_resources());
 		for (const spirv_cross::Resource& resource : res->uniform_buffers)
 		{
-			ShaderReflectionInfo sr{};
+			ShaderReflectionData sr{};
 			sr.name = compiler->get_name(resource.id);
 			sr.shaderResourceType = ShaderResourceType::ConstantBuffer;
 			sr.set = compiler->get_decoration(resource.id, spv::DecorationDescriptorSet);
@@ -34,12 +34,12 @@ namespace Daydream
 			sr.size = compiler->get_declared_struct_size(compiler->get_type(resource.type_id));
 			sr.shaderType = _type;
 
-			reflectionInfo.push_back(sr);
+			reflectionDatas.push_back(sr);
 		}
 
 		for (const spirv_cross::Resource& resource : res->sampled_images)
 		{
-			ShaderReflectionInfo sr{};
+			ShaderReflectionData sr{};
 			sr.name = compiler->get_name(resource.id);
 			sr.shaderResourceType = ShaderResourceType::Texture;
 			sr.set = compiler->get_decoration(resource.id, spv::DecorationDescriptorSet);
@@ -53,7 +53,7 @@ namespace Daydream
 				count = type.array[0];
 			}
 
-			reflectionInfo.push_back(sr);
+			reflectionDatas.push_back(sr);
 		}
 		ShaderCompileHelper::ConvertSPIRVtoDXBC(spirvData, _type, src);
 

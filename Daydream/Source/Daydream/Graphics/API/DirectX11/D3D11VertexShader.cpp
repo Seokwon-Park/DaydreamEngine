@@ -70,7 +70,7 @@ namespace Daydream
 			D3D11_SIGNATURE_PARAMETER_DESC paramDesc;
 			reflection->GetInputParameterDesc(i, &paramDesc);
 
-			ShaderReflectionInfo sr{};
+			ShaderReflectionData sr{};
 			sr.name = paramDesc.SemanticName;
 			sr.set = 0;
 			sr.binding = paramDesc.SemanticIndex;
@@ -79,7 +79,7 @@ namespace Daydream
 			sr.size = GraphicsUtility::GetRenderFormatSize(sr.format);
 			sr.shaderType = shaderType;
 
-			reflectionInfo.push_back(sr);
+			reflectionDatas.push_back(sr);
 		}
 	}
 

@@ -10,7 +10,7 @@ namespace Daydream
 	{
 		for (auto shader : _pso->GetShaders())
 		{
-			auto resourceInfo = shader->GetReflectionInfo();
+			auto resourceInfo = shader->GetShaderReflectionData();
 			for (auto& info : resourceInfo)
 			{
 				bindingMap[info.name] = info;

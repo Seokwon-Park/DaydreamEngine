@@ -14,5 +14,6 @@ namespace Daydream
 		const Array<Shared<Mesh>>& GetMeshes() { return meshes; }
 	private:
 		Array<Shared<Mesh>> meshes;
+		Array<Shared<Material>> materials;
 	};
 }

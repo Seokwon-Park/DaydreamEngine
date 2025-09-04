@@ -3,12 +3,17 @@
 
 namespace Daydream
 {
-    Array<Path> Directory::GetAllFilePaths() const
+    Array<Path> Directory::GetFilePathsWithExtensions(const Array<String>& _extensions) const
     {
-        return Array<Path>();
-    }
-    Array<Path> Directory::GetFilePathsWithExtension(const String& _extension) const
-    {
+        Array<Path> results;
+
+        auto list = std::filesystem::recursive_directory_iterator(path.string());
+
+        for (const auto& entry : list)
+        {
+            if (!entry.is_regular_file())
+                continue;
+        }
         return Array<Path>();
     }
 }

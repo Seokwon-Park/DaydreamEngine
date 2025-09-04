@@ -13,7 +13,7 @@ namespace Daydream
 
 		for (auto shader : _pso->GetShaders())
 		{
-			auto resourceInfo = shader->GetReflectionInfo();
+			auto resourceInfo = shader->GetShaderReflectionData();
 			for (auto info : resourceInfo)
 			{
 				bindingMap[info.name] = info;
@@ -46,9 +46,9 @@ namespace Daydream
 			if (texture == nullptr) continue;
 			DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
 			Shared<D3D12Texture2D> d3d12Tex = static_pointer_cast<D3D12Texture2D>(texture);
-			device->GetCommandList()->SetGraphicsRootDescriptorTable(bindingMap[name].set, d3d12Tex->GetSRVGPUHandle());
+			device->GetCommandList()->SetGraphicsRootDescriptorTable(bindingMap[name].descriptorTableIndex, d3d12Tex->GetSRVGPUHandle());
 			String samplerName = name + "Sampler";
-			device->GetCommandList()->SetGraphicsRootDescriptorTable(bindingMap[samplerName].set, d3d12Tex->GetSamplerGPUHandle());
+			device->GetCommandList()->SetGraphicsRootDescriptorTable(bindingMap[samplerName].descriptorTableIndex, d3d12Tex->GetSamplerGPUHandle());
 		}
 
 		for (auto [name, texture] : textureCubes)
@@ -56,18 +56,17 @@ namespace Daydream
 			if (texture == nullptr) continue;
 			DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
 			Shared<D3D12TextureCube> d3d12Tex = static_pointer_cast<D3D12TextureCube>(texture);
-			device->GetCommandList()->SetGraphicsRootDescriptorTable(bindingMap[name].set, d3d12Tex->GetSRVGPUHandle());
+			device->GetCommandList()->SetGraphicsRootDescriptorTable(bindingMap[name].descriptorTableIndex, d3d12Tex->GetSRVGPUHandle());
 			String samplerName = name + "Sampler";
-			device->GetCommandList()->SetGraphicsRootDescriptorTable(bindingMap[samplerName].set, d3d12Tex->GetSamplerGPUHandle());
+			device->GetCommandList()->SetGraphicsRootDescriptorTable(bindingMap[samplerName].descriptorTableIndex, d3d12Tex->GetSamplerGPUHandle());
 		}
-
 
 		for (auto [name, cbuffer] : cbuffers)
 		{
 			if (cbuffer== nullptr) continue;
 			DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
 			Shared<D3D12ConstantBuffer> d3d12Buffer= static_pointer_cast<D3D12ConstantBuffer>(cbuffer);
-			device->GetCommandList()->SetGraphicsRootConstantBufferView(bindingMap[name].set, d3d12Buffer->GetGPUVirtualAddress());
+			device->GetCommandList()->SetGraphicsRootConstantBufferView(bindingMap[name].descriptorTableIndex, d3d12Buffer->GetGPUVirtualAddress());
 		}
 	}
 	void D3D12Material::SetTexture2D(const std::string& _name, Shared<Texture2D> _texture)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Daydream/Graphics/Resources/Shader.h"
+#include "Daydream/Graphics/Resources/ShaderGroup.h"
 #include "Daydream/Graphics/Resources/Buffer.h"
 #include "Daydream/Graphics/Resources/Texture.h"
 #include "Daydream/Graphics/Resources/Material.h"
@@ -19,11 +20,7 @@ namespace Daydream
 
 	struct PipelineStateDesc
 	{
-		Shared<Shader> vertexShader = nullptr;
-		Shared<Shader> hullShader = nullptr;
-		Shared<Shader> domainShader = nullptr;
-		Shared<Shader> geometryShader = nullptr;
-		Shared<Shader> pixelShader = nullptr;
+		Shared<ShaderGroup> shaderGroup;
 		//Shared<Shader> computeShader; //??
 
 		//BufferLayout inputLayout;
@@ -35,7 +32,7 @@ namespace Daydream
 		//DepthStencilDesc depthStencilState;
 		//Array<GraphicsFormat> renderTargetFormats; // RTV 포맷들
 		//GraphicsFormat depthStencilFormat = GraphicsFormat::Unknown; // DSV 포맷
-		uint32_t sampleCount = 1;
+		UInt32 sampleCount = 1;
 		PrimitiveTopologyType topologyType = PrimitiveTopologyType::TriangleList;
 	};
 
@@ -48,18 +45,13 @@ namespace Daydream
 		virtual void Bind() const = 0;
 		virtual Shared<Material> CreateMaterial() = 0;
 
-		Array<Shared<Shader>> GetShaders() { return shaders; }
-
+		const Array<Shared<Shader>>& GetShaders() { return shaderGroup->GetShaders(); };
+				
 		static Shared<PipelineState> Create(const PipelineStateDesc& _desc);
 	protected:
-		Shared<Shader> vertexShader;
-		Shared<Shader> hullShader;
-		Shared<Shader> domainShader;
-		Shared<Shader> geometryShader;
-		Shared<Shader> pixelShader;
-		Shared<RenderPass> renderPass;
+		Shared<ShaderGroup> shaderGroup;
 
-		Array<Shared<Shader>> shaders;
+		Shared<RenderPass> renderPass;
 
 		//rtv, dsv;
 		//blend, rast, ds;

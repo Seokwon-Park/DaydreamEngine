@@ -10,7 +10,7 @@ namespace Daydream
 		context = RenderContext::Create(_device);
 		if (context)
 		{
-			context->Init();
+			context->Begin();
 		}
 	}
 }

@@ -30,8 +30,8 @@ namespace Daydream
 	void ShaderCompileHelper::GetDXIL(const Path& _filepath, ShaderType _type, ComPtr<IDxcBlob>& _shaderBlob)
 	{
 		ComPtr<IDxcBlobEncoding> sourceBlob;
-		HRESULT hr = utils->LoadFile(_filepath.ToWString().c_str(), nullptr, sourceBlob.GetAddressOf());
-		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to load File! {0}", _filepath.ToString());
+		HRESULT hr = utils->LoadFile(_filepath.wstring().c_str(), nullptr, sourceBlob.GetAddressOf());
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to load File! {0}", _filepath.string());
 
 		// 2. DxcBuffer 설정
 		DxcBuffer sourceBuffer{};
@@ -91,8 +91,8 @@ namespace Daydream
 	void ShaderCompileHelper::ConvertHLSLtoSPIRV(const Path& _filepath, ShaderType _type, Array<UInt32>& _output)
 	{
 		ComPtr<IDxcBlobEncoding> sourceBlob;
-		HRESULT hr = utils->LoadFile(_filepath.ToWString().c_str(), nullptr, sourceBlob.GetAddressOf());
-		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to load File! {0}", _filepath.ToString());
+		HRESULT hr = utils->LoadFile(_filepath.wstring().c_str(), nullptr, sourceBlob.GetAddressOf());
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to load File! {0}", _filepath.string());
 
 		// 2. DxcBuffer 설정
 		DxcBuffer sourceBuffer;

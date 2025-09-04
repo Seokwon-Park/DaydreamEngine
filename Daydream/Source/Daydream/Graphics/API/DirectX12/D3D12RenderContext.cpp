@@ -7,7 +7,7 @@ namespace Daydream
 	{
 		device = _device;
 	}
-	void D3D12GraphicsContext::Init()
+	void D3D12GraphicsContext::Begin()
 	{
 	}
 	void D3D12GraphicsContext::SetClearColor(const Color& _color)

@@ -27,9 +27,9 @@ namespace Daydream
 		glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		glTextureParameteri(textureID, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-		glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(textureID, GL_TEXTURE_WRAP_R, GL_REPEAT);
+		glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 		//Array<UInt8> redData(width * height * 4, 0);
 		//for (int i = 0; i < width*height; i++) {

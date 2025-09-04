@@ -2,16 +2,17 @@
 
 #include "Path.h"
 
-
 namespace Daydream
 {
 	class Directory
 	{
+	public:
 		Directory(Path _initialPath) :path(_initialPath) {}
+		Directory& operator=(std::filesystem::path _path) { path = _path; }
 
-		Array<Path> GetAllFilePaths() const;
+		const Path& getPath() const { return path; }
 
-		Array<Path> GetFilePathsWithExtension(const String& _extension) const;
+		std::vector<Path> GetFilePathsWithExtensions(const std::vector<String>& _extensions) const;
 	public:
 		Path path;
 	};
