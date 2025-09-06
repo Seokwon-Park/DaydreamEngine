@@ -1801,12 +1801,15 @@
     <ClInclude Include="Source\Daydream\Graphics\Resources\FrameParameters.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\ObjectParameters.h" />
     <ClInclude Include="Source\Daydream\Graphics\Managers\MaterialManager.h" />
-    <ClInclude Include="Source\Daydream\Graphics\Managers\TextureManager.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Managers\Texture2DManager.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\ShaderGroup.h" />
     <ClInclude Include="Source\Daydream\Graphics\Managers\RenderPassManager.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12HeapAllocator.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Sampler.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Sampler.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Managers\SamplerManager.h" />
+    <ClInclude Include="Source\Daydream\Core\ResourceManagerBase.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Managers\ShaderGroupManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -2146,11 +2149,16 @@
     <ClCompile Include="Source\Daydream\Graphics\Managers\ModelManager.cpp" />
     <ClCompile Include="Source\Base\IO\Directory.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanTextureCube.cpp" />
-    <ClCompile Include="Source\Daydream\Graphics\Managers\TextureManager.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Managers\Texture2DManager.cpp" />
     <ClCompile Include="Source\Daydream\Core\ResourceManager.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Managers\ShaderManager.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\ShaderGroup.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Managers\RenderPassManager.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12HeapAllocator.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Sampler.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Resources\Sampler.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Managers\SamplerManager.cpp" />
+    <ClCompile Include="Source\Daydream\Core\ResourceManagerBase.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Managers\ShaderGroupManager.cpp" />
   </ItemGroup>
 </Project>

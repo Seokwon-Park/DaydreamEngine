@@ -31,6 +31,7 @@ namespace Daydream
 		glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+
 		//Array<UInt8> redData(width * height * 4, 0);
 		//for (int i = 0; i < width*height; i++) {
 		//	redData[i * 4] = 255;     // R

@@ -104,6 +104,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Daydream\Graphics\Managers\ShaderGroupManager.h" />
     <ClInclude Include="Source\Base\Base.h" />
     <ClInclude Include="Source\Base\Container\Array.h" />
     <ClInclude Include="Source\Base\Container\HashMap.h" />
@@ -137,6 +138,7 @@
     <ClInclude Include="Source\Daydream\Core\Logger.h" />
     <ClInclude Include="Source\Daydream\Core\MouseCodes.h" />
     <ClInclude Include="Source\Daydream\Core\PlatformDetection.h" />
+    <ClInclude Include="Source\Daydream\Core\ResourceManagerBase.h" />
     <ClInclude Include="Source\Daydream\Core\Timestep.h" />
     <ClInclude Include="Source\Daydream\Core\Window.h" />
     <ClInclude Include="Source\Daydream\Core\WindowDefine.h" />
@@ -213,7 +215,8 @@
     <ClInclude Include="Source\Daydream\Graphics\Managers\MaterialManager.h" />
     <ClInclude Include="Source\Daydream\Graphics\Managers\ModelManager.h" />
     <ClInclude Include="Source\Daydream\Graphics\Managers\RenderPassManager.h" />
-    <ClInclude Include="Source\Daydream\Graphics\Managers\TextureManager.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Managers\SamplerManager.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Managers\Texture2DManager.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\FrameParameters.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\ObjectParameters.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Sampler.h" />
@@ -691,6 +694,7 @@
     <ClInclude Include="Vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Daydream\Graphics\Managers\ShaderGroupManager.cpp" />
     <ClCompile Include="Source\Base\IO\Directory.cpp" />
     <ClCompile Include="Source\Base\IO\File.cpp" />
     <ClCompile Include="Source\Base\IO\Path.cpp" />
@@ -708,6 +712,7 @@
     <ClCompile Include="Source\Daydream\Core\LayerStack.cpp" />
     <ClCompile Include="Source\Daydream\Core\Logger.cpp" />
     <ClCompile Include="Source\Daydream\Core\ResourceManager.cpp" />
+    <ClCompile Include="Source\Daydream\Core\ResourceManagerBase.cpp" />
     <ClCompile Include="Source\Daydream\Core\Window.cpp" />
     <ClCompile Include="Source\Daydream\Core\WindowManager.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Buffer.cpp" />
@@ -720,6 +725,7 @@
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11RenderContext.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11RenderDevice.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11RenderPass.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Sampler.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Shader.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Swapchain.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Texture.cpp" />
@@ -789,8 +795,9 @@
     <ClCompile Include="Source\Daydream\Graphics\Managers\ModelManager.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Managers\PipelineStateManager.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Managers\RenderPassManager.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Managers\SamplerManager.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Managers\ShaderManager.cpp" />
-    <ClCompile Include="Source\Daydream\Graphics\Managers\TextureManager.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Managers\Texture2DManager.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\Buffer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\Framebuffer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\Light.cpp" />
@@ -798,6 +805,7 @@
     <ClCompile Include="Source\Daydream\Graphics\Resources\Mesh.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\Model.cpp" />
     <ClCompile Include="Source\Daydream\Core\Resource.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Resources\Sampler.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\Shader.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\ShaderGroup.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\Texture.cpp" />

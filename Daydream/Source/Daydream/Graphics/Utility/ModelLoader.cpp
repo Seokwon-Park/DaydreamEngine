@@ -141,7 +141,7 @@ namespace Daydream
 			aiString str;
 			if (_mat->GetTexture(_type, 0, &str) == AI_SUCCESS)
 			{
-				_outPath = (baseDirectory / str.C_Str()).string();
+				_outPath = (baseDirectory / str.C_Str()).make_preferred().string();
 			}
 		}
 	}

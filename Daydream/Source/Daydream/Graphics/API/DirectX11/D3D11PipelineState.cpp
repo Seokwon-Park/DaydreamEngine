@@ -14,9 +14,8 @@ namespace Daydream
 		// 입력 파라미터 정보를 저장할 벡터
 		Array<D3D11_INPUT_ELEMENT_DESC> inputLayoutDesc;
 
-		for (const auto& info : shaderGroup->GetShader(ShaderType::Vertex)->GetShaderReflectionData())
+		for (const auto& info : shaderGroup->GetInputData())
 		{
-			if (info.shaderResourceType != ShaderResourceType::Input) continue;
 			D3D11_INPUT_ELEMENT_DESC elementDesc;
 			elementDesc.SemanticName = info.name.c_str();
 			elementDesc.SemanticIndex = info.binding;

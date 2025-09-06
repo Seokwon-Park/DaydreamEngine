@@ -12,6 +12,7 @@ namespace Daydream
 	struct FramebufferDesc;
 	struct PipelineStateDesc;
 	struct TextureDesc;
+	struct SamplerDesc;
 	struct ShaderResourceViewDesc;
 	class DaydreamWindow;
 	class VertexBuffer;
@@ -24,6 +25,7 @@ namespace Daydream
 	class Swapchain;
 	class Texture2D;
 	class TextureCube;
+	class Sampler;
 	class ImGuiRenderer;
 	class VertexArray;
 	class BufferLayout;
@@ -50,6 +52,7 @@ namespace Daydream
 		virtual Shared<Texture2D> CreateEmptyTexture2D(const TextureDesc& _desc) { return nullptr; }; // TODO : 이 기능이 필요한지 아닌지 모름
 		virtual Shared<Texture2D> CreateTexture2D(const void* _imageData, const TextureDesc& _desc) = 0;
 		virtual Shared<TextureCube> CreateTextureCube(Array<Array<UInt8>> _imagePixels, const TextureDesc& _desc) = 0;
+		virtual Shared<Sampler> CreateSampler(const SamplerDesc& _desc) { return nullptr; }
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() = 0;
 		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) = 0;
 		virtual Shared<Material> CreateMaterial(Shared<PipelineState> _pipeline) = 0;

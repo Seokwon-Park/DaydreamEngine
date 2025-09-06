@@ -2,12 +2,9 @@
 
 #include "Daydream/Graphics/Resources/Shader.h"
 #include "Daydream/Core/Resource.h"
-#include "Daydream/Core/ResourceManager.h"
 
 namespace Daydream
 {
-
-
 	class ShaderGroup : public Resource
 	{
 	public:

@@ -1,6 +1,8 @@
 #include "DaydreamPCH.h"
 #include "ShaderGroup.h"
 
+#include "Daydream/Core/ResourceManager.h"
+
 namespace Daydream
 {
 	const Array<Shared<Shader>>& ShaderGroup::GetShaders()

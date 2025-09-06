@@ -10,6 +10,7 @@
 #include "D3D11ImGuiRenderer.h"
 #include "D3D11Texture.h"
 #include "D3D11TextureCube.h"
+#include "D3D11Sampler.h"
 #include "D3D11Material.h"
 #include "D3D11RenderPass.h"
 
@@ -211,6 +212,11 @@ namespace Daydream
 	Shared<TextureCube> D3D11RenderDevice::CreateTextureCube(Array<Array<UInt8>> _imagePixels, const TextureDesc& _desc)
 	{
 		return MakeShared<D3D11TextureCube>(this, _desc, _imagePixels);
+	}
+
+	Shared<Sampler> D3D11RenderDevice::CreateSampler(const SamplerDesc& _desc)
+	{
+		return MakeShared<D3D11Sampler>(this, _desc);
 	}
 
 	Unique<ImGuiRenderer> D3D11RenderDevice::CreateImGuiRenderer()

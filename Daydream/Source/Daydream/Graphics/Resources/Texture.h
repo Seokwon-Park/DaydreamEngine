@@ -13,31 +13,12 @@ namespace Daydream
 		Texture3D
 	};
 
-	enum class DataType {
-		UnsignedByte,
-		Float,
-		UnsignedInt
-	};
-
-	enum class FilterMode {
-		LINEAR,
-		NEAREST,
-		LINEAR_MIPMAP_LINEAR
-	};
-
-	enum class WrapMode {
-		REPEAT,
-		ClampToEdge,
-		MirroredRepeat
-	};
-
 	struct TextureDesc
 	{
 		UInt32 width;
 		UInt32 height;
-		TextureType type;
-		FilterMode filterMode;
-		WrapMode wrapMode;
+		//FilterMode filterMode;
+		//WrapMode wrapMode;
 		RenderFormat format;
 		RenderBindFlags bindFlags;
 	};

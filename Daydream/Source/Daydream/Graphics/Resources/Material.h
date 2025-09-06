@@ -6,6 +6,7 @@
 
 namespace Daydream
 {
+	class Sampler;
 	class PipelineState;
 	class Texture2D;
 	class TextureCube;
@@ -17,9 +18,10 @@ namespace Daydream
 		virtual ~Material() = default;
 		virtual void Bind() = 0;
 
-		virtual void SetTexture2D(const std::string& _name, Shared<Texture2D> _texture) {};
-		virtual void SetTextureCube(const std::string& _name, Shared<TextureCube> _textureCube) {};
-		virtual void SetConstantBuffer(const std::string& _name, Shared<ConstantBuffer> _buffer) {};
+		virtual void SetSampler(const String& _name, Shared<Sampler> _sampler) {};
+		virtual void SetTexture2D(const String& _name, Shared<Texture2D> _texture) {};
+		virtual void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube) {};
+		virtual void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer) {};
 
 		static Shared<Material> Create(Shared<PipelineState> _pipeline);
 	protected:

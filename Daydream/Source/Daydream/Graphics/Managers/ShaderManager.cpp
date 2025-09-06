@@ -3,6 +3,7 @@
 
 #include "Daydream/Graphics/Resources/Shader.h"
 #include "Daydream/Graphics/Resources/ShaderGroup.h"
+#include "ShaderGroupManager.h"
 
 namespace Daydream
 {
@@ -54,7 +55,7 @@ namespace Daydream
 						{
 							shaderType = ShaderType::Domain;
 						}
-						shaderCache[shaderName] = Shader::Create(pathString, shaderType, ShaderLoadMode::File);
+						resourceCache[shaderName] = Shader::Create(pathString, shaderType, ShaderLoadMode::File);
 						break;
 					}
 				}
@@ -67,10 +68,5 @@ namespace Daydream
 			}
 		}
 	}
-	void ShaderManager::CreateEssentialShaderGroups()
-	{
-		shaderGroupCache["Model"] = ShaderGroup::Create("ModelVS", "ModelPS");
-		shaderGroupCache["Cubemap"] = ShaderGroup::Create("CubemapVS", "CubemapPS");
-		shaderGroupCache["Sprite"] = ShaderGroup::Create("SpriteVS", "SpritePS");
-	}
+
 }

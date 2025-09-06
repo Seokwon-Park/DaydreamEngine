@@ -2,6 +2,7 @@
 #include "PipelineStateManager.h"
 
 #include "Daydream/Graphics/Core/PipelineState.h"
+#include "Daydream/Core/ResourceManager.h"
 
 namespace Daydream
 {

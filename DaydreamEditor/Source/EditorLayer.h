@@ -28,6 +28,8 @@ namespace Daydream
 		Shared<VertexBuffer> cubeVBO;
 		Shared<IndexBuffer> squareIB;
 		Shared<IndexBuffer> cubeIBO;
+
+		Shared<Sampler> sampler;
 		Shared<Texture2D> texture;
 		Shared<Texture2D> texture2;
 		Shared<TextureCube> textureCube;

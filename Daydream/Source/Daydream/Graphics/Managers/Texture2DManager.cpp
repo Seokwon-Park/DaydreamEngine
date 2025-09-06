@@ -1,9 +1,9 @@
 #include "DaydreamPCH.h"
-#include "TextureManager.h"
+#include "Texture2DManager.h"
 
 namespace Daydream
 {
-	void TextureManager::PreloadTexturesFromDirectory(Path _directory, bool _isRecursive)
+	void Texture2DManager::LoadTexturesFromDirectory(Path _directory, bool _isRecursive)
 	{
 		if (!FileSystem::exists(_directory) || !FileSystem::is_directory(_directory))
 		{
@@ -40,7 +40,7 @@ namespace Daydream
 						//	isSRGB = false;
 						//}
 						textureDesc.format = isSRGB ? RenderFormat::R8G8B8A8_UNORM_SRGB : RenderFormat::R8G8B8A8_UNORM;
-						textureCache[pathString] = Texture2D::Create(pathString, textureDesc);
+						resourceCache[pathString] = Texture2D::Create(pathString, textureDesc);
 						break;
 					}
 				}
@@ -49,7 +49,7 @@ namespace Daydream
 			else if (_isRecursive && entry.is_directory())
 			{
 				// 자기 자신을 다시 호출하여 하위 폴더 탐색
-				PreloadTexturesFromDirectory(entry.path(), true);
+				LoadTexturesFromDirectory(entry.path(), true);
 			}
 		}
 	}

@@ -36,6 +36,7 @@
 #include "Daydream/Graphics/Resources/Shader.h"
 #include "Daydream/Graphics/Resources/ShaderGroup.h"
 #include "Daydream/Graphics/Resources/Framebuffer.h"
+#include "Daydream/Graphics/Resources/Sampler.h"
 #include "Daydream/Graphics/Resources/Texture.h"
 #include "Daydream/Graphics/Resources/TextureCube.h"
 #include "Daydream/Graphics/Resources/Material.h"

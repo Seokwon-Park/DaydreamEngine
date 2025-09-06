@@ -55,6 +55,9 @@ namespace Daydream
 
 		//auto path = Daydream::FilePath("Asset/Texture/Checkerboarduv.png");
 		//auto path = Daydream::FilePath("Asset/Texture/skybox/back.jpg");
+
+		sampler = ResourceManager::GetResource<Sampler>("LinearRepeat");
+
 		Daydream::TextureDesc textureDesc{};
 		textureDesc.bindFlags = Daydream::RenderBindFlags::ShaderResource;
 		textureDesc.format = Daydream::RenderFormat::R8G8B8A8_UNORM_SRGB;
@@ -103,14 +106,17 @@ namespace Daydream
 		
 		material->SetTexture2D("Texture", texture);
 		material->SetConstantBuffer("Camera", viewProjMat);
+		material->SetSampler("TextureSampler", sampler);
 
 		material3d = Material::Create(pso3d);
 
 		material3d->SetConstantBuffer("Camera", viewProjMat);
+		material3d->SetSampler("TextureSampler", sampler);
 
 		materialcube = Material::Create(cubemapPipeline);
 		materialcube->SetConstantBuffer("Camera", viewProjMat);
 		materialcube->SetTextureCube("TextureCubemap", textureCube);
+		materialcube->SetSampler("TextureCubemapSampler", sampler);
 
 		activeScene = MakeShared<Scene>("MainScene");
 
