@@ -23,13 +23,13 @@ namespace Daydream
 		// 텍스처 저장공간 할당 (데이터는 nullptr)
 		glTextureStorage2D(textureID, 1, internalFormat, width, height);
 
-		// 필터링 설정
-		glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		//// 필터링 설정
+		//glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		//glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		glTextureParameteri(textureID, GL_TEXTURE_WRAP_R, GL_REPEAT);
-		glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		//glTextureParameteri(textureID, GL_TEXTURE_WRAP_R, GL_REPEAT);
+		//glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		//glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 
 		//Array<UInt8> redData(width * height * 4, 0);
@@ -52,5 +52,9 @@ namespace Daydream
 	OpenGLTexture2D::~OpenGLTexture2D()
 	{
 		glDeleteTextures(1, &textureID);
+	}
+	void OpenGLTexture2D::SetSampler(Shared<Sampler> _sampler)
+	{
+		textureSampler = static_cast<OpenGLSampler*>(_sampler.get());
 	}
 }

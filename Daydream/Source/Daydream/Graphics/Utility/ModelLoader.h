@@ -17,10 +17,10 @@ namespace Daydream
 			return instance;
 		}
 
-		static Array<MeshData> LoadFromFile(const Path& _filepath) { return GetInstance().LoadFromFileInternal(_filepath); }
+		static ModelData LoadFromFile(const Path& _filepath) { return GetInstance().LoadFromFileInternal(_filepath); }
 	private:
 		ModelLoader() = default;
-		Array<MeshData> LoadFromFileInternal(const Path& _filepath);
+		ModelData LoadFromFileInternal(const Path& _filepath);
 		void ProcessScene(const aiScene* _scene);
 		void ProcessNode(aiNode* _node, const aiScene* _scene);
 		void ProcessMesh(aiMesh* _mesh, const aiScene* _scene);
@@ -28,6 +28,6 @@ namespace Daydream
 		void ProcessMaterial(aiMaterial* _material);
 		
 		Path baseDirectory;
-		Array<MeshData> modelData;
+		ModelData modelData;
 	};
 }

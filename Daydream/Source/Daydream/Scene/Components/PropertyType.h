@@ -8,7 +8,10 @@
         Array<Field> fields;
 
 #define ADD_PROPERTY(type, name) \
-        fields.push_back({ #name, type, &this->name });
+        fields.push_back({ #name, type, &name });
+
+#define ADD_PTR_PROPERTY(type, name) \
+        fields.push_back({ #name, type, name });
 
 #define REFLECT_END() \
         return fields; \
@@ -24,8 +27,8 @@ namespace Daydream
         String,
         Texture,
         Material,
-        Model,
         Light,
+        ModelPtr,
         FieldTypeMax
     };
 

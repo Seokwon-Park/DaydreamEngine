@@ -63,11 +63,14 @@ namespace Daydream
 
 	void ShaderGroup::CreateShaderResourceReflectionData()
 	{
-		for (const ShaderReflectionData& data : vertexShader->GetShaderReflectionData())
+		for (const Shared<Shader>& shader : shaders)
 		{
-			if (data.shaderResourceType != ShaderResourceType::Input)
+			for (ShaderReflectionData data : shader->GetShaderReflectionData())
 			{
-				shaderResourceReflectionData.push_back(data);
+				if (data.shaderResourceType != ShaderResourceType::Input)
+				{
+					shaderResourceReflectionData.push_back(data);
+				}
 			}
 		}
 	}

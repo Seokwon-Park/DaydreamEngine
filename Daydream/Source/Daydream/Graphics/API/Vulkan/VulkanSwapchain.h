@@ -35,6 +35,7 @@ namespace Daydream
 
 		virtual Shared<Framebuffer> GetBackFramebuffer() { return framebuffers[imageIndex]; };
 
+		void RecreateSwapchain();
 
 		inline vk::Format GetFormat() const { return format; }
 		inline vk::SwapchainKHR GetVkSwapchain() const { return swapchain.get(); }
@@ -65,5 +66,6 @@ namespace Daydream
 
 		UInt32 currentFrame = 0;
 		UInt32 imageIndex = 0;
+		GLFWwindow* window;
 	};
 }

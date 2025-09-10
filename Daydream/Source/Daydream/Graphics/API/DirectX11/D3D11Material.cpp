@@ -52,22 +52,24 @@ namespace Daydream
 			Shared<D3D11Texture2D> d3d11Tex = static_pointer_cast<D3D11Texture2D>(texture);
 			switch (bindingMap[name].shaderType)
 			{
-			case ShaderType::None:
+			case Daydream::ShaderType::None:
 				DAYDREAM_CORE_ASSERT(false, "ERROR");
 				break;
-			case ShaderType::Vertex:
+			case Daydream::ShaderType::Vertex:
 				device->GetContext()->VSSetShaderResources(resourceInfo.binding, 1, d3d11Tex->GetSRV().GetAddressOf());
+				device->GetContext()->VSSetSamplers(resourceInfo.binding, 1, d3d11Tex->GetSampler().GetAddressOf());
 				break;
-			case ShaderType::Hull:
+			case Daydream::ShaderType::Hull:
 				break;
-			case ShaderType::Domain:
+			case Daydream::ShaderType::Domain:
 				break;
-			case ShaderType::Geometry:
+			case Daydream::ShaderType::Geometry:
 				break;
-			case ShaderType::Pixel:
+			case Daydream::ShaderType::Pixel:
 				device->GetContext()->PSSetShaderResources(resourceInfo.binding, 1, d3d11Tex->GetSRV().GetAddressOf());
+				device->GetContext()->PSSetSamplers(resourceInfo.binding, 1, d3d11Tex->GetSampler().GetAddressOf());
 				break;
-			case ShaderType::Compute:
+			case Daydream::ShaderType::Compute:
 				break;
 			default:
 				break;
@@ -82,52 +84,24 @@ namespace Daydream
 			Shared<D3D11TextureCube> d3d11Tex = static_pointer_cast<D3D11TextureCube>(texture);
 			switch (bindingMap[name].shaderType)
 			{
-			case ShaderType::None:
+			case Daydream::ShaderType::None:
 				DAYDREAM_CORE_ASSERT(false, "ERROR");
 				break;
-			case ShaderType::Vertex:
+			case Daydream::ShaderType::Vertex:
 				device->GetContext()->VSSetShaderResources(resourceInfo.binding, 1, d3d11Tex->GetSRV().GetAddressOf());
+				device->GetContext()->VSSetSamplers(resourceInfo.binding, 1, d3d11Tex->GetSampler().GetAddressOf());
 				break;
-			case ShaderType::Hull:
+			case Daydream::ShaderType::Hull:
 				break;
-			case ShaderType::Domain:
+			case Daydream::ShaderType::Domain:
 				break;
-			case ShaderType::Geometry:
+			case Daydream::ShaderType::Geometry:
 				break;
-			case ShaderType::Pixel:
+			case Daydream::ShaderType::Pixel:
 				device->GetContext()->PSSetShaderResources(resourceInfo.binding, 1, d3d11Tex->GetSRV().GetAddressOf());
+				device->GetContext()->PSSetSamplers(resourceInfo.binding, 1, d3d11Tex->GetSampler().GetAddressOf());
 				break;
-			case ShaderType::Compute:
-				break;
-			default:
-				break;
-			}
-		}
-
-		for (auto [name, sampler] : samplers)
-		{
-			if (sampler == nullptr) continue;
-			auto resourceInfo = bindingMap[name];
-			DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX11, "Wrong API!");
-			Shared<D3D11Sampler> d3d11Sampler = static_pointer_cast<D3D11Sampler>(sampler);
-			switch (bindingMap[name].shaderType)
-			{
-			case ShaderType::None:
-				DAYDREAM_CORE_ASSERT(false, "ERROR");
-				break;
-			case ShaderType::Vertex:
-				device->GetContext()->VSSetSamplers(resourceInfo.binding, 1, d3d11Sampler->GetSampler().GetAddressOf());
-				break;
-			case ShaderType::Hull:
-				break;
-			case ShaderType::Domain:
-				break;
-			case ShaderType::Geometry:
-				break;
-			case ShaderType::Pixel:
-				device->GetContext()->PSSetSamplers(resourceInfo.binding, 1, d3d11Sampler->GetSampler().GetAddressOf());
-				break;
-			case ShaderType::Compute:
+			case Daydream::ShaderType::Compute:
 				break;
 			default:
 				break;
@@ -165,38 +139,29 @@ namespace Daydream
 		}
 	}
 
-	void D3D11Material::SetSampler(const String& _name, Shared<Sampler> _sampler)
-	{
-		if (bindingMap.find(_name) != bindingMap.end())//&& textures.find(_name) != textures.end())
-		{
-			auto resourceInfo = bindingMap[_name];
-			samplers[_name] = _sampler;
-		}
-	}
+	//void D3D11Material::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
+	//{
+	//	if (bindingMap.find(_name) != bindingMap.end() )//&& textures.find(_name) != textures.end())
+	//	{
+	//		auto resourceInfo = bindingMap[_name];
+	//		textures[_name] = _texture;
+	//	}
+	//}
 
-	void D3D11Material::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
-	{
-		if (bindingMap.find(_name) != bindingMap.end() )//&& textures.find(_name) != textures.end())
-		{
-			auto resourceInfo = bindingMap[_name];
-			textures[_name] = _texture;
-		}
-	}
-
-	void D3D11Material::SetTextureCube(const String& _name, Shared<TextureCube> _textureCube)
-	{
-		if (bindingMap.find(_name) != bindingMap.end() )//&& textureCubes.find(_name) != textureCubes.end())
-		{
-			auto resourceInfo = bindingMap[_name];
-			textureCubes[_name] = _textureCube;
-		}
-	}
-	void D3D11Material::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
-	{
-		if (bindingMap.find(_name) != bindingMap.end() )//&& cbuffers.find(_name) != cbuffers.end())
-		{
-			auto resourceInfo = bindingMap[_name];
-			cbuffers[_name] = _buffer;
-		}
-	}
+	//void D3D11Material::SetTextureCube(const String& _name, Shared<TextureCube> _textureCube)
+	//{
+	//	if (bindingMap.find(_name) != bindingMap.end() )//&& textureCubes.find(_name) != textureCubes.end())
+	//	{
+	//		auto resourceInfo = bindingMap[_name];
+	//		textureCubes[_name] = _textureCube;
+	//	}
+	//}
+	//void D3D11Material::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
+	//{
+	//	if (bindingMap.find(_name) != bindingMap.end() )//&& cbuffers.find(_name) != cbuffers.end())
+	//	{
+	//		auto resourceInfo = bindingMap[_name];
+	//		cbuffers[_name] = _buffer;
+	//	}
+	//}
 }

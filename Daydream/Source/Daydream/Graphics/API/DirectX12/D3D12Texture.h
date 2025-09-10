@@ -2,6 +2,7 @@
 
 #include "Daydream/Graphics/Resources/Texture.h"
 #include "D3D12RenderDevice.h"
+#include "D3D12Sampler.h"
 
 namespace Daydream
 {
@@ -13,31 +14,30 @@ namespace Daydream
 		//D3D12Texture2D(D3D12RenderDevice* _device, ComPtr<ID3D12Resource> _texture);
 		virtual ~D3D12Texture2D();
 
+		virtual void SetSampler(Shared<Sampler> _sampler) override;
+
 		virtual inline void* GetNativeHandle() override { return texture.Get(); }
 		virtual inline void* GetImGuiHandle() { return reinterpret_cast<void*>(GetSRVGPUHandle().ptr); }
 
 		// ºä »ý¼º ¹× Ä³½Ì
 		inline ID3D12Resource* GetID3D12Resource() { return texture.Get(); }
-		inline D3D12_RESOURCE_STATES GetCurrentState() { return currentState; }
-		inline D3D12_CPU_DESCRIPTOR_HANDLE GetSRVCPUHandle() { return srvCpuHandle; }
-		inline D3D12_GPU_DESCRIPTOR_HANDLE GetSRVGPUHandle() { return srvGpuHandle; }
+		inline D3D12_CPU_DESCRIPTOR_HANDLE GetSRVCPUHandle() const { return srvCpuHandle; }
+		inline D3D12_GPU_DESCRIPTOR_HANDLE GetSRVGPUHandle() const { return srvGpuHandle; }
 
-		inline D3D12_CPU_DESCRIPTOR_HANDLE GetRTVCPUHandle() { return rtvCpuHandle; }
+		inline D3D12_CPU_DESCRIPTOR_HANDLE GetRTVCPUHandle() const { return rtvCpuHandle; }
 
 		inline const D3D12_CPU_DESCRIPTOR_HANDLE& GetDSVCPUHandle() { return dsvCpuHandle; }
 
-		inline D3D12_CPU_DESCRIPTOR_HANDLE GetUAVCPUHandle() { return uavCpuHandle; }
-		inline D3D12_GPU_DESCRIPTOR_HANDLE GetUAVGPUHandle() { return uavGpuHandle; }
-		inline D3D12_CPU_DESCRIPTOR_HANDLE GetSamplerCPUHandle() { return samplerCpuHandle; }
-		inline D3D12_GPU_DESCRIPTOR_HANDLE GetSamplerGPUHandle() { return samplerGpuHandle; }
+		inline D3D12_CPU_DESCRIPTOR_HANDLE GetUAVCPUHandle() const { return uavCpuHandle; }
+		inline D3D12_GPU_DESCRIPTOR_HANDLE GetUAVGPUHandle() const { return uavGpuHandle; }
+
+		inline D3D12_GPU_DESCRIPTOR_HANDLE GetSamplerHandle() { return textureSampler->GetSamplerHandle(); }
 		//const D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() const { return gpuHandle; };
 	private:
 		D3D12RenderDevice* device;
-		ComPtr<ID3D12Resource> texture;
-		D3D12_RESOURCE_STATES currentState;
+		D3D12Sampler* textureSampler;
 
-		D3D12_CPU_DESCRIPTOR_HANDLE samplerCpuHandle = {};
-		D3D12_GPU_DESCRIPTOR_HANDLE samplerGpuHandle = {};
+		ComPtr<ID3D12Resource> texture;
 
 		D3D12_CPU_DESCRIPTOR_HANDLE srvCpuHandle = {};
 		D3D12_GPU_DESCRIPTOR_HANDLE srvGpuHandle = {};

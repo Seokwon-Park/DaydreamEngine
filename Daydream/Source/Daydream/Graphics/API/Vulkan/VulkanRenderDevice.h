@@ -2,6 +2,7 @@
 
 #include "vulkan/vulkan.h"
 
+//#define VULKAN_HPP_NO_EXCEPTIONS
 #define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
 #include "vulkan/vulkan.hpp"
 
@@ -27,7 +28,8 @@ namespace Daydream
 		std::optional<UInt32> graphicsFamily;
 		//std::optional<UInt32> presentFamily; // 지금은 필요없는듯.
 
-		bool IsComplete() {
+		bool IsComplete()
+		{
 			return graphicsFamily.has_value();
 		}
 	};
@@ -63,6 +65,7 @@ namespace Daydream
 		virtual Shared<Swapchain> CreateSwapchain(DaydreamWindow* _window, const SwapchainDesc& _desc)override;
 		virtual Shared<Texture2D> CreateTexture2D(const void* _imageData, const TextureDesc& _desc)override;
 		virtual Shared<TextureCube> CreateTextureCube(Array<Array<UInt8>> _imagePixels, const TextureDesc& _desc)override;
+		virtual Shared<Sampler> CreateSampler(const SamplerDesc& _desc)override;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() override;
 		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) override;
 		virtual Shared<Material> CreateMaterial(Shared<PipelineState> _pipeline) override;

@@ -1,6 +1,8 @@
 #include "DaydreamPCH.h"
 #include "Texture2DManager.h"
 
+#include "Daydream/Core/ResourceManager.h"
+
 namespace Daydream
 {
 	void Texture2DManager::LoadTexturesFromDirectory(Path _directory, bool _isRecursive)
@@ -41,6 +43,7 @@ namespace Daydream
 						//}
 						textureDesc.format = isSRGB ? RenderFormat::R8G8B8A8_UNORM_SRGB : RenderFormat::R8G8B8A8_UNORM;
 						resourceCache[pathString] = Texture2D::Create(pathString, textureDesc);
+						resourceCache[pathString]->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
 						break;
 					}
 				}

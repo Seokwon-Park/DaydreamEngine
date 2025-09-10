@@ -10,6 +10,7 @@
 #include "VulkanImGuiRenderer.h"
 #include "VulkanTexture.h"
 #include "VulkanTextureCube.h"
+#include "VulkanSampler.h"
 #include "VulkanMaterial.h"
 #include "Daydream/Graphics/Utility/GraphicsUtility.h"
 #include "Daydream/Graphics/Utility/ImageLoader.h"
@@ -301,6 +302,11 @@ namespace Daydream
 		CopyBufferToImage(uploadBuffer.get(), textureCube->GetImage(), bufferCopyRegions);
 
 		return textureCube;
+	}
+
+	Shared<Sampler> VulkanRenderDevice::CreateSampler(const SamplerDesc& _desc)
+	{
+		return MakeShared<VulkanSampler>(this, _desc);
 	}
 
 	Unique<ImGuiRenderer> VulkanRenderDevice::CreateImGuiRenderer()
@@ -721,12 +727,11 @@ namespace Daydream
 
 		vk::DebugUtilsMessengerCreateInfoEXT createInfo;
 		PopulateDebugMessengerCreateInfo(createInfo);
-
 		debugMessenger = instance->createDebugUtilsMessengerEXTUnique(createInfo);
 	}
 	void VulkanRenderDevice::PickPhysicalDevice()
 	{
-		auto physicalDevices = instance->enumeratePhysicalDevices();
+		Array<vk::PhysicalDevice> physicalDevices = instance->enumeratePhysicalDevices();
 		if (physicalDevices.empty())
 		{
 			DAYDREAM_CORE_ERROR("Failed to find GPUs with Vulkan support!");

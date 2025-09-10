@@ -96,9 +96,13 @@ namespace Daydream
             case FieldType::Light:
             {
                 Light* data = static_cast<Light*>(field.data);
-
                 UI::DrawLightController("Light", *data);
                 break;
+            }
+            case FieldType::ModelPtr:
+            {
+                Model* data = static_cast<Model*>(field.data);
+                UI::DrawModelController("Model", *data);
             }
             }
         }

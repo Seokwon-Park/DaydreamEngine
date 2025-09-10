@@ -12,8 +12,7 @@ namespace Daydream
 
 		width = _desc.width;
 		height = _desc.height;
-		imageSize = width * height * 4;
-		imageFormat = GraphicsUtility::Vulkan::ConvertRenderFormatToVkFormat(_desc.format);
+		vk::Format imageFormat = GraphicsUtility::Vulkan::ConvertRenderFormatToVkFormat(_desc.format);
 
 		vk::ImageCreateInfo imageInfo{};
 		vma::AllocationCreateInfo allocInfo{};
@@ -62,35 +61,13 @@ namespace Daydream
 		viewInfo.subresourceRange.layerCount = 6;
 
 		textureImageView = device->CreateImageView(viewInfo);
-
-
-		CreateSampler();
 	}
 	VulkanTextureCube::~VulkanTextureCube()
 	{
 	}
 
-	void VulkanTextureCube::CreateSampler()
+	void VulkanTextureCube::SetSampler(Shared<Sampler> _sampler)
 	{
-		vk::PhysicalDeviceProperties properties = device->GetPhysicalDevice().getProperties();
-
-		vk::SamplerCreateInfo samplerInfo{};
-		samplerInfo.magFilter = vk::Filter::eLinear;
-		samplerInfo.minFilter = vk::Filter::eLinear;
-		samplerInfo.addressModeU = vk::SamplerAddressMode::eRepeat;
-		samplerInfo.addressModeV = vk::SamplerAddressMode::eRepeat;
-		samplerInfo.addressModeW = vk::SamplerAddressMode::eRepeat;
-		samplerInfo.anisotropyEnable = VK_TRUE;
-		samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
-		//samplerInfo.anisotropyEnable = VK_FALSE;
-		//samplerInfo.maxAnisotropy = 1.0f;
-		samplerInfo.borderColor = vk::BorderColor::eIntOpaqueBlack;
-		samplerInfo.unnormalizedCoordinates = VK_FALSE;
-		samplerInfo.compareEnable = VK_FALSE;
-		samplerInfo.compareOp = vk::CompareOp::eAlways;
-		samplerInfo.mipmapMode = vk::SamplerMipmapMode::eLinear;
-
-		textureSampler = device->GetDevice().createSamplerUnique(samplerInfo);
+		textureSampler = static_cast<VulkanSampler*>(_sampler.get());
 	}
-
 }

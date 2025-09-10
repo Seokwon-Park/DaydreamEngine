@@ -184,6 +184,100 @@ namespace Daydream::GraphicsUtility::Vulkan
 		return vkFlags;
 	}
 
+	constexpr vk::SamplerAddressMode ConvertToVkAddressMode(WrapMode _wrapMode)
+	{
+		switch (_wrapMode)
+		{
+		case WrapMode::Repeat:
+			return vk::SamplerAddressMode::eRepeat;
+		case WrapMode::ClampToEdge:
+			return vk::SamplerAddressMode::eClampToEdge;
+		case WrapMode::ClampToBorder:
+			return vk::SamplerAddressMode::eClampToBorder;
+		case WrapMode::MirrorRepeat:
+			return vk::SamplerAddressMode::eMirroredRepeat;
+		default:
+			break;
+		}
+		return vk::SamplerAddressMode::eRepeat;
+	}
+
+	constexpr vk::Filter ConvertToVkFilter(FilterMode _filterMode)
+	{
+		switch (_filterMode)
+		{
+		case FilterMode::Nearest:
+		case FilterMode::NearestMipmapNearest:
+		case FilterMode::NearestMipmapLinear:
+			return vk::Filter::eNearest;
+
+		case FilterMode::Linear:
+		case FilterMode::LinearMipmapNearest:
+		case FilterMode::LinearMipmapLinear:
+			return vk::Filter::eLinear;
+		default:
+			break;
+		}
+		return vk::Filter::eLinear;
+	}
+
+	constexpr vk::SamplerMipmapMode ConvertToVkMipmapMode(FilterMode _mipMapFilterMode)
+	{
+		switch (_mipMapFilterMode)
+		{
+		case FilterMode::Nearest:
+		case FilterMode::NearestMipmapNearest:
+		case FilterMode::LinearMipmapNearest:
+			return vk::SamplerMipmapMode::eNearest;
+
+		case FilterMode::Linear:
+		case FilterMode::NearestMipmapLinear:
+		case FilterMode::LinearMipmapLinear:
+			return vk::SamplerMipmapMode::eLinear;
+		default:
+			break;
+		}
+		return vk::SamplerMipmapMode::eLinear;
+	}
+
+	constexpr vk::CompareOp ConvertToVkCompareOp(ComparisonFunc _func)
+	{
+		switch (_func)
+		{
+		case ComparisonFunc::Never:        return vk::CompareOp::eNever;
+		case ComparisonFunc::Less:         return vk::CompareOp::eLess;
+		case ComparisonFunc::Equal:        return vk::CompareOp::eEqual;
+		case ComparisonFunc::LessEqual:    return vk::CompareOp::eLessOrEqual;
+		case ComparisonFunc::Greater:      return vk::CompareOp::eGreater;
+		case ComparisonFunc::NotEqual:     return vk::CompareOp::eNotEqual;
+		case ComparisonFunc::GreaterEqual: return vk::CompareOp::eGreaterOrEqual; 
+		case ComparisonFunc::Always:       return vk::CompareOp::eAlways;
+		default:
+			break;
+		}
+		return vk::CompareOp::eNever;
+	}
+
+	vk::SamplerCreateInfo TranslateToVulkanSamplerCreateInfo(const SamplerDesc& _desc)
+	{
+		vk::SamplerCreateInfo info{};
+		
+		info.magFilter = ConvertToVkFilter(_desc.magFilter);
+		info.minFilter = ConvertToVkFilter(_desc.minFilter);
+		info.mipmapMode = ConvertToVkMipmapMode(_desc.mipFilter);
+		info.addressModeU = ConvertToVkAddressMode(_desc.wrapU);
+		info.addressModeV = ConvertToVkAddressMode(_desc.wrapV);
+		info.addressModeW = ConvertToVkAddressMode(_desc.wrapW);
+		info.anisotropyEnable = VK_FALSE;
+		info.maxAnisotropy = _desc.maxAnisotropy;
+		info.borderColor = vk::BorderColor::eIntTransparentBlack;
+		info.unnormalizedCoordinates = VK_FALSE;
+		info.compareEnable = VK_FALSE;
+		info.compareOp = ConvertToVkCompareOp(_desc.comparisonFunc);
+
+		return info;
+	}
+
 	constexpr vk::CullModeFlags ConvertToVulkanCullMode(const CullMode& _cullMode)
 	{
 		switch (_cullMode)

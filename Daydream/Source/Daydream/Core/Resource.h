@@ -6,12 +6,12 @@ namespace Daydream
 	{
 	public:
 		Resource() {};
-		Resource(const std::string& _name);
+		Resource(const String& _name);
 
-		inline void SetName(const std::string& _name) { name = _name; }
-		inline std::string GetName() const { return name; }
+		inline void SetName(const String& _name) { name = _name; }
+		inline String GetName() const { return name; }
 	private:
-		std::string name;
+		String name;
 
 	};
 }

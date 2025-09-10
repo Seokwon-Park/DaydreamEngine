@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Daydream/Graphics/Resources/Light.h"
+#include "Daydream/Graphics/Resources/Model.h"
 
 namespace Daydream::UI
 {
@@ -12,9 +13,10 @@ namespace Daydream::UI
 	void DrawTransformController(const String& _label, Transform& _transform,
 		Float32 _resetValue = 0.0f, Float32 _columnWidth = 100.0f);
 
+	void DrawColorEditor(const String& _label, Vector3& _color,Float32 _resetValue = 0.0f, Float32 _columnWidth = 100.0f);
 	//void MaterialControl(const String& _material);
 
 	void DrawLightController(const String& _label, Light& _light);
-	void DrawColorEditor(const String& _label, Vector3& _color,
-		Float32 _resetValue = 0.0f, Float32 _columnWidth = 100.0f);
+	void DrawModelController(const String& _label, Model& _model);
+
 }

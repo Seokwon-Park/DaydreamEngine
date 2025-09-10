@@ -9,7 +9,7 @@ namespace Daydream
 	{
 		device = _device;
 		desc = _desc;
-		GLFWwindow* window = Cast<GLFWwindow>(_window->GetNativeWindow());
+		window = Cast<GLFWwindow>(_window->GetNativeWindow());
 		//#if defined(DAYDREAM_PLATFORM_WINDOWS)
 		//		VkWin32SurfaceCreateInfoKHR createInfo{};
 		//		createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
@@ -105,8 +105,8 @@ namespace Daydream
 		vk::SwapchainKHR newSwapchain;
 
 		newSwapchain = device->GetDevice().createSwapchainKHR(createInfo);
-		
-		swapchain.release();
+
+		//swapchain.release();
 
 		swapchain = vk::UniqueSwapchainKHR(newSwapchain, vk::detail::ObjectDestroy<vk::Device, vk::detail::DispatchLoaderDynamic>(device->GetDevice()));
 
@@ -125,7 +125,7 @@ namespace Daydream
 	}
 	VulkanSwapchain::~VulkanSwapchain()
 	{
-		vkDeviceWaitIdle(device->GetDevice());
+		device->GetDevice().waitIdle();
 		//for (UInt32 i = 0; i < imageCount; i++)
 		//{
 		//	vkDestroySemaphore(device->GetDevice(), imageAvailableSemaphores[i], nullptr);
@@ -144,7 +144,7 @@ namespace Daydream
 		EndFrame();
 
 		BeginFrame();
-		
+
 		ResizeFramebuffers();
 
 		//framebuffers[currentFrame]->Begin();
@@ -152,26 +152,17 @@ namespace Daydream
 
 	void VulkanSwapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
 	{
-		// 1. 모든 GPU 작업 완료 대기
-		vkDeviceWaitIdle(device->GetDevice());
-
-		EndFrame();
-
 		desc.width = _width;
 		desc.height = _height;
-		framebuffers.clear();
+		// EndFrame();
+		// 1. 모든 GPU 작업 완료 대기
+	
 
-		CreateSwapchain();
+		//commandBuffers[currentFrame]->end();
+		//commandBuffers[currentFrame]->reset({});
+		//currentFrame = (currentFrame + 1) % imageCount;
 
-		framebuffers.resize(desc.bufferCount);
-		for (UInt32 i = 0; i < desc.bufferCount; i++)
-		{
-			framebuffers[i] = MakeShared<VulkanFramebuffer>(device, this, renderPass.get(), swapchainImages[i]);
-		}
-
-		currentFrame = (currentFrame + 1) % imageCount;
-
-		BeginFrame();
+		//BeginFrame();
 
 		//VkViewport viewport{};
 		////viewport.x = 0.0f;
@@ -192,16 +183,22 @@ namespace Daydream
 		//vkCmdSetScissor(device->GetCommandBuffer(), 0, 1, &scissor);
 	}
 
+
 	void VulkanSwapchain::BeginFrame()
 	{
 		//이전 프레임의 GPU 작업 완료됐다는 신호를 inFlightFence로 받기로 하고 대기
 		auto result = device->GetDevice().waitForFences(1, &inFlightFences[currentFrame].get(), VK_FALSE, UINT64_MAX);
+
 
 		//완료 됐으면 펜스 상태는 신호받기 전으로
 		result = device->GetDevice().resetFences(1, &inFlightFences[currentFrame].get());
 
 		//이미지를 GPU에 요청. 사용가능한 이미지의 인덱스를 imageIndex로 전달하고 imageAvailableSemaphore에 신호를 전달하라는 명령
 		result = device->GetDevice().acquireNextImageKHR(swapchain.get(), UINT64_MAX, imageAvailableSemaphores[currentFrame].get(), VK_NULL_HANDLE, &imageIndex);
+		if (result == vk::Result::eErrorOutOfDateKHR)
+		{
+			RecreateSwapchain();
+		}
 
 		//이미지 요청만 해놓고 일단 커맨드 받기 시작
 		device->SetCommandBuffer(commandBuffers[currentFrame].get());
@@ -245,9 +242,34 @@ namespace Daydream
 		presentInfo.pSwapchains = &swapchain.get();
 		presentInfo.pImageIndices = &imageIndex;
 
-		result = device->GetGraphicsQueue().presentKHR(presentInfo);
+		try
+		{
+			result = device->GetGraphicsQueue().presentKHR(presentInfo);
+		}
+		catch (const vk::OutOfDateKHRError& e)
+		{
+			RecreateSwapchain();
+		}
 
 		currentFrame = (currentFrame + 1) % imageCount;
+	}
+
+	void VulkanSwapchain::RecreateSwapchain()
+	{
+		device->GetDevice().waitIdle();
+
+		//commandBuffers[currentFrame]->reset({});
+		framebuffers.clear();
+		swapchainImages.clear();
+		swapchain.reset();
+		CreateSwapchain();
+		swapchainImages = device->GetDevice().getSwapchainImagesKHR(swapchain.get());
+
+		framebuffers.resize(desc.bufferCount);
+		for (UInt32 i = 0; i < desc.bufferCount; i++)
+		{
+			framebuffers[i] = MakeShared<VulkanFramebuffer>(device, this, renderPass.get(), swapchainImages[i]);
+		}
 	}
 
 	vk::SurfaceFormatKHR VulkanSwapchain::ChooseSwapSurfaceFormat(const Array<vk::SurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat)

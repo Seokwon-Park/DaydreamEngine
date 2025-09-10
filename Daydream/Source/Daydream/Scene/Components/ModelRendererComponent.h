@@ -5,7 +5,7 @@
 
 namespace Daydream
 {
-	struct WorldConstantBuffer
+	struct TransformConstantBufferData
 	{
 		Matrix4x4 world;
 		Matrix4x4 invTranspose;
@@ -23,16 +23,13 @@ namespace Daydream
 		virtual void Update(Float32 _deltaTime) override {};
 
 		void SetModel(Shared<Model> _model);
-		void SetMaterial(Shared<Material> _material) { material = _material.get(); }
 		void Render();
 
 		REFLECT_START()
-			ADD_PROPERTY(FieldType::Model, model)
-			ADD_PROPERTY(FieldType::Material, material)
+			ADD_PTR_PROPERTY(FieldType::ModelPtr, model)
 		REFLECT_END()
 	private:
 		Model* model;
-		Material* material;
 		Shared<ConstantBuffer> worldMatrix;
 	};
 }

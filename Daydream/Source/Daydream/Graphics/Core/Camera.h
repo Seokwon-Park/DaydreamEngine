@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Daydream/Graphics/Resources/Buffer.h"
+
 namespace Daydream
 {
 	enum class ProjectionType { Orthographic, Perspective };
@@ -15,6 +17,7 @@ namespace Daydream
 		const Matrix4x4& GetViewMatrix() const;
 		const Matrix4x4& GetProjectionMatrix() const;
 		const Matrix4x4& GetViewProjectionMatrix();
+		Shared<ConstantBuffer> GetViewProjectionConstantBuffer() const { return viewProjectionBuffer; }
 
 		Vector3 GetForward();
 		Vector3 GetUp();
@@ -29,9 +32,11 @@ namespace Daydream
 		void SetProjectionType(ProjectionType _type) { projectionType = _type; }
 
 	protected:
-		void UpdateMatrix();
+		void UpdateViewProjectionMatrix();
 		void UpdateViewMatrix();
 		void UpdateProjectionMatrix();
+
+		Shared<ConstantBuffer> viewProjectionBuffer;
 
 		Matrix4x4 projectionMatrix;
 		Matrix4x4 viewMatrix;
@@ -44,7 +49,6 @@ namespace Daydream
 		Float32 fovy;
 		Float32 orthoSize;
 		Float32 aspectRatio;
-
 
 		ProjectionType projectionType = ProjectionType::Perspective;
 	};

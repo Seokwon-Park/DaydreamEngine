@@ -47,6 +47,7 @@ namespace Daydream
         float lodBias = 0.0f;
 
         float maxAnisotropy = 1.0f;
+        bool comparisonEnable = false;
         ComparisonFunc comparisonFunc = ComparisonFunc::Never;
         float borderColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
     };

@@ -2,6 +2,7 @@
 #include "OpenGLMaterial.h"
 #include "OpenGLTexture.h"
 #include "OpenGLTextureCube.h"
+#include "OpenGLSampler.h"
 #include "OpenGLBuffer.h"
 
 namespace Daydream
@@ -26,10 +27,6 @@ namespace Daydream
 					textures[info.name] = nullptr;
 					break;
 				}
-				case ShaderResourceType::Sampler:
-				{
-					break;
-				}
 				default:
 					break;
 				}
@@ -41,40 +38,23 @@ namespace Daydream
 		for (auto [name, texture] : textures)
 		{
 			if (texture == nullptr) continue;
-			glBindTextureUnit(bindingMap[name].binding, static_cast<UInt32>(reinterpret_cast<uintptr_t>(texture->GetNativeHandle())));
+			Shared<OpenGLTexture2D> glTextexture = static_pointer_cast<OpenGLTexture2D>(texture);
+			glBindTextureUnit(bindingMap[name].binding, glTextexture->GetTextureID());
+			glBindSampler(bindingMap[name].binding, glTextexture->GetSamplerID());
 		}
 
 		for (auto [name, texture] : textureCubes)
 		{
 			if (texture == nullptr) continue;
-			glBindTextureUnit(bindingMap[name].binding, static_cast<UInt32>(reinterpret_cast<uintptr_t>(texture->GetNativeHandle())));
+			Shared<OpenGLTextureCube> glTextexture = static_pointer_cast<OpenGLTextureCube>(texture);
+			glBindTextureUnit(bindingMap[name].binding, glTextexture->GetTextureID());
+			glBindSampler(bindingMap[name].binding, glTextexture->GetSamplerID());
 		}
 
 		for (auto [name, cbuffer] : cbuffers)
 		{
 			if (cbuffer == nullptr) continue;
 			glBindBufferBase(GL_UNIFORM_BUFFER, bindingMap[name].binding, static_cast<UInt32>(reinterpret_cast<uintptr_t>(cbuffer->GetNativeHandle())));
-		}
-	}
-	void OpenGLMaterial::SetTexture2D(const std::string& _name, Shared<Texture2D> _texture)
-	{
-		if (bindingMap.find(_name) != bindingMap.end() && textures.find(_name) != textures.end())
-		{
-			textures[_name] = _texture;
-		}
-	}
-	void OpenGLMaterial::SetTextureCube(const std::string& _name, Shared<TextureCube> _texture)
-	{
-		if (bindingMap.find(_name) != bindingMap.end())
-		{
-			textureCubes[_name] = _texture;
-		}
-	}
-	void OpenGLMaterial::SetConstantBuffer(const std::string& _name, Shared<ConstantBuffer> _buffer)
-	{
-		if (bindingMap.find(_name) != bindingMap.end() && cbuffers.find(_name) != cbuffers.end())
-		{
-			cbuffers[_name] = _buffer;
 		}
 	}
 }

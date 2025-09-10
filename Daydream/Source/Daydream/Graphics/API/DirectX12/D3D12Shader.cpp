@@ -140,6 +140,7 @@ namespace Daydream
 
 			D3D_SHADER_INPUT_TYPE type = bindDesc.Type;
 
+			ShaderReflectionData sr{};
 			switch (type)
 			{
 			case D3D_SIT_CBUFFER:
@@ -148,22 +149,21 @@ namespace Daydream
 				D3D12_SHADER_BUFFER_DESC cbufferDesc;
 				cbuffer->GetDesc(&cbufferDesc);
 
-				ShaderReflectionData sr{};
 				sr.name = name;
 				sr.shaderResourceType = ShaderResourceType::ConstantBuffer;
-				sr.set = 0; // D3D11에서는 set 개념이 없음
+				sr.set = 0; 
 				sr.binding = bindDesc.BindPoint;
 				sr.count = bindDesc.BindCount;
 				sr.size = cbufferDesc.Size;
+				sr.shaderType = shaderType;
 				reflectionDatas.push_back(sr);
 				break;
 			}
 			case D3D_SIT_TEXTURE:
 			{
-				ShaderReflectionData sr{};
 				sr.name = name;
 				sr.shaderResourceType = ShaderResourceType::Texture;
-				sr.set = 0; // D3D11에서는 set 개념이 없음
+				sr.set = 0;
 				sr.binding = bindDesc.BindPoint;
 				sr.count = bindDesc.BindCount;
 				reflectionDatas.push_back(sr);
@@ -172,10 +172,9 @@ namespace Daydream
 			}
 			case D3D_SIT_SAMPLER:
 			{
-				ShaderReflectionData sr{};
 				sr.name = name;
 				sr.shaderResourceType = ShaderResourceType::Sampler;
-				sr.set = 0; // D3D11에서는 set 개념이 없음
+				sr.set = 0; 
 				sr.binding = bindDesc.BindPoint;
 				sr.count = bindDesc.BindCount;
 				reflectionDatas.push_back(sr);

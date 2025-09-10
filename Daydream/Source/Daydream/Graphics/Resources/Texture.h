@@ -2,6 +2,7 @@
 
 #include "Daydream/Enum/RendererEnums.h"
 #include "Daydream/Core/Resource.h"
+#include "Daydream/Graphics/Resources/Sampler.h"
 
 namespace Daydream
 {
@@ -31,6 +32,8 @@ namespace Daydream
 
 		virtual UInt32 GetWidth() const = 0;
 		virtual UInt32 GetHeight() const = 0;
+
+		virtual void SetSampler(Shared<Sampler> _sampler) = 0;
 
 		virtual void* GetNativeHandle() = 0;
 		//virtual void* GetImGuiHandle() = 0;

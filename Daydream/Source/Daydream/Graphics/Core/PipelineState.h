@@ -45,6 +45,7 @@ namespace Daydream
 		virtual void Bind() const = 0;
 		virtual Shared<Material> CreateMaterial() = 0;
 
+		const Shared<ShaderGroup>& GetShaderGroup() { return shaderGroup; }
 		const Array<Shared<Shader>>& GetShaders() { return shaderGroup->GetShaders(); };
 				
 		static Shared<PipelineState> Create(const PipelineStateDesc& _desc);

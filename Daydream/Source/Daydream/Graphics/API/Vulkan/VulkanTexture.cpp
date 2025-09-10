@@ -3,6 +3,7 @@
 
 #include "VulkanUtility.h"
 #include "Daydream/Graphics/Utility/ImageLoader.h"
+#include "Daydream/Core/ResourceManager.h"
 #include "backends/imgui_impl_vulkan.h"
 
 namespace Daydream
@@ -14,8 +15,7 @@ namespace Daydream
 
 		width = _desc.width;
 		height = _desc.height;
-		imageSize = width * height * 4;
-		imageFormat = GraphicsUtility::Vulkan::ConvertRenderFormatToVkFormat(_desc.format);
+		vk::Format imageFormat = GraphicsUtility::Vulkan::ConvertRenderFormatToVkFormat(_desc.format);
 
 		vk::ImageCreateInfo imageInfo{};
 		vma::AllocationCreateInfo allocInfo{};
@@ -67,32 +67,8 @@ namespace Daydream
 			textureImageView = device->CreateImageView(textureImage.get(), imageFormat,
 				vk::ImageAspectFlagBits::eColor);
 		}
-
-		CreateSampler();
 	}
 
-	void VulkanTexture2D::CreateSampler()
-	{
-		vk::PhysicalDeviceProperties properties = device->GetPhysicalDevice().getProperties();
-
-		vk::SamplerCreateInfo samplerInfo{};
-		samplerInfo.magFilter = vk::Filter::eLinear;
-		samplerInfo.minFilter = vk::Filter::eLinear;
-		samplerInfo.addressModeU = vk::SamplerAddressMode::eRepeat;
-		samplerInfo.addressModeV = vk::SamplerAddressMode::eRepeat;
-		samplerInfo.addressModeW = vk::SamplerAddressMode::eRepeat;
-		//samplerInfo.anisotropyEnable = VK_TRUE;
-		//samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
-		samplerInfo.anisotropyEnable = VK_FALSE;
-		samplerInfo.maxAnisotropy = 1.0f;
-		samplerInfo.borderColor = vk::BorderColor::eIntTransparentBlack;
-		samplerInfo.unnormalizedCoordinates = VK_FALSE;
-		samplerInfo.compareEnable = VK_FALSE;
-		samplerInfo.compareOp = vk::CompareOp::eNever;
-		samplerInfo.mipmapMode = vk::SamplerMipmapMode::eLinear;
-
-		textureSampler = device->GetDevice().createSamplerUnique(samplerInfo);
-	}
 
 	VulkanTexture2D::~VulkanTexture2D()
 	{
@@ -100,20 +76,26 @@ namespace Daydream
 		ImGuiDescriptorSet = VK_NULL_HANDLE;
 	}
 
+	void VulkanTexture2D::SetSampler(Shared<Sampler> _sampler)
+	{
+		textureSampler = static_cast<VulkanSampler*>(_sampler.get());
+	}
+
 	void* VulkanTexture2D::GetImGuiHandle()
 	{
 		if (ImGuiDescriptorSet != VK_NULL_HANDLE) return ImGuiDescriptorSet;
-		return ImGuiDescriptorSet = ImGui_ImplVulkan_AddTexture(textureSampler.get(), textureImageView.get(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		auto imguiSampler = static_cast<VulkanSampler*>(ResourceManager::GetResource<Sampler>("LinearRepeat").get());
+		return ImGuiDescriptorSet = ImGui_ImplVulkan_AddTexture(imguiSampler->GetSampler(), textureImageView.get(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 	}
 
-	void VulkanTexture2D::AllocateDescriptorSet(vk::DescriptorSetLayout _layout)
-	{
-		vk::DescriptorSetAllocateInfo allocInfo{};
-		allocInfo.descriptorPool = device->GetDescriptorPool();
-		allocInfo.descriptorSetCount = 1;
-		allocInfo.pSetLayouts = &_layout;
+	//void VulkanTexture2D::AllocateDescriptorSet(vk::DescriptorSetLayout _layout)
+	//{
+	//	vk::DescriptorSetAllocateInfo allocInfo{};
+	//	allocInfo.descriptorPool = device->GetDescriptorPool();
+	//	allocInfo.descriptorSetCount = 1;
+	//	allocInfo.pSetLayouts = &_layout;
 
-		textureSet = device->GetDevice().allocateDescriptorSetsUnique(allocInfo);
-	}
+	//	textureSet = device->GetDevice().allocateDescriptorSetsUnique(allocInfo);
+	//}
 
 }

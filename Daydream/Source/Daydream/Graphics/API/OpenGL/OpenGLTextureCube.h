@@ -1,5 +1,6 @@
 #pragma once
 
+#include "OpenGLSampler.h"
 #include "Daydream/Graphics/Resources/TextureCube.h"
 
 namespace Daydream
@@ -10,8 +11,15 @@ namespace Daydream
 		// Constrcuter Destructer
 		OpenGLTextureCube(const TextureDesc& _desc, const Array<Array<UInt8>>& _initialData);
 		virtual ~OpenGLTextureCube();
+
+		virtual void SetSampler(Shared<Sampler> _sampler) override;
+
 		virtual inline void* GetNativeHandle() override { return reinterpret_cast<void*>(static_cast<UInt64>(textureID)); }
+
+		UInt32 GetTextureID() const { return textureID; }
+		UInt32 GetSamplerID() const { return textureSampler->GetSamplerID(); }
 	private:
 		UInt32 textureID;
+		OpenGLSampler* textureSampler;
 	};
 }

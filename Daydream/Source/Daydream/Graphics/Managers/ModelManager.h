@@ -8,6 +8,8 @@ namespace Daydream
 	{
 	public:
 		ModelManager();
+
+		void LoadModelsFromDirectory(Path _directory, bool _isRecursive = false);
 	private:
 		HashMap<String, Shared<Model>> meshCache;
 	};

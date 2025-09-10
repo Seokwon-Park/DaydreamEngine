@@ -4,7 +4,7 @@
 namespace Daydream
 {
 
-	Array<MeshData> ModelLoader::LoadFromFileInternal(const Path& _filepath)
+	ModelData ModelLoader::LoadFromFileInternal(const Path& _filepath)
 	{
 		Assimp::Importer importer;
 
@@ -12,7 +12,8 @@ namespace Daydream
 		basePath = basePath.parent_path();
 		baseDirectory = basePath;
 
-		modelData.clear();
+		modelData.meshes.clear();
+		modelData.materials.clear();
 
 		UInt32 flags = aiProcess_Triangulate | aiProcess_ConvertToLeftHanded;// |           // 모든 면을 삼각형으로 변환
 			//aiProcess_FlipUVs |				// UV 좌표 뒤집기 (OpenGL용)
@@ -99,7 +100,7 @@ namespace Daydream
 			}
 		}
 
-		modelData.push_back(meshData);
+		modelData.meshes.push_back(meshData);
 
 		if (_mesh->mMaterialIndex >= 0)
 		{
@@ -130,7 +131,7 @@ namespace Daydream
 		{
 			materialData.shininess = shininess;
 		}
-		modelData.back().materialData = materialData;
+		modelData.materials.push_back(materialData);
 	}
 
 	void ModelLoader::GetTexturePath(aiMaterial* _mat, aiTextureType _type, std::string& _outPath)

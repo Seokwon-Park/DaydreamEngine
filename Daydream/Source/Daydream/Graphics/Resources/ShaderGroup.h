@@ -27,6 +27,7 @@ namespace Daydream
 
 		const Array<ShaderReflectionData>& GetInputData() { return inputReflectionData; }
 		const Array<ShaderReflectionData>& GetShaderResourceData() { return shaderResourceReflectionData; }
+		Array<ShaderReflectionData>& GetShaderResourceDataRef() { return shaderResourceReflectionData; }
 	private:
 		ShaderGroup(Shared<Shader> _vertexShader, Shared<Shader> _hullShader, Shared<Shader> _domainShader, Shared<Shader> _geometryShader, Shared<Shader> _pixelShader);
 

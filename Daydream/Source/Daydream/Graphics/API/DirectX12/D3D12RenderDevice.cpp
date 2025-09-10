@@ -10,6 +10,7 @@
 #include "D3D12ImGuiRenderer.h"
 #include "D3D12Texture.h"
 #include "D3D12TextureCube.h"
+#include "D3D12Sampler.h"
 #include "Daydream/Graphics/Utility/GraphicsUtility.h"
 
 namespace Daydream
@@ -143,7 +144,7 @@ namespace Daydream
 			D3D12_DESCRIPTOR_HEAP_DESC desc{};
 			desc.NumDescriptors = 1024;
 			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(cbvSrvUavHeap.GetAddressOf()));
 			DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create cbvSrvUav descriptor heap");
 			cbvSrvUavHeapAlloc.Create(device.Get(), cbvSrvUavHeap.Get());
@@ -400,6 +401,11 @@ namespace Daydream
 		//);
 
 		return texture;
+	}
+
+	Shared<Sampler> D3D12RenderDevice::CreateSampler(const SamplerDesc& _desc)
+	{
+		return MakeShared<D3D12Sampler>(this, _desc);
 	}
 
 	Unique<ImGuiRenderer> D3D12RenderDevice::CreateImGuiRenderer()

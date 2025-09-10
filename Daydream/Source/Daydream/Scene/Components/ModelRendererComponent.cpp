@@ -4,12 +4,13 @@
 #include "TransformComponent.h"
 
 #include "Daydream/Graphics/Core/Renderer.h"
+#include "Daydream/Core/ResourceManager.h"
 
 namespace Daydream
 {
 	ModelRendererComponent::ModelRendererComponent()
 	{
-		worldMatrix = ConstantBuffer::Create(sizeof(WorldConstantBuffer));
+		worldMatrix = ConstantBuffer::Create(sizeof(TransformConstantBufferData));
 	}
 
 	ModelRendererComponent::~ModelRendererComponent()
@@ -29,21 +30,33 @@ namespace Daydream
 	void ModelRendererComponent::Render()
 	{
 		Transform transform = GetOwner()->GetComponent<TransformComponent>()->GetTransform();
-		WorldConstantBuffer data;
+		TransformConstantBufferData data;
 		data.world = transform.GetWorldMatrix();
 		data.invTranspose = data.world;
 		data.invTranspose.MatrixInverse();
 		data.invTranspose.MatrixTranspose();
-		worldMatrix->Update(&data, sizeof(data));
-		material->SetConstantBuffer("World", worldMatrix);
-		
-		for (auto mesh : model->GetMeshes())
+
+
+		//for (auto mesh : model->GetMeshes())
+		//{
+		//	mesh->Bind();
+		//	material->SetTexture2D("Texture", mesh->GetDiffuseTexture());
+		//	material->SetTexture2D("NormalTexture", mesh->GetNormalTexture());
+		//	
+		//	material->Bind();
+		//	Renderer::Submit(mesh->GetIndexCount());
+		//}
+		auto meshes = model->GetMeshes();
+		auto materials = model->GetMaterials();
+		for (int i = 0; i< model->GetMeshes().size(); i++)
 		{
-			mesh->Bind();
-			material->SetTexture2D("Texture", mesh->GetDiffuseTexture());
-			material->SetTexture2D("NormalTexture", mesh->GetNormalTexture());
-			material->Bind();
-			Renderer::Submit(mesh->GetIndexCount());
+			meshes[i]->Bind();
+			worldMatrix->Update(&data, sizeof(data));
+			materials[i]->SetConstantBuffer("World", worldMatrix);
+			materials[i]->SetConstantBuffer("Camera", GetOwner()->GetScene()->GetCurrentCamera()->GetViewProjectionConstantBuffer());
+			materials[i]->SetConstantBuffer("Lights", GetOwner()->GetScene()->GetLightConstantBuffer());
+			materials[i]->Bind();
+			Renderer::Submit(meshes[i]->GetIndexCount());
 		}
 	}
 }

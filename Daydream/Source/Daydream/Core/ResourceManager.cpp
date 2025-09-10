@@ -4,8 +4,6 @@
 
 namespace Daydream
 {
-
-
 	ResourceManager::ResourceManager()
 	{
 		meshManager = MakeUnique<MeshManager>();
@@ -19,13 +17,22 @@ namespace Daydream
 
 	void ResourceManager::Init()
 	{
+		GetInstance().samplerManager->CreateEssentialSamplers();
 		GetInstance().textureManager->LoadTexturesFromDirectory("Asset", true);
 		GetInstance().shaderManager->LoadShadersFromDirectory("Asset/Shader", true);
 		GetInstance().shaderGroupManager->CreateEssentialShaderGroups();
-		GetInstance().samplerManager->CreateEssentialSamplers();
 		GetInstance().renderPassManager->CreateEssentialRenderPasses();
 		GetInstance().pipelineStateManager->CreateEssentialPipelineStates();
 	}
 
-
+	void ResourceManager::Shutdown()
+	{
+		GetInstance().pipelineStateManager = nullptr;
+		GetInstance().renderPassManager = nullptr;
+		GetInstance().textureManager = nullptr;
+		GetInstance().samplerManager = nullptr;
+		GetInstance().shaderGroupManager = nullptr;
+		GetInstance().shaderManager = nullptr;
+		GetInstance().meshManager = nullptr;
+	}
 }

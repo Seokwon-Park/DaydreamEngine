@@ -2,6 +2,7 @@
 
 #include "Daydream/Graphics/Resources/TextureCube.h"
 #include "VulkanRenderDevice.h"
+#include "VulkanSampler.h"
 
 namespace Daydream
 {
@@ -12,25 +13,21 @@ namespace Daydream
 		VulkanTextureCube(VulkanRenderDevice* _device, const TextureDesc& _desc);
 		virtual ~VulkanTextureCube();
 
+		virtual void SetSampler(Shared<Sampler> _sampler) override;
+		
 		virtual inline void* GetNativeHandle() override { return textureImage.get(); }
 
 		vk::Image GetImage() { return textureImage.get(); }
 		vk::ImageView GetImageView() { return textureImageView.get(); }
-		vk::Sampler GetSampler() { return textureSampler.get(); }
-
-		void CreateSampler();
-
+		vk::Sampler GetSampler() { return textureSampler->GetSampler(); }
 	private:
 		VulkanRenderDevice* device;
-
-		vk::DeviceSize imageSize;
-
-		vk::Format imageFormat = vk::Format::eR8G8B8A8Srgb;
+		VulkanSampler* textureSampler;
 
 		vma::UniqueImage textureImage;
 		vma::UniqueAllocation textureImageAllocation;
 		vk::UniqueImageView textureImageView;
 
-		vk::UniqueSampler textureSampler;
+
 	};
 }

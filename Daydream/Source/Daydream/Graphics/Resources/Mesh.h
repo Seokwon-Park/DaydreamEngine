@@ -13,22 +13,6 @@ namespace Daydream
 		Vector2 texCoord;
 	};
 
-	struct MaterialData
-	{
-		std::string name;
-
-		// 텍스처 파일 경로들
-		std::string diffuseTexturePath;
-		std::string specularTexturePath;
-		std::string normalMapPath;
-		// ... PBR 텍스처 경로들 (metallic, roughness, ao ...)
-
-		// 텍스처가 아닌 상수 값들
-		Vector3 diffuseColor = { 0.8f, 0.8f, 0.8f };
-		float shininess = 32.0f;
-		// ... PBR 상수 값들 (metallicFactor, roughnessFactor ...)
-	};
-
 	struct MeshData
 	{
 		Array<Vertex> vertices;

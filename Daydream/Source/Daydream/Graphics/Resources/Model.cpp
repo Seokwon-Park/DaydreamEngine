@@ -1,6 +1,8 @@
 #include "DaydreamPCH.h"
 #include "Model.h"
 
+#include "Daydream/Core/ResourceManager.h"
+
 #include "Daydream/Graphics/Utility/ModelLoader.h"
 #include "Daydream/Graphics/Resources/Buffer.h"
 #include "Daydream/Graphics/Resources/Mesh.h"
@@ -21,11 +23,11 @@ namespace Daydream
 		
 		Path filepath(_path);
 
-		Array<MeshData> meshDatas = ModelLoader::LoadFromFile(filepath);
+		ModelData modelData = ModelLoader::LoadFromFile(filepath);
 
 		Vector3 vmin(1000, 1000, 1000);
 		Vector3 vmax(-1000, -1000, -1000);
-		for (auto meshData : meshDatas)
+		for (auto meshData : modelData.meshes)
 		{
 			// Normalize vertices
 
@@ -39,7 +41,7 @@ namespace Daydream
 			}
 		}
 
-		for (auto meshData : meshDatas)
+		for (auto meshData : modelData.meshes)
 		{
 			float dx = vmax.x - vmin.x, dy = vmax.y - vmin.y, dz = vmax.z - vmin.z;
 			float dl = std::max(std::max(dx, dy), dz);
@@ -54,6 +56,14 @@ namespace Daydream
 			}
 			Shared<Mesh> mesh = Mesh::Create(meshData);
 			meshes.push_back(mesh);
+		}
+
+		for(UInt32 i = 0; i< modelData.materials.size(); i++)
+		{
+			Shared<Material> newMat = Material::Create(ResourceManager::GetResource<PipelineState>("ForwardPSO"));
+			newMat->SetTexture2D("Texture", ResourceManager::GetResource<Texture2D>(modelData.materials[i].diffuseTexturePath));
+			newMat->SetTexture2D("NormalTexture", ResourceManager::GetResource<Texture2D>(modelData.materials[i].normalMapPath));
+			materials.push_back(newMat);
 		}
 	}
 }

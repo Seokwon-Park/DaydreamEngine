@@ -38,25 +38,6 @@ namespace Daydream
 			texture = device->CreateTexture(textureDesc, D3D12_RESOURCE_STATE_COPY_DEST);
 		}
 
-		D3D12_SAMPLER_DESC samplerDesc = {};
-		samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // 선형 필터링
-		samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; // 텍스처 주소 모드 (반복)
-		samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-		samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-		samplerDesc.MipLODBias = 0.0f;
-		samplerDesc.MaxAnisotropy = 1; // 비등방성 필터링 사용 안 함
-		samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; // 비교 함수 (그림자 맵 등에서 사용)
-		samplerDesc.BorderColor[0] = 0.0f; // 경계 색상
-		samplerDesc.BorderColor[1] = 0.0f;
-		samplerDesc.BorderColor[2] = 0.0f;
-		samplerDesc.BorderColor[3] = 0.0f;
-		samplerDesc.MinLOD = 0.0f;
-		samplerDesc.MaxLOD = D3D12_FLOAT32_MAX; // 모든 밉맵 레벨 사용
-
-		device->GetSamplerHeapAlloc().Alloc(&samplerCpuHandle, &samplerGpuHandle);
-		
-		device->GetDevice()->CreateSampler(&samplerDesc, samplerCpuHandle);
-
 		if (!(textureDesc.Flags & D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE) &&
 			GraphicsUtility::HasFlag(_desc.bindFlags, RenderBindFlags::ShaderResource))
 		{ 
@@ -142,8 +123,6 @@ namespace Daydream
 
 			device->GetDevice()->CreateUnorderedAccessView(texture.Get(), nullptr, &uavDesc, uavCpuHandle);
 		}
-
-
 	}
 
 
@@ -171,5 +150,9 @@ namespace Daydream
 			uavCpuHandle.ptr = 0;
 			uavGpuHandle.ptr = 0;
 		}
+	}
+	void D3D12Texture2D::SetSampler(Shared<Sampler> _sampler)
+	{
+		textureSampler = static_cast<D3D12Sampler*>(_sampler.get());
 	}
 }

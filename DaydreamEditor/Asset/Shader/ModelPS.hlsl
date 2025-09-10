@@ -36,25 +36,23 @@ struct PSOutput
     float4 color : SV_Target0;
 };
 
-[[vk::binding(0, 1)]]
-Texture2D Texture : register(t0);
-[[vk::binding(1, 1)]]
-Texture2D NormalTexture : register(t1);
-[[vk::binding(0, 0)]]
-SamplerState TextureSampler : register(s0);
-
-
-//[[vk::binding(1, 1)]]
-//SamplerState NormalTextureSampler : register(s1);
-//[[vk::combinedImageSampler]][[vk::binding(4, 1)]]
+//[[vk::binding(0, 1)]]
 //Texture2D Texture : register(t0);
-//[[vk::combinedImageSampler]][[vk::binding(4, 1)]]
+//[[vk::binding(1, 1)]]
+//Texture2D NormalTexture : register(t1);
+//[[vk::binding(0, 0)]]
 //SamplerState TextureSampler : register(s0);
 
-//[[vk::combinedImageSampler]][[vk::binding(2, 1)]]
-//Texture2D NormalTexture : register(t1);
-//[[vk::combinedImageSampler]][[vk::binding(2, 1)]]
-//SamplerState NormalTextureSampler : register(s1);
+
+[[vk::combinedImageSampler]][[vk::binding(0, 1)]]
+Texture2D Texture : register(t0);
+[[vk::combinedImageSampler]][[vk::binding(0, 1)]]
+SamplerState TextureSampler : register(s0);
+
+[[vk::combinedImageSampler]][[vk::binding(1, 1)]]
+Texture2D NormalTexture : register(t1);
+[[vk::combinedImageSampler]][[vk::binding(1, 1)]]
+SamplerState NormalTextureSampler : register(s1);
 
 
 PSOutput PSMain(PSInput input)
@@ -65,7 +63,7 @@ PSOutput PSMain(PSInput input)
     
     float3 normalWorld = input.normal;
     
-    float3 normalTex = NormalTexture.Sample(TextureSampler, input.uv).rgb;
+    float3 normalTex = NormalTexture.Sample(NormalTextureSampler, input.uv).rgb;
     normalTex = 2.0 * normalTex - 1.0; // 범위 조절 [-1.0, 1.0]
     
     float3 N = normalWorld;

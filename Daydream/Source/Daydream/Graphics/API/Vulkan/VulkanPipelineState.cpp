@@ -96,7 +96,7 @@ namespace Daydream
 			layoutCreateInfo.pBindings = bindings.data();
 			layoutCreateInfo.flags = vk::DescriptorSetLayoutCreateFlagBits::eUpdateAfterBindPool;
 
-			descriptorSetLayouts.emplace_back(device->GetDevice().createDescriptorSetLayoutUnique(layoutCreateInfo));
+			descriptorSetLayouts.push_back(device->GetDevice().createDescriptorSetLayoutUnique(layoutCreateInfo));
 		}
 
 		Array<vk::DynamicState> dynamicStates =

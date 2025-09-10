@@ -164,6 +164,44 @@ namespace Daydream::GraphicsUtility::OpenGL
 		}
 	}
 
+	GLint ConvertToGLFilter(FilterMode _filterMode)
+	{
+		switch (_filterMode)
+		{
+		case FilterMode::Nearest:
+			return GL_NEAREST;
+		case FilterMode::Linear:
+			return GL_LINEAR;
+		case FilterMode::NearestMipmapNearest:
+			return GL_NEAREST_MIPMAP_NEAREST;
+		case FilterMode::LinearMipmapNearest:
+			return GL_LINEAR_MIPMAP_NEAREST;
+		case FilterMode::NearestMipmapLinear:
+			return GL_NEAREST_MIPMAP_LINEAR;
+		case FilterMode::LinearMipmapLinear:
+			return GL_LINEAR_MIPMAP_LINEAR;
+		default:
+			return GL_LINEAR; // Default fallback
+		}
+	}
+
+	GLint ConvertToGLWrapMode(WrapMode _wrapMode)
+	{
+		switch (_wrapMode)
+		{
+		case WrapMode::Repeat:
+			return GL_REPEAT;
+		case WrapMode::MirrorRepeat:
+			return GL_MIRRORED_REPEAT;
+		case WrapMode::ClampToEdge:
+			return GL_CLAMP_TO_EDGE;
+		case WrapMode::ClampToBorder:
+			return GL_CLAMP_TO_BORDER;
+		default:
+			return GL_REPEAT; // Default fallback
+		}
+	}
+
 
 }
 

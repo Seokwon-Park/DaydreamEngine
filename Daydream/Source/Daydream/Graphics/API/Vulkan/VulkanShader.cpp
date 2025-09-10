@@ -43,7 +43,7 @@ namespace Daydream
 			ShaderCompileHelper::ConvertHLSLtoSPIRV(path, _type, reflect);
 
 			vk::ShaderModuleCreateInfo createInfo{};
-			createInfo.codeSize = reflect.size()*sizeof(UInt32);
+			createInfo.codeSize = reflect.size() * sizeof(UInt32);
 			createInfo.pCode = reflect.data();
 
 			spirv_cross::Compiler compiler(reflect);
@@ -60,7 +60,7 @@ namespace Daydream
 					sr.set = compiler.get_decoration(resource.id, spv::DecorationLocation);
 					sr.binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
 					sr.shaderResourceType = ShaderResourceType::Input;
-					 
+
 					UInt32 componentCount = spirType.vecsize;
 					spirv_cross::SPIRType::BaseType baseType = spirType.basetype;
 					sr.format = GraphicsUtility::ConvertSPIRVTypeToRenderFormat(baseType, componentCount);

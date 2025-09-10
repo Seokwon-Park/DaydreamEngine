@@ -3,7 +3,7 @@
 
 namespace Daydream
 {
-	Resource::Resource(const std::string& _name)
+	Resource::Resource(const String& _name)
 		:name(_name)
 	{
 	}

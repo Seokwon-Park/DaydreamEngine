@@ -4,6 +4,8 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 
+#include "Daydream/Graphics/Resources/Texture.h"
+
 namespace Daydream::UI
 {
 	void DrawDragFloat(const String& _label, Float32& _value, Float32 _resetValue, Float32 _columnWidth)
@@ -37,7 +39,7 @@ namespace Daydream::UI
 		}
 	}
 
-	void Daydream::UI::DrawAxisControl(const String& _label, Float32* _value, Float32 _speed, Float32 _minValue, Float32 _maxValue, Float32 _resetValue, Vector4 _color)
+	void DrawAxisControl(const String& _label, Float32* _value, Float32 _speed, Float32 _minValue, Float32 _maxValue, Float32 _resetValue, Vector4 _color)
 	{
 		float lineHeight = GImGui->Font->LegacySize + GImGui->Style.FramePadding.y * 2.0f;
 		ImVec4 color(_color.x, _color.y, _color.z, _color.w);
@@ -142,6 +144,7 @@ namespace Daydream::UI
 	}
 	void DrawLightController(const String& _label, Light& _light)
 	{
+		ImGui::PushID(_label.c_str());
 		const char* lightTypeNames[] = { "Directional", "Point", "Spot" };
 
 		int currentItem = _light.type;
@@ -155,6 +158,20 @@ namespace Daydream::UI
 
 		DrawDragFloat("Intensity", _light.intensity);
 		DrawColorEditor("Color", _light.color);
+
+		ImGui::PopID();
+	}
+	void DrawModelController(const String& _label, Model& _model)
+	{
+		ImGui::PushID(_label.c_str());
+		for (auto material : _model.GetMaterials())
+		{
+			ImGui::Text(material->GetTextures().find("Texture")->first.c_str());
+			auto texture = material->GetTextures().find("Texture")->second;
+			ImGui::Image(texture->GetImGuiHandle(), ImVec2{ 100,100 });
+		}
+
+		ImGui::PopID();
 	}
 	void DrawColorEditor(const String& _label, Vector3& _color, Float32 _resetValue, Float32 _columnWidth)
 	{

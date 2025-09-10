@@ -13,6 +13,9 @@ namespace Daydream
 		orthoSize = 5.0f;
 		nearPlane = 0.001f;
 		farPlane = 1000.0f;
+		
+		viewProjectionBuffer = ConstantBuffer::Create(sizeof(Matrix4x4));
+
 		UpdateProjectionMatrix();
 	}
 	Camera::~Camera()
@@ -65,16 +68,17 @@ namespace Daydream
 		aspectRatio = static_cast<Float32>(_width) / _height;
 		UpdateProjectionMatrix();
 	}
-	void Camera::UpdateMatrix()
+	void Camera::UpdateViewProjectionMatrix()
 	{
 		viewProjectionMatrix = projectionMatrix * viewMatrix;
 		viewProjectionMatrix.MatrixTranspose();
+
+		viewProjectionBuffer->Update(&viewProjectionMatrix, sizeof(Matrix4x4));
 	}
 	void Camera::UpdateViewMatrix()
 	{
 		viewMatrix = Matrix4x4::LookTo(position, dir, up);
-
-		UpdateMatrix();
+		UpdateViewProjectionMatrix();
 	}
 	void Camera::UpdateProjectionMatrix()
 	{
@@ -91,6 +95,6 @@ namespace Daydream
 		default:
 			break;
 		}
-		UpdateMatrix();
+		UpdateViewProjectionMatrix();
 	}
 }

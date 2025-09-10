@@ -35,7 +35,6 @@ namespace Daydream
 		Shared<TextureCube> textureCube;
 
 		Shared<ConstantBuffer> viewProjMat;
-		Shared<ConstantBuffer> lightBuffer;
 
 		Shared<Shader> vs;
 		Shared<Shader> ps;
@@ -63,7 +62,6 @@ namespace Daydream
 
 		Shared<EditorCamera> editorCamera;
 
-		LightData lightData;
 
 		Unique<ViewportPanel> viewportPanel;
 		Unique<PropertyPanel> propertyPanel;

@@ -2,6 +2,7 @@
 
 #include "GameEntity/GameEntity.h"
 
+#include "Daydream/Graphics/Core/Camera.h"
 #include "Daydream/Graphics/Resources/Light.h"
 
 namespace Daydream
@@ -28,8 +29,13 @@ namespace Daydream
 		void AddLight(LightComponent* _light);
 		void AddModelRenderer(ModelRendererComponent* _modelRenderer);
 
-		const Array<LightComponent*>& GetLights() { return lights; }
-		const Array<ModelRendererComponent*>& GetModelRenderers() { return modelRenderers; }
+		inline const Array<LightComponent*>& GetLights() { return lights; }
+		inline const Array<ModelRendererComponent*>& GetModelRenderers() { return modelRenderers; }
+
+		inline void SetCurrentCamera(Shared<Camera> _camera) { currentCamera = _camera; }
+		inline const Shared<Camera> GetCurrentCamera() const { return currentCamera; }
+
+		inline Shared<ConstantBuffer> GetLightConstantBuffer() const { return lightBuffer; }
 
 		void Update(Float32 _deltaTime);
 
@@ -37,8 +43,13 @@ namespace Daydream
 	private:
 		Array<Unique<GameEntity>> entities;
 
+		Shared<Camera> currentCamera;
+
 		Array<LightComponent*> lights;
 		Array<ModelRendererComponent*> modelRenderers;
+
+		LightData lightData;
+		Shared<ConstantBuffer> lightBuffer;
 		//Array<SpriteRendererComponent*> spriteRenderers;
 	};
 }

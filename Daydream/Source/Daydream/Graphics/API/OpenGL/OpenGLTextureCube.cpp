@@ -32,14 +32,19 @@ namespace Daydream
                 _initialData[i].data() // 실제 픽셀 데이터
             );
         }
-        glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTextureParameteri(textureID, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-        glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        //glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        //glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        //glTextureParameteri(textureID, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        //glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        //glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	}
     OpenGLTextureCube::~OpenGLTextureCube()
     {
         glDeleteTextures(1, &textureID);
     }
+    void OpenGLTextureCube::SetSampler(Shared<Sampler> _sampler)
+    {
+        textureSampler = static_cast<OpenGLSampler*>(_sampler.get());
+    }
 }
+

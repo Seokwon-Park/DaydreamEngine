@@ -27,10 +27,11 @@ namespace Daydream
 		for (auto& p : FileSystem::directory_iterator(currentPath))
 		{
 			Path path = p.path();
-			std::string filenameString = path.filename().string();
-
-			if (auto texture = ResourceManager::GetResource<Texture2D>(path.string()))
+			String filenameString = path.filename().string();
+			String ext = path.extension().string();
+			if (path.has_extension() && (ext == ".png" || ext == ".jpg"))
 			{
+				auto texture = ResourceManager::GetResource<Texture2D>(path.string());
 				ImGui::Image(texture->GetImGuiHandle(), { 50,50 });
 			}
 			ImGui::Button(filenameString.c_str());

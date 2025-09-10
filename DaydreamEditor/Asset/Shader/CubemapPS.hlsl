@@ -9,9 +9,9 @@ struct PSOutput
     float4 color : SV_Target0;
 };
 
-[[vk::binding(1)]]
+[[vk::combinedImageSampler]][[vk::binding(1)]]
 TextureCube TextureCubemap : register(t0);
-[[vk::binding(2)]]
+[[vk::combinedImageSampler]][[vk::binding(1)]]
 SamplerState TextureCubemapSampler : register(s0);
 
 float4 PSMain(PSInput input) : SV_TARGET

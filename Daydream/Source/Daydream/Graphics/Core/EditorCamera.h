@@ -18,11 +18,10 @@ namespace Daydream
 
 		void ControlCameraView(Float32 _deltaTime);
 	private:
-
 		//virtual void UpdateViewMatrix() override;
 
-		Vector2 delta;
-		Vector2 prevMousePos{ 0, 0 };
+		Vector2 mouseDelta = Vector2(0, 0);
+		Vector2 prevMousePos = Vector2(0, 0);
 
 		Float32 pitch = 0.0f;
 		Float32 yaw = 0.0f;

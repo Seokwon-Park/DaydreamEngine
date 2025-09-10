@@ -2,7 +2,7 @@
 #include "imgui/imgui.h"
 
 #include "Daydream/Scene/Components/LightComponent.h"
-#include "Daydream/Scene/Components/ModelRendererComponent.h"
+//#include "Daydream/Scene/Components/ModelRendererComponent.h"
 
 namespace Daydream
 {
@@ -62,6 +62,7 @@ namespace Daydream
 		textureDesc.bindFlags = Daydream::RenderBindFlags::ShaderResource;
 		textureDesc.format = Daydream::RenderFormat::R8G8B8A8_UNORM_SRGB;
 		texture = Daydream::Texture2D::Create("Asset/Texture/skybox/back.jpg", textureDesc);
+		texture->SetSampler(sampler);
 
 		textureCube = TextureCube::Create({ "Asset/Texture/skybox/right.jpg",
 			"Asset/Texture/skybox/left.jpg",
@@ -71,6 +72,7 @@ namespace Daydream
 			"Asset/Texture/skybox/back.jpg" },
 			textureDesc
 		);
+		textureCube->SetSampler(sampler);
 		///////////////////////////////////////////////////////
 		Daydream::RenderPassDesc rpDesc;
 
@@ -106,17 +108,14 @@ namespace Daydream
 		
 		material->SetTexture2D("Texture", texture);
 		material->SetConstantBuffer("Camera", viewProjMat);
-		material->SetSampler("TextureSampler", sampler);
 
 		material3d = Material::Create(pso3d);
 
 		material3d->SetConstantBuffer("Camera", viewProjMat);
-		material3d->SetSampler("TextureSampler", sampler);
 
 		materialcube = Material::Create(cubemapPipeline);
 		materialcube->SetConstantBuffer("Camera", viewProjMat);
 		materialcube->SetTextureCube("TextureCubemap", textureCube);
-		materialcube->SetSampler("TextureCubemapSampler", sampler);
 
 		activeScene = MakeShared<Scene>("MainScene");
 
@@ -124,6 +123,7 @@ namespace Daydream
 		auto entity = activeScene->CreateGameEntity();
 		entity->SetName("Test");
 
+		activeScene->SetCurrentCamera(editorCamera);
 		//Cubemap Mesh
 		//auto meshData = MeshGenerator::CreateCube(5.0f);
 		auto meshData = MeshGenerator::CreateSphere(100.0f, 200, 200);
@@ -148,15 +148,13 @@ namespace Daydream
 
 		ModelRendererComponent* component = entity->AddComponent<ModelRendererComponent>();
 		component->SetModel(model);
-		component->SetMaterial(material3d);
-
 
 		////////////////////////Light////////////////////////////
 		auto lightEntity = activeScene->CreateGameEntity("Directional Light");
 		lightEntity->AddComponent<LightComponent>();
-		lightBuffer = Daydream::ConstantBuffer::Create(sizeof(LightData));
+		//lightBuffer = Daydream::ConstantBuffer::Create(sizeof(LightData));
 
-		material3d->SetConstantBuffer("Lights", lightBuffer);
+		//material3d->SetConstantBuffer("Lights", lightBuffer);
 
 		viewportPanel = MakeUnique<ViewportPanel>();
 		propertyPanel = MakeUnique<PropertyPanel>();
@@ -185,14 +183,6 @@ namespace Daydream
 			editorCamera->ControlCameraView(_deltaTime);
 		}
 
-
-		lightData.lightCount = 0;
-		lightData.eyePos = editorCamera->GetPosition();
-		for (auto* lightComponent : activeScene->GetLights())
-		{
-			lightData.lights[lightData.lightCount++] = lightComponent->GetLight();
-		}
-		lightBuffer->Update(&lightData, sizeof(LightData));
 		//for (int i = 0; i < 4; i++)
 		//{
 		//	DAYDREAM_CORE_INFO("{}, {}, {}, {}", camera->GetProjectionMatrix().mat[i][0]

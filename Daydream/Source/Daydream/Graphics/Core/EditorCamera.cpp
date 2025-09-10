@@ -13,7 +13,7 @@ namespace Daydream
 	void EditorCamera::Update(Float32 _deltaTime)
 	{
 		const Vector2& mouse{ Input::GetMouseX(), Input::GetMouseY() };
-		delta = (mouse - prevMousePos);
+		mouseDelta = (mouse - prevMousePos);
 		//DAYDREAM_CORE_INFO("{}, {}", delta.x, delta.y);
 
 		orientation = Quaternion(Vector3(pitch, yaw, 0.0f));
@@ -27,8 +27,8 @@ namespace Daydream
 
 	void EditorCamera::CameraRotate()
 	{
-		yaw += delta.x * rotationSpeed;
-		pitch += delta.y * rotationSpeed;
+		yaw += mouseDelta.x * rotationSpeed;
+		pitch += mouseDelta.y * rotationSpeed;
 
 	}
 

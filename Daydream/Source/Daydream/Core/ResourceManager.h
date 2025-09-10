@@ -31,13 +31,8 @@ namespace Daydream
 		}
 
 		static void Init();
-
-
-		inline static void Shutdown()
-		{
-			GetInstance().meshManager = nullptr;
-			GetInstance().textureManager = nullptr;
-		}
+		static void Shutdown();
+		
 
 		template<typename ResourceType>
 		static Shared<ResourceType> GetResource(const String& name);
@@ -88,6 +83,7 @@ namespace Daydream
 		ResourceManager& operator=(const ResourceManager&) = delete;
 	private:
 		ResourceManager();
+
 
 		Unique<MeshManager> meshManager;
 		Unique<ShaderManager> shaderManager;
