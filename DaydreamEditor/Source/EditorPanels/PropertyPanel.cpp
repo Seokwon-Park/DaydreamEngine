@@ -12,6 +12,36 @@ namespace Daydream
 		
 		if (selectedEntity)
 		{
+            char buffer[256];
+            strncpy(buffer, selectedEntity->GetName().c_str(), sizeof(buffer));
+            buffer[sizeof(buffer) - 1] = 0;
+
+            ImGuiTableFlags flags = ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_Resizable;
+
+            if (ImGui::BeginTable("##EntityNameTable", 2, flags)) // 고유 ID, 열 2개, 플래그
+            {
+                // 열의 속성을 설정합니다. (너비, 크기 조절 등)
+                // ImGuiTableColumnFlags_WidthFixed: 초기 너비 고정
+                // ImGuiTableColumnFlags_WidthStretch: 창 크기에 따라 너비 조절 (기본값)
+                ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, 100.0f);
+                ImGui::TableSetupColumn("Content", ImGuiTableColumnFlags_WidthStretch);
+
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("Name"); // 왼쪽 열: 레이블
+
+                ImGui::TableSetColumnIndex(1);
+                // [컨트롤러 UI 코드] // 오른쪽 열: 컨트롤러
+                ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 2,0 });
+
+                ImGui::SameLine();
+                ImGui::InputText("##Name", buffer, selectedEntity->GetName().size());
+
+                ImGui::PopStyleVar();
+                ImGui::EndTable();
+            }
+            ImGui::Separator(); // 이름 입력창 아래에 구분선을 추가
+            
 			const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen
 				| ImGuiTreeNodeFlags_Framed
 				| ImGuiTreeNodeFlags_SpanAvailWidth
@@ -57,6 +87,7 @@ namespace Daydream
                     ImGui::TreePop();
                 }
             }
+            ImGui::Button("Add Component");
 		}
 
 		ImGui::End();

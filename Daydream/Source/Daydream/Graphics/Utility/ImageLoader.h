@@ -6,8 +6,8 @@ namespace Daydream::ImageLoader
 {
 	struct ImageData
 	{
-		Int32 width;
-		Int32 height;
+		Int32 width = 0;
+		Int32 height = 0;
 		std::variant<Array<UInt8>, Array<Float32>> data;
 
 		const void* GetRawDataPtr()

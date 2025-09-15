@@ -17,9 +17,6 @@ namespace Daydream::ImageLoader
 		return ImageData();
 	}
 
-
-
-
 	HDRIImageData LoadHDRIFile(const Path& _path)
 	{
 		HDRIImageData imageData;

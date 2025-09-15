@@ -109,7 +109,7 @@ namespace Daydream
 				return 0;
 			}
 		}
-		
+
 		//VkFormat GraphicsUtil::ConvertRenderFormatToVkFormat(RenderFormat _format)
 		//{
 		//	switch (_format)

@@ -330,7 +330,7 @@ namespace Daydream
 
 			auto uploadBuffer = CreateBuffer(totalBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
 
-			UInt32 imageSize = _desc.width * _desc.height * 4;
+			UInt32 imageSize = _desc.width * _desc.height * GraphicsUtility::GetRenderFormatSize(_desc.format);
 
 			void* pixelData;
 			D3D12_RANGE range = { 0, totalBytes };

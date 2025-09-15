@@ -47,6 +47,7 @@ namespace Daydream
         {
             return Renderer::GetRenderDevice()->CreateTexture2D(nullptr, _desc);
         }
+        return nullptr;
     }
 
     Shared<Texture2D> Texture2D::CreateEmpty(const TextureDesc& _desc)

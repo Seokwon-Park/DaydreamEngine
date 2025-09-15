@@ -29,7 +29,7 @@ float2 SampleSphericalMap(float3 v)
 }
 
 
-PSOutput PSMain(PSInput input) : SV_TARGET
+PSOutput PSMain(PSInput input) 
 {
     PSOutput output = (PSOutput) 0;
     
@@ -37,6 +37,6 @@ PSOutput PSMain(PSInput input) : SV_TARGET
     float3 color = Texture.Sample(TextureSampler, uv).rgb;
     
     output.color = float4(color, 1.0f);
-    return output.color;
+    return output;
 }
 

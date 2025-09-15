@@ -234,7 +234,7 @@ namespace Daydream
 
 		if (_imageData != nullptr)
 		{
-			UInt32 imageSize = _desc.width * _desc.height * 4;
+			UInt32 imageSize = _desc.width * _desc.height * GraphicsUtility::GetRenderFormatSize(_desc.format);
 			auto [uploadBuffer, uploadBufferAllocation] = CreateBuffer(
 				imageSize,
 				vk::BufferUsageFlagBits::eTransferSrc,
@@ -268,7 +268,7 @@ namespace Daydream
 	{
 		auto textureCube = MakeShared<VulkanTextureCube>(this, _desc);
 
-		UInt32 imageSize = _desc.width * _desc.height * 4;
+		UInt32 imageSize = _desc.width * _desc.height * GraphicsUtility::GetRenderFormatSize(_desc.format);
 		UInt32 bufferSize = imageSize * 6;
 		vk::BufferCreateInfo bufferInfo;
 		bufferInfo.size = bufferSize;

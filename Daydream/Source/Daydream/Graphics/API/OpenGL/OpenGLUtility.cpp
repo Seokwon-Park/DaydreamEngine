@@ -164,6 +164,76 @@ namespace Daydream::GraphicsUtility::OpenGL
 		}
 	}
 
+	UInt32 ConvertRenderFormatToGLDataType(RenderFormat _format)
+	{
+		switch (_format) {
+			// 32-bit float formats
+		case RenderFormat::R32G32B32A32_FLOAT:
+		case RenderFormat::R32G32B32_FLOAT:
+		case RenderFormat::R32G32_FLOAT:
+		case RenderFormat::R32_FLOAT:
+			return GL_FLOAT;
+
+			// 16-bit float formats (half-float)
+		case RenderFormat::R16G16B16A16_FLOAT:
+		case RenderFormat::R16G16_FLOAT:
+		case RenderFormat::R16_FLOAT:
+			return GL_HALF_FLOAT;
+
+			// 8-bit normalized/integer formats
+		case RenderFormat::R8G8B8A8_UNORM:
+		case RenderFormat::R8G8B8A8_UNORM_SRGB:
+		case RenderFormat::B8G8R8A8_UNORM:
+		case RenderFormat::B8G8R8A8_UNORM_SRGB:
+		case RenderFormat::R8G8_UNORM:
+		case RenderFormat::R8_UNORM:
+		case RenderFormat::R8G8B8A8_UINT:
+			return GL_UNSIGNED_BYTE;
+		case RenderFormat::R8G8B8A8_SINT:
+			return GL_BYTE;
+
+			// 16-bit normalized/integer formats
+		case RenderFormat::R16G16B16A16_UNORM:
+		case RenderFormat::R16G16_UNORM:
+		case RenderFormat::R16_UNORM:
+		case RenderFormat::R16G16B16A16_UINT:
+			return GL_UNSIGNED_SHORT;
+		case RenderFormat::R16G16B16A16_SINT:
+			return GL_SHORT;
+
+			// 32-bit integer formats
+		case RenderFormat::R32G32B32A32_UINT:
+			return GL_UNSIGNED_INT;
+		case RenderFormat::R32G32B32A32_SINT:
+			return GL_INT;
+
+			// Special packed formats
+		case RenderFormat::R11G11B10_FLOAT:
+			return GL_UNSIGNED_INT_10F_11F_11F_REV;
+		case RenderFormat::R10G10B10A2_UNORM:
+		case RenderFormat::R10G10B10A2_UINT:
+			return GL_UNSIGNED_INT_2_10_10_10_REV;
+
+			// Depth/stencil formats
+		case RenderFormat::D32_FLOAT:
+			return GL_FLOAT;
+		case RenderFormat::D16_UNORM:
+			return GL_UNSIGNED_SHORT;
+		case RenderFormat::D24_UNORM_S8_UINT:
+			return GL_UNSIGNED_INT_24_8;
+		case RenderFormat::D32_FLOAT_S8X24_UINT:
+			return GL_FLOAT_32_UNSIGNED_INT_24_8_REV;
+
+		case RenderFormat::BC7_UNORM:
+		case RenderFormat::BC7_UNORM_SRGB:
+
+		case RenderFormat::UNKNOWN:
+		default:
+			DAYDREAM_CORE_ERROR("Unsupported or unknown render format for GL Data Type conversion: {0}", static_cast<int>(_format));
+			return GL_UNSIGNED_BYTE;
+		}
+	}
+
 	GLint ConvertToGLFilter(FilterMode _filterMode)
 	{
 		switch (_filterMode)

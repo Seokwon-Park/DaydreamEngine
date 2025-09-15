@@ -11,7 +11,6 @@ namespace Daydream::GraphicsUtility
 
 	UInt32 GetRenderFormatSize(RenderFormat _format);
 	
-
 	//VkFormat ConvertRenderFormatToVkFormat(RenderFormat _format);
 
 	RenderFormat ConvertSPIRVTypeToRenderFormat(spirv_cross::SPIRType::BaseType _baseType, UInt32 _componentCount);

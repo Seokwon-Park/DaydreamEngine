@@ -9,23 +9,6 @@
 
 namespace Daydream
 {
-	static GLenum RenderFormatToOpenGLBaseType(RenderFormat _format)
-	{
-		switch (_format)
-		{
-		case RenderFormat::R32_FLOAT:    return GL_FLOAT;
-		case RenderFormat::R32G32_FLOAT:   return GL_FLOAT;
-		case RenderFormat::R32G32B32_FLOAT:   return GL_FLOAT;
-		case RenderFormat::R32G32B32A32_FLOAT:   return GL_FLOAT;
-		case RenderFormat::R32_SINT:      return GL_INT;
-		case RenderFormat::R32G32_SINT:     return GL_INT;
-		case RenderFormat::R32G32B32_SINT:     return GL_INT;
-		case RenderFormat::R32G32B32A32_SINT:     return GL_INT;
-		}
-
-		DAYDREAM_CORE_ASSERT(false, "Unknown ShaderDataType!");
-		return 0;
-	}
 
 	
 
@@ -41,7 +24,7 @@ namespace Daydream
 			glEnableVertexArrayAttrib(vao, inputDataIndex);
 			glVertexArrayAttribFormat(vao, inputDataIndex,
 				info.count,
-				RenderFormatToOpenGLBaseType(info.format),
+				GraphicsUtility::OpenGL::ConvertRenderFormatToGLDataType(info.format),
 				GL_FALSE,
 				offset);
 			glVertexArrayAttribBinding(vao, inputDataIndex, 0);

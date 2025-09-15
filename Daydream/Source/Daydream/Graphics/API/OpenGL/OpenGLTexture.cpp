@@ -41,7 +41,7 @@ namespace Daydream
 		//}
 		if (_initialData)
 		{
-			glTextureSubImage2D(textureID, 0, 0, 0, width, height, dataFormat, GL_UNSIGNED_BYTE, _initialData);
+			glTextureSubImage2D(textureID, 0, 0, 0, width, height, dataFormat, GraphicsUtility::OpenGL::ConvertRenderFormatToGLDataType(_desc.format), _initialData);
 		}
 
 		//glTextureSubImage2D(textureID, 0, 0, 0, width, height, dataFormat, GL_UNSIGNED_BYTE, redData.data());

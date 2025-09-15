@@ -14,10 +14,10 @@ TextureCube TextureCubemap : register(t0);
 [[vk::combinedImageSampler]][[vk::binding(1)]]
 SamplerState TextureCubemapSampler : register(s0);
 
-float4 PSMain(PSInput input) : SV_TARGET
+PSOutput PSMain(PSInput input)
 {
     PSOutput output = (PSOutput) 0;
     
     output.color = TextureCubemap.Sample(TextureCubemapSampler, input.worldPosition);
-    return output.color;
+    return output;
 }

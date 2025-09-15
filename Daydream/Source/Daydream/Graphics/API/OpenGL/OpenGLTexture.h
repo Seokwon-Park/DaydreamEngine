@@ -21,6 +21,6 @@ namespace Daydream
 
 	private:
 		UInt32 textureID;
-		OpenGLSampler* textureSampler;
+		OpenGLSampler* textureSampler = nullptr;
 	};
 }

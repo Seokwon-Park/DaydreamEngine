@@ -1,6 +1,7 @@
 struct PSInput
 {
     float4 position : SV_Position;
+    float3 worldPosition : POSITION;
     float3 normal : NORMAL;
     float3 tangent : TANGENT;
     float2 uv : TEXCOORD0;
@@ -13,7 +14,9 @@ struct Light
     float3 position;
     float intensity;
     float3 direction;
-    float padding;
+    float ambientPower;
+    float shininess;
+    float3 padding;
 };
 
 cbuffer Lights : register(b2)
@@ -73,23 +76,28 @@ PSOutput PSMain(PSInput input)
         // matrix는 float4x4, 여기서는 벡터 변환용이라서 3x3 사용
     float3x3 TBN = float3x3(T, B, N);
     normalWorld = normalize(mul(normalTex, TBN));
+        
+    float4 albedo = Texture.Sample(TextureSampler, input.uv);
+    //if (albedo.a < 0.2f)
+    //{
+    //    clip(-1);
+    //}
     
     [unroll]
     for (int i = 0; i < 1; i++)
     {
-    //output.color = Texture.Sample(TextureSampler, input.uv) + input.color;
         float3 lightDir = -lights[i].direction;
         float diffuse = max(dot(normalize(lightDir), normalWorld), 0.0f);
         
-        float3 viewDirection = normalize(eyePosition - input.position.xyz);
+        float3 viewDir = normalize(eyePosition - input.worldPosition);
         float3 reflectDir = reflect(-lightDir, normalWorld);
-        float3 halfway = normalize(viewDirection + lightDir);
-        float specularPower = pow(max(dot(normalWorld, halfway), 0.0f), 20.0f);
+        float3 halfway = normalize(viewDir + lightDir);
+        float specularPower = pow(max(dot(normalWorld, halfway), 0.0f), lights[i].shininess);
+        float specular = specularPower * lights[i].intensity;
         
-        color += lights[i].color * diffuse + float3(1.0f, 1.0f, 1.0f) * specularPower;
-        //color += lights[i].color * ndotl + input.normal * specularPower;
+        color += albedo.rgb * lights[i].color * (diffuse + lights[i].ambientPower) + specular;
     }
     
-    output.color = Texture.Sample(TextureSampler, input.uv) + float4(color, 1.0f) * 0.3f;
+    output.color = float4(color, 1.0f);
     return output;
 }

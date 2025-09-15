@@ -9,7 +9,7 @@
 
 namespace Daydream::UI
 {
-	void DrawDragFloat(const String& _label, Float32& _value, Float32 _resetValue, Float32 _columnWidth)
+	void DrawDragFloat(const String& _label, Float32* _value, Float32 _speed, Float32 _minValue, Float32 _maxValue, Float32 _resetValue, Float32 _columnWidth)
 	{
 		ImGuiTableFlags flags = ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_Resizable;
 
@@ -33,7 +33,7 @@ namespace Daydream::UI
 
 			ImGui::SameLine();
 			std::string dragID = "##" + _label;
-			ImGui::DragFloat(dragID.c_str(), &_value, 0.1f, 0.0f, 0.0f, "%.2f");
+			ImGui::DragFloat(dragID.c_str(), _value, 0.1f, 0.0f, 0.0f, "%.2f");
 
 			ImGui::PopStyleVar();
 			ImGui::EndTable();
@@ -157,7 +157,9 @@ namespace Daydream::UI
 			_light.type = currentItem;
 		}
 
-		DrawDragFloat("Intensity", _light.intensity);
+		DrawDragFloat("Intensity", &_light.intensity, 0.1f, 0.0f, 1.0f);
+		DrawDragFloat("Ambient", &_light.ambientPower, 0.01f, 0.0f, 1.0f);
+		DrawDragFloat("Shininess", &_light.shininess);
 		DrawColorEditor("Color", _light.color);
 
 		ImGui::PopID();
