@@ -13,7 +13,7 @@ namespace Daydream
 	class D3D11TextureCube : public TextureCube
 	{
 	public:
-		D3D11TextureCube(D3D11RenderDevice* _device, const TextureDesc& _desc, Array<Array<UInt8>> _initialData);
+		D3D11TextureCube(D3D11RenderDevice* _device, const TextureDesc& _desc, Array<const void*>& _initialData);
 
 		virtual ~D3D11TextureCube();
 

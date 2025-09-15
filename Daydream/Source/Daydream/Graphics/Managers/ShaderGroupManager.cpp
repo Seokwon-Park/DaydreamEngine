@@ -10,6 +10,7 @@ namespace Daydream
 	{
 		resourceCache["Model"] = ShaderGroup::Create("ModelVS", "ModelPS");
 		resourceCache["Cubemap"] = ShaderGroup::Create("CubemapVS", "CubemapPS");
+		resourceCache["Equirectangular"] = ShaderGroup::Create("EquirectangularVS", "EquirectangularPS");
 		resourceCache["Sprite"] = ShaderGroup::Create("SpriteVS", "SpritePS");
 	}
 }

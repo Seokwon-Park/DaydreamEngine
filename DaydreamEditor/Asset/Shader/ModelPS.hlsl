@@ -79,14 +79,14 @@ PSOutput PSMain(PSInput input)
     {
     //output.color = Texture.Sample(TextureSampler, input.uv) + input.color;
         float3 lightDir = -lights[i].direction;
-        float ndotl = max(dot(normalize(lightDir), normalWorld), 0.0f);
+        float diffuse = max(dot(normalize(lightDir), normalWorld), 0.0f);
         
         float3 viewDirection = normalize(eyePosition - input.position.xyz);
         float3 reflectDir = reflect(-lightDir, normalWorld);
         float3 halfway = normalize(viewDirection + lightDir);
         float specularPower = pow(max(dot(normalWorld, halfway), 0.0f), 20.0f);
         
-        color += lights[i].color * ndotl + float3(1.0f, 1.0f, 1.0f) * specularPower;
+        color += lights[i].color * diffuse + float3(1.0f, 1.0f, 1.0f) * specularPower;
         //color += lights[i].color * ndotl + input.normal * specularPower;
     }
     

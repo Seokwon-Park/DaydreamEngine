@@ -335,7 +335,22 @@ namespace Daydream
 			void* pixelData;
 			D3D12_RANGE range = { 0, totalBytes };
 			uploadBuffer->Map(0, &range, &pixelData);
-			memcpy(pixelData, _imageData, totalBytes);
+			// 3. 한 줄씩 루프를 돌며 복사합니다.
+			BYTE* pDest = static_cast<BYTE*>(pixelData);
+			BYTE* pSrc = const_cast<BYTE*>(static_cast<const BYTE*>(_imageData)); // 원본 이미지 데이터
+			UINT rowCount = dstDesc.Height;
+			UINT rowSizeInBytes = dstDesc.Width * 4; // 픽셀당 4바이트 가정
+
+			for (UINT y = 0; y < rowCount; ++y)
+			{
+				// 한 줄(RowSizeInBytes) 만큼만 복사
+				memcpy(pDest, pSrc, rowSizeInBytes);
+
+				// 다음 줄로 포인터 이동
+				pDest += placedFootprint.Footprint.RowPitch; // 목적지는 RowPitch만큼 이동
+				pSrc += rowSizeInBytes;            // 소스는 실제 데이터 크기만큼 이동
+			}
+
 			uploadBuffer->Unmap(0, &range);
 
 			uploadBuffer->SetName(L"Check");
@@ -357,7 +372,7 @@ namespace Daydream
 		return texture;
 	}
 
-	Shared<TextureCube> D3D12RenderDevice::CreateTextureCube(Array<Array<UInt8>> _imagePixels, const TextureDesc& _desc)
+	Shared<TextureCube> D3D12RenderDevice::CreateTextureCube(Array<const void*>& _imagePixels, const TextureDesc& _desc)
 	{
 		auto texture = MakeShared<D3D12TextureCube>(this, _desc);
 
@@ -373,7 +388,7 @@ namespace Daydream
 		uploadBuffer->Map(0, nullptr, reinterpret_cast<void**>(&pixelData));
 		for (int i = 0; i < 6; ++i)
 		{
-			const void* srcPixels = _imagePixels[i].data(); // i번째 이미지 데이터 포인터
+			const void* srcPixels = _imagePixels[i]; // i번째 이미지 데이터 포인터
 			const auto& destLayout = layouts[i];
 			UINT rowPitch = _desc.width * 4; // 픽셀당 4바이트(R8G8B8A8)라고 가정
 

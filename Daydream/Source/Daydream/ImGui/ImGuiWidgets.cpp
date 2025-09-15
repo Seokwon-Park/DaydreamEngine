@@ -5,6 +5,7 @@
 #include "imgui_internal.h"
 
 #include "Daydream/Graphics/Resources/Texture.h"
+#include "Daydream/Core/ResourceManager.h"
 
 namespace Daydream::UI
 {
@@ -169,6 +170,16 @@ namespace Daydream::UI
 			ImGui::Text(material->GetTextures().find("Texture")->first.c_str());
 			auto texture = material->GetTextures().find("Texture")->second;
 			ImGui::Image(texture->GetImGuiHandle(), ImVec2{ 100,100 });
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_TEXTURE"))
+				{
+					String texturePath = (const char*)payload->Data;
+					auto texture = ResourceManager::GetResource<Texture2D>(texturePath);
+					material->SetTexture2D("Texture", texture);
+				}
+				ImGui::EndDragDropTarget();
+			}
 		}
 
 		ImGui::PopID();

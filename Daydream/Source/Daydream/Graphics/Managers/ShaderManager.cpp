@@ -55,6 +55,10 @@ namespace Daydream
 						{
 							shaderType = ShaderType::Domain;
 						}
+						if (pathString.find("GS.") != std::string::npos)
+						{
+							shaderType = ShaderType::Geometry;
+						}
 						resourceCache[shaderName] = Shader::Create(pathString, shaderType, ShaderLoadMode::File);
 						break;
 					}

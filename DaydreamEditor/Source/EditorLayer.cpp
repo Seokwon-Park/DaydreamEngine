@@ -61,7 +61,7 @@ namespace Daydream
 		Daydream::TextureDesc textureDesc{};
 		textureDesc.bindFlags = Daydream::RenderBindFlags::ShaderResource;
 		textureDesc.format = Daydream::RenderFormat::R8G8B8A8_UNORM_SRGB;
-		texture = Daydream::Texture2D::Create("Asset/Texture/skybox/back.jpg", textureDesc);
+		texture = Daydream::Texture2D::CreateFromFile("Asset/Texture/skybox/back.jpg", textureDesc);
 		texture->SetSampler(sampler);
 
 		textureCube = TextureCube::Create({ "Asset/Texture/skybox/right.jpg",
@@ -99,10 +99,9 @@ namespace Daydream
 		viewportFramebuffer = Framebuffer::Create(renderPass, fbDesc);
 
 		pso = ResourceManager::GetResource<PipelineState>("SpritePSO");
-
 		pso3d = ResourceManager::GetResource<PipelineState>("ForwardPSO");
-		
-		cubemapPipeline = ResourceManager::GetResource<PipelineState>("CubemapPSO");
+		//cubemapPipeline = ResourceManager::GetResource<PipelineState>("CubemapPSO");
+		cubemapPipeline = ResourceManager::GetResource<PipelineState>("EquirectangularPSO");
 
 		material = Material::Create(pso);
 		
@@ -115,7 +114,9 @@ namespace Daydream
 
 		materialcube = Material::Create(cubemapPipeline);
 		materialcube->SetConstantBuffer("Camera", viewProjMat);
-		materialcube->SetTextureCube("TextureCubemap", textureCube);
+		//materialcube->SetTextureCube("TextureCubemap", textureCube);
+		auto texture = ResourceManager::GetResource<Texture2D>("Asset\\Texture\\kloofendal_48d_partly_cloudy_puresky_4k.hdr");
+		materialcube->SetTexture2D("Texture", texture);
 
 		activeScene = MakeShared<Scene>("MainScene");
 

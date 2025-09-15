@@ -19,7 +19,7 @@ namespace Daydream
             ImGui::SetTooltip("Search for entities by name.");
         ImGui::Separator();
 
-        if (scene) 
+        if (scene)  
         {
             auto& entities = scene->GetAllEntities();
 
@@ -44,7 +44,7 @@ namespace Daydream
 
                     ImGui::Text("%s", name.c_str());
 
-                    ImGui::EndDragDropSource();
+                    ImGui::EndDragDropSource(); 
                 }
 
                 if (ImGui::BeginDragDropTarget())

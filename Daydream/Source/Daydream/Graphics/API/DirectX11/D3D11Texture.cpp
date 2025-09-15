@@ -31,7 +31,7 @@ namespace Daydream
 		{
 			D3D11_SUBRESOURCE_DATA pixelData{};
 			pixelData.pSysMem = _initialData;
-			pixelData.SysMemPitch = textureDesc.Width * sizeof(UInt8) * 4; //RGBA
+			pixelData.SysMemPitch = textureDesc.Width * GraphicsUtility::GetRenderFormatSize(_desc.format);
 
 			hr = device->GetDevice()->CreateTexture2D(&textureDesc, &pixelData, texture.GetAddressOf());
 		}

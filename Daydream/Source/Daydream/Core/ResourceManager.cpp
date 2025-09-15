@@ -19,6 +19,7 @@ namespace Daydream
 	{
 		GetInstance().samplerManager->CreateEssentialSamplers();
 		GetInstance().textureManager->LoadTexturesFromDirectory("Asset", true);
+		GetInstance().textureManager->LoadTexturesFromDirectory("Resource", true);
 		GetInstance().shaderManager->LoadShadersFromDirectory("Asset/Shader", true);
 		GetInstance().shaderGroupManager->CreateEssentialShaderGroups();
 		GetInstance().renderPassManager->CreateEssentialRenderPasses();

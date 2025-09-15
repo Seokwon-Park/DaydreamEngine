@@ -1,6 +1,8 @@
 #include "DaydreamPCH.h"
 #include "Texture2DManager.h"
 
+#include "Daydream/Graphics/Utility/ImageLoader.h"
+
 #include "Daydream/Core/ResourceManager.h"
 
 namespace Daydream
@@ -13,7 +15,7 @@ namespace Daydream
 			return;
 		}
 
-		const Array<String> supportedExtensions = { ".png", ".jpg", ".tga" };
+		const Array<String> supportedExtensions = { ".png", ".jpg", ".tga", ".hdr", "exr" };
 
 		// 디렉토리 순회
 		for (FileSystem::directory_entry entry : FileSystem::directory_iterator(_directory))
@@ -24,12 +26,11 @@ namespace Daydream
 				Path entryPath = entry.path();
 				String pathString = entryPath.make_preferred().string();
 				String extension = entry.path().extension().string();
-				for (const auto& supportedExtension : supportedExtensions) 
+				for (const auto& supportedExtension : supportedExtensions)
 				{
 					if (extension == supportedExtension)
 					{
-						TextureDesc textureDesc{};
-						textureDesc.bindFlags = RenderBindFlags::ShaderResource;
+
 						bool isSRGB = true;
 						if (pathString.find("_n.") != std::string::npos ||
 							pathString.find("_normal.") != std::string::npos)
@@ -41,8 +42,13 @@ namespace Daydream
 						//{
 						//	isSRGB = false;
 						//}
-						textureDesc.format = isSRGB ? RenderFormat::R8G8B8A8_UNORM_SRGB : RenderFormat::R8G8B8A8_UNORM;
-						resourceCache[pathString] = Texture2D::Create(pathString, textureDesc);
+						ImageLoader::ImageData data = ImageLoader::LoadImageFile(pathString);
+						TextureDesc desc{};
+						desc.bindFlags = RenderBindFlags::ShaderResource;
+						desc.width = data.width;
+						desc.height = data.height;
+						desc.format = extension == ".hdr" ? RenderFormat::R32G32B32A32_FLOAT : (isSRGB ? RenderFormat::R8G8B8A8_UNORM_SRGB : RenderFormat::R8G8B8A8_UNORM);
+						resourceCache[pathString] = Texture2D::Create(data.GetRawDataPtr(), desc);
 						resourceCache[pathString]->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
 						break;
 					}

@@ -104,6 +104,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Daydream\Core\UUID.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12Sampler.h">
       <SubType>
       </SubType>
@@ -703,6 +704,7 @@
     <ClInclude Include="Vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Daydream\Core\UUID.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Sampler.cpp">
       <SubType>
       </SubType>

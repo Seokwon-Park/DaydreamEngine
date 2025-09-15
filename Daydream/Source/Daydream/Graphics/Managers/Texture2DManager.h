@@ -10,16 +10,9 @@ namespace Daydream
 	{
 	public:
 		Texture2DManager() {};
-
-		/*Shared<Texture2D> Get(Path _path)
-		{
-			_path = _path.make_preferred();
-			return textureCache[_path.string()];
-		}*/
-		
+			
 		void LoadTexturesFromDirectory(Path _directory, bool _isRecursive = false);
 	private:
 		Path assetDirectory;
-		//SortedMap<String, Shared<Texture2D>> textureCache;
 	};
 }

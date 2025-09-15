@@ -102,6 +102,7 @@ namespace Daydream
 
 		modelData.meshes.push_back(meshData);
 
+		// TODO: Fix 만약 materialIndex가 0이면 mesh랑 서로 안맞게됨
 		if (_mesh->mMaterialIndex >= 0)
 		{
 			aiMaterial* material = _scene->mMaterials[_mesh->mMaterialIndex];

@@ -18,12 +18,12 @@ namespace Daydream
 		Path path(_src);
 		switch (_mode)
 		{
-		case Daydream::ShaderLoadMode::Source:
+		case ShaderLoadMode::Source:
 		{
 			DAYDREAM_CORE_ERROR("Daydream Vulkan API runtime compile is not supported!");
 			break;
 		}
-		case Daydream::ShaderLoadMode::File:
+		case ShaderLoadMode::File:
 		{
 			std::ifstream file(_src, std::ios::ate | std::ios::binary);
 

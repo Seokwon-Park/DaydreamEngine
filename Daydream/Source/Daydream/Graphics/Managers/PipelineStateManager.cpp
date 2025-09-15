@@ -38,5 +38,12 @@ namespace Daydream
 		
 		pipelineCache["CubemapPSO"] = PipelineState::Create(psoDesc);
 
+		psoDesc.rasterizerState = rastDesc;
+		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Equirectangular");
+		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("MainRenderPass");
+
+		pipelineCache["EquirectangularPSO"] = PipelineState::Create(psoDesc);
+
+
 	}
 }

@@ -116,7 +116,7 @@ namespace Daydream
 		return MakeShared<OpenGLTexture2D>(_desc, _imageData);
 	}
 
-	Shared<TextureCube> OpenGLRenderDevice::CreateTextureCube(Array<Array<UInt8>> _imagePixels, const TextureDesc& _desc)
+	Shared<TextureCube> OpenGLRenderDevice::CreateTextureCube(Array<const void*>& _imagePixels, const TextureDesc& _desc)
 	{
 		return MakeShared<OpenGLTextureCube>(_desc, _imagePixels);
 	}

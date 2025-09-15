@@ -9,7 +9,7 @@ namespace Daydream
 	{
 	public:
 		// Constrcuter Destructer
-		OpenGLTextureCube(const TextureDesc& _desc, const Array<Array<UInt8>>& _initialData);
+		OpenGLTextureCube(const TextureDesc& _desc, const Array<const void*>& _initialData);
 		virtual ~OpenGLTextureCube();
 
 		virtual void SetSampler(Shared<Sampler> _sampler) override;

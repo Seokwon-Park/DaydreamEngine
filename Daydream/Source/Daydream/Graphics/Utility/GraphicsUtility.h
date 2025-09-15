@@ -10,7 +10,7 @@ namespace Daydream::GraphicsUtility
 	bool HasFlag(RenderBindFlags _target, RenderBindFlags _flags);
 
 	UInt32 GetRenderFormatSize(RenderFormat _format);
-
+	
 
 	//VkFormat ConvertRenderFormatToVkFormat(RenderFormat _format);
 

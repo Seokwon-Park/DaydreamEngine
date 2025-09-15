@@ -1813,6 +1813,7 @@
     <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLSampler.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12Sampler.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanSampler.h" />
+    <ClInclude Include="Source\Daydream\Core\UUID.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -2166,5 +2167,6 @@
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLSampler.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Sampler.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanSampler.cpp" />
+    <ClCompile Include="Source\Daydream\Core\UUID.cpp" />
   </ItemGroup>
 </Project>

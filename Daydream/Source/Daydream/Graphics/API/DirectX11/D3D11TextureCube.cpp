@@ -58,7 +58,7 @@ namespace Daydream
 	//		return SUCCEEDED(hr);
 	//	}
 	//}
-	D3D11TextureCube::D3D11TextureCube(D3D11RenderDevice* _device, const TextureDesc& _desc, Array<Array<UInt8>> _initialData)
+	D3D11TextureCube::D3D11TextureCube(D3D11RenderDevice* _device, const TextureDesc& _desc, Array<const void*>& _initialData)
 	{
 		device = _device;
 		desc = _desc;
@@ -80,7 +80,7 @@ namespace Daydream
 
 		for (int i = 0; i < 6; i++)
 		{
-			subresourceData[i].pSysMem = _initialData[i].data();
+			subresourceData[i].pSysMem = _initialData[i];
 			subresourceData[i].SysMemPitch = textureDesc.Width * sizeof(UInt8) * 4;
 			subresourceData[i].SysMemSlicePitch = 0; 
 		}

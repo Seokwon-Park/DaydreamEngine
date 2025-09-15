@@ -264,7 +264,7 @@ namespace Daydream
 		return texture;
 	}
 
-	Shared<TextureCube> VulkanRenderDevice::CreateTextureCube(Array<Array<UInt8>> _imagePixels, const TextureDesc& _desc)
+	Shared<TextureCube> VulkanRenderDevice::CreateTextureCube(Array<const void*>& _imagePixels, const TextureDesc& _desc)
 	{
 		auto textureCube = MakeShared<VulkanTextureCube>(this, _desc);
 
@@ -283,7 +283,7 @@ namespace Daydream
 
 		char* mappedData = static_cast<char*>(allocator->getAllocationInfo(uploadBufferAllocation.get()).pMappedData);
 		for (int i = 0; i < 6; ++i) {
-			memcpy(mappedData + (imageSize * i), _imagePixels[i].data(), imageSize);
+			memcpy(mappedData + (imageSize * i), _imagePixels[i], imageSize);
 		}
 
 		Array<vk::BufferImageCopy> bufferCopyRegions;

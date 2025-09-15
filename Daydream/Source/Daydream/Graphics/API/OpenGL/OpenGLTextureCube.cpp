@@ -6,7 +6,7 @@
 
 namespace Daydream
 {
-	OpenGLTextureCube::OpenGLTextureCube(const TextureDesc& _desc, const Array<Array<UInt8>>& _initialData)
+	OpenGLTextureCube::OpenGLTextureCube(const TextureDesc& _desc, const Array<const void*>& _initialData)
 	{
         glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &textureID);
 
@@ -29,7 +29,7 @@ namespace Daydream
                 1,                  // 깊이 (한 면이므로 1)
                 dataFormat,         // 픽셀 데이터 포맷
                 GL_UNSIGNED_BYTE,   // 픽셀 데이터 타입
-                _initialData[i].data() // 실제 픽셀 데이터
+                _initialData[i] // 실제 픽셀 데이터
             );
         }
         //glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

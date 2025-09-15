@@ -12,6 +12,5 @@ namespace Daydream
 		inline String GetName() const { return name; }
 	private:
 		String name;
-
 	};
 }

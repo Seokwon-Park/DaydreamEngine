@@ -12,11 +12,14 @@ namespace Daydream
 		~AssetBrowserPanel();
 
 		void OnImGuiRender() override;
+		void RenderFolderTree(const Path& path, Path& selectedPath);
 	protected:
 
 	private:
+		Float32 padding = 8.0f;
+		Float32 thumbnailSize = 64.0f;
+
 		Path currentPath;
-
-
+		String draggedAssetString;
 	};
 }
