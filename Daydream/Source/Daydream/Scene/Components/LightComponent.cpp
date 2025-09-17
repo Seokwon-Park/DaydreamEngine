@@ -20,6 +20,7 @@ namespace Daydream
 	{
 		Transform transform = GetOwner()->GetComponent<TransformComponent>()->GetTransform();
 		light.direction = transform.GetForward();
+		light.position = transform.position;
 
 	}
 }

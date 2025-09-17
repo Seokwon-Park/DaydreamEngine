@@ -12,9 +12,14 @@ namespace Daydream
 
 	struct LightData
 	{
-		Light lights[32]; // 최대 32개 라이트
+		DirectionalLight dirLights[2];
+		PointLight pointLights[4];
+		SpotLight spotLights[4]; // 최대 32개 라이트
 		Vector3 eyePos;
-		int lightCount;
+		UInt32 dirLightCount;
+		Vector2 padding1;
+		UInt32 pointLightCount;
+		UInt32 spotLightCount;
 	};
 
 	class Scene
@@ -29,7 +34,7 @@ namespace Daydream
 		void AddLight(LightComponent* _light);
 		void AddModelRenderer(ModelRendererComponent* _modelRenderer);
 
-		inline const Array<LightComponent*>& GetLights() { return lights; }
+		inline const Array<LightComponent*>& GetLights() { return lightComponents; }
 		inline const Array<ModelRendererComponent*>& GetModelRenderers() { return modelRenderers; }
 
 		inline void SetCurrentCamera(Shared<Camera> _camera) { currentCamera = _camera; }
@@ -45,7 +50,7 @@ namespace Daydream
 
 		Shared<Camera> currentCamera;
 
-		Array<LightComponent*> lights;
+		Array<LightComponent*> lightComponents;
 		Array<ModelRendererComponent*> modelRenderers;
 
 		LightData lightData;

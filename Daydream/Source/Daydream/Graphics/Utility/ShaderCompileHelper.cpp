@@ -49,6 +49,7 @@ namespace Daydream
 		args.push_back(L"-E");
 		args.push_back(entryPoint.c_str());
 		args.push_back(L"-O3");
+		args.push_back(L"-Wno-ignored-attributes");
 
 		ComPtr<IDxcResult> result;
 		hr = compiler->Compile(&sourceBuffer,
@@ -153,33 +154,47 @@ namespace Daydream
 	}
 	void ShaderCompileHelper::ConvertSPIRVtoDXBC(const Array<UInt32> _spirvData, ShaderType _type, String& _hlslSource)
 	{
-		spirv_cross::CompilerHLSL hlsl(_spirvData);
+		try
+		{
+			spirv_cross::CompilerHLSL hlsl(_spirvData);
 
-		spirv_cross::CompilerGLSL::Options commonOptions{};
-		commonOptions.vertex.flip_vert_y = true;
+			spirv_cross::CompilerGLSL::Options commonOptions{};
+			commonOptions.vertex.flip_vert_y = true;
 
-		hlsl.set_common_options(commonOptions);
-		
-		spirv_cross::CompilerHLSL::Options options{};
-		options.shader_model = 50;
-		options.use_entry_point_name = true;
-		
-		hlsl.set_hlsl_options(options);
+			hlsl.set_common_options(commonOptions);
 
-		_hlslSource = hlsl.compile();
+			spirv_cross::CompilerHLSL::Options options{};
+			options.shader_model = 50;
+			options.use_entry_point_name = true;
+
+			hlsl.set_hlsl_options(options);
+
+			_hlslSource = hlsl.compile();
+		}
+		catch (const spirv_cross::CompilerError& e)
+		{
+			std::cerr << "SPIRV-Cross Error: " << e.what() << std::endl;
+		}
 	}
 	void ShaderCompileHelper::ConvertSPIRVtoGLSL(const Array<UInt32> _spirvData, ShaderType _type, String& _glslSource)
 	{
-		spirv_cross::CompilerGLSL compilerGLSL(_spirvData);
+		try
+		{
+			spirv_cross::CompilerGLSL compilerGLSL(_spirvData);
 
-		// GLSL 哪颇老 可记 汲沥
-		spirv_cross::CompilerGLSL::Options options{};
-		options.version = 450;  
-		options.separate_shader_objects = true;
-		//options.vertex.flip_vert_y = true;
-				
-		compilerGLSL.set_common_options(options);
-		// GLSL 内靛 积己
-		_glslSource = compilerGLSL.compile();
+			// GLSL 哪颇老 可记 汲沥
+			spirv_cross::CompilerGLSL::Options options{};
+			options.version = 450;
+			options.separate_shader_objects = true;
+			//options.vertex.flip_vert_y = true;
+
+			compilerGLSL.set_common_options(options);
+			// GLSL 内靛 积己
+			_glslSource = compilerGLSL.compile();
+		}
+		catch (const spirv_cross::CompilerError& e)
+		{
+			std::cerr << "SPIRV-Cross Error: " << e.what() << std::endl;
+		}
 	}
 }

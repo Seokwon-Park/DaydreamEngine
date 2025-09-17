@@ -87,6 +87,7 @@ namespace Daydream
                     ImGui::TreePop();
                 }
             }
+            
             ImGui::Button("Add Component");
 		}
 

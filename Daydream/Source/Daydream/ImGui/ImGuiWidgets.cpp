@@ -9,7 +9,7 @@
 
 namespace Daydream::UI
 {
-	void DrawDragFloat(const String& _label, Float32* _value, Float32 _speed, Float32 _minValue, Float32 _maxValue, Float32 _resetValue, Float32 _columnWidth)
+	void DrawDragFloat(const String& _label, Float32& _value, Float32 _speed, Float32 _minValue, Float32 _maxValue, Float32 _resetValue, Float32 _columnWidth)
 	{
 		ImGuiTableFlags flags = ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_Resizable;
 
@@ -33,14 +33,14 @@ namespace Daydream::UI
 
 			ImGui::SameLine();
 			std::string dragID = "##" + _label;
-			ImGui::DragFloat(dragID.c_str(), _value, 0.1f, 0.0f, 0.0f, "%.2f");
+			ImGui::DragFloat(dragID.c_str(), &_value, _speed, _minValue, _maxValue, "%.2f");
 
 			ImGui::PopStyleVar();
 			ImGui::EndTable();
 		}
 	}
 
-	void DrawAxisControl(const String& _label, Float32* _value, Float32 _speed, Float32 _minValue, Float32 _maxValue, Float32 _resetValue, Vector4 _color)
+	void DrawAxisControl(const String& _label, Float32& _value, Float32 _speed, Float32 _minValue, Float32 _maxValue, Float32 _resetValue, Vector4 _color)
 	{
 		float lineHeight = GImGui->Font->LegacySize + GImGui->Style.FramePadding.y * 2.0f;
 		ImVec4 color(_color.x, _color.y, _color.z, _color.w);
@@ -53,14 +53,14 @@ namespace Daydream::UI
 		// 굵은 폰트 적용
 		if (ImGui::Button(_label.c_str(), buttonSize))
 		{
-			*_value = _resetValue;
+			_value = _resetValue;
 		}
 		ImGui::PopStyleColor(3);
 
 		// 드래그 슬라이더
 		ImGui::SameLine();
 		std::string dragID = "##" + _label;
-		ImGui::DragFloat(dragID.c_str(), _value, _speed, _minValue, _maxValue, "%.2f");
+		ImGui::DragFloat(dragID.c_str(), &_value, _speed, _minValue, _maxValue, "%.2f");
 	}
 
 	void DrawVector3Controller(const String& _label, Vector3& _values, Float32 _resetValue, Float32 _columnWidth)
@@ -89,17 +89,17 @@ namespace Daydream::UI
 			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 2,0 });
 			ImGui::PushFont(boldFont);
 
-			DrawAxisControl("X", &_values.x, 0.1f, 0.0f, 0.0f, 0.0f, { 0.8f, 0.1f,0.1f, 1.0f });
-			
-			ImGui::PopItemWidth();
-
-			ImGui::SameLine();
-			DrawAxisControl("Y", &_values.y, 0.1f, 0.0f, 0.0f, 0.0f, { 0.1f, 0.8f,0.1f, 1.0f });
+			DrawAxisControl("X", _values.x, 0.1f, 0.0f, 0.0f, 0.0f, {0.8f, 0.1f,0.1f, 1.0f});
 
 			ImGui::PopItemWidth();
 
 			ImGui::SameLine();
-			DrawAxisControl("Z", &_values.z, 0.1f, 0.0f, 0.0f, 0.0f, { 0.1f, 0.1f,0.8f, 1.0f });
+			DrawAxisControl("Y", _values.y, 0.1f, 0.0f, 0.0f, 0.0f, { 0.1f, 0.8f,0.1f, 1.0f });
+
+			ImGui::PopItemWidth();
+
+			ImGui::SameLine();
+			DrawAxisControl("Z", _values.z, 0.1f, 0.0f, 0.0f, 0.0f, { 0.1f, 0.1f,0.8f, 1.0f });
 
 			ImGui::PopItemWidth();
 
@@ -108,34 +108,13 @@ namespace Daydream::UI
 			ImGui::EndTable();
 		}
 
-		//ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.1f, 1.0f });
-		//ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.8f, 0.3f, 0.3f, 1.0f });
-		//ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.5f, 0.1f, 0.1f, 1.0f });
-		//if (ImGui::Button("X", buttonSize))
-		//	values.x = resetValue;
-		//ImGui::PopStyleColor(3);
-
-		/*ImGui::SameLine();
-		ImGui::DragFloat("##X", &_values.x, 0.1f, 0.0f, 0.0f, "%.2f");*/
-
-
-
-		//ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.8f, 0.1f, 1.0f });
-		//ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.9f, 0.2f, 1.0f });
-		//ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.5f, 0.1f, 1.0f });
-		//if (ImGui::Button("Y", buttonSize))
-		//	_values.y = _resetValue;
-		//ImGui::PopStyleColor(3);
-
-
-		//ImGui::SameLine();
-		//ImGui::DragFloat("##Y", &_values.y, 0.1f, 0.0f, 0.0f, "%.2f");
-
-
-
 		ImGui::Columns(1);
 
 		ImGui::PopID();
+	}
+	void DrawVector3Controller(const String& _label, Vector3& _values, const char* _Xtag, const char* _Ytag, const char* _Ztag, Float32 _resetValue, Float32 _columnWidth)
+	{
+
 	}
 	void DrawTransformController(const String& _label, Transform& _transform, Float32 _resetValue, Float32 _columnWidth)
 	{
@@ -157,10 +136,30 @@ namespace Daydream::UI
 			_light.type = currentItem;
 		}
 
-		DrawDragFloat("Intensity", &_light.intensity, 0.1f, 0.0f, 1.0f);
-		DrawDragFloat("Ambient", &_light.ambientPower, 0.01f, 0.0f, 1.0f);
-		DrawDragFloat("Shininess", &_light.shininess);
-		DrawColorEditor("Color", _light.color);
+		switch (_light.type)
+		{
+		case Directional:
+			DrawDragFloat("Intensity", _light.intensity, 0.005f, 0.0f, 1.0f);
+			DrawColorEditor("Color", _light.color);
+			break;
+		case Point:
+			DrawDragFloat("Intensity", _light.intensity, 0.001f, 0.0f, 1.0f);
+			DrawDragFloat("Range", _light.range, 0.1f, 0.0f, 0.0f);
+			DrawColorEditor("Color", _light.color);
+			break;
+		case Spot:
+			DrawDragFloat("Intensity", _light.intensity, 0.001f, 0.0f, 1.0f);
+			DrawDragFloat("Range", _light.range, 0.1f, 0.0f, 0.0f);
+			DrawDragFloat("InnerConeAngle", _light.range, 0.1f, 0.0f, 360.0f);
+			DrawDragFloat("OuterConeAngle", _light.range, 0.1f, 0.0f, 360.0f);
+			DrawColorEditor("Color", _light.color);
+			break;
+		default:
+			break;
+		}
+
+
+		/*DrawColorEditor("Color", _light.color);*/
 
 		ImGui::PopID();
 	}
@@ -186,6 +185,7 @@ namespace Daydream::UI
 
 		ImGui::PopID();
 	}
+
 	void DrawColorEditor(const String& _label, Vector3& _color, Float32 _resetValue, Float32 _columnWidth)
 	{
 		ImGuiIO& io = ImGui::GetIO();
@@ -210,13 +210,13 @@ namespace Daydream::UI
 			float lineHeight = GImGui->Font->LegacySize + GImGui->Style.FramePadding.y * 2.0f;
 			Vector2 buttonSize = { lineHeight + 2.0f , lineHeight };
 
-			DrawAxisControl("R", &_color.x, 0.01f, 0.0f, 1.0f, 0.0f, { 0.8f, 0.1f,0.1f, 1.0f });
+			DrawAxisControl("R", _color.x, 0.01f, 0.0f, 1.0f, 0.0f, { 0.8f, 0.1f,0.1f, 1.0f });
 			ImGui::PopItemWidth();
 			ImGui::SameLine();
-			DrawAxisControl("G", &_color.y, 0.01f, 0.0f, 1.0f, 0.0f, { 0.1f, 0.8f,0.1f, 1.0f });
+			DrawAxisControl("G", _color.y, 0.01f, 0.0f, 1.0f, 0.0f, { 0.1f, 0.8f,0.1f, 1.0f });
 			ImGui::PopItemWidth();
 			ImGui::SameLine();
-			DrawAxisControl("B", &_color.z, 0.01f, 0.0f, 1.0f, 0.0f,  { 0.1f, 0.1f,0.8f, 1.0f });
+			DrawAxisControl("B", _color.z, 0.01f, 0.0f, 1.0f, 0.0f,  { 0.1f, 0.1f,0.8f, 1.0f });
 			ImGui::PopItemWidth();
 			ImGui::SameLine();
 

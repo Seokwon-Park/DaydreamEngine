@@ -339,7 +339,7 @@ namespace Daydream
 			BYTE* pDest = static_cast<BYTE*>(pixelData);
 			BYTE* pSrc = const_cast<BYTE*>(static_cast<const BYTE*>(_imageData)); // 원본 이미지 데이터
 			UINT rowCount = dstDesc.Height;
-			UINT rowSizeInBytes = dstDesc.Width * 4; // 픽셀당 4바이트 가정
+			UINT rowSizeInBytes = dstDesc.Width * GraphicsUtility::GetRenderFormatSize(_desc.format); // 픽셀당 4바이트 가정
 
 			for (UINT y = 0; y < rowCount; ++y)
 			{
