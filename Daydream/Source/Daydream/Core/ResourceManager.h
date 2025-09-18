@@ -25,9 +25,9 @@ namespace Daydream
 	class ResourceManager
 	{
 	public:
-		static ResourceManager& GetInstance() {
-			static ResourceManager instance;
-			return instance;
+		static ResourceManager& GetInstance()
+		{
+			return *instance;
 		}
 
 		static void Init();
@@ -58,5 +58,7 @@ namespace Daydream
 		Unique<SamplerManager> samplerManager;
 		Unique<RenderPassManager> renderPassManager;
 		Unique<PipelineStateManager> pipelineStateManager;
+
+		inline static ResourceManager* instance = nullptr;
 	};
 }

@@ -22,10 +22,9 @@ namespace Daydream
 		Vector3 GetForward();
 		Vector3 GetUp();
 		Vector3 GetRight();
-		Quaternion GetOrientation();
 
 		void SetPosition(Vector3 _position);
-		inline Vector3 GetPosition() const { return position; }
+		inline Vector3 GetPosition() const { return transform.position; }
 
 		void UpdateAspectRatio(UInt32 _width, UInt32 _height);
 
@@ -42,9 +41,7 @@ namespace Daydream
 		Matrix4x4 viewMatrix;
 		Matrix4x4 viewProjectionMatrix;
 
-		Vector3 position, rotation;
-		Vector3 dir, up;
-		Quaternion orientation;
+		Transform transform;
 		Float32 nearPlane, farPlane;
 		Float32 fovy;
 		Float32 orthoSize;

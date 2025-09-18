@@ -1,5 +1,5 @@
 #include "DaydreamPCH.h"
-#include "ResourceManagerBase.h"
+#include "ComponentRegistry.h"
 
 namespace Daydream
 {

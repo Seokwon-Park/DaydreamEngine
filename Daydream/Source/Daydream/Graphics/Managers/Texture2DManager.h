@@ -1,12 +1,12 @@
 #pragma once
 
 #include "Daydream/Graphics/Resources/Texture.h"
-#include "Daydream/Core/ResourceManagerBase.h"
+#include "Daydream/Core/RegistryBase.h"
 
 
 namespace Daydream
 {
-	class Texture2DManager : public ResourceManagerBase<Texture2D>
+	class Texture2DManager : public RegistryBase<Texture2D>
 	{
 	public:
 		Texture2DManager() {};

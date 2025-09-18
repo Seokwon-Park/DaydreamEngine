@@ -148,7 +148,7 @@
     <ClInclude Include="Source\Daydream\Core\Logger.h" />
     <ClInclude Include="Source\Daydream\Core\MouseCodes.h" />
     <ClInclude Include="Source\Daydream\Core\PlatformDetection.h" />
-    <ClInclude Include="Source\Daydream\Core\ResourceManagerBase.h" />
+    <ClInclude Include="Source\Daydream\Core\RegistryBase.h" />
     <ClInclude Include="Source\Daydream\Core\Timestep.h" />
     <ClInclude Include="Source\Daydream\Core\Window.h" />
     <ClInclude Include="Source\Daydream\Core\WindowDefine.h" />
@@ -271,6 +271,7 @@
     <ClInclude Include="Source\Daydream\ImGui\ImGuiWidgets.h" />
     <ClInclude Include="Source\Daydream\Scene\Components\CameraComponent.h" />
     <ClInclude Include="Source\Daydream\Scene\Components\Component.h" />
+    <ClInclude Include="Source\Daydream\Scene\Components\ComponentRegistry.h" />
     <ClInclude Include="Source\Daydream\Scene\Components\LightComponent.h" />
     <ClInclude Include="Source\Daydream\Scene\Components\ModelRendererComponent.h" />
     <ClInclude Include="Source\Daydream\Scene\Components\PropertyType.h" />
@@ -732,7 +733,7 @@
     <ClCompile Include="Source\Daydream\Core\LayerStack.cpp" />
     <ClCompile Include="Source\Daydream\Core\Logger.cpp" />
     <ClCompile Include="Source\Daydream\Core\ResourceManager.cpp" />
-    <ClCompile Include="Source\Daydream\Core\ResourceManagerBase.cpp" />
+    <ClCompile Include="Source\Daydream\Core\RegistryBase.cpp" />
     <ClCompile Include="Source\Daydream\Core\Window.cpp" />
     <ClCompile Include="Source\Daydream\Core\WindowManager.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Buffer.cpp" />
@@ -841,6 +842,7 @@
     <ClCompile Include="Source\Daydream\ImGui\ImGuiRenderer.cpp" />
     <ClCompile Include="Source\Daydream\ImGui\ImGuiWidgets.cpp" />
     <ClCompile Include="Source\Daydream\Scene\Components\Component.cpp" />
+    <ClCompile Include="Source\Daydream\Scene\Components\ComponentRegistry.cpp" />
     <ClCompile Include="Source\Daydream\Scene\Components\LightComponent.cpp" />
     <ClCompile Include="Source\Daydream\Scene\Components\ModelRendererComponent.cpp" />
     <ClCompile Include="Source\Daydream\Scene\Components\TransformComponent.cpp" />

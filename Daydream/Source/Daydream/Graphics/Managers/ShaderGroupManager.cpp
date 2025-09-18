@@ -8,9 +8,9 @@ namespace Daydream
 	}
 	void ShaderGroupManager::CreateEssentialShaderGroups()
 	{
-		resourceCache["Model"] = ShaderGroup::Create("ModelVS", "ModelPS");
-		resourceCache["Cubemap"] = ShaderGroup::Create("CubemapVS", "CubemapPS");
-		resourceCache["Equirectangular"] = ShaderGroup::Create("EquirectangularVS", "EquirectangularPS");
-		resourceCache["Sprite"] = ShaderGroup::Create("SpriteVS", "SpritePS");
+		registry["Model"] = ShaderGroup::Create("ModelVS", "ModelPS");
+		registry["Cubemap"] = ShaderGroup::Create("CubemapVS", "CubemapPS");
+		registry["Equirectangular"] = ShaderGroup::Create("EquirectangularVS", "EquirectangularPS");
+		registry["Sprite"] = ShaderGroup::Create("SpriteVS", "SpritePS");
 	}
 }

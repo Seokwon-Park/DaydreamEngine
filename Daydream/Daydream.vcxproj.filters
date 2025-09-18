@@ -1808,12 +1808,13 @@
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Sampler.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Sampler.h" />
     <ClInclude Include="Source\Daydream\Graphics\Managers\SamplerManager.h" />
-    <ClInclude Include="Source\Daydream\Core\ResourceManagerBase.h" />
+    <ClInclude Include="Source\Daydream\Core\RegistryBase.h" />
     <ClInclude Include="Source\Daydream\Graphics\Managers\ShaderGroupManager.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLSampler.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12Sampler.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanSampler.h" />
     <ClInclude Include="Source\Daydream\Core\UUID.h" />
+    <ClInclude Include="Source\Daydream\Scene\Components\ComponentRegistry.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\File.cpp">
@@ -2162,11 +2163,12 @@
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Sampler.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\Sampler.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Managers\SamplerManager.cpp" />
-    <ClCompile Include="Source\Daydream\Core\ResourceManagerBase.cpp" />
+    <ClCompile Include="Source\Daydream\Core\RegistryBase.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Managers\ShaderGroupManager.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLSampler.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Sampler.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanSampler.cpp" />
     <ClCompile Include="Source\Daydream\Core\UUID.cpp" />
+    <ClCompile Include="Source\Daydream\Scene\Components\ComponentRegistry.cpp" />
   </ItemGroup>
 </Project>

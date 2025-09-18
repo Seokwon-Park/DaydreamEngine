@@ -119,7 +119,7 @@ namespace Daydream
 			args.push_back(L"-fvk-invert-y");
 		}
 		args.push_back(L"-fvk-use-dx-layout");
-		args.push_back(L"-O3");
+		args.push_back(L"-O0");
 
 		ComPtr<IDxcResult> result;
 		hr = compiler->Compile(&sourceBuffer,
@@ -160,12 +160,13 @@ namespace Daydream
 
 			spirv_cross::CompilerGLSL::Options commonOptions{};
 			commonOptions.vertex.flip_vert_y = true;
-
+			
 			hlsl.set_common_options(commonOptions);
 
 			spirv_cross::CompilerHLSL::Options options{};
 			options.shader_model = 50;
 			options.use_entry_point_name = true;
+			
 
 			hlsl.set_hlsl_options(options);
 

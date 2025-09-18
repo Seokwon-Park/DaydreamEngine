@@ -16,5 +16,15 @@ namespace Daydream
 		{
 			return glm::degrees(_radians);
 		}
+
+		inline Float32 Cos(Float32 _radian)
+		{
+			return cosf(_radian);
+		}
+
+		inline Float32 CosDegree(Float32 _degrees)
+		{
+			return cosf(DegreeToRadian(_degrees));
+		}
 	};
 }

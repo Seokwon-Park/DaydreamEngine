@@ -150,8 +150,8 @@ namespace Daydream::UI
 		case Spot:
 			DrawDragFloat("Intensity", _light.intensity, 0.001f, 0.0f, 1.0f);
 			DrawDragFloat("Range", _light.range, 0.1f, 0.0f, 0.0f);
-			DrawDragFloat("InnerConeAngle", _light.range, 0.1f, 0.0f, 360.0f);
-			DrawDragFloat("OuterConeAngle", _light.range, 0.1f, 0.0f, 360.0f);
+			DrawDragFloat("InnerConeAngle", _light.spotInnerAngle, 0.1f, 0.0f, 360.0f);
+			DrawDragFloat("OuterConeAngle", _light.spotOuterAngle, 0.1f, 0.0f, 360.0f);
 			DrawColorEditor("Color", _light.color);
 			break;
 		default:

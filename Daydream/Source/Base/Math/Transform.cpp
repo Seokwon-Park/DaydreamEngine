@@ -18,7 +18,6 @@ namespace Daydream
 	{
 	}
 
-
 	Vector3 Transform::GetForward()
 	{
 		return glm::rotate(Quaternion(rotation), Vector3(0.0f,0.0f,1.0f));

@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Daydream/Graphics/Resources/Sampler.h"
-#include "Daydream/Core/ResourceManagerBase.h"
+#include "Daydream/Core/RegistryBase.h"
 
 namespace Daydream
 {
-	class SamplerManager : public ResourceManagerBase<Sampler>
+	class SamplerManager : public RegistryBase<Sampler>
 	{
 	public:
 		SamplerManager();

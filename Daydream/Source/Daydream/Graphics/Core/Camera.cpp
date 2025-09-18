@@ -6,9 +6,7 @@ namespace Daydream
 	Camera::Camera()
 		:viewMatrix(Matrix4x4()), projectionMatrix(Matrix4x4())
 	{
-		dir= Vector3(0.0f, 0.0f, 1.0f);
-		up = Vector3(0.0f, 1.0f, 0.0f);
-		fovy = 70.0f;
+		fovy = 60.0f;
 		aspectRatio = 1.6f/ 0.9f;
 		orthoSize = 5.0f;
 		nearPlane = 0.001f;
@@ -40,18 +38,14 @@ namespace Daydream
 		return viewProjectionMatrix;
 	}
 
-	Quaternion Camera::GetOrientation()
-	{
-		return orientation;
-	}
 
 	Vector3 Camera::GetForward()
 	{
-		return dir;
+		return transform.GetForward();
 	}
 	Vector3 Camera::GetUp()
 	{
-		return glm::rotate(GetOrientation(), Vector3(0.0f, 1.0f, 0.0f));
+		return transform.GetUp();
 	}
 	Vector3 Camera::GetRight()
 	{
@@ -60,7 +54,7 @@ namespace Daydream
 
 	void Camera::SetPosition(Vector3 _position)
 	{
-		position = _position;
+		transform.position = _position;
 		UpdateViewMatrix();
 	}
 	void Camera::UpdateAspectRatio(UInt32 _width, UInt32 _height)
@@ -77,7 +71,7 @@ namespace Daydream
 	}
 	void Camera::UpdateViewMatrix()
 	{
-		viewMatrix = Matrix4x4::LookTo(position, dir, up);
+		viewMatrix = Matrix4x4::LookTo(transform.position, transform.GetForward(), transform.GetUp());
 		UpdateViewProjectionMatrix();
 	}
 	void Camera::UpdateProjectionMatrix()

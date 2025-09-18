@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Daydream/Graphics/Resources/Mesh.h"
-#include "Daydream/Core/ResourceManagerBase.h"
+#include "Daydream/Core/RegistryBase.h"
 
 namespace Daydream
 {
-	class MeshManager : public ResourceManagerBase<Mesh>
+	class MeshManager : public RegistryBase<Mesh>
 	{
 	public:
 		MeshManager();

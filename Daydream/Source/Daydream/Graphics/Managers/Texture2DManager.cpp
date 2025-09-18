@@ -48,8 +48,8 @@ namespace Daydream
 						desc.width = data.width;
 						desc.height = data.height;
 						desc.format = extension == ".hdr" ? RenderFormat::R32G32B32A32_FLOAT : (isSRGB ? RenderFormat::R8G8B8A8_UNORM_SRGB : RenderFormat::R8G8B8A8_UNORM);
-						resourceCache[pathString] = Texture2D::Create(data.GetRawDataPtr(), desc);
-						resourceCache[pathString]->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
+						registry[pathString] = Texture2D::Create(data.GetRawDataPtr(), desc);
+						registry[pathString]->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
 						break;
 					}
 				}

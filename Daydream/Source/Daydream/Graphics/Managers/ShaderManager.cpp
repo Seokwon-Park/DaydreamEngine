@@ -59,7 +59,7 @@ namespace Daydream
 						{
 							shaderType = ShaderType::Geometry;
 						}
-						resourceCache[shaderName] = Shader::Create(pathString, shaderType, ShaderLoadMode::File);
+						registry[shaderName] = Shader::Create(pathString, shaderType, ShaderLoadMode::File);
 						break;
 					}
 				}

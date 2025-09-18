@@ -14,11 +14,6 @@ namespace Daydream
 	{
 		const Vector2& mouse{ Input::GetMouseX(), Input::GetMouseY() };
 		mouseDelta = (mouse - prevMousePos);
-		//DAYDREAM_CORE_INFO("{}, {}", delta.x, delta.y);
-
-		orientation = Quaternion(Vector3(pitch, yaw, 0.0f));
-		dir = glm::rotate(orientation, Vector3(0.0f, 0.0f, 1.0f));
-		up = glm::rotate(orientation, Vector3(0.0f, 1.0f, 0.0f));
 
 		UpdateViewMatrix();
 
@@ -27,8 +22,8 @@ namespace Daydream
 
 	void EditorCamera::CameraRotate()
 	{
-		yaw += mouseDelta.x * rotationSpeed;
-		pitch += mouseDelta.y * rotationSpeed;
+		transform.rotation.y += mouseDelta.x * rotationSpeed;
+		transform.rotation.x += mouseDelta.y * rotationSpeed;
 
 	}
 
@@ -36,31 +31,31 @@ namespace Daydream
 	{
 		if (Input::GetKeyPressed(Key::Q))
 		{
-			SetPosition(position - GetUp() * _deltaTime);
+			SetPosition(transform.position - transform.GetUp() * _deltaTime);
 		}
 		if (Input::GetKeyPressed(Key::E))
 		{
-			SetPosition(position + GetUp() * _deltaTime);
+			SetPosition(transform.position + transform.GetUp() * _deltaTime);
 		}
 
 		if (Input::GetKeyPressed(Key::W))
 		{
-			SetPosition(position + GetForward() * _deltaTime);
+			SetPosition(transform.position + transform.GetForward() * _deltaTime);
 		}
 
 		if (Input::GetKeyPressed(Key::A))
 		{
-			SetPosition(position - GetRight() * _deltaTime);
+			SetPosition(transform.position - transform.GetRight() * _deltaTime);
 		}
 
 		if (Input::GetKeyPressed(Key::S))
 		{
-			SetPosition(position - GetForward() * _deltaTime);
+			SetPosition(transform.position - transform.GetForward() * _deltaTime);
 		}
 
 		if (Input::GetKeyPressed(Key::D))
 		{
-			SetPosition(position + GetRight() * _deltaTime);
+			SetPosition(transform.position + transform.GetRight() * _deltaTime);
 		}
 	}
 	void EditorCamera::ControlCameraView(Float32 _deltaTime)

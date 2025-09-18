@@ -57,6 +57,7 @@ namespace Daydream
 
 		ShaderCompileHelper::Init();
 		ResourceManager::Init();
+
 	}
 
 	Application::~Application()

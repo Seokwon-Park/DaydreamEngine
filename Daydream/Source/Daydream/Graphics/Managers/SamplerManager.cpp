@@ -16,7 +16,7 @@ namespace Daydream
         samplerDesc.wrapU = WrapMode::Repeat;
         samplerDesc.wrapV = WrapMode::Repeat;
         samplerDesc.wrapW = WrapMode::Repeat;
-        resourceCache["LinearRepeat"] = Sampler::Create(samplerDesc);
+        registry["LinearRepeat"] = Sampler::Create(samplerDesc);
 
         // 선형 샘플러 (클램프)
         
@@ -26,7 +26,7 @@ namespace Daydream
         samplerDesc.wrapU = WrapMode::ClampToEdge;
         samplerDesc.wrapV = WrapMode::ClampToEdge;
         samplerDesc.wrapW = WrapMode::ClampToEdge;
-        resourceCache["LinearClampToEdge"] = Sampler::Create(samplerDesc);
+        registry["LinearClampToEdge"] = Sampler::Create(samplerDesc);
 
         // 가장 가까운 샘플러 (반복)
         
@@ -36,7 +36,7 @@ namespace Daydream
         samplerDesc.wrapU = WrapMode::Repeat;
         samplerDesc.wrapV = WrapMode::Repeat;
         samplerDesc.wrapW = WrapMode::Repeat;
-        resourceCache["NearestRepeat"] = Sampler::Create(samplerDesc);
+        registry["NearestRepeat"] = Sampler::Create(samplerDesc);
 
         // 가장 가까운 샘플러 (클램프)
         
@@ -46,7 +46,7 @@ namespace Daydream
         samplerDesc.wrapU = WrapMode::ClampToEdge;
         samplerDesc.wrapV = WrapMode::ClampToEdge;
         samplerDesc.wrapW = WrapMode::ClampToEdge;
-        resourceCache["NearestClampToEdge"] = Sampler::Create(samplerDesc);
+        registry["NearestClampToEdge"] = Sampler::Create(samplerDesc);
 	}
 	
 }

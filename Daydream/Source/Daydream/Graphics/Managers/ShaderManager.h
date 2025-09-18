@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Daydream/Core/ResourceManagerBase.h"
+#include "Daydream/Core/RegistryBase.h"
 
 namespace Daydream
 {
 	class Shader;
 	class ShaderGroup;
 	
-	class ShaderManager : public ResourceManagerBase<Shader>
+	class ShaderManager : public RegistryBase<Shader>
 	{
 	public:
 		ShaderManager();
