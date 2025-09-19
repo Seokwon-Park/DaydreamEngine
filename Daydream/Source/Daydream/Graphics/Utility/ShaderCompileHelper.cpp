@@ -11,26 +11,25 @@
 
 namespace Daydream
 {
-	IDxcUtils* ShaderCompileHelper::utils = nullptr;
-	IDxcCompiler3* ShaderCompileHelper::compiler = nullptr;
-
 	void ShaderCompileHelper::Init()
 	{
-		DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&utils));
-		DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&compiler));
+		instance = new ShaderCompileHelper();
+		DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(instance->utils.GetAddressOf()));
+		DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(instance->compiler.GetAddressOf()));
 	}
 
 	void ShaderCompileHelper::Shutdown()
 	{
-		utils->Release();
-		utils = nullptr;
-		compiler->Release();
-		compiler = nullptr;
+		delete instance;
+		//utils->Release();
+		//utils = nullptr;
+		//compiler->Release();
+		//compiler = nullptr;
 	}
 	void ShaderCompileHelper::GetDXIL(const Path& _filepath, ShaderType _type, ComPtr<IDxcBlob>& _shaderBlob)
 	{
 		ComPtr<IDxcBlobEncoding> sourceBlob;
-		HRESULT hr = utils->LoadFile(_filepath.wstring().c_str(), nullptr, sourceBlob.GetAddressOf());
+		HRESULT hr = instance->utils->LoadFile(_filepath.wstring().c_str(), nullptr, sourceBlob.GetAddressOf());
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to load File! {0}", _filepath.string());
 
 		// 2. DxcBuffer 설정
@@ -52,7 +51,7 @@ namespace Daydream
 		args.push_back(L"-Wno-ignored-attributes");
 
 		ComPtr<IDxcResult> result;
-		hr = compiler->Compile(&sourceBuffer,
+		hr = instance->compiler->Compile(&sourceBuffer,
 			args.data(),
 			static_cast<UINT32>(args.size()),
 			nullptr,  // 인클루드 핸들러 없음
@@ -85,14 +84,14 @@ namespace Daydream
 		reflectionBuffer.Ptr = _shaderBlob->GetBufferPointer();
 		reflectionBuffer.Size = _shaderBlob->GetBufferSize();
 
-		HRESULT hr = utils->CreateReflection(&reflectionBuffer, IID_PPV_ARGS(_reflection.GetAddressOf()));
+		HRESULT hr = instance->utils->CreateReflection(&reflectionBuffer, IID_PPV_ARGS(_reflection.GetAddressOf()));
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create reflection!");
 	}
 
 	void ShaderCompileHelper::ConvertHLSLtoSPIRV(const Path& _filepath, ShaderType _type, Array<UInt32>& _output)
 	{
 		ComPtr<IDxcBlobEncoding> sourceBlob;
-		HRESULT hr = utils->LoadFile(_filepath.wstring().c_str(), nullptr, sourceBlob.GetAddressOf());
+		HRESULT hr = instance->utils->LoadFile(_filepath.wstring().c_str(), nullptr, sourceBlob.GetAddressOf());
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to load File! {0}", _filepath.string());
 
 		// 2. DxcBuffer 설정
@@ -122,7 +121,7 @@ namespace Daydream
 		args.push_back(L"-O0");
 
 		ComPtr<IDxcResult> result;
-		hr = compiler->Compile(&sourceBuffer,
+		hr = instance->compiler->Compile(&sourceBuffer,
 			args.data(),
 			static_cast<UINT32>(args.size()),
 			nullptr,  // 인클루드 핸들러 없음
@@ -152,8 +151,9 @@ namespace Daydream
 		_output.resize((spirvBlob->GetBufferSize() + sizeof(UInt32) - 1) / sizeof(UInt32));
 		memcpy(_output.data(), spirvBlob->GetBufferPointer(), spirvBlob->GetBufferSize());
 	}
-	void ShaderCompileHelper::ConvertSPIRVtoDXBC(const Array<UInt32> _spirvData, ShaderType _type, String& _hlslSource)
+	String ShaderCompileHelper::ConvertSPIRVtoDXBC(const Array<UInt32> _spirvData, ShaderType _type)
 	{
+		String hlslSource;
 		try
 		{
 			spirv_cross::CompilerHLSL hlsl(_spirvData);
@@ -170,15 +170,18 @@ namespace Daydream
 
 			hlsl.set_hlsl_options(options);
 
-			_hlslSource = hlsl.compile();
+			hlslSource = hlsl.compile();
 		}
 		catch (const spirv_cross::CompilerError& e)
 		{
 			std::cerr << "SPIRV-Cross Error: " << e.what() << std::endl;
 		}
+		return hlslSource;
 	}
-	void ShaderCompileHelper::ConvertSPIRVtoGLSL(const Array<UInt32> _spirvData, ShaderType _type, String& _glslSource)
+	String ShaderCompileHelper::ConvertSPIRVtoGLSL(const Array<UInt32> _spirvData, ShaderType _type)
 	{
+		String glslSource;
+
 		try
 		{
 			spirv_cross::CompilerGLSL compilerGLSL(_spirvData);
@@ -191,11 +194,12 @@ namespace Daydream
 
 			compilerGLSL.set_common_options(options);
 			// GLSL 코드 생성
-			_glslSource = compilerGLSL.compile();
+			glslSource = compilerGLSL.compile();
 		}
 		catch (const spirv_cross::CompilerError& e)
 		{
 			std::cerr << "SPIRV-Cross Error: " << e.what() << std::endl;
 		}
+		return glslSource;
 	}
 }

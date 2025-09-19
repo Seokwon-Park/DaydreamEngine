@@ -1,19 +1,20 @@
 #pragma once
 
 #include "Window.h"
+#include "RegistryBase.h"
 
 namespace Daydream
 {
-	class WindowManager
+	class WindowManager : public RegistryBase<String, DaydreamWindow*>
 	{
 	public:
 		static void Init();
-		static DaydreamWindow* GetWindow(String _name);
+		static void Shutdown();
 		static void RegisterWindow(String _name, DaydreamWindow* _window);
 
 	private:
 		WindowManager() {};
-		static Unique<WindowManager> instance;
+		inline static WindowManager* instance = nullptr;
 		HashMap<std::string, DaydreamWindow*> windows;
 	};
 }

@@ -5,7 +5,7 @@
 
 namespace Daydream
 {
-	class SamplerManager : public RegistryBase<Sampler>
+	class SamplerManager : public RegistryBase<String, Shared<Sampler>>
 	{
 	public:
 		SamplerManager();

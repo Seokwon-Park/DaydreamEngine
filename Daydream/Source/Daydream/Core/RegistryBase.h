@@ -2,14 +2,14 @@
 
 namespace Daydream
 {
-	template<typename ValueType>
+	template<typename KeyType, typename ValueType>
 	class RegistryBase
 	{
 	public:
 		RegistryBase() = default;
 		virtual ~RegistryBase() = default;
 
-		Shared<ValueType> Get(const String& _name)
+		ValueType Get(const KeyType& _name)
 		{
 			if (registry.find(_name) != registry.end())
 			{
@@ -20,6 +20,6 @@ namespace Daydream
 		}
 
 	protected:
-		HashMap<String, Shared<ValueType>> registry;
+		HashMap<KeyType, ValueType> registry;
 	};
 }

@@ -11,7 +11,13 @@ namespace Daydream
 		EditorApplication(const Daydream::ApplicationSpecification& _spec)
 			:Daydream::Application(_spec)
 		{
+		}
+
+		virtual bool Init() override
+		{
+			Application::Init();
 			AttachLayer(new EditorLayer());
+			return true;
 		}
 	};
 
@@ -20,7 +26,7 @@ namespace Daydream
 		ApplicationSpecification spec;
 		spec.Name = "Daydream Engine Editor";
 		spec.WorkingDirectory = "../Lab";
-		spec.rendererAPI = RendererAPIType::DirectX11;
+		spec.rendererAPI = RendererAPIType::OpenGL;
 		return new EditorApplication(spec);
 	}
 }

@@ -3,11 +3,12 @@
 #include "PropertyType.h"
 
 #define DEFINE_COMPONENT_NAME(className)                            \
-public:                                                             \
     const char* GetName() const override							\
 	{																\
         return #className;                                          \
-    }
+    }																			
+
+
 
 namespace Daydream
 {

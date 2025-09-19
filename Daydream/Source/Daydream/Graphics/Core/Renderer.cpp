@@ -3,6 +3,8 @@
 #include "Renderer2D.h"
 
 #include <Daydream/Scene/Components/ModelRendererComponent.h>
+#include "Daydream/Graphics/Utility/ModelLoader.h"
+#include "Daydream/Graphics/Utility/ShaderCompileHelper.h"
 
 namespace Daydream
 {
@@ -20,12 +22,16 @@ namespace Daydream
 		DAYDREAM_CORE_ASSERT(instance == nullptr, "Renderer Already Initialized!");
 		instance = new Renderer(_API);
 		instance->renderDevice->Init();
+		ModelLoader::Init();
+		ShaderCompileHelper::Init();
 		RenderCommand::Init(instance->renderDevice.get());
 	}
 
 	void Renderer::Shutdown()
 	{
 		//Renderer2D::Shutdown();
+		ShaderCompileHelper::Shutdown();
+		ModelLoader::Shutdown();
 		instance->renderDevice.reset();
 		delete instance;
 		instance = nullptr;

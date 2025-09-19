@@ -10,10 +10,6 @@ namespace Daydream
 	{
 	}
 
-	Shared<PipelineState> PipelineStateManager::Get(const String& _name)
-	{
-		return pipelineCache[_name];
-	}
 	void PipelineStateManager::CreateEssentialPipelineStates()
 	{
 		RasterizerStateDesc rastDesc;
@@ -25,24 +21,24 @@ namespace Daydream
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Model");
 		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("MainRenderPass");
 
-		pipelineCache["ForwardPSO"] = PipelineState::Create(psoDesc);
+		registry["ForwardPSO"] = PipelineState::Create(psoDesc);
 
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Sprite");
 		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("MainRenderPass");
 
-		pipelineCache["SpritePSO"] = PipelineState::Create(psoDesc);
+		registry["SpritePSO"] = PipelineState::Create(psoDesc);
 
 		psoDesc.rasterizerState = rastDesc;
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Cubemap");
 		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("MainRenderPass");
 		
-		pipelineCache["CubemapPSO"] = PipelineState::Create(psoDesc);
+		registry["CubemapPSO"] = PipelineState::Create(psoDesc);
 
 		psoDesc.rasterizerState = rastDesc;
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Equirectangular");
 		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("MainRenderPass");
 
-		pipelineCache["EquirectangularPSO"] = PipelineState::Create(psoDesc);
+		registry["EquirectangularPSO"] = PipelineState::Create(psoDesc);
 
 
 	}

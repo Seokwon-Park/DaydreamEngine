@@ -4,7 +4,6 @@
 #include "Daydream/Event/Event.h"
 #include "Daydream/Graphics/Core/Swapchain.h"
 
-
 namespace Daydream
 {
 	struct WindowProps

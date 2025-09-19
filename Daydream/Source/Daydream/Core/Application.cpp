@@ -8,6 +8,7 @@
 #include "Daydream/Graphics/Core/Renderer.h"
 #include "Daydream/Graphics/Utility/ShaderCompileHelper.h"
 #include "ResourceManager.h"
+#include "Daydream/Scene/Components/ComponentRegistry.h"
 
 namespace Daydream
 {
@@ -20,13 +21,12 @@ namespace Daydream
 		DAYDREAM_CORE_ASSERT(!instance, "Application already exists!");
 		instance = this;
 
-		WindowProps prop;
 		prop.width = 1280;
 		prop.height = 720;
 		prop.title = _specification.Name;
 		prop.rendererAPI = _specification.rendererAPI;
 
-		//일단 프로그램 윈도우 생성
+		//프로그램 윈도우 생성
 		mainWindow = DaydreamWindow::Create(prop);
 		if (mainWindow == nullptr)
 		{
@@ -42,31 +42,13 @@ namespace Daydream
 
 		//testWindow = DaydreamWindow::Create(prop);
 		//testWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
-		WindowManager::Init();
-		WindowManager::RegisterWindow(prop.title, mainWindow.get());
 
-		//렌더러 초기화
-		Renderer::Init(_specification.rendererAPI);
-		//렌더러에 윈도우 
-		Renderer::CreateSwapchainForWindow(mainWindow.get());
-		Renderer::SetCurrentWindow(mainWindow.get());
-		//Renderer::RegisterWindow("TestWindow", testWindow.get());
-
-		imGuiLayer = new ImGuiLayer();
-		AttachOverlay(imGuiLayer);
-
-		ShaderCompileHelper::Init();
-		ResourceManager::Init();
 
 	}
 
 	Application::~Application()
 	{
-		mainWindow->SetSwapchain(nullptr);
-		mainWindow = nullptr;
-		ResourceManager::Shutdown();
-		layerStack.Release();
-		Renderer::Shutdown();
+		
 	}
 
 	void Application::AttachLayer(Layer* _layer)
@@ -79,7 +61,7 @@ namespace Daydream
 		layerStack.PushOverlay(_overlay);
 	}
 
-	void Application::ReadConfig(std::string_view _fileName)
+	void Application::ReadConfig(const String& _fileName)
 	{
 		std::ifstream file(_fileName.data());
 		DAYDREAM_CORE_ASSERT(!file.is_open(), "Cannot Open Configuration File!")
@@ -97,6 +79,21 @@ namespace Daydream
 	bool Application::Init()
 	{
 		isRunning = true;
+		WindowManager::Init();
+		WindowManager::RegisterWindow(prop.title, mainWindow.get());
+
+		//렌더러 초기화
+		Renderer::Init(prop.rendererAPI);
+		//렌더러에 윈도우 
+		Renderer::CreateSwapchainForWindow(mainWindow.get());
+		Renderer::SetCurrentWindow(mainWindow.get());
+		//Renderer::RegisterWindow("TestWindow", testWindow.get());
+
+		imGuiLayer = new ImGuiLayer();
+		AttachOverlay(imGuiLayer);
+
+		ResourceManager::Init();
+		ComponentRegistry::Init();
 
 		return true;
 	}
@@ -158,6 +155,14 @@ namespace Daydream
 	}
 	bool Application::Exit()
 	{
+		ComponentRegistry::Shutdown();
+		ResourceManager::Shutdown();
+		layerStack.Release();
+		mainWindow->SetSwapchain(nullptr);
+		Renderer::Shutdown();
+		WindowManager::Shutdown();
+		mainWindow = nullptr;
+
 		return true;
 	}
 

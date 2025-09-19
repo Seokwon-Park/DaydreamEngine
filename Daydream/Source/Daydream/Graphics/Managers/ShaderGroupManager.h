@@ -5,7 +5,7 @@
 
 namespace Daydream
 {
-	class ShaderGroupManager : public RegistryBase<ShaderGroup>
+	class ShaderGroupManager : public RegistryBase<String, Shared<ShaderGroup>>
 	{
 	public:
 		ShaderGroupManager();

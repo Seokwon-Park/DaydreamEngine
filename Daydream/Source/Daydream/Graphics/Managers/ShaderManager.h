@@ -7,7 +7,7 @@ namespace Daydream
 	class Shader;
 	class ShaderGroup;
 	
-	class ShaderManager : public RegistryBase<Shader>
+	class ShaderManager : public RegistryBase<String,Shared<Shader>>
 	{
 	public:
 		ShaderManager();

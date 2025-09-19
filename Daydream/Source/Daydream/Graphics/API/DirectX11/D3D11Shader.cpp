@@ -18,7 +18,6 @@ namespace Daydream
 		HRESULT hr;
 
 		Path path(_src);
-		String src;
 		Array<UInt32> spirvData;
 		ShaderCompileHelper::ConvertHLSLtoSPIRV(path, _type, spirvData);
 		//spirv_cross::CompilerHLSL compiler(spirvData);
@@ -95,7 +94,7 @@ namespace Daydream
 
 			reflectionDatas.push_back(sr);
 		}
-		ShaderCompileHelper::ConvertSPIRVtoDXBC(spirvData, _type, src);
+		String src = ShaderCompileHelper::ConvertSPIRVtoDXBC(spirvData, _type);
 
 		hr = D3DCompile(src.c_str(), src.size(), nullptr, nullptr, nullptr, entryPoint.c_str(), target.c_str(), 0, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");

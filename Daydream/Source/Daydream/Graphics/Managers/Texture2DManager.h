@@ -6,7 +6,7 @@
 
 namespace Daydream
 {
-	class Texture2DManager : public RegistryBase<Texture2D>
+	class Texture2DManager : public RegistryBase<String, Shared<Texture2D>>
 	{
 	public:
 		Texture2DManager() {};

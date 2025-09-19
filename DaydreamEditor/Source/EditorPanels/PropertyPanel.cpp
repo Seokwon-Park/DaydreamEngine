@@ -1,5 +1,7 @@
 #include "PropertyPanel.h"
 
+#include "Daydream/Scene/Components/ComponentRegistry.h"
+
 namespace Daydream
 {
 	PropertyPanel::PropertyPanel()
@@ -35,7 +37,10 @@ namespace Daydream
                 ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 2,0 });
 
                 ImGui::SameLine();
-                ImGui::InputText("##Name", buffer, selectedEntity->GetName().size());
+                if (ImGui::InputText("##Name", buffer, 256))
+                {
+                    selectedEntity->SetName(buffer);
+                };
 
                 ImGui::PopStyleVar();
                 ImGui::EndTable();
@@ -88,7 +93,63 @@ namespace Daydream
                 }
             }
             
-            ImGui::Button("Add Component");
+            ImGui::Spacing(); // 버튼 위에 약간의 공간 추가
+            ImGui::Separator(); // 구분선
+
+            const char* buttonLabel = "Add Component";
+            float buttonWidth = ImGui::CalcTextSize(buttonLabel).x + ImGui::GetStyle().FramePadding.x * 2.0f;
+            float contentWidth = ImGui::GetContentRegionAvail().x;
+            float cursorPosX = (contentWidth - buttonWidth) * 0.5f;
+            if (cursorPosX > 0.0f)
+            {
+                ImGui::SetCursorPosX(cursorPosX);
+            }
+
+            if (ImGui::Button(buttonLabel))
+            {
+                ImGui::OpenPopup("AddComponentPopup");
+            }
+
+            if (ImGui::BeginPopup("AddComponentPopup"))
+            {
+                // 등록된 모든 컴포넌트 목록을 가져옴
+                const auto& componentFactoryMap = ComponentRegistry::GetComponentMap();
+
+                // 검색 기능 (선택 사항이지만 매우 유용)
+                static char searchQuery[256] = "";
+                ImGui::InputTextWithHint("##Search", "Search Component...", searchQuery, sizeof(searchQuery));
+                ImGui::Separator();
+
+                for (const auto& [name, componentFunctions] : componentFactoryMap)
+                {
+                    String searchQueryLower = searchQuery;
+                    std::transform(searchQueryLower.begin(), searchQueryLower.end(), searchQueryLower.begin(), tolower);
+
+                    // 2. 비교 대상인 컴포넌트 이름(name)도 소문자로 변환
+                    String nameLower = name;
+                    std::transform(nameLower.begin(), nameLower.end(), nameLower.begin(), tolower);
+
+                    // 검색어 필터링
+                    if (searchQuery[0] != '\0' && nameLower.find(searchQueryLower) == std::string::npos)
+                    {
+                        continue; // 검색어와 일치하지 않으면 건너뜀
+                    }
+
+                    if (componentFunctions.hasFunc(selectedEntity))
+                    {
+                        continue;
+                    }
+                    // 목록에서 컴포넌트 이름을 클릭하면
+                    if (ImGui::Selectable(name.c_str()))
+                    {
+                        componentFunctions.createFunc(selectedEntity);
+
+                        ImGui::CloseCurrentPopup();
+                    }
+                }
+
+                ImGui::EndPopup();
+            }
 		}
 
 		ImGui::End();

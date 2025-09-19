@@ -47,8 +47,8 @@ namespace Daydream
 		void OnUpdateInputState() override;
 
 	private:
-		virtual void Init(const WindowProps& _props);
-		virtual void Shutdown();
+		void Init(const WindowProps& _props);
+		void Shutdown();
 
 		GLFWwindow* glfwWindow = nullptr;
 

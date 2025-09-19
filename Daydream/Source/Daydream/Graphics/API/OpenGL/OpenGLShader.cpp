@@ -162,7 +162,7 @@ namespace Daydream
 			reflectionDatas.push_back(sr);
 		}
 
-		ShaderCompileHelper::ConvertSPIRVtoGLSL(spirvData, _type, src);
+		src = ShaderCompileHelper::ConvertSPIRVtoGLSL(spirvData, _type);
 		Compile(src);
 
 		//if (shaderType == ShaderType::Vertex)

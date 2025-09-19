@@ -38,5 +38,7 @@ namespace Daydream
 		GetInstance().shaderGroupManager = nullptr;
 		GetInstance().shaderManager = nullptr;
 		GetInstance().meshManager = nullptr;
+
+		delete instance;
 	}
 }

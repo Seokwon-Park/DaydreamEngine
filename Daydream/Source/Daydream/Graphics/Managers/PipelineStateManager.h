@@ -1,19 +1,18 @@
 #pragma once
 
+#include "Daydream/Core/RegistryBase.h"
+
 
 namespace Daydream
 {
 	class PipelineState;
 
-	class PipelineStateManager
+	class PipelineStateManager : public RegistryBase<String, Shared<PipelineState>>
 	{
 	public:
 		PipelineStateManager();
 
-		Shared<PipelineState> Get(const String& _path);
-
 		void CreateEssentialPipelineStates();
 	private:
-		HashMap<String, Shared<PipelineState>> pipelineCache;
 	};
 }

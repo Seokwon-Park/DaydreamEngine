@@ -129,7 +129,7 @@ namespace Daydream::UI
 
 		int currentItem = _light.type;
 
-		if (ImGui::Combo("Light Type", &currentItem, lightTypeNames, IM_ARRAYSIZE(lightTypeNames)))
+		if (ImGui::Combo("##Light Type", &currentItem, lightTypeNames, IM_ARRAYSIZE(lightTypeNames)))
 		{
 			// 사용자가 드롭다운 메뉴에서 다른 항목을 선택했다면,
 			// 변경된 인덱스 값을 다시 enum 타입으로 변환하여 원본 데이터에 저장합니다.
@@ -150,7 +150,7 @@ namespace Daydream::UI
 		case Spot:
 			DrawDragFloat("Intensity", _light.intensity, 0.001f, 0.0f, 1.0f);
 			DrawDragFloat("Range", _light.range, 0.1f, 0.0f, 0.0f);
-			DrawDragFloat("InnerConeAngle", _light.spotInnerAngle, 0.1f, 0.0f, 360.0f);
+			DrawDragFloat("InnerConeAngle", _light.spotInnerAngle, 0.1f, 0.0f, _light.spotOuterAngle);
 			DrawDragFloat("OuterConeAngle", _light.spotOuterAngle, 0.1f, 0.0f, 360.0f);
 			DrawColorEditor("Color", _light.color);
 			break;

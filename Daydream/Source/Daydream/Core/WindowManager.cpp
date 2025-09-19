@@ -3,21 +3,14 @@
 
 namespace Daydream
 {
-	Unique<WindowManager> WindowManager::instance;
-
 	void WindowManager::Init()
 	{
-		instance = Unique<WindowManager>(new WindowManager());
+		instance = new WindowManager();
 	}
 
-	DaydreamWindow* WindowManager::GetWindow(String _name)
+	void WindowManager::Shutdown()
 	{
-		if (instance->windows.find(_name) == instance->windows.end())
-		{
-			DAYDREAM_CORE_ERROR("Window {} is not registered", _name);
-			return nullptr;
-		}
-		return instance->windows[_name];
+		delete instance;
 	}
 
 	void WindowManager::RegisterWindow(String _name, DaydreamWindow* _window)

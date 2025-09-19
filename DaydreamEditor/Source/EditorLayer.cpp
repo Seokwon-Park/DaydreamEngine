@@ -9,6 +9,10 @@ namespace Daydream
 	EditorLayer::EditorLayer()
 		:Layer("Editor Layer")
 	{
+	}
+
+	void EditorLayer::OnAttach()
+	{
 		//camera = MakeShared<EditorCamera>();
 		editorCamera = MakeShared<EditorCamera>();
 
@@ -104,7 +108,7 @@ namespace Daydream
 		cubemapPipeline = ResourceManager::GetResource<PipelineState>("EquirectangularPSO");
 
 		material = Material::Create(pso);
-		
+
 		material->SetTexture2D("Texture", texture);
 		material->SetConstantBuffer("Camera", viewProjMat);
 
@@ -133,8 +137,8 @@ namespace Daydream
 		{
 			positions.push_back(v.position);
 		}
-		
-		cubeVBO = VertexBuffer::CreateStatic(sizeof(Vector3)*positions.size(), 12, positions.data());
+
+		cubeVBO = VertexBuffer::CreateStatic(sizeof(Vector3) * positions.size(), 12, positions.data());
 		cubeIBO = IndexBuffer::Create(meshData.indices.data(), meshData.indices.size());
 		mesh = Mesh::Create(cubeVBO, cubeIBO);
 		/////////////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,9 @@
 #include "Base/MathTypes.h"
 
+//#define _CRTDBG_MAP_ALLOC
+//#include <stdlib.h>
+//#include <crtdbg.h>
+
 namespace Daydream
 {
 	extern Application* CreateApplication();
@@ -7,6 +11,9 @@ namespace Daydream
 
 Int32 main(int argc, char** argv)
 {
+	//_CrtSetBreakAlloc(176);
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 	Daydream::Logger::Init();
 
 	Daydream::Application* application = Daydream::CreateApplication();
@@ -28,6 +35,8 @@ Int32 main(int argc, char** argv)
 		delete application;
 		application = nullptr;
 	}
+
+	Daydream::Logger::Shutdown();
 
 	return 0;
 }

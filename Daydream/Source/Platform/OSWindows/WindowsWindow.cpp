@@ -12,7 +12,8 @@ namespace Daydream
 {
 	namespace
 	{
-		static bool sIsGLFWInitialized = false;
+		static bool isGLFWInitialized = false;
+		static int glfwCount = 0;
 
 		static void GLFWErrorCallback(int _error, const char* _description)
 		{
@@ -44,12 +45,12 @@ namespace Daydream
 
 		DAYDREAM_CORE_INFO("Create Window {0} ({1}, {2})", _props.title, _props.width, _props.height);
 
-		if (false == sIsGLFWInitialized)
+		if (false == isGLFWInitialized)
 		{
 			Int32 success = glfwInit();
 			DAYDREAM_CORE_ASSERT(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
-			sIsGLFWInitialized = true;
+			isGLFWInitialized = true;
 		}
 
 		//glfwWindowHint(GLFW_TITLEBAR, false);
@@ -59,6 +60,7 @@ namespace Daydream
 			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		}
 		glfwWindow = glfwCreateWindow((Int32)_props.width, (Int32)_props.height, _props.title.c_str(), nullptr, nullptr);
+		glfwCount++;
 
 		if (_props.rendererAPI == RendererAPIType::OpenGL)
 		{
@@ -168,6 +170,11 @@ namespace Daydream
 	void WindowsWindow::Shutdown()
 	{
 		glfwDestroyWindow(glfwWindow);
+		glfwCount--;
+		if (glfwCount == 0)
+		{
+			glfwTerminate();
+		}
 	}
 	void WindowsWindow::OnUpdate()
 	{

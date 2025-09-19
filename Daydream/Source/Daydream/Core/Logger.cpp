@@ -19,4 +19,9 @@ namespace Daydream
 		clientLogger = spdlog::stdout_color_mt("APPLICATION");
 		clientLogger->set_level(spdlog::level::trace);
 	}
+
+	void Logger::Shutdown()
+	{
+		spdlog::shutdown();
+	}
 }

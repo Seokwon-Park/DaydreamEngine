@@ -5,7 +5,7 @@
 
 namespace Daydream
 {
-	class MeshManager : public RegistryBase<Mesh>
+	class MeshManager : public RegistryBase<String, Shared<Mesh>>
 	{
 	public:
 		MeshManager();

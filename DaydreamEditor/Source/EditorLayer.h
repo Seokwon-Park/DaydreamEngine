@@ -13,6 +13,7 @@ namespace Daydream
 	public:
 		EditorLayer();
 
+		virtual void OnAttach() override;
 		virtual void OnUpdate(Float32 _deltaTime) override;
 		virtual void OnImGuiRender() override;
 		virtual void OnDetach() override;

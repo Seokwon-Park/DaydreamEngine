@@ -10,7 +10,6 @@ namespace Daydream
 	public:
 		virtual ~TextureCube() = default;
 
-
 		virtual UInt32 GetWidth() const { return width; }
 		virtual UInt32 GetHeight() const { return height; }
 

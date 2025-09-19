@@ -1,37 +1,54 @@
 #pragma once
 
-#include "Component.h" // 모든 컴포넌트의 기반 클래스
+#include "Daydream/Scene/GameEntity/GameEntity.h"
+#include "Component.h"
+#include "Daydream/Core/RegistryBase.h"
 
 namespace Daydream
 {
-    class ComponentRegistry
+#define REGISTER_COMPONENT(ComponentType)   \
+    do {                                    \
+        instance->RegisterComponent<ComponentType>(#ComponentType); \
+    } while(0)
+    
+    using ComponentCreateFunc = std::function<Component*(GameEntity*)>;
+    using ComponentHasFunc = std::function<bool(GameEntity*)>;
+
+    struct ComponentRegistryFunctions
+    {
+        ComponentCreateFunc createFunc;
+        ComponentHasFunc hasFunc;
+    };
+
+    // 컴포넌트 이름으로 컴포넌트를 생성
+
+    class ComponentRegistry : public RegistryBase<String, ComponentRegistryFunctions>
     {
     public:
-        // 컴포넌트 이름으로 컴포넌트를 생성하는 함수 (팩토리)
-        using ComponentCreateFunc = std::function<Shared<Component>()> ;
-
         // 싱글톤 인스턴스를 가져오는 함수
-        static ComponentRegistry* Get()
+        static ComponentRegistry& GetInstance()
         {
-            static ComponentRegistry instance;
-            return &instance;
+            return *instance;
         }
 
-        // 컴포넌트 타입을 시스템에 등록하는 함수
+        static void Init();
+        static void Shutdown();
+
         template<typename ComponentType>
-        void RegisterComponent(const String& name)
+        static void RegisterComponent(const String& _name)
         {
             static_assert(std::is_base_of<Component, ComponentType>::value, "Template argument must inherit from Component!");
-            componentFunctionMap[name] = [](){ return MakeShared<ComponentType>(); };
+            ComponentRegistryFunctions funcs;
+            funcs.createFunc = [](GameEntity* _entity) { return _entity->AddComponent<ComponentType>(); }; // 실제로는 스마트 포인터 사용
+            funcs.hasFunc = [](GameEntity* entity) { return entity->HasComponent<ComponentType>(); };
         }
 
-        // 등록된 모든 컴포넌트의 팩토리 맵을 반환
-        const HashMap<String, ComponentCreateFunc>& GetFactoryMap() const
+        static const HashMap<String, ComponentRegistryFunctions>& GetComponentMap()
         {
-            return componentFunctionMap;
+            return instance->registry;
         }
 
     private:
-        HashMap<String, ComponentCreateFunc> componentFunctionMap;
+        inline static ComponentRegistry* instance;
     };
 }

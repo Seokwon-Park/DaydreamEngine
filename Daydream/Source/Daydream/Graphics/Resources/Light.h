@@ -45,7 +45,7 @@ namespace Daydream
         Vector3 color = { 1.0f, 1.0f, 1.0f };
         Float32 range = 10.0f;   // Point, Spot 타입이 사용
         Vector3 position;        // Point, Spot 타입이 사용
-        Float32 spotInnerAngle = 0.0f;  // Spot 타입만 사용
-        Float32 spotOuterAngle = 0.0f;  // Spot 타입만 사용
+        Float32 spotInnerAngle = 20.0f;  // Spot 타입만 사용
+        Float32 spotOuterAngle = 30.0f;  // Spot 타입만 사용
 	};
 }

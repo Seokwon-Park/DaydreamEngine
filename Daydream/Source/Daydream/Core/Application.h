@@ -47,15 +47,13 @@ namespace Daydream
 		void AttachLayer(Layer* _layer);
 		void AttachOverlay(Layer* _overlay);
 
-		void ReadConfig(std::string_view _fileName);
+		void ReadConfig(const String& _fileName);
 	protected:
-
+		virtual bool Init();
+		virtual bool Run();
+		virtual bool Exit();
 	private:
 		friend int ::main(int argc, char** argv);
-
-		bool Init();
-		bool Run();
-		bool Exit();
 
 		void OnEvent(Event& _e);
 		bool OnWindowClose(WindowCloseEvent& _e);
@@ -68,6 +66,8 @@ namespace Daydream
 		bool isRunning = false;
 		bool isMinimized = false;
 		static Application* instance;
+
+		WindowProps prop;
 
 		//Layers
 		ImGuiLayer* imGuiLayer;
