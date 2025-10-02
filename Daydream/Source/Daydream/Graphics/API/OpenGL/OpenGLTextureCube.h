@@ -12,6 +12,8 @@ namespace Daydream
 		OpenGLTextureCube(const TextureDesc& _desc, const Array<const void*>& _initialData);
 		virtual ~OpenGLTextureCube();
 
+		virtual void Update(UInt32 _faceIndex, Shared<Texture2D> _texture);
+
 		virtual void SetSampler(Shared<Sampler> _sampler) override;
 
 		virtual inline void* GetNativeHandle() override { return reinterpret_cast<void*>(static_cast<UInt64>(textureID)); }

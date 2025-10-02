@@ -18,6 +18,7 @@ namespace Daydream
 			textures[_name] = _texture;
 		}
 	}
+
 	void Material::SetTextureCube(const String& _name, Shared<TextureCube> _texture)
 	{
 		if (bindingMap.find(_name) != bindingMap.end())

@@ -1,22 +1,17 @@
 #pragma once
 
+#include "Daydream/Core/RegistryBase.h"
 #include "Daydream/Graphics/Core/RenderPass.h"
 
 
 namespace Daydream
 {
-	class RenderPassManager
+	class RenderPassManager : public RegistryBase<String, Shared<RenderPass>>
 	{
 	public:
 		RenderPassManager();
 
-		Shared<RenderPass> Get(const String& _name)
-		{
-			return renderPassCache[_name];
-		}
-
 		void CreateEssentialRenderPasses();
 	private:
-		HashMap<String, Shared<RenderPass>> renderPassCache;
 	};
 }

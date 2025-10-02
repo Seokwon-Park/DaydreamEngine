@@ -20,6 +20,8 @@
       <Filter>EditorPanels</Filter>
     </ClInclude>
     <ClInclude Include="Source\EditorPanels\AssetBrowserPanel.h" />
+    <ClInclude Include="Source\EditorPanels\SkyboxPanel.h" />
+    <ClInclude Include="Source\EditorPanels\UI\ImGuiWidgets.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\EditorApp.cpp" />
@@ -34,5 +36,7 @@
       <Filter>EditorPanels</Filter>
     </ClCompile>
     <ClCompile Include="Source\EditorPanels\AssetBrowserPanel.cpp" />
+    <ClCompile Include="Source\EditorPanels\SkyboxPanel.cpp" />
+    <ClCompile Include="Source\EditorPanels\UI\ImGuiWidgets.cpp" />
   </ItemGroup>
 </Project>

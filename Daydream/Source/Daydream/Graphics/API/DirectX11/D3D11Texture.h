@@ -20,6 +20,9 @@ namespace Daydream
 
 		inline virtual void* GetNativeHandle() override { return texture.Get(); }
 		inline virtual void* GetImGuiHandle() { return GetSRV().Get(); }
+
+		inline ID3D11Resource* GetID3D11Resource() { return texture.Get(); }
+
 		inline ComPtr<ID3D11ShaderResourceView> GetSRV() { return views.srv; }
 		inline ComPtr<ID3D11DepthStencilView> GetDSV() {return views.dsv;}
 		inline ComPtr<ID3D11RenderTargetView> GetRTV() {return views.rtv;}

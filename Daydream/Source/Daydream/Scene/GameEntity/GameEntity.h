@@ -60,7 +60,7 @@ namespace Daydream
 		bool HasComponent()
 		{
 			auto itr = componentMap.find(std::type_index(typeid(ComponentType)));
-			return itr == componentMap.end();
+			return itr != componentMap.end();
 		}
 
 		Array<Unique<Component>>& GetAllComponents() { return components; };

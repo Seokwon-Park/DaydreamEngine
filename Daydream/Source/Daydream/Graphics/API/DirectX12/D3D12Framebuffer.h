@@ -20,7 +20,7 @@ namespace Daydream
 		virtual bool HasDepthAttachment() override { return depthAttachment != nullptr; };
 		virtual void Resize(UInt32 _width, UInt32 _height) override;
 
-		const Array<Shared<D3D12Texture2D>>& GetColorAttachments() { return colorAttachments; }
+		Array<Shared<D3D12Texture2D>>& GetColorAttachmentsRef() { return colorAttachments; }
 		const Shared<D3D12Texture2D>& GetDepthAttachment() { return depthAttachment; }
 
 		const D3D12_CPU_DESCRIPTOR_HANDLE& GetDepthStencilView() { return depthAttachment->GetDSVCPUHandle(); }

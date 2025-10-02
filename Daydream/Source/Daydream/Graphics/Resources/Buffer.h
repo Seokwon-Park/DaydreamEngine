@@ -124,7 +124,7 @@ namespace Daydream
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
-		UInt32 GetCount() const { return indexCount; }
+		UInt32 GetIndexCount() const { return indexCount; }
 
 		static Shared<IndexBuffer> Create(const UInt32* _indices, UInt32 _count);
 	protected:

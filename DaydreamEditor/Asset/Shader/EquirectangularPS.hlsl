@@ -36,6 +36,9 @@ PSOutput PSMain(PSInput input)
     float2 uv = SampleSphericalMap(normalize(input.worldPosition)); // make sure to normalize localPos
     float3 color = Texture.Sample(TextureSampler, uv).rgb;
     
+    //color = color / (color + float3(1.0, 1.0, 1.0));
+    //color = pow(color, float3(1.0, 1.0, 1.0) / 2.2);
+    
     output.color = float4(color, 1.0f);
     return output;
 }

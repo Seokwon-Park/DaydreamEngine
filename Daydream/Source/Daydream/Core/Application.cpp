@@ -109,15 +109,14 @@ namespace Daydream
 				layer->OnUpdate(deltaTime);
 			}
 
-			Renderer::BeginSwapchainRenderPass(mainWindow.get());
 
 			imGuiLayer->BeginImGui();
 			{
 				for (Layer* layer : layerStack)
 					layer->OnImGuiRender();
 			}
+			Renderer::BeginSwapchainRenderPass(mainWindow.get());
 			imGuiLayer->EndImGui();
-
 			Renderer::EndSwapchainRenderPass(mainWindow.get());
 			//auto [x, y] = Input::GetMousePosition();
 			////DAYDREAM_CORE_TRACE("{0}, {1}", x, y);
@@ -155,10 +154,10 @@ namespace Daydream
 	}
 	bool Application::Exit()
 	{
+		mainWindow->SetSwapchain(nullptr);
 		ComponentRegistry::Shutdown();
 		ResourceManager::Shutdown();
 		layerStack.Release();
-		mainWindow->SetSwapchain(nullptr);
 		Renderer::Shutdown();
 		WindowManager::Shutdown();
 		mainWindow = nullptr;

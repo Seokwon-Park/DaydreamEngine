@@ -64,11 +64,16 @@ namespace Daydream
 		virtual Shared<Shader> CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode) override;
 		virtual Shared<Swapchain> CreateSwapchain(DaydreamWindow* _window, const SwapchainDesc& _desc)override;
 		virtual Shared<Texture2D> CreateTexture2D(const void* _imageData, const TextureDesc& _desc)override;
+		virtual Shared<Texture2D> CreateEmptyTexture2D(const TextureDesc& _desc)override;
 		virtual Shared<TextureCube> CreateTextureCube(Array<const void*>& _imagePixels, const TextureDesc& _desc)override;
+		virtual Shared<TextureCube> CreateEmptyTextureCube(const TextureDesc& _desc) override;
 		virtual Shared<Sampler> CreateSampler(const SamplerDesc& _desc)override;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() override;
 		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) override;
 		virtual Shared<Material> CreateMaterial(Shared<PipelineState> _pipeline) override;
+
+		virtual void CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst) override;
+		virtual void CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D) override;
 
 		vk::Instance GetInstance() const { return instance.get(); }
 		vk::PhysicalDevice GetPhysicalDevice() const { return physicalDevice; }

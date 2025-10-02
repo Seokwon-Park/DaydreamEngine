@@ -12,6 +12,9 @@ namespace Daydream
 
 		width = _desc.width;
 		height = _desc.height;
+
+		textures.resize(6);
+
 		vk::Format imageFormat = GraphicsUtility::Vulkan::ConvertRenderFormatToVkFormat(_desc.format);
 
 		vk::ImageCreateInfo imageInfo{};

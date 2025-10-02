@@ -105,6 +105,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Source\Daydream\Core\UUID.h" />
+    <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12ResourceState.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12Sampler.h">
       <SubType>
       </SubType>
@@ -231,6 +232,7 @@
     <ClInclude Include="Source\Daydream\Graphics\Resources\ObjectParameters.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Sampler.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\ShaderGroup.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Resources\Skybox.h" />
     <ClInclude Include="Source\Daydream\Graphics\States\BlendState.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\Camera.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\CameraController.h" />
@@ -268,7 +270,6 @@
     <ClInclude Include="Source\Daydream\Graphics\Utility\ShaderCompileHelper.h" />
     <ClInclude Include="Source\Daydream\ImGui\ImGuiLayer.h" />
     <ClInclude Include="Source\Daydream\ImGui\ImGuiRenderer.h" />
-    <ClInclude Include="Source\Daydream\ImGui\ImGuiWidgets.h" />
     <ClInclude Include="Source\Daydream\Scene\Components\CameraComponent.h" />
     <ClInclude Include="Source\Daydream\Scene\Components\Component.h" />
     <ClInclude Include="Source\Daydream\Scene\Components\ComponentRegistry.h" />
@@ -706,6 +707,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Daydream\Core\UUID.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12ResourceState.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Sampler.cpp">
       <SubType>
       </SubType>
@@ -829,6 +831,7 @@
     <ClCompile Include="Source\Daydream\Graphics\Resources\Sampler.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\Shader.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\ShaderGroup.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Resources\Skybox.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\Texture.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\TextureCube.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Utility\DDSLoader.cpp" />
@@ -840,7 +843,6 @@
     <ClCompile Include="Source\Daydream\ImGui\ImGuiBackends.cpp" />
     <ClCompile Include="Source\Daydream\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="Source\Daydream\ImGui\ImGuiRenderer.cpp" />
-    <ClCompile Include="Source\Daydream\ImGui\ImGuiWidgets.cpp" />
     <ClCompile Include="Source\Daydream\Scene\Components\Component.cpp" />
     <ClCompile Include="Source\Daydream\Scene\Components\ComponentRegistry.cpp" />
     <ClCompile Include="Source\Daydream\Scene\Components\LightComponent.cpp" />

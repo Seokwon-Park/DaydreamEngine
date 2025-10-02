@@ -23,7 +23,6 @@ namespace Daydream
 		virtual void Resize(UInt32 _width, UInt32 _height) = 0;
 		virtual void RequestResize(UInt32 _width, UInt32 _height);
 		//virtual Shared<Texture2D> GetDepthAttachemntTexture(UInt32 _index) = 0;
-
 		
 		UInt32 GetWidth() { return width; }
 		UInt32 GetHeight() { return height; }

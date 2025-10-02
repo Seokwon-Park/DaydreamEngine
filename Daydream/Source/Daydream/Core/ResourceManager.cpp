@@ -20,24 +20,24 @@ namespace Daydream
 		DAYDREAM_CORE_ASSERT(!instance, "ResourceManager must be initialized only 1 time");
 		instance = new ResourceManager();
 
-		GetInstance().samplerManager->CreateEssentialSamplers();
-		GetInstance().textureManager->LoadTexturesFromDirectory("Asset", true);
-		GetInstance().textureManager->LoadTexturesFromDirectory("Resource", true);
-		GetInstance().shaderManager->LoadShadersFromDirectory("Asset/Shader", true);
-		GetInstance().shaderGroupManager->CreateEssentialShaderGroups();
-		GetInstance().renderPassManager->CreateEssentialRenderPasses();
-		GetInstance().pipelineStateManager->CreateEssentialPipelineStates();
+		instance->samplerManager->CreateEssentialSamplers();
+		instance->textureManager->LoadTexturesFromDirectory("Asset", true);
+		instance->textureManager->LoadTexturesFromDirectory("Resource", true);
+		instance->shaderManager->LoadShadersFromDirectory("Asset/Shader", true);
+		instance->shaderGroupManager->CreateEssentialShaderGroups();
+		instance->renderPassManager->CreateEssentialRenderPasses();
+		instance->pipelineStateManager->CreateEssentialPipelineStates();
 	}
 
 	void ResourceManager::Shutdown()
 	{
-		GetInstance().pipelineStateManager = nullptr;
-		GetInstance().renderPassManager = nullptr;
-		GetInstance().textureManager = nullptr;
-		GetInstance().samplerManager = nullptr;
-		GetInstance().shaderGroupManager = nullptr;
-		GetInstance().shaderManager = nullptr;
-		GetInstance().meshManager = nullptr;
+		instance->pipelineStateManager = nullptr;
+		instance->renderPassManager = nullptr;
+		instance->textureManager = nullptr;
+		instance->samplerManager = nullptr;
+		instance->shaderGroupManager = nullptr;
+		instance->shaderManager = nullptr;
+		instance->meshManager = nullptr;
 
 		delete instance;
 	}

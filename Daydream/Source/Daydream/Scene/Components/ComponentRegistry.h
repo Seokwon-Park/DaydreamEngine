@@ -8,7 +8,7 @@ namespace Daydream
 {
 #define REGISTER_COMPONENT(ComponentType)   \
     do {                                    \
-        instance->RegisterComponent<ComponentType>(#ComponentType); \
+        RegisterComponent<ComponentType>(#ComponentType); \
     } while(0)
     
     using ComponentCreateFunc = std::function<Component*(GameEntity*)>;
@@ -39,8 +39,10 @@ namespace Daydream
         {
             static_assert(std::is_base_of<Component, ComponentType>::value, "Template argument must inherit from Component!");
             ComponentRegistryFunctions funcs;
-            funcs.createFunc = [](GameEntity* _entity) { return _entity->AddComponent<ComponentType>(); }; // 실제로는 스마트 포인터 사용
-            funcs.hasFunc = [](GameEntity* entity) { return entity->HasComponent<ComponentType>(); };
+            funcs.createFunc = [&](GameEntity* _entity) { return _entity->AddComponent<ComponentType>(); }; // 실제로는 스마트 포인터 사용
+            funcs.hasFunc = [&](GameEntity* entity) { return entity->HasComponent<ComponentType>(); };
+
+            instance->registry[_name] = funcs;
         }
 
         static const HashMap<String, ComponentRegistryFunctions>& GetComponentMap()

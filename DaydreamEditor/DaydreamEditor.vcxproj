@@ -109,7 +109,9 @@
     </ClInclude>
     <ClInclude Include="Source\EditorPanels\PropertyPanel.h" />
     <ClInclude Include="Source\EditorPanels\SceneHierarchyPanel.h" />
+    <ClInclude Include="Source\EditorPanels\SkyboxPanel.h" />
     <ClInclude Include="Source\EditorPanels\UIPanel.h" />
+    <ClInclude Include="Source\EditorPanels\UI\ImGuiWidgets.h" />
     <ClInclude Include="Source\EditorPanels\ViewportPanel.h" />
   </ItemGroup>
   <ItemGroup>
@@ -121,6 +123,8 @@
     </ClCompile>
     <ClCompile Include="Source\EditorPanels\PropertyPanel.cpp" />
     <ClCompile Include="Source\EditorPanels\SceneHierarchyPanel.cpp" />
+    <ClCompile Include="Source\EditorPanels\SkyboxPanel.cpp" />
+    <ClCompile Include="Source\EditorPanels\UI\ImGuiWidgets.cpp" />
     <ClCompile Include="Source\EditorPanels\ViewportPanel.cpp" />
   </ItemGroup>
   <ItemGroup>

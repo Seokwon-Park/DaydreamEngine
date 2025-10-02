@@ -15,7 +15,6 @@ namespace Daydream::GraphicsUtility
 
 	RenderFormat ConvertSPIRVTypeToRenderFormat(spirv_cross::SPIRType::BaseType _baseType, UInt32 _componentCount);
 
-
 	//ShaderCompile
 	String GetShaderEntryPointName(ShaderType _type);
 	WideString GetShaderEntryPointNameW(ShaderType _type);
@@ -23,9 +22,6 @@ namespace Daydream::GraphicsUtility
 	WideString GetShaderTargetNameW(ShaderType _type, WideString _version);
 
 	//ShaderType, ShaderStage
-
-
-	
 
 	String GetVendor(UInt32 _vendorCode);
 }

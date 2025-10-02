@@ -3,12 +3,15 @@
 
 #include "Components/LightComponent.h"
 #include "Components/ModelRendererComponent.h"
+#include "Daydream/Graphics/Resources/Skybox.h"
 
 namespace Daydream
 {
 	Scene::Scene(const String& _name)
 	{
 		lightBuffer = ConstantBuffer::Create(sizeof(LightData));
+		skybox = MakeShared<Skybox>();
+		skybox->Init();
 	}
 
 	Scene::~Scene()

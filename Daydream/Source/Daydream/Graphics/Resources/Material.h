@@ -38,7 +38,8 @@ namespace Daydream
 		void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube);
 		void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer);
 
-		inline const HashMap<String, Shared<Texture2D>>& GetTextures() { return textures; }
+		inline const HashMap<String, Shared<Texture2D>>& GetAllTexture2D() { return textures; }
+		inline const HashMap<String, Shared<TextureCube>>& GetAllTextureCube() { return textureCubes; }
 
 		static Shared<Material> Create(Shared<PipelineState> _pipeline);
 	protected:

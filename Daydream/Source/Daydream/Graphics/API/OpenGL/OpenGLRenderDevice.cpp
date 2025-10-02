@@ -41,7 +41,7 @@ namespace Daydream
 		//	if (!strcmp(extension, "GL_NVX_gpu_memory_info"))
 		//		printf("%d: %s\n", i, extension);
 		//}
-		
+
 		DAYDREAM_CORE_INFO("OpenGL Info:");
 		DAYDREAM_CORE_INFO("  Vendor: {0}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
 		DAYDREAM_CORE_INFO("  Renderer: {0}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
@@ -75,7 +75,7 @@ namespace Daydream
 		return MakeShared<OpenGLVertexBuffer>(_size, _stride, _initialData);
 	}
 
-	Shared<IndexBuffer> Daydream::OpenGLRenderDevice::CreateIndexBuffer(const UInt32 * _indices, UInt32 _count)
+	Shared<IndexBuffer> Daydream::OpenGLRenderDevice::CreateIndexBuffer(const UInt32* _indices, UInt32 _count)
 	{
 		return MakeShared<OpenGLIndexBuffer>(_indices, _count);
 	}
@@ -85,7 +85,7 @@ namespace Daydream
 		return MakeShared<OpenGLRenderPass>(_desc);
 	}
 
-	Shared<Framebuffer> OpenGLRenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc &_desc)
+	Shared<Framebuffer> OpenGLRenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc)
 	{
 		return _renderPass->CreateFramebuffer(_desc);
 	}
@@ -121,6 +121,26 @@ namespace Daydream
 		return MakeShared<OpenGLTextureCube>(_desc, _imagePixels);
 	}
 
+	Shared<TextureCube> OpenGLRenderDevice::CreateTextureCube(const Array<Shared<Texture2D>>& _textures, const TextureDesc& _desc)
+	{
+		Array<const void*> dummy;
+		Shared<OpenGLTextureCube> textureCube = MakeShared<OpenGLTextureCube>(_desc, dummy);
+
+		for (int i = 0; i < 6; i++)
+		{
+			CopyTextureToCubemapFace
+			(
+				textureCube->GetTextureID(),
+				i,
+				(UInt32)(reinterpret_cast<UInt64>(_textures[i]->GetNativeHandle())),
+				_desc.width,
+				_desc.height
+			);
+		}
+
+		return textureCube;
+	}
+
 	Shared<Sampler> OpenGLRenderDevice::CreateSampler(const SamplerDesc& _desc)
 	{
 		return  MakeUnique<OpenGLSampler>(_desc);
@@ -141,4 +161,40 @@ namespace Daydream
 		return _pipeline->CreateMaterial();
 	}
 
+	void OpenGLRenderDevice::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
+	{
+		glCopyImageSubData(
+			static_cast<UInt32>(reinterpret_cast<UInt64>(_src->GetNativeHandle())),          // 원본 텍스처 이름
+			GL_TEXTURE_2D,       // 원본 텍스처 타입
+			0,                   // 원본 밉맵 레벨
+			0, 0, 0,             // 원본 오프셋 (x, y, z)
+			static_cast<UInt32>(reinterpret_cast<UInt64>(_dst->GetNativeHandle())),          // 대상 텍스처 이름
+			GL_TEXTURE_2D,       // 대상 텍스처 타입
+			0,                   // 대상 밉맵 레벨
+			0, 0, 0,             // 대상 오프셋 (x, y, z)
+			_src->GetWidth(),               // 복사할 너비
+			_src->GetHeight(),              // 복사할 높이
+			1                    // 복사할 깊이 (2D 텍스처는 1)
+		);
+	}
+
+	void OpenGLRenderDevice::CopyTextureToCubemapFace(
+		UInt32 _dstCubemap,
+		Int32 _faceIndex,
+		UInt32 _srcTexture2D,
+		Int32 _width,
+		Int32 _height)
+	{
+		glCopyImageSubData(
+			_srcTexture2D,      // 원본 텍스처 핸들
+			GL_TEXTURE_2D,        // 원본 타겟 타입
+			0,                    // 원본 밉 레벨
+			0, 0, 0,              // 원본 좌표 (x, y, z)
+			_dstCubemap,         // 대상 텍스처 핸들
+			GL_TEXTURE_CUBE_MAP,  // 대상 타겟 타입
+			0,                    // 대상 밉 레벨
+			0, 0, _faceIndex,      // 대상 좌표 (x, y, layer) - faceIndex가 레이어를 지정!
+			_width, _height, 1      // 복사할 크기
+		);
+	}
 }

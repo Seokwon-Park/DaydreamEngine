@@ -5,6 +5,7 @@
 #include "EditorPanels/ViewportPanel.h"
 #include "EditorPanels/PropertyPanel.h"
 #include "EditorPanels/AssetBrowserPanel.h"
+#include "EditorPanels/SkyboxPanel.h"
 
 namespace Daydream
 {
@@ -22,6 +23,7 @@ namespace Daydream
 	private:
 		Vector2 mainWindowSize;
 		Vector2 viewportSize;
+
 		bool isViewportHovered = false;
 		bool viewportShouldResize = true;
 
@@ -32,25 +34,19 @@ namespace Daydream
 
 		Shared<Sampler> sampler;
 		Shared<Texture2D> texture;
-		Shared<Texture2D> texture2;
+
 		Shared<TextureCube> textureCube;
 
 		Shared<ConstantBuffer> viewProjMat;
 
-		Shared<Shader> vs;
-		Shared<Shader> ps;
-
-		Shared<Shader> vs3d;
-		Shared<Shader> ps3d;
-
-		Shared<Shader> vscube;
-		Shared<Shader> pscube;
 		//Shared<MouseScrolledEvent>
 		Shared<RenderPass> renderPass;
 		Shared<Framebuffer> viewportFramebuffer;
+
 		Shared<PipelineState> pso;
 		Shared<PipelineState> pso3d;
-		Shared<PipelineState> cubemapPipeline;
+		Shared<PipelineState> skyboxPipeline;
+		Shared<PipelineState> equirectangleToCubePipeline;
 
 		Shared<Material> material;
 		Shared<Material> material3d;
@@ -68,6 +64,7 @@ namespace Daydream
 		Unique<PropertyPanel> propertyPanel;
 		Unique<SceneHierarchyPanel> sceneHierarchyPanel;
 		Unique<AssetBrowserPanel> assetBrowserPanel;
+		Unique<SkyboxPanel> skyboxPanel;
 		
 	};
 }

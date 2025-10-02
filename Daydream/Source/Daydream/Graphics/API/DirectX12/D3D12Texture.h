@@ -3,10 +3,11 @@
 #include "Daydream/Graphics/Resources/Texture.h"
 #include "D3D12RenderDevice.h"
 #include "D3D12Sampler.h"
+#include "D3D12ResourceState.h"
 
 namespace Daydream
 {
-	class D3D12Texture2D : public Texture2D
+	class D3D12Texture2D : public Texture2D, public D3D12ResourceState
 	{
 	public:
 		D3D12Texture2D(D3D12RenderDevice* _device, const TextureDesc& _desc);

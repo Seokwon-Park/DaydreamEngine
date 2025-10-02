@@ -209,9 +209,29 @@ namespace Daydream
 		return MakeShared<D3D11Texture2D>(this, _desc, _imageData);
 	}
 
+	Shared<Texture2D> D3D11RenderDevice::CreateEmptyTexture2D(const TextureDesc& _desc)
+	{
+		return MakeShared<D3D11Texture2D>(this, _desc);
+	}
+
 	Shared<TextureCube> D3D11RenderDevice::CreateTextureCube(Array<const void*>& _imageDatas, const TextureDesc& _desc)
 	{
 		return MakeShared<D3D11TextureCube>(this, _desc, _imageDatas);
+	}
+
+	Shared<TextureCube> D3D11RenderDevice::CreateTextureCube(const Array<Shared<Texture2D>>& _textures, const TextureDesc& _desc)
+	{
+		Array<const void*> dummy;
+		Shared<D3D11TextureCube> textureCube = MakeShared<D3D11TextureCube>(this, _desc, dummy);
+		for (int i = 0; i < _textures.size(); ++i)
+		{
+			CopyTextureToCubemapFace(
+				textureCube.get(),   // 대상: 큐브맵 리소스
+				i,                             // 대상 면 인덱스
+				_textures[i].get() // 원본: Texture2D 리소스
+			);
+		}
+		return textureCube;
 	}
 
 	Shared<Sampler> D3D11RenderDevice::CreateSampler(const SamplerDesc& _desc)
@@ -232,5 +252,40 @@ namespace Daydream
 	Shared<Material> D3D11RenderDevice::CreateMaterial(Shared<PipelineState> _pipeline)
 	{
 		return _pipeline->CreateMaterial();
+	}
+	void D3D11RenderDevice::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
+	{
+		deviceContext->CopyResource((ID3D11Resource*)_dst->GetNativeHandle(), (ID3D11Resource*)_src->GetNativeHandle());
+	}
+
+	void D3D11RenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D)
+	{
+		D3D11TextureCube* dst = static_cast<D3D11TextureCube*>(_dstCubemap);
+		D3D11Texture2D* src = static_cast<D3D11Texture2D*>(_srcTexture2D);
+		// 큐브맵의 MipLevels 정보를 가져와야 Subresource 인덱스를 계산할 수 있습니다.
+		D3D11_TEXTURE2D_DESC cubeDesc;
+		static_cast<ID3D11Texture2D*>(_dstCubemap->GetNativeHandle())->GetDesc(&cubeDesc);
+
+		// 1. 핵심: 대상 Subresource 인덱스를 계산합니다.
+		// 밉맵 레벨 0, 배열 슬라이스 faceIndex에 해당하는 Subresource를 찾습니다.
+		UINT dstSubresourceIndex = D3D11CalcSubresource(
+			0, 
+			_faceIndex,
+			cubeDesc.MipLevels
+		);
+
+		// 2. 원본 Subresource 인덱스는 항상 0입니다 (2D 텍스처는 Subresource가 하나).
+		UINT srcSubresourceIndex = 0;
+
+		// 3. 복사 명령을 즉시 실행합니다.
+		// DX11에서는 별도의 리소스 배리어가 필요 없습니다.
+		deviceContext->CopySubresourceRegion(
+			dst->GetID3D11Resource(),           // 대상 리소스
+			dstSubresourceIndex,  // 대상 Subresource
+			0, 0, 0,              // 대상 좌표 (x, y, z)
+			src->GetID3D11Resource(),         // 원본 리소스
+			srcSubresourceIndex,  // 원본 Subresource
+			nullptr               // 원본 영역 (nullptr은 전체를 의미)
+		);
 	}
 }

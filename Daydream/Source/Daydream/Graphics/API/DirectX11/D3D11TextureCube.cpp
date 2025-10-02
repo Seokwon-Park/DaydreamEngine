@@ -63,11 +63,16 @@ namespace Daydream
 		device = _device;
 		desc = _desc;
 
+		width = _desc.width;
+		height = _desc.height;
+
+		textures.resize(6);
+
 		D3D11_TEXTURE2D_DESC textureDesc = {};
 		textureDesc.Width = desc.width;
 		textureDesc.Height = desc.height;
 		textureDesc.MipLevels = 1;
-		textureDesc.ArraySize = _initialData.size(); // 큐브맵은 6개의 텍스처 배열입니다.
+		textureDesc.ArraySize = 6; // 큐브맵은 6개의 텍스처 배열입니다.
 		textureDesc.Format = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(_desc.format); // DXGI_FORMAT 열거형 값
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.SampleDesc.Quality = 0;
@@ -78,22 +83,33 @@ namespace Daydream
 		D3D11_SUBRESOURCE_DATA subresourceData[6];
 		bool hasInitialData = (_initialData.size() == 6);
 
-		for (int i = 0; i < 6; i++)
+		if (hasInitialData)
 		{
-			subresourceData[i].pSysMem = _initialData[i];
-			subresourceData[i].SysMemPitch = textureDesc.Width * sizeof(UInt8) * 4;
-			subresourceData[i].SysMemSlicePitch = 0; 
-		}
+			for (int i = 0; i < 6; i++)
+			{
+				subresourceData[i].pSysMem = _initialData[i];
+				subresourceData[i].SysMemPitch = textureDesc.Width * sizeof(UInt8) * 4;
+				subresourceData[i].SysMemSlicePitch = 0;
+			}
 
-		HRESULT hr = device->GetDevice()->CreateTexture2D(
-			&textureDesc,
-			&subresourceData[0],
-			texture.GetAddressOf() 
-		);
+			HRESULT hr = device->GetDevice()->CreateTexture2D(
+				&textureDesc,
+				&subresourceData[0],
+				texture.GetAddressOf()
+			);
+		}
+		else
+		{
+			HRESULT hr = device->GetDevice()->CreateTexture2D(
+				&textureDesc,
+				nullptr,
+				texture.GetAddressOf()
+			);
+		}
 
 		//CreateDebugCubemap(device->GetDevice(), texture.GetAddressOf(), views.srv.GetAddressOf());
 
-	if (textureDesc.BindFlags & D3D11_BIND_SHADER_RESOURCE)
+		if (textureDesc.BindFlags & D3D11_BIND_SHADER_RESOURCE)
 		{
 			D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 			srvDesc.Format = textureDesc.Format;
@@ -125,6 +141,12 @@ namespace Daydream
 
 	D3D11TextureCube::~D3D11TextureCube()
 	{
+	}
+
+	void D3D11TextureCube::Update(UInt32 _faceIndex, Shared<Texture2D> _texture)
+	{
+		textures[_faceIndex] = _texture;
+		device->CopyTextureToCubemapFace(this, _faceIndex, _texture.get());
 	}
 
 	void D3D11TextureCube::SetSampler(Shared<Sampler> _sampler)

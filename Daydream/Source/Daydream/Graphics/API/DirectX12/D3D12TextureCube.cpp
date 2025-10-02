@@ -2,6 +2,7 @@
 #include "D3D12TextureCube.h"
 
 #include "D3D12Utility.h"
+#include "D3D12Texture.h"
 
 namespace Daydream
 {
@@ -11,6 +12,8 @@ namespace Daydream
 
 		width = _desc.width;
 		height = _desc.height;
+
+		textures.resize(6);
 
 		D3D12_RESOURCE_DESC textureDesc = {};
 		textureDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
@@ -25,6 +28,7 @@ namespace Daydream
 		textureDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
 		texture = device->CreateTexture(textureDesc, D3D12_RESOURCE_STATE_COPY_DEST);
+		SetCurrentState(D3D12_RESOURCE_STATE_COPY_DEST);
 
 		//D3D12_SAMPLER_DESC samplerDesc = {};
 		//samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // 선형 필터링
@@ -58,7 +62,7 @@ namespace Daydream
 	{
 
 	}
-
+	
 	void D3D12TextureCube::SetSampler(Shared<Sampler> _sampler)
 	{
 		textureSampler = static_cast<D3D12Sampler*>(_sampler.get());

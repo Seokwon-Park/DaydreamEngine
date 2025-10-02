@@ -31,7 +31,7 @@ namespace Daydream
 		~Mesh();
 
 		Shared<VertexBuffer> GetVertexBuffer() { return vertexBuffer; }
-		UInt32 GetIndexCount() { return indexBuffer->GetCount(); }
+		UInt32 GetIndexCount() { return indexBuffer->GetIndexCount(); }
 
 		Shared<Texture2D> GetDiffuseTexture() { return diffuseTexture; }
 		Shared<Texture2D> GetNormalTexture() { return normalTexture; }

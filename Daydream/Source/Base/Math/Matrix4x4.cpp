@@ -32,7 +32,7 @@ namespace Daydream
 	Matrix4x4 Matrix4x4::operator*(Matrix4x4 _matrix)
 	{
 		Matrix4x4 result;
-		result.glmMat = glmMat * _matrix.glmMat;
+		result.glmMat =  glmMat * _matrix.glmMat;
 		return result;
 	}
 

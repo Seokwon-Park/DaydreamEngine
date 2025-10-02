@@ -4,6 +4,7 @@
 #include "D3D12Utility.h"
 #include "D3D12Shader.h"
 #include "D3D12Material.h"
+#include "D3D12RenderPass.h"
 
 namespace Daydream
 {
@@ -154,6 +155,9 @@ namespace Daydream
 		sampleDesc.Count = _desc.sampleCount;
 		sampleDesc.Quality = 0;
 
+		D3D12RenderPass* rp = (D3D12RenderPass*)_desc.renderPass.get();
+		const Array<DXGI_FORMAT>& formats = rp->GetFormats();
+
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC desc{};
 		desc.pRootSignature = rootSignature.Get();
 		desc.VS = static_cast<D3D12Shader*>(shaderGroup->GetShader(ShaderType::Vertex).get())->GetShaderBytecode();
@@ -164,7 +168,11 @@ namespace Daydream
 		desc.SampleDesc = sampleDesc;
 		desc.InputLayout.NumElements = static_cast<UInt32>(inputLayoutDesc.size());
 		desc.InputLayout.pInputElementDescs = inputLayoutDesc.data();
-		desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		for (int i = 0; i < formats.size(); i++)
+		{
+			desc.RTVFormats[i] = formats[i];
+
+		}
 		desc.SampleMask = UINT_MAX;
 
 		desc.BlendState.AlphaToCoverageEnable = FALSE;

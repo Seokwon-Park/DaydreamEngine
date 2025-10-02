@@ -13,7 +13,6 @@
 
 #include "Daydream/ImGui/ImGuiLayer.h"
 #include "Daydream/ImGui/ImGuiRenderer.h"
-#include "Daydream/ImGui/ImGuiWidgets.h"
 
 #include "Daydream/Enum/RendererEnums.h"
 
@@ -43,6 +42,7 @@
 #include "Daydream/Graphics/Resources/Mesh.h"
 #include "Daydream/Graphics/Resources/Model.h"
 #include "Daydream/Graphics/Resources/Light.h"
+#include "Daydream/Graphics/Resources/Skybox.h"
 
 #include "Daydream/Graphics/Core/Camera.h"
 #include "Daydream/Graphics/Core/EditorCamera.h"

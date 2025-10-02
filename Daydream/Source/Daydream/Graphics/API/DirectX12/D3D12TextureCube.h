@@ -3,10 +3,11 @@
 #include "Daydream/Graphics/Resources/TextureCube.h"
 #include "D3D12RenderDevice.h"
 #include "D3D12Sampler.h"
+#include "D3D12ResourceState.h"
 
 namespace Daydream
 {
-	class D3D12TextureCube : public TextureCube
+	class D3D12TextureCube : public TextureCube, public D3D12ResourceState
 	{
 	public:
 		// Constrcuter Destructer

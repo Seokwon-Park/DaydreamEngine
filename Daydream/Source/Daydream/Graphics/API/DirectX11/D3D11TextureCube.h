@@ -17,9 +17,13 @@ namespace Daydream
 
 		virtual ~D3D11TextureCube();
 
+		virtual void Update(UInt32 _faceIndex, Shared<Texture2D> _texture) override;
+
 		virtual void* GetNativeHandle() { return texture.Get(); };
 
 		virtual void SetSampler(Shared<Sampler> _sampler) override;
+
+		inline ID3D11Resource* GetID3D11Resource() { return texture.Get(); }
 
 		inline ComPtr<ID3D11ShaderResourceView> GetSRV() { return views.srv; }
 		inline ComPtr<ID3D11DepthStencilView> GetDSV() { return views.dsv; }
@@ -30,6 +34,7 @@ namespace Daydream
 	protected:
 		D3D11RenderDevice* device;
 		D3D11ResourceViews views;
+
 		ComPtr<ID3D11Texture2D> texture;
 		ComPtr<ID3D11SamplerState> textureSampler;
 

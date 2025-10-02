@@ -2,12 +2,19 @@
 #include "D3D12RenderPass.h"
 #include "D3D12Framebuffer.h"
 
+#include "D3D12Utility.h"
+
 namespace Daydream
 {
 	D3D12RenderPass::D3D12RenderPass(D3D12RenderDevice* _device, const RenderPassDesc& _desc)
 	{
 		device = _device;
 		desc = _desc;
+
+		for (auto attachment :_desc.colorAttachments)
+		{
+			formats.push_back(GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(attachment.format));
+		}
 	}
 	D3D12RenderPass::~D3D12RenderPass()
 	{
@@ -16,6 +23,22 @@ namespace Daydream
 	void D3D12RenderPass::Begin(Shared<Framebuffer> _framebuffer)
 	{
 		currentFramebuffer = static_cast<D3D12Framebuffer*>(_framebuffer.get());
+
+		for (auto tex : currentFramebuffer->GetColorAttachmentsRef())
+		{
+			device->TransitionResourceState(device->GetCommandList(), tex->GetID3D12Resource(), tex->GetCurrentState(),
+				D3D12_RESOURCE_STATE_RENDER_TARGET);
+			tex->SetCurrentState(D3D12_RESOURCE_STATE_RENDER_TARGET);
+		}
+
+		if (currentFramebuffer->HasDepthAttachment())
+		{
+			auto dsv = currentFramebuffer->GetDepthAttachment();
+			device->TransitionResourceState(device->GetCommandList(), dsv->GetID3D12Resource(), dsv->GetCurrentState(),
+				D3D12_RESOURCE_STATE_DEPTH_WRITE);
+			dsv->SetCurrentState(D3D12_RESOURCE_STATE_DEPTH_WRITE);
+		}
+
 		Array<D3D12_CPU_DESCRIPTOR_HANDLE>& rtHandles = currentFramebuffer->GetRenderTargetHandles();
 		//
 		//for (auto texture : currentFramebuffer->GetColorAttachments())
@@ -32,6 +55,7 @@ namespace Daydream
 		{
 			device->GetCommandList()->ClearRenderTargetView(rtHandle, clearColor.color, 0, nullptr);
 		}
+
 		if (currentFramebuffer->HasDepthAttachment())
 		{
 			device->GetCommandList()->ClearDepthStencilView(currentFramebuffer->GetDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);

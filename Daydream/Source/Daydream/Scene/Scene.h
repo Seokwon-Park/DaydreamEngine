@@ -7,8 +7,10 @@
 
 namespace Daydream
 {
+
 	class ModelRendererComponent;
 	class LightComponent;
+	class Skybox;
 
 	struct LightData
 	{
@@ -42,10 +44,13 @@ namespace Daydream
 
 		inline Shared<ConstantBuffer> GetLightConstantBuffer() const { return lightBuffer; }
 
+		inline Shared<Skybox> GetSkybox() const { return skybox; }
+
 		void Update(Float32 _deltaTime);
 
 		Array<Unique<GameEntity>>& GetAllEntities() { return entities; }
 	private:
+		SortedMap<UInt64, GameEntity> entityRegistry;
 		Array<Unique<GameEntity>> entities;
 
 		Shared<Camera> currentCamera;
@@ -56,5 +61,6 @@ namespace Daydream
 		LightData lightData;
 		Shared<ConstantBuffer> lightBuffer;
 		//Array<SpriteRendererComponent*> spriteRenderers;
+		Shared<Skybox> skybox;
 	};
 }

@@ -139,6 +139,7 @@ namespace Daydream
                     {
                         continue;
                     }
+
                     // 목록에서 컴포넌트 이름을 클릭하면
                     if (ImGui::Selectable(name.c_str()))
                     {
@@ -195,7 +196,7 @@ namespace Daydream
             case FieldType::ModelPtr:
             {
                 Model* data = static_cast<Model*>(field.data);
-                UI::DrawModelController("Model", *data);
+                UI::DrawModelController("Model", data);
             }
             }
         }

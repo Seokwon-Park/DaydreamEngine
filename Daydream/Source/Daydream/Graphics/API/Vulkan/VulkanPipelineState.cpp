@@ -56,6 +56,7 @@ namespace Daydream
 			shaderStageInfo.stage = GraphicsUtility::Vulkan::ConvertToShaderStageFlagBit(shader->GetType());
 
 			shaderStages.push_back(shaderStageInfo);
+			UInt32 setSize = 0;
 			for (const auto& info : shader->GetShaderReflectionData())
 			{
 				if (info.shaderResourceType == ShaderResourceType::Input && shader->GetType() == ShaderType::Vertex)

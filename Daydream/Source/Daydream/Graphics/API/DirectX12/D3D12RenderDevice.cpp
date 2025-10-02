@@ -263,7 +263,7 @@ namespace Daydream
 
 		CopyBuffer(uploadBuffer.Get(), vertexBuffer->GetDX12Buffer(), _size);
 
-		TransitionResourceState(vertexBuffer->GetDX12Buffer(), D3D12_RESOURCE_STATE_COPY_DEST,
+		TransitionResourceState(commandList.Get(), vertexBuffer->GetDX12Buffer(), D3D12_RESOURCE_STATE_COPY_DEST,
 			D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
 
 		return vertexBuffer;
@@ -285,9 +285,8 @@ namespace Daydream
 
 		CopyBuffer(uploadBuffer.Get(), indexBuffer->GetDX12Buffer(), bufferSize);
 
-		TransitionResourceState(indexBuffer->GetDX12Buffer(), D3D12_RESOURCE_STATE_COPY_DEST,
+		TransitionResourceState(commandList.Get(), indexBuffer->GetDX12Buffer(), D3D12_RESOURCE_STATE_COPY_DEST,
 			D3D12_RESOURCE_STATE_INDEX_BUFFER);
-
 		return indexBuffer;
 	}
 
@@ -338,8 +337,8 @@ namespace Daydream
 			// 3. 한 줄씩 루프를 돌며 복사합니다.
 			BYTE* pDest = static_cast<BYTE*>(pixelData);
 			BYTE* pSrc = const_cast<BYTE*>(static_cast<const BYTE*>(_imageData)); // 원본 이미지 데이터
-			UINT rowCount = dstDesc.Height;
-			UINT rowSizeInBytes = dstDesc.Width * GraphicsUtility::GetRenderFormatSize(_desc.format); // 픽셀당 4바이트 가정
+			UInt32 rowCount = dstDesc.Height;
+			UInt32 rowSizeInBytes = dstDesc.Width * GraphicsUtility::GetRenderFormatSize(_desc.format); // 픽셀당 4바이트 가정
 
 			for (UINT y = 0; y < rowCount; ++y)
 			{
@@ -352,23 +351,35 @@ namespace Daydream
 			}
 
 			uploadBuffer->Unmap(0, &range);
-
 			uploadBuffer->SetName(L"Check");
 
 			CopyBufferToImage(uploadBuffer.Get(), texture->GetID3D12Resource(), { placedFootprint });
+
+			//ExecuteSingleTimeCommands([&](ID3D12GraphicsCommandList* _commandList)
+			//	{
+			//		TransitionResourceState(_commandList, texture->GetID3D12Resource(), texture->GetCurrentState(),
+			//			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+			//	});
+			//texture->SetCurrentState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+
+
+			//TransitionResourceState(commandList.Get(), texture->GetID3D12Resource(), texture->GetCurrentState(),
+			//	D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+			//texture->SetCurrentState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 		}
 		else
 		{
-			ExecuteSingleTimeCommands(
-				[&](ID3D12GraphicsCommandList* _commandList)
-				{
-					TransitionResourceState(texture->GetID3D12Resource(), D3D12_RESOURCE_STATE_COPY_DEST,
-						D3D12_RESOURCE_STATE_COMMON);
-				}
-			);
+			//TransitionResourceState(commandList.Get(), texture->GetID3D12Resource(), texture->GetCurrentState(),
+			//	D3D12_RESOURCE_STATE_COMMON);
+			//texture->SetCurrentState(D3D12_RESOURCE_STATE_COMMON);
 		}
 
+		return texture;
+	}
 
+	Shared<Texture2D> D3D12RenderDevice::CreateEmptyTexture2D(const TextureDesc& _desc)
+	{
+		Shared<D3D12Texture2D> texture = MakeShared<D3D12Texture2D>(this, _desc);
 		return texture;
 	}
 
@@ -407,6 +418,9 @@ namespace Daydream
 
 
 		CopyBufferToImage(uploadBuffer.Get(), texture->GetID3D12Resource(), layouts);
+		//TransitionResourceState(commandList.Get(), texture->GetID3D12Resource(), D3D12_RESOURCE_STATE_COPY_DEST,
+		//	D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+
 		//ExecuteSingleTimeCommands(
 		//	[&](ID3D12GraphicsCommandList* _commandList)
 		//	{
@@ -437,6 +451,57 @@ namespace Daydream
 	{
 		return _pipeline->CreateMaterial();
 	}
+
+	void D3D12RenderDevice::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
+	{
+		D3D12Texture2D* src = (D3D12Texture2D*)_src.get();
+		D3D12Texture2D* dst = (D3D12Texture2D*)_dst.get();
+		TransitionResourceState(commandList.Get(), src->GetID3D12Resource(), src->GetCurrentState(),
+			D3D12_RESOURCE_STATE_COPY_SOURCE);
+		src->SetCurrentState(D3D12_RESOURCE_STATE_COPY_SOURCE);
+		commandList->CopyResource(dst->GetID3D12Resource(), src->GetID3D12Resource());
+		dst->SetCurrentState(D3D12_RESOURCE_STATE_COPY_DEST);
+	}
+
+	void D3D12RenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D)
+	{
+		//TransitionResourceState(commandList.Get(), _srcTexture2D, D3D12_RESOURCE_STATE_COPY_DEST,
+		//	D3D12_RESOURCE_STATE_COPY_SOURCE);
+		//TransitionResourceState(commandList.Get(), _dstCubemap, D3D12_RESOURCE_STATE_COPY_SOURCE,
+		//	D3D12_RESOURCE_STATE_COPY_DEST);
+
+		D3D12Texture2D* src = (D3D12Texture2D*)_srcTexture2D;
+		D3D12TextureCube* dst = (D3D12TextureCube*)_dstCubemap;
+
+		TransitionResourceState(commandList.Get(), src->GetID3D12Resource(), src->GetCurrentState(),
+			D3D12_RESOURCE_STATE_COPY_SOURCE);
+		src->SetCurrentState(D3D12_RESOURCE_STATE_COPY_SOURCE);
+		TransitionResourceState(commandList.Get(), dst->GetID3D12Resource(), dst->GetCurrentState(),
+			D3D12_RESOURCE_STATE_COPY_DEST);
+		dst->SetCurrentState(D3D12_RESOURCE_STATE_COPY_DEST);
+
+		D3D12_TEXTURE_COPY_LOCATION srcLocation = {};
+		srcLocation.pResource = src->GetID3D12Resource();
+		srcLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+		srcLocation.SubresourceIndex = 0; 
+
+		D3D12_TEXTURE_COPY_LOCATION dstLocation = {};
+		dstLocation.pResource = dst->GetID3D12Resource();
+		dstLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+		// 핵심: faceIndex를 사용하여 큐브맵의 특정 면을 Subresource로 지정합니다.
+		dstLocation.SubresourceIndex = _faceIndex;
+
+		// 3. 복사 명령을 기록합니다.
+		commandList->CopyTextureRegion(&dstLocation, 0, 0, 0, &srcLocation, nullptr);
+
+		TransitionResourceState(commandList.Get(), src->GetID3D12Resource(), src->GetCurrentState(),
+			D3D12_RESOURCE_STATE_COMMON);
+		src->SetCurrentState(D3D12_RESOURCE_STATE_COMMON);
+		TransitionResourceState(commandList.Get(), dst->GetID3D12Resource(), dst->GetCurrentState(),
+			D3D12_RESOURCE_STATE_COMMON);
+		dst->SetCurrentState(D3D12_RESOURCE_STATE_COMMON);
+	}
+
 
 	void D3D12RenderDevice::ExecuteSingleTimeCommands(std::function<void(ID3D12GraphicsCommandList*)> commands)
 	{
@@ -553,7 +618,7 @@ namespace Daydream
 	}
 
 
-	void Daydream::D3D12RenderDevice::CopyBufferToImage(ID3D12Resource* _src, ID3D12Resource* _dst, Array<D3D12_PLACED_SUBRESOURCE_FOOTPRINT> _subresourceFootprint)
+	void D3D12RenderDevice::CopyBufferToImage(ID3D12Resource* _src, ID3D12Resource* _dst, Array<D3D12_PLACED_SUBRESOURCE_FOOTPRINT> _subresourceFootprint)
 	{
 		ExecuteSingleTimeCommands([&](ID3D12GraphicsCommandList* _commandList)
 			{
@@ -571,12 +636,10 @@ namespace Daydream
 
 					_commandList->CopyTextureRegion(&dstLocation, 0, 0, 0, &srcLocation, nullptr);
 				}
-
-				TransitionResourceState(_dst, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 			});
 	}
 
-	void D3D12RenderDevice::TransitionResourceState(ID3D12Resource* _resource, D3D12_RESOURCE_STATES _stateBefore, D3D12_RESOURCE_STATES _stateAfter)
+	void D3D12RenderDevice::TransitionResourceState(ID3D12GraphicsCommandList* _commandList, ID3D12Resource* _resource, D3D12_RESOURCE_STATES _stateBefore, D3D12_RESOURCE_STATES _stateAfter)
 	{
 		if (_stateBefore == _stateAfter)
 		{
@@ -591,7 +654,7 @@ namespace Daydream
 		barrier.Transition.StateBefore = _stateBefore;
 		barrier.Transition.StateAfter = _stateAfter;
 
-		commandList->ResourceBarrier(1, &barrier);
+		_commandList->ResourceBarrier(1, &barrier);
 	}
 
 
