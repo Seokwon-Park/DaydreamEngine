@@ -13,12 +13,14 @@ namespace Daydream
 
         void GenerateHDRCubemap(Shared<Texture2D> _texture);
         void GenerateIrradianceCubemap();
+        void GeneratePrefilterCubemap();
         void GenerateBRDF();
         void UpdateSkyboxFace(UInt32 _faceIndex, Shared<Texture2D> _texture);
 
         Shared<Texture2D> GetBRDF() { return BRDFTexture; }
         Shared<TextureCube> GetSkyboxTexture() { return skyboxTextureCube; }
         Shared<TextureCube> GetIrradianceTexture() { return irradianceTextureCube; }
+        Shared<TextureCube> GetPrefilterTexture() { return prefilterTextureCube; }
     private:
         bool isUsingSkybox = true;
         bool isHDR = false;
@@ -30,11 +32,13 @@ namespace Daydream
 
         Array<Shared<Material>> equirectangularMaterials;
         Array<Shared<Material>> irradianceMaterials;
+        Array<Shared<Material>> prefilterMaterials;
         Shared<Material> resizeMaterial;
 
         Shared<Framebuffer> captureFramebuffer;
         Shared<Framebuffer> resizeFramebuffer;
-        Shared<Framebuffer> irraidanceFramebuffer;
+        Shared<Framebuffer> irradianceFramebuffer;
+        Shared<Framebuffer> prefilterFramebuffer;
 
         Shared<RenderPass> equirectangularRenderPass;
         Shared<RenderPass> resizeRenderPass;
@@ -42,6 +46,7 @@ namespace Daydream
 
         Shared<PipelineState> equirectangularPSO;
         Shared<PipelineState> irradiancePSO;
+        Shared<PipelineState> prefilterPSO;
         Shared<PipelineState> resizePSO;
         Shared<PipelineState> brdfPSO;
 
@@ -60,10 +65,12 @@ namespace Daydream
         Shared<Texture2D> resizeResultTexture;
         Array<Shared<Texture2D>> equirectangularResultTextures;
         Array<Shared<Texture2D>> irradianceResultTextures;
+        Array<Shared<Texture2D>> prefilterResultTextures;
         Array<Shared<Texture2D>> oldTextures;
 
         Shared<Texture2D> BRDFTexture;
         Shared<TextureCube> skyboxTextureCube;
         Shared<TextureCube> irradianceTextureCube;
+        Shared<TextureCube> prefilterTextureCube;
     };
 }

@@ -193,6 +193,30 @@ namespace Daydream::UI
 	void DrawModelController(const String& _label, Model* _model)
 	{
 		ImGui::PushID(_label.c_str());
+		const auto& modelNames = ResourceManager::GetInstance().
+		const char* currentItemName = (modelRef) ? modelRef->GetName().c_str() : "None";
+
+		if (ImGui::BeginCombo(label, currentItemName))
+		{
+			if (ImGui::Selectable("None", modelRef == nullptr))
+			{
+				modelRef = nullptr;
+			}
+			// ... (나머지 로직은 거의 동일) ...
+
+			for (const auto& modelName : modelNames)
+			{
+				bool isSelected = (modelRef && modelRef->GetName() == modelName);
+				if (ImGui::Selectable(modelName.c_str(), isSelected))
+				{
+					// ResourceManager에서 바로 Shared<Model>을 받아 할당
+					modelRef = ResourceManager::GetResource<Model>(modelName);
+				}
+				// ...
+			}
+			ImGui::EndCombo();
+		}
+
 		auto& materials = _model->GetMaterials();
 		for (UInt64 i = 0; i < materials.size(); i++)
 		{

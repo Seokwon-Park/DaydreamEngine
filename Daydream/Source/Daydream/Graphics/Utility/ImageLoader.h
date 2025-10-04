@@ -45,7 +45,7 @@ namespace Daydream::ImageLoader
 		imageData.data = ArrayType();
 		auto& pixelData = std::get<ArrayType>(imageData.data);
 
-		size_t imageSize = (size_t)imageData.width * imageData.height * 4;
+		UInt64 imageSize = (UInt64)imageData.width * imageData.height * 4;
 		pixelData.resize(imageSize);
 		memcpy(pixelData.data(), pixels, imageSize * sizeof(T));
 

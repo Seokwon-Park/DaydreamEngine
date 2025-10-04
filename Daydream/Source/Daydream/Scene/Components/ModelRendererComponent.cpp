@@ -5,6 +5,7 @@
 
 #include "Daydream/Graphics/Core/Renderer.h"
 #include "Daydream/Core/ResourceManager.h"
+#include "Daydream/Graphics/Resources/Skybox.h"
 
 namespace Daydream
 {
@@ -55,6 +56,9 @@ namespace Daydream
 			materials[i]->SetConstantBuffer("World", worldMatrix);
 			materials[i]->SetConstantBuffer("Camera", GetOwner()->GetScene()->GetCurrentCamera()->GetViewProjectionConstantBuffer());
 			materials[i]->SetConstantBuffer("Lights", GetOwner()->GetScene()->GetLightConstantBuffer());
+			materials[i]->SetTexture2D("BRDFLUT", GetOwner()->GetScene()->GetSkybox()->GetBRDF());
+			materials[i]->SetTextureCube("IrradianceTexture", GetOwner()->GetScene()->GetSkybox()->GetIrradianceTexture());
+			materials[i]->SetTextureCube("Prefilter", GetOwner()->GetScene()->GetSkybox()->GetPrefilterTexture());
 			materials[i]->Bind();
 			Renderer::Submit(meshes[i]->GetIndexCount());
 		}

@@ -77,8 +77,8 @@ namespace Daydream
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.SampleDesc.Quality = 0;
 		textureDesc.Usage = D3D11_USAGE_DEFAULT; // 일반적인 텍스처 사용법
-		textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-		textureDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+		textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+		textureDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE | D3D11_RESOURCE_MISC_GENERATE_MIPS;
 
 		D3D11_SUBRESOURCE_DATA subresourceData[6];
 		bool hasInitialData = (_initialData.size() == 6);
@@ -107,6 +107,8 @@ namespace Daydream
 			);
 		}
 
+		
+
 		//CreateDebugCubemap(device->GetDevice(), texture.GetAddressOf(), views.srv.GetAddressOf());
 
 		if (textureDesc.BindFlags & D3D11_BIND_SHADER_RESOURCE)
@@ -114,9 +116,10 @@ namespace Daydream
 			D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 			srvDesc.Format = textureDesc.Format;
 			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
-			srvDesc.TextureCube.MipLevels = 1;
+			srvDesc.TextureCube.MipLevels = -1;
 			device->GetDevice()->CreateShaderResourceView(texture.Get(), &srvDesc, views.srv.GetAddressOf());
 			DAYDREAM_CORE_ASSERT(views.srv, "This texture was not created with the Shader Resource View (SRV) bind flag.");
+			device->GetContext()->GenerateMips(views.srv.Get());
 		}
 
 		if (textureDesc.BindFlags & D3D11_BIND_DEPTH_STENCIL)

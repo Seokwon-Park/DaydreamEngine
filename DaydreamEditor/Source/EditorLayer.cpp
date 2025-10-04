@@ -45,7 +45,7 @@ namespace Daydream
 		uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
 		squareIB = Daydream::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 
-		editorCamera->SetPosition({ 0.0f,0.0f,0.0f });
+		editorCamera->SetPosition({ 0.0f,0.0f,-2.0f });
 		viewProjMat = ConstantBuffer::Create(sizeof(Daydream::Matrix4x4));
 		viewProjMat->Update(&editorCamera->GetViewProjectionMatrix(), sizeof(Daydream::Matrix4x4));
 
@@ -136,6 +136,7 @@ namespace Daydream
 		//model = MakeShared<Model>(mesh);
 		model = MakeShared<Model>();
 		//model->Load("Asset/Model/Lowpoly_tree_sample.fbx");
+		//model->Load("Asset/Model/Ceberus/Cerberus_LP.FBX");
 		model->Load("Asset/Model/scene.gltf");
 
 		//cubeIBO = IndexBuffer::Create(squareIndices2, sizeof(squareIndices2) / sizeof(uint32_t));
@@ -158,7 +159,6 @@ namespace Daydream
 		assetBrowserPanel = MakeUnique<AssetBrowserPanel>();
 		skyboxPanel = MakeUnique<SkyboxPanel>();
 
-		skyboxPanel->Setup(textureCube, materialcube);
 		skyboxPanel->SetSkybox(activeScene->GetSkybox());
 	}
 
@@ -215,6 +215,10 @@ namespace Daydream
 	{
 		CreateDockspace();
 
+		ImGui::Begin("Test");
+
+		ImGui::Image(ResourceManager::GetResource<Texture2D>("DefaultNormal")->GetImGuiHandle(), ImVec2{400,200});
+		ImGui::End();
 
 		//ImGui::Begin("SkyboxSettings");
 		//static bool chk = false;

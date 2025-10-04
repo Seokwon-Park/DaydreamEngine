@@ -110,7 +110,7 @@ namespace Daydream
 
 		{
 			D3D12_DESCRIPTOR_HEAP_DESC desc{};
-			desc.NumDescriptors = 8;
+			desc.NumDescriptors = 512;
 			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(rtvHeap.GetAddressOf()));
@@ -120,7 +120,7 @@ namespace Daydream
 
 		{
 			D3D12_DESCRIPTOR_HEAP_DESC desc{};
-			desc.NumDescriptors = 4;
+			desc.NumDescriptors = 512;
 			desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
 			desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 			HRESULT hr = device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(dsvHeap.GetAddressOf()));
@@ -430,6 +430,13 @@ namespace Daydream
 		//);
 
 		return texture;
+	}
+
+	Shared<TextureCube> D3D12RenderDevice::CreateEmptyTextureCube(const TextureDesc& _desc)
+	{
+		auto textureCube = MakeShared<D3D12TextureCube>(this, _desc);
+
+		return textureCube;
 	}
 
 	Shared<Sampler> D3D12RenderDevice::CreateSampler(const SamplerDesc& _desc)

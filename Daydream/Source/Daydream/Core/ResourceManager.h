@@ -20,7 +20,7 @@ namespace Daydream
 		static Shared<ResourceType> GetResource<ResourceType>(const String& _name)	\
 		{																							\
 			return GetInstance().resourceManager->Get(_name);										\
-		}
+		}					
 
 	class ResourceManager
 	{
@@ -52,6 +52,7 @@ namespace Daydream
 		ResourceManager();
 
 		Unique<MeshManager> meshManager;
+		Unique<ModelManager> modelManager;
 		Unique<ShaderManager> shaderManager;
 		Unique<ShaderGroupManager> shaderGroupManager;
 		Unique<Texture2DManager> textureManager;

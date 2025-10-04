@@ -128,15 +128,16 @@ namespace Daydream
 
 		for (int i = 0; i < 6; i++)
 		{
-			CopyTextureToCubemapFace
-			(
-				textureCube->GetTextureID(),
-				i,
-				(UInt32)(reinterpret_cast<UInt64>(_textures[i]->GetNativeHandle())),
-				_desc.width,
-				_desc.height
-			);
+			CopyTextureToCubemapFace(textureCube.get(), i, _textures[i].get());
 		}
+
+		return textureCube;
+	}
+
+	Shared<TextureCube> OpenGLRenderDevice::CreateEmptyTextureCube(const TextureDesc& _desc)
+	{
+		Array<const void*> dummy;
+		auto textureCube = MakeShared<OpenGLTextureCube>(_desc, dummy);
 
 		return textureCube;
 	}
@@ -163,6 +164,8 @@ namespace Daydream
 
 	void OpenGLRenderDevice::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
 	{
+		OpenGLTexture2D* src = static_cast<OpenGLTexture2D*>(_src.get());
+		OpenGLTexture2D* dst = static_cast<OpenGLTexture2D*>(_dst.get());
 		glCopyImageSubData(
 			static_cast<UInt32>(reinterpret_cast<UInt64>(_src->GetNativeHandle())),          // 원본 텍스처 이름
 			GL_TEXTURE_2D,       // 원본 텍스처 타입
@@ -178,23 +181,20 @@ namespace Daydream
 		);
 	}
 
-	void OpenGLRenderDevice::CopyTextureToCubemapFace(
-		UInt32 _dstCubemap,
-		Int32 _faceIndex,
-		UInt32 _srcTexture2D,
-		Int32 _width,
-		Int32 _height)
+	void OpenGLRenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D)
 	{
+		OpenGLTexture2D* src = static_cast<OpenGLTexture2D*>(_srcTexture2D);
+		OpenGLTextureCube* dst = static_cast<OpenGLTextureCube*>(_dstCubemap);
 		glCopyImageSubData(
-			_srcTexture2D,      // 원본 텍스처 핸들
+			src->GetTextureID(),      // 원본 텍스처 핸들
 			GL_TEXTURE_2D,        // 원본 타겟 타입
 			0,                    // 원본 밉 레벨
 			0, 0, 0,              // 원본 좌표 (x, y, z)
-			_dstCubemap,         // 대상 텍스처 핸들
+			dst->GetTextureID(),         // 대상 텍스처 핸들
 			GL_TEXTURE_CUBE_MAP,  // 대상 타겟 타입
 			0,                    // 대상 밉 레벨
 			0, 0, _faceIndex,      // 대상 좌표 (x, y, layer) - faceIndex가 레이어를 지정!
-			_width, _height, 1      // 복사할 크기
+			_dstCubemap->GetWidth(), _dstCubemap->GetHeight(), 1      // 복사할 크기
 		);
 	}
 }

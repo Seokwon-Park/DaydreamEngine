@@ -234,6 +234,13 @@ namespace Daydream
 		return textureCube;
 	}
 
+	Shared<TextureCube> D3D11RenderDevice::CreateEmptyTextureCube(const TextureDesc& _desc)
+	{
+		Array<const void*> dummy;
+		auto textureCube = MakeShared<D3D11TextureCube>(this, _desc, dummy);
+		return textureCube;
+	}
+
 	Shared<Sampler> D3D11RenderDevice::CreateSampler(const SamplerDesc& _desc)
 	{
 		return MakeShared<D3D11Sampler>(this, _desc);

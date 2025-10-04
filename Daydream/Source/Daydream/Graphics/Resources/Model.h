@@ -23,6 +23,7 @@ namespace Daydream
 		const Array<Shared<Material>>& GetMaterials() { return materials; }
 		
 		static Shared<Model> Create();
+		static Shared<Model> Create(Shared<Mesh> _mesh);
 	private:
 		Array<Shared<Mesh>> meshes;
 		Array<Shared<Material>> materials;

@@ -371,15 +371,15 @@ namespace Daydream
 		// 1. 레이아웃 변경: 복사를 위한 준비
 		vk::ImageMemoryBarrier barriers[2] = {};
 
-		VulkanTexture2D* source = (VulkanTexture2D*)_src.get();
-		VulkanTexture2D* dest = (VulkanTexture2D*)_dst.get();
+		VulkanTexture2D* src = (VulkanTexture2D*)_src.get();
+		VulkanTexture2D* dst = (VulkanTexture2D*)_dst.get();
 
 		// 원본 이미지를 TRANSFER_SRC로 변경
 		barriers[0].oldLayout = vk::ImageLayout::eUndefined; // 또는 현재 레이아웃
 		barriers[0].newLayout = vk::ImageLayout::eTransferSrcOptimal;
 		barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barriers[0].image = source->GetImage();
+		barriers[0].image = src->GetImage();
 		barriers[0].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
 		barriers[0].subresourceRange.baseMipLevel = 0;
 		barriers[0].subresourceRange.levelCount = 1;
@@ -393,7 +393,7 @@ namespace Daydream
 		barriers[1].newLayout = vk::ImageLayout::eTransferDstOptimal;
 		barriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barriers[1].image = dest->GetImage();
+		barriers[1].image = dst->GetImage();
 		barriers[1].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
 		barriers[1].subresourceRange.baseMipLevel = 0;
 		barriers[1].subresourceRange.levelCount = 1;
@@ -417,13 +417,13 @@ namespace Daydream
 		copyRegion.srcSubresource.layerCount = 1;
 		copyRegion.dstSubresource.aspectMask = vk::ImageAspectFlagBits::eColor;
 		copyRegion.dstSubresource.layerCount = 1;
-		copyRegion.extent.width = source->GetWidth();
-		copyRegion.extent.height = source->GetHeight();
+		copyRegion.extent.width = src->GetWidth();
+		copyRegion.extent.height = src->GetHeight();
 		copyRegion.extent.depth = 1;
 
 		currentCommandBuffer.copyImage(
-			source->GetImage(), vk::ImageLayout::eTransferSrcOptimal,
-			dest->GetImage(), vk::ImageLayout::eTransferDstOptimal,
+			src->GetImage(), vk::ImageLayout::eTransferSrcOptimal,
+			dst->GetImage(), vk::ImageLayout::eTransferDstOptimal,
 			1, &copyRegion
 		);
 
@@ -433,7 +433,7 @@ namespace Daydream
 		barriers[0].newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 		barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barriers[0].image = source->GetImage();
+		barriers[0].image = src->GetImage();
 		barriers[0].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
 		barriers[0].subresourceRange.baseMipLevel = 0;
 		barriers[0].subresourceRange.levelCount = 1;
@@ -447,7 +447,7 @@ namespace Daydream
 		barriers[1].newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 		barriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barriers[1].image = dest->GetImage();
+		barriers[1].image = dst->GetImage();
 		barriers[1].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
 		barriers[1].subresourceRange.baseMipLevel = 0;
 		barriers[1].subresourceRange.levelCount = 1;
@@ -471,47 +471,43 @@ namespace Daydream
 		VulkanTextureCube* dst = static_cast<VulkanTextureCube*>(_dstCubemap);
 		VulkanTexture2D* src = static_cast<VulkanTexture2D*>(_srcTexture2D);
 
-		vk::ImageMemoryBarrier barrier{};
-		barrier.oldLayout = vk::ImageLayout::eUndefined;
-		barrier.newLayout = vk::ImageLayout::eTransferSrcOptimal;
-		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barrier.image = src->GetImage();
-		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-		barrier.subresourceRange.baseArrayLayer = 0;
-		barrier.subresourceRange.baseMipLevel = 0;
-		barrier.subresourceRange.layerCount = 1;	
-		barrier.subresourceRange.levelCount = 1;
-				
-		vkCmdPipelineBarrier(
-			currentCommandBuffer,
-			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,  // 이전 작업 단계
-			VK_PIPELINE_STAGE_TRANSFER_BIT,     // 다음 작업 단계 (전송)
-			0,
-			0, nullptr,
-			0, nullptr,
-			1, barrier
-		);
+		vk::ImageMemoryBarrier barriers[2] = {};
 
-		barrier.oldLayout = vk::ImageLayout::eUndefined;
-		barrier.newLayout = vk::ImageLayout::eTransferDstOptimal;
-		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barrier.image = dst->GetImage();
-		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-		barrier.subresourceRange.baseArrayLayer = 0;
-		barrier.subresourceRange.baseMipLevel = 0;
-		barrier.subresourceRange.layerCount = 1;
-		barrier.subresourceRange.levelCount = 1;
+		// 원본 이미지를 TRANSFER_SRC로 변경
+		barriers[0].oldLayout = vk::ImageLayout::eUndefined; // 또는 현재 레이아웃
+		barriers[0].newLayout = vk::ImageLayout::eTransferSrcOptimal;
+		barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barriers[0].image = src->GetImage();
+		barriers[0].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+		barriers[0].subresourceRange.baseMipLevel = 0;
+		barriers[0].subresourceRange.levelCount = 1;
+		barriers[0].subresourceRange.baseArrayLayer = 0;
+		barriers[0].subresourceRange.layerCount = 1;
+		barriers[0].srcAccessMask = {}; // 이전 작업이 없다고 가정
+		barriers[0].dstAccessMask = vk::AccessFlagBits::eTransferRead;
 
-		vkCmdPipelineBarrier(
-			currentCommandBuffer,
-			VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,  // 이전 작업 단계
-			VK_PIPELINE_STAGE_TRANSFER_BIT,     // 다음 작업 단계 (전송)
-			0,
+		// 대상 이미지를 TRANSFER_DST로 변경
+		barriers[1].oldLayout = vk::ImageLayout::eUndefined; // 또는 현재 레이아웃
+		barriers[1].newLayout = vk::ImageLayout::eTransferDstOptimal;
+		barriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barriers[1].image = dst->GetImage();
+		barriers[1].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+		barriers[1].subresourceRange.baseMipLevel = 0;
+		barriers[1].subresourceRange.levelCount = 1;
+		barriers[1].subresourceRange.baseArrayLayer = 0;
+		barriers[1].subresourceRange.layerCount = 1;
+		barriers[1].srcAccessMask = {};
+		barriers[1].dstAccessMask = vk::AccessFlagBits::eTransferWrite;
+
+		currentCommandBuffer.pipelineBarrier(
+			vk::PipelineStageFlagBits::eTopOfPipe,  // 이전 작업 단계
+			vk::PipelineStageFlagBits::eTransfer,     // 다음 작업 단계 (전송)
+			{},
 			0, nullptr,
 			0, nullptr,
-			1, barrier
+			2, barriers
 		);
 
 		//barrier.oldLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
@@ -555,46 +551,40 @@ namespace Daydream
 			1, &copyRegion
 		);
 
-		barrier.oldLayout = vk::ImageLayout::eTransferSrcOptimal;
-		barrier.newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
-		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barrier.image = src->GetImage();
-		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-		barrier.subresourceRange.baseArrayLayer = 0;
-		barrier.subresourceRange.baseMipLevel = 0;
-		barrier.subresourceRange.layerCount = 1;
-		barrier.subresourceRange.levelCount = 1;
+		barriers[0].oldLayout = vk::ImageLayout::eTransferSrcOptimal; // 또는 현재 레이아웃
+		barriers[0].newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+		barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barriers[0].image = src->GetImage();
+		barriers[0].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+		barriers[0].subresourceRange.baseMipLevel = 0;
+		barriers[0].subresourceRange.levelCount = 1;
+		barriers[0].subresourceRange.baseArrayLayer = 0;
+		barriers[0].subresourceRange.layerCount = 1;
+		barriers[0].srcAccessMask = vk::AccessFlagBits::eTransferRead; // 이전 작업이 없다고 가정
+		barriers[0].dstAccessMask = {};
 
-		vkCmdPipelineBarrier(
-			currentCommandBuffer,
-			VK_PIPELINE_STAGE_TRANSFER_BIT,     
-			VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,  
-			0,
-			0, nullptr,
-			0, nullptr,
-			1, barrier
-		);
+		// 대상 이미지를 TRANSFER_DST로 변경
+		barriers[1].oldLayout = vk::ImageLayout::eTransferDstOptimal; // 또는 현재 레이아웃
+		barriers[1].newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+		barriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barriers[1].image = dst->GetImage();
+		barriers[1].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+		barriers[1].subresourceRange.baseMipLevel = 0;
+		barriers[1].subresourceRange.levelCount = 1;
+		barriers[1].subresourceRange.baseArrayLayer = 0;
+		barriers[1].subresourceRange.layerCount = 1;
+		barriers[1].srcAccessMask = vk::AccessFlagBits::eTransferWrite;
+		barriers[1].dstAccessMask = {};
 
-		barrier.oldLayout = vk::ImageLayout::eTransferDstOptimal;
-		barrier.newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
-		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barrier.image = dst->GetImage();
-		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-		barrier.subresourceRange.baseArrayLayer = 0;
-		barrier.subresourceRange.baseMipLevel = 0;
-		barrier.subresourceRange.layerCount = 1;
-		barrier.subresourceRange.levelCount = 1;
-
-		vkCmdPipelineBarrier(
-			currentCommandBuffer,
-			VK_PIPELINE_STAGE_TRANSFER_BIT,  // 이전 작업 단계
-			VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,     // 다음 작업 단계 (전송)
-			0,
+		currentCommandBuffer.pipelineBarrier(
+			vk::PipelineStageFlagBits::eTransfer,  // 이전 작업 단계
+			vk::PipelineStageFlagBits::eFragmentShader,     // 다음 작업 단계 (전송)
+			{},
 			0, nullptr,
 			0, nullptr,
-			1, barrier
+			2, barriers
 		);
 
 

@@ -28,19 +28,14 @@ namespace Daydream
 		virtual Shared<Texture2D> CreateTexture2D(const void* _imageData, const TextureDesc& _desc)override;
 		virtual Shared<TextureCube> CreateTextureCube(Array<const void*>& _imagePixels, const TextureDesc& _desc)override;
 		virtual Shared<TextureCube> CreateTextureCube(const Array<Shared<Texture2D>>& _textures, const TextureDesc& _desc) override;
+		virtual Shared<TextureCube> CreateEmptyTextureCube(const TextureDesc& _desc) override;
 		virtual Shared<Sampler> CreateSampler(const SamplerDesc& _desc) override;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() override;
 		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) override;
 		virtual Shared<Material> CreateMaterial(Shared<PipelineState> _pipeline) override;
 
 		virtual void CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst) override;
-
-		void CopyTextureToCubemapFace(
-			UInt32 _dstCubemapID,   
-			Int32 _faceIndex,       
-			UInt32 _srcTexture2D_ID,
-			Int32 _width,
-			Int32 _height);
+		virtual void CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D) override;
 
 		String GetVersion() const { return version; }
 	protected:

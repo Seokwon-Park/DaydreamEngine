@@ -16,7 +16,7 @@ namespace Daydream
 			return;
 		}
 
-		const Array<String> supportedExtensions = { ".gltf" };
+		const Array<String> supportedExtensions = { ".gltf", ".fbx" };
 
 		// 디렉토리 순회
 		for (FileSystem::directory_entry entry : FileSystem::directory_iterator(_directory))
@@ -31,17 +31,6 @@ namespace Daydream
 				{
 					if (extension == supportedExtension)
 					{
-						bool isSRGB = true;
-						if (pathString.find("_n.") != std::string::npos ||
-							pathString.find("_normal.") != std::string::npos)
-						{
-							isSRGB = false; // 노멀맵이므로 선형(Linear)으로 처리
-						}
-						//// 러프니스, 메탈릭 등 다른 데이터 텍스처에 대한 규칙도 추가...
-						//else if (pathString.find("_r.") != std::string::npos)
-						//{
-						//	isSRGB = false;
-						//}
 						Shared<Model> model = Model::Create();
 						model->Load(pathString);
 						registry[pathString] = model;

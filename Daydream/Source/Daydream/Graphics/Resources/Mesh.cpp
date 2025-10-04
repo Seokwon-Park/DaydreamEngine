@@ -13,8 +13,8 @@ namespace Daydream
 		vertexBuffer = VertexBuffer::CreateStatic(_meshData.vertices.size() * sizeof(Vertex), sizeof(Vertex), _meshData.vertices.data());
 		indexBuffer = IndexBuffer::Create(_meshData.indices.data(), _meshData.indices.size());
 
-		if (!_meshData.materialData.diffuseTexturePath.empty())
-			diffuseTexture = ResourceManager::GetResource<Texture2D>(_meshData.materialData.diffuseTexturePath);
+		if (!_meshData.materialData.albedoMapPath.empty())
+			diffuseTexture = ResourceManager::GetResource<Texture2D>(_meshData.materialData.albedoMapPath);
 		if (!_meshData.materialData.normalMapPath.empty())
 			normalTexture = ResourceManager::GetResource<Texture2D>(_meshData.materialData.normalMapPath);
 	}

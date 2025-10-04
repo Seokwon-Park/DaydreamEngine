@@ -28,6 +28,7 @@ namespace Daydream
 		virtual Shared<Texture2D> CreateEmptyTexture2D(const TextureDesc& _desc)override;
 		virtual Shared<TextureCube> CreateTextureCube(Array<const void*>& _imageDatas, const TextureDesc& _desc)override;
 		virtual Shared<TextureCube> CreateTextureCube(const Array<Shared<Texture2D>>& _textures, const TextureDesc& _desc) override;
+		virtual Shared<TextureCube> CreateEmptyTextureCube(const TextureDesc& _desc) override;
 		virtual Shared<Sampler> CreateSampler(const SamplerDesc& _desc) override;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() override;
 		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size) override;

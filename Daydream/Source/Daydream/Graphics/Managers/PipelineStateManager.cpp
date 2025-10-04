@@ -56,7 +56,11 @@ namespace Daydream
 
 		registry["IrradiancePSO"] = PipelineState::Create(psoDesc);
 
+		psoDesc.rasterizerState = rastDesc;
+		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Prefilter");
+		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
 
+		registry["PrefilterPSO"] = PipelineState::Create(psoDesc);
 
 	}
 }

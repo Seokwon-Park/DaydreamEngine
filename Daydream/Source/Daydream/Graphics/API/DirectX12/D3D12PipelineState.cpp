@@ -35,7 +35,7 @@ namespace Daydream
 		srvRanges.reserve(sz);
 		samplerRanges.reserve(sz);
 		auto& shaderResourceData = shaderGroup->GetShaderResourceDataRef();
-		for (int i = 0; i< shaderGroup->GetShaderResourceDataRef().size(); i++)
+		for (int i = 0; i < shaderGroup->GetShaderResourceDataRef().size(); i++)
 		{
 			switch (shaderResourceData[i].shaderResourceType)
 			{

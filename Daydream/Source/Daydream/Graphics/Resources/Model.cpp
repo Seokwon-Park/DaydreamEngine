@@ -20,7 +20,7 @@ namespace Daydream
 	void Model::Load(const String& _path)
 	{
 		meshes.clear();
-		
+
 		Path filepath(_path);
 
 		ModelData modelData = ModelLoader::LoadFromFile(filepath);
@@ -58,12 +58,39 @@ namespace Daydream
 			meshes.push_back(mesh);
 		}
 
-		for(UInt32 i = 0; i< modelData.materials.size(); i++)
+		for (UInt32 i = 0; i < modelData.materials.size(); i++)
 		{
 			Shared<Material> newMat = Material::Create(ResourceManager::GetResource<PipelineState>("ForwardPSO"));
-			newMat->SetTexture2D("Texture", ResourceManager::GetResource<Texture2D>(modelData.materials[i].diffuseTexturePath));
-			newMat->SetTexture2D("NormalTexture", ResourceManager::GetResource<Texture2D>(modelData.materials[i].normalMapPath));
+			auto diffuse = ResourceManager::GetResource<Texture2D>("Default");
+			auto normal = ResourceManager::GetResource<Texture2D>("DefaultNormal");
+			auto roughness = ResourceManager::GetResource<Texture2D>("DefaultRoughness");
+			auto metallic = ResourceManager::GetResource<Texture2D>("DefaultMetallic");
+			auto ao = ResourceManager::GetResource<Texture2D>("DefaultAO");
+			newMat->SetTexture2D("AlbedoTexture", diffuse);
+			newMat->SetTexture2D("NormalTexture", normal);
+			newMat->SetTexture2D("RoughnessTexture", roughness);
+			newMat->SetTexture2D("MetallicTexture", metallic);
+			newMat->SetTexture2D("AOTexture", ao);
+			if (!modelData.materials[i].albedoMapPath.empty())
+				newMat->SetTexture2D("AlbedoTexture", ResourceManager::GetResource<Texture2D>(modelData.materials[i].albedoMapPath));
+			if (!modelData.materials[i].normalMapPath.empty())
+				newMat->SetTexture2D("NormalTexture", ResourceManager::GetResource<Texture2D>(modelData.materials[i].normalMapPath));
+			if (!modelData.materials[i].roughnessMapPath.empty())
+				newMat->SetTexture2D("RoughnessTexture", ResourceManager::GetResource<Texture2D>(modelData.materials[i].roughnessMapPath));
+			if (!modelData.materials[i].metallicMapPath.empty())
+				newMat->SetTexture2D("MetallicTexture", ResourceManager::GetResource<Texture2D>(modelData.materials[i].metallicMapPath));
+			if (!modelData.materials[i].AOMapPath.empty())
+				newMat->SetTexture2D("AOTexture", ResourceManager::GetResource<Texture2D>(modelData.materials[i].AOMapPath));
 			materials.push_back(newMat);
 		}
+	}
+	Shared<Model> Model::Create()
+	{
+		return MakeShared<Model>();
+	}
+
+	Shared<Model> Model::Create(Shared<Mesh> _mesh)
+	{
+		return MakeShared<Model>(_mesh);
 	}
 }

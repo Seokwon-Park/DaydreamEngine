@@ -7,6 +7,7 @@ namespace Daydream
 	ResourceManager::ResourceManager()
 	{
 		meshManager = MakeUnique<MeshManager>();
+		modelManager = MakeUnique<ModelManager>();
 		shaderManager = MakeUnique<ShaderManager>();
 		shaderGroupManager = MakeUnique<ShaderGroupManager>();
 		samplerManager = MakeUnique<SamplerManager>();
@@ -21,12 +22,14 @@ namespace Daydream
 		instance = new ResourceManager();
 
 		instance->samplerManager->CreateEssentialSamplers();
+		instance->textureManager->CreateEssentialTextures();
 		instance->textureManager->LoadTexturesFromDirectory("Asset", true);
 		instance->textureManager->LoadTexturesFromDirectory("Resource", true);
 		instance->shaderManager->LoadShadersFromDirectory("Asset/Shader", true);
 		instance->shaderGroupManager->CreateEssentialShaderGroups();
 		instance->renderPassManager->CreateEssentialRenderPasses();
 		instance->pipelineStateManager->CreateEssentialPipelineStates();
+		instance->modelManager->LoadModelsFromDirectory("Asset", true);
 	}
 
 	void ResourceManager::Shutdown()

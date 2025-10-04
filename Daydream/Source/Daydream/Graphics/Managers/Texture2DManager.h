@@ -11,6 +11,7 @@ namespace Daydream
 	public:
 		Texture2DManager() {};
 			
+		void CreateEssentialTextures();
 		void LoadTexturesFromDirectory(Path _directory, bool _isRecursive = false);
 	private:
 		Path assetDirectory;

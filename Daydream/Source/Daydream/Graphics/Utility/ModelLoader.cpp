@@ -117,9 +117,12 @@ namespace Daydream
 		_material->Get(AI_MATKEY_NAME, name);
 		materialData.name = name.C_Str();
 
-		GetTexturePath(_material, aiTextureType_DIFFUSE, materialData.diffuseTexturePath);
-		GetTexturePath(_material, aiTextureType_SPECULAR, materialData.specularTexturePath);
+		GetTexturePath(_material, aiTextureType_DIFFUSE, materialData.albedoMapPath);
+		//GetTexturePath(_material, aiTextureType_SPECULAR, materialData.specularTexturePath);
 		GetTexturePath(_material, aiTextureType_NORMALS, materialData.normalMapPath);
+		GetTexturePath(_material, aiTextureType_DIFFUSE_ROUGHNESS, materialData.roughnessMapPath);
+		GetTexturePath(_material, aiTextureType_METALNESS, materialData.metallicMapPath);
+		GetTexturePath(_material, aiTextureType_AMBIENT_OCCLUSION, materialData.AOMapPath);
 
 		aiColor4D diffuseColor;
 		if (aiGetMaterialColor(_material, AI_MATKEY_COLOR_DIFFUSE, &diffuseColor) == AI_SUCCESS)

@@ -14,14 +14,14 @@ namespace Daydream
 
 	struct LightData
 	{
-		DirectionalLight dirLights[2];
-		PointLight pointLights[4];
-		SpotLight spotLights[4]; // 최대 32개 라이트
+		DirectionalLight dirLights[2] = {};
+		PointLight pointLights[4] = {};
+		SpotLight spotLights[4] = {}; // 최대 32개 라이트
 		Vector3 eyePos;
-		UInt32 dirLightCount;
+		UInt32 dirLightCount = 0;
 		Vector2 padding1;
-		UInt32 pointLightCount;
-		UInt32 spotLightCount;
+		UInt32 pointLightCount = 0;
+		UInt32 spotLightCount = 0;
 	};
 
 	class Scene

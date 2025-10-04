@@ -134,9 +134,9 @@ struct PSOutput
 
 
 [[vk::combinedImageSampler]][[vk::binding(0, 1)]]
-Texture2D Texture : register(t0);
+Texture2D AlbedoTexture : register(t0);
 [[vk::combinedImageSampler]][[vk::binding(0, 1)]]
-SamplerState TextureSampler : register(s0);
+SamplerState AlbedoTextureSampler : register(s0);
 
 [[vk::combinedImageSampler]][[vk::binding(1, 1)]]
 Texture2D NormalTexture : register(t1);
@@ -148,7 +148,7 @@ PSOutput PSMain(PSInput input)
 {
     PSOutput output = (PSOutput) 0;
     
-    float4 albedo = Texture.Sample(TextureSampler, input.uv);
+    float4 albedo = AlbedoTexture.Sample(AlbedoTextureSampler, input.uv);
     if (albedo.a < 0.2f)
     {
         clip(-1);

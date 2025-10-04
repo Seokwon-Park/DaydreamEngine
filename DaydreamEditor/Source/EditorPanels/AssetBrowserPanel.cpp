@@ -77,7 +77,7 @@ namespace Daydream
 					else // 파일인 경우
 					{
 						std::string ext = path.extension().string();
-						if (ext == ".png" || ext == ".jpg" || ext == ".hdr") // 이미지 파일
+						if (ext == ".png" || ext == ".jpg" || ext == ".hdr" || ext == ".tga") // 이미지 파일
 						{
 							auto texture = ResourceManager::GetResource<Texture2D>(pathString);
 							if (texture != nullptr)

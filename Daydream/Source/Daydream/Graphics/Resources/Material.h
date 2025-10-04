@@ -17,9 +17,12 @@ namespace Daydream
 		String name;
 
 		// 텍스처 파일 경로들
-		String diffuseTexturePath;
-		String specularTexturePath;
+		String albedoMapPath;
+		//String specularTexturePath;
 		String normalMapPath;
+		String metallicMapPath;
+		String roughnessMapPath;
+		String AOMapPath;
 		// ... PBR 텍스처 경로들 (metallic, roughness, ao ...)
 
 		// 텍스처가 아닌 상수 값들
