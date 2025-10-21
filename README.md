@@ -11,7 +11,7 @@
 ## Configuring the dependencies
 Tested
 Environment - Windows 10, Visual Studio 2022   
-API - OpenGL 4.5, DX11, DX12, Vulkan 1.4
+API - OpenGL 4.5, DX11, DX12, Vulkan 1.4 SDK
 
 ## Getting Started
 
