@@ -9,18 +9,9 @@ namespace Daydream
 		RegistryBase() = default;
 		virtual ~RegistryBase() = default;
 
-		Array<KeyType>& GetNameList() { return nameList; }
+		inline Array<KeyType>& GetNameList() { return nameList; }
 
-		void Add(const KeyType& _name, ValueType _value)
-		{
-			if (registry.find(_name) != registry.end())
-			{
-				DAYDREAM_CORE_INFO("Duplicate name!");
-				return;
-			}
-			registry.insert({ _name,_value });
-			nameList.push_back(_name);
-		}
+		void Register(const KeyType& _name, ValueType _value);
 
 		ValueType Get(const KeyType& _name)
 		{
@@ -36,4 +27,18 @@ namespace Daydream
 		HashMap<KeyType, ValueType> registry;
 		Array<KeyType> nameList;
 	};
+
+	template<typename KeyType, typename ValueType>
+	inline void RegistryBase<KeyType, ValueType>::Register(const KeyType& _name, ValueType _value)
+	{
+		if (registry.find(_name) != registry.end())
+		{
+			DAYDREAM_CORE_INFO("Duplicate name!");
+			return;
+		}
+		registry.insert({ _name,_value });
+		nameList.push_back(_name);
+		std::sort(nameList.begin(), nameList.end());
+		
+	}
 }

@@ -83,12 +83,12 @@ float2 IntegrateBRDF(float NdotV, float roughness)
 
     float3 N = float3(0.0, 0.0, 1.0);
 
-    static const uint SAMPLE_COUNT = 1024u;
-    for (uint i = 0u; i < SAMPLE_COUNT; ++i)
+    static const uint SampleCount = 1024u;
+    for (uint i = 0u; i < SampleCount; ++i)
     {
         // generates a sample vector that's biased towards the
         // preferred alignment direction (importance sampling).
-        float2 Xi = Hammersley(i, SAMPLE_COUNT);
+        float2 Xi = Hammersley(i, SampleCount);
         float3 H = ImportanceSampleGGX(Xi, N, roughness);
         float3 L = normalize(2.0 * dot(V, H) * H - V);
 
@@ -106,8 +106,8 @@ float2 IntegrateBRDF(float NdotV, float roughness)
             B += Fc * G_Vis;
         }
     }
-    A /= float(SAMPLE_COUNT);
-    B /= float(SAMPLE_COUNT);
+    A /= float(SampleCount);
+    B /= float(SampleCount);
     return float2(A, B);
 }
 

@@ -470,7 +470,7 @@ namespace Daydream
 		dst->SetCurrentState(D3D12_RESOURCE_STATE_COPY_DEST);
 	}
 
-	void D3D12RenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D)
+	void Daydream::D3D12RenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel)
 	{
 		//TransitionResourceState(commandList.Get(), _srcTexture2D, D3D12_RESOURCE_STATE_COPY_DEST,
 		//	D3D12_RESOURCE_STATE_COPY_SOURCE);
@@ -478,7 +478,9 @@ namespace Daydream
 		//	D3D12_RESOURCE_STATE_COPY_DEST);
 
 		D3D12Texture2D* src = (D3D12Texture2D*)_srcTexture2D;
+
 		D3D12TextureCube* dst = (D3D12TextureCube*)_dstCubemap;
+		
 
 		TransitionResourceState(commandList.Get(), src->GetID3D12Resource(), src->GetCurrentState(),
 			D3D12_RESOURCE_STATE_COPY_SOURCE);
@@ -496,7 +498,7 @@ namespace Daydream
 		dstLocation.pResource = dst->GetID3D12Resource();
 		dstLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
 		// 핵심: faceIndex를 사용하여 큐브맵의 특정 면을 Subresource로 지정합니다.
-		dstLocation.SubresourceIndex = _faceIndex;
+		dstLocation.SubresourceIndex = _mipLevel + _faceIndex * dst->GetMipLevels();
 
 		// 3. 복사 명령을 기록합니다.
 		commandList->CopyTextureRegion(&dstLocation, 0, 0, 0, &srcLocation, nullptr);

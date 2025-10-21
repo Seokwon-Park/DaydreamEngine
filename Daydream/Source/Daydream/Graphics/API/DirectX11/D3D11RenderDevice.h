@@ -35,7 +35,7 @@ namespace Daydream
 		virtual Shared<Material> CreateMaterial(Shared<PipelineState> _pipeline) override;
 
 		virtual void CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst) override;
-		virtual void CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D) override;
+		virtual void CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel = 0) override;
 
 		ID3D11Device* GetDevice() { return device.Get(); }
 		ID3D11DeviceContext* GetContext() { return deviceContext.Get(); }

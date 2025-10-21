@@ -14,6 +14,7 @@ namespace Daydream
 		registry["Equirectangular"] = ShaderGroup::Create("CubemapVS", "EquirectangularPS");
 		registry["Irradiance"] = ShaderGroup::Create("CubemapVS", "IrradiancePS");
 		registry["Prefilter"] = ShaderGroup::Create("CubemapVS", "PrefilterPS");
+		registry["Mip"] = ShaderGroup::Create("ResizeVS", "ResizePS");
 		registry["Sprite"] = ShaderGroup::Create("SpriteVS", "SpritePS");
 		registry["Resize"] = ShaderGroup::Create("ResizeVS", "ResizePS");
 		registry["BRDF"] = ShaderGroup::Create("BRDFVS", "BRDFPS");

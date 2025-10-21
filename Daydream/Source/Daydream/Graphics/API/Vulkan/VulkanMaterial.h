@@ -10,7 +10,7 @@ namespace Daydream
 	{
 	public:
 		VulkanMaterial(VulkanRenderDevice* _device, VulkanPipelineState* _pso);
-
+		virtual ~VulkanMaterial() override;
 		virtual void Bind() override;
 
 		//virtual void SetTexture2D(const std::string& _name, Shared<Texture2D> _texture)override;

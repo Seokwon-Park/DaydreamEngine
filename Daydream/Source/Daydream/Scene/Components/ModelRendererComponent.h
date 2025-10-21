@@ -26,10 +26,13 @@ namespace Daydream
 		void Render();
 
 		REFLECT_START()
+			ADD_PROPERTY(FieldType::PBRValue, materialValue)
 			ADD_PTR_PROPERTY(FieldType::ModelPtr, model)
 		REFLECT_END()
 	private:
 		Model* model;
+		MaterialConstantBufferData materialValue;
 		Shared<ConstantBuffer> worldMatrix;
+		Shared<ConstantBuffer> materialCB;
 	};
 }

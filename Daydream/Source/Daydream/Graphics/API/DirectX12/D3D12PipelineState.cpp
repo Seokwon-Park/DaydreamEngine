@@ -187,13 +187,13 @@ namespace Daydream
 		for (UINT i = 0; i < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
 			desc.BlendState.RenderTarget[i] = defaultRenderTargetBlendDesc;
 
-		desc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT; // 실제 포맷과 맞춰야 함
+		desc.DSVFormat = rp->HasDepthStencil()?DXGI_FORMAT_D24_UNORM_S8_UINT: DXGI_FORMAT_UNKNOWN; // 실제 포맷과 맞춰야 함
 		D3D12_DEPTH_STENCIL_DESC dsDesc{};
 		// 깊이/스텐실 상태 설정 (d3dx12 없이 직접 - 깊이 테스트 비활성화)
-		dsDesc.DepthEnable = TRUE; // 깊이 테스트 끔
+		dsDesc.DepthEnable = rp->HasDepthStencil(); // 깊이 테스트 끔
 		dsDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 		dsDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS; // 또는 적절한 함수
-		dsDesc.StencilEnable = TRUE; // 스텐실 테스트 끔
+		dsDesc.StencilEnable = rp->HasDepthStencil(); // 스텐실 테스트 끔
 		dsDesc.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;   // 0xFF (모든 비트 읽기)
 		dsDesc.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK; // 0xFF (모든 비트 쓰기)
 

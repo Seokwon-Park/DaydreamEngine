@@ -32,7 +32,8 @@ namespace Daydream
 
 		static void Init();
 		static void Shutdown();
-		
+	
+
 
 		template<typename ResourceType>
 		static Shared<ResourceType> GetResource(const String& name);

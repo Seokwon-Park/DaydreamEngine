@@ -124,6 +124,9 @@ namespace Daydream
 		GetTexturePath(_material, aiTextureType_METALNESS, materialData.metallicMapPath);
 		GetTexturePath(_material, aiTextureType_AMBIENT_OCCLUSION, materialData.AOMapPath);
 
+		if (materialData.AOMapPath.empty()) {
+			GetTexturePath(_material, aiTextureType_LIGHTMAP, materialData.AOMapPath);
+		}
 		aiColor4D diffuseColor;
 		if (aiGetMaterialColor(_material, AI_MATKEY_COLOR_DIFFUSE, &diffuseColor) == AI_SUCCESS)
 		{

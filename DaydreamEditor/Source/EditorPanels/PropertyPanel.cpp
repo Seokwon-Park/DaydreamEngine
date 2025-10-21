@@ -197,6 +197,13 @@ namespace Daydream
             {
                 Model* data = static_cast<Model*>(field.data);
                 UI::DrawModelController("Model", data);
+                break;
+            }
+            case FieldType::PBRValue:
+            {
+                MaterialConstantBufferData* data = static_cast<MaterialConstantBufferData*>(field.data);
+                UI::DrawPBRController("MaterialOptions", *data);
+                break;
             }
             }
         }

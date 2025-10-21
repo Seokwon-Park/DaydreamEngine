@@ -4,14 +4,26 @@
     <Filter Include="EditorPanels">
       <UniqueIdentifier>{6FDCDA8C-5B3F-6A31-04C5-A2E7F00636B4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="EditorPanels\UI">
+      <UniqueIdentifier>{3C0D7B0F-A898-E8D3-B1A9-6BC81DB444D4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\EditorLayer.h" />
+    <ClInclude Include="Source\EditorPanels\AssetBrowserPanel.h">
+      <Filter>EditorPanels</Filter>
+    </ClInclude>
     <ClInclude Include="Source\EditorPanels\PropertyPanel.h">
       <Filter>EditorPanels</Filter>
     </ClInclude>
     <ClInclude Include="Source\EditorPanels\SceneHierarchyPanel.h">
       <Filter>EditorPanels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\EditorPanels\SkyboxPanel.h">
+      <Filter>EditorPanels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\EditorPanels\UI\ImGuiWidgets.h">
+      <Filter>EditorPanels\UI</Filter>
     </ClInclude>
     <ClInclude Include="Source\EditorPanels\UIPanel.h">
       <Filter>EditorPanels</Filter>
@@ -19,24 +31,27 @@
     <ClInclude Include="Source\EditorPanels\ViewportPanel.h">
       <Filter>EditorPanels</Filter>
     </ClInclude>
-    <ClInclude Include="Source\EditorPanels\AssetBrowserPanel.h" />
-    <ClInclude Include="Source\EditorPanels\SkyboxPanel.h" />
-    <ClInclude Include="Source\EditorPanels\UI\ImGuiWidgets.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\EditorApp.cpp" />
     <ClCompile Include="Source\EditorLayer.cpp" />
+    <ClCompile Include="Source\EditorPanels\AssetBrowserPanel.cpp">
+      <Filter>EditorPanels</Filter>
+    </ClCompile>
     <ClCompile Include="Source\EditorPanels\PropertyPanel.cpp">
       <Filter>EditorPanels</Filter>
     </ClCompile>
     <ClCompile Include="Source\EditorPanels\SceneHierarchyPanel.cpp">
       <Filter>EditorPanels</Filter>
     </ClCompile>
+    <ClCompile Include="Source\EditorPanels\SkyboxPanel.cpp">
+      <Filter>EditorPanels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\EditorPanels\UI\ImGuiWidgets.cpp">
+      <Filter>EditorPanels\UI</Filter>
+    </ClCompile>
     <ClCompile Include="Source\EditorPanels\ViewportPanel.cpp">
       <Filter>EditorPanels</Filter>
     </ClCompile>
-    <ClCompile Include="Source\EditorPanels\AssetBrowserPanel.cpp" />
-    <ClCompile Include="Source\EditorPanels\SkyboxPanel.cpp" />
-    <ClCompile Include="Source\EditorPanels\UI\ImGuiWidgets.cpp" />
   </ItemGroup>
 </Project>

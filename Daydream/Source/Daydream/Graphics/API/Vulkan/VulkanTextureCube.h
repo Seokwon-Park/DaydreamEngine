@@ -14,8 +14,11 @@ namespace Daydream
 		virtual ~VulkanTextureCube();
 
 		virtual void SetSampler(Shared<Sampler> _sampler) override;
+		virtual void GenerateMips() override;
 		
 		virtual inline void* GetNativeHandle() override { return textureImage.get(); }
+
+		UInt32 GetMipLevels() { return mipLevels; }
 
 		vk::Image GetImage() { return textureImage.get(); }
 		vk::ImageView GetImageView() { return textureImageView.get(); }
@@ -28,6 +31,8 @@ namespace Daydream
 		vma::UniqueAllocation textureImageAllocation;
 		vk::UniqueImageView textureImageView;
 
+		vk::Format imageFormat;
+		UInt32 mipLevels = 0;
 
 	};
 }

@@ -205,6 +205,7 @@ namespace Daydream
 		{
 			skyboxPipeline->Bind();
 			mesh->Bind();
+			materialcube->SetTextureCube("TextureCubemap", activeScene->GetSkybox()->GetSkyboxTexture());
 			materialcube->Bind();
 			Renderer::Submit(mesh->GetIndexCount());
 		}
@@ -214,11 +215,6 @@ namespace Daydream
 	void EditorLayer::OnImGuiRender()
 	{
 		CreateDockspace();
-
-		ImGui::Begin("Test");
-
-		ImGui::Image(ResourceManager::GetResource<Texture2D>("DefaultNormal")->GetImGuiHandle(), ImVec2{400,200});
-		ImGui::End();
 
 		//ImGui::Begin("SkyboxSettings");
 		//static bool chk = false;

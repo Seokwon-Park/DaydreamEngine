@@ -23,6 +23,21 @@ namespace Daydream
 
 		registry["StandardRenderPass"] = RenderPass::Create(rpDesc);
 
+
+		// Mipmap 생성을 위한 RenderPass (Depth Buffer 없음)
+		rpDesc.colorAttachments.clear();
+		attach.format = RenderFormat::R16G16B16A16_FLOAT; // 밉맵을 생성할 텍스처 포맷에 맞춰주세요.
+		attach.loadOp = AttachmentLoadOp::Clear; // 이 전 내용이 필요 없으므로 DontCare나 Clear
+		attach.storeOp = AttachmentStoreOp::Store;
+		rpDesc.colorAttachments.push_back(attach);
+
+		rpDesc.depthAttachment = {};
+		attach.format = RenderFormat::UNKNOWN;
+		attach.loadOp = AttachmentLoadOp::Clear;
+		attach.storeOp = AttachmentStoreOp::Store;
+		rpDesc.depthAttachment = attach;
+
+		registry["MipmapRenderPass"] = RenderPass::Create(rpDesc);
 		//rpDesc.colorAttachments.clear();
 		//attach.format = RenderFormat::R32G32B32A32_FLOAT;
 		//attach.loadOp = AttachmentLoadOp::Clear;

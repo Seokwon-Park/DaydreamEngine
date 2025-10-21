@@ -17,6 +17,7 @@ workspace "Daydream"
 	IncludeDir["assimp"] = "Daydream/Vendor/assimp/include"
 	IncludeDir["dxcompiler"] = "Daydream/Vendor/dxcompiler/include"
 	IncludeDir["VulkanMemoryAllocator"] = "Daydream/Vendor/VulkanMemoryAllocator"
+	IncludeDir["ImGuizmo"] = "Daydream/Vendor/ImGuizmo"
 
 	include "Daydream/Vendor/glfw"
 	include "Daydream/Vendor/glad"
@@ -44,6 +45,8 @@ project "Daydream"
 		"%{prj.name}/Vendor/glm/glm/**.hpp",
  		"%{prj.name}/Vendor/glm/glm/**.inl",
  		"%{prj.name}/Vendor/VulkanMemoryAllocator/**.cpp",
+ 		"%{prj.name}/Vendor/ImGuizmo/**.h",
+ 		"%{prj.name}/Vendor/ImGuizmo/**.cpp",
 	}
 	includedirs
 	{
@@ -57,6 +60,7 @@ project "Daydream"
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.dxcompiler}",
 		"%{IncludeDir.VulkanMemoryAllocator}",
+		"%{IncludeDir.ImGuizmo}",
 		"$(VULKAN_SDK)/Include",
 	}
 	libdirs 
@@ -123,7 +127,7 @@ project "Daydream"
 			"spirv-cross-msl.lib",
 			"spirv-cross-reflect.lib",
 			"spirv-cross-util.lib",
-            "assimp-vc143-mt.lib" -- Assimp Debug 버전 라이브러리 이름 (필요 시 주석 해제)
+            "assimp-vc143-mt.lib" -- Assimp Release 버전 라이브러리 이름 (필요 시 주석 해제)
         }
 	
 project "Sandbox"

@@ -12,19 +12,33 @@ namespace Daydream
 		ImGui::Begin("SkyboxSettings");
 		ImGui::Checkbox("Render Skybox", &isUsingSkybox);
 
+
+		if (UI::DrawToggleButtonGroup("Diffuse", &diffuseIndex, resolutionOptions))
+		{
+			skybox->SetDiffuseResolution(resolutionFactors[diffuseIndex]);
+		}
+		if (UI::DrawToggleButtonGroup("Specular", &specularIndex, resolutionOptions))
+		{
+			skybox->SetSpecularResolution(resolutionFactors[specularIndex]);
+		}
+
+		if (ImGui::Button("Bake IBL"))
+		{
+			skybox->GenerateIrradianceCubemap();
+			skybox->GeneratePrefilterCubemap();
+		}
+
 		if (ImGui::Button("CreateEquirectangular"))
 		{
 			isHDR = true;
 		}
 
-		ImGui::Text("BRDF");
-		if (skybox->GetBRDF() != nullptr)
-		{
-			ImGui::Image(skybox->GetBRDF()->GetImGuiHandle(), ImVec2{ 100,100 });
-		}
-
 		if (isHDR)
 		{
+			if (UI::DrawToggleButtonGroup("Skybox", &skyboxIndex, resolutionOptions))
+			{
+				skybox->SetDiffuseResolution(resolutionFactors[skyboxIndex]);
+			}
 			ImGui::Image(equirectangularDropTarget->GetImGuiHandle(), ImVec2{ 400,200 });
 			if (ImGui::BeginDragDropTarget())
 			{
@@ -71,21 +85,13 @@ namespace Daydream
 		}
 		//UI::DrawMaterialController("SkyboxTextures", skyboxMaterial.get());
 
-		if (ImGui::Button("UpdateIrradiance"))
+
+
+		ImGui::Text("BRDF");
+		if (skybox->GetBRDF() != nullptr)
 		{
-			skybox->GenerateIrradianceCubemap();
+			ImGui::Image(skybox->GetBRDF()->GetImGuiHandle(), ImVec2{ 100,100 });
 		}
-
-		//if (ImGui::Button("GenerateBRDF"))
-		//{
-		//	skybox->GenerateBRDF();
-		//}
-
-		for (int i = 0; i < 6; i++)
-		{
-
-		}
-
 
 
 		ImGui::End();

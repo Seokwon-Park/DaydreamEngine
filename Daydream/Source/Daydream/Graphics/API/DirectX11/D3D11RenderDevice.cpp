@@ -228,7 +228,7 @@ namespace Daydream
 			CopyTextureToCubemapFace(
 				textureCube.get(),   // 대상: 큐브맵 리소스
 				i,                             // 대상 면 인덱스
-				_textures[i].get() // 원본: Texture2D 리소스
+				_textures[i].get()// 원본: Texture2D 리소스
 			);
 		}
 		return textureCube;
@@ -265,7 +265,7 @@ namespace Daydream
 		deviceContext->CopyResource((ID3D11Resource*)_dst->GetNativeHandle(), (ID3D11Resource*)_src->GetNativeHandle());
 	}
 
-	void D3D11RenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D)
+	void D3D11RenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel)
 	{
 		D3D11TextureCube* dst = static_cast<D3D11TextureCube*>(_dstCubemap);
 		D3D11Texture2D* src = static_cast<D3D11Texture2D*>(_srcTexture2D);
@@ -276,7 +276,7 @@ namespace Daydream
 		// 1. 핵심: 대상 Subresource 인덱스를 계산합니다.
 		// 밉맵 레벨 0, 배열 슬라이스 faceIndex에 해당하는 Subresource를 찾습니다.
 		UINT dstSubresourceIndex = D3D11CalcSubresource(
-			0, 
+			_mipLevel, 
 			_faceIndex,
 			cubeDesc.MipLevels
 		);

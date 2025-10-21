@@ -21,6 +21,7 @@ namespace Daydream
 		DAYDREAM_CORE_ASSERT(!instance, "ResourceManager must be initialized only 1 time");
 		instance = new ResourceManager();
 
+		instance->meshManager->CreateEssentialMeshes();
 		instance->samplerManager->CreateEssentialSamplers();
 		instance->textureManager->CreateEssentialTextures();
 		instance->textureManager->LoadTexturesFromDirectory("Asset", true);

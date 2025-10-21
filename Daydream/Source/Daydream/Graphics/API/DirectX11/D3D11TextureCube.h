@@ -17,11 +17,11 @@ namespace Daydream
 
 		virtual ~D3D11TextureCube();
 
-		virtual void Update(UInt32 _faceIndex, Shared<Texture2D> _texture) override;
-
 		virtual void* GetNativeHandle() { return texture.Get(); };
 
 		virtual void SetSampler(Shared<Sampler> _sampler) override;
+		virtual void GenerateMips() override;
+
 
 		inline ID3D11Resource* GetID3D11Resource() { return texture.Get(); }
 

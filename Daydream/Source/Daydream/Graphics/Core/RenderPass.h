@@ -50,6 +50,7 @@ namespace Daydream
 
 		const RenderPassDesc& GetDesc() { return desc; }
 		void SetClearColor(Color _clearColor) { clearColor = _clearColor; }
+		bool HasDepthStencil() const { return desc.depthAttachment.format != RenderFormat::UNKNOWN; };
 
 		static Shared<RenderPass> Create(const RenderPassDesc& _desc);
 	protected:

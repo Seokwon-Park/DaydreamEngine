@@ -20,6 +20,7 @@ namespace Daydream
 		UInt32 height;
 		//FilterMode filterMode;
 		//WrapMode wrapMode;
+		UInt32 mipLevels = 1;
 		RenderFormat format;
 		RenderBindFlags bindFlags;
 	};

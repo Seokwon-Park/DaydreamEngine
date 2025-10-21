@@ -24,6 +24,13 @@ namespace Daydream
 
 		const char* faceLabels[6] = { "Right (+X)", "Left (-X)", "Top (+Y)", "Bottom (-Y)", "Front (+Z)", "Back (-Z)" };
 
+		const Array<String> resolutionOptions = { "64", "128", "256", "512", "1024", "2048" };
+		const Array<UInt32> resolutionFactors = { 64, 128, 256, 512, 1024, 2048 };
+
+		int skyboxIndex = 3;
+		int diffuseIndex = 0;
+		int specularIndex = 3;
+
 		Shared<Skybox> skybox;
 		Shared<Texture2D> equirectangularDropTarget;
 	};

@@ -128,7 +128,7 @@ namespace Daydream
 
 		for (int i = 0; i < 6; i++)
 		{
-			CopyTextureToCubemapFace(textureCube.get(), i, _textures[i].get());
+			CopyTextureToCubemapFace(textureCube.get(), i, _textures[i].get(), 0);
 		}
 
 		return textureCube;
@@ -181,7 +181,7 @@ namespace Daydream
 		);
 	}
 
-	void OpenGLRenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D)
+	void Daydream::OpenGLRenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel)
 	{
 		OpenGLTexture2D* src = static_cast<OpenGLTexture2D*>(_srcTexture2D);
 		OpenGLTextureCube* dst = static_cast<OpenGLTextureCube*>(_dstCubemap);
@@ -192,9 +192,9 @@ namespace Daydream
 			0, 0, 0,              // 원본 좌표 (x, y, z)
 			dst->GetTextureID(),         // 대상 텍스처 핸들
 			GL_TEXTURE_CUBE_MAP,  // 대상 타겟 타입
-			0,                    // 대상 밉 레벨
+			_mipLevel,             // 대상 밉 레벨
 			0, 0, _faceIndex,      // 대상 좌표 (x, y, layer) - faceIndex가 레이어를 지정!
-			_dstCubemap->GetWidth(), _dstCubemap->GetHeight(), 1      // 복사할 크기
+			src->GetWidth(), src->GetHeight(), 1      // 복사할 크기
 		);
 	}
 }

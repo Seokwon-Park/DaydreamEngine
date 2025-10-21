@@ -88,6 +88,8 @@ namespace Daydream
 			}
 			}
 			lightBuffer->Update(&lightData, sizeof(LightData));
+
+			skybox->Update();
 		}
 
 		for (const auto& entity : entities)

@@ -58,6 +58,20 @@ cbuffer Lights : register(b2)
     uint spotLightCount;
 };
 
+cbuffer Material : register(b3)
+{
+    uint useAlbedoMap;
+    uint useNormalMap;
+    uint useAOMap;
+    uint useMetallicMap;
+    uint useRoughnessMap;
+    float exposure;
+    float gamma;
+    float roughnessMat;
+    float3 albedoMat; // baseColor
+    float metallicMat;
+}
+
 [[vk::combinedImageSampler]][[vk::binding(0, 1)]]
 Texture2D AlbedoTexture : register(t0);
 [[vk::combinedImageSampler]][[vk::binding(0, 1)]]
@@ -153,11 +167,11 @@ float3 CalculatePBR(float3 L, float3 V, float3 N, float3 F0, float3 albedo, floa
     float G = GeometrySmith(N, V, L, roughness);
     float3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);
     float3 numerator = NDF * G * F;
-    float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001;
-    float3 specular = numerator / denominator;
+    float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
+    float3 specular = numerator / max(denominator, 0.00001);
     float3 kS = F;
-    float3 kD = 1.0 - kS;
-    kD *= 1.0 - metallic;
+    float3 kD = float3(1.0f, 1.0f, 1.0f) - kS;
+    kD *= 1.0f - metallic;
     float NdotL = max(dot(N, L), 0.0);
     return (kD * albedo / PI + specular) * radiance * NdotL;
 }
@@ -178,9 +192,8 @@ float3 ComputePBRPointLight(PointLight light, float3 worldPos, float3 V, float3 
         return float3(0.0, 0.0, 0.0);
     }
     L = normalize(L);
-    float attenuation = 1.0 / (distance * distance+ 0.001);
+    float attenuation = 1.0 / (distance * distance);
     float3 radiance = light.color * light.intensity * attenuation;
-    //return float3(1.0, 1.0, 1.0);
     return CalculatePBR(L, V, N, F0, albedo, metallic, roughness, radiance);
 }
 
@@ -197,7 +210,6 @@ float3 ComputePBRSpotLight(SpotLight light, float3 worldPos, float3 V, float3 N,
     float spotEffect = smoothstep(light.outerConeCos, light.innerConeCos, theta);
     float attenuation = 1.0 / (distance * distance + 0.001);
     float3 radiance = light.color * light.intensity * attenuation * spotEffect;
-    //return float3(1.0, 1.0, 1.0);
     return CalculatePBR(L, V, N, F0, albedo, metallic, roughness, radiance);
 }
 
@@ -206,10 +218,36 @@ PSOutput PSMain(PSInput input)
     PSOutput output = (PSOutput) 0;
     
  // --- 1. 재질(Material) 속성 정의 (텍스처에서 읽어오도록 수정) ---
-    float3 albedo = AlbedoTexture.Sample(AlbedoTextureSampler, input.uv).rgb;
-    float metallic = MetallicTexture.Sample(MetallicTextureSampler, input.uv).b;
-    float roughness = RoughnessTexture.Sample(RoughnessTextureSampler, input.uv).g;
-    float ao = AOTexture.Sample(AOTextureSampler, input.uv).r;
+    float3 albedo = albedoMat;
+    float3 normal = input.normal;
+    float metallic = metallicMat;
+    float roughness = roughnessMat;
+    float ao = 1.0f;
+    if (useAlbedoMap)
+    {
+        albedo = AlbedoTexture.Sample(AlbedoTextureSampler, input.uv).rgb;
+    }
+    if (useNormalMap)
+    {
+        normal = NormalTexture.Sample(NormalTextureSampler, input.uv).rgb * 2.0 - 1.0;
+    }
+    
+    //float3 albedo = 1.0f;
+    if (useMetallicMap)
+    {
+        metallic = MetallicTexture.Sample(MetallicTextureSampler, input.uv).b;
+    }
+    //float metallic= 0.0f;
+    if (useRoughnessMap)
+    {
+        roughness = RoughnessTexture.Sample(RoughnessTextureSampler, input.uv).g;
+    }
+    //float roughness = 1.0f;
+    if (useAOMap)
+    {
+        ao = AOTexture.Sample(AOTextureSampler, input.uv).r;
+    }
+    //float ao = 0;
 
     if (AlbedoTexture.Sample(AlbedoTextureSampler, input.uv).a < 0.2f)
     {
@@ -222,8 +260,7 @@ PSOutput PSMain(PSInput input)
     float3 B = cross(N, T);
     float3x3 TBN = float3x3(T, B, N);
     
-    float3 normalTex = NormalTexture.Sample(NormalTextureSampler, input.uv).rgb * 2.0 - 1.0;
-    N = normalize(mul(normalTex, TBN));
+    N = normalize(mul(normal, TBN));
 
     // --- 3. 기본 벡터 및 F0 계산 ---
     float3 V = normalize(eyePosition - input.worldPosition); // View direction
@@ -257,19 +294,21 @@ PSOutput PSMain(PSInput input)
     float3 diffuseIBL = irradiance * albedo;
     
     const float MAX_REFLECTION_LOD = 4.0;
-    float3 prefilteredColor = Prefilter.SampleLevel(PrefilterSampler, R, roughness * MAX_REFLECTION_LOD).rgb;
-    //float3 prefilteredColor = Prefilter.Sample(PrefilterSampler, R).rgb;
+    //float3 prefilteredColor = Prefilter.SampleLevel(PrefilterSampler, R, roughness * MAX_REFLECTION_LOD).rgb;
+    float3 prefilteredColor = Prefilter.Sample(PrefilterSampler, R).rgb;
     float2 brdf = BRDFLUT.Sample(BRDFLUTSampler, float2(max(dot(N, V), 0.0), roughness)).rg;
     float3 specularIBL = prefilteredColor * (F_ibl * brdf.x + brdf.y);
     
     float3 ambient = (kD_ibl * diffuseIBL + specularIBL) * ao;
     
     // --- 6. 최종 색상 조합 ---
-    float3 color = ambient + Lo - ambient;
+    float3 color = Lo + ambient;
+    //color = diffuseIBL * albedo;
 
     // --- 7. 후처리: HDR 톤 매핑 및 감마 보정 ---
     color = color / (color + float3(1.0, 1.0, 1.0)); // Reinhard Tonemapping
-    color = pow(color, float3(1.0 / 2.2, 1.0 / 2.2, 1.0 / 2.2)); // Gamma Correction
+    color = color * exposure; 
+    color = pow(color, float3(1.0 / gamma, 1.0 / gamma, 1.0 / gamma)); // Gamma Correction
 
     output.color = float4(color, 1.0);
     //float3 x = normalTex - normalTex + irradiance - irradiance + prefilteredColor - prefilteredColor + float3(brdf - brdf, 0.0);

@@ -17,6 +17,7 @@ namespace Daydream
 	public:
 		Model();
 		Model(Shared<Mesh> _mesh);
+		~Model();
 		
 		void Load(const String& _path);
 		const Array<Shared<Mesh>>& GetMeshes() { return meshes; }

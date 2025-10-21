@@ -20,5 +20,8 @@ namespace Daydream::UI
 
 	void DrawLightController(const String& _label, Light& _light);
 	void DrawModelController(const String& _label, Model* _model);
+	void DrawPBRController(const String& _label, MaterialConstantBufferData& _data);
+	bool CheckboxU32(const char* label, UInt32* v);
 
+	bool DrawToggleButtonGroup(const char* _label, int* _selectedIndex, const Array<String>& _options);
 }

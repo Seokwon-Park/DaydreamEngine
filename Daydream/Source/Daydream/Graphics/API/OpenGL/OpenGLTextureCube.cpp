@@ -19,7 +19,7 @@ namespace Daydream
         internalFormat = GraphicsUtility::OpenGL::ConvertRenderFormatToGLFormat(_desc.format);
         dataFormat = GraphicsUtility::OpenGL::ConvertRenderFormatToGLDataFormat(_desc.format);
 
-        glTextureStorage2D(textureID, 1, internalFormat, _desc.width, _desc.height);
+        glTextureStorage2D(textureID, _desc.mipLevels, internalFormat, _desc.width, _desc.height);
 
         if (_initialData.size() == 6)
         {
@@ -38,37 +38,20 @@ namespace Daydream
                 );
             }
         }
-        //glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        //glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        //glTextureParameteri(textureID, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-        //glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        //glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	}
     OpenGLTextureCube::~OpenGLTextureCube()
     {
         glDeleteTextures(1, &textureID);
     }
 
-    void OpenGLTextureCube::Update(UInt32 _faceIndex, Shared<Texture2D> _texture)
-    {
-        textures[_faceIndex] = _texture;
-
-        glCopyImageSubData(
-            static_cast<UInt32>(reinterpret_cast<UInt64>(_texture->GetNativeHandle())),      // 원본 텍스처 핸들
-            GL_TEXTURE_2D,        // 원본 타겟 타입
-            0,                    // 원본 밉 레벨
-            0, 0, 0,              // 원본 좌표 (x, y, z)
-            textureID,         // 대상 텍스처 핸들
-            GL_TEXTURE_CUBE_MAP,  // 대상 타겟 타입
-            0,                    // 대상 밉 레벨
-            0, 0, _faceIndex,      // 대상 좌표 (x, y, layer) - faceIndex가 레이어를 지정!
-            width, height, 1      // 복사할 크기
-        );
-    }
-
     void OpenGLTextureCube::SetSampler(Shared<Sampler> _sampler)
     {
         textureSampler = static_cast<OpenGLSampler*>(_sampler.get());
+    }
+
+    void OpenGLTextureCube::GenerateMips()
+    {
+        glGenerateTextureMipmap(textureID);
     }
 }
 

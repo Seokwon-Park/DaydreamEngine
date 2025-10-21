@@ -11,6 +11,13 @@ namespace Daydream
         return Renderer::GetRenderDevice()->CreateMaterial(_pipeline);
     }
 
+	Material::~Material()
+	{
+		textures.clear();
+		cbuffers.clear();
+		textureCubes.clear();
+	}
+
 	void Material::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
 	{
 		if (bindingMap.find(_name) != bindingMap.end())
@@ -26,6 +33,7 @@ namespace Daydream
 			textureCubes[_name] = _texture;
 		}
 	}
+
 	void Material::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
 	{
 		if (bindingMap.find(_name) != bindingMap.end())

@@ -8,12 +8,13 @@ namespace Daydream
 	class TextureCube : public Texture
 	{
 	public:
-		virtual ~TextureCube() = default;
+		virtual ~TextureCube();
 
 		virtual UInt32 GetWidth() const { return width; }
 		virtual UInt32 GetHeight() const { return height; }
 
-		virtual void Update(UInt32 _faceIndex, Shared<Texture2D> _texture);
+		void Update(UInt32 _faceIndex, Shared<Texture2D> _texture);
+		virtual void GenerateMips() {};
 
 		virtual void* GetNativeHandle() override = 0;
 		void* GetImGuiHandle(UInt32 _faceIndex);

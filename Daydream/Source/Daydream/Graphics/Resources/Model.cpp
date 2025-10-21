@@ -17,6 +17,11 @@ namespace Daydream
 	{
 		meshes.push_back(_mesh);
 	}
+	Model::~Model()
+	{
+		meshes.clear();
+		materials.clear();
+	}
 	void Model::Load(const String& _path)
 	{
 		meshes.clear();
@@ -81,6 +86,7 @@ namespace Daydream
 				newMat->SetTexture2D("MetallicTexture", ResourceManager::GetResource<Texture2D>(modelData.materials[i].metallicMapPath));
 			if (!modelData.materials[i].AOMapPath.empty())
 				newMat->SetTexture2D("AOTexture", ResourceManager::GetResource<Texture2D>(modelData.materials[i].AOMapPath));
+
 			materials.push_back(newMat);
 		}
 	}

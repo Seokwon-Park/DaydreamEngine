@@ -18,6 +18,6 @@ PSOutput PSMain(PSInput input)
 {
     PSOutput output = (PSOutput) 0;
     
-    output.color = TextureCubemap.Sample(TextureCubemapSampler, input.worldPosition);
+    output.color = TextureCubemap.SampleLevel(TextureCubemapSampler, input.worldPosition, 0.0);
     return output;
 }

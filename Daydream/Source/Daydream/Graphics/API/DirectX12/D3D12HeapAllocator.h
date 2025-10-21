@@ -35,7 +35,7 @@ namespace Daydream
 		void Alloc(D3D12_CPU_DESCRIPTOR_HANDLE* _outCpuDescriptorHandle)
 		{
 			DAYDREAM_CORE_ASSERT(freeIndices.size() > 0, "");
-			int idx = freeIndices.back();
+			UInt64 idx = freeIndices.back();
 			freeIndices.pop_back();
 			_outCpuDescriptorHandle->ptr = heapStartCpu.ptr + (idx * heapHandleIncrement);
 		}
@@ -44,7 +44,7 @@ namespace Daydream
 		{
 			DAYDREAM_CORE_ASSERT(freeIndices.size() > 0, "");
 			DAYDREAM_CORE_ASSERT(heapType != D3D12_DESCRIPTOR_HEAP_TYPE_RTV, "");
-			int idx = freeIndices.back();
+			UInt64 idx = freeIndices.back();
 			freeIndices.pop_back();
 			_outCpuDescriptorHandle->ptr = heapStartCpu.ptr + (idx * heapHandleIncrement);
 			_outGpuDescriptorHandle->ptr = heapStartGpu.ptr + (idx * heapHandleIncrement);
@@ -52,6 +52,7 @@ namespace Daydream
 		void Free(D3D12_CPU_DESCRIPTOR_HANDLE _outCpuDescriptorHandle)
 		{
 			int cpuIndex = (int)((_outCpuDescriptorHandle.ptr - heapStartCpu.ptr) / heapHandleIncrement);
+			DAYDREAM_CORE_ASSERT(cpuIndex < 512, "WTF?");
 			freeIndices.push_back(cpuIndex);
 		}
 		void Free(D3D12_CPU_DESCRIPTOR_HANDLE _outCpuDescriptorHandle, D3D12_GPU_DESCRIPTOR_HANDLE _outGpuDescriptorHandle)
@@ -66,7 +67,7 @@ namespace Daydream
 		D3D12_DESCRIPTOR_HEAP_TYPE  heapType = D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES;
 		D3D12_CPU_DESCRIPTOR_HANDLE heapStartCpu;
 		D3D12_GPU_DESCRIPTOR_HANDLE heapStartGpu;
-		UINT                        heapHandleIncrement;
+		UInt64                    heapHandleIncrement;
 		Array<UInt32>					freeIndices;
 	};
 

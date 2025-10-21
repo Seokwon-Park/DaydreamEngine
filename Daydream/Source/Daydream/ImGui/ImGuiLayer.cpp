@@ -2,6 +2,7 @@
 #include "ImGuiLayer.h"
 
 #include <imgui.h>
+#include "ImGuizmo.h"
 
 #include <GLFW/glfw3.h>
 
@@ -64,6 +65,7 @@ namespace Daydream
 	{
 		renderer->NewFrame();
 		ImGui::NewFrame();
+		ImGuizmo::BeginFrame();
 	}
 	void ImGuiLayer::EndImGui()
 	{

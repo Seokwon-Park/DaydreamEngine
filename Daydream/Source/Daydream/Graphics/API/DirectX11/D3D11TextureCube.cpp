@@ -71,7 +71,7 @@ namespace Daydream
 		D3D11_TEXTURE2D_DESC textureDesc = {};
 		textureDesc.Width = desc.width;
 		textureDesc.Height = desc.height;
-		textureDesc.MipLevels = 1;
+		textureDesc.MipLevels = _desc.mipLevels;
 		textureDesc.ArraySize = 6; // 큐브맵은 6개의 텍스처 배열입니다.
 		textureDesc.Format = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(_desc.format); // DXGI_FORMAT 열거형 값
 		textureDesc.SampleDesc.Count = 1;
@@ -119,7 +119,6 @@ namespace Daydream
 			srvDesc.TextureCube.MipLevels = -1;
 			device->GetDevice()->CreateShaderResourceView(texture.Get(), &srvDesc, views.srv.GetAddressOf());
 			DAYDREAM_CORE_ASSERT(views.srv, "This texture was not created with the Shader Resource View (SRV) bind flag.");
-			device->GetContext()->GenerateMips(views.srv.Get());
 		}
 
 		if (textureDesc.BindFlags & D3D11_BIND_DEPTH_STENCIL)
@@ -146,15 +145,13 @@ namespace Daydream
 	{
 	}
 
-	void D3D11TextureCube::Update(UInt32 _faceIndex, Shared<Texture2D> _texture)
-	{
-		textures[_faceIndex] = _texture;
-		device->CopyTextureToCubemapFace(this, _faceIndex, _texture.get());
-	}
-
 	void D3D11TextureCube::SetSampler(Shared<Sampler> _sampler)
 	{
 		auto sampler = static_pointer_cast<D3D11Sampler>(_sampler);
 		textureSampler = sampler->GetSampler();
+	}
+	void D3D11TextureCube::GenerateMips()
+	{
+		device->GetContext()->GenerateMips(views.srv.Get());
 	}
 }

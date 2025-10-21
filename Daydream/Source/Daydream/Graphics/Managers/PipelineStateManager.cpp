@@ -35,8 +35,12 @@ namespace Daydream
 
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("BRDF");
 		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
-
 		registry["BRDFPSO"] = PipelineState::Create(psoDesc);
+
+		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Mip"); // 밉맵 생성용 셰이더 그룹
+		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("MipmapRenderPass"); // 방금 만든 RenderPass 사용
+		registry["GenerateMipsPSO"] = PipelineState::Create(psoDesc);
+
 
 		psoDesc.rasterizerState = rastDesc;
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Cubemap");

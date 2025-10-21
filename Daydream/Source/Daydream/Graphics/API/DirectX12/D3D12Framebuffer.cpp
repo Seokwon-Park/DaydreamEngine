@@ -12,6 +12,8 @@ namespace Daydream
 		height = _desc.height;
 		renderPass = _renderPass;
 
+		swapchainRTVHandle.ptr = 0;
+		
 		CreateAttachments();
 	}
 
@@ -39,7 +41,10 @@ namespace Daydream
 
 	D3D12Framebuffer::~D3D12Framebuffer()
 	{
-		device->GetRTVHeapAlloc().Free(swapchainRTVHandle);
+		if (swapchainRTVHandle.ptr != 0)
+		{
+			device->GetRTVHeapAlloc().Free(swapchainRTVHandle);
+		}
 		renderTargetHandles.clear();
 		depthStencilHandle;
 		colorAttachments.clear();

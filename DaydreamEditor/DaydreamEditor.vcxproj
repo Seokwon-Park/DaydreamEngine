@@ -54,9 +54,6 @@
     <TargetName>DaydreamEditor</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
-  <PropertyGroup Label="Vcpkg">
-    <VcpkgEnabled>false</VcpkgEnabled>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -103,24 +100,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Source\EditorLayer.h" />
-    <ClInclude Include="Source\EditorPanels\AssetBrowserPanel.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
+    <ClInclude Include="Source\EditorPanels\AssetBrowserPanel.h" />
     <ClInclude Include="Source\EditorPanels\PropertyPanel.h" />
     <ClInclude Include="Source\EditorPanels\SceneHierarchyPanel.h" />
     <ClInclude Include="Source\EditorPanels\SkyboxPanel.h" />
-    <ClInclude Include="Source\EditorPanels\UIPanel.h" />
     <ClInclude Include="Source\EditorPanels\UI\ImGuiWidgets.h" />
+    <ClInclude Include="Source\EditorPanels\UIPanel.h" />
     <ClInclude Include="Source\EditorPanels\ViewportPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\EditorApp.cpp" />
     <ClCompile Include="Source\EditorLayer.cpp" />
-    <ClCompile Include="Source\EditorPanels\AssetBrowserPanel.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
+    <ClCompile Include="Source\EditorPanels\AssetBrowserPanel.cpp" />
     <ClCompile Include="Source\EditorPanels\PropertyPanel.cpp" />
     <ClCompile Include="Source\EditorPanels\SceneHierarchyPanel.cpp" />
     <ClCompile Include="Source\EditorPanels\SkyboxPanel.cpp" />

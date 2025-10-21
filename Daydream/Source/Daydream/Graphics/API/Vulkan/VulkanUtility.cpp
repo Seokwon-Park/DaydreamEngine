@@ -274,6 +274,10 @@ namespace Daydream::GraphicsUtility::Vulkan
 		info.unnormalizedCoordinates = VK_FALSE;
 		info.compareEnable = VK_FALSE;
 		info.compareOp = ConvertToVkCompareOp(_desc.comparisonFunc);
+		info.mipmapMode = vk::SamplerMipmapMode::eLinear;
+		info.minLod = 0.0f; // Optional
+		info.maxLod = VK_LOD_CLAMP_NONE;
+		info.mipLodBias = 0.0f; // Optional
 
 		return info;
 	}

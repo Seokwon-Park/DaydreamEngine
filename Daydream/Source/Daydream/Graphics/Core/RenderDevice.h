@@ -60,7 +60,7 @@ namespace Daydream
 		virtual Shared<Material> CreateMaterial(Shared<PipelineState> _pipeline) = 0;
 
 		virtual void CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst) = 0;
-		virtual void CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D) {}
+		virtual void CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel = 0) {}
 
 		void CreateSwapchainForWindow(DaydreamWindow* _window);
 		void AddFramebufferResizeRequest(Framebuffer* _framebuffer, Vector2 _size) { framebufferResizeInfo.push_back({ _framebuffer, _size }); };

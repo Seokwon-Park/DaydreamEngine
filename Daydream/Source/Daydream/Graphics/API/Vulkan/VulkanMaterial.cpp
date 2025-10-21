@@ -32,6 +32,13 @@ namespace Daydream
 			bindingMap[resource.name] = resource;
 		}
 	}
+	VulkanMaterial::~VulkanMaterial()
+	{
+		device = nullptr;
+		pso = nullptr;
+		rawSets.clear();
+		sets.clear();
+	}
 	void VulkanMaterial::Bind()
 	{
 		for (auto [name, texture] : textures)

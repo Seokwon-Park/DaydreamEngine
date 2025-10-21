@@ -9,10 +9,15 @@
 
 namespace Daydream
 {
+	TextureCube::~TextureCube()
+	{
+		textures.clear();
+	}
 	void TextureCube::Update(UInt32 _faceIndex, Shared<Texture2D> _texture)
 	{
 		textures[_faceIndex] = _texture;
-		Renderer::GetRenderDevice()->CopyTextureToCubemapFace(this, _faceIndex, _texture.get());
+		textures[_faceIndex]->SetSampler(ResourceManager::GetResource<Sampler>("LinearClampToEdge"));
+		Renderer::GetRenderDevice()->CopyTextureToCubemapFace(this, _faceIndex, _texture.get(), 0);
 	}
 
 	void* TextureCube::GetImGuiHandle(UInt32 _faceIndex)

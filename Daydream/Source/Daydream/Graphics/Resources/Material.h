@@ -31,10 +31,25 @@ namespace Daydream
 		// ... PBR 상수 값들 (metallicFactor, roughnessFactor ...)
 	};
 
+	struct MaterialConstantBufferData
+	{
+		UInt32 useAlbedoMap = 1;
+		UInt32 useNormalMap = 1;
+		UInt32 useAOMap = 1;
+		UInt32 useMetallicMap = 1;
+		UInt32 useRoughnessMap = 1;
+		Float32 exposure = 1.0f;
+		Float32 gamma = 2.2f;
+		Float32 roughness = 0;
+		Vector3 albedo = Vector3(0.0f,0.0f,0.0f); // baseColor
+		Float32 metallic = 0.0f;
+	};
+
+
 	class Material : public Resource
 	{
 	public:
-		virtual ~Material() = default;
+		virtual ~Material();
 		virtual void Bind() = 0;
 		
 		void SetTexture2D(const String& _name, Shared<Texture2D> _texture);

@@ -13,7 +13,7 @@ namespace Daydream
 		desc.bindFlags = RenderBindFlags::ShaderResource;
 		desc.width = 1;
 		desc.height = 1;
-		desc.format = RenderFormat::R8G8B8A8_UNORM_SRGB;
+		desc.format = RenderFormat::R8G8B8A8_UNORM;
 		UInt32 imageSize = desc.width * desc.height;
 
 		Array<UInt8> pixelData;
@@ -24,32 +24,32 @@ namespace Daydream
 		pixelData[1] = 255;
 		pixelData[2] = 255;
 		
-		Add("Default", Texture2D::Create(pixelData.data(), desc));
+		Register("Default", Texture2D::Create(pixelData.data(), desc));
 		registry["Default"]->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
 
 		pixelData[0] = 128;
 		pixelData[1] = 128;
 		pixelData[2] = 255;
 
-		registry["DefaultNormal"] = Texture2D::Create(pixelData.data(), desc);
+		Register("DefaultNormal", Texture2D::Create(pixelData.data(), desc));
 		registry["DefaultNormal"]->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
 
 		pixelData[0] = 128;
 		pixelData[1] = 128;
 		pixelData[2] = 128;
-		registry["DefaultRoughness"] = Texture2D::Create(pixelData.data(), desc);
+		Register("DefaultRoughness", Texture2D::Create(pixelData.data(), desc));
 		registry["DefaultRoughness"]->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
 
 		pixelData[0] = 0;
 		pixelData[1] = 0;
 		pixelData[2] = 0;
-		registry["DefaultMetallic"] = Texture2D::Create(pixelData.data(), desc);
+		Register("DefaultMetallic", Texture2D::Create(pixelData.data(), desc));
 		registry["DefaultMetallic"]->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
 
 		pixelData[0] = 255;
 		pixelData[1] = 255;
 		pixelData[2] = 255;
-		registry["DefaultAO"] = Texture2D::Create(pixelData.data(), desc);
+		Register("DefaultAO", Texture2D::Create(pixelData.data(), desc));
 		registry["DefaultAO"]->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
 
 
@@ -84,9 +84,17 @@ namespace Daydream
 
 						bool isSRGB = true;
 						if (pathString.find("_n.") != std::string::npos ||
-							pathString.find("_normal.") != std::string::npos)
+							pathString.find("_normal.") != std::string::npos ||
+							pathString.find("metal") != std::string::npos ||
+							pathString.find("rough") != std::string::npos)
 						{
 							isSRGB = false; // 노멀맵이므로 선형(Linear)으로 처리
+						}
+
+						if (pathString.find("metal") != std::string::npos ||
+							pathString.find("rough") != std::string::npos)
+						{
+							isSRGB = false;
 						}
 						//// 러프니스, 메탈릭 등 다른 데이터 텍스처에 대한 규칙도 추가...
 						//else if (pathString.find("_r.") != std::string::npos)

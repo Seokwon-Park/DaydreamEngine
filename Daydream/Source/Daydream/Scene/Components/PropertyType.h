@@ -29,6 +29,7 @@ namespace Daydream
         Material,
         Light,
         ModelPtr,
+        PBRValue,
         FieldTypeMax
     };
 

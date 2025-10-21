@@ -241,7 +241,7 @@ namespace Daydream::GraphicsUtility::OpenGL
 		case FilterMode::Nearest:
 			return GL_NEAREST;
 		case FilterMode::Linear:
-			return GL_LINEAR;
+			return GL_LINEAR_MIPMAP_LINEAR;
 		case FilterMode::NearestMipmapNearest:
 			return GL_NEAREST_MIPMAP_NEAREST;
 		case FilterMode::LinearMipmapNearest:

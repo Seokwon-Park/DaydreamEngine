@@ -108,7 +108,7 @@ namespace Daydream
 			Array<vk::DescriptorPoolSize> poolSizes =
 			{
 				{ vk::DescriptorType::eCombinedImageSampler , IMGUI_IMPL_VULKAN_MINIMUM_IMAGE_SAMPLER_POOL_SIZE },
-				{ vk::DescriptorType::eCombinedImageSampler , 256 },
+				{ vk::DescriptorType::eCombinedImageSampler , 1024 },
 				{ vk::DescriptorType::eUniformBuffer , 256 },
 			};
 
@@ -182,7 +182,7 @@ namespace Daydream
 		return vertexBuffer;
 	}
 
-	Shared<IndexBuffer> VulkanRenderDevice::CreateIndexBuffer(const UInt32 * _indices, UInt32 _count)
+	Shared<IndexBuffer> VulkanRenderDevice::CreateIndexBuffer(const UInt32* _indices, UInt32 _count)
 	{
 		auto indexBuffer = MakeShared<VulkanIndexBuffer>(this, _count);
 
@@ -240,7 +240,7 @@ namespace Daydream
 				vk::BufferUsageFlagBits::eTransferSrc,
 				vma::MemoryUsage::eCpuOnly,
 				vma::AllocationCreateFlagBits::eMapped);
-			
+
 			vma::AllocationInfo allocationInfo;
 			allocator->getAllocationInfo(uploadBufferAllocation.get(), &allocationInfo);
 			memcpy(allocationInfo.pMappedData, _imageData, imageSize);
@@ -311,7 +311,7 @@ namespace Daydream
 		for (UInt32 i = 0; i < 6; i++)
 		{
 			VkBufferImageCopy region = {};
-			region.bufferOffset = imageSize*i;
+			region.bufferOffset = imageSize * i;
 			region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 			region.imageSubresource.mipLevel = 0;
 			region.imageSubresource.baseArrayLayer = i;
@@ -331,8 +331,8 @@ namespace Daydream
 		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
 		barrier.subresourceRange.baseArrayLayer = 0;
 		barrier.subresourceRange.baseMipLevel = 0;
-		barrier.subresourceRange.layerCount = 1;
-		barrier.subresourceRange.levelCount = 1;
+		barrier.subresourceRange.layerCount = 6;
+		barrier.subresourceRange.levelCount = _desc.mipLevels;
 
 		TransitionImageLayout(barrier);
 
@@ -386,7 +386,7 @@ namespace Daydream
 		barriers[0].subresourceRange.baseArrayLayer = 0;
 		barriers[0].subresourceRange.layerCount = 1;
 		barriers[0].srcAccessMask = {}; // 이전 작업이 없다고 가정
-		barriers[0].dstAccessMask = vk::AccessFlagBits::eTransferRead; 
+		barriers[0].dstAccessMask = vk::AccessFlagBits::eTransferRead;
 
 		// 대상 이미지를 TRANSFER_DST로 변경
 		barriers[1].oldLayout = vk::ImageLayout::eUndefined; // 또는 현재 레이아웃
@@ -400,7 +400,7 @@ namespace Daydream
 		barriers[1].subresourceRange.baseArrayLayer = 0;
 		barriers[1].subresourceRange.layerCount = 1;
 		barriers[1].srcAccessMask = {};
-		barriers[1].dstAccessMask = vk::AccessFlagBits::eTransferWrite; 
+		barriers[1].dstAccessMask = vk::AccessFlagBits::eTransferWrite;
 
 		currentCommandBuffer.pipelineBarrier(
 			vk::PipelineStageFlagBits::eTopOfPipe,  // 이전 작업 단계
@@ -466,7 +466,7 @@ namespace Daydream
 		);
 	}
 
-	void VulkanRenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D)
+	void VulkanRenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel)
 	{
 		VulkanTextureCube* dst = static_cast<VulkanTextureCube*>(_dstCubemap);
 		VulkanTexture2D* src = static_cast<VulkanTexture2D*>(_srcTexture2D);
@@ -494,9 +494,9 @@ namespace Daydream
 		barriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[1].image = dst->GetImage();
 		barriers[1].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-		barriers[1].subresourceRange.baseMipLevel = 0;
+		barriers[1].subresourceRange.baseMipLevel = _mipLevel;
 		barriers[1].subresourceRange.levelCount = 1;
-		barriers[1].subresourceRange.baseArrayLayer = 0;
+		barriers[1].subresourceRange.baseArrayLayer = _faceIndex;
 		barriers[1].subresourceRange.layerCount = 1;
 		barriers[1].srcAccessMask = {};
 		barriers[1].dstAccessMask = vk::AccessFlagBits::eTransferWrite;
@@ -535,7 +535,7 @@ namespace Daydream
 
 		// 목적지 서브리소스 설정
 		copyRegion.dstSubresource.aspectMask = vk::ImageAspectFlagBits::eColor;
-		copyRegion.dstSubresource.mipLevel = 0;
+		copyRegion.dstSubresource.mipLevel = _mipLevel;
 		copyRegion.dstSubresource.baseArrayLayer = _faceIndex; // 큐브맵의 특정 면을 가리킴
 		copyRegion.dstSubresource.layerCount = 1;
 		copyRegion.dstOffset = vk::Offset3D{ 0, 0, 0 };
@@ -564,16 +564,15 @@ namespace Daydream
 		barriers[0].srcAccessMask = vk::AccessFlagBits::eTransferRead; // 이전 작업이 없다고 가정
 		barriers[0].dstAccessMask = {};
 
-		// 대상 이미지를 TRANSFER_DST로 변경
 		barriers[1].oldLayout = vk::ImageLayout::eTransferDstOptimal; // 또는 현재 레이아웃
 		barriers[1].newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 		barriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[1].image = dst->GetImage();
 		barriers[1].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-		barriers[1].subresourceRange.baseMipLevel = 0;
+		barriers[1].subresourceRange.baseMipLevel = _mipLevel;
 		barriers[1].subresourceRange.levelCount = 1;
-		barriers[1].subresourceRange.baseArrayLayer = 0;
+		barriers[1].subresourceRange.baseArrayLayer = _faceIndex;
 		barriers[1].subresourceRange.layerCount = 1;
 		barriers[1].srcAccessMask = vk::AccessFlagBits::eTransferWrite;
 		barriers[1].dstAccessMask = {};
@@ -803,12 +802,12 @@ namespace Daydream
 
 	}
 
-	
+
 
 	void VulkanRenderDevice::TransitionImageLayout(vk::Image _image, vk::Format _format, vk::ImageLayout _oldLayout, vk::ImageLayout _newLayout)
 	{
 		//vk::CommandBuffer transCommandBuffer = BeginSingleTimeCommands();
-		
+
 		vk::ImageMemoryBarrier barrier{};
 		barrier.oldLayout = _oldLayout;
 		barrier.newLayout = _newLayout;

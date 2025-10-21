@@ -9,6 +9,8 @@ namespace Daydream
 	{
 	public:
 		MeshManager();
+
+		void CreateEssentialMeshes();
 	private:
 	};
 }

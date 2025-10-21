@@ -10,3 +10,6 @@
 [submodule "Daydream/Vendor/glm"]
 	path = Daydream/Vendor/glm
 	url = https://github.com/g-truc/glm
+[submodule "Daydream/Vendor/ImGuizmo"]
+	path = Daydream/Vendor/ImGuizmo
+	url = https://github.com/Seokwon-Park/ImGuizmo
