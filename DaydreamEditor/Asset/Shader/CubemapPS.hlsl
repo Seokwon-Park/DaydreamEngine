@@ -18,6 +18,12 @@ PSOutput PSMain(PSInput input)
 {
     PSOutput output = (PSOutput) 0;
     
-    output.color = TextureCubemap.SampleLevel(TextureCubemapSampler, input.worldPosition, 0.0);
+    float3 color = TextureCubemap.SampleLevel(TextureCubemapSampler, input.worldPosition, 0.0).rgb;
+    float gamma = 2.2;
+    color = color / (color + float3(1.0, 1.0, 1.0)); // Reinhard Tonemapping
+    color = pow(color, float3(1.0 / gamma, 1.0 / gamma, 1.0 / gamma)); // Gamma Correction
+  
+    output.color = float4(color, 1.0f);
+    
     return output;
 }

@@ -65,7 +65,8 @@ namespace Daydream
 
 		for (UInt32 i = 0; i < modelData.materials.size(); i++)
 		{
-			Shared<Material> newMat = Material::Create(ResourceManager::GetResource<PipelineState>("ForwardPSO"));
+			//Shared<Material> newMat = Material::Create(ResourceManager::GetResource<PipelineState>("ForwardPSO"));
+			Shared<Material> newMat = Material::Create(ResourceManager::GetResource<PipelineState>("GBufferPSO"));
 			auto diffuse = ResourceManager::GetResource<Texture2D>("Default");
 			auto normal = ResourceManager::GetResource<Texture2D>("DefaultNormal");
 			auto roughness = ResourceManager::GetResource<Texture2D>("DefaultRoughness");

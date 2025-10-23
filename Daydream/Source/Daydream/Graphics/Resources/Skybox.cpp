@@ -11,12 +11,12 @@ namespace Daydream
 	{
 		cubeFaceViewMatrices =
 		{
-			Matrix4x4::LookTo(Vector3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, 1.0f,  0.0f)),
-			Matrix4x4::LookTo(Vector3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, 1.0f,  0.0f)),
-			Matrix4x4::LookTo(Vector3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
-			Matrix4x4::LookTo(Vector3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, 1.0f)),
-			Matrix4x4::LookTo(Vector3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec3(0.0f, 1.0f,  0.0f)),
-			Matrix4x4::LookTo(Vector3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, 1.0f,  0.0f))
+			Matrix4x4::CreateLookTo(Vector3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, 1.0f,  0.0f)),
+			Matrix4x4::CreateLookTo(Vector3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, 1.0f,  0.0f)),
+			Matrix4x4::CreateLookTo(Vector3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
+			Matrix4x4::CreateLookTo(Vector3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, 1.0f)),
+			Matrix4x4::CreateLookTo(Vector3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec3(0.0f, 1.0f,  0.0f)),
+			Matrix4x4::CreateLookTo(Vector3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, 1.0f,  0.0f))
 		};
 		cubeFaceProjMatrix = Matrix4x4::Perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
 
@@ -207,84 +207,81 @@ namespace Daydream
 	{
 		UInt32 result = (UInt32)std::log2f(specularResolution);
 
-		if (prefilterMipLevels != result)
+		prefilterMipLevels = result;
+
+		prefilterMaterials.resize(6 * prefilterMipLevels);
+		for (UInt32 mip = 0; mip < prefilterMipLevels; mip++)
 		{
-			prefilterMipLevels = result;
-
-			prefilterMaterials.resize(6 * prefilterMipLevels);
-			for (int mip = 0; mip < prefilterMipLevels; mip++)
+			for (UInt32 face = 0; face < 6; face++)
 			{
-				for (int face = 0; face < 6; face++)
-				{
-					UInt32 index = prefilterMipLevels * face + mip;
-					prefilterMaterials[index] = Material::Create(prefilterPSO);
-					prefilterMaterials[index]->SetConstantBuffer("Camera", cubeFaceConstantBuffers[face]);
-				}
+				UInt32 index = prefilterMipLevels * face + mip;
+				prefilterMaterials[index] = Material::Create(prefilterPSO);
+				prefilterMaterials[index]->SetConstantBuffer("Camera", cubeFaceConstantBuffers[face]);
 			}
+		}
 
-			roughnessConstantBuffers.resize(prefilterMipLevels);
-			for (int mip = 0; mip < prefilterMipLevels; mip++)
-			{
-				roughnessConstantBuffers[mip] = ConstantBuffer::Create(sizeof(Vector4));
-				roughness = Vector4(0.0f, 0.0f, 0.0f, (float)mip / (prefilterMipLevels - 1));
-				roughnessConstantBuffers[mip]->Update(&roughness, sizeof(Vector4));
-			}
+		roughnessConstantBuffers.resize(prefilterMipLevels);
+		for (int mip = 0; mip < prefilterMipLevels; mip++)
+		{
+			roughnessConstantBuffers[mip] = ConstantBuffer::Create(sizeof(Vector4));
+			roughness = Vector4(0.0f, 0.0f, 0.0f, (float)mip / (prefilterMipLevels - 1));
+			roughnessConstantBuffers[mip]->Update(&roughness, sizeof(Vector4));
+		}
 
-			TextureDesc textureDesc{};
-			textureDesc.width = specularResolution;
-			textureDesc.height = specularResolution;
-			textureDesc.mipLevels = prefilterMipLevels;
+		TextureDesc textureDesc{};
+		textureDesc.width = specularResolution;
+		textureDesc.height = specularResolution;
+		textureDesc.mipLevels = prefilterMipLevels;
+		textureDesc.bindFlags = RenderBindFlags::ShaderResource;
+		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
+
+		prefilterTextureCube = TextureCube::CreateEmpty(textureDesc);
+		prefilterTextureCube->SetSampler(ResourceManager::GetResource<Sampler>("LinearClampToEdge"));
+		oldTextures.push_back(prefilterTextureCube);
+
+		prefilterResultTextures.clear();
+		prefilterResultTextures.resize(6 * prefilterMipLevels);
+		prefilterFramebuffers.resize(prefilterMipLevels);
+		for (int mip = 0; mip < prefilterMipLevels; mip++)
+		{
+			textureDesc.width = std::max(1U, specularResolution >> mip);
+			textureDesc.height = std::max(1U, specularResolution >> mip);
+			textureDesc.mipLevels = 1;
 			textureDesc.bindFlags = RenderBindFlags::ShaderResource;
 			textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
 
-			prefilterTextureCube = TextureCube::CreateEmpty(textureDesc);
-			prefilterTextureCube->SetSampler(ResourceManager::GetResource<Sampler>("LinearClampToEdge"));
-			oldTextures.push_back(prefilterTextureCube);
+			FramebufferDesc fbDesc;
+			fbDesc.width = std::max(1U, specularResolution >> mip);
+			fbDesc.height = std::max(1U, specularResolution >> mip);
 
-			prefilterResultTextures.clear();
-			prefilterResultTextures.resize(6 * prefilterMipLevels);
-			prefilterFramebuffers.resize(prefilterMipLevels);
-			for (int mip = 0; mip < prefilterMipLevels; mip++)
+			prefilterFramebuffers[mip] = Framebuffer::Create(irradianceRenderPass, fbDesc);
+
+			for (int face = 0; face < 6; face++)
 			{
-				textureDesc.width = std::max(1U, specularResolution >> mip);
-				textureDesc.height = std::max(1U, specularResolution >> mip);
-				textureDesc.mipLevels = 1;
-				textureDesc.bindFlags = RenderBindFlags::ShaderResource;
-				textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
+				UInt32 index = prefilterMipLevels * face + mip;
+				prefilterMaterials[index]->SetTextureCube("TextureCubemap", skyboxTextureCube);
+				prefilterMaterials[index]->SetConstantBuffer("Roughness", roughnessConstantBuffers[mip]);
 
-				FramebufferDesc fbDesc;
-				fbDesc.width = std::max(1U, specularResolution >> mip);
-				fbDesc.height = std::max(1U, specularResolution >> mip);
+				irradianceRenderPass->Begin(prefilterFramebuffers[mip]);
 
-				prefilterFramebuffers[mip] = Framebuffer::Create(irradianceRenderPass, fbDesc);
+				prefilterPSO->Bind();
+				boxMesh->Bind();
+				prefilterMaterials[index]->Bind();
+				Renderer::Submit(boxMesh->GetIndexCount());
 
-				for (int face = 0; face < 6; face++)
+				irradianceRenderPass->End();
+
+				prefilterResultTextures[index] = Texture2D::CreateEmpty(textureDesc);
+				Renderer::GetRenderDevice()->CopyTexture2D(prefilterFramebuffers[mip]->GetColorAttachmentTexture(0), prefilterResultTextures[index]);
+				if (mip == 0)
 				{
-					UInt32 index = prefilterMipLevels * face + mip;
-					prefilterMaterials[index]->SetTextureCube("TextureCubemap", skyboxTextureCube);
-					prefilterMaterials[index]->SetConstantBuffer("Roughness", roughnessConstantBuffers[mip]);
-
-					irradianceRenderPass->Begin(prefilterFramebuffers[mip]);
-
-					prefilterPSO->Bind();
-					boxMesh->Bind();
-					prefilterMaterials[index]->Bind();
-					Renderer::Submit(boxMesh->GetIndexCount());
-
-					irradianceRenderPass->End();
-
-					prefilterResultTextures[index] = Texture2D::CreateEmpty(textureDesc);
-					Renderer::GetRenderDevice()->CopyTexture2D(prefilterFramebuffers[mip]->GetColorAttachmentTexture(0), prefilterResultTextures[index]);
-					if (mip == 0)
-					{
-						prefilterTextureCube->Update(face, prefilterResultTextures[index]);
-					}
-					else
-					{
-						Renderer::GetRenderDevice()->CopyTextureToCubemapFace(prefilterTextureCube.get(), face, prefilterResultTextures[index].get(), mip);
-					}
-					oldTextures.push_back(prefilterResultTextures[face]);
+					prefilterTextureCube->Update(face, prefilterResultTextures[index]);
 				}
+				else
+				{
+					Renderer::GetRenderDevice()->CopyTextureToCubemapFace(prefilterTextureCube.get(), face, prefilterResultTextures[index].get(), mip);
+				}
+				oldTextures.push_back(prefilterResultTextures[face]);
 			}
 		}
 

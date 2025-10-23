@@ -7,6 +7,7 @@
 #include "EditorPanels/AssetBrowserPanel.h"
 #include "EditorPanels/SkyboxPanel.h"
 
+
 namespace Daydream
 {
 	class EditorLayer : public Layer
@@ -18,6 +19,10 @@ namespace Daydream
 		virtual void OnUpdate(Float32 _deltaTime) override;
 		virtual void OnImGuiRender() override;
 		virtual void OnDetach() override;
+		virtual void OnEvent(Event& _event) override;
+
+		bool OnKeyPressed(KeyPressedEvent& _e);
+
 		void CreateDockspace();
 		void UpdateViewportSize();
 	private:
@@ -25,6 +30,7 @@ namespace Daydream
 		Vector2 viewportSize;
 
 		bool isViewportHovered = false;
+		bool isViewportFocused = false;
 		bool viewportShouldResize = true;
 
 		Shared<VertexBuffer> squareVB;
@@ -40,14 +46,20 @@ namespace Daydream
 		Shared<ConstantBuffer> viewProjMat;
 
 		//Shared<MouseScrolledEvent>
+		Shared<RenderPass> gBufferRenderPass;
 		Shared<RenderPass> renderPass;
+		Shared<Framebuffer> gBufferFramebuffer;
 		Shared<Framebuffer> viewportFramebuffer;
 
+		Shared<PipelineState> gBufferPSO;
+		Shared<PipelineState> deferredLightingPSO;
+		Shared<PipelineState> PSO;
 		Shared<PipelineState> pso;
 		Shared<PipelineState> pso3d;
 		Shared<PipelineState> skyboxPipeline;
 		Shared<PipelineState> equirectangleToCubePipeline;
 
+		Shared<Material> deferredLightingMaterial;
 		Shared<Material> material;
 		Shared<Material> material3d;
 		Shared<Material> materialcube;
@@ -59,12 +71,13 @@ namespace Daydream
 
 		Shared<EditorCamera> editorCamera;
 
-
+		//Panels
 		Unique<ViewportPanel> viewportPanel;
 		Unique<PropertyPanel> propertyPanel;
 		Unique<SceneHierarchyPanel> sceneHierarchyPanel;
 		Unique<AssetBrowserPanel> assetBrowserPanel;
 		Unique<SkyboxPanel> skyboxPanel;
-		
+
+		UInt32 guizmoType = -1;
 	};
 }

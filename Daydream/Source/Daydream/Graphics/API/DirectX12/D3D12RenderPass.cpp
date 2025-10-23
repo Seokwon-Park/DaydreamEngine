@@ -10,11 +10,6 @@ namespace Daydream
 	{
 		device = _device;
 		desc = _desc;
-
-		for (auto attachment :_desc.colorAttachments)
-		{
-			formats.push_back(GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(attachment.format));
-		}
 	}
 	D3D12RenderPass::~D3D12RenderPass()
 	{

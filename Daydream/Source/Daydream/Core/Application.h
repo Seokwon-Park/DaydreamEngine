@@ -48,10 +48,13 @@ namespace Daydream
 		void AttachOverlay(Layer* _overlay);
 
 		void ReadConfig(const String& _fileName);
+
+		ImGuiLayer* GetImGuiLayer() { return imGuiLayer; }
 	protected:
 		virtual bool Init();
 		virtual bool Run();
 		virtual bool Exit();
+
 	private:
 		friend int ::main(int argc, char** argv);
 

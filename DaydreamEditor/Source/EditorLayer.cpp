@@ -1,6 +1,8 @@
 #include "EditorLayer.h"
 #include "imgui/imgui.h"
 
+#include "ImGuizmo.h"
+
 #include "Daydream/Scene/Components/LightComponent.h"
 //#include "Daydream/Scene/Components/ModelRendererComponent.h"
 
@@ -18,32 +20,32 @@ namespace Daydream
 		activeScene = MakeShared<Scene>("MainScene");
 
 
-		float squareVertices[4 * 9] = {
-		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-		-0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-		 0.5f,	0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-		 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-		};
+		//float squareVertices[4 * 9] = {
+		//-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+		//-0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+		// 0.5f,	0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+		// 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+		//};
 
-		float squareVertices2[4 * 9] = {
-			-0.3f, -0.4f, .5f, 1.0f,0.0f,0.0f,1.0f, 0.0f,1.0f,
-			 -0.3f,  0.6f, .5f,0.0f,0.0f,1.0f,1.0f, 0.0f,0.0f,
-			 0.7f, 0.6f, 1.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 0.0f,
-			 0.7f, -0.4f, 1.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 1.0f,
-		};
+		//float squareVertices2[4 * 9] = {
+		//	-0.3f, -0.4f, .5f, 1.0f,0.0f,0.0f,1.0f, 0.0f,1.0f,
+		//	 -0.3f,  0.6f, .5f,0.0f,0.0f,1.0f,1.0f, 0.0f,0.0f,
+		//	 0.7f, 0.6f, 1.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 0.0f,
+		//	 0.7f, -0.4f, 1.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 1.0f,
+		//};
 
-		Daydream::BufferLayout layout =
-		{
-			{ Daydream::ShaderDataType::Float3, "a_Position", "POSITION"},
-			{ Daydream::ShaderDataType::Float4, "a_Color", "COLOR"},
-			{ Daydream::ShaderDataType::Float2, "a_TexCoord", "TEXCOORD"}
-		};
-		//squareVB = Daydream::VertexBuffer::CreateStatic(squareVertices, sizeof(squareVertices), layout.GetStride());
-		squareVB = VertexBuffer::CreateDynamic(sizeof(squareVertices), layout.GetStride(), 0, nullptr);
-		squareVB->SetData(squareVertices, sizeof(squareVertices));
+		//Daydream::BufferLayout layout =
+		//{
+		//	{ Daydream::ShaderDataType::Float3, "a_Position", "POSITION"},
+		//	{ Daydream::ShaderDataType::Float4, "a_Color", "COLOR"},
+		//	{ Daydream::ShaderDataType::Float2, "a_TexCoord", "TEXCOORD"}
+		//};
+		////squareVB = Daydream::VertexBuffer::CreateStatic(squareVertices, sizeof(squareVertices), layout.GetStride());
+		//squareVB = VertexBuffer::CreateDynamic(sizeof(squareVertices), layout.GetStride(), 0, nullptr);
+		//squareVB->SetData(squareVertices, sizeof(squareVertices));
 
-		uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
-		squareIB = Daydream::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
+		//uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
+		//squareIB = Daydream::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 
 		editorCamera->SetPosition({ 0.0f,0.0f,-2.0f });
 		viewProjMat = ConstantBuffer::Create(sizeof(Daydream::Matrix4x4));
@@ -81,6 +83,7 @@ namespace Daydream
 		textureCube->SetSampler(sampler);
 
 		renderPass = ResourceManager::GetResource<RenderPass>("StandardRenderPass");
+		gBufferRenderPass = ResourceManager::GetResource<RenderPass>("GBufferRenderPass");
 		renderPass->SetClearColor(Daydream::Color::Blue);
 
 		Daydream::FramebufferDesc fbDesc;
@@ -91,14 +94,19 @@ namespace Daydream
 
 		viewportFramebuffer = Framebuffer::Create(renderPass, fbDesc);
 
+		fbDesc.width = 1600;
+		fbDesc.height = 900;
+		gBufferFramebuffer = Framebuffer::Create(gBufferRenderPass, fbDesc);
+
 
 		pso = ResourceManager::GetResource<PipelineState>("SpritePSO");
 		pso3d = ResourceManager::GetResource<PipelineState>("ForwardPSO");
+		gBufferPSO = ResourceManager::GetResource<PipelineState>("GBufferPSO");
 		skyboxPipeline = ResourceManager::GetResource<PipelineState>("CubemapPSO");
 		equirectangleToCubePipeline = ResourceManager::GetResource<PipelineState>("EquirectangularPSO");
+		deferredLightingPSO = ResourceManager::GetResource<PipelineState>("DeferredPSO");
 
 		material = Material::Create(pso);
-
 		material->SetTexture2D("Texture", texture);
 		material->SetConstantBuffer("Camera", viewProjMat);
 
@@ -111,6 +119,8 @@ namespace Daydream
 		materialcube->SetTextureCube("TextureCubemap", activeScene->GetSkybox()->GetSkyboxTexture());
 		auto texture = ResourceManager::GetResource<Texture2D>("Asset\\Texture\\kloofendal_48d_partly_cloudy_puresky_4k.hdr");
 		//materialcube->SetTexture2D("Texture", texture);
+
+		deferredLightingMaterial = Material::Create(deferredLightingPSO);
 
 
 		///////////////////////////////////////////////////////
@@ -136,7 +146,7 @@ namespace Daydream
 		//model = MakeShared<Model>(mesh);
 		model = MakeShared<Model>();
 		//model->Load("Asset/Model/Lowpoly_tree_sample.fbx");
-		//model->Load("Asset/Model/Ceberus/Cerberus_LP.FBX");
+		//model->Load("Asset/Model/cerberusgun/scene.gltf");
 		model->Load("Asset/Model/scene.gltf");
 
 		//cubeIBO = IndexBuffer::Create(squareIndices2, sizeof(squareIndices2) / sizeof(uint32_t));
@@ -189,7 +199,6 @@ namespace Daydream
 		//		, camera->GetProjectionMatrix().mat[i][3]);
 		//}
 
-		renderPass->Begin(viewportFramebuffer);
 
 		//pso->Bind();
 		//squareVB->Bind();
@@ -197,43 +206,63 @@ namespace Daydream
 		//material->Bind();
 
 		//Renderer::Submit(squareIB->GetCount());
-
-		pso3d->Bind();
+		gBufferRenderPass->Begin(gBufferFramebuffer);
+		gBufferPSO->Bind();
+		//pso3d->Bind();
 		activeScene->Update(_deltaTime);
+		gBufferRenderPass->End();
 
-		if (skyboxPanel->IsUsingSkybox())
+		renderPass->Begin(viewportFramebuffer);
+
+		for (int i = 0; i < 4; i++)
 		{
-			skyboxPipeline->Bind();
-			mesh->Bind();
-			materialcube->SetTextureCube("TextureCubemap", activeScene->GetSkybox()->GetSkyboxTexture());
-			materialcube->Bind();
-			Renderer::Submit(mesh->GetIndexCount());
+			gBufferFramebuffer->GetColorAttachmentTexture(i)->SetSampler(sampler);
 		}
+
+		deferredLightingPSO->Bind();
+		deferredLightingMaterial->SetTexture2D("PositionTexture", gBufferFramebuffer->GetColorAttachmentTexture(0));
+		deferredLightingMaterial->SetTexture2D("NormalTexture", gBufferFramebuffer->GetColorAttachmentTexture(1));
+		deferredLightingMaterial->SetTexture2D("AlbedoTexture", gBufferFramebuffer->GetColorAttachmentTexture(2));
+		deferredLightingMaterial->SetTexture2D("RMAOTexture", gBufferFramebuffer->GetColorAttachmentTexture(3));
+		deferredLightingMaterial->SetTexture2D("BRDFLUT", activeScene->GetSkybox()->GetBRDF());
+		deferredLightingMaterial->SetConstantBuffer("Lights", activeScene->GetLightConstantBuffer());
+		deferredLightingMaterial->SetTextureCube("IrradianceTexture", activeScene->GetSkybox()->GetIrradianceTexture());
+		deferredLightingMaterial->SetTextureCube("Prefilter", activeScene->GetSkybox()->GetPrefilterTexture());
+		deferredLightingMaterial->Bind();
+		ResourceManager::GetResource<Mesh>("Quad")->Bind();
+		Renderer::Submit(6);
+
+		//pso3d->Bind();
+		//activeScene->Update(_deltaTime);
+
+		//if (skyboxPanel->IsUsingSkybox())
+		//{
+		//	skyboxPipeline->Bind();
+		//	mesh->Bind();
+		//	materialcube->SetTextureCube("TextureCubemap", activeScene->GetSkybox()->GetSkyboxTexture());
+		//	materialcube->Bind();
+		//	Renderer::Submit(mesh->GetIndexCount());
+		//}
 		renderPass->End();
+		deferredLightingMaterial->Unbind();
 	}
 
 	void EditorLayer::OnImGuiRender()
 	{
 		CreateDockspace();
 
-		//ImGui::Begin("SkyboxSettings");
-		//static bool chk = false;
-		//ImGui::Checkbox("UseHDR", &chk);
-		//if (chk)
-		//{
-		//	static Shared<Texture2D> hdrImage;
-		//	ImGui::Image(hdrImage ? hdrImage->GetImGuiHandle() : nullptr, ImVec2{ 400,200 });
-		//	if (ImGui::BeginDragDropTarget())
-		//	{
-		//		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_TEXTURE"))
-		//		{
-		//			String name = (const char*)payload->Data;
-		//			CreateCubemap();
-		//			hdrImage = ResourceManager::GetResource<Texture2D>(name);
-		//		}
-		//		ImGui::EndDragDropTarget();
-		//	}
-		//}
+		ImGui::Begin("GBufferView");
+		//static int index = 0;
+		//if (ImGui::Button("Position"))index = 0;
+		//if (ImGui::Button("Normal"))index = 1;
+		//if (ImGui::Button("Albedo"))index = 2;
+		//if (ImGui::Button("AORM"))index = 3;
+		for (int i = 0; i < 4; i++)
+		{
+			ImGui::Image((ImTextureID)gBufferFramebuffer->GetColorAttachmentTexture(i)->GetImGuiHandle(), ImVec2{ viewportSize.x / 3,viewportSize.y / 3 });
+			ImGui::SameLine;
+		}
+		ImGui::End();
 		//UI::DrawMaterialController("SkyboxTextures", materialcube.get());
 		//ImGui::BeginChild("CubemapTexture");
 		{
@@ -275,7 +304,7 @@ namespace Daydream
 				if (ImGui::MenuItem("Save Scene As...", "Ctrl+Shift+S")) { /* 씬 다른 이름으로 저장 로직 */ }
 				ImGui::Separator();
 				if (ImGui::MenuItem("Exit")) {
-					// Daydream::Application::Get().Close(); // 애플리케이션 종료 요청
+					//Daydream::Application::GetInstance(); // 애플리케이션 종료 요청
 				}
 				ImGui::EndMenu();
 			}
@@ -298,26 +327,54 @@ namespace Daydream
 			ImGuiWindowFlags_NoScrollWithMouse);
 		//DAYDREAM_INFO("{0}, {1}", viewportSize.x, viewportSize.y);
 		UpdateViewportSize();
+		isViewportFocused = ImGui::IsWindowFocused();
 		isViewportHovered = ImGui::IsWindowHovered();
-
+		Application::GetInstance().GetImGuiLayer()->BlockEvents(!isViewportFocused && !isViewportHovered);
 
 		ImGui::Image((ImTextureID)viewportFramebuffer->GetColorAttachmentTexture(0)->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
+
+		GameEntity* selectedEntity = sceneHierarchyPanel->GetSelectedEntity();
+		if (selectedEntity && guizmoType != -1)
+		{
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist();
+			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, viewportFramebuffer->GetWidth(), viewportFramebuffer->GetHeight());
+
+			Transform& transform = selectedEntity->GetComponent<TransformComponent>()->GetTransform();
+			Matrix4x4 worldMatrix = transform.GetWorldMatrix();
+			ImGuizmo::Manipulate(editorCamera->GetViewMatrix().values, editorCamera->GetProjectionMatrix().values,
+				(ImGuizmo::OPERATION)guizmoType, ImGuizmo::LOCAL, worldMatrix.values);
+
+			if (ImGuizmo::IsUsing())
+			{
+				Vector3 translation, rotation, scale;
+				Matrix4x4::Decompose(worldMatrix, translation, rotation, scale);
+
+				transform.position = translation;
+				transform.rotation = rotation;
+				transform.scale = scale;
+			}
+		}
 		//ImGui::Text("Rendered Scene will go here!");
 		ImGui::End();
 		ImGui::PopStyleVar();
-
-		sceneHierarchyPanel->OnImGuiRender();
-		propertyPanel->SetSelectedEntity(sceneHierarchyPanel->GetSelectedEntity());
-		propertyPanel->OnImGuiRender();
-		assetBrowserPanel->OnImGuiRender();
-		skyboxPanel->OnImGuiRender();
-
 
 		// 예시: 콘솔/로그 패널
 		ImGui::Begin("Console");
 		ImGui::Text("Engine Logs and Messages");
 		// 엔진의 로그 메시지를 출력
 		ImGui::End();
+
+		sceneHierarchyPanel->OnImGuiRender();
+
+
+		propertyPanel->SetSelectedEntity(selectedEntity);
+		propertyPanel->OnImGuiRender();
+		assetBrowserPanel->OnImGuiRender();
+		skyboxPanel->OnImGuiRender();
+
+
+
 	}
 
 	void EditorLayer::UpdateViewportSize()
@@ -328,7 +385,7 @@ namespace Daydream
 		ImVec2 CurWindowSize = ImGui::GetMainViewport()->Size;
 		bool isWindowResized = mainWindowSize.x != ImGui::GetMainViewport()->Size.x || mainWindowSize.y != ImGui::GetMainViewport()->Size.y;
 		bool isViewportResized = viewportFramebuffer->GetWidth() != ImGuiViewportSize.x || viewportFramebuffer->GetHeight() != ImGuiViewportSize.y;
-		if (currentActive) return; // 그냥 활성화 상태면 일단 크기조절하지마.
+		if (currentActive) return; // 그냥 활성화 상태면 일단 크기조절 X
 		if (isViewportResized) // 윈도우 크기가 저장된 값과 다르거나 Imgui 윈도우 크기가 framebuffer크기와 다르면 리사이즈 된거임
 		{
 			// 최종 크기로 카메라 및 프레임버퍼 업데이트
@@ -344,6 +401,7 @@ namespace Daydream
 				//viewportFramebuffer->Resize(static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
 				//Renderer::BeginSwapchainRenderPass(Renderer::GetCurrentWindow());
 				viewportFramebuffer->RequestResize(static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
+				gBufferFramebuffer->RequestResize(static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
 
 				// 카메라의 뷰포트 크기 업데이트
 				// camera->SetViewportSize(currentContentRegionSize.x, currentContentRegionSize.y);
@@ -373,6 +431,47 @@ namespace Daydream
 	void EditorLayer::OnDetach()
 	{
 		viewportFramebuffer = nullptr;
+	}
+
+	void EditorLayer::OnEvent(Event& _event)
+	{
+		EventDispatcher dispatcher(_event);
+		dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+		//dispatcher.Dispatch<MouseButtonPressedEvent>(BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
+	}
+
+	bool EditorLayer::OnKeyPressed(KeyPressedEvent& _event)
+	{
+		if (Input::GetMousePressed(Mouse::ButtonRight))
+		{
+			//DAYDREAM_INFO("BLOCK EVENT");
+			return true;
+		}
+
+		switch (_event.GetKeyCode())
+		{
+		case Key::Q:
+		{
+			guizmoType = -1;
+			break;
+		}
+		case Key::W:
+		{
+			guizmoType = ImGuizmo::OPERATION::TRANSLATE;
+			break;
+		}
+		case Key::E:
+		{
+			guizmoType = ImGuizmo::OPERATION::ROTATE;
+			break;
+		}
+		case Key::R:
+		{
+			guizmoType = ImGuizmo::OPERATION::SCALE;
+			break;
+		}
+		}
+		return false;
 	}
 
 	void EditorLayer::CreateDockspace()

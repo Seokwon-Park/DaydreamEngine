@@ -41,6 +41,13 @@ namespace Daydream
 		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("MipmapRenderPass"); // 방금 만든 RenderPass 사용
 		registry["GenerateMipsPSO"] = PipelineState::Create(psoDesc);
 
+		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("GBuffer"); // 새로 만들 G-Buffer 셰이더
+		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("GBufferRenderPass"); // 방금 만든 G-Buffer RenderPass
+		registry["GBufferPSO"] = PipelineState::Create(psoDesc);
+
+		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("DeferredLighting"); 
+		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("StandardRenderPass"); 
+		registry["DeferredPSO"] = PipelineState::Create(psoDesc);
 
 		psoDesc.rasterizerState = rastDesc;
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Cubemap");

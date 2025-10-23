@@ -151,18 +151,23 @@ namespace Daydream
 			| vk::ColorComponentFlagBits::eB
 			| vk::ColorComponentFlagBits::eA;
 		colorBlendAttachment.blendEnable = VK_FALSE;
-		colorBlendAttachment.srcColorBlendFactor = vk::BlendFactor::eOne; // Optional
-		colorBlendAttachment.dstColorBlendFactor = vk::BlendFactor::eZero; // Optional
-		colorBlendAttachment.colorBlendOp = vk::BlendOp::eAdd; // Optional
-		colorBlendAttachment.srcAlphaBlendFactor = vk::BlendFactor::eOne; // Optional
-		colorBlendAttachment.dstAlphaBlendFactor = vk::BlendFactor::eZero; // Optional
-		colorBlendAttachment.alphaBlendOp = vk::BlendOp::eAdd; // Optional
+		//colorBlendAttachment.srcColorBlendFactor = vk::BlendFactor::eOne; // Optional
+		//colorBlendAttachment.dstColorBlendFactor = vk::BlendFactor::eZero; // Optional
+		//colorBlendAttachment.colorBlendOp = vk::BlendOp::eAdd; // Optional
+		//colorBlendAttachment.srcAlphaBlendFactor = vk::BlendFactor::eOne; // Optional
+		//colorBlendAttachment.dstAlphaBlendFactor = vk::BlendFactor::eZero; // Optional
+		//colorBlendAttachment.alphaBlendOp = vk::BlendOp::eAdd; // Optional
+
+		UInt32 attachmentCount = _desc.renderPass->GetDesc().colorAttachments.size();
+
+		std::vector<vk::PipelineColorBlendAttachmentState> blendAttachmentStates;
+		blendAttachmentStates.resize(attachmentCount, colorBlendAttachment);
 
 		vk::PipelineColorBlendStateCreateInfo colorBlending{};
 		colorBlending.logicOpEnable = VK_FALSE;
 		colorBlending.logicOp = vk::LogicOp::eCopy; // Optional
-		colorBlending.attachmentCount = 1;
-		colorBlending.pAttachments = &colorBlendAttachment;
+		colorBlending.attachmentCount = attachmentCount;
+		colorBlending.pAttachments = blendAttachmentStates.data();
 		colorBlending.blendConstants[0] = 0.0f; // Optional
 		colorBlending.blendConstants[1] = 0.0f; // Optional
 		colorBlending.blendConstants[2] = 0.0f; // Optional

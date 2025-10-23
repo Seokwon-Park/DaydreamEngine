@@ -33,7 +33,7 @@ namespace Daydream
                     _desc.height,       // 높이
                     1,                  // 깊이 (한 면이므로 1)
                     dataFormat,         // 픽셀 데이터 포맷
-                    GL_UNSIGNED_BYTE,   // 픽셀 데이터 타입
+                    GraphicsUtility::OpenGL::ConvertRenderFormatToGLDataType(_desc.format),   // 픽셀 데이터 타입
                     _initialData[i] // 실제 픽셀 데이터
                 );
             }

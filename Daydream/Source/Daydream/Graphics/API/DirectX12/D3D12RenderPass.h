@@ -17,11 +17,8 @@ namespace Daydream
 		virtual void End() override;
 
 		virtual Shared<Framebuffer> CreateFramebuffer(const FramebufferDesc& _desc) override;
-
-		const Array<DXGI_FORMAT>& GetFormats() { return formats; }
 	private:
 		D3D12RenderDevice* device;
 		D3D12Framebuffer* currentFramebuffer;
-		Array<DXGI_FORMAT> formats;
 	};
 }  

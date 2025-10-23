@@ -15,7 +15,7 @@ namespace Daydream
 		virtual void Init() override;
 		virtual void Update(Float32 _deltaTime) override;
 
-		const Transform& GetTransform() { return transform; }
+		Transform& GetTransform() { return transform; }
 
 		REFLECT_START()
 			ADD_PROPERTY(FieldType::Transform, transform)

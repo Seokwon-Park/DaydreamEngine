@@ -88,9 +88,11 @@ namespace Daydream
 				DAYDREAM_CORE_ASSERT(false, "ERROR");
 				break;
 			case Daydream::ShaderType::Vertex:
+			{
 				device->GetContext()->VSSetShaderResources(resourceInfo.binding, 1, d3d11Tex->GetSRV().GetAddressOf());
 				device->GetContext()->VSSetSamplers(resourceInfo.binding, 1, d3d11Tex->GetSampler().GetAddressOf());
 				break;
+			}
 			case Daydream::ShaderType::Hull:
 				break;
 			case Daydream::ShaderType::Domain:
@@ -98,9 +100,11 @@ namespace Daydream
 			case Daydream::ShaderType::Geometry:
 				break;
 			case Daydream::ShaderType::Pixel:
+			{
 				device->GetContext()->PSSetShaderResources(resourceInfo.binding, 1, d3d11Tex->GetSRV().GetAddressOf());
 				device->GetContext()->PSSetSamplers(resourceInfo.binding, 1, d3d11Tex->GetSampler().GetAddressOf());
 				break;
+			}
 			case Daydream::ShaderType::Compute:
 				break;
 			default:
@@ -137,6 +141,46 @@ namespace Daydream
 				break;
 			}
 		}
+	}
+
+	void D3D11Material::Unbind()
+	{
+		for (auto [name, texture] : textures)
+		{
+			if (texture == nullptr) continue;
+			auto resourceInfo = bindingMap[name];
+			DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX11, "Wrong API!");
+			Shared<D3D11Texture2D> d3d11Tex = static_pointer_cast<D3D11Texture2D>(texture);
+			switch (bindingMap[name].shaderType)
+			{
+			case Daydream::ShaderType::None:
+				DAYDREAM_CORE_ASSERT(false, "ERROR");
+				break;
+			case Daydream::ShaderType::Vertex:
+				device->GetContext()->VSSetShaderResources(resourceInfo.binding, 1, nullptr);
+				device->GetContext()->VSSetSamplers(resourceInfo.binding, 1,nullptr);
+				break;
+			case Daydream::ShaderType::Hull:
+				break;
+			case Daydream::ShaderType::Domain:
+				break;
+			case Daydream::ShaderType::Geometry:
+				break;
+			case Daydream::ShaderType::Pixel:
+			{
+				ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+				ID3D11SamplerState* nullSampler[1] = { nullptr };
+				device->GetContext()->PSSetShaderResources(resourceInfo.binding, 1, nullSRV);
+				device->GetContext()->PSSetSamplers(resourceInfo.binding, 1, nullSampler);
+				break;
+			}
+			case Daydream::ShaderType::Compute:
+				break;
+			default:
+				break;
+			}
+		}
+
 	}
 
 	//void D3D11Material::SetTexture2D(const String& _name, Shared<Texture2D> _texture)

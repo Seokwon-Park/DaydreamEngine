@@ -49,16 +49,13 @@ float3 ImportanceSampleGGX(float2 Xi, float3 N, float roughness)
     return normalize(sampleVec);
 }
 // ----------------------------------------------------------------------------
-float GeometrySchlickGGX(float NdotV, float roughness)
+float GeometrySchlickGGX(float cosTheta, float roughness)
 {
     // note that we use a different k for IBL
     float a = roughness;
     float k = (a * a) / 2.0;
 
-    float nom = NdotV;
-    float denom = NdotV * (1.0 - k) + k;
-
-    return nom / denom;
+    return cosTheta / (cosTheta * (1.0 - k) + k);
 }
 // ----------------------------------------------------------------------------
 float GeometrySmith(float3 N, float3 V, float3 L, float roughness)

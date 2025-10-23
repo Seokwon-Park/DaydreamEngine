@@ -84,6 +84,7 @@ namespace Daydream
 
 						bool isSRGB = true;
 						if (pathString.find("_n.") != std::string::npos ||
+							pathString.find("_N.") != std::string::npos ||
 							pathString.find("_normal.") != std::string::npos ||
 							pathString.find("metal") != std::string::npos ||
 							pathString.find("rough") != std::string::npos)

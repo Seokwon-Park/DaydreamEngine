@@ -157,7 +157,7 @@ PSOutput PSMain(PSInput input)
     float3 color = float3(0.0f, 0.0f, 0.0f);
     
     float3 normalWorld = input.normal;
-    
+     
     float3 normalTex = NormalTexture.Sample(NormalTextureSampler, input.uv).rgb;
     normalTex = 2.0 * normalTex - 1.0; // 범위 조절 [-1.0, 1.0]
     

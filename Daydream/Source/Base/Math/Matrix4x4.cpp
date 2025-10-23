@@ -3,30 +3,76 @@
 
 #include "MathUtil.h"
 
+#include "glm/gtx/matrix_decompose.hpp"
+
 namespace Daydream
 {
 	Matrix4x4::Matrix4x4()
 	{
 		glmMat = glm::mat4(1.0f);
 	}
-	void Matrix4x4::MatrixInverse()
+	Matrix4x4& Matrix4x4::MatrixInverse()
 	{
 		glmMat = glm::inverse(glmMat);
+		return *this;
 	}
-	void Matrix4x4::MatrixTranslate(Vector3 _translate)
+
+	Matrix4x4& Matrix4x4::MatrixTranslate(Vector3 _translate)
 	{
 		glmMat = glm::translate(glmMat, _translate);
+		return *this;
 	}
-	void Matrix4x4::MatrixTranslate(Vector4 _translate)
+	Matrix4x4& Matrix4x4::MatrixTranslate(Vector4 _translate)
 	{
+		glmMat = glm::translate(glmMat, glm::vec3(_translate.x, _translate.y, _translate.z));
+		return *this; 
+	}
+	Matrix4x4& Matrix4x4::MatrixRotate(Vector3 _rollPitchYaw)
+	{
+		Vector3 radians = glm::radians(_rollPitchYaw);
+		Quaternion quat = glm::quat(radians);
+		glmMat = glm::toMat4(quat);
 
+		return *this;
 	}
-	void Matrix4x4::MatrixRotate(Vector3 _rollPitchYaw)
-	{
-	}
-	void Matrix4x4::MatrixTranspose()
+	Matrix4x4& Matrix4x4::MatrixTranspose()
 	{
 		glmMat = glm::transpose(glmMat);
+		return *this;
+	}
+
+	Matrix4x4 Matrix4x4::GetInverse() const
+	{
+		Matrix4x4 result = *this; // 1. 나를 복사
+		result.glmMat = glm::inverse(this->glmMat); // 2. 복사본을 수정
+		return result; // 3. 복사본을 반환
+	}
+
+	Matrix4x4 Matrix4x4::GetTranslate(Vector3 _translate) const
+	{
+		Matrix4x4 result = *this;
+		// [주의] glm::translate는 원본을 *수정하지 않고* 새 행렬을 반환합니다.
+		// 따라서 'this->glmMat'을 기반으로 연산해야 합니다.
+		result.glmMat = glm::translate(this->glmMat, _translate);
+		return result;
+	}
+
+	Matrix4x4 Matrix4x4::GetRotate(Vector3 _rollPitchYaw) const
+	{
+		Matrix4x4 result = *this;
+		glm::vec3 radians = glm::radians(_rollPitchYaw);
+		glm::quat rotationQuat = glm::quat(radians);
+
+		// 원본 'this->glmMat'에 회전을 곱한 결과를 'result.glmMat'에 저장
+		result.glmMat = this->glmMat * glm::toMat4(rotationQuat);
+		return result;
+	}
+
+	Matrix4x4 Matrix4x4::GetTranspose() const
+	{
+		Matrix4x4 result = *this;
+		result.glmMat = glm::transpose(this->glmMat);
+		return result;
 	}
 
 	Matrix4x4 Matrix4x4::operator*(Matrix4x4 _matrix)
@@ -46,7 +92,7 @@ namespace Daydream
 		return glmMat * Vector4(_vector, 1.0f);
 	}
 
-	Matrix4x4 Matrix4x4::Translate(Vector3 _translate)
+	Matrix4x4 Matrix4x4::CreateTranslation(Vector3 _translate)
 	{
 		return Translate(Matrix4x4(), _translate);
 	}
@@ -54,6 +100,12 @@ namespace Daydream
 	Matrix4x4 Matrix4x4::Translate(Matrix4x4 _matrix, Vector3 _translate)
 	{
 		_matrix.MatrixTranslate(_translate);
+		return _matrix;
+	}
+
+	Matrix4x4 Matrix4x4::Transpose(Matrix4x4 _matrix)
+	{
+		_matrix.MatrixTranspose();
 		return _matrix;
 	}
 
@@ -88,7 +140,7 @@ namespace Daydream
 		return _matrix;
 	}
 
-	Matrix4x4 Matrix4x4::LookTo(Vector3 _eye, Vector3 _direction, Vector3 _up)
+	Matrix4x4 Matrix4x4::CreateLookTo(Vector3 _eye, Vector3 _direction, Vector3 _up)
 	{
 		Matrix4x4 out;
 		out.glmMat = glm::lookAt(_eye, _eye + glm::normalize(_direction), _up);
@@ -107,5 +159,17 @@ namespace Daydream
 		world.glmMat *= QuatToMatrix(Quaternion(glm::radians(_transform.rotation))).glmMat;
 		world.glmMat = glm::scale(world.glmMat, _transform.scale);
 		return world;
+	}
+
+	bool Matrix4x4::Decompose(const Matrix4x4& _matrix, Vector3& _outTranslation, Vector3& _outRotation, Vector3& _outScale)
+	{
+		Quaternion rotation;
+		Vector3 skew;
+		Vector4 perspective;
+		glm::decompose(_matrix.glmMat, _outScale, rotation, _outTranslation, skew, perspective);
+
+		_outRotation = glm::degrees(glm::eulerAngles(rotation));
+		
+		return false;
 	}
 }

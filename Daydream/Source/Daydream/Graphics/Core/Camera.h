@@ -6,6 +6,13 @@ namespace Daydream
 {
 	enum class ProjectionType { Orthographic, Perspective };
 
+	struct CameraConstantBufferData
+	{
+		Matrix4x4 view;
+		Matrix4x4 projection;
+		Matrix4x4 viewProjection;
+	};
+
 	class Camera
 	{
 	public:

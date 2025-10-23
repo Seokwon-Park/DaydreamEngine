@@ -51,6 +51,7 @@ namespace Daydream
 	public:
 		virtual ~Material();
 		virtual void Bind() = 0;
+		virtual void Unbind() {};
 		
 		void SetTexture2D(const String& _name, Shared<Texture2D> _texture);
 		void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube);

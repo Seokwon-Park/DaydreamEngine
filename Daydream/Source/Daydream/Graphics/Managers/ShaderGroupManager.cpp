@@ -18,5 +18,7 @@ namespace Daydream
 		registry["Sprite"] = ShaderGroup::Create("SpriteVS", "SpritePS");
 		registry["Resize"] = ShaderGroup::Create("ResizeVS", "ResizePS");
 		registry["BRDF"] = ShaderGroup::Create("BRDFVS", "BRDFPS");
+		registry["GBuffer"] = ShaderGroup::Create("GBufferVS", "GBufferPS");
+		registry["DeferredLighting"] = ShaderGroup::Create("DeferredLightingVS", "DeferredLightingPS");
 	}
 }

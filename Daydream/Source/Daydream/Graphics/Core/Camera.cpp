@@ -12,7 +12,7 @@ namespace Daydream
 		nearPlane = 0.001f;
 		farPlane = 1000.0f;
 
-		viewProjectionBuffer = ConstantBuffer::Create(sizeof(Matrix4x4));
+		viewProjectionBuffer = ConstantBuffer::Create(sizeof(CameraConstantBufferData));
 
 		UpdateProjectionMatrix();
 	}
@@ -66,11 +66,16 @@ namespace Daydream
 		viewProjectionMatrix = projectionMatrix * viewMatrix;
 		viewProjectionMatrix.MatrixTranspose();
 
-		viewProjectionBuffer->Update(&viewProjectionMatrix, sizeof(Matrix4x4));
+		CameraConstantBufferData data;
+		data.view = viewMatrix;
+		data.projection = projectionMatrix;
+		data.viewProjection = viewProjectionMatrix;
+
+		viewProjectionBuffer->Update(&data, sizeof(CameraConstantBufferData));
 	}
 	void Camera::UpdateViewMatrix()
 	{
-		viewMatrix = Matrix4x4::LookTo(transform.position, transform.GetForward(), transform.GetUp());
+		viewMatrix = Matrix4x4::CreateLookTo(transform.position, transform.GetForward(), transform.GetUp());
 		UpdateViewProjectionMatrix();
 	}
 	void Camera::UpdateProjectionMatrix()

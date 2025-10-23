@@ -23,6 +23,41 @@ namespace Daydream
 
 		registry["StandardRenderPass"] = RenderPass::Create(rpDesc);
 
+		// === G-Buffer RenderPass ===
+		rpDesc.colorAttachments.clear();
+
+		// Attachment 0: Position (View Space)
+		attach.format = RenderFormat::R16G16B16A16_FLOAT;
+		attach.loadOp = AttachmentLoadOp::Clear;
+		attach.storeOp = AttachmentStoreOp::Store;
+		rpDesc.colorAttachments.push_back(attach);
+
+		// Attachment 1: Normal (View Space)
+		attach.format = RenderFormat::R16G16B16A16_FLOAT; // 또는 R10G10B10A2_UNORM 등으로 압축
+		attach.loadOp = AttachmentLoadOp::Clear;
+		attach.storeOp = AttachmentStoreOp::Store;
+		rpDesc.colorAttachments.push_back(attach);
+
+		// Attachment 2: Albedo (Diffuse Color)
+		attach.format = RenderFormat::R8G8B8A8_UNORM;
+		attach.loadOp = AttachmentLoadOp::Clear;
+		attach.storeOp = AttachmentStoreOp::Store;
+		rpDesc.colorAttachments.push_back(attach);
+
+		// Attachment 3: Metallic / Roughness / AO / Emissive
+		attach.format = RenderFormat::R8G8B8A8_UNORM; // 채널별로 R=Metallic, G=Roughness, ...
+		attach.loadOp = AttachmentLoadOp::Clear;
+		attach.storeOp = AttachmentStoreOp::Store;
+		rpDesc.colorAttachments.push_back(attach);
+
+		// Depth Attachment
+		attach.format = RenderFormat::D24_UNORM_S8_UINT;
+		attach.loadOp = AttachmentLoadOp::Clear;
+		attach.storeOp = AttachmentStoreOp::Store;
+		rpDesc.depthAttachment = attach;
+
+		registry["GBufferRenderPass"] = RenderPass::Create(rpDesc);
+
 
 		// Mipmap 생성을 위한 RenderPass (Depth Buffer 없음)
 		rpDesc.colorAttachments.clear();

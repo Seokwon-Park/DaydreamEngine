@@ -5,6 +5,7 @@
 #include "Daydream/Core/Application.h"
 #include "Daydream/Core/Logger.h"
 #include "Daydream/Core/Layer.h"
+#include "Daydream/Core/Core.h"
 
 #include "Daydream/Core/Input.h"
 #include "Daydream/Core/KeyCodes.h"
@@ -18,6 +19,7 @@
 
 #include "Daydream/Scene/Scene.h"
 #include "Daydream/Scene/Components/Component.h"
+#include "Daydream/Scene/Components/TransformComponent.h"
 
 
 // ---Renderer------------------------------------

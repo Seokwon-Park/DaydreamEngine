@@ -33,7 +33,7 @@ namespace Daydream
 	{
 		Transform transform = GetOwner()->GetComponent<TransformComponent>()->GetTransform();
 		TransformConstantBufferData data;
-		data.world = transform.GetWorldMatrix();
+		data.world = transform.GetWorldMatrix().GetTranspose();
 		data.invTranspose = data.world;
 		data.invTranspose.MatrixInverse();
 		data.invTranspose.MatrixTranspose();
@@ -56,11 +56,11 @@ namespace Daydream
 			meshes[i]->Bind();
 			materials[i]->SetConstantBuffer("World", worldMatrix);
 			materials[i]->SetConstantBuffer("Camera", GetOwner()->GetScene()->GetCurrentCamera()->GetViewProjectionConstantBuffer());
-			materials[i]->SetConstantBuffer("Lights", GetOwner()->GetScene()->GetLightConstantBuffer());
-			materials[i]->SetConstantBuffer("Material", materialCB);
-			materials[i]->SetTexture2D("BRDFLUT", GetOwner()->GetScene()->GetSkybox()->GetBRDF());
-			materials[i]->SetTextureCube("IrradianceTexture", GetOwner()->GetScene()->GetSkybox()->GetIrradianceTexture());
-			materials[i]->SetTextureCube("Prefilter", GetOwner()->GetScene()->GetSkybox()->GetPrefilterTexture());
+			//materials[i]->SetConstantBuffer("Lights", GetOwner()->GetScene()->GetLightConstantBuffer());
+			//materials[i]->SetConstantBuffer("Material", materialCB);
+			//materials[i]->SetTexture2D("BRDFLUT", GetOwner()->GetScene()->GetSkybox()->GetBRDF());
+			//materials[i]->SetTextureCube("IrradianceTexture", GetOwner()->GetScene()->GetSkybox()->GetIrradianceTexture());
+			//materials[i]->SetTextureCube("Prefilter", GetOwner()->GetScene()->GetSkybox()->GetPrefilterTexture());
 			materials[i]->Bind();
 			Renderer::Submit(meshes[i]->GetIndexCount());
 		}

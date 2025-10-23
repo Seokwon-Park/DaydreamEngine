@@ -10,6 +10,7 @@ struct PSInput
 struct PSOutput
 {
     float4 color : SV_Target0;
+    uint entityID : SV_Target1;
 };
 
 //================================================================================
@@ -147,12 +148,12 @@ float GeometrySmith(float3 N, float3 V, float3 L, float roughness)
     return ggx1 * ggx2;
 }
 
-float3 fresnelSchlick(float cosTheta, float3 F0)
+float3 FresnelSchlick(float cosTheta, float3 F0)
 {
     return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
 
-float3 fresnelSchlickRoughness(float cosTheta, float3 F0, float roughness)
+float3 FresnelSchlickRoughness(float cosTheta, float3 F0, float roughness)
 {
     return F0 + (max(float3(1.0 - roughness, 1.0 - roughness, 1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
@@ -165,7 +166,7 @@ float3 CalculatePBR(float3 L, float3 V, float3 N, float3 F0, float3 albedo, floa
     float3 H = normalize(V + L);
     float NDF = DistributionGGX(N, H, roughness);
     float G = GeometrySmith(N, V, L, roughness);
-    float3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);
+    float3 F = FresnelSchlick(max(dot(H, V), 0.0), F0);
     float3 numerator = NDF * G * F;
     float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
     float3 specular = numerator / max(denominator, 0.00001);
@@ -285,17 +286,22 @@ PSOutput PSMain(PSInput input)
     }
 
     // --- 5. 간접 조명(Indirect/Ambient Lighting) - IBL 계산 ---
-    float3 F_ibl = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+    float3 F_ibl = FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
     float3 kS_ibl = F_ibl;
     float3 kD_ibl = 1.0 - kS_ibl;
     kD_ibl *= 1.0 - metallic;
     
     float3 irradiance = IrradianceTexture.Sample(IrradianceTextureSampler, N).rgb;
-    float3 diffuseIBL = irradiance * albedo;
+    float3 diffuseIBL = (irradiance * albedo) / PI;
     
-    const float MAX_REFLECTION_LOD = 4.0;
-    //float3 prefilteredColor = Prefilter.SampleLevel(PrefilterSampler, R, roughness * MAX_REFLECTION_LOD).rgb;
-    float3 prefilteredColor = Prefilter.Sample(PrefilterSampler, R).rgb;
+    uint width;
+    uint height;
+    uint maxMipLevel;
+    Prefilter.GetDimensions(0, width, height, maxMipLevel);
+    
+    const float MAX_REFLECTION_LOD = maxMipLevel;
+    float3 prefilteredColor = Prefilter.SampleLevel(PrefilterSampler, R, roughness * MAX_REFLECTION_LOD).rgb;
+    //float3 prefilteredColor = Prefilter.Sample(PrefilterSampler, R).rgb;
     float2 brdf = BRDFLUT.Sample(BRDFLUTSampler, float2(max(dot(N, V), 0.0), roughness)).rg;
     float3 specularIBL = prefilteredColor * (F_ibl * brdf.x + brdf.y);
     
@@ -307,7 +313,7 @@ PSOutput PSMain(PSInput input)
 
     // --- 7. 후처리: HDR 톤 매핑 및 감마 보정 ---
     color = color / (color + float3(1.0, 1.0, 1.0)); // Reinhard Tonemapping
-    color = color * exposure; 
+    color = color * exposure;
     color = pow(color, float3(1.0 / gamma, 1.0 / gamma, 1.0 / gamma)); // Gamma Correction
 
     output.color = float4(color, 1.0);

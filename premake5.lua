@@ -45,8 +45,8 @@ project "Daydream"
 		"%{prj.name}/Vendor/glm/glm/**.hpp",
  		"%{prj.name}/Vendor/glm/glm/**.inl",
  		"%{prj.name}/Vendor/VulkanMemoryAllocator/**.cpp",
- 		"%{prj.name}/Vendor/ImGuizmo/**.h",
- 		"%{prj.name}/Vendor/ImGuizmo/**.cpp",
+ 		"%{prj.name}/Vendor/ImGuizmo/ImGuizmo.h",
+ 		"%{prj.name}/Vendor/ImGuizmo/ImGuizmo.cpp",
 	}
 	includedirs
 	{
@@ -85,6 +85,9 @@ project "Daydream"
 		"GLM_FORCE_LEFT_HANDED",
 		"GLM_FORCE_DEPTH_ZERO_TO_ONE"
 	}
+
+	filter "files:Daydream/Vendor/ImGuizmo/**.cpp"
+		flags {"NoPCH"}
 
 	filter "system:windows"
 		cppdialect "C++20"
@@ -150,7 +153,8 @@ project "Sandbox"
 		"Daydream/Vendor/spdlog/include",
 		"Daydream/Source",
 		"Daydream/Vendor",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.ImGuizmo}",
 	}
 	links
 	{
@@ -194,7 +198,8 @@ project "DaydreamEditor"
 		"Daydream/Vendor/spdlog/include",
 		"Daydream/Source",
 		"Daydream/Vendor",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.ImGuizmo}",
 	}
 	links
 	{
