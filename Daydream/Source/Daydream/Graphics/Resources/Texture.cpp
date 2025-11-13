@@ -10,6 +10,11 @@
 
 namespace Daydream
 {
+    void Texture2D::Load(const Path& _path)
+    {
+
+    }
+
     Shared<Texture2D> Texture2D::Create(const void* _data, const TextureDesc& _desc)
     {
         return Renderer::GetRenderDevice()->CreateTexture2D(_data, _desc);

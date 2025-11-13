@@ -1,12 +1,13 @@
 #include "DaydreamPCH.h"
 #include "Model.h"
 
-#include "Daydream/Core/ResourceManager.h"
-
 #include "Daydream/Graphics/Utility/ModelLoader.h"
 #include "Daydream/Graphics/Resources/Buffer.h"
 #include "Daydream/Graphics/Resources/Mesh.h"
+#include "Daydream/Graphics/Core/PipelineState.h"
+#include "Daydream/Graphics/Manager/ResourceManager.h"
 #include "Daydream/Graphics/Core/Renderer.h"
+#include "Daydream/Asset/AssetManager.h"
 
 namespace Daydream
 {
@@ -22,7 +23,7 @@ namespace Daydream
 		meshes.clear();
 		materials.clear();
 	}
-	void Model::Load(const String& _path)
+	void Model::Load(const Path & _path)
 	{
 		meshes.clear();
 
@@ -67,26 +68,26 @@ namespace Daydream
 		{
 			//Shared<Material> newMat = Material::Create(ResourceManager::GetResource<PipelineState>("ForwardPSO"));
 			Shared<Material> newMat = Material::Create(ResourceManager::GetResource<PipelineState>("GBufferPSO"));
-			auto diffuse = ResourceManager::GetResource<Texture2D>("Default");
-			auto normal = ResourceManager::GetResource<Texture2D>("DefaultNormal");
-			auto roughness = ResourceManager::GetResource<Texture2D>("DefaultRoughness");
-			auto metallic = ResourceManager::GetResource<Texture2D>("DefaultMetallic");
-			auto ao = ResourceManager::GetResource<Texture2D>("DefaultAO");
+			auto diffuse = AssetManager::GetAssetByPath<Texture2D>("Default");
+			auto normal = AssetManager::GetAssetByPath<Texture2D>("DefaultNormal");
+			auto roughness = AssetManager::GetAssetByPath<Texture2D>("DefaultRoughness");
+			auto metallic = AssetManager::GetAssetByPath<Texture2D>("DefaultMetallic");
+			auto ao = AssetManager::GetAssetByPath<Texture2D>("DefaultAO");
 			newMat->SetTexture2D("AlbedoTexture", diffuse);
 			newMat->SetTexture2D("NormalTexture", normal);
 			newMat->SetTexture2D("RoughnessTexture", roughness);
 			newMat->SetTexture2D("MetallicTexture", metallic);
 			newMat->SetTexture2D("AOTexture", ao);
 			if (!modelData.materials[i].albedoMapPath.empty())
-				newMat->SetTexture2D("AlbedoTexture", ResourceManager::GetResource<Texture2D>(modelData.materials[i].albedoMapPath));
+				newMat->SetTexture2D("AlbedoTexture", AssetManager::GetAssetByPath<Texture2D>(modelData.materials[i].albedoMapPath));
 			if (!modelData.materials[i].normalMapPath.empty())
-				newMat->SetTexture2D("NormalTexture", ResourceManager::GetResource<Texture2D>(modelData.materials[i].normalMapPath));
+				newMat->SetTexture2D("NormalTexture", AssetManager::GetAssetByPath<Texture2D>(modelData.materials[i].normalMapPath));
 			if (!modelData.materials[i].roughnessMapPath.empty())
-				newMat->SetTexture2D("RoughnessTexture", ResourceManager::GetResource<Texture2D>(modelData.materials[i].roughnessMapPath));
+				newMat->SetTexture2D("RoughnessTexture", AssetManager::GetAssetByPath<Texture2D>(modelData.materials[i].roughnessMapPath));
 			if (!modelData.materials[i].metallicMapPath.empty())
-				newMat->SetTexture2D("MetallicTexture", ResourceManager::GetResource<Texture2D>(modelData.materials[i].metallicMapPath));
+				newMat->SetTexture2D("MetallicTexture", AssetManager::GetAssetByPath<Texture2D>(modelData.materials[i].metallicMapPath));
 			if (!modelData.materials[i].AOMapPath.empty())
-				newMat->SetTexture2D("AOTexture", ResourceManager::GetResource<Texture2D>(modelData.materials[i].AOMapPath));
+				newMat->SetTexture2D("AOTexture", AssetManager::GetAssetByPath<Texture2D>(modelData.materials[i].AOMapPath));
 
 			materials.push_back(newMat);
 		}

@@ -4,7 +4,7 @@
 #include "TransformComponent.h"
 
 #include "Daydream/Graphics/Core/Renderer.h"
-#include "Daydream/Core/ResourceManager.h"
+#include "Daydream/Graphics/Manager/ResourceManager.h"
 #include "Daydream/Graphics/Resources/Skybox.h"
 
 namespace Daydream
@@ -21,7 +21,6 @@ namespace Daydream
 
 	void ModelRendererComponent::Init()
 	{
-		GetOwner()->GetScene()->AddModelRenderer(this);
 	}
 
 	void ModelRendererComponent::SetModel(Shared<Model> _model)

@@ -67,8 +67,8 @@ namespace Daydream
 					attribDesc.format = GraphicsUtility::Vulkan::ConvertRenderFormatToVkFormat(info.format);
 					attribDesc.offset = offset;
 
-					offset += info.size;
-					vertexInputdesc.stride += info.size;
+					offset += (UInt32)info.size;
+					vertexInputdesc.stride += (UInt32)info.size;
 
 					attribDescArray.push_back(attribDesc);
 					continue;
@@ -88,7 +88,7 @@ namespace Daydream
 			Array<vk::DescriptorBindingFlags> bindingFlags(bindings.size(), vk::DescriptorBindingFlagBits::eUpdateAfterBind);
 
 			vk::DescriptorSetLayoutBindingFlagsCreateInfo extendedInfo{};
-			extendedInfo.bindingCount = bindingFlags.size();
+			extendedInfo.bindingCount = (UInt32)bindingFlags.size();
 			extendedInfo.pBindingFlags = bindingFlags.data();
 
 			vk::DescriptorSetLayoutCreateInfo layoutCreateInfo{};
@@ -158,7 +158,7 @@ namespace Daydream
 		//colorBlendAttachment.dstAlphaBlendFactor = vk::BlendFactor::eZero; // Optional
 		//colorBlendAttachment.alphaBlendOp = vk::BlendOp::eAdd; // Optional
 
-		UInt32 attachmentCount = _desc.renderPass->GetDesc().colorAttachments.size();
+		UInt32 attachmentCount = (UInt32)_desc.renderPass->GetDesc().colorAttachments.size();
 
 		std::vector<vk::PipelineColorBlendAttachmentState> blendAttachmentStates;
 		blendAttachmentStates.resize(attachmentCount, colorBlendAttachment);

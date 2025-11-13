@@ -2,6 +2,7 @@
 
 #include "Daydream/Scene/Components/Component.h"
 #include "Daydream/Scene/Components/ModelRendererComponent.h"
+#include "EntityHandle.h"
 
 namespace Daydream
 {
@@ -14,17 +15,29 @@ namespace Daydream
 		GameEntity();
 		~GameEntity();
 
+		inline const String& GetName() const { return name; }
 		inline void SetName(const String& _name) { name = _name; }
-		inline const String& GetName() { return name; }
-		inline void SetScene(Scene* _scene) { scene = _scene; }
+
 		Scene* GetScene() { return scene; }
+		inline void SetScene(Scene* _scene) { scene = _scene; }
+
+		/// 자신의 핸들을 설정하고 가져오는 함수
+		EntityHandle GetHandle() const { return handle; }
+		void SetHandle(EntityHandle _handle) { handle = _handle; }
+
+		bool IsValid() const { return handle.IsValid(); }
+
 		void Init();
 		void Update(Float32 _deltaTime);
 
-		void SetParent(GameEntity* _parent)
-		{
-			parent = _parent;
-		}
+		EntityHandle GetParentHandle() const { return parentHandle; }
+		GameEntity* GetParent();
+		void SetParent(EntityHandle _parentHandle);
+		void RemoveParent();
+
+		// 자식 핸들 목록을 반환
+		const Array<EntityHandle>& GetChildrenHandles() const { return childrenHandles; }
+
 
 		template <class ComponentType>
 		ComponentType* GetComponent()
@@ -64,18 +77,37 @@ namespace Daydream
 		}
 
 		Array<Unique<Component>>& GetAllComponents() { return components; };
+
+		void Reset()
+		{
+			components.clear();
+			componentMap.clear();
+			scene = nullptr;
+			parentHandle = EntityHandle(); // 유효하지 않은 핸들로 초기화
+			childrenHandles.clear();
+			name = "";
+			handle = EntityHandle(); // 자기 자신 핸들도 초기화
+		}
+
+		void ReorderChild(EntityHandle _childHandle, UInt64 _newIndex);
+	
 	protected:
 
 	private:
+		// 자식 추가/제거
+		void AddChild(EntityHandle _childHandle);
+		void RemoveChild(EntityHandle _childHandle);
+
 		Array<Unique<Component>> components;
 		HashMap<std::type_index, Component*> componentMap;
 
 		Scene* scene;
+		EntityHandle handle; 
 
-		GameEntity* parent = nullptr;
-		Array<GameEntity*> childrens;
+		EntityHandle parentHandle;
+		Array<EntityHandle> childrenHandles;
 
-		std::string name;
+		String name;
 	};
 }
 

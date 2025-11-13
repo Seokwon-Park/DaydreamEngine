@@ -30,14 +30,15 @@ namespace Daydream
 		Scene(const String& _name);
 		~Scene();
 
-		GameEntity* CreateGameEntity();
-		GameEntity* CreateGameEntity(const String& _name);
+		GameEntity* CreateGameEntity(const String& _name = "Entity");
+		void DestroyEntity(EntityHandle _handle);
+		GameEntity* GetEntity(EntityHandle _handle);
+		const GameEntity* GetEntity(EntityHandle _handle) const;
 
-		void AddLight(LightComponent* _light);
-		void AddModelRenderer(ModelRendererComponent* _modelRenderer);
+		bool IsHandleValid(EntityHandle _handle) const;
 
-		inline const Array<LightComponent*>& GetLights() { return lightComponents; }
-		inline const Array<ModelRendererComponent*>& GetModelRenderers() { return modelRenderers; }
+		inline const Array<EntityHandle>& GetLights() { return lightEntities; }
+		inline const Array<EntityHandle>& GetModelRenderers() { return modelRendererEntities; }
 
 		inline void SetCurrentCamera(Shared<Camera> _camera) { currentCamera = _camera; }
 		inline const Shared<Camera> GetCurrentCamera() const { return currentCamera; }
@@ -48,18 +49,29 @@ namespace Daydream
 
 		void Update(Float32 _deltaTime);
 
-		Array<Unique<GameEntity>>& GetAllEntities() { return entities; }
+		const Array<EntityHandle>& GetAllEntities() const { return activeEntities; }
+		const Array<EntityHandle>& GetRootEntities() const { return rootEntities; }
+
+		void AddRootEntity(EntityHandle _rootEntity);
+		void RemoveRootEntity(EntityHandle _rootEntity);
+
+		void ReorderRootEntity(EntityHandle _entityHandle, UInt64 _newIndex);
 	private:
-		SortedMap<UInt64, GameEntity> entityRegistry;
-		Array<Unique<GameEntity>> entities;
+		Array<Unique<GameEntity>> entityPool;
+
+		Array<UInt32> generations; //index의 generation
+		Queue<UInt32> freeIndices; //사용가능한 인덱스
+
+		Array<EntityHandle> activeEntities;
+		Array<EntityHandle> rootEntities;
 
 		Shared<Camera> currentCamera;
 
-		Array<LightComponent*> lightComponents;
-		Array<ModelRendererComponent*> modelRenderers;
+		Array<EntityHandle> lightEntities;
+		Array<EntityHandle> modelRendererEntities;
 
 		LightData lightData;
-		Shared<ConstantBuffer> lightBuffer;
+		Shared<ConstantBuffer> lightBuffer; 
 		//Array<SpriteRendererComponent*> spriteRenderers;
 		Shared<Skybox> skybox;
 	};

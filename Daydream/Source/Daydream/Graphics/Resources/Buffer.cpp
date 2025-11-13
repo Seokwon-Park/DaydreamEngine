@@ -26,3 +26,4 @@ namespace Daydream
 		return Renderer::GetRenderDevice()->CreateConstantBuffer(_size);
 	}
 }
+

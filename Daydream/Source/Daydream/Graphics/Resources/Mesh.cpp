@@ -4,19 +4,19 @@
 
 #include "Daydream/Graphics/Core/Renderer.h"
 
-#include "Daydream/Core/ResourceManager.h"
+#include "Daydream/Asset/AssetManager.h"
 
 namespace Daydream
 {
 	Mesh::Mesh(const MeshData& _meshData)
 	{
-		vertexBuffer = VertexBuffer::CreateStatic(_meshData.vertices.size() * sizeof(Vertex), sizeof(Vertex), _meshData.vertices.data());
-		indexBuffer = IndexBuffer::Create(_meshData.indices.data(), _meshData.indices.size());
+		vertexBuffer = VertexBuffer::CreateStatic((UInt32)_meshData.vertices.size() * sizeof(Vertex), sizeof(Vertex), _meshData.vertices.data());
+		indexBuffer = IndexBuffer::Create(_meshData.indices.data(), (UInt32)_meshData.indices.size());
 
 		if (!_meshData.materialData.albedoMapPath.empty())
-			diffuseTexture = ResourceManager::GetResource<Texture2D>(_meshData.materialData.albedoMapPath);
+			diffuseTexture = AssetManager::GetAssetByPath<Texture2D>(_meshData.materialData.albedoMapPath);
 		if (!_meshData.materialData.normalMapPath.empty())
-			normalTexture = ResourceManager::GetResource<Texture2D>(_meshData.materialData.normalMapPath);
+			normalTexture = AssetManager::GetAssetByPath<Texture2D>(_meshData.materialData.normalMapPath);
 	}
 	Mesh::Mesh(Shared<VertexBuffer> _vertexBuffer, Shared<IndexBuffer> _indexBuffer)
 	{

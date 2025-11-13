@@ -40,7 +40,6 @@ namespace Daydream
 		{
 			return parent->GetWorldMatrix() * localMatrix;
 		}
-
 		
 		// 3. 부모가 없다면, 자신의 로컬 행렬이 곧 월드 행렬입니다.
 		return localMatrix;

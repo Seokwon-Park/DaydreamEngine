@@ -1,7 +1,7 @@
 #include "DaydreamPCH.h"
 #include "ShaderGroup.h"
 
-#include "Daydream/Core/ResourceManager.h"
+#include "Daydream/Asset/AssetManager.h"
 
 namespace Daydream
 {
@@ -107,10 +107,22 @@ namespace Daydream
 		DAYDREAM_CORE_ASSERT(false, "Unknown Shader Type!");
 		return Shared<Shader>();
 	}
-	Shared<ShaderGroup> ShaderGroup::Create(const String& _vertexShaderName, const String& _pixelShaderName)
+	Shared<ShaderGroup> ShaderGroup::Create(const Path& _vertexShaderPath, const Path&
+_pixelShaderPath)
 	{
-		auto vertexShader = ResourceManager::GetResource<Shader>(_vertexShaderName);
-		auto pixelShader = ResourceManager::GetResource<Shader>(_pixelShaderName);
+		auto vertexShader = AssetManager::GetAssetByPath<Shader>(_vertexShaderPath);
+		auto pixelShader = AssetManager::GetAssetByPath<Shader>(_pixelShaderPath);
+		return Create(vertexShader, pixelShader);
+	}
+	Shared<ShaderGroup> ShaderGroup::CreateBuiltin(const Path& _vertexShaderName, const Path& _pixelShaderName)
+	{
+		const String BuiltinShaderDir = "Asset/Shader/";
+
+		Path vertexPath = BuiltinShaderDir / _vertexShaderName;
+		Path pixelPath = BuiltinShaderDir / _pixelShaderName;
+
+		auto vertexShader = AssetManager::GetAssetByPath<Shader>(vertexPath);
+		auto pixelShader = AssetManager::GetAssetByPath<Shader>(pixelPath);
 		return Create(vertexShader, pixelShader);
 	}
 }

@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Daydream/Core/Resource.h"
 #include "Daydream/Graphics/Resources/Shader.h"
-
 
 namespace Daydream
 {
@@ -46,7 +44,7 @@ namespace Daydream
 	};
 
 
-	class Material : public Resource
+	class Material 
 	{
 	public:
 		virtual ~Material();

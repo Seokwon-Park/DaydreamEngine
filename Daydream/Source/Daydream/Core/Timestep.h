@@ -5,17 +5,17 @@ namespace Daydream
 	class Timestep
 	{
 	public:
-		Timestep(float time = 0.0f)
-			:m_Time(time)
+		Timestep(float _time = 0.0f)
+			:floatTime(_time)
 		{
 
 		}
 
-		operator float() const { return m_Time; }
+		operator float() const { return floatTime; }
 
-		float GetSeconds() const { return m_Time; }
-		float GetMilliseconds() const { return m_Time * 1000.0f; }
+		float GetSeconds() const { return floatTime; }
+		float GetMilliseconds() const { return floatTime * 1000.0f; }
 	private:
-		float m_Time;
+		float floatTime;
 	};
 }

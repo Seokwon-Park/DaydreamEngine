@@ -1,18 +1,19 @@
 #pragma once
 
 #include "Daydream/Graphics/Resources/Shader.h"
-#include "Daydream/Core/Resource.h"
 
 namespace Daydream
 {
-	class ShaderGroup : public Resource
+	class ShaderGroup
 	{
 	public:
 		const Array<Shared<Shader>>& GetShaders();
 		const Shared<Shader> GetShader(ShaderType _type);
 
-		static Shared<ShaderGroup> Create(const String& _vertexShaderName,
-			const String& _pixelShaderName);
+		static Shared<ShaderGroup> Create(const Path& _vertexShaderPath, const Path&
+_pixelShaderPath);
+		static Shared<ShaderGroup> CreateBuiltin(const Path& _vertexShaderName, const Path&
+			_pixelShaderName);
 
 		static Shared<ShaderGroup> Create(Shared<Shader> _vertexShader,
 			Shared<Shader> _pixelShader);

@@ -9,19 +9,24 @@ workspace "Daydream"
 	}
 
 	IncludeDir = {}
+	IncludeDir["assimp"] = "Daydream/Vendor/assimp/include"
 	IncludeDir["GLFW"] = "Daydream/Vendor/glfw/include"
 	IncludeDir["glad"] = "Daydream/Vendor/glad/include"
-	IncludeDir["ImGui"] = "Daydream/Vendor/imgui"
 	IncludeDir["glm"] = "Daydream/Vendor/glm"
+	IncludeDir["ImGui"] = "Daydream/Vendor/imgui"
 	IncludeDir["stb"] = "Daydream/Vendor/stb"
-	IncludeDir["assimp"] = "Daydream/Vendor/assimp/include"
 	IncludeDir["dxcompiler"] = "Daydream/Vendor/dxcompiler/include"
 	IncludeDir["VulkanMemoryAllocator"] = "Daydream/Vendor/VulkanMemoryAllocator"
 	IncludeDir["ImGuizmo"] = "Daydream/Vendor/ImGuizmo"
+	IncludeDir["stduuid"] = "Daydream/Vendor/stduuid/include"
+	IncludeDir["yaml"] = "Daydream/Vendor/yaml-cpp/include"
+	IncludeDir["nfd"] = "Daydream/Vendor/nfd-extended/src/include"
 
 	include "Daydream/Vendor/glfw"
 	include "Daydream/Vendor/glad"
 	include "Daydream/Vendor/imgui"
+	include "Daydream/Vendor/yaml-cpp"
+	include "Daydream/Vendor/nfd-extended"
 	
 project "Daydream"
 	location "Daydream"
@@ -61,6 +66,9 @@ project "Daydream"
 		"%{IncludeDir.dxcompiler}",
 		"%{IncludeDir.VulkanMemoryAllocator}",
 		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.stduuid}",
+		"%{IncludeDir.yaml}",
+		"%{IncludeDir.nfd}",
 		"$(VULKAN_SDK)/Include",
 	}
 	libdirs 
@@ -74,6 +82,8 @@ project "Daydream"
 		"GLFW",
 		"glad",
 		"ImGui",
+		"yaml-cpp",
+		"nfd",
 		"vulkan-1.lib",
 		"dxcompiler.lib",
 		"dxil.lib",
@@ -82,6 +92,7 @@ project "Daydream"
 
 	defines
 	{
+		"YAML_CPP_STATIC_DEFINE",
 		"GLM_FORCE_LEFT_HANDED",
 		"GLM_FORCE_DEPTH_ZERO_TO_ONE"
 	}
@@ -155,6 +166,7 @@ project "Sandbox"
 		"Daydream/Vendor",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.stduuid}",
 	}
 	links
 	{
@@ -200,6 +212,7 @@ project "DaydreamEditor"
 		"Daydream/Vendor",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.stduuid}",
 	}
 	links
 	{

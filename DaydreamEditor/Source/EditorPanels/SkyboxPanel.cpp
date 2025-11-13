@@ -4,7 +4,7 @@ namespace Daydream
 {
 	SkyboxPanel::SkyboxPanel()
 	{
-		equirectangularDropTarget = ResourceManager::GetResource<Texture2D>("Resource\\NoTexture.png");
+		equirectangularDropTarget = AssetManager::GetAssetByPath<Texture2D>("Resource/NoTexture.png");
 	}
 
 	void SkyboxPanel::OnImGuiRender()
@@ -44,8 +44,9 @@ namespace Daydream
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_TEXTURE"))
 				{
-					String texturePath = (const char*)payload->Data;
-					auto texture = ResourceManager::GetResource<Texture2D>(texturePath);
+					AssetHandle* pHandle = (AssetHandle*)payload->Data;
+					AssetHandle handle = *pHandle;
+					auto texture = AssetManager::GetAsset<Texture2D>(handle);
 					skybox->GenerateHDRCubemap(texture);
 					isHDR = false;
 				}
@@ -63,8 +64,9 @@ namespace Daydream
 				{
 					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_TEXTURE"))
 					{
-						String texturePath = (const char*)payload->Data;
-						auto texture = ResourceManager::GetResource<Texture2D>(texturePath);
+						AssetHandle* pHandle = (AssetHandle*)payload->Data;
+						AssetHandle handle = *pHandle;
+						auto texture = AssetManager::GetAsset<Texture2D>(handle);
 
 						skybox->UpdateSkyboxFace(i, texture);
 					}

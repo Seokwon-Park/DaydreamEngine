@@ -1,7 +1,7 @@
 #include "DaydreamPCH.h"
 #include "Skybox.h"
 
-#include "Daydream/Core/ResourceManager.h"
+#include "Daydream/Graphics/Manager/ResourceManager.h"
 #include "Daydream/Graphics/Core/Renderer.h"
 #include "Daydream/Graphics/Utility/MeshGenerator.h"
 
@@ -35,7 +35,7 @@ namespace Daydream
 
 		equirectangularMaterials.resize(6);
 		equirectangularResultTextures.resize(6);
-		for (int i = 0; i < equirectangularMaterials.size(); i++)
+		for (int i = 0; i < equirectangularMaterials.size(); i++) 
 		{
 			equirectangularMaterials[i] = Material::Create(equirectangularPSO);
 			equirectangularMaterials[i]->SetConstantBuffer("Camera", cubeFaceConstantBuffers[i]);
@@ -57,7 +57,7 @@ namespace Daydream
 		}
 
 		prefilterPSO = ResourceManager::GetResource<PipelineState>("PrefilterPSO");
-		equirectangularDropTarget = ResourceManager::GetResource<Texture2D>("Resource\\NoTexture.png");
+		equirectangularDropTarget = AssetManager::GetAssetByPath<Texture2D>("Resource/NoTexture.png");
 
 		brdfPSO = ResourceManager::GetResource<PipelineState>("BRDFPSO");
 
@@ -69,8 +69,8 @@ namespace Daydream
 		{
 			positions.push_back(v.position);
 		}
-		boxVB = VertexBuffer::CreateStatic(sizeof(Vector3) * positions.size(), 12, positions.data());
-		boxIB = IndexBuffer::Create(meshData.indices.data(), meshData.indices.size());
+		boxVB = VertexBuffer::CreateStatic(sizeof(Vector3) * (UInt32)positions.size(), 12, positions.data());
+		boxIB = IndexBuffer::Create(meshData.indices.data(), (UInt32)meshData.indices.size());
 		boxMesh = Mesh::Create(boxVB, boxIB);
 	}
 
@@ -85,8 +85,8 @@ namespace Daydream
 	void Skybox::Init()
 	{
 		//////////////////////////////////////Create Default Skybox TextureCubes;
-		skyboxMipLevels = (UInt32)std::log2f(skyboxResolution);
-		equirectangularTexture = ResourceManager::GetResource<Texture2D>("Resource\\skybox.hdr");
+		skyboxMipLevels = (UInt32)std::log2f((Float32)skyboxResolution);
+		equirectangularTexture = AssetManager::GetAssetByPath<Texture2D>("Resource/skybox.hdr");
 		GenerateHDRCubemap(equirectangularTexture);
 		GenerateBRDF();
 		GenerateIrradianceCubemap();
@@ -104,7 +104,7 @@ namespace Daydream
 
 	void Skybox::GenerateHDRCubemap(Shared<Texture2D> _texture)
 	{
-		skyboxMipLevels = (UInt32)std::log2f(skyboxResolution);
+		skyboxMipLevels = (UInt32)std::log2f((Float32)skyboxResolution);
 
 		TextureDesc textureDesc{};
 		textureDesc.width = skyboxResolution;
@@ -205,7 +205,7 @@ namespace Daydream
 
 	void Skybox::GeneratePrefilterCubemap()
 	{
-		UInt32 result = (UInt32)std::log2f(specularResolution);
+		UInt32 result = (UInt32)std::log2f((Float32)specularResolution);
 
 		prefilterMipLevels = result;
 
@@ -221,7 +221,7 @@ namespace Daydream
 		}
 
 		roughnessConstantBuffers.resize(prefilterMipLevels);
-		for (int mip = 0; mip < prefilterMipLevels; mip++)
+		for (UInt32 mip = 0; mip < prefilterMipLevels; mip++)
 		{
 			roughnessConstantBuffers[mip] = ConstantBuffer::Create(sizeof(Vector4));
 			roughness = Vector4(0.0f, 0.0f, 0.0f, (float)mip / (prefilterMipLevels - 1));
@@ -242,7 +242,7 @@ namespace Daydream
 		prefilterResultTextures.clear();
 		prefilterResultTextures.resize(6 * prefilterMipLevels);
 		prefilterFramebuffers.resize(prefilterMipLevels);
-		for (int mip = 0; mip < prefilterMipLevels; mip++)
+		for (UInt32 mip = 0; mip < prefilterMipLevels; mip++)
 		{
 			textureDesc.width = std::max(1U, specularResolution >> mip);
 			textureDesc.height = std::max(1U, specularResolution >> mip);

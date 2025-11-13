@@ -5,10 +5,11 @@
 #include "Input.h"
 #include "KeyCodes.h"
 #include "Daydream/ImGui/ImGuiLayer.h"
+#include "Daydream/Asset/AssetManager.h"
 #include "Daydream/Graphics/Core/Renderer.h"
-#include "Daydream/Graphics/Utility/ShaderCompileHelper.h"
-#include "ResourceManager.h"
 #include "Daydream/Scene/Components/ComponentRegistry.h"
+#include "Daydream/Graphics/Manager/ResourceManager.h"
+
 
 namespace Daydream
 {
@@ -80,6 +81,8 @@ namespace Daydream
 		WindowManager::Init();
 		WindowManager::RegisterWindow(prop.title, mainWindow.get());
 
+		AssetManager::Init();
+		AssetManager::LoadAssetDataFromDirectory("Asset");
 		//렌더러 초기화
 		Renderer::Init(prop.rendererAPI);
 		//렌더러에 윈도우 
@@ -87,10 +90,11 @@ namespace Daydream
 		Renderer::SetCurrentWindow(mainWindow.get());
 		//Renderer::RegisterWindow("TestWindow", testWindow.get());
 
+		ResourceManager::Init();
+
 		imGuiLayer = new ImGuiLayer();
 		AttachOverlay(imGuiLayer);
 
-		ResourceManager::Init();
 		ComponentRegistry::Init();
 
 		return true;
@@ -154,8 +158,9 @@ namespace Daydream
 	{
 		mainWindow->SetSwapchain(nullptr);
 		ComponentRegistry::Shutdown();
-		ResourceManager::Shutdown();
 		layerStack.Release();
+		AssetManager::Shutdown();
+		ResourceManager::Shutdown();
 		Renderer::Shutdown();
 		WindowManager::Shutdown();
 		mainWindow = nullptr;

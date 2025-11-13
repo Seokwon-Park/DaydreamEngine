@@ -22,6 +22,9 @@
     <Filter Include="Source\Daydream">
       <UniqueIdentifier>{6C60B3E8-D8EB-20AD-E1FC-A3A14D077DAD}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Daydream\Asset">
+      <UniqueIdentifier>{FBB5C825-6722-8420-3016-1C7E9C41A688}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source\Daydream\Core">
       <UniqueIdentifier>{44A8353F-3037-BF08-D955-D303C5C3CFAE}</UniqueIdentifier>
     </Filter>
@@ -58,8 +61,8 @@
     <Filter Include="Source\Daydream\Graphics\Core">
       <UniqueIdentifier>{04C2915C-70DA-7886-3987-0820A55E0D20}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Daydream\Graphics\Managers">
-      <UniqueIdentifier>{89556BEF-F5C3-C06E-3EAD-7B6EAA5AB60A}</UniqueIdentifier>
+    <Filter Include="Source\Daydream\Graphics\Manager">
+      <UniqueIdentifier>{560A2AAA-425B-15EC-6BBF-03AE576FA855}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\Daydream\Graphics\Resources">
       <UniqueIdentifier>{962EDB76-826A-DEE0-EB7C-F6D7D7D786FB}</UniqueIdentifier>
@@ -72,6 +75,9 @@
     </Filter>
     <Filter Include="Source\Daydream\ImGui">
       <UniqueIdentifier>{96765526-02E3-1021-CBD6-A87E37023389}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Daydream\Project">
+      <UniqueIdentifier>{B2B0DC3A-1EE8-24D2-27F2-88F593A84BCB}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source\Daydream\Scene">
       <UniqueIdentifier>{896E0527-F5DA-C021-BECE-587F2AFAE289}</UniqueIdentifier>
@@ -138,6 +144,9 @@
     <ClInclude Include="Source\Base\Container\HashMap.h">
       <Filter>Source\Base\Container</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Base\Container\Queue.h">
+      <Filter>Source\Base\Container</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Base\Container\SortedMap.h">
       <Filter>Source\Base\Container</Filter>
     </ClInclude>
@@ -195,6 +204,21 @@
     <ClInclude Include="Source\Daydream.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Daydream\Asset\Asset.h">
+      <Filter>Source\Daydream\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Daydream\Asset\AssetManager.h">
+      <Filter>Source\Daydream\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Daydream\Asset\MaterialManager.h">
+      <Filter>Source\Daydream\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Daydream\Asset\ModelRegistry.h">
+      <Filter>Source\Daydream\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Daydream\Asset\Texture2DRegistry.h">
+      <Filter>Source\Daydream\Asset</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Daydream\Core\Application.h">
       <Filter>Source\Daydream\Core</Filter>
     </ClInclude>
@@ -205,6 +229,9 @@
       <Filter>Source\Daydream\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Core\EntryPoint.h">
+      <Filter>Source\Daydream\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Daydream\Core\FileDialog.h">
       <Filter>Source\Daydream\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Core\Input.h">
@@ -226,15 +253,6 @@
       <Filter>Source\Daydream\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Core\PlatformDetection.h">
-      <Filter>Source\Daydream\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Daydream\Core\RegistryBase.h">
-      <Filter>Source\Daydream\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Daydream\Core\Resource.h">
-      <Filter>Source\Daydream\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Daydream\Core\ResourceManager.h">
       <Filter>Source\Daydream\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Core\Timestep.h">
@@ -486,32 +504,29 @@
     <ClInclude Include="Source\Daydream\Graphics\Core\Swapchain.h">
       <Filter>Source\Daydream\Graphics\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\Managers\MaterialManager.h">
-      <Filter>Source\Daydream\Graphics\Managers</Filter>
+    <ClInclude Include="Source\Daydream\Graphics\Manager\MeshRegistry.h">
+      <Filter>Source\Daydream\Graphics\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\Managers\MeshManager.h">
-      <Filter>Source\Daydream\Graphics\Managers</Filter>
+    <ClInclude Include="Source\Daydream\Graphics\Manager\PipelineStateRegistry.h">
+      <Filter>Source\Daydream\Graphics\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\Managers\ModelManager.h">
-      <Filter>Source\Daydream\Graphics\Managers</Filter>
+    <ClInclude Include="Source\Daydream\Graphics\Manager\RenderPassRegistry.h">
+      <Filter>Source\Daydream\Graphics\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\Managers\PipelineStateManager.h">
-      <Filter>Source\Daydream\Graphics\Managers</Filter>
+    <ClInclude Include="Source\Daydream\Graphics\Manager\ResourceManager.h">
+      <Filter>Source\Daydream\Graphics\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\Managers\RenderPassManager.h">
-      <Filter>Source\Daydream\Graphics\Managers</Filter>
+    <ClInclude Include="Source\Daydream\Graphics\Manager\ResourceRegistry.h">
+      <Filter>Source\Daydream\Graphics\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\Managers\SamplerManager.h">
-      <Filter>Source\Daydream\Graphics\Managers</Filter>
+    <ClInclude Include="Source\Daydream\Graphics\Manager\SamplerRegistry.h">
+      <Filter>Source\Daydream\Graphics\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\Managers\ShaderGroupManager.h">
-      <Filter>Source\Daydream\Graphics\Managers</Filter>
+    <ClInclude Include="Source\Daydream\Graphics\Manager\ShaderGroupRegistry.h">
+      <Filter>Source\Daydream\Graphics\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\Managers\ShaderManager.h">
-      <Filter>Source\Daydream\Graphics\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\Managers\Texture2DManager.h">
-      <Filter>Source\Daydream\Graphics\Managers</Filter>
+    <ClInclude Include="Source\Daydream\Graphics\Manager\ShaderRegistry.h">
+      <Filter>Source\Daydream\Graphics\Manager</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\Resources\Buffer.h">
       <Filter>Source\Daydream\Graphics\Resources</Filter>
@@ -591,6 +606,9 @@
     <ClInclude Include="Source\Daydream\ImGui\ImGuiRenderer.h">
       <Filter>Source\Daydream\ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Daydream\Project\Project.h">
+      <Filter>Source\Daydream\Project</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Daydream\Scene\Components\CameraComponent.h">
       <Filter>Source\Daydream\Scene\Components</Filter>
     </ClInclude>
@@ -614,6 +632,9 @@
     </ClInclude>
     <ClInclude Include="Source\Daydream\Scene\Components\TransformComponent.h">
       <Filter>Source\Daydream\Scene\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Daydream\Scene\GameEntity\EntityHandle.h">
+      <Filter>Source\Daydream\Scene\GameEntity</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Scene\GameEntity\GameEntity.h">
       <Filter>Source\Daydream\Scene\GameEntity</Filter>
@@ -1896,6 +1917,7 @@
     <ClInclude Include="Vendor\stb\stb_image.h">
       <Filter>Vendor\stb</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Daydream\Asset\AssetImporter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\Directory.cpp">
@@ -1931,7 +1953,22 @@
     <ClCompile Include="Source\Base\Time\TimeStep.cpp">
       <Filter>Source\Base\Time</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Daydream\Asset\Asset.cpp">
+      <Filter>Source\Daydream\Asset</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Daydream\Asset\AssetManager.cpp">
+      <Filter>Source\Daydream\Asset</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Daydream\Asset\ModelRegistry.cpp">
+      <Filter>Source\Daydream\Asset</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Daydream\Asset\Texture2DRegistry.cpp">
+      <Filter>Source\Daydream\Asset</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Daydream\Core\Application.cpp">
+      <Filter>Source\Daydream\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Daydream\Core\FileDialog.cpp">
       <Filter>Source\Daydream\Core</Filter>
     </ClCompile>
     <ClCompile Include="Source\Daydream\Core\Input.cpp">
@@ -1944,15 +1981,6 @@
       <Filter>Source\Daydream\Core</Filter>
     </ClCompile>
     <ClCompile Include="Source\Daydream\Core\Logger.cpp">
-      <Filter>Source\Daydream\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Daydream\Core\RegistryBase.cpp">
-      <Filter>Source\Daydream\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Daydream\Core\Resource.cpp">
-      <Filter>Source\Daydream\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Daydream\Core\ResourceManager.cpp">
       <Filter>Source\Daydream\Core</Filter>
     </ClCompile>
     <ClCompile Include="Source\Daydream\Core\UUID.cpp">
@@ -2186,29 +2214,29 @@
     <ClCompile Include="Source\Daydream\Graphics\Core\Swapchain.cpp">
       <Filter>Source\Daydream\Graphics\Core</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Daydream\Graphics\Managers\MeshManager.cpp">
-      <Filter>Source\Daydream\Graphics\Managers</Filter>
+    <ClCompile Include="Source\Daydream\Graphics\Manager\MeshRegistry.cpp">
+      <Filter>Source\Daydream\Graphics\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Daydream\Graphics\Managers\ModelManager.cpp">
-      <Filter>Source\Daydream\Graphics\Managers</Filter>
+    <ClCompile Include="Source\Daydream\Graphics\Manager\PipelineStateRegistry.cpp">
+      <Filter>Source\Daydream\Graphics\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Daydream\Graphics\Managers\PipelineStateManager.cpp">
-      <Filter>Source\Daydream\Graphics\Managers</Filter>
+    <ClCompile Include="Source\Daydream\Graphics\Manager\RenderPassRegistry.cpp">
+      <Filter>Source\Daydream\Graphics\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Daydream\Graphics\Managers\RenderPassManager.cpp">
-      <Filter>Source\Daydream\Graphics\Managers</Filter>
+    <ClCompile Include="Source\Daydream\Graphics\Manager\ResourceManager.cpp">
+      <Filter>Source\Daydream\Graphics\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Daydream\Graphics\Managers\SamplerManager.cpp">
-      <Filter>Source\Daydream\Graphics\Managers</Filter>
+    <ClCompile Include="Source\Daydream\Graphics\Manager\ResourceRegistry.cpp">
+      <Filter>Source\Daydream\Graphics\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Daydream\Graphics\Managers\ShaderGroupManager.cpp">
-      <Filter>Source\Daydream\Graphics\Managers</Filter>
+    <ClCompile Include="Source\Daydream\Graphics\Manager\SamplerRegistry.cpp">
+      <Filter>Source\Daydream\Graphics\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Daydream\Graphics\Managers\ShaderManager.cpp">
-      <Filter>Source\Daydream\Graphics\Managers</Filter>
+    <ClCompile Include="Source\Daydream\Graphics\Manager\ShaderGroupRegistry.cpp">
+      <Filter>Source\Daydream\Graphics\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Daydream\Graphics\Managers\Texture2DManager.cpp">
-      <Filter>Source\Daydream\Graphics\Managers</Filter>
+    <ClCompile Include="Source\Daydream\Graphics\Manager\ShaderRegistry.cpp">
+      <Filter>Source\Daydream\Graphics\Manager</Filter>
     </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\Resources\Buffer.cpp">
       <Filter>Source\Daydream\Graphics\Resources</Filter>
@@ -2273,6 +2301,9 @@
     <ClCompile Include="Source\Daydream\ImGui\ImGuiRenderer.cpp">
       <Filter>Source\Daydream\ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Daydream\Project\Project.cpp">
+      <Filter>Source\Daydream\Project</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Daydream\Scene\Components\Component.cpp">
       <Filter>Source\Daydream\Scene\Components</Filter>
     </ClCompile>
@@ -2287,6 +2318,9 @@
     </ClCompile>
     <ClCompile Include="Source\Daydream\Scene\Components\TransformComponent.cpp">
       <Filter>Source\Daydream\Scene\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Daydream\Scene\GameEntity\EntityHandle.cpp">
+      <Filter>Source\Daydream\Scene\GameEntity</Filter>
     </ClCompile>
     <ClCompile Include="Source\Daydream\Scene\GameEntity\GameEntity.cpp">
       <Filter>Source\Daydream\Scene\GameEntity</Filter>
@@ -2315,5 +2349,6 @@
     <ClCompile Include="Vendor\stb\stb_image.cpp">
       <Filter>Vendor\stb</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Daydream\Asset\AssetImporter.cpp" />
   </ItemGroup>
 </Project>

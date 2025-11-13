@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Daydream/Enum/RendererEnums.h"
-#include "Daydream/Core/Resource.h"
 #include "Daydream/Graphics/Resources/Sampler.h"
+#include "Daydream/Asset/Asset.h"
 
 namespace Daydream
 {
@@ -26,7 +26,7 @@ namespace Daydream
 	};
 
 
-	class Texture : public Resource
+	class Texture : public Asset
 	{
 	public:
 		virtual ~Texture() = default;
@@ -50,6 +50,8 @@ namespace Daydream
 
 		virtual void* GetNativeHandle() = 0;
 		virtual void* GetImGuiHandle() = 0;
+		
+		void Load(const Path& _path);
 
 		static Shared<Texture2D> Create(const void* _data, const TextureDesc& _desc);
 		static Shared<Texture2D> CreateFromFile(const Path& _path, const TextureDesc& _desc);
@@ -58,9 +60,9 @@ namespace Daydream
 		Texture2D() = default;
 
 		TextureDesc desc = TextureDesc();
-		Int32 width = 0;
-		Int32 height = 0;
-		Int32 channels = 0;
+		UInt32 width = 0;
+		UInt32 height = 0;
+		UInt32 channels = 0;
 	};
 
 

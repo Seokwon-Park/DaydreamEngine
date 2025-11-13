@@ -10,7 +10,7 @@
 #include "Daydream/Graphics/Core/PipelineState.h"
 #include "Daydream/Graphics/Core/Renderer.h"
 #include "Daydream/Graphics/Utility/MeshGenerator.h"
-#include "Daydream/Core/ResourceManager.h"
+#include "Daydream/Asset/AssetManager.h"
 
 namespace Daydream::UI
 {
@@ -141,8 +141,9 @@ namespace Daydream::UI
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_TEXTURE"))
 				{
-					String texturePath = (const char*)payload->Data;
-					auto texture = ResourceManager::GetResource<Texture2D>(texturePath);
+					AssetHandle* pHandle = (AssetHandle*)payload->Data;
+					AssetHandle handle = *pHandle;
+					auto texture = AssetManager::GetAsset<Texture2D>(handle);
 					_material->SetTexture2D(name, texture);
 				}
 				ImGui::EndDragDropTarget();

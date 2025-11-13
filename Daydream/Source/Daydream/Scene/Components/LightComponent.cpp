@@ -14,7 +14,6 @@ namespace Daydream
 	}
 	void LightComponent::Init()
 	{
-		GetOwner()->GetScene()->AddLight(this);
 	}
 	void LightComponent::Update(Float32 _deltaTime)
 	{

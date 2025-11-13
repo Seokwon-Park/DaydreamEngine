@@ -13,3 +13,9 @@
 [submodule "Daydream/Vendor/ImGuizmo"]
 	path = Daydream/Vendor/ImGuizmo
 	url = https://github.com/Seokwon-Park/ImGuizmo
+[submodule "Daydream/Vendor/yaml-cpp"]
+	path = Daydream/Vendor/yaml-cpp
+	url = https://github.com/Seokwon-Park/yaml-cpp
+[submodule "Daydream/Vendor/nfd-extended"]
+	path = Daydream/Vendor/nfd-extended
+	url = https://github.com/Seokwon-Park/nativefiledialog-extended

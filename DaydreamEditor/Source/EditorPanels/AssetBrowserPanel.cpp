@@ -71,7 +71,7 @@ namespace Daydream
 					if (p.is_directory())
 					{
 						// 폴더 아이콘 로드 (ResourceManager에 미리 로드해두세요)
-						auto texture = ResourceManager::GetResource<Texture2D>("Resource\\DirectoryIcon.png");
+						auto texture = AssetManager::GetAssetByPath<Texture2D>("Resource\\DirectoryIcon.png");
 						ImGui::ImageButton(pathString.c_str(), (ImTextureID)texture->GetImGuiHandle(), { thumbnailSize, thumbnailSize });
 					}
 					else // 파일인 경우
@@ -79,7 +79,7 @@ namespace Daydream
 						std::string ext = path.extension().string();
 						if (ext == ".png" || ext == ".jpg" || ext == ".hdr" || ext == ".tga") // 이미지 파일
 						{
-							auto texture = ResourceManager::GetResource<Texture2D>(pathString);
+							auto texture = AssetManager::GetAssetByPath<Texture2D>(pathString);
 							if (texture != nullptr)
 							{
 								ImGui::ImageButton(pathString.c_str(), (ImTextureID)texture->GetImGuiHandle(), { thumbnailSize, thumbnailSize });
@@ -88,8 +88,9 @@ namespace Daydream
 							// 드래그 앤 드롭 소스 설정 (ImageButton에만 적용)
 							if (ImGui::BeginDragDropSource())
 							{
+								AssetHandle assetHandle = texture->GetAssetHandle();
 								// 경로 데이터를 페이로드로 설정
-								ImGui::SetDragDropPayload("ASSET_TEXTURE", pathString.c_str(), pathString.size() + 1);
+								ImGui::SetDragDropPayload("ASSET_TEXTURE", &assetHandle, sizeof(AssetHandle));
 
 								// 드래그 중 미리보기
 								ImGui::Text("%s", filenameString.c_str());
@@ -100,7 +101,7 @@ namespace Daydream
 						}
 						else // 기타 파일 아이콘
 						{
-							auto texture = ResourceManager::GetResource<Texture2D>("Resource\\FileIcon.png");
+							auto texture = AssetManager::GetAssetByPath<Texture2D>("Resource\\FileIcon.png");
 							ImGui::ImageButton(filenameString.c_str(), (ImTextureID)texture->GetImGuiHandle(), { thumbnailSize, thumbnailSize });
 						}
 					}

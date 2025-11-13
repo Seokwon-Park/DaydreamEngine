@@ -106,7 +106,7 @@ namespace Daydream
 
 		}
 
-		device->GetCommandBuffer().bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pso->GetPipelineLayout(), 0, rawSets.size(), rawSets.data(), 0, nullptr);
+		device->GetCommandBuffer().bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pso->GetPipelineLayout(), 0, (UInt32)rawSets.size(), rawSets.data(), 0, nullptr);
 	}
 	//void VulkanMaterial::SetTexture2D(const std::string& _name, Shared<Texture2D> _texture)
 	//{

@@ -1,13 +1,41 @@
 #pragma once
 
+#define UUID_SYSTEM_GENERATOR
+#include "stduuid.h"
+
 namespace Daydream
 {
-	class UUID
+	class AssetHandle
 	{
 	public:
-		UUID();
-		UUID(UInt64 _UUID);
+		AssetHandle();
+		explicit AssetHandle(const String& _string);
+		AssetHandle(const uuids::uuid& _other);
+
+		String ToString() const;
+		AssetHandle StringToUUID(const String& _string) const;
+		bool IsValid() const;
+
+		bool operator==(const AssetHandle& _other) const;
+		bool operator!=(const AssetHandle& _other) const;
+		bool operator<(const AssetHandle& _other) const; 
+
 	private:
-		//UInt64 uuid;
+		static uuids::uuid GenerateUUID();
+		uuids::uuid uuid;
+
+		friend struct std::hash<Daydream::AssetHandle>;
+	};
+}
+
+namespace std
+{
+	template <>
+	struct hash<Daydream::AssetHandle>
+	{
+		UInt64 operator()(const Daydream::AssetHandle& _id) const
+		{
+			return std::hash<uuids::uuid>{}(_id.uuid);
+		}
 	};
 }

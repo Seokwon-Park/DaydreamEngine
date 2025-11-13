@@ -2,7 +2,7 @@
 
 #include "Mesh.h"
 #include "Material.h"
-#include "Daydream/Core/Resource.h"
+#include "Daydream/Asset/Asset.h"
 
 namespace Daydream
 {
@@ -12,14 +12,14 @@ namespace Daydream
 		Array<MaterialData> materials;
 	};
 
-	class Model : public Resource
+	class Model : public Asset
 	{
 	public:
 		Model();
 		Model(Shared<Mesh> _mesh);
 		~Model();
 		
-		void Load(const String& _path);
+		void Load(const Path & _path);
 		const Array<Shared<Mesh>>& GetMeshes() { return meshes; }
 		const Array<Shared<Material>>& GetMaterials() { return materials; }
 		

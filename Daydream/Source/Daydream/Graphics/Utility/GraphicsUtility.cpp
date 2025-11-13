@@ -2,7 +2,6 @@
 #include "GraphicsUtility.h"
 
 #include "Daydream/Graphics/Core/Renderer.h"
-#include "Daydream/Core/ResourceManager.h"
 
 #include "Daydream/Graphics/Resources/Texture.h"
 #include "Daydream/Graphics/Resources/Buffer.h"
@@ -375,67 +374,6 @@ namespace Daydream
 			DAYDREAM_CORE_ASSERT(false, "Invalid type");
 			return nullptr;
 		}
-
-		//Shared<Texture2D> ResizeTexture(Shared<Texture2D> _originalTexture, UInt32 _targetWidth, UInt32 _targetHeight)
-		//{
-		//	// VBO와 IBO는 static으로 선언하여 최초 호출 시 한 번만 생성합니다.
-		//	static Shared<VertexBuffer> quadVBO = nullptr;
-		//	static Shared<IndexBuffer> quadIBO = nullptr;
-		//	static Shared<Mesh> quadMesh = nullptr;
-		//	static Shared<PipelineState> resizePSO = nullptr;
-		//	static Shared<Framebuffer> resizeFBO = nullptr;
-		//	static Shared<Material> resizeMat= nullptr;
-		//	static Shared<RenderPass> pass = nullptr;
-
-		//	static Shared<Texture2D> result = nullptr;
-
-		//	// 최초 호출 시 리소스들을 생성하는 로직
-		//	if (quadMesh == nullptr)
-		//	{
-		//		// position, uv
-		//		Float32 vertices[] = {
-		//			-1.0f, -1.0f, 0.0f, 0.0f, 1.0f,
-		//			-1.0f,  1.0f, 0.0f, 0.0f, 0.0f,
-		//			 1.0f,  1.0f, 0.0f, 1.0f, 0.0f,
-		//			 1.0f, -1.0f, 0.0f, 1.0f, 1.0f,
-		//		};
-		//		UInt32 indices[6] = { 0, 1, 2, 2, 3, 0 };
-
-		//		quadVBO = VertexBuffer::CreateStatic(sizeof(vertices), 20, vertices);
-		//		quadIBO = IndexBuffer::Create(indices, 6);
-		//		quadMesh = Mesh::Create(quadVBO, quadIBO);
-		//		resizePSO = ResourceManager::GetResource<PipelineState>("ResizePSO");
-		//	}
-
-		//	// --- FBO는 크기가 동적으로 변하므로 매번 새로 생성합니다. ---
-		//	pass = ResourceManager::GetResource<RenderPass>("StandardRenderPass");
-
-		//	FramebufferDesc fbDesc;
-		//	fbDesc.width = _targetWidth;
-		//	fbDesc.height = _targetHeight;
-		//	resizeFBO = Framebuffer::Create(pass, fbDesc);
-
-		//	resizeMat = Material::Create(resizePSO);
-		//	resizeMat->SetTexture2D("Texture", _originalTexture);
-
-		//	pass->Begin(resizeFBO);
-		//	resizePSO->Bind();
-		//	quadMesh->Bind();
-		//	resizeMat->Bind();
-		//	Renderer::Submit(quadMesh->GetIndexCount());
-		//	pass->End();
-
-		//	Daydream::TextureDesc textureDesc{};
-		//	textureDesc.width = _targetWidth;
-		//	textureDesc.height = _targetHeight;
-		//	textureDesc.bindFlags = Daydream::RenderBindFlags::ShaderResource;
-		//	textureDesc.format = Daydream::RenderFormat::R8G8B8A8_UNORM;
-
-		//	result = Texture2D::CreateEmpty(textureDesc);
-		//	Renderer::GetRenderDevice()->CopyTexture2D(resizeFBO->GetColorAttachmentTexture(0), result);
-
-		//	return Shared<Texture2D>();
-		//}
 
 		String GetVendor(UInt32 _vendorCode)
 		{

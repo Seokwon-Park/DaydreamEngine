@@ -1,11 +1,11 @@
 #include "DaydreamPCH.h"
 #include "Daydream/Graphics/Resources/TextureCube.h"
 
-#include "Daydream/Core/ResourceManager.h"
-
 #include "Daydream/Graphics/Core/Renderer.h"
 
 #include "Daydream/Graphics/Utility/ImageLoader.h"
+
+#include "Daydream/Graphics/Manager/ResourceManager.h"
 
 namespace Daydream
 {

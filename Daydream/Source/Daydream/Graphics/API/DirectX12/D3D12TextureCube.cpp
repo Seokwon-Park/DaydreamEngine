@@ -4,7 +4,8 @@
 #include "D3D12Utility.h"
 #include "D3D12Texture.h"
 
-#include "Daydream/Core/ResourceManager.h"
+#include "Daydream/Graphics/Manager/ResourceManager.h"
+#include "Daydream/Graphics/Resources/Mesh.h"
 #include "D3D12PipelineState.h"
 
 namespace Daydream
@@ -65,45 +66,49 @@ namespace Daydream
 		device->GetCBVSRVUAVHeapAlloc().Alloc(&srvCpuHandle, &srvGpuHandle);
 		device->GetDevice()->CreateShaderResourceView(texture.Get(), &srvDesc, srvCpuHandle);
 
-		rtvCpuHandles.resize(mipLevels * 6);
-		mipSrvCpuHandles.resize(mipLevels * 6);
-		mipSrvGpuHandles.resize(mipLevels * 6);
-		for (UInt32 mip = 0; mip < mipLevels; mip++)
+		if (mipLevels > 1)
 		{
-			for (UInt32 face = 0; face < 6; face++)
+
+			rtvCpuHandles.resize(mipLevels * 6);
+			mipSrvCpuHandles.resize(mipLevels * 6);
+			mipSrvGpuHandles.resize(mipLevels * 6);
+			for (UInt32 mip = 0; mip < mipLevels; mip++)
 			{
-				UInt32 index = mipLevels * face + mip;
+				for (UInt32 face = 0; face < 6; face++)
+				{
+					UInt32 index = mipLevels * face + mip;
 
-				D3D12_RENDER_TARGET_VIEW_DESC rtvDesc = {};
-				rtvDesc.Format = format;
-				rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DARRAY;
-				rtvDesc.Texture2DArray.MipSlice = mip;
-				rtvDesc.Texture2DArray.FirstArraySlice = face;
-				rtvDesc.Texture2DArray.ArraySize = 1;
+					D3D12_RENDER_TARGET_VIEW_DESC rtvDesc = {};
+					rtvDesc.Format = format;
+					rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DARRAY;
+					rtvDesc.Texture2DArray.MipSlice = mip;
+					rtvDesc.Texture2DArray.FirstArraySlice = face;
+					rtvDesc.Texture2DArray.ArraySize = 1;
 
-				device->GetRTVHeapAlloc().Alloc(&rtvCpuHandles[index]);
-				device->GetDevice()->CreateRenderTargetView(texture.Get(), &rtvDesc, rtvCpuHandles[index]);
+					device->GetRTVHeapAlloc().Alloc(&rtvCpuHandles[index]);
+					device->GetDevice()->CreateRenderTargetView(texture.Get(), &rtvDesc, rtvCpuHandles[index]);
 
-				srvDesc.Format = format;
-				srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+					srvDesc.Format = format;
+					srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
-				// [핵심 1] 뷰 차원을 2D가 아닌 2D_ARRAY로 지정
-				srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DARRAY;
+					// [핵심 1] 뷰 차원을 2D가 아닌 2D_ARRAY로 지정
+					srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DARRAY;
 
-				// [핵심 2] 서브리소스를 1개의 밉, 1개의 면으로 한정
-				srvDesc.Texture2DArray.MostDetailedMip = mip; // 원하는 밉 레벨
-				srvDesc.Texture2DArray.MipLevels = 1;        // 1개만
-				srvDesc.Texture2DArray.FirstArraySlice = face; // 원하는 큐브 면
-				srvDesc.Texture2DArray.ArraySize = 1;        // 1개만
-				srvDesc.Texture2DArray.PlaneSlice = 0;
-				srvDesc.Texture2DArray.ResourceMinLODClamp = 0.0f;
+					// [핵심 2] 서브리소스를 1개의 밉, 1개의 면으로 한정
+					srvDesc.Texture2DArray.MostDetailedMip = mip; // 원하는 밉 레벨
+					srvDesc.Texture2DArray.MipLevels = 1;        // 1개만
+					srvDesc.Texture2DArray.FirstArraySlice = face; // 원하는 큐브 면
+					srvDesc.Texture2DArray.ArraySize = 1;        // 1개만
+					srvDesc.Texture2DArray.PlaneSlice = 0;
+					srvDesc.Texture2DArray.ResourceMinLODClamp = 0.0f;
 
-				device->GetCBVSRVUAVHeapAlloc().Alloc(&mipSrvCpuHandles[index], &mipSrvGpuHandles[index]);
-				device->GetDevice()->CreateShaderResourceView(texture.Get(), &srvDesc, mipSrvCpuHandles[index]);
+					device->GetCBVSRVUAVHeapAlloc().Alloc(&mipSrvCpuHandles[index], &mipSrvGpuHandles[index]);
+					device->GetDevice()->CreateShaderResourceView(texture.Get(), &srvDesc, mipSrvCpuHandles[index]);
+				}
 			}
-		}
 
-		resizeMaterial = Material::Create(ResourceManager::GetResource<PipelineState>("GenerateMipsPSO"));
+			resizeMaterial = Material::Create(ResourceManager::GetResource<PipelineState>("GenerateMipsPSO"));
+		}
 
 		//cubeFaceConstantBuffers.resize(6);
 		//for (int i = 0; i < 6; i++)
@@ -158,7 +163,7 @@ namespace Daydream
 				////textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;c
 
 				//
-				resizeMaterial->SetTexture2D("Texture", textures[face]);
+				//resizeMaterial->SetTexture2D("Texture", textures[face]);
 				//resizeMaterial->SetConstantBuffer("Camera", cubeFaceConstantBuffers[face]);
 
 				D3D12_RECT rect;
@@ -170,8 +175,8 @@ namespace Daydream
 				device->GetCommandList()->RSSetScissorRects(1, &rect);
 
 				D3D12_VIEWPORT viewport = {};
-				viewport.Width = std::max(1, width >> mip);
-				viewport.Height = std::max(1, height >> mip);
+				viewport.Width = (Float32)std::max(1, width >> mip);
+				viewport.Height = (Float32)std::max(1, height >> mip);
 				viewport.MinDepth = 0.0f;
 				viewport.MaxDepth = 1.0f;
 				viewport.TopLeftX = 0;
@@ -184,7 +189,7 @@ namespace Daydream
 				device->TransitionResourceState(device->GetCommandList(), texture.Get(), GetCurrentState(), D3D12_RESOURCE_STATE_RENDER_TARGET);
 				SetCurrentState(D3D12_RESOURCE_STATE_RENDER_TARGET);
 				resizePSO->Bind();
-				device->GetCommandList()->SetGraphicsRootDescriptorTable(1, mipSrvGpuHandles[mipLevels * face + mip-1]);
+				device->GetCommandList()->SetGraphicsRootDescriptorTable(1, mipSrvGpuHandles[mipLevels * face + mip - 1]);
 				device->GetCommandList()->SetGraphicsRootDescriptorTable(0, textureSampler->GetSamplerHandle());
 				quadMesh->Bind();
 				device->GetCommandList()->ClearRenderTargetView(rtvCpuHandles[index], color, 0, nullptr);

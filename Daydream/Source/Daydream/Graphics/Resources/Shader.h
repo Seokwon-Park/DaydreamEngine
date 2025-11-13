@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Daydream/Enum/RendererEnums.h"
+#include "Daydream/Asset/Asset.h"
 
 namespace Daydream
 {
@@ -29,7 +30,7 @@ namespace Daydream
 
 	};
 	
-	class Shader
+	class Shader : public Asset
 	{
 	public:
 		virtual ~Shader() = default;

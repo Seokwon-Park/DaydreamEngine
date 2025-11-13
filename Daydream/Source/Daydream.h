@@ -10,12 +10,15 @@
 #include "Daydream/Core/Input.h"
 #include "Daydream/Core/KeyCodes.h"
 #include "Daydream/Core/MouseCodes.h"
-#include "Daydream/Core/ResourceManager.h"
+
+#include "Daydream/Asset/AssetManager.h"
 
 #include "Daydream/ImGui/ImGuiLayer.h"
 #include "Daydream/ImGui/ImGuiRenderer.h"
 
 #include "Daydream/Enum/RendererEnums.h"
+
+#include "Daydream/Project/Project.h"
 
 #include "Daydream/Scene/Scene.h"
 #include "Daydream/Scene/Components/Component.h"
@@ -28,6 +31,9 @@
 #include "Daydream/Graphics/Core/RenderCommand.h"
 #include "Daydream/Graphics/Core/RenderPass.h"
 #include "Daydream/Graphics/Core/PipelineState.h"
+
+#include "Daydream/Graphics/Core/Camera.h"
+#include "Daydream/Graphics/Core/EditorCamera.h"
 
 #include "Daydream/Graphics/States/BlendState.h"
 #include "Daydream/Graphics/States/RasterizerState.h"
@@ -46,8 +52,7 @@
 #include "Daydream/Graphics/Resources/Light.h"
 #include "Daydream/Graphics/Resources/Skybox.h"
 
-#include "Daydream/Graphics/Core/Camera.h"
-#include "Daydream/Graphics/Core/EditorCamera.h"
+#include "Daydream/Graphics/Manager/ResourceManager.h"
 
 #include "Daydream/Graphics/Utility/MeshGenerator.h"
 // -----------------------------------------------

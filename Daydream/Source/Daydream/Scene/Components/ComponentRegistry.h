@@ -2,7 +2,6 @@
 
 #include "Daydream/Scene/GameEntity/GameEntity.h"
 #include "Component.h"
-#include "Daydream/Core/RegistryBase.h"
 
 namespace Daydream
 {
@@ -22,7 +21,7 @@ namespace Daydream
 
     // 컴포넌트 이름으로 컴포넌트를 생성
 
-    class ComponentRegistry : public RegistryBase<String, ComponentRegistryFunctions>
+    class ComponentRegistry
     {
     public:
         // 싱글톤 인스턴스를 가져오는 함수
@@ -51,6 +50,8 @@ namespace Daydream
         }
 
     private:
+        HashMap<String, ComponentRegistryFunctions> registry;
+
         inline static ComponentRegistry* instance;
     };
 }

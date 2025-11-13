@@ -1,11 +1,10 @@
 #pragma once
 
 #include "Window.h"
-#include "RegistryBase.h"
 
 namespace Daydream
 {
-	class WindowManager : public RegistryBase<String, DaydreamWindow*>
+	class WindowManager 
 	{
 	public:
 		static void Init();

@@ -31,9 +31,9 @@ namespace Daydream
 		}
 
 		UInt32 index = 0;
-		int sz = shaderGroup->GetShaderResourceData().size();
-		srvRanges.reserve(sz);
-		samplerRanges.reserve(sz);
+		UInt64 resourceSize = shaderGroup->GetShaderResourceData().size();
+		srvRanges.reserve(resourceSize);
+		samplerRanges.reserve(resourceSize);
 		auto& shaderResourceData = shaderGroup->GetShaderResourceDataRef();
 		for (int i = 0; i < shaderGroup->GetShaderResourceDataRef().size(); i++)
 		{
@@ -163,7 +163,7 @@ namespace Daydream
 		desc.PS = static_cast<D3D12Shader*>(shaderGroup->GetShader(ShaderType::Pixel).get())->GetShaderBytecode();
 		desc.RasterizerState = rasterizerDesc;
 		desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-		desc.NumRenderTargets = rpDesc.colorAttachments.size();
+		desc.NumRenderTargets = (UInt32)rpDesc.colorAttachments.size();
 		desc.SampleDesc = sampleDesc;
 		desc.InputLayout.NumElements = static_cast<UInt32>(inputLayoutDesc.size());
 		desc.InputLayout.pInputElementDescs = inputLayoutDesc.data();

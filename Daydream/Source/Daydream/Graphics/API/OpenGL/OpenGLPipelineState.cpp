@@ -28,7 +28,7 @@ namespace Daydream
 				GL_FALSE,
 				offset);
 			glVertexArrayAttribBinding(vao, inputDataIndex, 0);
-			offset += info.size;
+			offset += (UInt32)info.size;
 			inputDataIndex++;
 		}
 

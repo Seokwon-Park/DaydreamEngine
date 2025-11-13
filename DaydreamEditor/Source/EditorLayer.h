@@ -23,6 +23,8 @@ namespace Daydream
 
 		bool OnKeyPressed(KeyPressedEvent& _e);
 
+		void CreateProject();
+
 		void CreateDockspace();
 		void UpdateViewportSize();
 	private:
@@ -33,9 +35,7 @@ namespace Daydream
 		bool isViewportFocused = false;
 		bool viewportShouldResize = true;
 
-		Shared<VertexBuffer> squareVB;
 		Shared<VertexBuffer> cubeVBO;
-		Shared<IndexBuffer> squareIB;
 		Shared<IndexBuffer> cubeIBO;
 
 		Shared<Sampler> sampler;
@@ -70,6 +70,9 @@ namespace Daydream
 		Shared<Scene> activeScene;
 
 		Shared<EditorCamera> editorCamera;
+
+		Shared<Project> currentProject;
+		Unique<AssetManager> eidtorAssetManager;
 
 		//Panels
 		Unique<ViewportPanel> viewportPanel;

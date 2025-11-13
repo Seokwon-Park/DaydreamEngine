@@ -2,7 +2,6 @@
 
 #include "Daydream/Graphics/Core/RenderDevice.h"
 #include "RenderCommand.h"
-#include "Daydream/Graphics/Resources/Shader.h"
 #include "Daydream/Scene/Scene.h"
 #include "Daydream/Graphics/Core/Camera.h"
 
@@ -39,8 +38,6 @@ namespace Daydream
 		DaydreamWindow* currentWindow;
 
 		Unique<RenderDevice> renderDevice;
-
-
 	};
 }
 

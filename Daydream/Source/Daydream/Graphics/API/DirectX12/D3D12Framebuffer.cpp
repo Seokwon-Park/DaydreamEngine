@@ -21,8 +21,8 @@ namespace Daydream
 	{
 		device = _device;
 		auto desc = _swapchainImage->GetDesc();
-		width = desc.Width;
-		height = desc.Height;
+		width = (UInt32)desc.Width;
+		height = (UInt32)desc.Height;
 		renderPass = _renderPass;
 
 		D3D12_RESOURCE_DESC textureDesc = _swapchainImage->GetDesc();

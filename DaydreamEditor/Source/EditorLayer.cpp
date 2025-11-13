@@ -15,37 +15,11 @@ namespace Daydream
 
 	void EditorLayer::OnAttach()
 	{
-		//camera = MakeShared<EditorCamera>();
+
+		AssetManager::LoadAssetDataFromDirectory("Resource");
+
 		editorCamera = MakeShared<EditorCamera>();
 		activeScene = MakeShared<Scene>("MainScene");
-
-
-		//float squareVertices[4 * 9] = {
-		//-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-		//-0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-		// 0.5f,	0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-		// 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-		//};
-
-		//float squareVertices2[4 * 9] = {
-		//	-0.3f, -0.4f, .5f, 1.0f,0.0f,0.0f,1.0f, 0.0f,1.0f,
-		//	 -0.3f,  0.6f, .5f,0.0f,0.0f,1.0f,1.0f, 0.0f,0.0f,
-		//	 0.7f, 0.6f, 1.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 0.0f,
-		//	 0.7f, -0.4f, 1.0f,0.0f,1.0f,0.0f,1.0f, 1.0f, 1.0f,
-		//};
-
-		//Daydream::BufferLayout layout =
-		//{
-		//	{ Daydream::ShaderDataType::Float3, "a_Position", "POSITION"},
-		//	{ Daydream::ShaderDataType::Float4, "a_Color", "COLOR"},
-		//	{ Daydream::ShaderDataType::Float2, "a_TexCoord", "TEXCOORD"}
-		//};
-		////squareVB = Daydream::VertexBuffer::CreateStatic(squareVertices, sizeof(squareVertices), layout.GetStride());
-		//squareVB = VertexBuffer::CreateDynamic(sizeof(squareVertices), layout.GetStride(), 0, nullptr);
-		//squareVB->SetData(squareVertices, sizeof(squareVertices));
-
-		//uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
-		//squareIB = Daydream::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 
 		editorCamera->SetPosition({ 0.0f,0.0f,-2.0f });
 		viewProjMat = ConstantBuffer::Create(sizeof(Daydream::Matrix4x4));
@@ -117,7 +91,6 @@ namespace Daydream
 		materialcube = Material::Create(skyboxPipeline);
 		materialcube->SetConstantBuffer("Camera", viewProjMat);
 		materialcube->SetTextureCube("TextureCubemap", activeScene->GetSkybox()->GetSkyboxTexture());
-		auto texture = ResourceManager::GetResource<Texture2D>("Asset\\Texture\\kloofendal_48d_partly_cloudy_puresky_4k.hdr");
 		//materialcube->SetTexture2D("Texture", texture);
 
 		deferredLightingMaterial = Material::Create(deferredLightingPSO);
@@ -127,10 +100,13 @@ namespace Daydream
 		auto entity = activeScene->CreateGameEntity();
 		entity->SetName("Test");
 
+		auto entity2 = activeScene->CreateGameEntity();
+		entity2->SetName("Test2");
+
 		activeScene->SetCurrentCamera(editorCamera);
 		//Cubemap Mesh
 		//auto meshData = MeshGenerator::CreateCube(5.0f);
-		auto meshData = MeshGenerator::CreateSphere(100.0f, 20.0f, 20.0f);
+		auto meshData = MeshGenerator::CreateSphere(100.0f, 20, 20);
 		Array<Vector3> positions;
 		for (Vertex v : meshData.vertices)
 		{
@@ -154,6 +130,9 @@ namespace Daydream
 		ModelRendererComponent* component = entity->AddComponent<ModelRendererComponent>();
 		component->SetModel(model);
 
+		ModelRendererComponent* component2 = entity2->AddComponent<ModelRendererComponent>();
+		component2->SetModel(AssetManager::GetAssetByPath<Model>("Asset/Model/cerberusgun/scene.gltf"));
+
 		////////////////////////Light////////////////////////////
 		auto lightEntity = activeScene->CreateGameEntity("Directional Light");
 		lightEntity->AddComponent<LightComponent>();
@@ -175,6 +154,7 @@ namespace Daydream
 	void EditorLayer::OnUpdate(Float32 _deltaTime)
 	{
 		editorCamera->Update(_deltaTime);
+		sceneHierarchyPanel->Update();
 		viewProjMat->Update(&editorCamera->GetViewProjectionMatrix(), sizeof(Daydream::Matrix4x4));
 
 		static bool isViewControlled = false;
@@ -230,19 +210,19 @@ namespace Daydream
 		deferredLightingMaterial->SetTextureCube("Prefilter", activeScene->GetSkybox()->GetPrefilterTexture());
 		deferredLightingMaterial->Bind();
 		ResourceManager::GetResource<Mesh>("Quad")->Bind();
-		Renderer::Submit(6);
+		Renderer::Submit(ResourceManager::GetResource<Mesh>("Quad")->GetIndexCount());
 
 		//pso3d->Bind();
 		//activeScene->Update(_deltaTime);
 
-		//if (skyboxPanel->IsUsingSkybox())
-		//{
-		//	skyboxPipeline->Bind();
-		//	mesh->Bind();
-		//	materialcube->SetTextureCube("TextureCubemap", activeScene->GetSkybox()->GetSkyboxTexture());
-		//	materialcube->Bind();
-		//	Renderer::Submit(mesh->GetIndexCount());
-		//}
+		if (skyboxPanel->IsUsingSkybox())
+		{
+			skyboxPipeline->Bind();
+			mesh->Bind();
+			materialcube->SetTextureCube("TextureCubemap", activeScene->GetSkybox()->GetSkyboxTexture());
+			materialcube->Bind();
+			Renderer::Submit(mesh->GetIndexCount());
+		}
 		renderPass->End();
 		deferredLightingMaterial->Unbind();
 	}
@@ -260,7 +240,6 @@ namespace Daydream
 		for (int i = 0; i < 4; i++)
 		{
 			ImGui::Image((ImTextureID)gBufferFramebuffer->GetColorAttachmentTexture(i)->GetImGuiHandle(), ImVec2{ viewportSize.x / 3,viewportSize.y / 3 });
-			ImGui::SameLine;
 		}
 		ImGui::End();
 		//UI::DrawMaterialController("SkyboxTextures", materialcube.get());
@@ -298,8 +277,11 @@ namespace Daydream
 		{
 			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::MenuItem("New Scene", "Ctrl+N")) { /* 새 씬 로직 */ }
-				if (ImGui::MenuItem("Open Scene...", "Ctrl+O")) { /* 씬 열기 로직 */ }
+				if (ImGui::MenuItem("New Project", "Ctrl+N")) 
+				{
+					CreateProject();
+				}
+				if (ImGui::MenuItem("Open Project...", "Ctrl+O")) { /* 씬 열기 로직 */ }
 				if (ImGui::MenuItem("Save Scene", "Ctrl+S")) { /* 씬 저장 로직 */ }
 				if (ImGui::MenuItem("Save Scene As...", "Ctrl+Shift+S")) { /* 씬 다른 이름으로 저장 로직 */ }
 				ImGui::Separator();
@@ -472,6 +454,10 @@ namespace Daydream
 		}
 		}
 		return false;
+	}
+
+	void EditorLayer::CreateProject()
+	{
 	}
 
 	void EditorLayer::CreateDockspace()

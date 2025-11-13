@@ -32,7 +32,6 @@ namespace Daydream
 {
 	namespace
 	{
-
 		static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(
 			vk::DebugUtilsMessageSeverityFlagBitsEXT _messageSeverity,
 			vk::DebugUtilsMessageTypeFlagsEXT _messageType,
