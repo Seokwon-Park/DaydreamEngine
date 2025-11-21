@@ -33,7 +33,7 @@ Use the `--recursive` flag to verify that all dependencies are loaded correctly.
 
 Clone the repository   
 ```bash
-git clone --recursive [https://github.com/Seokwon-Park/DaydreamEngine](https://github.com/Seokwon-Park/DaydreamEngine)
+git clone --recursive https://github.com/Seokwon-Park/DaydreamEngine
 ```
 
 If the repository was cloned non-recursively previously, use    
