@@ -31,20 +31,14 @@ To build and run the engine, you need:
 ### 1. Clone the Repository
 Use the `--recursive` flag to verify that all dependencies are loaded correctly.
 
-Clone the repository   
+Clone the repository
 ```bash
 git clone --recursive https://github.com/Seokwon-Park/DaydreamEngine
 ```
 
-If the repository was cloned non-recursively previously, use    
+If you have already cloned the repository non-recursively, you can initialize the submodules with the following command:
 ```bash
-git submodule update --init
-```
-
-
-Then update the submodule with    
-```
-git submodule update
+git submodule update --init --recursive
 ```
 
 ### 2. Generate Project Files
