@@ -67,6 +67,12 @@ namespace Daydream::GraphicsUtility::OpenGL
 		case RenderFormat::R32G32_FLOAT:           return GL_RG32F;
 		case RenderFormat::R32_FLOAT:              return GL_R32F;
 
+			// 32-bit float formats
+		case RenderFormat::R32G32B32A32_UINT:     return GL_RGBA32UI;
+		case RenderFormat::R32G32B32_UINT:        return GL_RGB32UI;
+		case RenderFormat::R32G32_UINT:           return GL_RG32UI;
+		case RenderFormat::R32_UINT:              return GL_R32UI;
+
 			// 16-bit float formats
 		case RenderFormat::R16G16B16A16_FLOAT:     return GL_RGBA16F;
 		case RenderFormat::R16G16_FLOAT:           return GL_RG16F;
@@ -86,7 +92,6 @@ namespace Daydream::GraphicsUtility::OpenGL
 		case RenderFormat::R16_UNORM:              return GL_R16;
 
 			// Integer formats
-		case RenderFormat::R32G32B32A32_UINT:      return GL_RGBA32UI;
 		case RenderFormat::R32G32B32A32_SINT:      return GL_RGBA32I;
 		case RenderFormat::R16G16B16A16_UINT:      return GL_RGBA16UI;
 		case RenderFormat::R16G16B16A16_SINT:      return GL_RGBA16I;
@@ -145,6 +150,7 @@ namespace Daydream::GraphicsUtility::OpenGL
 		case RenderFormat::R16G16B16A16_SINT:      return GL_RGBA_INTEGER;
 		case RenderFormat::R8G8B8A8_UINT:          return GL_RGBA_INTEGER;
 		case RenderFormat::R8G8B8A8_SINT:          return GL_RGBA_INTEGER;
+		case RenderFormat::R32_UINT:			   return GL_RED_INTEGER;
 			// Special formats
 		case RenderFormat::R11G11B10_FLOAT:        return GL_RGB;
 		case RenderFormat::R10G10B10A2_UNORM:      return GL_RGBA;

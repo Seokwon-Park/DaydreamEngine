@@ -69,9 +69,9 @@ namespace Daydream
 		{
 			positions.push_back(v.position);
 		}
-		boxVB = VertexBuffer::CreateStatic(sizeof(Vector3) * (UInt32)positions.size(), 12, positions.data());
-		boxIB = IndexBuffer::Create(meshData.indices.data(), (UInt32)meshData.indices.size());
-		boxMesh = Mesh::Create(boxVB, boxIB);
+		//boxVB = VertexBuffer::CreateStatic(sizeof(Vector3) * (UInt32)positions.size(), 12, positions.data());
+		//boxIB = IndexBuffer::Create(meshData.indices.data(), (UInt32)meshData.indices.size());
+		boxMesh = ResourceManager::GetResource<Mesh>("Box");
 	}
 
 	Skybox::~Skybox()
@@ -339,7 +339,7 @@ namespace Daydream
 		resizePSO->Bind();
 		quadMesh->Bind();
 		resizeMaterial->Bind();
-		Renderer::Submit(resizeIB->GetIndexCount());
+		Renderer::Submit(quadMesh->GetIndexCount());
 		resizeRenderPass->End();
 
 		resizeResultTexture = Texture2D::CreateEmpty(textureDesc);

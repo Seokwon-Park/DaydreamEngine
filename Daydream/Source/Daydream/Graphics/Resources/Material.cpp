@@ -2,7 +2,7 @@
 #include "Material.h"
 
 #include "Daydream/Graphics/Core/Renderer.h"
-#include "Daydream/Graphics/Core/PipelineState.h"
+#include "Daydream/Graphics/Resources/PipelineState.h"
 
 namespace Daydream
 {

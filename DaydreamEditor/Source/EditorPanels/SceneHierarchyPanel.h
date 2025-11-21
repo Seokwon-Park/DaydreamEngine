@@ -12,6 +12,7 @@ namespace Daydream
 		SceneHierarchyPanel();
 
 		void SetCurrentScene(Scene* _scene);
+		void SetSelectedEntity(GameEntity* _entity) { selectedEntity = _entity; }
 		GameEntity* GetSelectedEntity() { return selectedEntity; }
 
 		void Update();

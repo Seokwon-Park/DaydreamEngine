@@ -136,6 +136,7 @@ namespace Daydream
 	void VulkanRenderPass::End()
 	{
  		device->GetCommandBuffer().endRenderPass();
+		currentFramebuffer = nullptr;
 	}
 	Shared<Framebuffer> VulkanRenderPass::CreateFramebuffer(const FramebufferDesc& _desc)
 	{

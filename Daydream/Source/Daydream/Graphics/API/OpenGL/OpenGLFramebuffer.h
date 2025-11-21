@@ -17,6 +17,7 @@ namespace Daydream
 		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) override;
 		virtual inline bool HasDepthAttachment() override { return depthAttachment != nullptr; }
 		virtual void Resize(UInt32 _width, UInt32 _height) override;
+		virtual UInt32 ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY) override;
 
 		void AttachTextures();
 		bool IsBackbuffer() { return isBackbuffer; }
@@ -26,6 +27,8 @@ namespace Daydream
 		UInt32 framebufferID;
 		Array<Shared<OpenGLTexture2D>> colorAttachments;
 		Shared<OpenGLTexture2D> depthAttachment;
+
+		Shared<OpenGLTexture2D> entityTexture;
 		bool isBackbuffer = false;
 	};
 }

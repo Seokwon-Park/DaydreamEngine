@@ -13,6 +13,12 @@ struct PSOutput
     float4 normal : SV_Target1;
     float4 albedo : SV_Target2;
     float4 material : SV_Target3;
+    uint entityHandle : SV_Target4;
+};
+
+cbuffer Entity : register(b2)
+{
+    uint entityHandle;
 };
 
 [[vk::combinedImageSampler]][[vk::binding(0, 1)]]
@@ -70,12 +76,14 @@ PSOutput PSMain(PSInput input)
 
     float3 normal = NormalTexture.Sample(NormalTextureSampler, input.uv).rgb * 2.0 - 1.0;
     normal = normalize(mul(normal, TBN));
-    
+
     //output.position = float4(input.worldPosition, 1.0f);
     output.position = float4(input.worldPosition, 1.0f);
     output.normal = float4(normal, 1.0f);
     output.albedo = albedo;
+    //output.albedo = float4(1.0f, 1.0f, 0.0f, 1.0f);
     output.material = float4(MRAO, 1.0f);
+    output.entityHandle = entityHandle;
     
     return output;
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Daydream/Graphics/Core/PipelineState.h"
+#include "Daydream/Graphics/Resources/PipelineState.h"
 
 #include "D3D12RenderDevice.h"
 

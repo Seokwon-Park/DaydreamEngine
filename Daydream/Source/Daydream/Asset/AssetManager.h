@@ -2,6 +2,7 @@
 
 #include "Asset.h"
 
+
 namespace Daydream
 {
 	struct AssetMetadata
@@ -28,6 +29,8 @@ namespace Daydream
 		static void Shutdown();
 
 		static void LoadAssetDataFromDirectory(const Path& _directoryPath, bool _isRecursive = true);
+		static void CreateBuiltinAssets();
+
 
 		template<typename AssetType>
 		static Shared<AssetType> GetAsset(AssetHandle _uuid)
@@ -46,7 +49,7 @@ namespace Daydream
 				return nullptr;
 			}
 
-			// (newAsset은 이제 loadedAssetCache에도 저장되어 있음)
+			// newAsset은 이제 loadedAssetCache에도 저장되어 있음
 			return std::static_pointer_cast<AssetType>(newAsset);
 		}
 
@@ -66,13 +69,14 @@ namespace Daydream
 	private:
 		AssetManager();
 
+		AssetType GetAssetTypeFromPath(const Path& _path);
+		void CreateBuiltinTexture2D();
+
 		void ProcessDirectory(const Path& _directoryPath, bool _isRecursive = true);
 		void ProcessFile(const Path& _filePath, AssetType _assetType);
 		void RegisterAsset(const Path& _path);
 		AssetMetadata LoadMetadata(const Path& _path);
 		Shared<Asset> LoadAssetCache(AssetHandle _uuid);
-		AssetType GetAssetTypeFromPath(const Path& _path);
-
 		void CreateMetaDataFile(const AssetMetadata& _metadata);
 
 		HashMap<AssetHandle, AssetMetadata> assetRegistry;
@@ -80,7 +84,5 @@ namespace Daydream
 		HashMap<AssetHandle, Shared<Asset>> loadedAssetCache;
 
 		inline static AssetManager* instance = nullptr;
-
-		static const SortedMap<String, AssetType> assetExtensionMap;
 	};
 }

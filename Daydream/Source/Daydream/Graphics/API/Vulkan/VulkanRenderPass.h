@@ -1,7 +1,7 @@
 #pragma once
 
 #include "VulkanRenderDevice.h"
-#include "Daydream/Graphics/Core/RenderPass.h"
+#include "Daydream/Graphics/Resources/RenderPass.h"
 
 namespace Daydream
 {

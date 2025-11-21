@@ -21,7 +21,9 @@ namespace Daydream
 		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) override;
 		virtual bool HasDepthAttachment() override { return depthAttachment != nullptr; }
 		virtual void Resize(UInt32 _width, UInt32 _height) override;
+		virtual UInt32 ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY) override;
 		//virtual Shared<Texture2D> GetDepthAttachemntTexture(UInt32 _index) override;
+
 
 		Array<ID3D11RenderTargetView*> GetRenderTargetViews() { return renderTargetViews; }
 		ComPtr<ID3D11DepthStencilView> GetDepthStencilView() { return depthAttachment->GetDSV(); }
@@ -33,5 +35,9 @@ namespace Daydream
 		Array<ID3D11RenderTargetView*> renderTargetViews;
 		Shared<D3D11Texture2D> depthAttachment;
 		ComPtr<ID3D11DepthStencilView> depthStencilView;
+
+		Shared<D3D11Texture2D> entityTexture = 0;
+		ComPtr<ID3D11Texture2D> readTexture;
+
 	};
 }

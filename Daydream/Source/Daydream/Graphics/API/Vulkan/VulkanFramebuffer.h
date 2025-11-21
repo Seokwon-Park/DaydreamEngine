@@ -21,6 +21,7 @@ namespace Daydream
 		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) override;
 		virtual inline bool HasDepthAttachment() override { return depthAttachment != nullptr; }
 		virtual void Resize(UInt32 _width, UInt32 _height) override;
+		virtual UInt32 ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY) override;
 
 		vk::Framebuffer GetFramebuffer() { return framebuffer.get(); }
 		vk::Extent2D GetExtent() { return extent; }
@@ -38,5 +39,10 @@ namespace Daydream
 		Shared<VulkanTexture2D> depthAttachment;
 
 		Array<Shared<VulkanTexture2D>> oldAttachments;
+
+		Shared<VulkanTexture2D> entityTexture;
+		vma::UniqueBuffer stagingBuffer;
+		vma::UniqueAllocation stagingBufferAllocation;
+
 	};
 }

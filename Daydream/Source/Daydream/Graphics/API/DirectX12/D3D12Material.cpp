@@ -44,7 +44,10 @@ namespace Daydream
 			Shared<D3D12Texture2D> d3d12Tex = static_pointer_cast<D3D12Texture2D>(texture);
 			device->GetCommandList()->SetGraphicsRootDescriptorTable(bindingMap[name].descriptorTableIndex, d3d12Tex->GetSRVGPUHandle());
 			String samplerName = name + "Sampler";
-			device->GetCommandList()->SetGraphicsRootDescriptorTable(bindingMap[samplerName].descriptorTableIndex, d3d12Tex->GetSamplerHandle());
+			if (bindingMap.find(samplerName) != bindingMap.end())
+			{
+				device->GetCommandList()->SetGraphicsRootDescriptorTable(bindingMap[samplerName].descriptorTableIndex, d3d12Tex->GetSamplerHandle());
+			}
 		}
 
 		for (auto [name, texture] : textureCubes)

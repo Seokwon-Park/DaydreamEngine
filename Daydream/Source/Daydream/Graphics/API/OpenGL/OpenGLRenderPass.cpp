@@ -16,16 +16,17 @@ namespace Daydream
 		if (currentFramebuffer->IsBackbuffer() == true)
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
 			//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 		else
 		{
-			glViewport(0, 0, currentFramebuffer->GetWidth(), currentFramebuffer->GetHeight());
 			glBindFramebuffer(GL_FRAMEBUFFER, currentFramebuffer->GetFramebufferID());
+			glViewport(0, 0, currentFramebuffer->GetWidth(), currentFramebuffer->GetHeight());
 			if (currentFramebuffer->HasDepthAttachment())
 			{
 				glEnable(GL_DEPTH_TEST);
+				glDepthFunc(GL_LESS);
 				glClear(GL_DEPTH_BUFFER_BIT);
 			}
 

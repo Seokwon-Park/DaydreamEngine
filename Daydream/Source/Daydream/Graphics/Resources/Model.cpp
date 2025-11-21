@@ -4,7 +4,7 @@
 #include "Daydream/Graphics/Utility/ModelLoader.h"
 #include "Daydream/Graphics/Resources/Buffer.h"
 #include "Daydream/Graphics/Resources/Mesh.h"
-#include "Daydream/Graphics/Core/PipelineState.h"
+#include "Daydream/Graphics/Resources/PipelineState.h"
 #include "Daydream/Graphics/Manager/ResourceManager.h"
 #include "Daydream/Graphics/Core/Renderer.h"
 #include "Daydream/Asset/AssetManager.h"
@@ -68,11 +68,12 @@ namespace Daydream
 		{
 			//Shared<Material> newMat = Material::Create(ResourceManager::GetResource<PipelineState>("ForwardPSO"));
 			Shared<Material> newMat = Material::Create(ResourceManager::GetResource<PipelineState>("GBufferPSO"));
-			auto diffuse = AssetManager::GetAssetByPath<Texture2D>("Default");
-			auto normal = AssetManager::GetAssetByPath<Texture2D>("DefaultNormal");
-			auto roughness = AssetManager::GetAssetByPath<Texture2D>("DefaultRoughness");
-			auto metallic = AssetManager::GetAssetByPath<Texture2D>("DefaultMetallic");
-			auto ao = AssetManager::GetAssetByPath<Texture2D>("DefaultAO");
+
+			Shared<Texture2D> diffuse = AssetManager::GetAssetByPath<Texture2D>("DefaultTexture");
+			Shared<Texture2D> normal = AssetManager::GetAssetByPath<Texture2D>("DefaultNormal");
+			Shared<Texture2D> roughness = AssetManager::GetAssetByPath<Texture2D>("DefaultRoughness");
+			Shared<Texture2D> metallic = AssetManager::GetAssetByPath<Texture2D>("DefaultMetallic");
+			Shared<Texture2D> ao = AssetManager::GetAssetByPath<Texture2D>("DefaultAO");
 			newMat->SetTexture2D("AlbedoTexture", diffuse);
 			newMat->SetTexture2D("NormalTexture", normal);
 			newMat->SetTexture2D("RoughnessTexture", roughness);

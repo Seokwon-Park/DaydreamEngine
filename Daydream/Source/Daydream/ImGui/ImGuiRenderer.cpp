@@ -46,6 +46,7 @@ namespace Daydream
 	void ImGuiRenderer::Shutdown()
 	{
 		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
 	}
 
 	void ImGuiRenderer::NewFrame()

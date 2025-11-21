@@ -6,6 +6,12 @@ namespace Daydream
 {
 	class Framebuffer;
 	struct FramebufferDesc;
+	
+	enum class AttachmentType
+	{
+		None,
+		EntityHandle,
+	};
 
 	enum class AttachmentLoadOp {
 		Load,      // 이전 내용을 그대로 로드
@@ -24,6 +30,7 @@ namespace Daydream
 		// 이 Attachment에 대한 처리 방식을 명시	
 		AttachmentLoadOp  loadOp = AttachmentLoadOp::Clear;
 		AttachmentStoreOp storeOp = AttachmentStoreOp::Store;
+		AttachmentType type = AttachmentType::None;
 		// loadOp가 Clear일 경우 사용할 값
 		Color clearValue = Color(0.0f, 0.0f, 0.0f, 1.0f);
 		bool isSwapchain = false;
@@ -55,6 +62,6 @@ namespace Daydream
 		static Shared<RenderPass> Create(const RenderPassDesc& _desc);
 	protected:
 		RenderPassDesc desc;
-		Color clearColor;
+		Color clearColor = Color(0.0f,0.0f,0.0f,0.0f);
 	};
 }

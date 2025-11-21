@@ -27,6 +27,9 @@ struct EntityHandle
 
 	static EntityHandle Create(UInt32 _index, UInt32 _generation)
 	{
+		DAYDREAM_CORE_ASSERT((_index & ~indexMask) == 0 , "Entity Index가 허용 범위를 초과했습니다!");
+		DAYDREAM_CORE_ASSERT((_generation & ~generationMask) == 0 , "Generation이 허용 범위를 초과했습니다!");
+
 		UInt32 newId = ((_generation & generationMask) << indexBits) | (_index & indexMask);
 		// 0은 Invalid ID로 사용하므로, 만약 조합된 ID가 0이면 
 		// (보통 index 0, generation 0일 때) 유효하지 않은 핸들을 반환

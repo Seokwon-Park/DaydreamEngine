@@ -42,7 +42,7 @@ namespace Daydream {
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	void Daydream::OpenGLVertexBuffer::SetData(const void * _data, UInt32 _dataSize)
+	void OpenGLVertexBuffer::SetData(const void * _data, UInt32 _dataSize)
 	{
 		glNamedBufferSubData(bufferID, 0, _dataSize, _data);
 	}

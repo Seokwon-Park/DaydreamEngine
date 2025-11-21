@@ -25,6 +25,11 @@ namespace Daydream
 		viewProjMat = ConstantBuffer::Create(sizeof(Daydream::Matrix4x4));
 		viewProjMat->Update(&editorCamera->GetViewProjectionMatrix(), sizeof(Daydream::Matrix4x4));
 
+		entityBuffer = ConstantBuffer::Create(sizeof(EntityInfo));
+		info.entityID = 0;
+		info.thickness = 3;
+
+
 		sampler = ResourceManager::GetResource<Sampler>("LinearRepeat");
 
 		Daydream::TextureDesc textureDesc{};
@@ -58,6 +63,7 @@ namespace Daydream
 
 		renderPass = ResourceManager::GetResource<RenderPass>("StandardRenderPass");
 		gBufferRenderPass = ResourceManager::GetResource<RenderPass>("GBufferRenderPass");
+		maskRenderPass = ResourceManager::GetResource<RenderPass>("MaskRenderPass");
 		renderPass->SetClearColor(Daydream::Color::Blue);
 
 		Daydream::FramebufferDesc fbDesc;
@@ -72,6 +78,7 @@ namespace Daydream
 		fbDesc.height = 900;
 		gBufferFramebuffer = Framebuffer::Create(gBufferRenderPass, fbDesc);
 
+		maskFramebuffer = Framebuffer::Create(maskRenderPass, fbDesc);
 
 		pso = ResourceManager::GetResource<PipelineState>("SpritePSO");
 		pso3d = ResourceManager::GetResource<PipelineState>("ForwardPSO");
@@ -79,6 +86,7 @@ namespace Daydream
 		skyboxPipeline = ResourceManager::GetResource<PipelineState>("CubemapPSO");
 		equirectangleToCubePipeline = ResourceManager::GetResource<PipelineState>("EquirectangularPSO");
 		deferredLightingPSO = ResourceManager::GetResource<PipelineState>("DeferredPSO");
+		maskPSO = ResourceManager::GetResource<PipelineState>("MaskPSO");
 
 		material = Material::Create(pso);
 		material->SetTexture2D("Texture", texture);
@@ -178,6 +186,14 @@ namespace Daydream
 		//		, camera->GetProjectionMatrix().mat[i][2]
 		//		, camera->GetProjectionMatrix().mat[i][3]);
 		//}
+		info.entityID = 0;
+		auto entity = sceneHierarchyPanel->GetSelectedEntity();
+		if (entity != nullptr)
+		{
+			info.entityID = entity->GetHandle().GetID();
+		}
+
+		entityBuffer->Update(&info, sizeof(EntityInfo));
 
 
 		//pso->Bind();
@@ -192,12 +208,32 @@ namespace Daydream
 		activeScene->Update(_deltaTime);
 		gBufferRenderPass->End();
 
+		// selectionFramebuffer는 반드시 "검은색(0)"으로 Clear 되어 있어야 함.
+
+		GameEntity* selectedEntity = sceneHierarchyPanel->GetSelectedEntity(); // 선택된 객체 가져오기
+
+		if (selectedEntity != nullptr && selectedEntity->GetComponent<ModelRendererComponent>())
+		{
+			maskRenderPass->Begin(maskFramebuffer);
+			maskPSO->Bind();
+			selectedEntity->GetComponent<ModelRendererComponent>()->RenderMeshOnly();
+			maskRenderPass->End();
+		}
+
 		renderPass->Begin(viewportFramebuffer);
 
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 5; i++)
 		{
-			gBufferFramebuffer->GetColorAttachmentTexture(i)->SetSampler(sampler);
+			if (i == 4)
+			{
+				gBufferFramebuffer->GetColorAttachmentTexture(i)->SetSampler(ResourceManager::GetResource<Sampler>("NearestRepeat"));
+			}
+			else
+			{
+				gBufferFramebuffer->GetColorAttachmentTexture(i)->SetSampler(sampler);
+			}
 		}
+		maskFramebuffer->GetColorAttachmentTexture(0)->SetSampler(ResourceManager::GetResource<Sampler>("NearestRepeat"));
 
 		deferredLightingPSO->Bind();
 		deferredLightingMaterial->SetTexture2D("PositionTexture", gBufferFramebuffer->GetColorAttachmentTexture(0));
@@ -205,7 +241,10 @@ namespace Daydream
 		deferredLightingMaterial->SetTexture2D("AlbedoTexture", gBufferFramebuffer->GetColorAttachmentTexture(2));
 		deferredLightingMaterial->SetTexture2D("RMAOTexture", gBufferFramebuffer->GetColorAttachmentTexture(3));
 		deferredLightingMaterial->SetTexture2D("BRDFLUT", activeScene->GetSkybox()->GetBRDF());
+		deferredLightingMaterial->SetTexture2D("EntityIDTexture", gBufferFramebuffer->GetColorAttachmentTexture(4));
+		deferredLightingMaterial->SetTexture2D("OutlineTexture", maskFramebuffer->GetColorAttachmentTexture(0));
 		deferredLightingMaterial->SetConstantBuffer("Lights", activeScene->GetLightConstantBuffer());
+		deferredLightingMaterial->SetConstantBuffer("EditorData", entityBuffer);
 		deferredLightingMaterial->SetTextureCube("IrradianceTexture", activeScene->GetSkybox()->GetIrradianceTexture());
 		deferredLightingMaterial->SetTextureCube("Prefilter", activeScene->GetSkybox()->GetPrefilterTexture());
 		deferredLightingMaterial->Bind();
@@ -242,6 +281,7 @@ namespace Daydream
 			ImGui::Image((ImTextureID)gBufferFramebuffer->GetColorAttachmentTexture(i)->GetImGuiHandle(), ImVec2{ viewportSize.x / 3,viewportSize.y / 3 });
 		}
 		ImGui::End();
+
 		//UI::DrawMaterialController("SkyboxTextures", materialcube.get());
 		//ImGui::BeginChild("CubemapTexture");
 		{
@@ -277,7 +317,7 @@ namespace Daydream
 		{
 			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::MenuItem("New Project", "Ctrl+N")) 
+				if (ImGui::MenuItem("New Project", "Ctrl+N"))
 				{
 					CreateProject();
 				}
@@ -306,16 +346,50 @@ namespace Daydream
 
 		ImGui::Begin("Viewport", nullptr,
 			ImGuiWindowFlags_NoScrollbar |
-			ImGuiWindowFlags_NoScrollWithMouse);
+			ImGuiWindowFlags_NoScrollWithMouse // | ImGuiWindowFlags_NoTitleBar
+		);
 		//DAYDREAM_INFO("{0}, {1}", viewportSize.x, viewportSize.y);
 		UpdateViewportSize();
 		isViewportFocused = ImGui::IsWindowFocused();
 		isViewportHovered = ImGui::IsWindowHovered();
+
 		Application::GetInstance().GetImGuiLayer()->BlockEvents(!isViewportFocused && !isViewportHovered);
 
-		ImGui::Image((ImTextureID)viewportFramebuffer->GetColorAttachmentTexture(0)->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
+		switch (viewIndex)
+		{
+		case 0:
+		{
+			ImGui::Image((ImTextureID)viewportFramebuffer->GetColorAttachmentTexture(0)->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
+			break;
+		}
+		case 1:
+		{
+			ImGui::Image((ImTextureID)gBufferFramebuffer->GetColorAttachmentTexture(0)->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
+			break;
+		}
+		case 2:
+		{
+			ImGui::Image((ImTextureID)gBufferFramebuffer->GetColorAttachmentTexture(1)->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
+			break;
+		}
+		case 3:
+		{
+			ImGui::Image((ImTextureID)gBufferFramebuffer->GetColorAttachmentTexture(2)->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
+			break;
+		}
+		case 4:
+		{
+			ImGui::Image((ImTextureID)gBufferFramebuffer->GetColorAttachmentTexture(3)->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
+			break;
+		}
+
+
+		}
 
 		GameEntity* selectedEntity = sceneHierarchyPanel->GetSelectedEntity();
+
+		isGuizmoInteract = ImGuizmo::IsUsing() || ImGuizmo::IsOver();
+
 		if (selectedEntity && guizmoType != -1)
 		{
 			ImGuizmo::SetOrthographic(false);
@@ -325,7 +399,7 @@ namespace Daydream
 			Transform& transform = selectedEntity->GetComponent<TransformComponent>()->GetTransform();
 			Matrix4x4 worldMatrix = transform.GetWorldMatrix();
 			ImGuizmo::Manipulate(editorCamera->GetViewMatrix().values, editorCamera->GetProjectionMatrix().values,
-				(ImGuizmo::OPERATION)guizmoType, ImGuizmo::LOCAL, worldMatrix.values);
+				(ImGuizmo::OPERATION)guizmoType, ImGuizmo::WORLD, worldMatrix.values);
 
 			if (ImGuizmo::IsUsing())
 			{
@@ -344,6 +418,7 @@ namespace Daydream
 		// 예시: 콘솔/로그 패널
 		ImGui::Begin("Console");
 		ImGui::Text("Engine Logs and Messages");
+		ImGui::DragInt("test", &info.thickness);
 		// 엔진의 로그 메시지를 출력
 		ImGui::End();
 
@@ -354,9 +429,6 @@ namespace Daydream
 		propertyPanel->OnImGuiRender();
 		assetBrowserPanel->OnImGuiRender();
 		skyboxPanel->OnImGuiRender();
-
-
-
 	}
 
 	void EditorLayer::UpdateViewportSize()
@@ -367,6 +439,11 @@ namespace Daydream
 		ImVec2 CurWindowSize = ImGui::GetMainViewport()->Size;
 		bool isWindowResized = mainWindowSize.x != ImGui::GetMainViewport()->Size.x || mainWindowSize.y != ImGui::GetMainViewport()->Size.y;
 		bool isViewportResized = viewportFramebuffer->GetWidth() != ImGuiViewportSize.x || viewportFramebuffer->GetHeight() != ImGuiViewportSize.y;
+		auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+		auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+		auto viewportOffset = ImGui::GetWindowPos(); // Includes tab bar(height 21)
+		viewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+		viewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
 		if (currentActive) return; // 그냥 활성화 상태면 일단 크기조절 X
 		if (isViewportResized) // 윈도우 크기가 저장된 값과 다르거나 Imgui 윈도우 크기가 framebuffer크기와 다르면 리사이즈 된거임
 		{
@@ -384,7 +461,7 @@ namespace Daydream
 				//Renderer::BeginSwapchainRenderPass(Renderer::GetCurrentWindow());
 				viewportFramebuffer->RequestResize(static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
 				gBufferFramebuffer->RequestResize(static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
-
+				maskFramebuffer->RequestResize(static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
 				// 카메라의 뷰포트 크기 업데이트
 				// camera->SetViewportSize(currentContentRegionSize.x, currentContentRegionSize.y);
 
@@ -410,6 +487,16 @@ namespace Daydream
 		//}
 	}
 
+	Pair<Int32, Int32> EditorLayer::GetViewportMousePos()
+	{
+		auto [mouseX, mouseY] = ImGui::GetMousePos();
+		mouseX -= viewportBounds[0].x;
+		mouseY -= viewportBounds[0].y;
+		//glm::vec2 viewportSize = viewportBounds[1] - viewportBounds[0];
+		//my = viewportSize.y - my;
+		return { mouseX, mouseY };
+	}
+
 	void EditorLayer::OnDetach()
 	{
 		viewportFramebuffer = nullptr;
@@ -419,7 +506,7 @@ namespace Daydream
 	{
 		EventDispatcher dispatcher(_event);
 		dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(EditorLayer::OnKeyPressed));
-		//dispatcher.Dispatch<MouseButtonPressedEvent>(BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
+		dispatcher.Dispatch<MouseButtonPressedEvent>(BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
 	}
 
 	bool EditorLayer::OnKeyPressed(KeyPressedEvent& _event)
@@ -432,6 +519,34 @@ namespace Daydream
 
 		switch (_event.GetKeyCode())
 		{
+		case Key::D1:
+		{
+			viewIndex = 0;
+			break;
+		}
+		case Key::D2:
+		{
+			viewIndex = 1;
+			break;
+		}
+		case Key::D3:
+		{
+			viewIndex = 2;
+			break;
+		}
+		case Key::D4:
+		{
+			viewIndex = 3;
+			break;
+		}
+		case Key::D5:
+		{
+			viewIndex = 4;
+			break;
+		}
+
+
+
 		case Key::Q:
 		{
 			guizmoType = -1;
@@ -453,6 +568,22 @@ namespace Daydream
 			break;
 		}
 		}
+		return false;
+	}
+
+	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& _e)
+	{
+		if (isViewportHovered && !isGuizmoInteract && Input::GetMouseDown(Mouse::ButtonLeft))
+		{
+			DAYDREAM_INFO("{}", gBufferFramebuffer->ReadEntityHandleFromPixel(GetViewportMousePos()));
+			int test = gBufferFramebuffer->ReadEntityHandleFromPixel(GetViewportMousePos());
+			if (test != 0)
+			{
+				sceneHierarchyPanel->SetSelectedEntity(activeScene->GetEntity(EntityHandle(test)));
+			}
+		}
+		DAYDREAM_INFO("Mouse Coord = {0}, {1}", GetViewportMousePos().first, GetViewportMousePos().second);
+
 		return false;
 	}
 

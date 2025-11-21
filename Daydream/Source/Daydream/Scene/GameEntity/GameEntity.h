@@ -22,7 +22,7 @@ namespace Daydream
 		inline void SetScene(Scene* _scene) { scene = _scene; }
 
 		/// 자신의 핸들을 설정하고 가져오는 함수
-		EntityHandle GetHandle() const { return handle; }
+		const EntityHandle& GetHandle() const { return handle; }
 		void SetHandle(EntityHandle _handle) { handle = _handle; }
 
 		bool IsValid() const { return handle.IsValid(); }

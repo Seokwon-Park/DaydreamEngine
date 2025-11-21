@@ -8,35 +8,42 @@
 
 namespace Daydream
 {
-	const SortedMap<String, AssetType> AssetManager::assetExtensionMap = {
-		// 텍스처
-		{".png", AssetType::Texture2D},
-		{".jpg", AssetType::Texture2D},
-		{".jpeg", AssetType::Texture2D},
-		{".tga", AssetType::Texture2D},
-		{".hdr", AssetType::Texture2D},
-
-		// 씬
-		{".ddscene", AssetType::Scene}, // 예시
-
-		{".hlsl", AssetType::Shader}, 
-
-		// 메쉬
-		{".fbx", AssetType::Model},
-		{".gltf", AssetType::Model},
-		{".obj", AssetType::Model},
-
-		// 스크립트
-	};
-
 	namespace 
 	{
+		const SortedMap<String, AssetType> assetExtensionMap = {
+			// 텍스처
+			{".png", AssetType::Texture2D},
+			{".jpg", AssetType::Texture2D},
+			{".jpeg", AssetType::Texture2D},
+			{".tga", AssetType::Texture2D},
+			{".hdr", AssetType::Texture2D},
+
+			// 씬
+			{".ddscene", AssetType::Scene}, // 예시
+
+			{".hlsl", AssetType::Shader},
+
+			// 메쉬
+			{".fbx", AssetType::Model},
+			{".gltf", AssetType::Model},
+			{".obj", AssetType::Model},
+
+			// 스크립트
+		};
+
+
 		const SortedMap<String, AssetType> assetTypeMap =
 		{
 			{"Texture2D", AssetType::Texture2D},
 			{"Model", AssetType::Model},
 			{"Shader", AssetType::Shader},
 		};
+
+		const AssetHandle DefaultTexture= AssetHandle("00000001-0000-0000-0000-000000000001");
+		const AssetHandle DefaultNormal = AssetHandle("00000001-0000-0000-0000-000000000002");
+		const AssetHandle DefaultRoughness= AssetHandle("00000001-0000-0000-0000-000000000002");
+		const AssetHandle DefaultMetallic = AssetHandle("00000001-0000-0000-0000-000000000002");
+		const AssetHandle DefaultAO = AssetHandle("00000001-0000-0000-0000-000000000002");
 
 
 		String AssetTypeToString(AssetType _type)
@@ -89,29 +96,11 @@ namespace Daydream
 		instance->ProcessDirectory(_directoryPath, _isRecursive);
 	}
 
-	void AssetManager::RegisterAsset(const Path& _path)
+	void AssetManager::CreateBuiltinAssets()
 	{
-		Path metaFilePath = _path;
-		metaFilePath += ".ddmeta";
-
-		AssetMetadata metadata = LoadMetadata(metaFilePath);
-		if (!metadata.IsValid())
-		{
-			// 메타파일이 손상되었거나 유효하지 않음
-			return;
-		}
-
-		// 파일 경로가 메타데이터와 다를 수 있으므로(파일 이동 감지),
-		// 실제 파일 경로로 업데이트
-		metadata.filePath = _path; // TODO: 상대 경로로 변환해야 함
-
-		// 레지스트리에 등록
-		if (assetRegistry.find(metadata.handle) == assetRegistry.end())
-		{
-			assetRegistry[metadata.handle] = metadata;
-			assetPathMap[metadata.filePath.generic_string()] = metadata.handle;
-		}
+		instance->CreateBuiltinTexture2D();
 	}
+
 
 	AssetMetadata AssetManager::LoadMetadata(const Path& _metaFilePath)
 	{
@@ -129,6 +118,12 @@ namespace Daydream
 		//	fout << data;
 		//	fout.close();
 		//}
+
+		//String tmp = data["Path"].as<String>();
+		//data["Path"] = Path(tmp).generic_string();
+		//std::ofstream fout(_metaFilePath);
+		//fout << data;
+		//fout.close();
 
 		AssetMetadata metadata;
 		metadata.handle = AssetHandle(data["Handle"].as<String>());
@@ -196,6 +191,49 @@ namespace Daydream
 		return itr->second;
 	}
 
+	void AssetManager::CreateBuiltinTexture2D()
+	{
+		TextureDesc desc{};
+		desc.bindFlags = RenderBindFlags::ShaderResource;
+		desc.width = 1;
+		desc.height = 1;
+		desc.format = RenderFormat::R8G8B8A8_UNORM;
+		UInt32 imageSize = desc.width * desc.height;
+
+		Array<UInt8> pixelData;
+		pixelData.resize(imageSize * 4);
+		pixelData[3] = 255;
+		pixelData[0] = 255;
+		pixelData[1] = 255;
+		pixelData[2] = 255;
+		assetPathMap["DefaultTexture"] = DefaultTexture;
+		loadedAssetCache[DefaultTexture] = Texture2D::Create(pixelData.data(), desc);
+
+		pixelData[0] = 128;
+		pixelData[1] = 128;
+		pixelData[2] = 255;
+		assetPathMap["DefaultNormal"] = DefaultNormal;
+		loadedAssetCache[DefaultNormal] = Texture2D::Create(pixelData.data(), desc);
+
+		pixelData[0] = 128;
+		pixelData[1] = 128;
+		pixelData[2] = 128;
+		assetPathMap["DefaultRoughness"] = DefaultRoughness;
+		loadedAssetCache[DefaultRoughness] = Texture2D::Create(pixelData.data(), desc);
+
+		pixelData[0] = 0;
+		pixelData[1] = 0;
+		pixelData[2] = 0;
+		assetPathMap["DefaultMetallic"] = DefaultMetallic;
+		loadedAssetCache[DefaultMetallic] = Texture2D::Create(pixelData.data(), desc);
+
+		pixelData[0] = 255;
+		pixelData[1] = 255;
+		pixelData[2] = 255;
+		assetPathMap["DefaultAO"] = DefaultAO;
+		loadedAssetCache[DefaultAO] = Texture2D::Create(pixelData.data(), desc);
+	}
+
 	void AssetManager::ProcessDirectory(const Path& _directoryPath, bool _isRecursive)
 	{
 		auto dirItr = FileSystem::directory_iterator(_directoryPath);
@@ -240,6 +278,30 @@ namespace Daydream
 			metadata.type = _assetType;
 			//Create metafile
 			CreateMetaDataFile(metadata);
+		}
+	}
+
+	void AssetManager::RegisterAsset(const Path& _path)
+	{
+		Path metaFilePath = _path;
+		metaFilePath += ".ddmeta";
+
+		AssetMetadata metadata = LoadMetadata(metaFilePath);
+		if (!metadata.IsValid())
+		{
+			// 메타파일이 손상되었거나 유효하지 않음
+			return;
+		}
+
+		// 파일 경로가 메타데이터와 다를 수 있으므로(파일 이동 감지),
+		// 실제 파일 경로로 업데이트
+		metadata.filePath = _path; // TODO: 상대 경로로 변환해야 함
+
+		// 레지스트리에 등록
+		if (assetRegistry.find(metadata.handle) == assetRegistry.end())
+		{
+			assetRegistry[metadata.handle] = metadata;
+			assetPathMap[metadata.filePath.generic_string()] = metadata.handle;
 		}
 	}
 

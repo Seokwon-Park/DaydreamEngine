@@ -24,6 +24,7 @@ namespace Daydream
 		registry["Resize"] = ShaderGroup::CreateBuiltin("ResizeVS.hlsl", "ResizePS.hlsl");
 		registry["BRDF"] = ShaderGroup::CreateBuiltin("BRDFVS.hlsl", "BRDFPS.hlsl");
 		registry["GBuffer"] = ShaderGroup::CreateBuiltin("GBufferVS.hlsl", "GBufferPS.hlsl");
+		registry["Mask"] = ShaderGroup::CreateBuiltin("MaskVS.hlsl", "MaskPS.hlsl");
 		registry["DeferredLighting"] = ShaderGroup::CreateBuiltin("DeferredLightingVS.hlsl", "DeferredLightingPS.hlsl");
 	}
 }

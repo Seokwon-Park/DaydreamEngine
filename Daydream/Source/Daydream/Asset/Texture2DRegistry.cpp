@@ -9,50 +9,7 @@ namespace Daydream
 {
 	void Texture2DRegistry::CreateEssentialTextures()
 	{
-		TextureDesc desc{};
-		desc.bindFlags = RenderBindFlags::ShaderResource;
-		desc.width = 1;
-		desc.height = 1;
-		desc.format = RenderFormat::R8G8B8A8_UNORM;
-		UInt32 imageSize = desc.width * desc.height;
-
-		Array<UInt8> pixelData;
-		pixelData.resize(imageSize * 4);
-		pixelData[3] = 255;
-
-		pixelData[0] = 255;
-		pixelData[1] = 255;
-		pixelData[2] = 255;
-		
-		//registry["Default"]->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
-
-		pixelData[0] = 128;
-		pixelData[1] = 128;
-		pixelData[2] = 255;
-
-		//Register("DefaultNormal", Texture2D::Create(pixelData.data(), desc));
-		//registry["DefaultNormal"]->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
-
-		pixelData[0] = 128;
-		pixelData[1] = 128;
-		pixelData[2] = 128;
-		//Register("DefaultRoughness", Texture2D::Create(pixelData.data(), desc));
-		//registry["DefaultRoughness"]->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
-
-		pixelData[0] = 0;
-		pixelData[1] = 0;
-		pixelData[2] = 0;
-		//Register("DefaultMetallic", Texture2D::Create(pixelData.data(), desc));
-		//registry["DefaultMetallic"]->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
-
-		pixelData[0] = 255;
-		pixelData[1] = 255;
-		pixelData[2] = 255;
-		//Register("DefaultAO", Texture2D::Create(pixelData.data(), desc));
-		//registry["DefaultAO"]->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
-
-
-
+	
 
 
 	}

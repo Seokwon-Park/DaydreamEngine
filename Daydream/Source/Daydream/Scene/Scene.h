@@ -54,7 +54,6 @@ namespace Daydream
 
 		void AddRootEntity(EntityHandle _rootEntity);
 		void RemoveRootEntity(EntityHandle _rootEntity);
-
 		void ReorderRootEntity(EntityHandle _entityHandle, UInt64 _newIndex);
 	private:
 		Array<Unique<GameEntity>> entityPool;

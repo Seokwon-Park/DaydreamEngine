@@ -7,7 +7,7 @@
 #include "Daydream/Graphics/Resources/Buffer.h"
 #include "Daydream/Graphics/Resources/Mesh.h"
 #include "Daydream/Graphics/Resources/Framebuffer.h"
-#include "Daydream/Graphics/Core/PipelineState.h"
+#include "Daydream/Graphics/Resources/PipelineState.h"
 
 namespace Daydream
 {

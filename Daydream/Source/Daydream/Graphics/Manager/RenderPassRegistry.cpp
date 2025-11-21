@@ -1,6 +1,6 @@
 #include "DaydreamPCH.h"
 #include "RenderPassRegistry.h"
-#include "Daydream/Graphics/Core/RenderPass.h"
+#include "Daydream/Graphics/Resources/RenderPass.h"
 
 namespace Daydream
 {
@@ -20,6 +20,20 @@ namespace Daydream
 		rpDesc.depthAttachment = attach;
 
 		registry["StandardRenderPass"] = RenderPass::Create(rpDesc);
+
+		rpDesc.colorAttachments.clear();
+
+		attach.format = RenderFormat::R32_UINT;
+		attach.loadOp = AttachmentLoadOp::Clear;
+		attach.storeOp = AttachmentStoreOp::Store;
+		rpDesc.colorAttachments.push_back(attach);
+
+		attach.format = RenderFormat::UNKNOWN;
+		attach.loadOp = AttachmentLoadOp::Clear;
+		attach.storeOp = AttachmentStoreOp::Store;
+		rpDesc.depthAttachment = attach;
+
+		registry["MaskRenderPass"] = RenderPass::Create(rpDesc);
 
 		// === G-Buffer RenderPass ===
 		rpDesc.colorAttachments.clear();
@@ -48,10 +62,18 @@ namespace Daydream
 		attach.storeOp = AttachmentStoreOp::Store;
 		rpDesc.colorAttachments.push_back(attach);
 
+		// Attachment 4: EntityID
+		attach.format = RenderFormat::R32_UINT; 
+		attach.loadOp = AttachmentLoadOp::Clear;
+		attach.storeOp = AttachmentStoreOp::Store;
+		attach.type = AttachmentType::EntityHandle;
+		rpDesc.colorAttachments.push_back(attach);
+
 		// Depth Attachment
 		attach.format = RenderFormat::D24_UNORM_S8_UINT;
 		attach.loadOp = AttachmentLoadOp::Clear;
 		attach.storeOp = AttachmentStoreOp::Store;
+		attach.type = AttachmentType::None;
 		rpDesc.depthAttachment = attach;
 
 		registry["GBufferRenderPass"] = RenderPass::Create(rpDesc);

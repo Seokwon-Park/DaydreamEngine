@@ -17,8 +17,8 @@ namespace Daydream
 		ImGuiLayer();
 		~ImGuiLayer();
 
-		//Init ImGui For _window
-		void Init();
+		static void Init();
+		static void Shutdown();
 
 		void OnAttach() override;
 		void OnDetach() override;
@@ -32,9 +32,7 @@ namespace Daydream
 
 	private:
 		void SetDarkThemeColors();
-
-		Unique<ImGuiRenderer> renderer;
-		
+				
 		bool isBlockEvents = true;
 	};
 }

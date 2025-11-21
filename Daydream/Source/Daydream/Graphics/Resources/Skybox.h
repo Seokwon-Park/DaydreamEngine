@@ -78,12 +78,8 @@ namespace Daydream
         Shared<PipelineState> resizePSO;
         Shared<PipelineState> brdfPSO;
 
-        Shared<VertexBuffer> boxVB;
-        Shared<IndexBuffer> boxIB;
         Shared<Mesh> boxMesh;
 
-        Shared<VertexBuffer> resizeVB;
-        Shared<IndexBuffer> resizeIB;
         Shared<Mesh> quadMesh;
 
         Shared<Texture2D> equirectangularTexture; // 2D->Cube 원본 텍스쳐

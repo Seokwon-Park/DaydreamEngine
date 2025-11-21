@@ -8,6 +8,7 @@
 
 #include "Daydream/Core/Application.h"
 #include "Daydream/Graphics/Core/Renderer.h"
+#include "Daydream/Asset/AssetManager.h"
 
 namespace Daydream
 {
@@ -41,16 +42,13 @@ namespace Daydream
 
 		SetDarkThemeColors();
 		
-		renderer = Renderer::GetRenderDevice()->CreateImGuiRenderer();
-		renderer->Init(&Application::GetInstance().GetMainWindow());
+		Renderer::GetImGuiRenderer()->Init(&Application::GetInstance().GetMainWindow());
 
 		//ImGui_ImplGlfw_InitForOpenGL(window, true);
 		//ImGui_ImplOpenGL3_Init("#version 410");
 	}
 	void ImGuiLayer::OnDetach()
 	{
-		renderer->Shutdown();
-		ImGui::DestroyContext();
 	}
 	void ImGuiLayer::OnEvent(Event& _event)
 	{
@@ -63,7 +61,7 @@ namespace Daydream
 	}
 	void ImGuiLayer::BeginImGui()
 	{
-		renderer->NewFrame();
+		Renderer::GetImGuiRenderer()->NewFrame();
 		ImGui::NewFrame();
 		ImGuizmo::BeginFrame();
 	}
@@ -73,7 +71,7 @@ namespace Daydream
 		Application& app = Application::GetInstance();
 		io.DisplaySize = ImVec2(static_cast<Float32>(app.GetMainWindow().GetWidth()), static_cast<Float32>(app.GetMainWindow().GetHeight()));
 
-		renderer->Render();
+		Renderer::GetImGuiRenderer()->Render();
 
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{

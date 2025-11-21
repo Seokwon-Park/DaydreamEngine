@@ -72,8 +72,11 @@ namespace Daydream
 
 	VulkanTexture2D::~VulkanTexture2D()
 	{
-		ImGui_ImplVulkan_RemoveTexture(ImGuiDescriptorSet);
-		ImGuiDescriptorSet = VK_NULL_HANDLE;
+		if (ImGuiDescriptorSet != VK_NULL_HANDLE)
+		{
+			ImGui_ImplVulkan_RemoveTexture(ImGuiDescriptorSet);
+			ImGuiDescriptorSet = VK_NULL_HANDLE;
+		}
 	}
 
 	void VulkanTexture2D::SetSampler(Shared<Sampler> _sampler)

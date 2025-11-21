@@ -19,6 +19,7 @@ namespace Daydream
 		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) override;
 		virtual bool HasDepthAttachment() override { return depthAttachment != nullptr; };
 		virtual void Resize(UInt32 _width, UInt32 _height) override;
+		virtual UInt32 ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY) override;
 
 		Array<Shared<D3D12Texture2D>>& GetColorAttachmentsRef() { return colorAttachments; }
 		const Shared<D3D12Texture2D>& GetDepthAttachment() { return depthAttachment; }
@@ -36,6 +37,12 @@ namespace Daydream
 		Shared<D3D12Texture2D> depthAttachment;
 
 		Array<Shared<D3D12Texture2D>> oldAttachments;
+
+		Shared<D3D12Texture2D> entityTexture = 0;
+		ComPtr<ID3D12Resource> readTexture;
+		D3D12_PLACED_SUBRESOURCE_FOOTPRINT footprint = {};
+		UInt64 bufferSize = 0;
+
 		
 	};
 }

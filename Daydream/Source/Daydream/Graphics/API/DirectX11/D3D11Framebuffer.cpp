@@ -14,6 +14,21 @@ namespace Daydream
 		renderPass = _renderPass;
 
 		CreateAttachments();
+
+		D3D11_TEXTURE2D_DESC desc;
+		desc.Width = 1;
+		desc.Height = 1;
+		desc.MipLevels = 1;
+		desc.ArraySize= 1 ;
+		desc.Format = DXGI_FORMAT_R32_UINT;
+		desc.SampleDesc.Count = 1;
+		desc.SampleDesc.Quality = 0;
+		desc.Usage = D3D11_USAGE_STAGING;
+		desc.BindFlags = 0;
+		desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+		desc.MiscFlags = 0;
+
+		device->GetDevice()->CreateTexture2D(&desc, nullptr, readTexture.GetAddressOf());
 	}
 	void D3D11Framebuffer::CreateAttachments()
 	{
@@ -28,6 +43,10 @@ namespace Daydream
 			textureDesc.bindFlags = RenderBindFlags::RenderTarget | RenderBindFlags::ShaderResource;
 
 			Shared<D3D11Texture2D> colorTexture = MakeShared<D3D11Texture2D>(device, textureDesc);
+			if (colorAttachmentDesc.type == AttachmentType::EntityHandle)
+			{
+				entityTexture = colorTexture;
+			}
 			colorAttachments.push_back(colorTexture);
 			renderTargetViews.push_back(colorTexture->GetRTV().Get());
 		}
@@ -102,6 +121,31 @@ namespace Daydream
 		depthAttachment = nullptr;
 
 		CreateAttachments();
+	}
+	UInt32 D3D11Framebuffer::ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY)
+	{
+		D3D11_BOX sourceRegion;
+		sourceRegion.left = _mouseX;
+		sourceRegion.right = _mouseX + 1;
+		sourceRegion.top = _mouseY;
+		sourceRegion.bottom = _mouseY + 1;
+		sourceRegion.front = 0;
+		sourceRegion.back = 1;
+
+		device->GetContext()->CopySubresourceRegion(
+			readTexture.Get(), 0,
+			0, 0, 0,
+			entityTexture->GetID3D11Resource(), 0,
+			&sourceRegion
+		);
+
+		// CPU에서 읽기
+		D3D11_MAPPED_SUBRESOURCE mappedResource;
+		device->GetContext()->Map(readTexture.Get(), 0, D3D11_MAP_READ, 0, &mappedResource);
+		UInt32 entityID = *((UInt32*)mappedResource.pData);
+		device->GetContext()->Unmap(readTexture.Get(), 0);
+
+		return entityID;
 	}
 	//Shared<Texture2D> D3D11Framebuffer::GetDepthAttachemntTexture(UInt32 _index)
 	//{

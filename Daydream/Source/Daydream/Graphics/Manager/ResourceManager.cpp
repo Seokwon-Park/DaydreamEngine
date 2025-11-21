@@ -2,8 +2,8 @@
 #include "ResourceManager.h"
 
 #include "Daydream/Graphics/Resources/ShaderGroup.h"
-#include "Daydream/Graphics/Core/PipelineState.h"
-#include "Daydream/Graphics/Core/RenderPass.h"
+#include "Daydream/Graphics/Resources/PipelineState.h"
+#include "Daydream/Graphics/Resources/RenderPass.h"
 #include "Daydream/Graphics/Resources/Shader.h"
 #include "Daydream/Graphics/Resources/Mesh.h"
 #include "Daydream/Graphics/Resources/Sampler.h"

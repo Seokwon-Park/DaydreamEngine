@@ -7,7 +7,7 @@
 #include "Daydream/Graphics/Resources/Texture.h"
 #include "Daydream/Graphics/Resources/TextureCube.h"
 #include "Daydream/Graphics/Resources/Framebuffer.h"
-#include "Daydream/Graphics/Core/PipelineState.h"
+#include "Daydream/Graphics/Resources/PipelineState.h"
 #include "Daydream/Graphics/Core/Renderer.h"
 #include "Daydream/Graphics/Utility/MeshGenerator.h"
 #include "Daydream/Asset/AssetManager.h"

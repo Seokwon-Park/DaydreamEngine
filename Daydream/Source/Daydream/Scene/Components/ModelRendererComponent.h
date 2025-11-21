@@ -24,6 +24,7 @@ namespace Daydream
 
 		void SetModel(Shared<Model> _model);
 		void Render();
+		void RenderMeshOnly();
 
 		REFLECT_START()
 			ADD_PROPERTY(FieldType::PBRValue, materialValue)
@@ -34,5 +35,9 @@ namespace Daydream
 		MaterialConstantBufferData materialValue;
 		Shared<ConstantBuffer> worldMatrix;
 		Shared<ConstantBuffer> materialCB;
+		Shared<ConstantBuffer> entityHandle;
+
+		Shared<Material> maskMaterial;
+
 	};
 }

@@ -10,6 +10,13 @@
 
 namespace Daydream
 {
+	struct EntityInfo
+	{
+		UInt32 dummy[2]{};
+		UInt32 entityID;
+		Int32 thickness;
+	};
+
 	class EditorLayer : public Layer
 	{
 	public:
@@ -22,17 +29,22 @@ namespace Daydream
 		virtual void OnEvent(Event& _event) override;
 
 		bool OnKeyPressed(KeyPressedEvent& _e);
+		bool OnMouseButtonPressed(MouseButtonPressedEvent& _e);
 
 		void CreateProject();
 
 		void CreateDockspace();
 		void UpdateViewportSize();
+
+		Pair<Int32, Int32> GetViewportMousePos();
 	private:
 		Vector2 mainWindowSize;
 		Vector2 viewportSize;
+		Vector2 viewportBounds[2];
 
 		bool isViewportHovered = false;
 		bool isViewportFocused = false;
+		bool isGuizmoInteract = false;
 		bool viewportShouldResize = true;
 
 		Shared<VertexBuffer> cubeVBO;
@@ -44,25 +56,31 @@ namespace Daydream
 		Shared<TextureCube> textureCube;
 
 		Shared<ConstantBuffer> viewProjMat;
+		EntityInfo info;
+		Shared<ConstantBuffer> entityBuffer;
 
 		//Shared<MouseScrolledEvent>
 		Shared<RenderPass> gBufferRenderPass;
 		Shared<RenderPass> renderPass;
+		Shared<RenderPass> maskRenderPass;
+
 		Shared<Framebuffer> gBufferFramebuffer;
 		Shared<Framebuffer> viewportFramebuffer;
+		Shared<Framebuffer> maskFramebuffer;
 
 		Shared<PipelineState> gBufferPSO;
 		Shared<PipelineState> deferredLightingPSO;
-		Shared<PipelineState> PSO;
 		Shared<PipelineState> pso;
 		Shared<PipelineState> pso3d;
 		Shared<PipelineState> skyboxPipeline;
 		Shared<PipelineState> equirectangleToCubePipeline;
+		Shared<PipelineState> maskPSO;
 
 		Shared<Material> deferredLightingMaterial;
 		Shared<Material> material;
 		Shared<Material> material3d;
 		Shared<Material> materialcube;
+		Shared<Material> maskMaterial;
 
 		Shared<Mesh> mesh;
 		Shared<Model> model;
@@ -73,6 +91,8 @@ namespace Daydream
 
 		Shared<Project> currentProject;
 		Unique<AssetManager> eidtorAssetManager;
+
+		UInt32 viewIndex = 0;
 
 		//Panels
 		Unique<ViewportPanel> viewportPanel;

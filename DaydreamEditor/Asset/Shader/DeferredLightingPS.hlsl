@@ -64,6 +64,16 @@ cbuffer Lights : register(b2)
     uint pointLightCount;
     uint spotLightCount;
 };
+
+cbuffer EditorData : register(b3) // 기존 Material이 b3였다면 b4로 밀거나 통합하세요
+{
+    uint2 padding;
+    uint selectedID; // 현재 선택된 Entity ID (0 = 아무것도 선택 안됨)
+    int outlineThickness;
+    //float screenWidth; // 화면 너비 (ID 텍스처 Load()에 사용)
+    //float screenHeight; // 화면 높이 (ID 텍스처 Load()에 사용)
+    //float outlineThickness; // 외곽선 두께 (예: 1, 2, 3 픽셀)
+};
 // (cbuffer Material : register(b3) ... )
 
 
@@ -108,6 +118,16 @@ SamplerState PrefilterSampler : register(s5);
 Texture2D BRDFLUT : register(t6);
 [[vk::combinedImageSampler]][[vk::binding(6, 1)]]
 SamplerState BRDFLUTSampler : register(s6);
+
+[[vk::combinedImageSampler]][[vk::binding(7, 1)]]
+Texture2D<uint> EntityIDTexture : register(t7);
+[[vk::combinedImageSampler]][[vk::binding(7, 1)]]
+SamplerState EntityIDTextureSampler : register(s7);
+
+[[vk::combinedImageSampler]][[vk::binding(8, 1)]]
+Texture2D<uint> OutlineTexture : register(t8);
+[[vk::combinedImageSampler]][[vk::binding(8, 1)]]
+SamplerState OutlineTextureSampler : register(s8);
 
 //================================================================================
 // PBR 함수들 (PBR 셰이더에서 가져옴)
@@ -218,6 +238,51 @@ PSOutput PSMain(PSInput input)
     
     // --- 1. G-Buffer에서 데이터 샘플링 ---
     float2 uv = input.uv;
+
+    int3 pixelCoord = int3(input.position.xy, 0);
+    
+    // R32 텍스처에서 값 읽기
+    uint value = OutlineTexture.Load(pixelCoord).r;
+    
+    // selected id가 아닌 픽셀에 대해서 검사
+    if (value != 1 && selectedID != 0)
+    {
+        for (int y = -outlineThickness; y <= outlineThickness; ++y)
+        {
+            for (int x = -outlineThickness; x <= outlineThickness; ++x)
+            {
+                // 자기 자신은 검사 패스
+                if (x == 0 && y == 0)
+                    continue;
+
+                // 주변 픽셀 좌표 계산
+                int3 neighborPos = pixelCoord + int3(x, y, 0);
+            
+                uint neighborValue = OutlineTexture.Load(neighborPos).r;
+
+                //내가 이웃 픽셀의 외곽선 픽셀이 되어야 하는 경우
+                if (neighborValue == 1)
+                {
+                    // 이웃 픽셀의 실제 값
+                    uint realVisibleID = EntityIDTexture.Load(neighborPos).r;
+                
+                    if (realVisibleID == selectedID) 
+                    {
+                        // 이 픽셀이 실제로도 그 물체 근처라면 (가려지지 않음)
+                        output.color = float4(1.0f, 0.5f, 0.0f, 1.0f); // 밝은 주황
+                    }
+                    else
+                    {
+                        // 마스크상으로는 외곽선인데, 실제로는 다른 게 보임 (가려진 경우)
+                        output.color = float4(0.8f, 0.3f, 0.0f, 1.0f); // 어두운 주황
+                    }
+                
+                    return output;
+                }
+            }
+        }
+    }
+
     float4 posData = PositionTexture.Sample(PositionTextureSampler, uv);
     float3 worldPosition = posData.xyz;
     

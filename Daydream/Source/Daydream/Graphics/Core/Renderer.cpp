@@ -15,6 +15,7 @@ namespace Daydream
 		currentWindow = nullptr;
 		renderDevice = RenderDevice::Create(_API);
 		DAYDREAM_CORE_ASSERT(renderDevice, "Failed to create graphics device!");
+		renderer = renderDevice->CreateImGuiRenderer();
 	}
 
 	void Renderer::Init(RendererAPIType _API)
@@ -32,6 +33,7 @@ namespace Daydream
 		//Renderer2D::Shutdown();
 		ShaderCompileHelper::Shutdown();
 		ModelLoader::Shutdown();
+		instance->renderer->Shutdown();
 		instance->renderDevice.reset();
 		delete instance;
 		instance = nullptr;

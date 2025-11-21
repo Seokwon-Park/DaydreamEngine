@@ -78,6 +78,21 @@ namespace Daydream
 		CreateAttachments();
 		AttachTextures();
 	}
+	UInt32 OpenGLFramebuffer::ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY)
+	{
+		UInt32 pixel;
+		glGetTextureSubImage(
+			entityTexture->GetTextureID(),       // 텍스처 ID
+			0,                  // Mipmap Level
+			_mouseX, _mouseY, 0,            // Offset (x, y, z)
+			1, 1, 1,            // Size (width, height, depth)
+			GL_RED_INTEGER,		        // Format (텍스처 포맷에 맞춰야 함)
+			GL_UNSIGNED_INT,           // Type
+			sizeof(pixel),      // Buffer Size
+			&pixel               // Data Pointer
+		);
+		return pixel;
+	}
 	void OpenGLFramebuffer::CreateAttachments()
 	{
 		const RenderPassDesc& renderPassDesc = renderPass->GetDesc();
@@ -90,6 +105,10 @@ namespace Daydream
 			textureDesc.bindFlags = RenderBindFlags::RenderTarget | RenderBindFlags::ShaderResource;
 
 			Shared<OpenGLTexture2D> colorTexture = MakeShared<OpenGLTexture2D>(textureDesc);
+			if (colorAttachmentDesc.type == AttachmentType::EntityHandle)
+			{
+				entityTexture = colorTexture;
+			}
 			colorAttachments.push_back(colorTexture);
 		}
 

@@ -26,6 +26,8 @@ namespace Daydream
 
 		static void Submit(UInt32 _indexCount);
 
+		static ImGuiRenderer* GetImGuiRenderer() { return instance->renderer.get(); }
+
 		static Renderer& Get() { return *instance; }
 		static inline RendererAPIType GetAPI() { return instance->renderDevice->GetAPI(); }
 		static inline RenderDevice* GetRenderDevice() { return instance->renderDevice.get(); }
@@ -37,6 +39,7 @@ namespace Daydream
 
 		DaydreamWindow* currentWindow;
 
+		Unique<ImGuiRenderer> renderer;
 		Unique<RenderDevice> renderDevice;
 	};
 }

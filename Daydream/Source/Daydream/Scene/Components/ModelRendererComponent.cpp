@@ -13,6 +13,9 @@ namespace Daydream
 	{
 		worldMatrix = ConstantBuffer::Create(sizeof(TransformConstantBufferData));
 		materialCB = ConstantBuffer::Create(sizeof(MaterialConstantBufferData));
+		entityHandle = ConstantBuffer::Create(16);
+
+		maskMaterial = Material::Create(ResourceManager::GetResource<PipelineState>("MaskPSO"));
 	}
 
 	ModelRendererComponent::~ModelRendererComponent()
@@ -21,6 +24,7 @@ namespace Daydream
 
 	void ModelRendererComponent::Init()
 	{
+		entityHandle->Update(&GetOwner()->GetHandle().id, sizeof(UInt32));
 	}
 
 	void ModelRendererComponent::SetModel(Shared<Model> _model)
@@ -36,7 +40,7 @@ namespace Daydream
 		data.invTranspose = data.world;
 		data.invTranspose.MatrixInverse();
 		data.invTranspose.MatrixTranspose();
-		worldMatrix->Update(&data, sizeof(data));
+		worldMatrix->Update(&data, sizeof(TransformConstantBufferData));
 		
 		materialCB->Update(&materialValue, sizeof(materialValue));
 		//for (auto mesh : model->GetMeshes())
@@ -55,12 +59,40 @@ namespace Daydream
 			meshes[i]->Bind();
 			materials[i]->SetConstantBuffer("World", worldMatrix);
 			materials[i]->SetConstantBuffer("Camera", GetOwner()->GetScene()->GetCurrentCamera()->GetViewProjectionConstantBuffer());
+			materials[i]->SetConstantBuffer("Entity", entityHandle);
+
 			//materials[i]->SetConstantBuffer("Lights", GetOwner()->GetScene()->GetLightConstantBuffer());
 			//materials[i]->SetConstantBuffer("Material", materialCB);
 			//materials[i]->SetTexture2D("BRDFLUT", GetOwner()->GetScene()->GetSkybox()->GetBRDF());
 			//materials[i]->SetTextureCube("IrradianceTexture", GetOwner()->GetScene()->GetSkybox()->GetIrradianceTexture());
 			//materials[i]->SetTextureCube("Prefilter", GetOwner()->GetScene()->GetSkybox()->GetPrefilterTexture());
 			materials[i]->Bind();
+			Renderer::Submit(meshes[i]->GetIndexCount());
+		}
+	}
+
+	void ModelRendererComponent::RenderMeshOnly()
+	{
+		// 1. Transform 업데이트 (기존 로직 유지)
+		Transform transform = GetOwner()->GetComponent<TransformComponent>()->GetTransform();
+		TransformConstantBufferData data;
+		data.world = transform.GetWorldMatrix().GetTranspose();
+		data.invTranspose = data.world;
+		data.invTranspose.MatrixInverse();
+		data.invTranspose.MatrixTranspose();
+		worldMatrix->Update(&data, sizeof(data));
+
+		// 2. Mesh 순회 (Material Bind는 스킵!)
+		auto meshes = model->GetMeshes();
+		maskMaterial->SetConstantBuffer("World", worldMatrix);
+		maskMaterial->SetConstantBuffer("Camera", GetOwner()->GetScene()->GetCurrentCamera()->GetViewProjectionConstantBuffer());
+		for (int i = 0; i < meshes.size(); i++)
+		{
+			// 2-1. Mesh(VBO, IBO) 바인딩
+			meshes[i]->Bind();
+			maskMaterial->Bind();
+
+			// 3. 그리기 요청
 			Renderer::Submit(meshes[i]->GetIndexCount());
 		}
 	}

@@ -16,12 +16,12 @@ namespace Daydream
 		modelData.materials.clear();
 
 		UInt32 flags = aiProcess_Triangulate | aiProcess_ConvertToLeftHanded;// |           // 모든 면을 삼각형으로 변환
-			//aiProcess_FlipUVs |				// UV 좌표 뒤집기 (OpenGL용)
-			//aiProcess_GenNormals |			// 노말 벡터 생성
-		//	aiProcess_CalcTangentSpace;			// | //탄젠트/바이탄젠트 계산
-		//aiProcess_JoinIdenticalVertices | // 중복 정점 제거
-		//aiProcess_OptimizeMeshes |		// 메시 최적화
-		//aiProcess_ValidateDataStructure;  // 데이터 유효성 검사
+		//aiProcess_FlipUVs |				// UV 좌표 뒤집기 (OpenGL용)
+		//aiProcess_GenNormals |			// 노말 벡터 생성
+	//	aiProcess_CalcTangentSpace;			// | //탄젠트/바이탄젠트 계산
+	//aiProcess_JoinIdenticalVertices | // 중복 정점 제거
+	//aiProcess_OptimizeMeshes |		// 메시 최적화
+	//aiProcess_ValidateDataStructure;  // 데이터 유효성 검사
 
 		DAYDREAM_INFO(FileSystem::exists(_filepath));
 
@@ -124,8 +124,20 @@ namespace Daydream
 		GetTexturePath(_material, aiTextureType_METALNESS, materialData.metallicMapPath);
 		GetTexturePath(_material, aiTextureType_AMBIENT_OCCLUSION, materialData.AOMapPath);
 
-		if (materialData.AOMapPath.empty()) {
-			GetTexturePath(_material, aiTextureType_LIGHTMAP, materialData.AOMapPath);
+		if (materialData.AOMapPath.empty())
+		{
+			if (!materialData.roughnessMapPath.empty() &&
+				materialData.roughnessMapPath == materialData.metallicMapPath)
+			{
+				// "이 텍스처는 ORM 압축 텍스처다!"라고 추론합니다.
+				// AO 맵 경로를 Roughness/Metallic 맵 경로와 동일하게 "강제"로 설정합니다.
+				// DAYDREAM_CORE_INFO("AO 맵 경로를 Packed Texture({0})로 추론합니다.", materialData.roughnessMapPath);
+				materialData.AOMapPath = materialData.roughnessMapPath;
+			}
+			else
+			{
+				GetTexturePath(_material, aiTextureType_LIGHTMAP, materialData.AOMapPath);
+			}
 		}
 		aiColor4D diffuseColor;
 		if (aiGetMaterialColor(_material, AI_MATKEY_COLOR_DIFFUSE, &diffuseColor) == AI_SUCCESS)

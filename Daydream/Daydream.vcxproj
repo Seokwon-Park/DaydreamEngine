@@ -223,11 +223,11 @@
     <ClInclude Include="Source\Daydream\Graphics\Core\Camera.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\CameraController.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\EditorCamera.h" />
-    <ClInclude Include="Source\Daydream\Graphics\Core\PipelineState.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Resources\PipelineState.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderCommand.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderContext.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderDevice.h" />
-    <ClInclude Include="Source\Daydream\Graphics\Core\RenderPass.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Resources\RenderPass.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\Renderer.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\Renderer2D.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\Swapchain.h" />
@@ -798,11 +798,11 @@
     <ClCompile Include="Source\Daydream\Graphics\Core\Camera.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\EditorCamera.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\OrthographicCamera.cpp" />
-    <ClCompile Include="Source\Daydream\Graphics\Core\PipelineState.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Resources\PipelineState.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderCommand.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderContext.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderDevice.cpp" />
-    <ClCompile Include="Source\Daydream\Graphics\Core\RenderPass.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Resources\RenderPass.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\Renderer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\Renderer2D.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\Swapchain.cpp" />

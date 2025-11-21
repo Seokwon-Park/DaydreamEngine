@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Daydream/Graphics/Core/PipelineState.h"
+#include "Daydream/Graphics/Resources/PipelineState.h"
 #include "VulkanRenderDevice.h"
 
 namespace Daydream
