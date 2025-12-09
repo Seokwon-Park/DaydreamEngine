@@ -5,6 +5,7 @@
 
 #include "Daydream/Scene/Components/LightComponent.h"
 //#include "Daydream/Scene/Components/ModelRendererComponent.h"
+#include "Daydream/Scene/Components/MeshRendererComponent.h"
 
 namespace Daydream
 {
@@ -15,8 +16,8 @@ namespace Daydream
 
 	void EditorLayer::OnAttach()
 	{
-
-		AssetManager::LoadAssetDataFromDirectory("Resource");
+		AssetManager::LoadAssetMetadataFromDirectory("Resource");
+		AssetManager::LoadAssets(LoadPhase::Early);
 
 		editorCamera = MakeShared<EditorCamera>();
 		activeScene = MakeShared<Scene>("MainScene");
@@ -28,7 +29,6 @@ namespace Daydream
 		entityBuffer = ConstantBuffer::Create(sizeof(EntityInfo));
 		info.entityID = 0;
 		info.thickness = 3;
-
 
 		sampler = ResourceManager::GetResource<Sampler>("LinearRepeat");
 
@@ -89,7 +89,7 @@ namespace Daydream
 		maskPSO = ResourceManager::GetResource<PipelineState>("MaskPSO");
 
 		material = Material::Create(pso);
-		material->SetTexture2D("Texture", texture);
+		//material->SetTexture2D("Texture", texture);
 		material->SetConstantBuffer("Camera", viewProjMat);
 
 		material3d = Material::Create(pso3d);
@@ -140,6 +140,8 @@ namespace Daydream
 
 		ModelRendererComponent* component2 = entity2->AddComponent<ModelRendererComponent>();
 		component2->SetModel(AssetManager::GetAssetByPath<Model>("Asset/Model/cerberusgun/scene.gltf"));
+
+		MeshRendererComponent* component3 = entity->AddComponent<MeshRendererComponent>();
 
 		////////////////////////Light////////////////////////////
 		auto lightEntity = activeScene->CreateGameEntity("Directional Light");
@@ -382,8 +384,21 @@ namespace Daydream
 			ImGui::Image((ImTextureID)gBufferFramebuffer->GetColorAttachmentTexture(3)->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
 			break;
 		}
+		}
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(AssetManager::AssetTypeToString(AssetType::Model).c_str()))
+			{
+				AssetHandle* pHandle = (AssetHandle*)payload->Data;
+				AssetHandle handle = *pHandle;
+				Shared<Model> model = AssetManager::GetAsset<Model>(handle);
 
-
+				for (auto x : model->GetMeshes())
+				{
+					DAYDREAM_CORE_INFO("{}", x.ToString());
+				}
+			}
+			ImGui::EndDragDropTarget();
 		}
 
 		GameEntity* selectedEntity = sceneHierarchyPanel->GetSelectedEntity();
@@ -575,14 +590,14 @@ namespace Daydream
 	{
 		if (isViewportHovered && !isGuizmoInteract && Input::GetMouseDown(Mouse::ButtonLeft))
 		{
-			DAYDREAM_INFO("{}", gBufferFramebuffer->ReadEntityHandleFromPixel(GetViewportMousePos()));
+			//DAYDREAM_INFO("{}", gBufferFramebuffer->ReadEntityHandleFromPixel(GetViewportMousePos()));
 			int test = gBufferFramebuffer->ReadEntityHandleFromPixel(GetViewportMousePos());
 			if (test != 0)
 			{
 				sceneHierarchyPanel->SetSelectedEntity(activeScene->GetEntity(EntityHandle(test)));
 			}
 		}
-		DAYDREAM_INFO("Mouse Coord = {0}, {1}", GetViewportMousePos().first, GetViewportMousePos().second);
+		//DAYDREAM_INFO("Mouse Coord = {0}, {1}", GetViewportMousePos().first, GetViewportMousePos().second);
 
 		return false;
 	}

@@ -20,6 +20,7 @@ namespace Daydream
 		bool operator!=(const AssetHandle& _other) const;
 		bool operator<(const AssetHandle& _other) const; 
 
+		static AssetHandle Generate();
 	private:
 		static uuids::uuid GenerateUUID();
 		uuids::uuid uuid;

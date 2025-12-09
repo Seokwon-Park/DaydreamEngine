@@ -17,6 +17,7 @@ namespace Daydream
 		virtual ~D3D11Texture2D();
 
 		virtual void SetSampler(Shared<Sampler> _sampler) override;
+		virtual bool HasSampler() override { return textureSampler != nullptr; }
 
 		inline virtual void* GetNativeHandle() override { return texture.Get(); }
 		inline virtual void* GetImGuiHandle() { return GetSRV().Get(); }

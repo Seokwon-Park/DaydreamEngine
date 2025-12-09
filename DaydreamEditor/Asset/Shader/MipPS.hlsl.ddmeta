@@ -1,3 +1,4 @@
 Handle: 58478258-b0c6-482a-8fc1-decdc9e3b9d4
 Path: Asset/Shader/MipPS.hlsl
 Type: Shader
+Name: MipPS

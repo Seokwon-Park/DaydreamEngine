@@ -44,7 +44,7 @@ namespace Daydream
 	};
 
 
-	class Material 
+	class Material : public Asset
 	{
 	public:
 		virtual ~Material();
@@ -57,6 +57,9 @@ namespace Daydream
 
 		inline const HashMap<String, Shared<Texture2D>>& GetAllTexture2D() { return textures; }
 		inline const HashMap<String, Shared<TextureCube>>& GetAllTextureCube() { return textureCubes; }
+
+		inline const HashMap<String, ShaderReflectionData>& GetBindings() { return bindingMap; }
+
 
 		static Shared<Material> Create(Shared<PipelineState> _pipeline);
 	protected:

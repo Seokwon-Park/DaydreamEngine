@@ -199,6 +199,19 @@ namespace Daydream
                 UI::DrawModelController("Model", data);
                 break;
             }
+
+            case FieldType::Mesh:
+            {
+                AssetHandle* handle = static_cast<AssetHandle*>(field.data);
+                UI::DrawMeshController("Mesh", handle);
+                break;
+            }
+            case FieldType::Material:
+            {
+                AssetHandle* handle = static_cast<AssetHandle*>(field.data);
+                UI::DrawMaterialController("Material", handle);
+                break;
+            }
             case FieldType::PBRValue:
             {
                 MaterialConstantBufferData* data = static_cast<MaterialConstantBufferData*>(field.data);

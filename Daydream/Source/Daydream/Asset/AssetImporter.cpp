@@ -1,13 +1,17 @@
 #include "DaydreamPCH.h"
 #include "AssetImporter.h"
+#include "AssetDefaults.h"
 #include "Daydream/Graphics/Utility/ImageLoader.h"
+#include "Daydream/Graphics/Utility/ModelLoader.h"
 #include "Daydream/Graphics/Manager/ResourceManager.h"
+#include "Daydream/Graphics/Resources/PipelineState.h"
+#include "yaml-cpp/yaml.h"
 
 namespace Daydream
 {
-	Shared<Texture2D> AssetImporter::LoadTexture2D(const Path& _texturePath)
+	Shared<Texture2D> AssetImporter::LoadTexture2D(const AssetMetadata& _metaData)
 	{
-		Path texturePath = _texturePath;
+		Path texturePath = _metaData.filePath;
 		String pathString = texturePath.make_preferred().string();
 		String extension = texturePath.extension().string();
 
@@ -24,7 +28,7 @@ namespace Daydream
 			isSRGB = false;
 		}
 
-		ImageLoader::ImageData data = ImageLoader::LoadImageFile(pathString);
+		ImageData data = ImageLoader::LoadImageFile(pathString);
 		TextureDesc desc{};
 		desc.bindFlags = RenderBindFlags::ShaderResource;
 		desc.width = data.width;
@@ -39,23 +43,221 @@ namespace Daydream
 			desc.format = isSRGB ? RenderFormat::R8G8B8A8_UNORM_SRGB : RenderFormat::R8G8B8A8_UNORM;
 		}
 		auto newTexture = Texture2D::Create(data.GetRawDataPtr(), desc);
-		newTexture->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
+
 		return newTexture;
 	}
-	Shared<Model> AssetImporter::LoadModel(const Path& _modelPath)
+
+	Shared<Model> AssetImporter::LoadModel(const AssetMetadata& _metaData)
 	{
-		Path texturePath = _modelPath;
-		String pathString = texturePath.make_preferred().string();
-		String extension = texturePath.extension().string();
-		Shared<Model> newModel = Model::Create();
-		newModel->Load(pathString);
+		Path modelPath = _metaData.filePath;
+
+		String pathString = modelPath.generic_string();
+		String extension = modelPath.extension().string();
+		String metaFilePathString = pathString + ".ddmeta";
+
+		Shared<ModelData> modelData = ModelLoader::LoadFromFile(modelPath);
+		Shared<Model> newModel = Model::Create(modelData);
+
+		YAML::Node metaNode = YAML::LoadFile(metaFilePathString);
+		bool isGeneratingNewMeta = _metaData.subAssets.empty();
+
+		if (!metaNode["SubAssets"])
+		{
+			metaNode["SubAssets"] = YAML::Node(YAML::NodeType::Map);
+		}
+
+		//for normalize
+		//Vector3 vmin(1000, 1000, 1000);
+		//Vector3 vmax(-1000, -1000, -1000);
+		//for (auto meshData : modelData->meshes)
+		//{
+		//	// Normalize vertices
+		//	for (auto& v : meshData.vertices) {
+		//		vmin.x = std::min(vmin.x, v.position.x);
+		//		vmin.y = std::min(vmin.y, v.position.y);
+		//		vmin.z = std::min(vmin.z, v.position.z);
+		//		vmax.x = std::max(vmax.x, v.position.x);
+		//		vmax.y = std::max(vmax.y, v.position.y);
+		//		vmax.z = std::max(vmax.z, v.position.z);
+		//	}
+		//}
+		bool isMetaDirty = false; // 메타데이터 저장 필요 여부
+
+		for (UInt32 i = 0; i < modelData->meshes.size(); i++)
+		{
+			auto& meshData = modelData->meshes[i];
+			String meshName = meshData.name;
+			if (meshName.empty())
+			{
+				meshName = "Unnamed_" + std::to_string(i);
+			}
+
+
+			AssetHandle meshHandle;
+			//mesh이름과 관련된 데이터가 있으면 메쉬핸들만 가져온다.
+			if (metaNode["SubAssets"][meshName])
+			{
+				String handleStr = metaNode["SubAssets"][meshName]["Handle"].as<String>();
+				meshHandle = AssetHandle(handleStr); // 기존 핸들 사용
+			}
+			else //없으면 
+			{
+				String pathMapKey = pathString + '#' + meshName; // 파일명이 중복될 수 있으므로
+
+				//Create Subasset Mesh Metadata
+				meshHandle = AssetHandle::Generate(); // 랜덤 UUID 생성
+
+				//새로운 메쉬정보를 등록
+				AssetMetadata metadata = AssetMetadata();
+				metadata.handle = meshHandle;
+				metadata.filePath = pathMapKey;
+				metadata.type = AssetType::Mesh;
+				AssetManager::Register(metadata);
+
+				// 새로운 노드 객체 생성
+				YAML::Node newEntry;
+				newEntry["Handle"] = meshHandle.ToString();
+				newEntry["Path"] = pathMapKey;
+				newEntry["Type"] = "Mesh";
+
+				metaNode["SubAssets"][meshName] = newEntry;
+				isMetaDirty = true;
+			}
+
+			Shared<Mesh> mesh = Mesh::Create(meshData);
+			mesh->SetAssetHandle(meshHandle);
+			mesh->SetAssetName(meshName);
+			AssetManager::AddLoadedAsset(meshHandle, mesh);
+		}
+
+		if (isMetaDirty)
+		{
+			std::ofstream fout(metaFilePathString);
+			fout << metaNode;
+			fout.close();
+		}
+
+
+		Path materialDir = modelPath.parent_path() / "Materials";
+		if (!FileSystem::exists(materialDir))
+			FileSystem::create_directory(materialDir);
+
+		for (UInt32 i = 0; i < modelData->materials.size(); i++)
+		{
+			auto& materialData = modelData->materials[i];
+
+			String materialName = materialData.name;
+			if (materialName.empty())
+			{
+				materialName = "Unnamed_" + std::to_string(i);
+			}
+
+			Path materialPath = materialDir / (materialName + ".ddmat");
+			String materialPathString = materialPath.generic_string();
+
+			AssetHandle materialHandle;
+			if (FileSystem::exists(materialPath))
+			{
+				Shared<Material> existingMaterial = AssetManager::GetAssetByPath<Material>(materialPathString);
+				if (existingMaterial)
+				{
+					materialHandle = existingMaterial->GetAssetHandle();
+					existingMaterial->SetAssetName(materialName);
+				}
+				else
+				{
+					//TODO:error msg
+				}
+			}
+			else
+			{
+				Shared<Material> newMaterial = Material::Create(ResourceManager::GetResource<PipelineState>("GBufferPSO"));
+				Shared<Texture2D> albedo = AssetManager::GetAssetByPath<Texture2D>(modelData->materials[i].albedoMapPath);
+				Shared<Texture2D> normal = AssetManager::GetAssetByPath<Texture2D>(modelData->materials[i].normalMapPath);
+				Shared<Texture2D> roughness = AssetManager::GetAssetByPath<Texture2D>(modelData->materials[i].roughnessMapPath);
+				Shared<Texture2D> metallic = AssetManager::GetAssetByPath<Texture2D>(modelData->materials[i].metallicMapPath);
+				Shared<Texture2D> ao = AssetManager::GetAssetByPath<Texture2D>(modelData->materials[i].AOMapPath);
+
+				if (albedo == nullptr)
+				{
+					albedo = AssetManager::GetAsset<Texture2D>(AssetDefaults::DefaultAlbedoHandle);
+				}
+
+				if (normal == nullptr)
+				{
+					normal = AssetManager::GetAsset<Texture2D>(AssetDefaults::DefaultNormalHandle);
+				}
+
+				if (roughness == nullptr)
+				{
+					roughness = AssetManager::GetAsset<Texture2D>(AssetDefaults::DefaultRoughnessHandle);
+				}
+
+				if (metallic == nullptr)
+				{
+					metallic = AssetManager::GetAsset<Texture2D>(AssetDefaults::DefaultMetallicHandle);
+				}
+				if (ao == nullptr)
+				{
+					ao = AssetManager::GetAsset<Texture2D>(AssetDefaults::DefaultAOHandle);
+				}
+
+				newMaterial->SetTexture2D("AlbedoTexture", albedo);
+				newMaterial->SetTexture2D("NormalTexture", normal);
+				newMaterial->SetTexture2D("RoughnessTexture", roughness);
+				newMaterial->SetTexture2D("MetallicTexture", metallic);
+				newMaterial->SetTexture2D("AOTexture", ao);
+
+				materialHandle = AssetHandle::Generate();
+				newMaterial->SetAssetHandle(materialHandle);
+				newMaterial->SetAssetName(materialName);
+
+				AssetMetadata matMetadata;
+				matMetadata.handle = materialHandle;
+				matMetadata.filePath = materialPathString;
+				matMetadata.type = AssetType::Material; // [중요] 타입 수정
+				AssetManager::CreateMetaDataFile(matMetadata);
+				AssetManager::Register(matMetadata); // 여기서 .ddmat.ddmeta 파일이 생성될 것입니다.
+				AssetManager::AddLoadedAsset(materialHandle, newMaterial);
+
+				YAML::Emitter out;
+				out << YAML::BeginMap;
+				out << YAML::Key << "Material";
+				out << YAML::BeginMap;
+				out << YAML::Key << "PSO" << YAML::Value << "GBufferPSO";
+
+				//// 파라미터 저장
+				//out << YAML::Key << "Parameters";
+				//out << YAML::BeginMap;
+				//out << YAML::Key << "Roughness" << material->GetRoughness();
+				//out << YAML::Key << "AlbedoColor" << material->GetAlbedoColor(); // Vector는 오버로딩 필요
+				//out << YAML::EndMap;
+
+				// 텍스처 저장
+				out << YAML::Key << "Textures";
+				out << YAML::BeginMap;
+				for (auto& [name, resources] : newMaterial->GetAllTexture2D())
+				{
+					out << YAML::Key << name << YAML::Value << resources->GetAssetHandle().ToString();
+				}
+				out << YAML::EndMap;
+				out << YAML::EndMap;
+				out << YAML::EndMap;
+
+				std::ofstream fout(materialPath);
+				fout << out.c_str();
+				fout.close();
+			}
+			//Shared<Material> newMat = Material::Create(ResourceManager::GetResource<PipelineState>("ForwardPSO"));
+			//materials.push_back(newMat);
+		}
 
 		return newModel;
 	}
-	Shared<Shader> AssetImporter::LoadShader(const Path& _shaderPath)
+	Shared<Shader> AssetImporter::LoadShader(const AssetMetadata& _metaData)
 	{
 		// 지원하는 확장자인지 확인
-		Path entryPath = _shaderPath;
+		Path entryPath = _metaData.filePath;
 		String pathString = entryPath.string();
 		String shaderName = entryPath.stem().string();
 		String extension = entryPath.extension().string();
@@ -85,6 +287,60 @@ namespace Daydream
 		Shared<Shader> newShader = Shader::Create(pathString, shaderType, ShaderLoadMode::File);
 
 		return newShader;
+	}
+	Shared<Material> AssetImporter::LoadMaterial(const AssetMetadata& _metaData)
+	{
+		Path materialPath = _metaData.filePath;
+
+		String pathString = materialPath.generic_string();
+		String extension = materialPath.extension().string();
+		String metaFilePathString = pathString + ".ddmeta";
+
+		YAML::Node metaNode = YAML::LoadFile(pathString);
+		if (!metaNode["Material"])
+		{
+			//Error is not material
+			return nullptr;
+		}
+		YAML::Node matNode = metaNode["Material"];
+		String PSO = matNode["PSO"].as<String>();
+		Shared<Material> newMaterial = Material::Create(ResourceManager::GetResource<PipelineState>(PSO));
+		YAML::Node textureNode = matNode["Textures"];
+		if (textureNode)
+		{
+			// YAML::const_iterator를 사용하여 Key(슬롯이름)와 Value(UUID)를 쌍으로 가져옵니다.
+			for (auto it = textureNode.begin(); it != textureNode.end(); ++it)
+			{
+				String slotName = it->first.as<String>();      // 예: "AlbedoTexture"
+				String handleStr = it->second.as<String>();    // 예: "de27a743-..."
+
+				// 문자열 UUID를 AssetHandle로 변환
+				AssetHandle handle(handleStr);
+
+				if (handle.IsValid())
+				{
+					// AssetManager에게 해당 핸들의 텍스처를 달라고 요청
+					// 이미 로드되어 있다면 캐시에서 줄 것이고, 없다면 로드해서 줄 것입니다.
+					Shared<Texture2D> texture = AssetManager::GetAsset<Texture2D>(handle);
+
+					if (texture)
+					{
+						newMaterial->SetTexture2D(slotName, texture);
+					}
+					else
+					{
+						// 해당 핸들의 텍스처가 로드 실패했거나 삭제된 경우
+						// 기본 텍스처로 대체하거나, null로 두면 쉐이더에서 처리
+						// newMaterial->SetTexture2D(slotName, AssetManager::GetDefaultTexture()); 
+					}
+				}
+			}
+		}
+
+
+
+		return newMaterial;
+
 	}
 }
 

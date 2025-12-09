@@ -4,29 +4,46 @@
 #include "Material.h"
 #include "Daydream/Asset/Asset.h"
 
+
 namespace Daydream
 {
+	struct NodeData
+	{
+		String name;
+		Matrix4x4 transform;
+		Array<UInt32> meshIndices; // 이 노드가 사용하는 메쉬들의 인덱스 (modelData.meshes의 인덱스)
+		Array<NodeData> children; // 자식 노드들
+	};
+
 	struct ModelData
 	{
 		Array<MeshData> meshes;
+		Array<SkeletalMeshData> skeletalMeshes;
 		Array<MaterialData> materials;
+
+		NodeData rootNode;
 	};
 
 	class Model : public Asset
 	{
 	public:
-		Model();
-		Model(Shared<Mesh> _mesh);
+		Model() = default;
+		Model(Shared<ModelData> _data);
+		//Model(Shared<Mesh> _mesh);
 		~Model();
 		
 		void Load(const Path & _path);
-		const Array<Shared<Mesh>>& GetMeshes() { return meshes; }
-		const Array<Shared<Material>>& GetMaterials() { return materials; }
+		void AddMesh(AssetHandle _meshHandle) { meshes.push_back(_meshHandle); }
+		void AddMaterial(AssetHandle _materialHandle) { meshes.push_back(_materialHandle); }
+
+		const Array<AssetHandle>& GetMeshes() { return meshes; }
+		const Array<AssetHandle>& GetMaterials() { return materials; }
 		
-		static Shared<Model> Create();
-		static Shared<Model> Create(Shared<Mesh> _mesh);
+		static Shared<Model> Create(Shared<ModelData> _data);
+		//static Shared<Model> Create(Shared<Mesh> _mesh);
 	private:
-		Array<Shared<Mesh>> meshes;
-		Array<Shared<Material>> materials;
+		Shared<ModelData> modelData;
+		Array<AssetHandle> meshes;
+		Array<AssetHandle> materials;
 	};
 }

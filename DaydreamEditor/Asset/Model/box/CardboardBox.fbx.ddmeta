@@ -1,3 +1,10 @@
 Handle: 2537c508-c3cb-470c-8f74-a0fc94e1eb25
 Path: Asset/Model/box/CardboardBox.fbx
 Type: Model
+SubAssets:
+  Cube.001:
+    Handle: 52d27c1f-080c-4fe6-be16-ed856cdff7ee
+    Path: Asset/Model/box/CardboardBox.fbx#Cube.001
+    Type: Mesh
+    Name: Cube.001
+Name: CardboardBox

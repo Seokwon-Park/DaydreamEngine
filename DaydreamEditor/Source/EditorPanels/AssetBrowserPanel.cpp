@@ -62,47 +62,90 @@ namespace Daydream
 					ImGui::TableNextColumn();
 
 					const Path& path = p.path();
-					std::string filenameString = path.filename().string();
 					std::string pathString = path.string();
+					std::string filenameString = path.filename().string();
 
 					ImGui::PushID(pathString.c_str()); // 각 위젯에 고유 ID 부여
+
+					Shared<Texture2D> thumbnail;
 
 					// 폴더 또는 파일 아이콘 표시
 					if (p.is_directory())
 					{
 						// 폴더 아이콘 로드 (ResourceManager에 미리 로드해두세요)
-						auto texture = AssetManager::GetAssetByPath<Texture2D>("Resource\\DirectoryIcon.png");
-						ImGui::ImageButton(pathString.c_str(), (ImTextureID)texture->GetImGuiHandle(), { thumbnailSize, thumbnailSize });
+						thumbnail = AssetManager::GetAssetByPath<Texture2D>("Resource\\DirectoryIcon.png");
+						ImGui::ImageButton(pathString.c_str(), (ImTextureID)thumbnail->GetImGuiHandle(), { thumbnailSize, thumbnailSize });
 					}
 					else // 파일인 경우
 					{
-						std::string ext = path.extension().string();
-						if (ext == ".png" || ext == ".jpg" || ext == ".hdr" || ext == ".tga") // 이미지 파일
+						AssetType type = AssetManager::GetAssetTypeFromPath(path);
+						String typeString = AssetManager::AssetTypeToString(type);
+						Shared<Asset> asset;
+						thumbnail = AssetManager::GetAssetByPath<Texture2D>("Resource\\FileIcon.png");
+						switch (type)
 						{
-							auto texture = AssetManager::GetAssetByPath<Texture2D>(pathString);
-							if (texture != nullptr)
+						case AssetType::None: // is not AssetFile
+						{
+							thumbnail = AssetManager::GetAssetByPath<Texture2D>("Resource\\FileIcon.png");
+							ImGui::ImageButton(filenameString.c_str(), (ImTextureID)thumbnail->GetImGuiHandle(), { thumbnailSize, thumbnailSize });
+							break;
+						}
+						case AssetType::Texture2D:
+						{
+							thumbnail = AssetManager::GetAssetByPath<Texture2D>(pathString);
+							asset = thumbnail;
+							if (thumbnail != nullptr)
 							{
-								ImGui::ImageButton(pathString.c_str(), (ImTextureID)texture->GetImGuiHandle(), { thumbnailSize, thumbnailSize });
+								ImGui::ImageButton(pathString.c_str(), (ImTextureID)thumbnail->GetImGuiHandle(), { thumbnailSize, thumbnailSize });
 							}
 
-							// 드래그 앤 드롭 소스 설정 (ImageButton에만 적용)
 							if (ImGui::BeginDragDropSource())
 							{
-								AssetHandle assetHandle = texture->GetAssetHandle();
+								AssetHandle assetHandle = asset->GetAssetHandle();
 								// 경로 데이터를 페이로드로 설정
-								ImGui::SetDragDropPayload("ASSET_TEXTURE", &assetHandle, sizeof(AssetHandle));
+								ImGui::SetDragDropPayload(typeString.c_str(), &assetHandle, sizeof(AssetHandle));
 
 								// 드래그 중 미리보기
 								ImGui::Text("%s", filenameString.c_str());
-								ImGui::Image((ImTextureID)texture->GetImGuiHandle(), ImVec2(50, 50));
+								ImGui::Image((ImTextureID)thumbnail->GetImGuiHandle(), ImVec2(50, 50));
+
+								ImGui::EndDragDropSource();
+							}
+							break;
+						}
+						case AssetType::TextureCube:
+							break;
+						case AssetType::Shader:
+							break;
+						case AssetType::Scene:
+							break;
+						case AssetType::Model:
+						{
+							asset = AssetManager::GetAssetByPath<Model>(pathString);
+
+							ImGui::ImageButton(pathString.c_str(), (ImTextureID)thumbnail->GetImGuiHandle(), { thumbnailSize, thumbnailSize });
+							if (ImGui::BeginDragDropSource())
+							{
+								AssetHandle assetHandle = asset->GetAssetHandle();
+								// 경로 데이터를 페이로드로 설정
+								ImGui::SetDragDropPayload(typeString.c_str(), &assetHandle, sizeof(AssetHandle));
+
+								// 드래그 중 미리보기
+								ImGui::Text("%s", filenameString.c_str());
+								ImGui::Image((ImTextureID)thumbnail->GetImGuiHandle(), ImVec2(50, 50));
 
 								ImGui::EndDragDropSource();
 							}
 						}
-						else // 기타 파일 아이콘
+						break;
+						case AssetType::Script:
+							break;
+						default:
 						{
-							auto texture = AssetManager::GetAssetByPath<Texture2D>("Resource\\FileIcon.png");
-							ImGui::ImageButton(filenameString.c_str(), (ImTextureID)texture->GetImGuiHandle(), { thumbnailSize, thumbnailSize });
+							thumbnail = AssetManager::GetAssetByPath<Texture2D>("Resource\\FileIcon.png");
+							ImGui::ImageButton(filenameString.c_str(), (ImTextureID)thumbnail->GetImGuiHandle(), { thumbnailSize, thumbnailSize });
+							break;
+						}
 						}
 					}
 

@@ -4,6 +4,12 @@
 
 namespace Daydream
 {
+	struct TransformConstantBufferData
+	{
+		Matrix4x4 world;
+		Matrix4x4 invTranspose;
+	};
+
 	class TransformComponent : public Component
 	{
 	public:

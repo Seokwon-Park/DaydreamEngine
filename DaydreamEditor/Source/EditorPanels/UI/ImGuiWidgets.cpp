@@ -139,7 +139,7 @@ namespace Daydream::UI
 				ImGui::Image(texture->GetImGuiHandle(), ImVec2{ 100,100 });
 			if (ImGui::BeginDragDropTarget())
 			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_TEXTURE"))
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(AssetManager::AssetTypeToString(AssetType::Texture2D).c_str()))
 				{
 					AssetHandle* pHandle = (AssetHandle*)payload->Data;
 					AssetHandle handle = *pHandle;
@@ -218,14 +218,84 @@ namespace Daydream::UI
 		//	ImGui::EndCombo();
 		//}
 
-		auto& materials = _model->GetMaterials();
-		for (UInt64 i = 0; i < materials.size(); i++)
-		{
-			String label = "Material" + std::to_string(i);
-			DrawMaterialController(label, materials[i].get());
-		}
+		//auto& materials = _model->GetMaterials();
+		//for (UInt64 i = 0; i < materials.size(); i++)
+		//{
+		//	String label = "Material" + std::to_string(i);
+		//	DrawMaterialController(label, materials[i].get());
+		//}
 
 		ImGui::PopID();
+	}
+
+	void DrawMeshController(const String& _label, AssetHandle* _meshHandle)
+	{
+		Shared<Mesh> currentMesh = AssetManager::GetAsset<Mesh>(*_meshHandle);
+		const char* previewValue = currentMesh ? currentMesh->GetAssetName().c_str() : "None";
+
+		// 3. 콤보 박스 시작
+		// 첫 번째 인자: 라벨(ID), 두 번째 인자: 닫혀있을 때 보이는 텍스트
+		if (ImGui::BeginCombo(_label.c_str(), previewValue))
+		{
+			// 4. 목록 순회
+			for (auto& metadata : AssetManager::GetAssetsByType(AssetType::Mesh))
+			{
+				// 이 아이템이 선택된 상태인지 확인
+				// (포인터 주소 비교 혹은 UUID 비교)
+				const bool isSelected = (*_meshHandle == metadata.handle);
+
+				// 5. 선택 가능한 항목 그리기 (Selectable)
+				// 클릭 시 true 반환 -> 선택된 것으로 처리
+				Shared<Mesh> mesh = AssetManager::GetAsset<Mesh>(metadata.handle);
+				if (ImGui::Selectable(mesh->GetAssetName().c_str(), isSelected))
+				{
+					*_meshHandle = metadata.handle;
+				}
+
+				// 6. 초기 포커스 설정 (선택된 아이템으로 바로 스크롤 이동)
+				if (isSelected)
+				{
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		}
+
+		//ImGui::PopID();
+	}
+
+	void DrawMaterialController(const String& _label, AssetHandle* _materialHandle)
+	{
+		AssetMetadata metadata = AssetManager::GetAssetMetadata(*_materialHandle);
+		const char* previewValue = metadata.name.empty() ? "None" : metadata.name.c_str();
+
+		// 3. 콤보 박스 시작
+		// 첫 번째 인자: 라벨(ID), 두 번째 인자: 닫혀있을 때 보이는 텍스트
+		if (ImGui::BeginCombo(_label.c_str(), previewValue))
+		{
+			// 4. 목록 순회
+			for (auto& metadata : AssetManager::GetAssetsByType(AssetType::Material))
+			{
+				// 이 아이템이 선택된 상태인지 확인
+				// (포인터 주소 비교 혹은 UUID 비교)
+				const bool isSelected = (*_materialHandle == metadata.handle);
+
+				// 5. 선택 가능한 항목 그리기 (Selectable)
+				// 클릭 시 true 반환 -> 선택된 것으로 처리
+				//Shared<Material> material = AssetManager::GetAsset<Material>(metadata.handle);
+				if (ImGui::Selectable(metadata.name.c_str(), isSelected))
+				{
+					*_materialHandle = metadata.handle;
+				}
+
+				// 6. 초기 포커스 설정 (선택된 아이템으로 바로 스크롤 이동)
+				if (isSelected)
+				{
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		}
 	}
 
 	bool CheckboxU32(const char* label, UInt32* v)

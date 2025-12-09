@@ -82,15 +82,20 @@ namespace Daydream
 		WindowManager::RegisterWindow(prop.title, mainWindow.get());
 
 		AssetManager::Init();
-		AssetManager::LoadAssetDataFromDirectory("Asset");
+		AssetManager::LoadAssetMetadataFromDirectory("Asset");
 		//렌더러 초기화
 		Renderer::Init(prop.rendererAPI);
+
+		AssetManager::LoadAssets(LoadPhase::Early);// 셰이더 때문에 renderer초기화 이후로 미룸
+
 		//렌더러에 윈도우 
 		Renderer::CreateSwapchainForWindow(mainWindow.get());
 		Renderer::SetCurrentWindow(mainWindow.get());
 		//Renderer::RegisterWindow("TestWindow", testWindow.get());
 
 		ResourceManager::Init();
+
+		AssetManager::LoadAssets(LoadPhase::Normal);// 모델을 로드하기 위해서는 pipeline이 빌드된 상태여야함
 
 		imGuiLayer = new ImGuiLayer();
 		AttachOverlay(imGuiLayer);

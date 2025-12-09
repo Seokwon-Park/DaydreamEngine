@@ -1,3 +1,4 @@
 Handle: d91e2fdf-6948-44d0-9bc4-a526c038b1d8
 Path: Asset/Shader/BRDFPS.hlsl
 Type: Shader
+Name: BRDFPS

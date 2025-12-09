@@ -1,3 +1,4 @@
 Handle: 2f6ae32c-40cd-4f85-901e-1b93bcebe41d
 Path: Asset/Shader/SpritePS.hlsl
 Type: Shader
+Name: SpritePS

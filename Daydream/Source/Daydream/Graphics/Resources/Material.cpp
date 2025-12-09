@@ -3,6 +3,7 @@
 
 #include "Daydream/Graphics/Core/Renderer.h"
 #include "Daydream/Graphics/Resources/PipelineState.h"
+#include "Daydream/Graphics/Manager/ResourceManager.h"
 
 namespace Daydream
 {
@@ -22,7 +23,12 @@ namespace Daydream
 	{
 		if (bindingMap.find(_name) != bindingMap.end())
 		{
+			if (!_texture->HasSampler())
+			{
+				_texture->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
+			}
 			textures[_name] = _texture;
+			
 		}
 	}
 

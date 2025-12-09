@@ -2,80 +2,125 @@
 #include "AssetManager.h"
 
 #include "AssetImporter.h"
+#include "AssetDefaults.h"
 
 #include "Daydream/Core/UUID.h"
 #include "yaml-cpp/yaml.h"
 
 namespace Daydream
 {
-	namespace 
+	namespace
 	{
-		const SortedMap<String, AssetType> assetExtensionMap = {
-			// 텍스처
-			{".png", AssetType::Texture2D},
-			{".jpg", AssetType::Texture2D},
-			{".jpeg", AssetType::Texture2D},
-			{".tga", AssetType::Texture2D},
-			{".hdr", AssetType::Texture2D},
-
-			// 씬
-			{".ddscene", AssetType::Scene}, // 예시
-
-			{".hlsl", AssetType::Shader},
-
-			// 메쉬
-			{".fbx", AssetType::Model},
-			{".gltf", AssetType::Model},
-			{".obj", AssetType::Model},
-
-			// 스크립트
-		};
-
-
-		const SortedMap<String, AssetType> assetTypeMap =
+		LoadPhase GetAssetLoadPhase(AssetType type)
 		{
-			{"Texture2D", AssetType::Texture2D},
-			{"Model", AssetType::Model},
-			{"Shader", AssetType::Shader},
-		};
-
-		const AssetHandle DefaultTexture= AssetHandle("00000001-0000-0000-0000-000000000001");
-		const AssetHandle DefaultNormal = AssetHandle("00000001-0000-0000-0000-000000000002");
-		const AssetHandle DefaultRoughness= AssetHandle("00000001-0000-0000-0000-000000000002");
-		const AssetHandle DefaultMetallic = AssetHandle("00000001-0000-0000-0000-000000000002");
-		const AssetHandle DefaultAO = AssetHandle("00000001-0000-0000-0000-000000000002");
-
-
-		String AssetTypeToString(AssetType _type)
-		{
-			switch (_type)
+			switch (type)
 			{
-			case AssetType::None:
-				break;
+				// [Early] 의존성이 없는 원시 데이터
 			case AssetType::Texture2D:
-				return "Texture2D";
-				break;
-			case AssetType::Scene:
-				break;
 			case AssetType::Shader:
-				return "Shader";
-				break;
-			case AssetType::Model:
-				return "Model";
-				break;
-			case AssetType::Script:
-				break;
-			default:
-				break;
-			}
-			return "";
-		}
+				//case AssetType::Mesh:
+				//case AssetType::Audio:
+				return LoadPhase::Early;
 
-		AssetType StringToAssetType(String _typeString)
-		{
-			return assetTypeMap.at(_typeString);
+				// [Normal] 원시 데이터를 참조하는 데이터
+			case AssetType::Model:
+			case AssetType::Material: // Texture, Shader 참조
+				//case AssetType::Animation:
+				//case AssetType::PhysicsMaterial:
+				return LoadPhase::Normal;
+
+				// [Late] 모든 것이 준비된 후 로드해야 하는 데이터
+			//case AssetType::Prefab:   // Mesh, Material 등 모든걸 참조
+			case AssetType::Scene:
+				return LoadPhase::Late;
+			}
+
+			return LoadPhase::MAX; // 기본값
 		}
 	}
+
+	const SortedMap<String, AssetType> AssetManager::assetExtensionMap = {
+		// 텍스처
+		{".png", AssetType::Texture2D},
+		{".jpg", AssetType::Texture2D},
+		{".jpeg", AssetType::Texture2D},
+		{".tga", AssetType::Texture2D},
+		{".hdr", AssetType::Texture2D},
+
+		// 씬
+		{".ddscene", AssetType::Scene}, // 예시
+
+		// 셰이더
+		{".hlsl", AssetType::Shader},
+
+		// 메쉬
+		{".fbx", AssetType::Model},
+		{".gltf", AssetType::Model},
+		{".obj", AssetType::Model},
+
+		//머티리얼
+		{".ddmat", AssetType::Material},
+
+
+		// 스크립트
+	};
+
+	const SortedMap<String, AssetType> AssetManager::assetTypeMap =
+	{
+		{"Texture2D", AssetType::Texture2D},
+		{"Model", AssetType::Model},
+		{"Shader", AssetType::Shader},
+		{"Mesh", AssetType::Mesh},
+		{"Material", AssetType::Material},
+	};
+
+
+	String AssetManager::AssetTypeToString(AssetType _type)
+	{
+		switch (_type)
+		{
+		case AssetType::None:
+			return "None";
+			break;
+		case AssetType::Texture2D:
+			return "Texture2D";
+			break;
+		case AssetType::Scene:
+			break;
+		case AssetType::Shader:
+			return "Shader";
+			break;
+		case AssetType::Model:
+			return "Model";
+			break;
+		case AssetType::Mesh:
+			return "Mesh";
+			break;
+		case AssetType::Material:
+			return "Material";
+			break;
+		case AssetType::Script:
+			break;
+		default:
+			break;
+		}
+		DAYDREAM_CORE_ERROR("case is not valid");
+		return "";
+	}
+
+	Array<AssetMetadata> AssetManager::GetAssetsByType(AssetType type)
+	{
+		Array<AssetMetadata> result;
+		for (const auto& [handle, metadata] : instance->assetRegistry)
+		{
+			if (metadata.type == type)
+			{
+				result.push_back(metadata);
+			}
+		}
+		return result;
+	}
+
 	AssetManager::AssetManager()
 	{
 
@@ -91,45 +136,108 @@ namespace Daydream
 		delete instance;
 	}
 
-	void AssetManager::LoadAssetDataFromDirectory(const Path& _directoryPath, bool _isRecursive)
+	void AssetManager::LoadAssetMetadataFromDirectory(const Path& _directoryPath, bool _isRecursive)
 	{
 		instance->ProcessDirectory(_directoryPath, _isRecursive);
+	}
+
+	void AssetManager::LoadAssets(LoadPhase _phase)
+	{
+		if (_phase == LoadPhase::Early)
+		{
+			instance->CreateBuiltinTexture2D();
+		}
+		for (auto [handle, metadata] : instance->assetRegistry)
+		{
+			if (instance->loadedAssetCache.find(handle) != instance->loadedAssetCache.end())
+			{
+				continue;
+			}
+
+			LoadPhase phase = GetAssetLoadPhase(metadata.type);
+
+			if (phase != _phase) continue;
+
+			Shared<Asset> newAsset = instance->LoadAssetCache(metadata.handle);
+			newAsset->SetAssetHandle(metadata.handle);
+
+			if (newAsset == nullptr)
+			{
+				return;
+			}
+
+			newAsset->SetAssetHandle(metadata.handle);
+			instance->loadedAssetCache[metadata.handle] = newAsset;
+		}
 	}
 
 	void AssetManager::CreateBuiltinAssets()
 	{
 		instance->CreateBuiltinTexture2D();
+		AssetMetadata metadata;
+		metadata.handle = AssetDefaults::DefaultMaterial;
+		metadata.filePath = "";
+		metadata.type = AssetType::Material;
+		metadata.name = "";
+
+		instance->assetRegistry[AssetDefaults::DefaultMaterial] = metadata;
+	}
+
+	const AssetMetadata& AssetManager::GetAssetMetadata(AssetHandle _handle)
+	{
+		auto itr = instance->assetRegistry.find(_handle);
+		if (itr == instance->assetRegistry.end())
+		{
+			return instance->assetRegistry[AssetDefaults::DefaultMaterial];
+		}
+		return itr->second;
 	}
 
 
 	AssetMetadata AssetManager::LoadMetadata(const Path& _metaFilePath)
 	{
-		YAML::Node data = YAML::LoadFile(_metaFilePath.string());
-		if (!data["Handle"])
+		YAML::Node metaNode = YAML::LoadFile(_metaFilePath.string());
+		if (!metaNode["Handle"])
 		{
 			return AssetMetadata(); // 유효하지 않음
 		}
 
-		//String tmp = data["Type"].as<String>();
-		//if (tmp == "Texture")
-		//{
-		//	data["Type"] = "Texture2D";
-		//	std::ofstream fout(_metaFilePath);
-		//	fout << data;
-		//	fout.close();
-		//}
-
-		//String tmp = data["Path"].as<String>();
-		//data["Path"] = Path(tmp).generic_string();
-		//std::ofstream fout(_metaFilePath);
-		//fout << data;
-		//fout.close();
-
 		AssetMetadata metadata;
-		metadata.handle = AssetHandle(data["Handle"].as<String>());
-		metadata.filePath = data["Path"].as<String>();
-		metadata.type = StringToAssetType(data["Type"].as<String>());
+		metadata.handle = AssetHandle(metaNode["Handle"].as<String>());
+		metadata.filePath = metaNode["Path"].as<String>();
+		metadata.type = StringToAssetType(metaNode["Type"].as<String>());
+		metadata.name = metaNode["Name"].as<String>();
 
+		switch (metadata.type)
+		{
+		case AssetType::Texture2D:
+			break;
+		case AssetType::TextureCube:
+			//loadedAsset = AssetImporter::LoadTextureCube(metadata.FilePath);
+			break;
+		case AssetType::Model:
+		{
+			for (auto subAsset : metaNode["SubAssets"])
+			{
+				String meshName = subAsset.first.as<String>();
+				YAML::Node meshNode = subAsset.second;
+
+				AssetMetadata subAssetMetadata;
+				subAssetMetadata.handle = AssetHandle(meshNode["Handle"].as<String>());
+				subAssetMetadata.filePath = meshNode["Path"].as<String>();
+				subAssetMetadata.type = StringToAssetType(meshNode["Type"].as<String>());
+
+				metadata.subAssets[subAssetMetadata.filePath.generic_string()] = subAssetMetadata;
+				DAYDREAM_CORE_INFO("{}", subAsset.first.as<String>());
+			}
+			break;
+		}
+		case AssetType::Shader:
+			break;
+		default:
+			break;
+			// 로드할 수 없는 타입
+		}
 		return metadata;
 	}
 
@@ -150,17 +258,20 @@ namespace Daydream
 		switch (metadata.type)
 		{
 		case AssetType::Texture2D:
-			loadedAsset = AssetImporter::LoadTexture2D(metadata.filePath);
+			loadedAsset = AssetImporter::LoadTexture2D(metadata);
 			break;
 		case AssetType::TextureCube:
 			//loadedAsset = AssetImporter::LoadTextureCube(metadata.FilePath);
 			break;
 		case AssetType::Model:
-			loadedAsset = AssetImporter::LoadModel(metadata.filePath);
+			loadedAsset = AssetImporter::LoadModel(metadata);
 			break;
 			// ... 기타 애셋 타입
+		case AssetType::Material:
+			loadedAsset = AssetImporter::LoadMaterial(metadata);
+			break;
 		case AssetType::Shader:
-			loadedAsset = AssetImporter::LoadShader(metadata.filePath);
+			loadedAsset = AssetImporter::LoadShader(metadata);
 			break;
 		default:
 			// 로드할 수 없는 타입
@@ -180,17 +291,6 @@ namespace Daydream
 		return loadedAsset;
 	}
 
-	AssetType AssetManager::GetAssetTypeFromPath(const Path& _path)
-	{
-		String ext = _path.extension().string();
-		auto itr = assetExtensionMap.find(ext);
-		if (itr == assetExtensionMap.end())
-		{
-			return AssetType::None;
-		}
-		return itr->second;
-	}
-
 	void AssetManager::CreateBuiltinTexture2D()
 	{
 		TextureDesc desc{};
@@ -206,32 +306,32 @@ namespace Daydream
 		pixelData[0] = 255;
 		pixelData[1] = 255;
 		pixelData[2] = 255;
-		assetPathMap["DefaultTexture"] = DefaultTexture;
-		loadedAssetCache[DefaultTexture] = Texture2D::Create(pixelData.data(), desc);
+		assetPathMap["DefaultTexture"] = AssetDefaults::DefaultAlbedoHandle;
+		loadedAssetCache[AssetDefaults::DefaultAlbedoHandle] = Texture2D::Create(pixelData.data(), desc);
 
 		pixelData[0] = 128;
 		pixelData[1] = 128;
 		pixelData[2] = 255;
-		assetPathMap["DefaultNormal"] = DefaultNormal;
-		loadedAssetCache[DefaultNormal] = Texture2D::Create(pixelData.data(), desc);
+		assetPathMap["DefaultNormal"] = AssetDefaults::DefaultNormalHandle;
+		loadedAssetCache[AssetDefaults::DefaultNormalHandle] = Texture2D::Create(pixelData.data(), desc);
 
 		pixelData[0] = 128;
 		pixelData[1] = 128;
 		pixelData[2] = 128;
-		assetPathMap["DefaultRoughness"] = DefaultRoughness;
-		loadedAssetCache[DefaultRoughness] = Texture2D::Create(pixelData.data(), desc);
+		assetPathMap["DefaultRoughness"] = AssetDefaults::DefaultRoughnessHandle;
+		loadedAssetCache[AssetDefaults::DefaultRoughnessHandle] = Texture2D::Create(pixelData.data(), desc);
 
 		pixelData[0] = 0;
 		pixelData[1] = 0;
 		pixelData[2] = 0;
-		assetPathMap["DefaultMetallic"] = DefaultMetallic;
-		loadedAssetCache[DefaultMetallic] = Texture2D::Create(pixelData.data(), desc);
+		assetPathMap["DefaultMetallic"] = AssetDefaults::DefaultMetallicHandle;
+		loadedAssetCache[AssetDefaults::DefaultMetallicHandle] = Texture2D::Create(pixelData.data(), desc);
 
 		pixelData[0] = 255;
 		pixelData[1] = 255;
 		pixelData[2] = 255;
-		assetPathMap["DefaultAO"] = DefaultAO;
-		loadedAssetCache[DefaultAO] = Texture2D::Create(pixelData.data(), desc);
+		assetPathMap["DefaultAO"] = AssetDefaults::DefaultAOHandle;
+		loadedAssetCache[AssetDefaults::DefaultAOHandle] = Texture2D::Create(pixelData.data(), desc);
 	}
 
 	void AssetManager::ProcessDirectory(const Path& _directoryPath, bool _isRecursive)
@@ -255,7 +355,7 @@ namespace Daydream
 			}
 			else
 			{
-				AssetType type = GetAssetTypeFromPath(path);
+				AssetType type = GetAssetType(ext);
 				if (type == AssetType::None) continue;
 				ProcessFile(path, type);
 			}
@@ -266,46 +366,45 @@ namespace Daydream
 	{
 		Path metaFilePath = _filePath;
 		metaFilePath += ".ddmeta";
-		if (FileSystem::exists(metaFilePath))
+		AssetMetadata metadata = AssetMetadata();
+		if (!FileSystem::exists(metaFilePath))
 		{
-			RegisterAsset(_filePath);
-		}
-		else
-		{
-			AssetMetadata metadata;
-			metadata.handle = AssetHandle();
+			metadata.handle = AssetHandle::Generate();
 			metadata.filePath = _filePath.string(); // TODO: 상대 경로로 변환해야 함
 			metadata.type = _assetType;
 			//Create metafile
-			CreateMetaDataFile(metadata);
+			CreateMetaDataFileInternal(metadata);
 		}
-	}
 
-	void AssetManager::RegisterAsset(const Path& _path)
-	{
-		Path metaFilePath = _path;
-		metaFilePath += ".ddmeta";
+		//metaFile이 존재한다는 사실이 무조건 보장
+		metadata = LoadMetadata(metaFilePath);
+		RegisterAsset(metadata);
 
-		AssetMetadata metadata = LoadMetadata(metaFilePath);
 		if (!metadata.IsValid())
 		{
 			// 메타파일이 손상되었거나 유효하지 않음
 			return;
 		}
+	}
 
-		// 파일 경로가 메타데이터와 다를 수 있으므로(파일 이동 감지),
-		// 실제 파일 경로로 업데이트
-		metadata.filePath = _path; // TODO: 상대 경로로 변환해야 함
-
+	void AssetManager::RegisterAsset(const AssetMetadata& _metadata)
+	{
 		// 레지스트리에 등록
-		if (assetRegistry.find(metadata.handle) == assetRegistry.end())
+		if (assetRegistry.find(_metadata.handle) == assetRegistry.end())
 		{
-			assetRegistry[metadata.handle] = metadata;
-			assetPathMap[metadata.filePath.generic_string()] = metadata.handle;
+			assetRegistry[_metadata.handle] = _metadata;
+			assetPathMap[_metadata.filePath.generic_string()] = _metadata.handle;
+		}
+		if (!_metadata.subAssets.empty())
+		{
+			for (auto [key, subMetadata] : _metadata.subAssets)
+			{
+				RegisterAsset(subMetadata);
+			}
 		}
 	}
 
-	void AssetManager::CreateMetaDataFile(const AssetMetadata& _metadata)
+	void AssetManager::CreateMetaDataFileInternal(const AssetMetadata& _metadata)
 	{
 		Path metaFilePath = _metadata.filePath;
 		metaFilePath += ".ddmeta";

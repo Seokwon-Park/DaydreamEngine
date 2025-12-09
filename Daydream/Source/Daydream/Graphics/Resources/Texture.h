@@ -35,6 +35,7 @@ namespace Daydream
 		virtual UInt32 GetHeight() const = 0;
 
 		virtual void SetSampler(Shared<Sampler> _sampler) = 0;
+		virtual bool HasSampler() = 0;
 
 		virtual void* GetNativeHandle() = 0;
 		//virtual void* GetImGuiHandle() = 0;
@@ -51,8 +52,6 @@ namespace Daydream
 		virtual void* GetNativeHandle() = 0;
 		virtual void* GetImGuiHandle() = 0;
 		
-		void Load(const Path& _path);
-
 		static Shared<Texture2D> Create(const void* _data, const TextureDesc& _desc);
 		static Shared<Texture2D> CreateFromFile(const Path& _path, const TextureDesc& _desc);
 		static Shared<Texture2D> CreateEmpty(const TextureDesc& _desc);

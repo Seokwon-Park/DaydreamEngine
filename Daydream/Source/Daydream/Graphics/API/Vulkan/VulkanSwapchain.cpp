@@ -119,7 +119,7 @@ namespace Daydream
 		vk::CommandBufferAllocateInfo allocInfo{};
 		allocInfo.commandPool = device->GetCommandPool();
 		allocInfo.level = vk::CommandBufferLevel::ePrimary;
-		allocInfo.commandBufferCount = commandBuffers.size();
+		allocInfo.commandBufferCount = (UInt32)commandBuffers.size();
 
 		commandBuffers = device->GetDevice().allocateCommandBuffersUnique(allocInfo);
 	}

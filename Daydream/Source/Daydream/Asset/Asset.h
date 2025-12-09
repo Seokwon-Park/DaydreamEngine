@@ -12,6 +12,8 @@ namespace Daydream
 		Shader,
 		Scene,
 		Model,
+		Mesh,
+		Material,
 		Script
 	};
 
@@ -21,12 +23,25 @@ namespace Daydream
 		Asset();
 		~Asset();
 
-		inline void SetUUID(AssetHandle _id) { id = _id; }
+		inline void SetAssetHandle(AssetHandle _id) { id = _id; }
 		inline AssetHandle GetAssetHandle() { return id; }
+
+		inline void SetAssetName(String _name) { name = _name; }
+		inline const String& GetAssetName() const 
+		{ 
+			if (name.empty())
+			{
+				DAYDREAM_CORE_INFO("No Name");
+			}
+			return name; 
+		}
+
+		inline AssetType GetAssetType() const { return type; }
 	protected:
 
 	private:
-		AssetType type;
-		AssetHandle id;
+		AssetType type = AssetType::None;
+		AssetHandle id = AssetHandle();
+		String name = "";
 	};
 }

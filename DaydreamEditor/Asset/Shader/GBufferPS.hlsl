@@ -16,7 +16,7 @@ struct PSOutput
     uint entityHandle : SV_Target4;
 };
 
-cbuffer Entity : register(b2)
+cbuffer Entity : register(b3)
 {
     uint entityHandle;
 };

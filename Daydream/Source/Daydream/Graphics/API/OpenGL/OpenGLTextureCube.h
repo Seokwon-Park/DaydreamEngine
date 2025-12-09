@@ -13,6 +13,7 @@ namespace Daydream
 		virtual ~OpenGLTextureCube();
 
 		virtual void SetSampler(Shared<Sampler> _sampler) override;
+		virtual bool HasSampler() override { return textureSampler != nullptr; }
 		virtual void GenerateMips() override;
 
 		virtual inline void* GetNativeHandle() override { return reinterpret_cast<void*>(static_cast<UInt64>(textureID)); }

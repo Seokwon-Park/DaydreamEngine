@@ -15,6 +15,7 @@ namespace Daydream
 		virtual ~D3D12TextureCube();
 
 		virtual void SetSampler(Shared<Sampler> _sampler) override;
+		virtual bool HasSampler() override { return textureSampler != nullptr; }
 		virtual void GenerateMips() override;
 
 		virtual inline void* GetNativeHandle() override { return texture.Get(); }

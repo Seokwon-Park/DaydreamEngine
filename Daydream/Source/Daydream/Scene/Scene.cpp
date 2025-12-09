@@ -3,6 +3,7 @@
 
 #include "Components/LightComponent.h"
 #include "Components/ModelRendererComponent.h"
+#include "Components/MeshRendererComponent.h"
 #include "Daydream/Graphics/Resources/Skybox.h"
 
 namespace Daydream
@@ -139,7 +140,8 @@ namespace Daydream
 			GameEntity* entity = GetEntity(handle);
 			if (!entity) continue; // °Ë»ç
 
-			ModelRendererComponent* renderComponent = entity->GetComponent<ModelRendererComponent>();
+			//ModelRendererComponent* renderComponent = entity->GetComponent<ModelRendererComponent>();
+			MeshRendererComponent* renderComponent = entity->GetComponent<MeshRendererComponent>();
 			if (renderComponent != nullptr)
 			{
 				renderComponent->Render();

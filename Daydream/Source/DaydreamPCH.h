@@ -7,6 +7,8 @@
 #include <memory>
 #include <algorithm>
 #include <functional>
+#include <thread>
+#include <future>
 
 #include <string>
 #include <vector>

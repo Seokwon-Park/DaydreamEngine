@@ -10,11 +10,6 @@
 
 namespace Daydream
 {
-    void Texture2D::Load(const Path& _path)
-    {
-
-    }
-
     Shared<Texture2D> Texture2D::Create(const void* _data, const TextureDesc& _desc)
     {
         return Renderer::GetRenderDevice()->CreateTexture2D(_data, _desc);
@@ -27,25 +22,27 @@ namespace Daydream
         if (_path.extension().string() == ".png" || _path.extension().string() == ".jpg")
         {
             auto imageData = ImageLoader::LoadImageFile(_path);
-            if (std::get<Array<UInt8>>(imageData.data).data() != nullptr)
+            Array<UInt8> pixels = std::get<Array<UInt8>>(imageData.data);
+            if (pixels.data() != nullptr)
             {
                 TextureDesc finalDesc = _desc;
                 finalDesc.width = imageData.width;
                 finalDesc.height = imageData.height;
 
-                return Renderer::GetRenderDevice()->CreateTexture2D(std::get<Array<UInt8>>(imageData.data).data(), finalDesc);
+                return Renderer::GetRenderDevice()->CreateTexture2D(pixels.data(), finalDesc);
             }
         }
         else if (_path.extension().string() == ".exr" || _path.extension().string() == ".hdr")
         {
-            auto imageData = ImageLoader::LoadHDRIFile(_path);
-            if (imageData.data.data() != nullptr)
+            auto imageData = ImageLoader::LoadImageFile(_path);
+            Array<Float32> pixels = std::get<Array<Float32>>(imageData.data);
+            if (pixels.data() != nullptr)
             {
                 TextureDesc finalDesc = _desc;
                 finalDesc.width = imageData.width;
                 finalDesc.height = imageData.height;
                 finalDesc.format = RenderFormat::R32G32B32A32_FLOAT;
-                return Renderer::GetRenderDevice()->CreateTexture2D(imageData.data.data(), finalDesc);
+                return Renderer::GetRenderDevice()->CreateTexture2D(pixels.data(), finalDesc);
             }
         }
         else

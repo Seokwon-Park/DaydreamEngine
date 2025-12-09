@@ -1,3 +1,10 @@
 Handle: 359f0335-6b94-47a1-a518-a94ff315aad3
 Path: Asset/Model/Lowpoly_tree_sample.fbx
 Type: Model
+SubAssets:
+  Tree_lp_11:
+    Handle: addd9355-9e38-4d71-83df-38c004c8da65
+    Path: Asset/Model/Lowpoly_tree_sample.fbx#Tree_lp_11
+    Type: Mesh
+    Name: Tree_lp_11
+Name: Lowpoly_tree_sample

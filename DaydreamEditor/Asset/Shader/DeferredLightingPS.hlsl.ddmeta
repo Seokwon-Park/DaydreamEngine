@@ -1,3 +1,4 @@
 Handle: 34779bcc-b5c7-4e1b-988f-ae4583a54d8b
 Path: Asset/Shader/DeferredLightingPS.hlsl
 Type: Shader
+Name: DeferredLightingPS

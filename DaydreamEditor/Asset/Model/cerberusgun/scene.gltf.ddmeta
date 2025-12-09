@@ -1,3 +1,10 @@
 Handle: 22a2285c-1c90-4181-9915-0f0ac2761005
 Path: Asset/Model/cerberusgun/scene.gltf
 Type: Model
+SubAssets:
+  Cerberus00_Fixed_08 - Default_0:
+    Handle: f8f91039-dda0-4172-bcd0-5350d5c0788b
+    Path: Asset/Model/cerberusgun/scene.gltf#Cerberus00_Fixed_08 - Default_0
+    Type: Mesh
+    Name: Cerberus00_Fixed_08 - Default_0
+Name: scene

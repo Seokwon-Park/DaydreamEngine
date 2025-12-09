@@ -3,17 +3,44 @@
 
 namespace Daydream
 {
+	namespace
+	{
+		Matrix4x4 ConvertAssimpMatrix(const aiMatrix4x4& _mat)
+		{
+			// 엔진의 행렬 메모리 레이아웃(Row/Column Major)에 맞춰 변환
+			Matrix4x4 ret;
 
-	ModelData ModelLoader::LoadFromFileInternal(const Path& _filepath)
+			ret.glmMat = glm::make_mat4(&_mat.a1);
+			ret.glmMat = glm::transpose(ret.glmMat);
+
+			return ret;
+		}
+
+		bool CheckIsSkeletal(const aiScene* _scene)
+		{
+			// 1. 애니메이션이 있으면 무조건 스켈레탈로 간주
+			if (_scene->mNumAnimations > 0) return true;
+
+			// 2. 메쉬들을 뒤져서 뼈가 있는지 확인
+			for (unsigned int i = 0; i < _scene->mNumMeshes; i++)
+			{
+				aiMesh* mesh = _scene->mMeshes[i];
+				if (mesh->HasBones())
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+	}
+
+	Shared<ModelData> ModelLoader::LoadFromFile(const Path& _filepath)
 	{
 		Assimp::Importer importer;
 
-		Path basePath = _filepath;
-		basePath = basePath.parent_path();
-		baseDirectory = basePath;
-
-		modelData.meshes.clear();
-		modelData.materials.clear();
+		Path baseDirectory;
+		baseDirectory = _filepath.parent_path();
 
 		UInt32 flags = aiProcess_Triangulate | aiProcess_ConvertToLeftHanded;// |           // 모든 면을 삼각형으로 변환
 		//aiProcess_FlipUVs |				// UV 좌표 뒤집기 (OpenGL용)
@@ -26,31 +53,64 @@ namespace Daydream
 		DAYDREAM_INFO(FileSystem::exists(_filepath));
 
 		const aiScene* scene = importer.ReadFile(_filepath.string(), flags);
-
 		bool result = !scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode;
 		DAYDREAM_CORE_ASSERT(nullptr != scene, "{0}", importer.GetErrorString());
 
-		ProcessScene(scene);
-		return modelData;
-	}
-	void ModelLoader::ProcessScene(const aiScene* _scene)
-	{
-		ProcessNode(_scene->mRootNode, _scene);
-	}
-	void ModelLoader::ProcessNode(aiNode* _node, const aiScene* _scene)
-	{
-		for (UInt32 i = 0; i < _node->mNumMeshes; i++)
+		Shared<ModelData> modelData;
+
+		modelData = MakeShared<ModelData>();
+		modelData->meshes.clear();
+		modelData->materials.clear();
+
+		if (scene->mNumMaterials > 0)
+			modelData->materials.reserve(scene->mNumMaterials);
+		if (scene->mNumMeshes > 0)
+			modelData->meshes.reserve(scene->mNumMeshes);
+
+		for (UInt32 i = 0; i < scene->mNumMaterials; i++)
 		{
-			aiMesh* mesh = _scene->mMeshes[_node->mMeshes[i]];
-			ProcessMesh(mesh, _scene);
+			ProcessMaterial(scene->mMaterials[i], modelData, baseDirectory);
 		}
 
+		for (UInt32 i = 0; i < scene->mNumMeshes; i++)
+		{
+			ProcessMesh(scene->mMeshes[i], scene, modelData);
+		}
+
+		modelData->rootNode = ProcessNode(scene->mRootNode, scene, modelData);
+		return modelData;
+	}
+	
+	void ModelLoader::ProcessScene(const aiScene* _scene)
+	{
+		ProcessNode(_scene->mRootNode, _scene, nullptr);
+	}
+	NodeData ModelLoader::ProcessNode(aiNode* _node, const aiScene* _scene, Shared<ModelData> _modelData)
+	{
+		NodeData node;
+		node.name = _node->mName.C_Str();
+
+		// 핵심: Assimp의 변환 행렬을 엔진의 Matrix4로 변환하여 저장
+		// (Sponza의 기둥 위치 등이 여기에 포함됨)
+		node.transform = ConvertAssimpMatrix(_node->mTransformation);
+
+		// 해당 노드가 참조하는 메쉬 인덱스 저장
+		for (UInt32 i = 0; i < _node->mNumMeshes; i++)
+		{
+			// _node->mMeshes[i]는 scene->mMeshes 배열의 인덱스임
+			node.meshIndices.push_back(_node->mMeshes[i]);
+		}
+
+		// 자식 노드 순회
 		for (UInt32 i = 0; i < _node->mNumChildren; i++)
 		{
-			ProcessNode(_node->mChildren[i], _scene);
+			NodeData childNode = ProcessNode(_node->mChildren[i], _scene, _modelData);
+			node.children.push_back(childNode);
 		}
+
+		return node;
 	}
-	void ModelLoader::ProcessMesh(aiMesh* _mesh, const aiScene* _scene)
+	void ModelLoader::ProcessMesh(aiMesh* _mesh, const aiScene* _scene, Shared<ModelData> _modelData)
 	{
 		MeshData meshData;
 		meshData.name = _mesh->mName.C_Str();
@@ -90,7 +150,6 @@ namespace Daydream
 			meshData.vertices.push_back(vertex);
 		}
 
-
 		for (UInt32 i = 0; i < _mesh->mNumFaces; i++)
 		{
 			aiFace face = _mesh->mFaces[i];
@@ -99,30 +158,23 @@ namespace Daydream
 				meshData.indices.push_back(face.mIndices[j]);
 			}
 		}
+		meshData.materialIndex = _mesh->mMaterialIndex;
 
-		modelData.meshes.push_back(meshData);
-
-		// TODO: Fix 만약 materialIndex가 0이면 mesh랑 서로 안맞게됨
-		if (_mesh->mMaterialIndex >= 0)
-		{
-			aiMaterial* material = _scene->mMaterials[_mesh->mMaterialIndex];
-
-			ProcessMaterial(material);
-		}
+		_modelData->meshes.push_back(meshData);
 	}
-	void ModelLoader::ProcessMaterial(aiMaterial* _material)
+	void ModelLoader::ProcessMaterial(aiMaterial* _material, Shared<ModelData> _modelData, const Path& _baseDirectory)
 	{
 		MaterialData materialData;
 		aiString name;
 		_material->Get(AI_MATKEY_NAME, name);
 		materialData.name = name.C_Str();
 
-		GetTexturePath(_material, aiTextureType_DIFFUSE, materialData.albedoMapPath);
+		materialData.albedoMapPath = StringGetTexturePath(_material, aiTextureType_DIFFUSE, _baseDirectory);
 		//GetTexturePath(_material, aiTextureType_SPECULAR, materialData.specularTexturePath);
-		GetTexturePath(_material, aiTextureType_NORMALS, materialData.normalMapPath);
-		GetTexturePath(_material, aiTextureType_DIFFUSE_ROUGHNESS, materialData.roughnessMapPath);
-		GetTexturePath(_material, aiTextureType_METALNESS, materialData.metallicMapPath);
-		GetTexturePath(_material, aiTextureType_AMBIENT_OCCLUSION, materialData.AOMapPath);
+		materialData.normalMapPath = StringGetTexturePath(_material, aiTextureType_NORMALS, _baseDirectory);
+		materialData.roughnessMapPath = StringGetTexturePath(_material, aiTextureType_DIFFUSE_ROUGHNESS, _baseDirectory);
+		materialData.metallicMapPath = StringGetTexturePath(_material, aiTextureType_METALNESS, _baseDirectory);
+		materialData.AOMapPath = StringGetTexturePath(_material, aiTextureType_AMBIENT_OCCLUSION, _baseDirectory);
 
 		if (materialData.AOMapPath.empty())
 		{
@@ -136,7 +188,7 @@ namespace Daydream
 			}
 			else
 			{
-				GetTexturePath(_material, aiTextureType_LIGHTMAP, materialData.AOMapPath);
+				materialData.AOMapPath = StringGetTexturePath(_material, aiTextureType_LIGHTMAP, _baseDirectory);
 			}
 		}
 		aiColor4D diffuseColor;
@@ -150,10 +202,10 @@ namespace Daydream
 		{
 			materialData.shininess = shininess;
 		}
-		modelData.materials.push_back(materialData);
+		_modelData->materials.push_back(materialData);
 	}
 
-	void ModelLoader::GetTexturePath(aiMaterial* _mat, aiTextureType _type, std::string& _outPath)
+	String ModelLoader::StringGetTexturePath(aiMaterial* _mat, aiTextureType _type, const Path& _baseDirectory)
 	{
 		// 해당 타입의 텍스처가 1개 이상 있는지 확인하고, 첫 번째 텍스처 경로를 가져옴
 		if (_mat->GetTextureCount(_type) > 0)
@@ -161,8 +213,9 @@ namespace Daydream
 			aiString str;
 			if (_mat->GetTexture(_type, 0, &str) == AI_SUCCESS)
 			{
-				_outPath = (baseDirectory / str.C_Str()).make_preferred().string();
+				return  (_baseDirectory / str.C_Str()).generic_string();
 			}
 		}
+		return "";
 	}
 }

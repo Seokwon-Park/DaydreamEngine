@@ -1,3 +1,4 @@
 Handle: 2a0d176e-f451-4b21-9f38-eeb058197c1a
 Path: Asset/Shader/GBufferVS.hlsl
 Type: Shader
+Name: GBufferVS

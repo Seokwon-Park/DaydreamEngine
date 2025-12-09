@@ -26,6 +26,7 @@ namespace Daydream
         Transform,
         String,
         Texture,
+        Mesh,
         Material,
         Light,
         ModelPtr,

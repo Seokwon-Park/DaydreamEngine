@@ -39,7 +39,6 @@ namespace Daydream
 		{
 			equirectangularMaterials[i] = Material::Create(equirectangularPSO);
 			equirectangularMaterials[i]->SetConstantBuffer("Camera", cubeFaceConstantBuffers[i]);
-			equirectangularMaterials[i]->SetTexture2D("Texture", equirectangularTexture);
 		}
 
 		// Resize Capture setup

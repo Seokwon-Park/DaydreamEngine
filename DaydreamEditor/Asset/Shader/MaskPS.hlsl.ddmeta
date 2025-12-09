@@ -1,3 +1,4 @@
 Handle: 2edae5f4-3ea7-4c2a-bbce-976059904e24
 Path: Asset\Shader\MaskPS.hlsl
 Type: Shader
+Name: MaskPS

@@ -23,7 +23,6 @@ namespace Daydream
 		DAYDREAM_CORE_ASSERT(instance == nullptr, "Renderer Already Initialized!");
 		instance = new Renderer(_API);
 		instance->renderDevice->Init();
-		ModelLoader::Init();
 		ShaderCompileHelper::Init();
 		RenderCommand::Init(instance->renderDevice.get());
 	}
@@ -32,7 +31,6 @@ namespace Daydream
 	{
 		//Renderer2D::Shutdown();
 		ShaderCompileHelper::Shutdown();
-		ModelLoader::Shutdown();
 		instance->renderer->Shutdown();
 		instance->renderDevice.reset();
 		delete instance;

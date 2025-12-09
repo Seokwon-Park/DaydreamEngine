@@ -33,11 +33,11 @@ namespace Daydream
 	Shared<TextureCube> TextureCube::Create(const Array<Path>& _paths, const TextureDesc& _desc)
 	{
 		Array<const void*> imageDatas;
-		Array<ImageLoader::ImageData> temp;
+		Array<ImageData> temp;
 		TextureDesc finalDesc = _desc;
 		for (auto path : _paths)
 		{
-			ImageLoader::ImageData imageData = ImageLoader::LoadImageFile(path);
+			ImageData imageData = ImageLoader::LoadImageFile(path);
 
 			if (std::get<Array<UInt8>>(imageData.data).data() != nullptr)
 			{

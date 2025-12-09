@@ -1918,6 +1918,12 @@
       <Filter>Vendor\stb</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Asset\AssetImporter.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Resources\SkeletalModel.h" />
+    <ClInclude Include="Source\Daydream\Scene\Components\MeshRendererComponent.h" />
+    <ClInclude Include="Source\Daydream\Asset\AssetDefaults.h" />
+    <ClInclude Include="Source\Daydream\Core\ThreadPool.h" />
+    <ClInclude Include="Source\Daydream\Core\Thread.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Core\RenderThread.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\Directory.cpp">
@@ -2350,5 +2356,10 @@
       <Filter>Vendor\stb</Filter>
     </ClCompile>
     <ClCompile Include="Source\Daydream\Asset\AssetImporter.cpp" />
+    <ClCompile Include="Source\Daydream\Scene\Components\MeshRendererComponent.cpp" />
+    <ClCompile Include="Source\Daydream\Asset\AssetDefaults.cpp" />
+    <ClCompile Include="Source\Daydream\Core\ThreadPool.cpp" />
+    <ClCompile Include="Source\Daydream\Core\Thread.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Core\RenderThread.cpp" />
   </ItemGroup>
 </Project>

@@ -4,7 +4,7 @@
 namespace Daydream
 {
 	AssetHandle::AssetHandle()
-		:uuid(GenerateUUID())
+		:uuid()
 	{
 	}
 
@@ -45,6 +45,13 @@ namespace Daydream
 	bool AssetHandle::operator<(const AssetHandle& _other) const
 	{
 		return uuid < _other.uuid;
+	}
+
+	AssetHandle AssetHandle::Generate()
+	{
+		AssetHandle handle;
+		handle.uuid = GenerateUUID();
+		return handle;
 	}
 
 	uuids::uuid AssetHandle::GenerateUUID()

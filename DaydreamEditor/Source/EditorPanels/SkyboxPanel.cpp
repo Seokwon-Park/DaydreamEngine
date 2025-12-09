@@ -42,7 +42,7 @@ namespace Daydream
 			ImGui::Image(equirectangularDropTarget->GetImGuiHandle(), ImVec2{ 400,200 });
 			if (ImGui::BeginDragDropTarget())
 			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_TEXTURE"))
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(AssetManager::AssetTypeToString(AssetType::Texture2D).c_str()))
 				{
 					AssetHandle* pHandle = (AssetHandle*)payload->Data;
 					AssetHandle handle = *pHandle;
@@ -62,7 +62,7 @@ namespace Daydream
 				ImGui::Image(skybox->GetSkyboxTexture()->GetImGuiHandle(i), ImVec2{ 100,100 });
 				if (ImGui::BeginDragDropTarget())
 				{
-					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_TEXTURE"))
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(AssetManager::AssetTypeToString(AssetType::Texture2D).c_str()))
 					{
 						AssetHandle* pHandle = (AssetHandle*)payload->Data;
 						AssetHandle handle = *pHandle;
