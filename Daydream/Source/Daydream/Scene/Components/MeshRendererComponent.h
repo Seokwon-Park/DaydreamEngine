@@ -33,7 +33,7 @@ namespace Daydream
 		AssetHandle materialHandle;
 
 		MaterialConstantBufferData materialValue;
-		Shared<ConstantBuffer> worldMatrix;
+		Shared<ConstantBuffer> worldMatrixConstantBuffer;
 		Shared<ConstantBuffer> materialCB;
 		Shared<ConstantBuffer> entityHandle;
 

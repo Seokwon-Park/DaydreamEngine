@@ -33,17 +33,44 @@ namespace Daydream
 		return scene->GetEntity(parentHandle);
 	}
 
+	bool GameEntity::IsDescendant(GameEntity* _target)
+	{
+		GameEntity* current = _target;
+		while (current)
+		{
+			if (current == this) // 포인터 직접 비교
+			{
+				DAYDREAM_CORE_ERROR("[Scene] Cannot set descendant as parent - circular reference!");
+				return true;
+			}
+
+			EntityHandle nextParentHandle = current->GetParentHandle();
+			if (!nextParentHandle.IsValid())
+			{
+				break; // 루트 도달
+			}
+
+			current = scene->GetEntity(nextParentHandle);
+			if (!current) // nullptr 체크
+			{
+				DAYDREAM_CORE_WARN("Parent chain broken - entity not found");
+				return true;
+			}
+		}
+		return false;
+	}
+
 	void GameEntity::SetParent(EntityHandle _parentHandle)
 	{
 		if (!scene)
 		{
-			DAYDREAM_CORE_ERROR("Entity has no scene!");
+			DAYDREAM_CORE_ERROR("[Scene] Entity has no scene!");
 			return;
 		}
 
 		if (handle == _parentHandle) // 부모가 자기 자신이 될 수 없음
 		{
-			DAYDREAM_CORE_ERROR("Cannot set self as parent!");
+			DAYDREAM_CORE_ERROR("[Scene] Cannot set self as parent!");
 			return;
 		}
 
@@ -58,32 +85,15 @@ namespace Daydream
 			newParent = scene->GetEntity(_parentHandle);
 			if (!newParent) // 새로운 부모의 핸들로 가져온 포인터가 유효한지 확인
 			{
-				DAYDREAM_CORE_ERROR("Invalid parent handle - entity not found!");
+				DAYDREAM_CORE_ERROR("[Scene] Invalid parent handle - entity not found!");
 				return; // 실패하면 아무것도 변경하지 않음
 			}
 
-			// 순환 참조 체크 (새 부모가 this의 자손인지)
+			// 순환 참조 체크 (this의 새 부모 엔티티의 부모라인을 쭉 따라갔을 때 this를 부모로 두고 있으면 절대 안된다)
 			GameEntity* checkParent = newParent;
-			while (checkParent)
+			if (IsDescendant(checkParent))
 			{
-				if (checkParent == this) // 포인터 직접 비교
-				{
-					DAYDREAM_CORE_ERROR("Cannot set descendant as parent - circular reference!");
-					return;
-				}
-
-				EntityHandle nextParentHandle = checkParent->GetParentHandle();
-				if (!nextParentHandle.IsValid())
-				{
-					break; // 루트 도달
-				}
-
-				checkParent = scene->GetEntity(nextParentHandle);
-				if (!checkParent) // nullptr 체크
-				{
-					DAYDREAM_CORE_WARN("Parent chain broken - entity not found");
-					break;
-				}
+				return;
 			}
 		}
 
@@ -92,7 +102,7 @@ namespace Daydream
 			GameEntity* oldParent = scene->GetEntity(parentHandle);
 			if (oldParent)
 			{
-				oldParent->RemoveChild(handle); // oldParent의 자식 목록에서 'this' 제거
+				oldParent->DetachChildInternal(handle); // oldParent의 자식 목록에서 'this' 제거
 			}
 		}
 		else
@@ -107,7 +117,7 @@ namespace Daydream
 		// 6. 새 부모에 'this'를 자식으로 추가
 		if (newParent) // _parentHandle이 유효한 경우
 		{
-			newParent->AddChild(handle); // newParent의 자식 목록에 'this' 추가
+			newParent->AddChildInternal(handle); // newParent의 자식 목록에 'this' 추가
 		}
 		else
 		{
@@ -135,7 +145,7 @@ namespace Daydream
 		GameEntity* oldParent = scene->GetEntity(parentHandle);
 		if (oldParent)
 		{
-			oldParent->RemoveChild(handle);
+			oldParent->DetachChildInternal(handle);
 		}
 		else
 		{
@@ -149,7 +159,7 @@ namespace Daydream
 		scene->AddRootEntity(handle);
 	}
 
-	void GameEntity::AddChild(EntityHandle _childHandle)
+	void GameEntity::AddChildInternal(EntityHandle _childHandle)
 	{
 		if (!scene)
 		{
@@ -188,7 +198,7 @@ namespace Daydream
 		childrenHandles.push_back(_childHandle);
 	}
 
-	void GameEntity::RemoveChild(EntityHandle _childHandle)
+	void GameEntity::DetachChildInternal(EntityHandle _childHandle)
 	{
 		// C++ 표준 라이브러리의 'erase-remove idiom' 
 		// _childHandle이 아닌 값들을 앞쪽으로 shift 삭제할 값이 시작되는 위치를 return 
@@ -200,7 +210,7 @@ namespace Daydream
 		);
 	}
 
-	void GameEntity::ReorderChild(EntityHandle childHandle, UInt64 newIndex)
+	void GameEntity::ReorderChild(EntityHandle _childHandle, UInt64 _newIndex)
 	{
 		if (!scene)
 		{
@@ -209,12 +219,12 @@ namespace Daydream
 		}
 
 		// 자식 목록에서 childHandle을 찾음
-		auto it = std::find(childrenHandles.begin(), childrenHandles.end(), childHandle);
+		auto it = std::find(childrenHandles.begin(), childrenHandles.end(), _childHandle);
 
 		if (it == childrenHandles.end())
 		{
 			// 자식이 아니면 추가 후 순서 조정
-			GameEntity* child = scene->GetEntity(childHandle);
+			GameEntity* child = scene->GetEntity(_childHandle);
 			if (child)
 			{
 				child->SetParent(handle);
@@ -226,15 +236,15 @@ namespace Daydream
 		UInt64 currentIndex = std::distance(childrenHandles.begin(), it);
 
 		// 같은 위치면 아무것도 안 함
-		if (currentIndex == newIndex)
+		if (currentIndex == _newIndex)
 		{
 			return;
 		}
 
 		// 인덱스 범위 체크
-		if (newIndex > childrenHandles.size())
+		if (_newIndex > childrenHandles.size())
 		{
-			newIndex = childrenHandles.size();
+			_newIndex = childrenHandles.size();
 		}
 
 		// 요소를 제거하고 새 위치에 삽입
@@ -242,11 +252,11 @@ namespace Daydream
 		childrenHandles.erase(it);
 
 		// erase 후 삽입 위치 조정
-		if (newIndex > currentIndex)
+		if (_newIndex > currentIndex)
 		{
-			newIndex--;
+			_newIndex--;
 		}
 
-		childrenHandles.insert(childrenHandles.begin() + newIndex, movedHandle);
+		childrenHandles.insert(childrenHandles.begin() + _newIndex, movedHandle);
 	}
 }

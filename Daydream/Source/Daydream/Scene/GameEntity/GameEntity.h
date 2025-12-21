@@ -18,12 +18,12 @@ namespace Daydream
 		inline const String& GetName() const { return name; }
 		inline void SetName(const String& _name) { name = _name; }
 
-		Scene* GetScene() { return scene; }
+		inline Scene* GetScene() const { return scene; }
 		inline void SetScene(Scene* _scene) { scene = _scene; }
 
 		/// 자신의 핸들을 설정하고 가져오는 함수
-		const EntityHandle& GetHandle() const { return handle; }
-		void SetHandle(EntityHandle _handle) { handle = _handle; }
+		inline const EntityHandle& GetHandle() const { return handle; }
+		inline void SetHandle(EntityHandle _handle) { handle = _handle; }
 
 		bool IsValid() const { return handle.IsValid(); }
 
@@ -32,6 +32,7 @@ namespace Daydream
 
 		EntityHandle GetParentHandle() const { return parentHandle; }
 		GameEntity* GetParent();
+		
 		void SetParent(EntityHandle _parentHandle);
 		void RemoveParent();
 
@@ -95,8 +96,11 @@ namespace Daydream
 
 	private:
 		// 자식 추가/제거
-		void AddChild(EntityHandle _childHandle);
-		void RemoveChild(EntityHandle _childHandle);
+		void AddChildInternal(EntityHandle _childHandle);
+		void DetachChildInternal(EntityHandle _childHandle);
+
+		//Target is Descendant of this Entity?
+		bool IsDescendant(GameEntity* _target);
 
 		Array<Unique<Component>> components;
 		HashMap<std::type_index, Component*> componentMap;

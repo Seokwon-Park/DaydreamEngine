@@ -13,7 +13,7 @@ namespace Daydream
 	{
 		//https://github.com/gabime/spdlog/wiki/3.-Custom-formatting
 		spdlog::set_pattern("%^[%T] %n : %v%$");
-		coreLogger = spdlog::stdout_color_mt("Daydream ENGINE");
+		coreLogger = spdlog::stdout_color_mt("DAYDREAM ENGINE");
 		coreLogger->set_level(spdlog::level::trace);
 
 		clientLogger = spdlog::stdout_color_mt("APPLICATION");

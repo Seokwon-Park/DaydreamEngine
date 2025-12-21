@@ -119,6 +119,7 @@ namespace Daydream
 				newEntry["Handle"] = meshHandle.ToString();
 				newEntry["Path"] = pathMapKey;
 				newEntry["Type"] = "Mesh";
+				newEntry["Name"] = meshName;
 
 				metaNode["SubAssets"][meshName] = newEntry;
 				isMetaDirty = true;
@@ -128,6 +129,7 @@ namespace Daydream
 			mesh->SetAssetHandle(meshHandle);
 			mesh->SetAssetName(meshName);
 			AssetManager::AddLoadedAsset(meshHandle, mesh);
+			newModel->AddMesh(meshHandle);
 		}
 
 		if (isMetaDirty)
@@ -248,6 +250,7 @@ namespace Daydream
 				fout << out.c_str();
 				fout.close();
 			}
+			newModel->AddMaterial(materialHandle);
 			//Shared<Material> newMat = Material::Create(ResourceManager::GetResource<PipelineState>("ForwardPSO"));
 			//materials.push_back(newMat);
 		}

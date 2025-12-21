@@ -42,7 +42,9 @@ namespace Daydream
 		Path baseDirectory;
 		baseDirectory = _filepath.parent_path();
 
-		UInt32 flags = aiProcess_Triangulate | aiProcess_ConvertToLeftHanded;// |           // 모든 면을 삼각형으로 변환
+		UInt32 flags = aiProcess_Triangulate |   // 모든 면을 삼각형으로 변환
+			aiProcess_ConvertToLeftHanded; // | // 왼손 좌표계 사용
+		//aiProcess_OptimizeGraph;// |
 		//aiProcess_FlipUVs |				// UV 좌표 뒤집기 (OpenGL용)
 		//aiProcess_GenNormals |			// 노말 벡터 생성
 	//	aiProcess_CalcTangentSpace;			// | //탄젠트/바이탄젠트 계산
@@ -50,7 +52,7 @@ namespace Daydream
 	//aiProcess_OptimizeMeshes |		// 메시 최적화
 	//aiProcess_ValidateDataStructure;  // 데이터 유효성 검사
 
-		DAYDREAM_INFO(FileSystem::exists(_filepath));
+		DAYDREAM_INFO("Load File {}", _filepath.generic_string());
 
 		const aiScene* scene = importer.ReadFile(_filepath.string(), flags);
 		bool result = !scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode;
@@ -77,34 +79,108 @@ namespace Daydream
 			ProcessMesh(scene->mMeshes[i], scene, modelData);
 		}
 
-		modelData->rootNode = ProcessNode(scene->mRootNode, scene, modelData);
+		//Vector3 vmin(1000, 1000, 1000);
+		//Vector3 vmax(-1000, -1000, -1000);
+		//for (auto meshData : modelData->meshes)
+		//{
+		//	// Normalize vertices
+
+		//	for (auto& v : meshData.vertices) {
+		//		vmin.x = std::min(vmin.x, v.position.x);
+		//		vmin.y = std::min(vmin.y, v.position.y);
+		//		vmin.z = std::min(vmin.z, v.position.z);
+		//		vmax.x = std::max(vmax.x, v.position.x);
+		//		vmax.y = std::max(vmax.y, v.position.y);
+		//		vmax.z = std::max(vmax.z, v.position.z);
+		//	}
+		//}
+
+		//for (auto& meshData : modelData->meshes)
+		//{
+		//	float dx = vmax.x - vmin.x, dy = vmax.y - vmin.y, dz = vmax.z - vmin.z;
+		//	float dl = std::max(std::max(dx, dy), dz);
+		//	float cx = (vmax.x + vmin.x) * 0.5f, cy = (vmax.y + vmin.y) * 0.5f,
+		//		cz = (vmax.z + vmin.z) * 0.5f;
+
+		//	for (auto& v : meshData.vertices)
+		//	{
+		//		v.position.x = (v.position.x - cx) / dl;
+		//		v.position.y = (v.position.y - cy) / dl;
+		//		v.position.z = (v.position.z - cz) / dl;
+		//	}
+		//}
+
+		Matrix4x4 identity;
+		modelData->rootNode = ProcessNode(scene->mRootNode, scene, modelData->meshes, identity);
 		return modelData;
 	}
-	
+
 	void ModelLoader::ProcessScene(const aiScene* _scene)
 	{
-		ProcessNode(_scene->mRootNode, _scene, nullptr);
+		//ProcessNode(_scene->mRootNode, _scene, );
 	}
-	NodeData ModelLoader::ProcessNode(aiNode* _node, const aiScene* _scene, Shared<ModelData> _modelData)
+	NodeData ModelLoader::ProcessNode(aiNode* _curNode, const aiScene* _scene, const Array<MeshData>& _meshDatas, const Matrix4x4& _parentTransform)
 	{
-		NodeData node;
-		node.name = _node->mName.C_Str();
+		bool isRootNode = _scene->mRootNode == _curNode;
+		bool hasMesh = (_curNode->mNumMeshes > 0);
+		bool isDummyNode = !hasMesh;
 
-		// 핵심: Assimp의 변환 행렬을 엔진의 Matrix4로 변환하여 저장
-		// (Sponza의 기둥 위치 등이 여기에 포함됨)
-		node.transform = ConvertAssimpMatrix(_node->mTransformation);
+		//Matrix4x4 parentTransform = _parentTransform;
+		Matrix4x4 localTransform = ConvertAssimpMatrix(_curNode->mTransformation);
+		Matrix4x4 nextTransform = localTransform * _parentTransform;
 
-		// 해당 노드가 참조하는 메쉬 인덱스 저장
-		for (UInt32 i = 0; i < _node->mNumMeshes; i++)
+		UInt32 meshSize = _scene->mNumMeshes;
+
+		//if (!hasMesh && _curNode->mNumChildren == 1)
+		//{
+		//	// 내 자식을 처리해서 바로 리턴해버림 (나는 생략됨)
+		//	return ProcessNode(_curNode->mChildren[0], _scene, _meshDatas);
+		//}
+
+		NodeData node{};
+		node.name = _curNode->mName.C_Str();
+
+		if (_curNode->mNumMeshes == 1)
 		{
-			// _node->mMeshes[i]는 scene->mMeshes 배열의 인덱스임
-			node.meshIndices.push_back(_node->mMeshes[i]);
+			UInt32 meshIndex = _curNode->mMeshes[0];
+			if (meshIndex < meshSize)
+			{
+				node.meshIndex = meshIndex;
+				Matrix4x4 tmp = nextTransform.GetTranslated(_meshDatas[meshIndex].centerOffset);
+				node.transform = Transform::Decompose(tmp);
+			}
+			//translation += rotation * (centerOffset * scale);
+		}
+		// CASE B: 메쉬가 여러 개 있는 경우 (멀티 머티리얼 등)
+		// -> 현재 노드는 '그룹' 역할만 하고, 서브 노드들을 만들어 메쉬를 담당시킴
+		else if (_curNode->mNumMeshes > 1)
+		{
+			// node.meshIndex는 INVALID 상태 유지
+
+			for (UInt32 i = 0; i < _curNode->mNumMeshes; i++)
+			{
+				UInt32 meshIndex = _curNode->mMeshes[i];
+
+				// 서브 노드 생성
+				NodeData subNode{};
+				subNode.name = node.name + "_SubMesh_" + std::to_string(i);
+				subNode.meshIndex = meshIndex;
+
+				// [보정] 서브 노드의 위치를 오프셋만큼 이동
+				// 서브 노드는 부모(현재 노드) 기준이므로 회전/스케일 없이 위치만 이동하면 됨
+				//subNode.transform.rotation = Quaternion::Identity();
+				//subNode.transform.scale = Vector3(1.0f);
+
+				// 자식으로 등록
+				node.children.push_back(subNode);
+			}
 		}
 
 		// 자식 노드 순회
-		for (UInt32 i = 0; i < _node->mNumChildren; i++)
+
+		for (UInt32 i = 0; i < _curNode->mNumChildren; i++)
 		{
-			NodeData childNode = ProcessNode(_node->mChildren[i], _scene, _modelData);
+			NodeData childNode = ProcessNode(_curNode->mChildren[i], _scene, _meshDatas, nextTransform);
 			node.children.push_back(childNode);
 		}
 
@@ -115,6 +191,10 @@ namespace Daydream
 		MeshData meshData;
 		meshData.name = _mesh->mName.C_Str();
 
+		// AABB 계산을 위한 변수 초기화
+		Vector3 minBound(FLT_MAX, FLT_MAX, FLT_MAX);
+		Vector3 maxBound(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
 		for (UInt32 i = 0; i < _mesh->mNumVertices; i++)
 		{
 			Vertex vertex;
@@ -122,6 +202,9 @@ namespace Daydream
 			vertex.position.x = _mesh->mVertices[i].x;
 			vertex.position.y = _mesh->mVertices[i].y;
 			vertex.position.z = _mesh->mVertices[i].z;
+
+			minBound = Math::Min(minBound, vertex.position);
+			maxBound = Math::Max(maxBound, vertex.position);
 
 			if (_mesh->HasNormals())
 			{
@@ -148,6 +231,18 @@ namespace Daydream
 			}
 
 			meshData.vertices.push_back(vertex);
+		}
+
+		DAYDREAM_CORE_TRACE("{},{},{}", minBound.x, minBound.y, minBound.z);
+		DAYDREAM_CORE_TRACE("{},{},{}", maxBound.x, maxBound.y, maxBound.z);
+		Vector3 center = (minBound + maxBound) * 0.5f;
+		meshData.centerOffset = center;
+
+		//// 3. 정점 재배치 (recentering)
+		//// 모든 정점에서 중심점을 빼서, 메쉬의 로컬 원점을 (0,0,0)인 중심으로 이동시킴
+		for (auto& v : meshData.vertices)
+		{
+			v.position = v.position - center;
 		}
 
 		for (UInt32 i = 0; i < _mesh->mNumFaces; i++)

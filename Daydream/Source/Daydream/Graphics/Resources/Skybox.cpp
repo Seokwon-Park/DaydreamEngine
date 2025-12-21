@@ -18,14 +18,14 @@ namespace Daydream
 			Matrix4x4::CreateLookTo(Vector3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec3(0.0f, 1.0f,  0.0f)),
 			Matrix4x4::CreateLookTo(Vector3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, 1.0f,  0.0f))
 		};
-		cubeFaceProjMatrix = Matrix4x4::Perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+		cubeFaceProjMatrix = Matrix4x4::CreatePerspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
 
 		cubeFaceConstantBuffers.resize(6);
 		for (int i = 0; i < 6; i++)
 		{
 			cubeFaceConstantBuffers[i] = ConstantBuffer::Create(sizeof(Matrix4x4));
-			captureViewProjections.push_back(cubeFaceProjMatrix * cubeFaceViewMatrices[i]);
-			captureViewProjections[i].MatrixTranspose();
+			captureViewProjections.push_back(cubeFaceViewMatrices[i] * cubeFaceProjMatrix);
+			captureViewProjections[i].Transpose();
 			cubeFaceConstantBuffers[i]->Update(&captureViewProjections[i], sizeof(Matrix4x4));
 		}
 
@@ -35,7 +35,7 @@ namespace Daydream
 
 		equirectangularMaterials.resize(6);
 		equirectangularResultTextures.resize(6);
-		for (int i = 0; i < equirectangularMaterials.size(); i++) 
+		for (int i = 0; i < equirectangularMaterials.size(); i++)
 		{
 			equirectangularMaterials[i] = Material::Create(equirectangularPSO);
 			equirectangularMaterials[i]->SetConstantBuffer("Camera", cubeFaceConstantBuffers[i]);

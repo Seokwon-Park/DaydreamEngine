@@ -230,8 +230,8 @@ namespace Daydream::UI
 
 	void DrawMeshController(const String& _label, AssetHandle* _meshHandle)
 	{
-		Shared<Mesh> currentMesh = AssetManager::GetAsset<Mesh>(*_meshHandle);
-		const char* previewValue = currentMesh ? currentMesh->GetAssetName().c_str() : "None";
+		AssetMetadata metadata = AssetManager::GetAssetMetadata(*_meshHandle);
+		const char* previewValue = metadata.name.empty() ? "None" : metadata.name.c_str();
 
 		// 3. 콤보 박스 시작
 		// 첫 번째 인자: 라벨(ID), 두 번째 인자: 닫혀있을 때 보이는 텍스트
@@ -246,8 +246,7 @@ namespace Daydream::UI
 
 				// 5. 선택 가능한 항목 그리기 (Selectable)
 				// 클릭 시 true 반환 -> 선택된 것으로 처리
-				Shared<Mesh> mesh = AssetManager::GetAsset<Mesh>(metadata.handle);
-				if (ImGui::Selectable(mesh->GetAssetName().c_str(), isSelected))
+				if (ImGui::Selectable(metadata.name.c_str(), isSelected))
 				{
 					*_meshHandle = metadata.handle;
 				}

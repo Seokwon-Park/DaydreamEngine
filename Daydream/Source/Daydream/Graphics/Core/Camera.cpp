@@ -63,8 +63,8 @@ namespace Daydream
 	}
 	void Camera::UpdateViewProjectionMatrix()
 	{
-		viewProjectionMatrix = projectionMatrix * viewMatrix;
-		viewProjectionMatrix.MatrixTranspose();
+		viewProjectionMatrix = viewMatrix * projectionMatrix ;
+		viewProjectionMatrix.Transpose();
 
 		CameraConstantBufferData data;
 		data.view = viewMatrix;
@@ -83,11 +83,11 @@ namespace Daydream
 		switch (projectionType)
 		{
 		case ProjectionType::Perspective:
-			projectionMatrix = Matrix4x4::Perspective(glm::radians(fovy), aspectRatio, nearPlane, farPlane);
+			projectionMatrix = Matrix4x4::CreatePerspective(glm::radians(fovy), aspectRatio, nearPlane, farPlane);
 			break;
 		case ProjectionType::Orthographic:
 		{
-			projectionMatrix = Matrix4x4::Orthographic(-orthoSize * aspectRatio, orthoSize * aspectRatio, -orthoSize, orthoSize, nearPlane, farPlane);
+			projectionMatrix = Matrix4x4::CreateOrthographic(-orthoSize * aspectRatio, orthoSize * aspectRatio, -orthoSize, orthoSize, nearPlane, farPlane);
 			break;
 		}
 		default:

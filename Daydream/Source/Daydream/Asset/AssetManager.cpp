@@ -55,6 +55,7 @@ namespace Daydream
 
 		// 메쉬
 		{".fbx", AssetType::Model},
+		{".FBX", AssetType::Model},
 		{".gltf", AssetType::Model},
 		{".obj", AssetType::Model},
 
@@ -128,12 +129,25 @@ namespace Daydream
 
 	void AssetManager::Init()
 	{
-		instance = new AssetManager();
+		if (instance == nullptr)
+		{
+			DAYDREAM_CORE_INFO("[AssetManager] AssetManager initialize");
+			instance = new AssetManager();
+		}
+		else
+		{
+			DAYDREAM_CORE_WARN("[AssetManager] AssetManager is already initialized!");
+		}
 	}
 
 	void AssetManager::Shutdown()
 	{
-		delete instance;
+		if (instance != nullptr)
+		{
+			DAYDREAM_CORE_INFO("[AssetManager] AssetManager shutdown");
+			delete instance;
+			instance = nullptr;
+		}
 	}
 
 	void AssetManager::LoadAssetMetadataFromDirectory(const Path& _directoryPath, bool _isRecursive)
@@ -157,18 +171,19 @@ namespace Daydream
 			LoadPhase phase = GetAssetLoadPhase(metadata.type);
 
 			if (phase != _phase) continue;
-
-			Shared<Asset> newAsset = instance->LoadAssetCache(metadata.handle);
-			newAsset->SetAssetHandle(metadata.handle);
-
-			if (newAsset == nullptr)
-			{
-				return;
-			}
-
-			newAsset->SetAssetHandle(metadata.handle);
-			instance->loadedAssetCache[metadata.handle] = newAsset;
 		}
+
+		//	Shared<Asset> newAsset = instance->LoadAssetCache(metadata.handle);
+		//	newAsset->SetAssetHandle(metadata.handle);
+
+		//	if (newAsset == nullptr)
+		//	{
+		//		return;
+		//	}
+
+		//	newAsset->SetAssetHandle(metadata.handle);
+		//	instance->loadedAssetCache[metadata.handle] = newAsset;
+		//}
 	}
 
 	void AssetManager::CreateBuiltinAssets()
@@ -226,6 +241,7 @@ namespace Daydream
 				subAssetMetadata.handle = AssetHandle(meshNode["Handle"].as<String>());
 				subAssetMetadata.filePath = meshNode["Path"].as<String>();
 				subAssetMetadata.type = StringToAssetType(meshNode["Type"].as<String>());
+				subAssetMetadata.name = meshNode["Name"].as<String>();
 
 				metadata.subAssets[subAssetMetadata.filePath.generic_string()] = subAssetMetadata;
 				DAYDREAM_CORE_INFO("{}", subAsset.first.as<String>());
@@ -286,6 +302,7 @@ namespace Daydream
 
 		// 3. 로드 성공! 캐시에 저장
 		loadedAssetCache[_uuid] = loadedAsset;
+		loadedAsset->SetAssetName(metadata.name);
 
 		// 4. 로드된 애셋(Shared<Asset>) 반환
 		return loadedAsset;
@@ -372,6 +389,7 @@ namespace Daydream
 			metadata.handle = AssetHandle::Generate();
 			metadata.filePath = _filePath.string(); // TODO: 상대 경로로 변환해야 함
 			metadata.type = _assetType;
+			metadata.name = _filePath.stem().string();
 			//Create metafile
 			CreateMetaDataFileInternal(metadata);
 		}
@@ -416,6 +434,7 @@ namespace Daydream
 		out << YAML::Key << "Path" << YAML::Value << _metadata.filePath.string();
 		// AssetType을 문자열로 변환하는 함수가 필요함
 		out << YAML::Key << "Type" << YAML::Value << AssetTypeToString(_metadata.type);
+		out << YAML::Key << "Name" << YAML::Value << _metadata.name;
 		out << YAML::EndMap;
 
 		std::ofstream fout(metaFilePath);

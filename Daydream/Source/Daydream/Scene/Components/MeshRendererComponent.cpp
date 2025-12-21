@@ -13,7 +13,7 @@ namespace Daydream
 {
 	MeshRendererComponent::MeshRendererComponent()
 	{
-		worldMatrix = ConstantBuffer::Create(sizeof(TransformConstantBufferData));
+		worldMatrixConstantBuffer = ConstantBuffer::Create(sizeof(TransformConstantBufferData));
 		materialCB = ConstantBuffer::Create(sizeof(MaterialConstantBufferData));
 		entityHandle = ConstantBuffer::Create(16);
 
@@ -30,18 +30,21 @@ namespace Daydream
 
 	void MeshRendererComponent::Render()
 	{
-		Transform transform = GetOwner()->GetComponent<TransformComponent>()->GetTransform();
+		TransformComponent* transform = GetOwner()->GetComponent<TransformComponent>();
 		TransformConstantBufferData data;
-		data.world = transform.GetWorldMatrix().GetTranspose();
+		data.world = transform->GetWorldMatrix().GetTranspose();
 		data.invTranspose = data.world;
-		data.invTranspose.MatrixInverse();
-		data.invTranspose.MatrixTranspose();
-		worldMatrix->Update(&data, sizeof(TransformConstantBufferData));
+		data.invTranspose.Invert();
+		data.invTranspose.Transpose();
+		worldMatrixConstantBuffer->Update(&data, sizeof(TransformConstantBufferData));
 
 		materialCB->Update(&materialValue, sizeof(materialValue));
-
-		Shared<Mesh> mesh = AssetManager::GetAsset<Mesh>(meshHandle);
-		Shared<Material> material = AssetManager::GetAsset<Material>(materialHandle);
+		Shared<Mesh> mesh;
+		Shared<Material> material;
+		if (meshHandle.IsValid())
+			mesh = AssetManager::GetAsset<Mesh>(meshHandle);
+		if (materialHandle.IsValid())
+			material = AssetManager::GetAsset<Material>(materialHandle);
 
 		if (mesh)
 		{
@@ -49,7 +52,7 @@ namespace Daydream
 		}
 		if (material)
 		{
-			material->SetConstantBuffer("World", worldMatrix);
+			material->SetConstantBuffer("World", worldMatrixConstantBuffer);
 			material->SetConstantBuffer("Camera", GetOwner()->GetScene()->GetCurrentCamera()->GetViewProjectionConstantBuffer());
 			material->SetConstantBuffer("Entity", entityHandle);
 
@@ -93,18 +96,26 @@ namespace Daydream
 	void MeshRendererComponent::RenderMeshOnly()
 	{
 		// 1. Transform 업데이트 (기존 로직 유지)
-		Transform transform = GetOwner()->GetComponent<TransformComponent>()->GetTransform();
+		TransformComponent* transform = GetOwner()->GetComponent<TransformComponent>();
 		TransformConstantBufferData data;
-		data.world = transform.GetWorldMatrix().GetTranspose();
+		data.world = transform->GetWorldMatrix().GetTranspose();
 		data.invTranspose = data.world;
-		data.invTranspose.MatrixInverse();
-		data.invTranspose.MatrixTranspose();
-		worldMatrix->Update(&data, sizeof(data));
+		data.invTranspose.Invert();
+		data.invTranspose.Transpose();
+		worldMatrixConstantBuffer->Update(&data, sizeof(data));
 
-		// 2. Mesh 순회 (Material Bind는 스킵!)
-		//auto meshes = model->GetMeshes();
-		maskMaterial->SetConstantBuffer("World", worldMatrix);
+		// 2. Mesh 순회 (Material Bind는 스킵!)				
+		Shared<Mesh> mesh = AssetManager::GetAsset<Mesh>(meshHandle);
+		maskMaterial->SetConstantBuffer("World", worldMatrixConstantBuffer);
 		maskMaterial->SetConstantBuffer("Camera", GetOwner()->GetScene()->GetCurrentCamera()->GetViewProjectionConstantBuffer());
+
+
+		if (mesh)
+		{
+			mesh->Bind();
+			maskMaterial->Bind();
+			Renderer::Submit(mesh->GetIndexCount());
+		}
 		//for (int i = 0; i < meshes.size(); i++)
 		//{
 		//	// 2-1. Mesh(VBO, IBO) 바인딩

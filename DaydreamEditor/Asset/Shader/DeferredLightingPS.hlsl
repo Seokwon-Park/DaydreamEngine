@@ -1,16 +1,3 @@
-
-
-
-// --- 기존 조명/IBL 입력 (Forward 셰이더와 동일) ---
-
-// (cbuffer Lights : register(b2) ... )
-// (cbuffer Material : register(b3) ... ) - exposure, gamma 때문에 필요
-// (TextureCube IrradianceTexture : register(t5) ... )
-// (TextureCube Prefilter : register(t6) ... )
-// (Texture2D BRDFLUT : register(t7) ... )
-// (SamplerState ...Sampler : register(s5-s7) ... )
-
-// (기존과 동일한 구조체 및 상수들)
 struct PSInput
 {
     float4 position : SV_Position;

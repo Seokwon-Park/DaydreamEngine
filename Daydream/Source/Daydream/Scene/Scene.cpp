@@ -54,6 +54,18 @@ namespace Daydream
 		return newEntity;
 	}
 
+	GameEntity* Scene::CreateGameEntityFromModel(AssetHandle _modelHandle)
+	{
+		Shared<Model> model = AssetManager::GetAsset<Model>(_modelHandle);
+		Shared<ModelData> data = model->GetModelData();
+		GameEntity* root = CreateGameEntity(data->rootNode.name);
+		ProcessModelNode(root, data->rootNode, model);
+
+		return root;
+	}
+
+
+
 	void Scene::DestroyEntity(EntityHandle _handle)
 	{
 		if (!IsHandleValid(_handle))
@@ -246,5 +258,72 @@ namespace Daydream
 		}
 
 		rootEntities.insert(rootEntities.begin() + _newIndex, movedHandle);
+	}
+	void Scene::ProcessModelNode(GameEntity* _parentEntity, const NodeData& _curNode, const Shared<Model>& _model)
+	{
+		String entityName = _curNode.name;
+		if (entityName.empty()) entityName = "Node";
+
+		auto modelData = _model->GetModelData();
+		GameEntity* nodeEntity = CreateGameEntity(entityName);
+		//nodeEntity->GetComponent<TransformComponent>()->SetTransform(_curNode.transform);
+
+
+		// 2. 부모 연결 및 트랜스폼 설정 (노드 자체의 속성)
+		if (_parentEntity)
+		{
+			nodeEntity->SetParent(_parentEntity->GetHandle());
+		}
+
+		// 트랜스폼 컴포넌트 가져와서 설정 (Matrix Decompose 등)
+		auto transform = nodeEntity->GetComponent<TransformComponent>();
+		transform->SetTransform(_curNode.transform);
+
+
+		// 3. 메쉬 처리 로직 (1개 vs N개)
+		auto meshHandles = _model->GetMeshes(); // 저장해둔 핸들 리스트
+
+		if (_curNode.meshIndex != -1)
+		{
+			UInt32 index = _curNode.meshIndex;
+			AssetHandle meshHandle = _model->GetMeshes()[index];
+			AssetHandle materialHandle = _model->GetMaterials()[modelData->meshes[index].materialIndex];
+
+			auto meshRenderer = nodeEntity->AddComponent<MeshRendererComponent>();
+			meshRenderer->SetMesh(meshHandle);
+			meshRenderer->SetMaterial(materialHandle);
+		}
+		//else if (_curNode.meshIndices.size() > 1)
+		//{
+		//	// [Case B] 메쉬가 여러 개 -> 자식 엔티티(Sub-mesh)로 분리
+		//	for (auto meshIndex : _curNode.meshIndices)
+		//	{
+		//		AssetHandle meshHandle = _model->GetMeshes()[meshIndex];
+		//		AssetHandle materialHandle = _model->GetMaterials()[modelData->meshes[meshIndex].materialIndex];
+
+		//		Shared<Mesh> meshAsset = AssetManager::GetAsset<Mesh>(meshHandle);
+
+		//		// 이름 결정: "노드이름_메쉬이름" 혹은 그냥 "메쉬이름"
+		//		String subName = meshAsset ? meshAsset->GetAssetName() : "SubMesh";
+
+		//		// 주인(nodeEntity)의 자식으로 생성
+		//		GameEntity* subEntity = CreateGameEntity(entityName + "_" + subName);
+		//		subEntity->SetParent(nodeEntity->GetHandle());
+
+		//		// 서브 엔티티의 트랜스폼은 Identity (부모인 nodeEntity가 위치를 잡고 있으므로)
+		//		nodeEntity->GetComponent<TransformComponent>()->SetTransform(Transform());
+		//		auto meshRenderer = subEntity->AddComponent<MeshRendererComponent>();
+		//		meshRenderer->SetMesh(meshHandle);
+		//		meshRenderer->SetMaterial(materialHandle);
+		//		// materialHandle 설정...
+		//	}
+		//}
+
+		// 4. [중요] 자식 노드 순회 (재귀)
+		// 여기서 넘겨주는 부모는 방금 만든 'nodeEntity'가 되어야 함
+		for (const auto& childNode : _curNode.children)
+		{
+			ProcessModelNode(nodeEntity, childNode, _model);
+		}
 	}
 }

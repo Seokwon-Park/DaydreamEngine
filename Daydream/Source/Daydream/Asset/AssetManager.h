@@ -67,8 +67,18 @@ namespace Daydream
 			{
 				return std::static_pointer_cast<AssetType>(itr->second);
 			}
+			
+			Shared<Asset> newAsset = instance->LoadAssetCache(_uuid);
 
-			return nullptr;
+			if (newAsset == nullptr)
+			{
+				return nullptr;
+			}
+
+			newAsset->SetAssetHandle(_uuid);
+			instance->loadedAssetCache[_uuid] = newAsset;
+
+			return std::static_pointer_cast<AssetType>(newAsset);
 		}
 
 		template<typename AssetType>
@@ -79,6 +89,7 @@ namespace Daydream
 			auto itr = instance->assetPathMap.find(path);
 			if (itr == instance->assetPathMap.end())
 			{
+				DAYDREAM_CORE_WARN("Wrong Path");
 				return nullptr;
 			}
 			AssetHandle uuid = itr->second;
@@ -170,6 +181,8 @@ namespace Daydream
 
 		static const SortedMap<String, AssetType> assetExtensionMap;
 		static const SortedMap<String, AssetType> assetTypeMap;
+
+		std::mutex assetMutex;
 	};
 
 }

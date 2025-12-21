@@ -1,0 +1,10 @@
+Handle: 48122b6b-e395-4d3b-aa34-a0a2a5e20302
+Path: Asset\Model\Ceberus\Cerberus_LP.FBX
+Type: Model
+Name: Cerberus_LP
+SubAssets:
+  Cerberus00_Fixed:
+    Handle: 17eea5ae-8e1e-4960-aa99-ed89cb8a3a91
+    Path: Asset/Model/Ceberus/Cerberus_LP.FBX#Cerberus00_Fixed
+    Type: Mesh
+    Name: Cerberus00_Fixed

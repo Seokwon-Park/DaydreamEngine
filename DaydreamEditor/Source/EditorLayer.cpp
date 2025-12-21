@@ -214,11 +214,11 @@ namespace Daydream
 
 		GameEntity* selectedEntity = sceneHierarchyPanel->GetSelectedEntity(); // 선택된 객체 가져오기
 
-		if (selectedEntity != nullptr && selectedEntity->GetComponent<ModelRendererComponent>())
+		if (selectedEntity != nullptr && selectedEntity->GetComponent<MeshRendererComponent>())
 		{
 			maskRenderPass->Begin(maskFramebuffer);
 			maskPSO->Bind();
-			selectedEntity->GetComponent<ModelRendererComponent>()->RenderMeshOnly();
+			selectedEntity->GetComponent<MeshRendererComponent>()->RenderMeshOnly();
 			maskRenderPass->End();
 		}
 
@@ -390,8 +390,7 @@ namespace Daydream
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(AssetManager::AssetTypeToString(AssetType::Model).c_str()))
 			{
 				AssetHandle* pHandle = (AssetHandle*)payload->Data;
-				AssetHandle handle = *pHandle;
-				Shared<Model> model = AssetManager::GetAsset<Model>(handle);
+				activeScene->CreateGameEntityFromModel(*pHandle);
 
 				for (auto x : model->GetMeshes())
 				{
@@ -409,21 +408,60 @@ namespace Daydream
 		{
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
-			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, viewportFramebuffer->GetWidth(), viewportFramebuffer->GetHeight());
+			ImVec2 windowPos = ImGui::GetWindowPos();
+			ImVec2 contentMin = ImGui::GetWindowContentRegionMin();
+			ImVec2 contentMax = ImGui::GetWindowContentRegionMax();
 
-			Transform& transform = selectedEntity->GetComponent<TransformComponent>()->GetTransform();
-			Matrix4x4 worldMatrix = transform.GetWorldMatrix();
+			float viewX = windowPos.x + contentMin.x;
+			float viewY = windowPos.y + contentMin.y;
+			float viewWidth = contentMax.x - contentMin.x;   // 혹은 viewportFramebuffer->GetWidth()
+			float viewHeight = contentMax.y - contentMin.y;  // 혹은 viewportFramebuffer->GetHeight()
+
+			// 탭 높이만큼 밀려난 정확한 위치에 Rect 설정
+			ImGuizmo::SetRect(viewX, viewY, viewWidth, viewHeight);
+
+			TransformComponent* transform = selectedEntity->GetComponent<TransformComponent>();
+			Matrix4x4 currentWorldMat = transform->GetWorldMatrix();
 			ImGuizmo::Manipulate(editorCamera->GetViewMatrix().values, editorCamera->GetProjectionMatrix().values,
-				(ImGuizmo::OPERATION)guizmoType, ImGuizmo::WORLD, worldMatrix.values);
+				(ImGuizmo::OPERATION)guizmoType, ImGuizmo::WORLD, currentWorldMat.values);
 
 			if (ImGuizmo::IsUsing())
 			{
-				Vector3 translation, rotation, scale;
-				Matrix4x4::Decompose(worldMatrix, translation, rotation, scale);
+				Matrix4x4 newLocalMat;
+				GameEntity* parent = selectedEntity->GetParent();
 
-				transform.position = translation;
-				transform.rotation = rotation;
-				transform.scale = scale;
+				if (parent != nullptr)
+				{
+					// 부모의 월드 행렬을 가져옴
+					Matrix4x4 parentWorldMat = parent->GetComponent<TransformComponent>()->GetWorldMatrix();
+
+					// GLM을 이용해 역행렬 계산 (내부 데이터가 glm이므로 glm::inverse 사용)
+					Matrix4x4 parentInverse;
+					parentInverse = parentWorldMat.GetInversed();
+
+					// 행렬 곱셈 (Row-Major 기준: World * Inverse)
+					// 앞서 구현한 operator*가 있다면: newLocalMat = currentWorldMat * parentInverse;
+					// 만약 operator가 헷갈리면 안전하게 GLM으로 직접 계산:
+					newLocalMat = currentWorldMat * parentInverse; // GLM은 순서가 반대 (Inv * World)
+				}
+				else
+				{
+					// 부모가 없으면 월드 행렬이 곧 로컬 행렬
+					newLocalMat = currentWorldMat;
+				}
+
+				// [수정 4] 보정된 Local Matrix를 분해하여 저장
+				Vector3 translation, rotationVec, scale;
+				Quaternion rotationQuat;
+
+				// Decompose 구현에 따라 다르지만, 회전은 짐벌락 방지를 위해 Quaternion으로 뽑는 게 좋습니다.
+				// Matrix4x4::Decompose(newLocalMat, translation, rotationQuat, scale); 
+
+				// 작성하신 Decompose 함수 시그니처에 맞춰 사용하세요.
+				// (만약 Vector3 오일러 각도를 쓴다면 변환 필요)
+				Transform::Decompose(newLocalMat, translation, rotationVec, scale);
+
+				transform->SetTransform(translation, rotationVec, scale);
 			}
 		}
 		//ImGui::Text("Rendered Scene will go here!");

@@ -40,7 +40,6 @@ namespace Daydream
 		Shared<Model> model;
 
 		//OrthographicCamera camera = OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f);
-		Camera camera = Camera();
 		Matrix4x4 cameraPos;
 	};
 }

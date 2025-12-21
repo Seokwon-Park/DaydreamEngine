@@ -10,8 +10,8 @@ namespace Daydream
 	struct NodeData
 	{
 		String name;
-		Matrix4x4 transform;
-		Array<UInt32> meshIndices; // 이 노드가 사용하는 메쉬들의 인덱스 (modelData.meshes의 인덱스)
+		Transform transform = Transform();
+		Int32 meshIndex = -1; // 이 노드가 메쉬를 보유하고 있는지?(modelData.meshes의 인덱스)
 		Array<NodeData> children; // 자식 노드들
 	};
 
@@ -22,6 +22,8 @@ namespace Daydream
 		Array<MaterialData> materials;
 
 		NodeData rootNode;
+
+		Bool isSkeletalModel = false;
 	};
 
 	class Model : public Asset
@@ -34,11 +36,11 @@ namespace Daydream
 		
 		void Load(const Path & _path);
 		void AddMesh(AssetHandle _meshHandle) { meshes.push_back(_meshHandle); }
-		void AddMaterial(AssetHandle _materialHandle) { meshes.push_back(_materialHandle); }
+		void AddMaterial(AssetHandle _materialHandle) { materials.push_back(_materialHandle); }
 
 		const Array<AssetHandle>& GetMeshes() { return meshes; }
 		const Array<AssetHandle>& GetMaterials() { return materials; }
-		
+		const Shared<ModelData>& GetModelData() { return modelData; }
 		static Shared<Model> Create(Shared<ModelData> _data);
 		//static Shared<Model> Create(Shared<Mesh> _mesh);
 	private:

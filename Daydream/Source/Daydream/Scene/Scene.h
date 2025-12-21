@@ -31,14 +31,12 @@ namespace Daydream
 		~Scene();
 
 		GameEntity* CreateGameEntity(const String& _name = "Entity");
+		GameEntity* CreateGameEntityFromModel(AssetHandle _modelHandle);
 		void DestroyEntity(EntityHandle _handle);
 		GameEntity* GetEntity(EntityHandle _handle);
 		const GameEntity* GetEntity(EntityHandle _handle) const;
 
 		bool IsHandleValid(EntityHandle _handle) const;
-
-		inline const Array<EntityHandle>& GetLights() { return lightEntities; }
-		inline const Array<EntityHandle>& GetModelRenderers() { return modelRendererEntities; }
 
 		inline void SetCurrentCamera(Shared<Camera> _camera) { currentCamera = _camera; }
 		inline const Shared<Camera> GetCurrentCamera() const { return currentCamera; }
@@ -56,6 +54,8 @@ namespace Daydream
 		void RemoveRootEntity(EntityHandle _rootEntity);
 		void ReorderRootEntity(EntityHandle _entityHandle, UInt64 _newIndex);
 	private:
+		void ProcessModelNode(GameEntity* _parentEntity, const NodeData& _curNode, const Shared<Model>& _model);
+
 		Array<Unique<GameEntity>> entityPool;
 
 		Array<UInt32> generations; //index¿« generation

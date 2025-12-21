@@ -36,10 +36,8 @@ namespace Daydream
 	{
 		Transform transform = GetOwner()->GetComponent<TransformComponent>()->GetTransform();
 		TransformConstantBufferData data;
-		data.world = transform.GetWorldMatrix().GetTranspose();
-		data.invTranspose = data.world;
-		data.invTranspose.MatrixInverse();
-		data.invTranspose.MatrixTranspose();
+		data.world = transform.GetLocalMatrix().GetTranspose();
+		data.invTranspose = data.world.GetInversed().GetTranspose();
 		worldMatrix->Update(&data, sizeof(TransformConstantBufferData));
 		
 		materialCB->Update(&materialValue, sizeof(materialValue));
@@ -76,10 +74,10 @@ namespace Daydream
 		// 1. Transform 업데이트 (기존 로직 유지)
 		Transform transform = GetOwner()->GetComponent<TransformComponent>()->GetTransform();
 		TransformConstantBufferData data;
-		data.world = transform.GetWorldMatrix().GetTranspose();
+		data.world = transform.GetLocalMatrix().GetTranspose();
 		data.invTranspose = data.world;
-		data.invTranspose.MatrixInverse();
-		data.invTranspose.MatrixTranspose();
+		data.invTranspose.Invert();
+		data.invTranspose.Transpose();
 		worldMatrix->Update(&data, sizeof(data));
 
 		// 2. Mesh 순회 (Material Bind는 스킵!)

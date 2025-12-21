@@ -16,6 +16,7 @@ namespace Daydream
 	Vector3 RotateAxisXRadian(const Vector3& _vector, Float32 _radian);
 	Vector3 RotateAxisYRadian(const Vector3& _vector, Float32 _radian);
 	Vector3 RotateAxisZRadian(const Vector3& _vector, Float32 _radian);
+
 	//class Vector3
 	//{
 	//public:

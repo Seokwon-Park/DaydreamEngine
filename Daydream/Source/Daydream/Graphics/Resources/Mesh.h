@@ -41,7 +41,7 @@ namespace Daydream
 	{
 		Array<Vertex> vertices;
 		Array<UInt32> indices;
-		MaterialData materialData;
+		Vector3 centerOffset;
 		UInt32 materialIndex;
 		Path basePath;
 		String name;
@@ -68,9 +68,6 @@ namespace Daydream
 		Shared<VertexBuffer> GetVertexBuffer() { return vertexBuffer; }
 		UInt32 GetIndexCount() { return indexBuffer->GetIndexCount(); }
 
-		Shared<Texture2D> GetDiffuseTexture() { return diffuseTexture; }
-		Shared<Texture2D> GetNormalTexture() { return normalTexture; }
-
 		void Bind();
 
 		static Shared<Mesh> Create();
@@ -79,9 +76,5 @@ namespace Daydream
 	private:
 		Shared<VertexBuffer> vertexBuffer;
 		Shared<IndexBuffer> indexBuffer;
-
-		Shared<Texture2D> diffuseTexture;
-		Shared<Texture2D> specularTexture;
-		Shared<Texture2D> normalTexture;
 	};
 }
