@@ -39,7 +39,6 @@ namespace Daydream
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create inputlayout!");
 
 		//CW
-
 		D3D11_RASTERIZER_DESC rastDesc = GraphicsUtility::DirectX11::TranslateToD3D11RasterizerDesc(_desc.rasterizerState);
 		
 		

@@ -54,6 +54,7 @@ namespace Daydream
 
 		Shared<RenderPass> renderPass;
 
+		PipelineStateDesc desc;
 		//rtv, dsv;
 		//blend, rast, ds;
 

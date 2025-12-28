@@ -45,6 +45,19 @@ namespace Daydream
 		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("MipmapRenderPass");
 		registry["GenerateMipsPSO"] = PipelineState::Create(psoDesc);
 
+		// Shadow
+		RasterizerStateDesc shadowRSDesc = {};
+		shadowRSDesc.cullMode = CullMode::Back; 
+		shadowRSDesc.fillMode = FillMode::Solid;
+		shadowRSDesc.depthBias = 1000;
+		shadowRSDesc.slopeScaledDepthBias = 1.0f;
+		shadowRSDesc.depthClipEnable = true;
+
+		psoDesc.rasterizerState = shadowRSDesc;
+		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Depth");
+		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("DepthRenderPass");
+		registry["DepthPSO"] = PipelineState::Create(psoDesc);
+
 		// G-Buffer 
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("GBuffer"); 
 		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("GBufferRenderPass"); 

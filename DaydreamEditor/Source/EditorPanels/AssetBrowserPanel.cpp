@@ -9,6 +9,7 @@ namespace Daydream
 	{
 	}
 
+	
 	AssetBrowserPanel::~AssetBrowserPanel()
 	{
 	}

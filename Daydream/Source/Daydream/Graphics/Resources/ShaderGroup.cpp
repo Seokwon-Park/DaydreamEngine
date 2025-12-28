@@ -9,6 +9,12 @@ namespace Daydream
 	{
 		return shaders;
 	}
+
+	Shared<ShaderGroup> ShaderGroup::Create(Shared<Shader> _vertexShader)
+	{
+		return Create(_vertexShader, nullptr);
+	}
+
 	Shared<ShaderGroup> ShaderGroup::Create(Shared<Shader> _vertexShader, Shared<Shader> _pixelShader)
 	{
 		return Create(_vertexShader, nullptr, _pixelShader);
@@ -35,7 +41,7 @@ namespace Daydream
 	}
 	ShaderGroup::ShaderGroup(Shared<Shader> _vertexShader, Shared<Shader> _hullShader, Shared<Shader> _domainShader, Shared<Shader> _geometryShader, Shared<Shader> _pixelShader)
 	{
-		DAYDREAM_CORE_ASSERT(_vertexShader && _pixelShader, "VS ans PS can't be nullptr!");
+		DAYDREAM_CORE_ASSERT(_vertexShader, "VS can't be nullptr!");
 
 		vertexShader = _vertexShader;
 		hullShader = _hullShader;
@@ -44,10 +50,10 @@ namespace Daydream
 		pixelShader = _pixelShader;
 
 		shaders.push_back(vertexShader);
-		shaders.push_back(pixelShader);
 		if (hullShader != nullptr) shaders.push_back(hullShader);
 		if (domainShader != nullptr) shaders.push_back(domainShader);
 		if (geometryShader != nullptr) shaders.push_back(geometryShader);
+		if (pixelShader != nullptr) shaders.push_back(pixelShader);
 	}
 
 	void ShaderGroup::CreateInputReflectionData()
@@ -97,6 +103,7 @@ namespace Daydream
 			return geometryShader;
 			break;
 		case ShaderType::Pixel:
+			DAYDREAM_CORE_ASSERT(pixelShader, "GS is nullptr!");
 			return pixelShader;
 			break;
 		case ShaderType::Compute:
@@ -114,6 +121,17 @@ _pixelShaderPath)
 		auto pixelShader = AssetManager::GetAssetByPath<Shader>(_pixelShaderPath);
 		return Create(vertexShader, pixelShader);
 	}
+
+	Shared<ShaderGroup> ShaderGroup::CreateBuiltin(const Path& _vertexShaderName)
+	{
+		const String BuiltinShaderDir = "Asset/Shader/";
+
+		Path vertexPath = BuiltinShaderDir / _vertexShaderName;
+
+		auto vertexShader = AssetManager::GetAssetByPath<Shader>(vertexPath);
+		return Create(vertexShader);
+	}
+
 	Shared<ShaderGroup> ShaderGroup::CreateBuiltin(const Path& _vertexShaderName, const Path& _pixelShaderName)
 	{
 		const String BuiltinShaderDir = "Asset/Shader/";

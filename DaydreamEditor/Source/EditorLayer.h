@@ -60,14 +60,17 @@ namespace Daydream
 		Shared<ConstantBuffer> entityBuffer;
 
 		//Shared<MouseScrolledEvent>
+		Shared<RenderPass> depthRenderPass;
 		Shared<RenderPass> gBufferRenderPass;
 		Shared<RenderPass> renderPass;
 		Shared<RenderPass> maskRenderPass;
 
+		Shared<Framebuffer> depthFramebuffer;
 		Shared<Framebuffer> gBufferFramebuffer;
 		Shared<Framebuffer> viewportFramebuffer;
 		Shared<Framebuffer> maskFramebuffer;
 
+		Shared<PipelineState> depthPSO;
 		Shared<PipelineState> gBufferPSO;
 		Shared<PipelineState> deferredLightingPSO;
 		Shared<PipelineState> pso;

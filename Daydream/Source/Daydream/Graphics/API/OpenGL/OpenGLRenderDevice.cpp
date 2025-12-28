@@ -32,6 +32,7 @@ namespace Daydream
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		DAYDREAM_CORE_ASSERT(status, "Failed to initialize Glad!");
 
+		glClipControl(GL_UPPER_LEFT, GL_ZERO_TO_ONE);
 		//GLint count;
 		//glGetIntegerv(GL_NUM_EXTENSIONS, &count);
 

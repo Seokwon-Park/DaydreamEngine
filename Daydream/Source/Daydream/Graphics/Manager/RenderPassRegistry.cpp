@@ -21,6 +21,7 @@ namespace Daydream
 
 		registry["StandardRenderPass"] = RenderPass::Create(rpDesc);
 
+		// === G-Buffer RenderPass ===
 		rpDesc.colorAttachments.clear();
 
 		attach.format = RenderFormat::R32_UINT;
@@ -34,6 +35,16 @@ namespace Daydream
 		rpDesc.depthAttachment = attach;
 
 		registry["MaskRenderPass"] = RenderPass::Create(rpDesc);
+
+		// === Depth RenderPass ===
+		rpDesc.colorAttachments.clear();
+
+		attach.format = RenderFormat::D24_UNORM_S8_UINT;
+		attach.loadOp = AttachmentLoadOp::Clear;
+		attach.storeOp = AttachmentStoreOp::Store;
+		rpDesc.depthAttachment = attach;
+
+		registry["DepthRenderPass"] = RenderPass::Create(rpDesc);
 
 		// === G-Buffer RenderPass ===
 		rpDesc.colorAttachments.clear();

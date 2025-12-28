@@ -218,8 +218,9 @@ namespace Daydream
 				matMetadata.handle = materialHandle;
 				matMetadata.filePath = materialPathString;
 				matMetadata.type = AssetType::Material; // [중요] 타입 수정
+				matMetadata.name = materialName;
 				AssetManager::CreateMetaDataFile(matMetadata);
-				AssetManager::Register(matMetadata); // 여기서 .ddmat.ddmeta 파일이 생성될 것입니다.
+				AssetManager::Register(matMetadata); // 여기서 .ddmat.ddmeta 파일이 생성
 				AssetManager::AddLoadedAsset(materialHandle, newMaterial);
 
 				YAML::Emitter out;

@@ -62,6 +62,7 @@ namespace Daydream
 		textureCube->SetSampler(sampler);
 
 		renderPass = ResourceManager::GetResource<RenderPass>("StandardRenderPass");
+		depthRenderPass = ResourceManager::GetResource<RenderPass>("DepthRenderPass");
 		gBufferRenderPass = ResourceManager::GetResource<RenderPass>("GBufferRenderPass");
 		maskRenderPass = ResourceManager::GetResource<RenderPass>("MaskRenderPass");
 		renderPass->SetClearColor(Daydream::Color::Blue);
@@ -80,12 +81,17 @@ namespace Daydream
 
 		maskFramebuffer = Framebuffer::Create(maskRenderPass, fbDesc);
 
+		fbDesc.width = 1024;
+		fbDesc.height = 1024;
+		depthFramebuffer = Framebuffer::Create(depthRenderPass, fbDesc);
+
 		pso = ResourceManager::GetResource<PipelineState>("SpritePSO");
 		pso3d = ResourceManager::GetResource<PipelineState>("ForwardPSO");
 		gBufferPSO = ResourceManager::GetResource<PipelineState>("GBufferPSO");
 		skyboxPipeline = ResourceManager::GetResource<PipelineState>("CubemapPSO");
 		equirectangleToCubePipeline = ResourceManager::GetResource<PipelineState>("EquirectangularPSO");
 		deferredLightingPSO = ResourceManager::GetResource<PipelineState>("DeferredPSO");
+		depthPSO = ResourceManager::GetResource<PipelineState>("DepthPSO");
 		maskPSO = ResourceManager::GetResource<PipelineState>("MaskPSO");
 
 		material = Material::Create(pso);
@@ -214,13 +220,13 @@ namespace Daydream
 
 		GameEntity* selectedEntity = sceneHierarchyPanel->GetSelectedEntity(); // 선택된 객체 가져오기
 
+		maskRenderPass->Begin(maskFramebuffer);
 		if (selectedEntity != nullptr && selectedEntity->GetComponent<MeshRendererComponent>())
 		{
-			maskRenderPass->Begin(maskFramebuffer);
 			maskPSO->Bind();
 			selectedEntity->GetComponent<MeshRendererComponent>()->RenderMeshOnly();
-			maskRenderPass->End();
 		}
+		maskRenderPass->End();
 
 		renderPass->Begin(viewportFramebuffer);
 

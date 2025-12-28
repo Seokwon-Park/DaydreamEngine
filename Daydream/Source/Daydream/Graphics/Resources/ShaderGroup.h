@@ -12,9 +12,12 @@ namespace Daydream
 
 		static Shared<ShaderGroup> Create(const Path& _vertexShaderPath, const Path&
 _pixelShaderPath);
+		static Shared<ShaderGroup> CreateBuiltin(const Path& _vertexShaderName);
 		static Shared<ShaderGroup> CreateBuiltin(const Path& _vertexShaderName, const Path&
 			_pixelShaderName);
 
+
+		static Shared<ShaderGroup> Create(Shared<Shader> _vertexShader);
 		static Shared<ShaderGroup> Create(Shared<Shader> _vertexShader,
 			Shared<Shader> _pixelShader);
 		static Shared<ShaderGroup> Create(Shared<Shader> _vertexShader,

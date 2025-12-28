@@ -9,8 +9,8 @@ namespace Daydream
 {
 	PipelineState::PipelineState(const PipelineStateDesc& _desc)
 	{
+		desc = _desc;
 		shaderGroup = _desc.shaderGroup;
-
 		renderPass = _desc.renderPass;
 	}
 

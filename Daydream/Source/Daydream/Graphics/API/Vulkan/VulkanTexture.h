@@ -29,7 +29,7 @@ namespace Daydream
 	private:
 		bool isSwapchainImage = false;
 		VulkanRenderDevice* device;
-		VulkanSampler* textureSampler;
+		VulkanSampler* textureSampler = nullptr;
 
 		vma::UniqueImage textureImage;
 		vma::UniqueAllocation textureImageAllocation;

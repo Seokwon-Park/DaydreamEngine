@@ -155,6 +155,66 @@ namespace Daydream
 	}
 	void OpenGLPipelineState::Bind() const
 	{
+		const auto& rsDesc = desc.rasterizerState;
+		// Fill Mode (Solid vs Wireframe)
+		GLenum polygonMode = (rsDesc.fillMode == FillMode::Wireframe) ? GL_LINE : GL_FILL;
+		glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
+
+		// Cull Mode
+		if (rsDesc.cullMode == CullMode::None)
+		{
+			glDisable(GL_CULL_FACE);
+		}
+		else
+		{
+			glEnable(GL_CULL_FACE);
+			// Front: GL_FRONT, Back: GL_BACK
+			GLenum face = (rsDesc.cullMode == CullMode::Front) ? GL_FRONT : GL_BACK;
+			glCullFace(face);
+		}
+
+		// Winding Order (Front Counter Clockwise)
+		// true: CCW (반시계), false: CW (시계)
+		glFrontFace(rsDesc.frontCounterClockwise ? GL_CCW : GL_CW);
+
+		//// Depth Clip Enable
+		//if (rsDesc.depthClipEnable)
+		//{
+		//	glDisable(GL_DEPTH_CLAMP); // Clipping 활성화 (기본 동작)
+		//}
+		//else
+		//{
+		//	glEnable(GL_DEPTH_CLAMP);  // Clipping 비활성화 (Clamping)
+		//}
+
+		//// Scissor Enable
+		//if (rsDesc.scissorEnable)
+		//	glEnable(GL_SCISSOR_TEST);
+		//else
+		//	glDisable(GL_SCISSOR_TEST);
+
+		//// Multisample Enable
+		//if (rsDesc.multisampleEnable)
+		//	glEnable(GL_MULTISAMPLE);
+		//else
+		//	glDisable(GL_MULTISAMPLE);
+
+		//// Antialiased Line Enable
+		//if (rsDesc.antialiasedLineEnable)
+		//	glEnable(GL_LINE_SMOOTH);
+		//else
+		//	glDisable(GL_LINE_SMOOTH);
+
+		//// Depth Bias (Polygon Offset)
+		//if (rsDesc.depthBias != 0 || rsDesc.slopeScaledDepthBias != 0.0f)
+		//{
+		//	glEnable(GL_POLYGON_OFFSET_FILL); // Wireframe일 경우 GL_POLYGON_OFFSET_LINE 고려 필요
+		//	glPolygonOffset(rsDesc.slopeScaledDepthBias, static_cast<float>(rsDesc.depthBias));
+		//}
+		//else
+		//{
+		//	glDisable(GL_POLYGON_OFFSET_FILL);
+		//}
 		glBindVertexArray(vao);
 		glBindProgramPipeline(pipeline);
 	}

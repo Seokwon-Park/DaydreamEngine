@@ -188,7 +188,7 @@ namespace Daydream
 		desc.DSVFormat = _desc.renderPass->HasDepthStencil()?DXGI_FORMAT_D24_UNORM_S8_UINT: DXGI_FORMAT_UNKNOWN; // 실제 포맷과 맞춰야 함
 		D3D12_DEPTH_STENCIL_DESC dsDesc{};
 		// 깊이/스텐실 상태 설정 (d3dx12 없이 직접 - 깊이 테스트 비활성화)
-		dsDesc.DepthEnable = _desc.renderPass->HasDepthStencil(); // 깊이 테스트 끔
+		dsDesc.DepthEnable = _desc.renderPass->HasDepthStencil();
 		dsDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 		dsDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS; // 또는 적절한 함수
 		dsDesc.StencilEnable = _desc.renderPass->HasDepthStencil(); // 스텐실 테스트 끔
