@@ -160,6 +160,12 @@ namespace Daydream
 			}
 
 			LightComponent* lightComponent = entity->GetComponent<LightComponent>();
+			Transform transform = entity->GetComponent<TransformComponent>()->GetTransform();
+
+			if (firstLightComponent == nullptr)
+			{
+				firstLightComponent = lightComponent;
+			}
 			if (lightComponent != nullptr)
 			{
 				Light light = lightComponent->GetLight();
@@ -168,8 +174,9 @@ namespace Daydream
 				case Directional:
 				{
 					DirectionalLight dirLight;
+					dirLight.lightViewProjection = light.lightViewProjectionMatrix;
 					dirLight.color = light.color;
-					dirLight.direction = light.direction;
+					dirLight.direction = transform.GetForward();
 					dirLight.intensity = light.intensity;
 					lightData.dirLights[lightData.dirLightCount++] = dirLight;
 					break;
@@ -180,16 +187,16 @@ namespace Daydream
 					pointLight.color = light.color;
 					pointLight.range = light.range;
 					pointLight.intensity = light.intensity;
-					pointLight.position = light.position;
+					pointLight.position = transform.position;
 					lightData.pointLights[lightData.pointLightCount++] = pointLight;
 					break;
 				}
 				case Spot:
 				{
 					SpotLight spotLight;
-					spotLight.position = light.position;
+					spotLight.position = transform.position;
 					spotLight.range = light.range;
-					spotLight.direction = light.direction;
+					spotLight.direction = transform.GetForward();
 					spotLight.intensity = light.intensity;
 					spotLight.color = light.color;
 					spotLight.innerConeCos = Math::CosDegree(light.spotInnerAngle);
@@ -203,6 +210,22 @@ namespace Daydream
 		lightBuffer->Update(&lightData, sizeof(LightData));
 
 		skybox->Update();
+	}
+
+	void Scene::RenderDepth()
+	{
+		for (EntityHandle handle : activeEntities) // 이벤트 기반으로 관리된 목록 사용
+		{
+			GameEntity* entity = GetEntity(handle);
+			if (!entity) continue; // 검사
+
+			//ModelRendererComponent* renderComponent = entity->GetComponent<ModelRendererComponent>();
+			MeshRendererComponent* renderComponent = entity->GetComponent<MeshRendererComponent>();
+			if (renderComponent != nullptr)
+			{
+				renderComponent->RenderDepth();
+			}
+		}
 	}
 
 	void Scene::AddRootEntity(EntityHandle _rootEntity)

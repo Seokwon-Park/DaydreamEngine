@@ -57,7 +57,7 @@ namespace Daydream
 			textureDesc.width = width;
 			textureDesc.height = height;
 			textureDesc.format = renderPassDesc.depthAttachment.format;
-			textureDesc.bindFlags = RenderBindFlags::DepthStencil;
+			textureDesc.bindFlags = RenderBindFlags::DepthStencil | RenderBindFlags::ShaderResource;
 
 			Shared<D3D11Texture2D> depthTexture = MakeShared<D3D11Texture2D>(device, textureDesc);
 			depthAttachment = depthTexture;
@@ -109,6 +109,10 @@ namespace Daydream
 	{
 		DAYDREAM_CORE_ASSERT(_index < colorAttachments.size(), "index out of range");
 		return colorAttachments[_index];
+	}
+	Shared<Texture2D> D3D11Framebuffer::GetDepthAttachmentTexture()
+	{
+		return depthAttachment;
 	}
 	void D3D11Framebuffer::Resize(UInt32 _width, UInt32 _height)
 	{

@@ -20,15 +20,30 @@ namespace Daydream
 	{
 	}
 
-	Vector3 Transform::GetForward()
+	//Vector3 Transform::GetForward()
+	//{
+	//	return glm::rotate(Quaternion(glm::radians(rotation)), Vector3(0.0f,0.0f,1.0f));
+	//}
+	//Vector3 Transform::GetUp()
+	//{
+	//	return glm::rotate(Quaternion(glm::radians(rotation)), Vector3(0.0f, 1.0f, 0.0f));
+	//}
+	//Vector3 Transform::GetRight()
+	//{
+	//	return glm::cross(GetUp(), GetForward());
+	//}
+
+	Vector3 Transform::GetForward() const
 	{
-		return glm::rotate(Quaternion(rotation), Vector3(0.0f,0.0f,1.0f));
+		return glm::rotate(Quaternion(glm::radians(rotation)), Vector3(0.0f, 0.0f, 1.0f));
 	}
-	Vector3 Transform::GetUp()
+
+	Vector3 Transform::GetUp() const
 	{
-		return glm::rotate(Quaternion(rotation), Vector3(0.0f, 1.0f, 0.0f));
+		return glm::rotate(Quaternion(glm::radians(rotation)), Vector3(0.0f, 1.0f, 0.0f));
 	}
-	Vector3 Transform::GetRight()
+
+	Vector3 Transform::GetRight() const
 	{
 		return glm::cross(GetUp(), GetForward());
 	}

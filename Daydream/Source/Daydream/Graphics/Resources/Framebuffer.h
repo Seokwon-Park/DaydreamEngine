@@ -19,6 +19,7 @@ namespace Daydream
 		virtual ~Framebuffer() = default;
 
 		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) = 0;
+		virtual Shared<Texture2D> GetDepthAttachmentTexture() = 0;
 		virtual bool HasDepthAttachment() = 0;
 		virtual void Resize(UInt32 _width, UInt32 _height) = 0;
 

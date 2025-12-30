@@ -12,13 +12,18 @@ namespace Daydream
 		width = _desc.width;
 		height = _desc.height;
 
+
+		DXGI_FORMAT textureFormat = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(_desc.format);
+		DXGI_FORMAT srvFormat = textureFormat;
+		DXGI_FORMAT dsvFormat = textureFormat;
+
 		D3D12_RESOURCE_DESC textureDesc = {};
 		textureDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 		textureDesc.Width = width;
 		textureDesc.Height = height;
 		textureDesc.DepthOrArraySize = 1;
 		textureDesc.MipLevels = 1;
-		textureDesc.Format = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(_desc.format);
+		textureDesc.Format = textureFormat;
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN; // vk::ImageTiling::eOptimal¿¡ ÇØ´ç
 		textureDesc.Flags = GraphicsUtility::DirectX12::ConvertToD3D12BindFlags(_desc.bindFlags);
@@ -26,27 +31,20 @@ namespace Daydream
 		texture = device->CreateTexture(textureDesc, D3D12_RESOURCE_STATE_COPY_DEST);
 		SetCurrentState(D3D12_RESOURCE_STATE_COPY_DEST);
 
-		//if (GraphicsUtility::HasFlag(_desc.bindFlags, RenderBindFlags::RenderTarget))
-		//{
-		//	textureDesc.Flags = GraphicsUtility::DirectX12::ConvertToD3D12BindFlags(_desc.bindFlags);
-		//	texture = device->CreateTexture(textureDesc, D3D12_RESOURCE_STATE_RENDER_TARGET);
-		//}
-		//else if (GraphicsUtility::HasFlag(_desc.bindFlags, RenderBindFlags::DepthStencil))
-		//{
-		//	textureDesc.Flags = GraphicsUtility::DirectX12::ConvertToD3D12BindFlags(_desc.bindFlags);
-		//	texture = device->CreateTexture(textureDesc, D3D12_RESOURCE_STATE_DEPTH_WRITE);
-		//}
-		//else
-		//{
-		//	textureDesc.Flags = GraphicsUtility::DirectX12::ConvertToD3D12BindFlags(_desc.bindFlags);
-		//	texture = device->CreateTexture(textureDesc, D3D12_RESOURCE_STATE_COPY_DEST);
-		//}
+
+
+		if (GraphicsUtility::HasFlag(_desc.bindFlags, RenderBindFlags::ShaderResource) && GraphicsUtility::HasFlag(_desc.bindFlags, RenderBindFlags::DepthStencil))
+		{
+			srvFormat = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+			dsvFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		}
+
 
 		if (!(textureDesc.Flags & D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE) &&
 			GraphicsUtility::HasFlag(_desc.bindFlags, RenderBindFlags::ShaderResource))
 		{ 
 			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-			srvDesc.Format = textureDesc.Format;
+			srvDesc.Format = srvFormat;
 			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 			srvDesc.Texture2D.MipLevels = textureDesc.MipLevels;
 			srvDesc.Texture2D.MostDetailedMip = 0;
@@ -79,7 +77,7 @@ namespace Daydream
 		{
 			device->GetDSVHeapAlloc().Alloc(&dsvCpuHandle); // DSVs only need CPU handle
 			D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
-			dsvDesc.Format = textureDesc.Format;
+			dsvDesc.Format = dsvFormat;
 			dsvDesc.Flags = D3D12_DSV_FLAG_NONE; // Can be D3D12_DSV_FLAG_READ_ONLY_DEPTH or _STENCIL
 			dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 			

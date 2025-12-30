@@ -47,7 +47,7 @@ namespace Daydream
 			depthAttachment.stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
 			depthAttachment.stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
 			depthAttachment.initialLayout = vk::ImageLayout::eUndefined;
-			depthAttachment.finalLayout = vk::ImageLayout::eDepthStencilAttachmentOptimal;
+			depthAttachment.finalLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 
 			attachments.push_back(depthAttachment);
 
@@ -64,10 +64,10 @@ namespace Daydream
 		vk::SubpassDependency dependency{};
 		dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
 		dependency.dstSubpass = 0;
-		dependency.srcStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
+		dependency.srcStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput | vk::PipelineStageFlagBits::eEarlyFragmentTests;
 		dependency.srcAccessMask = {};
-		dependency.dstStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
-		dependency.dstAccessMask = vk::AccessFlagBits::eColorAttachmentWrite;
+		dependency.dstStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput | vk::PipelineStageFlagBits::eEarlyFragmentTests;
+		dependency.dstAccessMask = vk::AccessFlagBits::eColorAttachmentWrite | vk::AccessFlagBits::eDepthStencilAttachmentWrite;
 
 		vk::RenderPassCreateInfo renderPassInfo{};
 		renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());

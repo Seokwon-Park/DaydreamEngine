@@ -209,7 +209,7 @@ namespace Daydream
 			textureDesc.width = width;
 			textureDesc.height = height;
 			textureDesc.format = renderPassDesc.depthAttachment.format;
-			textureDesc.bindFlags = RenderBindFlags::DepthStencil;
+			textureDesc.bindFlags = RenderBindFlags::DepthStencil | RenderBindFlags::ShaderResource;
 
 			Shared<D3D12Texture2D> depthTexture = MakeShared<D3D12Texture2D>(device, textureDesc);
 			depthAttachment = depthTexture;

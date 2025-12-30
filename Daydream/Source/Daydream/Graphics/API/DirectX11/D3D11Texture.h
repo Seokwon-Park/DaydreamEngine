@@ -36,9 +36,6 @@ namespace Daydream
 		D3D11Sampler* textureSampler = nullptr;
 		D3D11ResourceViews views;
 		ComPtr<ID3D11Texture2D> texture;
-		
-		
-
 	};
 }
 

@@ -40,7 +40,7 @@ namespace Daydream
 
 		vk::ImageMemoryBarrier barrier{};
 		barrier.oldLayout = vk::ImageLayout::eUndefined;
-		barrier.newLayout = vk::ImageLayout::eTransferDstOptimal;
+		
 		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barrier.image = textureImage.get();
@@ -53,18 +53,20 @@ namespace Daydream
 		{
 			barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eDepth | vk::ImageAspectFlagBits::eStencil;
 
-			device->TransitionImageLayout(barrier);
+			//device->TransitionImageLayout(barrier);
 
-			textureImageView = device->CreateImageView(textureImage.get(), imageFormat,
+			srvImageView = device->CreateImageView(textureImage.get(), imageFormat,
+				vk::ImageAspectFlagBits::eDepth);
+			dsvImageView = device->CreateImageView(textureImage.get(), imageFormat,
 				vk::ImageAspectFlagBits::eDepth | vk::ImageAspectFlagBits::eStencil);
 		}
 		else
 		{
+			barrier.newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 			barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-
 			device->TransitionImageLayout(barrier);
 
-			textureImageView = device->CreateImageView(textureImage.get(), imageFormat,
+			srvImageView = device->CreateImageView(textureImage.get(), imageFormat,
 				vk::ImageAspectFlagBits::eColor);
 		}
 	}
@@ -88,7 +90,7 @@ namespace Daydream
 	{
 		if (ImGuiDescriptorSet != VK_NULL_HANDLE) return ImGuiDescriptorSet;
 		auto imguiSampler = static_cast<VulkanSampler*>(ResourceManager::GetResource<Sampler>("LinearRepeat").get());
-		return ImGuiDescriptorSet = ImGui_ImplVulkan_AddTexture(imguiSampler->GetSampler(), textureImageView.get(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		return ImGuiDescriptorSet = ImGui_ImplVulkan_AddTexture(imguiSampler->GetSampler(), srvImageView.get(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 	}
 
 	//void VulkanTexture2D::AllocateDescriptorSet(vk::DescriptorSetLayout _layout)

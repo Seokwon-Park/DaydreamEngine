@@ -37,7 +37,7 @@ namespace Daydream
 		//const D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() const { return gpuHandle; };
 	private:
 		D3D12RenderDevice* device;
-		D3D12Sampler* textureSampler;
+		D3D12Sampler* textureSampler = nullptr;
 
 		ComPtr<ID3D12Resource> texture;
 

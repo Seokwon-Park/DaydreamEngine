@@ -21,6 +21,7 @@ namespace Daydream
 		inline void SetMaterial(const AssetHandle _materialHandle) { materialHandle = _materialHandle; }
 		void Render();
 		void RenderMeshOnly();
+		void RenderDepth();
 
 		REFLECT_START()
 			ADD_PROPERTY(FieldType::Mesh, meshHandle)
@@ -32,11 +33,10 @@ namespace Daydream
 		AssetHandle meshHandle;
 		AssetHandle materialHandle;
 
-		MaterialConstantBufferData materialValue;
 		Shared<ConstantBuffer> worldMatrixConstantBuffer;
-		Shared<ConstantBuffer> materialCB;
 		Shared<ConstantBuffer> entityHandle;
 
 		Shared<Material> maskMaterial;
+		Shared<Material> lightMaterial;
 	};
 }

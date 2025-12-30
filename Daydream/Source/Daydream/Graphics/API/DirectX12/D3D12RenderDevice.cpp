@@ -620,7 +620,7 @@ namespace Daydream
 			D3D12_HEAP_FLAG_NONE,
 			&_desc,
 			_initialState,
-			isUseClearValue ? &clearValue : nullptr,
+			nullptr,
 			IID_PPV_ARGS(texture.GetAddressOf())
 		);
 		return texture;

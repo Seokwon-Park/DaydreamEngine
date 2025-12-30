@@ -160,7 +160,18 @@ namespace Daydream
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC desc{};
 		desc.pRootSignature = rootSignature.Get();
 		desc.VS = static_cast<D3D12Shader*>(shaderGroup->GetShader(ShaderType::Vertex).get())->GetShaderBytecode();
-		desc.PS = static_cast<D3D12Shader*>(shaderGroup->GetShader(ShaderType::Pixel).get())->GetShaderBytecode();
+		auto pixelShader = shaderGroup->GetShader(ShaderType::Pixel);
+		if (pixelShader)
+		{
+			// PS가 있으면 바이트코드 설정
+			desc.PS = static_cast<D3D12Shader*>(pixelShader.get())->GetShaderBytecode();
+		}
+		else
+		{
+			// PS가 없으면 (Depth Only 등) { nullptr, 0 } 으로 설정
+			desc.PS = { nullptr, 0 };
+		}
+		//desc.PS = static_cast<D3D12Shader*>(shaderGroup->GetShader(ShaderType::Pixel).get())->GetShaderBytecode();
 		desc.RasterizerState = rasterizerDesc;
 		desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 		desc.NumRenderTargets = (UInt32)rpDesc.colorAttachments.size();

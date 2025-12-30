@@ -43,12 +43,15 @@ namespace Daydream
 		
 		
 		_device->GetDevice()->CreateRasterizerState(&rastDesc, rasterizer.GetAddressOf());
-
-
 	}
 
 	void D3D11PipelineState::Bind() const
 	{
+		device->GetContext()->PSSetShader(nullptr, nullptr, 0);
+		device->GetContext()->GSSetShader(nullptr, nullptr, 0);
+		device->GetContext()->HSSetShader(nullptr, nullptr, 0);
+		device->GetContext()->DSSetShader(nullptr, nullptr, 0);
+		device->GetContext()->VSSetShader(nullptr, nullptr, 0);
 		for (auto shader : shaderGroup->GetShaders())
 		{
 			shader->Bind();

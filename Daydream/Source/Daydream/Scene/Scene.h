@@ -46,6 +46,7 @@ namespace Daydream
 		inline Shared<Skybox> GetSkybox() const { return skybox; }
 
 		void Update(Float32 _deltaTime);
+		void RenderDepth();
 
 		const Array<EntityHandle>& GetAllEntities() const { return activeEntities; }
 		const Array<EntityHandle>& GetRootEntities() const { return rootEntities; }
@@ -53,6 +54,9 @@ namespace Daydream
 		void AddRootEntity(EntityHandle _rootEntity);
 		void RemoveRootEntity(EntityHandle _rootEntity);
 		void ReorderRootEntity(EntityHandle _entityHandle, UInt64 _newIndex);
+
+		//temp
+		LightComponent* GetLightComponent() { return firstLightComponent; }
 	private:
 		void ProcessModelNode(GameEntity* _parentEntity, const NodeData& _curNode, const Shared<Model>& _model);
 
@@ -73,5 +77,8 @@ namespace Daydream
 		Shared<ConstantBuffer> lightBuffer; 
 		//Array<SpriteRendererComponent*> spriteRenderers;
 		Shared<Skybox> skybox;
+
+		//temp
+		LightComponent* firstLightComponent = nullptr;
 	};
 }

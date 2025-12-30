@@ -67,6 +67,14 @@ namespace Daydream
 	{
 		return colorAttachments[_index];
 	}
+	Shared<Texture2D> OpenGLFramebuffer::GetDepthAttachmentTexture()
+	{
+		if (HasDepthAttachment())
+		{
+			return depthAttachment;
+		}
+		return nullptr;
+	}
 	void OpenGLFramebuffer::Resize(UInt32 _width, UInt32 _height)
 	{
 		width = _width;

@@ -91,19 +91,19 @@ namespace Daydream
 			return vertexShader;
 			break;
 		case ShaderType::Hull:
-			DAYDREAM_CORE_ASSERT(hullShader, "HS is nullptr!");
+			DAYDREAM_CORE_WARN("HS is nullptr!");
 			return hullShader;
 			break;
 		case ShaderType::Domain:
-			DAYDREAM_CORE_ASSERT(domainShader, "DS is nullptr!");
+			DAYDREAM_CORE_WARN("DS is nullptr!");
 			return domainShader;
 			break;
 		case ShaderType::Geometry:
-			DAYDREAM_CORE_ASSERT(geometryShader, "GS is nullptr!");
+			DAYDREAM_CORE_WARN("GS is nullptr!");
 			return geometryShader;
 			break;
 		case ShaderType::Pixel:
-			DAYDREAM_CORE_ASSERT(pixelShader, "GS is nullptr!");
+			DAYDREAM_CORE_WARN("PS is nullptr!");
 			return pixelShader;
 			break;
 		case ShaderType::Compute:

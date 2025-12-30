@@ -13,9 +13,12 @@ namespace Daydream
 		Transform(const Vector3& _position, const Vector3& _rotation);
 		Transform(const Vector3& _position, const Vector3& _rotation, const Vector3& _scale);
 
-		Vector3 GetForward();
-		Vector3 GetUp();
-		Vector3 GetRight();
+		//Vector3 GetForward();
+		//Vector3 GetUp();
+		//Vector3 GetRight();
+		Vector3 GetForward() const;
+		Vector3 GetUp() const;
+		Vector3 GetRight() const;
 		Quaternion GetOrientation();
 
 		Vector3 position = Vector3();

@@ -52,7 +52,7 @@ namespace Daydream::GraphicsUtility::Vulkan
 		case RenderFormat::R32_FLOAT:						return vk::Format::eR32Sfloat;
 		case RenderFormat::R32_UINT:						return vk::Format::eR32Uint;
 		case RenderFormat::R32_SINT:						return vk::Format::eR32Sint;
-		case RenderFormat::R24G8_TYPELESS:					return vk::Format::eUndefined;
+		case RenderFormat::R24G8_TYPELESS:					return vk::Format::eD24UnormS8Uint;
 		case RenderFormat::D24_UNORM_S8_UINT:				return vk::Format::eD24UnormS8Uint;
 		case RenderFormat::R24_UNORM_X8_TYPELESS:			return vk::Format::eD24UnormS8Uint;
 		case RenderFormat::X24_TYPELESS_G8_UINT:			return vk::Format::eD24UnormS8Uint;

@@ -45,9 +45,22 @@ namespace Daydream
 		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("MipmapRenderPass");
 		registry["GenerateMipsPSO"] = PipelineState::Create(psoDesc);
 
+		// G-Buffer 
+		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("GBuffer");
+		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("GBufferRenderPass");
+		registry["GBufferPSO"] = PipelineState::Create(psoDesc);
+
+		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("DeferredLighting");
+		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("StandardRenderPass");
+		registry["DeferredPSO"] = PipelineState::Create(psoDesc);
+
+		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Mask");
+		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("MaskRenderPass");
+		registry["MaskPSO"] = PipelineState::Create(psoDesc);
+
 		// Shadow
 		RasterizerStateDesc shadowRSDesc = {};
-		shadowRSDesc.cullMode = CullMode::Back; 
+		shadowRSDesc.cullMode = CullMode::Front; 
 		shadowRSDesc.fillMode = FillMode::Solid;
 		shadowRSDesc.depthBias = 1000;
 		shadowRSDesc.slopeScaledDepthBias = 1.0f;
@@ -57,19 +70,6 @@ namespace Daydream
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Depth");
 		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("DepthRenderPass");
 		registry["DepthPSO"] = PipelineState::Create(psoDesc);
-
-		// G-Buffer 
-		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("GBuffer"); 
-		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("GBufferRenderPass"); 
-		registry["GBufferPSO"] = PipelineState::Create(psoDesc);
-
-		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("DeferredLighting"); 
-		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("StandardRenderPass"); 
-		registry["DeferredPSO"] = PipelineState::Create(psoDesc);
-
-		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Mask");
-		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("MaskRenderPass");
-		registry["MaskPSO"] = PipelineState::Create(psoDesc);
 
 		//Cubemap 렌더링 파이프라인
 		psoDesc.rasterizerState = rastDesc;

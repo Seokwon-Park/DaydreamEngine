@@ -21,7 +21,7 @@ namespace Daydream
 		Vector2 mouseDelta = Vector2(0, 0);
 		Vector2 prevMousePos = Vector2(0, 0);
 
-		float rotationSpeed = 0.01f;
+		float rotationSpeed = 1.0f;
 		float moveSpeed = 0.01f;
 		bool isDragging = false;
 	};

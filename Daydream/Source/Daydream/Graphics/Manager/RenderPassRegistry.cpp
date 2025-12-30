@@ -14,7 +14,7 @@ namespace Daydream
 		attach.storeOp = AttachmentStoreOp::Store;
 		rpDesc.colorAttachments.push_back(attach);
 
-		attach.format = RenderFormat::D24_UNORM_S8_UINT;
+		attach.format = RenderFormat::R24G8_TYPELESS;
 		attach.loadOp = AttachmentLoadOp::Clear;
 		attach.storeOp = AttachmentStoreOp::Store;
 		rpDesc.depthAttachment = attach;
@@ -39,7 +39,7 @@ namespace Daydream
 		// === Depth RenderPass ===
 		rpDesc.colorAttachments.clear();
 
-		attach.format = RenderFormat::D24_UNORM_S8_UINT;
+		attach.format = RenderFormat::R24G8_TYPELESS;
 		attach.loadOp = AttachmentLoadOp::Clear;
 		attach.storeOp = AttachmentStoreOp::Store;
 		rpDesc.depthAttachment = attach;
@@ -81,7 +81,7 @@ namespace Daydream
 		rpDesc.colorAttachments.push_back(attach);
 
 		// Depth Attachment
-		attach.format = RenderFormat::D24_UNORM_S8_UINT;
+		attach.format = RenderFormat::R24G8_TYPELESS;
 		attach.loadOp = AttachmentLoadOp::Clear;
 		attach.storeOp = AttachmentStoreOp::Store;
 		attach.type = AttachmentType::None;
@@ -123,7 +123,7 @@ namespace Daydream
 		attach.storeOp = AttachmentStoreOp::Store;
 		rpDesc.colorAttachments.push_back(attach);
 
-		attach.format = RenderFormat::D24_UNORM_S8_UINT;
+		attach.format = RenderFormat::R24G8_TYPELESS;
 		attach.loadOp = AttachmentLoadOp::Clear;
 		attach.storeOp = AttachmentStoreOp::Store;
 		rpDesc.depthAttachment = attach;

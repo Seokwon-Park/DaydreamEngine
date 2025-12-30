@@ -1,7 +1,14 @@
 #pragma once
 
+#include "Daydream/Graphics/Resources/Buffer.h"
+
 namespace Daydream
 {
+    struct LightSpaceData
+    {
+        Matrix4x4 viewProjection;
+    };
+
     enum LightType
     {
         Directional = 0,
@@ -11,6 +18,7 @@ namespace Daydream
 
     struct DirectionalLight
     {
+        Matrix4x4 lightViewProjection = Matrix4x4();
         Vector3 direction = Vector3(0.0f, 0.0f, 1.0f);
         Float32 intensity = 1.0f;
         Vector3 color = Vector3(1.0f, 1.0f, 1.0f);
@@ -37,15 +45,26 @@ namespace Daydream
         Float32 outerConeCos = 0.0f;
     };
 
-	struct Light
+	class Light
 	{
+    public: 
+        Light();
+
         UInt32 type = LightType::Directional;
-        Vector3 direction = Vector3(0.0f,0.0f,1.0f);
         Float32 intensity = 1.0f;
         Vector3 color = Vector3(1.0f, 1.0f, 1.0f);
         Float32 range = 10.0f;   // Point, Spot 타입이 사용
-        Vector3 position = Vector3(0.0f,0.0f,0.0f); // Point, Spot 타입이 사용
         Float32 spotInnerAngle = 20.0f;  // Spot 타입만 사용
         Float32 spotOuterAngle = 30.0f;  // Spot 타입만 사용
+
+        Matrix4x4 lightProjectionMatrix = Matrix4x4();
+        Matrix4x4 lightViewMatrix = Matrix4x4();
+        Matrix4x4 lightViewProjectionMatrix = Matrix4x4();
+
+        void UpdateViewMatrix(const Transform& _transform);
+        void UpdateProjectionMatrix();
+        void UpdateViewProjectionMatrix();
+
+        Shared<ConstantBuffer> lightViewProjectionBuffer;
 	};
 }

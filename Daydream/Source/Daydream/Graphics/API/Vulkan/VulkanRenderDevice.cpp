@@ -244,9 +244,21 @@ namespace Daydream
 			allocator->getAllocationInfo(uploadBufferAllocation.get(), &allocationInfo);
 			memcpy(allocationInfo.pMappedData, _imageData, imageSize);
 
+			vk::ImageMemoryBarrier barrier{};
+			barrier.oldLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+			barrier.newLayout = vk::ImageLayout::eTransferDstOptimal;
+			barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+			barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+			barrier.image = texture->GetImage();
+			barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+			barrier.subresourceRange.baseArrayLayer = 0;
+			barrier.subresourceRange.baseMipLevel = 0;
+			barrier.subresourceRange.layerCount = 1;
+			barrier.subresourceRange.levelCount = 1;
+			TransitionImageLayout(barrier);
+
 			CopyBufferToImage(uploadBuffer.get(), texture->GetImage(), _desc.width, _desc.height);
 
-			vk::ImageMemoryBarrier barrier{};
 			barrier.oldLayout = vk::ImageLayout::eTransferDstOptimal;
 			barrier.newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 			barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;

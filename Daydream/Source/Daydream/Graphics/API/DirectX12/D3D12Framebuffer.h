@@ -17,6 +17,7 @@ namespace Daydream
 		virtual ~D3D12Framebuffer() override;
 
 		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) override;
+		virtual Shared<Texture2D> GetDepthAttachmentTexture() override { return depthAttachment; };
 		virtual bool HasDepthAttachment() override { return depthAttachment != nullptr; };
 		virtual void Resize(UInt32 _width, UInt32 _height) override;
 		virtual UInt32 ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY) override;
@@ -31,8 +32,8 @@ namespace Daydream
 	private:
 		D3D12RenderDevice* device;
 		D3D12_CPU_DESCRIPTOR_HANDLE swapchainRTVHandle;
-		Array<D3D12_CPU_DESCRIPTOR_HANDLE> renderTargetHandles; 
-		D3D12_CPU_DESCRIPTOR_HANDLE depthStencilHandle; 
+		Array<D3D12_CPU_DESCRIPTOR_HANDLE> renderTargetHandles;
+		D3D12_CPU_DESCRIPTOR_HANDLE depthStencilHandle;
 		Array<Shared<D3D12Texture2D>> colorAttachments;
 		Shared<D3D12Texture2D> depthAttachment;
 
@@ -43,7 +44,7 @@ namespace Daydream
 		D3D12_PLACED_SUBRESOURCE_FOOTPRINT footprint = {};
 		UInt64 bufferSize = 0;
 
-		
+
 	};
 }
 

@@ -81,8 +81,8 @@ namespace Daydream
 
 		maskFramebuffer = Framebuffer::Create(maskRenderPass, fbDesc);
 
-		fbDesc.width = 1024;
-		fbDesc.height = 1024;
+		fbDesc.width = 4096;
+		fbDesc.height = 4096;
 		depthFramebuffer = Framebuffer::Create(depthRenderPass, fbDesc);
 
 		pso = ResourceManager::GetResource<PipelineState>("SpritePSO");
@@ -208,6 +208,11 @@ namespace Daydream
 		//squareVB->Bind();
 		//squareIB->Bind();
 		//material->Bind();
+		depthRenderPass->Begin(depthFramebuffer);
+		depthPSO->Bind();
+		activeScene->RenderDepth();
+		depthRenderPass->End();
+
 
 		//Renderer::Submit(squareIB->GetCount());
 		gBufferRenderPass->Begin(gBufferFramebuffer);
@@ -251,6 +256,7 @@ namespace Daydream
 		deferredLightingMaterial->SetTexture2D("BRDFLUT", activeScene->GetSkybox()->GetBRDF());
 		deferredLightingMaterial->SetTexture2D("EntityIDTexture", gBufferFramebuffer->GetColorAttachmentTexture(4));
 		deferredLightingMaterial->SetTexture2D("OutlineTexture", maskFramebuffer->GetColorAttachmentTexture(0));
+		deferredLightingMaterial->SetTexture2D("DepthTexture", depthFramebuffer->GetDepthAttachmentTexture());
 		deferredLightingMaterial->SetConstantBuffer("Lights", activeScene->GetLightConstantBuffer());
 		deferredLightingMaterial->SetConstantBuffer("EditorData", entityBuffer);
 		deferredLightingMaterial->SetTextureCube("IrradianceTexture", activeScene->GetSkybox()->GetIrradianceTexture());
@@ -278,12 +284,14 @@ namespace Daydream
 	{
 		CreateDockspace();
 
-		ImGui::Begin("GBufferView");
+		ImGui::Begin("Test");
 		//static int index = 0;
 		//if (ImGui::Button("Position"))index = 0;
 		//if (ImGui::Button("Normal"))index = 1;
 		//if (ImGui::Button("Albedo"))index = 2;
 		//if (ImGui::Button("AORM"))index = 3;
+		ImGui::Image((ImTextureID)depthFramebuffer->GetDepthAttachmentTexture()->GetImGuiHandle(), ImVec2{viewportSize.x / 3,viewportSize.y / 3});
+
 		for (int i = 0; i < 4; i++)
 		{
 			ImGui::Image((ImTextureID)gBufferFramebuffer->GetColorAttachmentTexture(i)->GetImGuiHandle(), ImVec2{ viewportSize.x / 3,viewportSize.y / 3 });

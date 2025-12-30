@@ -160,7 +160,7 @@ namespace Daydream
 				entityTexture = colorTexture;
 			}
 			colorAttachments.push_back(colorTexture);
-			attachmentImageViews.push_back(colorTexture->GetImageView());
+			attachmentImageViews.push_back(colorTexture->GetSrvImageView());
 		}
 
 		if (renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
@@ -169,12 +169,12 @@ namespace Daydream
 			textureDesc.width = width;
 			textureDesc.height = height;
 			textureDesc.format = renderPassDesc.depthAttachment.format;
-			textureDesc.bindFlags = RenderBindFlags::DepthStencil;
+			textureDesc.bindFlags = RenderBindFlags::DepthStencil | RenderBindFlags::ShaderResource;
 
 			Shared<VulkanTexture2D> depthTexture = MakeShared<VulkanTexture2D>(device, textureDesc);
 			depthAttachment = depthTexture;
-			depthStencilView = depthTexture->GetImageView();
-			attachmentImageViews.push_back(depthAttachment->GetImageView());
+			depthStencilView = depthTexture->GetSrvImageView();
+			attachmentImageViews.push_back(depthAttachment->GetSrvImageView());
 		}
 
 		vk::FramebufferCreateInfo framebufferInfo{};

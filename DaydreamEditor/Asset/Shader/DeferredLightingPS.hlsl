@@ -14,6 +14,7 @@ struct PSOutput
 //================================================================================
 struct DirectionalLight
 {
+    matrix viewProjection;
     float3 direction;
     float intensity;
     float3 color;
@@ -61,6 +62,7 @@ cbuffer EditorData : register(b3) // 기존 Material이 b3였다면 b4로 밀거나 통합하
     //float screenHeight; // 화면 높이 (ID 텍스처 Load()에 사용)
     //float outlineThickness; // 외곽선 두께 (예: 1, 2, 3 픽셀)
 };
+
 // (cbuffer Material : register(b3) ... )
 
 
@@ -115,6 +117,11 @@ SamplerState EntityIDTextureSampler : register(s7);
 Texture2D<uint> OutlineTexture : register(t8);
 [[vk::combinedImageSampler]][[vk::binding(8, 1)]]
 SamplerState OutlineTextureSampler : register(s8);
+
+[[vk::combinedImageSampler]][[vk::binding(9, 1)]]
+Texture2D DepthTexture : register(t9);
+[[vk::combinedImageSampler]][[vk::binding(9, 1)]]
+SamplerState DepthTextureSampler : register(s9);
 
 //================================================================================
 // PBR 함수들 (PBR 셰이더에서 가져옴)
@@ -253,7 +260,7 @@ PSOutput PSMain(PSInput input)
                     // 이웃 픽셀의 실제 값
                     uint realVisibleID = EntityIDTexture.Load(neighborPos).r;
                 
-                    if (realVisibleID == selectedID) 
+                    if (realVisibleID == selectedID)
                     {
                         // 이 픽셀이 실제로도 그 물체 근처라면 (가려지지 않음)
                         output.color = float4(1.0f, 0.5f, 0.0f, 1.0f); // 밝은 주황
@@ -301,7 +308,73 @@ PSOutput PSMain(PSInput input)
     uint i;
     for (i = 0; i < dirLightCount; ++i)
     {
-        Lo += ComputePBRDirectionalLight(dirLights[i], V, N, F0, albedo, metallic, roughness);
+        float3 L = normalize(-dirLights[i].direction);
+
+        float shadowFactor = 1.0f;
+        if (i == 0)
+        {
+            DirectionalLight dirLight = dirLights[i];
+            float4 lightScreen = mul(float4(worldPosition, 1.0f), dirLight.viewProjection);
+            lightScreen.xyz /= lightScreen.w;
+        
+        // 2. 카메라(광원)에서 볼 때의 텍스춰 좌표 계산
+        // [-1, 1]x[-1, 1] -> [0, 1]x[0, 1]
+        // 주의: 텍스춰 좌표와 NDC는 y가 반대
+            float2 lightTexcoord = float2(lightScreen.x, -lightScreen.y);
+            lightTexcoord += 1.0f;
+            lightTexcoord *= 0.5;
+        
+            uint width, height;
+            DepthTexture.GetDimensions(width, height);
+            float2 texelSize = 1.0 / float2(width, height);
+
+            float currentDepth = lightScreen.z;
+        
+        // Bias 설정 (상수 0.001 대신 각도에 따른 Bias 추천하지만, 일단 기존 값 유지)
+            float bias = 0.00001;
+        
+            float shadowSum = 0.0;
+
+        // 4. PCF 루프 (3x3 샘플링)
+            for (int x = -1; x <= 1; ++x)
+            {
+                for (int y = -1; y <= 1; ++y)
+                {
+                // 주변 텍셀 좌표 계산
+                    float2 pcfUV = lightTexcoord + float2(x, y) * texelSize;
+                
+                // 뎁스 샘플링
+                    float pcfDepth = DepthTexture.Sample(DepthTextureSampler, pcfUV).r;
+                
+                // 비교 로직:
+                // 내 깊이(current - bias)가 맵에 기록된 깊이(pcfDepth)보다 크면(뒤에 있으면) 그림자
+                // 그림자면 0.0, 빛이면 1.0을 더함 (shadowFactor가 1.0이어야 밝으니까)
+                    if (currentDepth - bias > pcfDepth)
+                    {
+                        shadowSum += 0.0f; // 가려짐 (그림자)
+                    }
+                    else
+                    {
+                        shadowSum += 1.0f; // 안 가려짐 (빛)
+                    }
+                }
+            }
+
+        // 9개 샘플의 평균을 구함 (0.0 ~ 1.0 사이의 부드러운 값)
+        shadowFactor = shadowSum / 9.0;
+
+        // --- [수정된 부분 끝] ---
+
+        // (선택 사항) 범위 밖 처리: 섀도우 맵 밖은 항상 빛을 받도록
+            if (lightScreen.z > 1.0 || lightScreen.z < 0.0 ||
+            lightTexcoord.x > 1.0 || lightTexcoord.x < 0.0 ||
+            lightTexcoord.y > 1.0 || lightTexcoord.y < 0.0)
+            {
+                shadowFactor = 1.0f;
+            }
+        }
+        
+        Lo += ComputePBRDirectionalLight(dirLights[i], V, N, F0, albedo, metallic, roughness) * shadowFactor;
     }
     for (i = 0; i < pointLightCount; ++i)
     {
@@ -312,7 +385,7 @@ PSOutput PSMain(PSInput input)
         Lo += ComputePBRSpotLight(spotLights[i], worldPosition, V, N, F0, albedo, metallic, roughness);
     }
 
-    // --- 5. 간접 조명(IBL) 계산 (Forward 셰이더와 *완전히 동일*) ---
+    // --- 5. 간접 조명(IBL) 계산 ---
     float3 F_ibl = FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
     float3 kS_ibl = F_ibl;
     float3 kD_ibl = 1.0 - kS_ibl;
@@ -340,7 +413,6 @@ PSOutput PSMain(PSInput input)
     color = color / (color + float3(1.0, 1.0, 1.0)); // Reinhard Tonemapping
     color = color * 1.0f;
     color = pow(color, float3(1.0 / gamma, 1.0 / gamma, 1.0 / gamma)); // Gamma Correction
-
     output.color = float4(color, 1.0f);
     return output;
 }

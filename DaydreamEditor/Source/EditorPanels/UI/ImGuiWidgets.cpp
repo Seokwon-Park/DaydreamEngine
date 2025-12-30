@@ -167,7 +167,7 @@ namespace Daydream::UI
 		switch (_light.type)
 		{
 		case Directional:
-			DrawFloatController("Intensity", _light.intensity, 0.005f, 0.0f, 1.0f);
+			DrawFloatController("Intensity", _light.intensity, 0.005f, 0.0f, 10.0f);
 			DrawColorController("Color", _light.color);
 			break;
 		case Point:
