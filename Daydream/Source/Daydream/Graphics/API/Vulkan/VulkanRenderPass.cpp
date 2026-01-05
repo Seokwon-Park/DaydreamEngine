@@ -24,7 +24,7 @@ namespace Daydream
 			colorAttachment.stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
 			colorAttachment.stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
 			colorAttachment.initialLayout = vk::ImageLayout::eUndefined;
-			colorAttachment.finalLayout =_desc.colorAttachments[i].isSwapchain ? vk::ImageLayout::ePresentSrcKHR : vk::ImageLayout::eShaderReadOnlyOptimal;
+			colorAttachment.finalLayout = _desc.colorAttachments[i].isSwapchain ? vk::ImageLayout::ePresentSrcKHR : vk::ImageLayout::eShaderReadOnlyOptimal;
 
 			attachments.push_back(colorAttachment);
 
@@ -64,10 +64,10 @@ namespace Daydream
 		vk::SubpassDependency dependency{};
 		dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
 		dependency.dstSubpass = 0;
-		dependency.srcStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput | vk::PipelineStageFlagBits::eEarlyFragmentTests;
+		dependency.srcStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
 		dependency.srcAccessMask = {};
-		dependency.dstStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput | vk::PipelineStageFlagBits::eEarlyFragmentTests;
-		dependency.dstAccessMask = vk::AccessFlagBits::eColorAttachmentWrite | vk::AccessFlagBits::eDepthStencilAttachmentWrite;
+		dependency.dstStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
+		dependency.dstAccessMask = vk::AccessFlagBits::eColorAttachmentWrite;
 
 		vk::RenderPassCreateInfo renderPassInfo{};
 		renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
@@ -135,7 +135,7 @@ namespace Daydream
 	}
 	void VulkanRenderPass::End()
 	{
- 		device->GetCommandBuffer().endRenderPass();
+		device->GetCommandBuffer().endRenderPass();
 		currentFramebuffer = nullptr;
 	}
 	Shared<Framebuffer> VulkanRenderPass::CreateFramebuffer(const FramebufferDesc& _desc)

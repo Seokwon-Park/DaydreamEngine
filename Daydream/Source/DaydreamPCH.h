@@ -10,6 +10,7 @@
 #include <thread>
 #include <future>
 
+#include <bit>
 #include <string>
 #include <vector>
 #include <string_view>

@@ -256,13 +256,12 @@
     <ClInclude Include="Source\Daydream\Graphics\Manager\ShaderGroupRegistry.h" />
     <ClInclude Include="Source\Daydream\Graphics\Manager\ShaderRegistry.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Buffer.h" />
-    <ClInclude Include="Source\Daydream\Graphics\Resources\FrameParameters.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Resources\ShaderBinder.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Framebuffer.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Light.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Material.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Mesh.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Model.h" />
-    <ClInclude Include="Source\Daydream\Graphics\Resources\ObjectParameters.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Sampler.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Shader.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\ShaderGroup.h" />

@@ -27,8 +27,6 @@ namespace Daydream
 		Array<vk::UniqueDescriptorSetLayout> descriptorSetLayouts;
 		Array<vk::DescriptorSetLayout> rawDescriptorSetLayouts;
 
-		vk::DescriptorPool descriptorPool;
-
 		HashMap<ShaderType, String> entryPoints;
 
 	};

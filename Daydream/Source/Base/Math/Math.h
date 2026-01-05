@@ -3,6 +3,8 @@
 #include "Base/MathTypes.h"
 #include "Base/Math/Matrix4x4.h"
 
+#include <bit>
+
 namespace Daydream
 {
 	class Math
@@ -28,15 +30,30 @@ namespace Daydream
 			return cosf(DegreeToRadian(_degrees));
 		}
 
-		inline static Vector3 Min(const Vector3& a, const Vector3& b)
+		template <typename T>
+		inline static T Min(const T& _a, const T& _b)
 		{
-			return glm::min(a, b); // x는 x끼리, y는 y끼리 비교
+			return glm::min(_a, _b);
 		}
 
-		// AABB 계산용 Max (Component-wise)
-		inline static Vector3 Max(const Vector3& a, const Vector3& b)
+		template <typename T>
+		inline static T Max(const T& _a, const T& _b)
 		{
-			return glm::max(a, b);
+			return glm::max(_a, _b);
 		}
+
+		// 필요하다면 Clamp도 똑같이 처리 가능
+		template <typename T>
+		inline static T Clamp(const T& _val, const T& _min, const T& _max)
+		{
+			return glm::clamp(_val, _min, _max);
+		}
+
+		template <std::unsigned_integral T>
+		inline static T BitCount(T _x)
+		{
+			return std::popcount(_x);
+		}
+
 	};
 }

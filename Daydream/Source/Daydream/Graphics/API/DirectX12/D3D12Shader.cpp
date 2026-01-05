@@ -10,7 +10,7 @@ namespace Daydream
 	{
 		RenderFormat ConvertToRenderFormat(const D3D12_SIGNATURE_PARAMETER_DESC& paramDesc)
 		{
-			int componentCount = __popcnt(paramDesc.Mask); // 비트 수 세는 함수
+			int componentCount = Math::BitCount(paramDesc.Mask); // 비트 수 세는 함수
 
 			switch (componentCount)
 			{

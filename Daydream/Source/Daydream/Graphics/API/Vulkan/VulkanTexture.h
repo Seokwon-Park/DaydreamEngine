@@ -21,7 +21,7 @@ namespace Daydream
 		virtual void* GetImGuiHandle() override;
 
 		vk::Image GetImage() { return textureImage.get(); }
-		vk::ImageView GetSrvImageView() { return srvImageView.get(); }
+		vk::ImageView GetImageView() { return srv.get(); }
 		vk::Sampler GetSampler() { return textureSampler->GetSampler(); }
 
 	protected:
@@ -33,8 +33,8 @@ namespace Daydream
 
 		vma::UniqueImage textureImage;
 		vma::UniqueAllocation textureImageAllocation;
-		vk::UniqueImageView srvImageView;
-		vk::UniqueImageView dsvImageView;
+		vk::UniqueImageView srv;
+		vk::UniqueImageView dsv;
 
 		//ImGui Image¿ë
 		VkDescriptorSet ImGuiDescriptorSet = VK_NULL_HANDLE;

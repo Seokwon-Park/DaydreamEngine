@@ -2,5 +2,5 @@
 
 namespace Daydream
 {
-
+	class ShaderResourceBinder
 }

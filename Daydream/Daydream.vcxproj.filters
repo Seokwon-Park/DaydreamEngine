@@ -531,7 +531,7 @@
     <ClInclude Include="Source\Daydream\Graphics\Resources\Buffer.h">
       <Filter>Source\Daydream\Graphics\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\Resources\FrameParameters.h">
+    <ClInclude Include="Source\Daydream\Graphics\Resources\ShaderBinder.h">
       <Filter>Source\Daydream\Graphics\Resources</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\Resources\Framebuffer.h">
@@ -547,9 +547,6 @@
       <Filter>Source\Daydream\Graphics\Resources</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\Resources\Model.h">
-      <Filter>Source\Daydream\Graphics\Resources</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\Resources\ObjectParameters.h">
       <Filter>Source\Daydream\Graphics\Resources</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\Resources\Sampler.h">

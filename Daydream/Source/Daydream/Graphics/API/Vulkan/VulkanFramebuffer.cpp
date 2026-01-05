@@ -46,7 +46,7 @@ namespace Daydream
 
 		CreateAttachments();
 	}
-	
+
 	VulkanFramebuffer::~VulkanFramebuffer()
 	{
 		colorAttachments.clear();
@@ -128,7 +128,7 @@ namespace Daydream
 			nullptr, nullptr, barrierToOriginal
 		);
 
-		device->EndSingleTimeCommands(cmd); 
+		device->EndSingleTimeCommands(cmd);
 
 		UInt32 pixelValue = 0;
 		vma::AllocationInfo allocationInfo;
@@ -155,12 +155,27 @@ namespace Daydream
 			textureDesc.bindFlags = RenderBindFlags::RenderTarget | RenderBindFlags::ShaderResource;
 
 			Shared<VulkanTexture2D> colorTexture = MakeShared<VulkanTexture2D>(device, textureDesc);
+
+			vk::ImageMemoryBarrier barrier{};
+			barrier.oldLayout = vk::ImageLayout::eUndefined;
+			barrier.newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+			barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+			barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+			barrier.image = colorTexture->GetImage();
+			barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+			barrier.subresourceRange.baseArrayLayer = 0;
+			barrier.subresourceRange.baseMipLevel = 0;
+			barrier.subresourceRange.layerCount = 1;
+			barrier.subresourceRange.levelCount = 1;
+
+			device->TransitionImageLayout(barrier);
+
 			if (colorAttachmentDesc.type == AttachmentType::EntityHandle)
 			{
 				entityTexture = colorTexture;
 			}
 			colorAttachments.push_back(colorTexture);
-			attachmentImageViews.push_back(colorTexture->GetSrvImageView());
+			attachmentImageViews.push_back(colorTexture->GetImageView());
 		}
 
 		if (renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
@@ -172,9 +187,10 @@ namespace Daydream
 			textureDesc.bindFlags = RenderBindFlags::DepthStencil | RenderBindFlags::ShaderResource;
 
 			Shared<VulkanTexture2D> depthTexture = MakeShared<VulkanTexture2D>(device, textureDesc);
+
 			depthAttachment = depthTexture;
-			depthStencilView = depthTexture->GetSrvImageView();
-			attachmentImageViews.push_back(depthAttachment->GetSrvImageView());
+			depthStencilView = depthTexture->GetImageView();
+			attachmentImageViews.push_back(depthAttachment->GetImageView());
 		}
 
 		vk::FramebufferCreateInfo framebufferInfo{};

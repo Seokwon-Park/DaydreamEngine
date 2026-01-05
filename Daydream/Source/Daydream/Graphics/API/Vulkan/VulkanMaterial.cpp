@@ -49,7 +49,7 @@ namespace Daydream
 
 			vk::DescriptorImageInfo imageInfo{};
 			imageInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
-			imageInfo.imageView = vulkanTexture->GetSrvImageView();
+			imageInfo.imageView = vulkanTexture->GetImageView();
 			imageInfo.sampler = vulkanTexture->GetSampler();
 
 			vk::WriteDescriptorSet writeSet = {};
