@@ -47,6 +47,8 @@ namespace Daydream
 		bool isGuizmoInteract = false;
 		bool viewportShouldResize = true;
 
+		Unique<SceneRenderer> sceneRenderer;
+
 		Shared<VertexBuffer> cubeVBO;
 		Shared<IndexBuffer> cubeIBO;
 

@@ -1921,6 +1921,7 @@
     <ClInclude Include="Source\Daydream\Core\ThreadPool.h" />
     <ClInclude Include="Source\Daydream\Core\Thread.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderThread.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Core\SceneRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\Directory.cpp">
@@ -2358,5 +2359,6 @@
     <ClCompile Include="Source\Daydream\Core\ThreadPool.cpp" />
     <ClCompile Include="Source\Daydream\Core\Thread.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderThread.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Core\SceneRenderer.cpp" />
   </ItemGroup>
 </Project>

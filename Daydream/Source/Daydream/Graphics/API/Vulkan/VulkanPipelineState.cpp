@@ -34,7 +34,7 @@ namespace Daydream
 	{
 		device = _device;
 
-		SortedMap<UInt32, Array<vk::DescriptorSetLayoutBinding>> setBindings;
+		
 
 		vk::VertexInputBindingDescription vertexInputdesc;
 		vertexInputdesc.binding = 0;
@@ -42,8 +42,21 @@ namespace Daydream
 		vertexInputdesc.inputRate = vk::VertexInputRate::eVertex;
 
 		UInt32 offset = 0;
-
 		Array<vk::VertexInputAttributeDescription> attribDescArray;
+		for (const auto& info : shaderGroup->GetInputData())
+		{
+			vk::VertexInputAttributeDescription attribDesc{};
+			attribDesc.location = info.set;
+			attribDesc.binding = info.binding;
+			attribDesc.format = GraphicsUtility::Vulkan::ConvertRenderFormatToVkFormat(info.format);
+			attribDesc.offset = offset;
+
+			offset += (UInt32)info.size;
+			vertexInputdesc.stride += (UInt32)info.size;
+
+			attribDescArray.push_back(attribDesc);
+		}
+
 		for (const Shared<Shader>& shader : shaderGroup->GetShaders())
 		{
 			entryPoints[shader->GetType()] = GraphicsUtility::GetShaderEntryPointName(shader->GetType());
@@ -56,34 +69,24 @@ namespace Daydream
 			shaderStageInfo.stage = GraphicsUtility::Vulkan::ConvertToShaderStageFlagBit(shader->GetType());
 
 			shaderStages.push_back(shaderStageInfo);
-			UInt32 setSize = 0;
-			for (const auto& info : shader->GetShaderReflectionData())
-			{
-				if (info.shaderResourceType == ShaderResourceType::Input && shader->GetType() == ShaderType::Vertex)
-				{
-					vk::VertexInputAttributeDescription attribDesc{};
-					attribDesc.location = info.set;
-					attribDesc.binding = info.binding;
-					attribDesc.format = GraphicsUtility::Vulkan::ConvertRenderFormatToVkFormat(info.format);
-					attribDesc.offset = offset;
-
-					offset += (UInt32)info.size;
-					vertexInputdesc.stride += (UInt32)info.size;
-
-					attribDescArray.push_back(attribDesc);
-					continue;
-				}
-				vk::DescriptorSetLayoutBinding binding = {};
-				binding.binding = info.binding;
-				binding.descriptorType = ToVkDescType(info.shaderResourceType);
-				binding.descriptorCount = 1;
-				binding.stageFlags = GraphicsUtility::Vulkan::ConvertToShaderStageFlagBit(shader->GetType());
-				binding.pImmutableSamplers = nullptr;
-				setBindings[info.set].push_back(binding);
-			}
 		}
 
-		for (const auto& [setIndex, bindings] : setBindings)
+		UInt32 setCount = shaderGroup->GetSetCount();
+		Array<Array<vk::DescriptorSetLayoutBinding>> setBindings(setCount);
+		for (const auto& info : shaderGroup->GetShaderResourceData())
+		{
+			vk::DescriptorSetLayoutBinding binding = {};
+			binding.binding = info.binding;
+			binding.descriptorType = ToVkDescType(info.shaderResourceType);
+			binding.descriptorCount = 1;
+			binding.stageFlags = GraphicsUtility::Vulkan::ConvertToShaderStageFlagBit(info.shaderType);
+			binding.pImmutableSamplers = nullptr;
+			setBindings[info.set].push_back(binding);
+		}
+
+		//descriptorSetLayouts.resize(setCount);
+
+		for (const auto& bindings : setBindings)
 		{
 			Array<vk::DescriptorBindingFlags> bindingFlags(bindings.size(), vk::DescriptorBindingFlagBits::eUpdateAfterBind);
 
@@ -92,10 +95,11 @@ namespace Daydream
 			extendedInfo.pBindingFlags = bindingFlags.data();
 
 			vk::DescriptorSetLayoutCreateInfo layoutCreateInfo{};
-			layoutCreateInfo.pNext = &extendedInfo; // 확장 정보 연결!
+			//layoutCreateInfo.pNext = &extendedInfo; // 확장 정보 연결!
 			layoutCreateInfo.bindingCount = Cast<UInt32>(bindings.size());
 			layoutCreateInfo.pBindings = bindings.data();
-			layoutCreateInfo.flags = vk::DescriptorSetLayoutCreateFlagBits::eUpdateAfterBindPool;
+			layoutCreateInfo.flags = /*vk::DescriptorSetLayoutCreateFlagBits::eUpdateAfterBindPool |*/ 
+				vk::DescriptorSetLayoutCreateFlagBits::ePushDescriptor;
 
 			descriptorSetLayouts.push_back(device->GetDevice().createDescriptorSetLayoutUnique(layoutCreateInfo));
 		}
@@ -123,6 +127,7 @@ namespace Daydream
 		vk::PipelineInputAssemblyStateCreateInfo inputAssembly{};
 		inputAssembly.topology = vk::PrimitiveTopology::eTriangleList;
 		inputAssembly.primitiveRestartEnable = VK_FALSE;
+		
 
 		vk::PipelineRasterizationStateCreateInfo rasterizer = GraphicsUtility::Vulkan::TranslateToVulkanRasterizerCreateInfo(_desc.rasterizerState);
 		//vk::PipelineRasterizationStateCreateInfo rasterizer{};
@@ -242,8 +247,8 @@ namespace Daydream
 	{
 
 	}
-	Shared<Material> VulkanPipelineState::CreateMaterial()
-	{
-		return MakeShared<VulkanMaterial>(device, this);
-	}
+	//Shared<Material> VulkanPipelineState::CreateMaterial()
+	//{
+	//	return MakeShared<VulkanMaterial>(device, this);
+	//}
 }

@@ -12,7 +12,7 @@ namespace Daydream
 		virtual ~VulkanPipelineState() override;
 
 		virtual void Bind() const override;
-		virtual Shared<Material> CreateMaterial() override;
+		//virtual Shared<Material> CreateMaterial() override;
 
 		void CreateShaderStageInfo(const Shared<Shader>& _shader);
 		Array<vk::DescriptorSetLayout> GetLayout() { return rawDescriptorSetLayouts; };

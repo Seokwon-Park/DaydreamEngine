@@ -86,7 +86,7 @@ namespace Daydream
         }
 
         //vk::CommandBuffer commandBuffer = device->BeginSingleTimeCommands(); // 이 함수는 vk::CommandBuffer를 반환한다고 가정
-        vk::CommandBuffer commandBuffer = device->GetCommandBuffer();
+        vk::CommandBuffer commandBuffer = device->BeginSingleTimeCommands();
 
         vk::Image image = textureImage.get();
         // vk::ImageMemoryBarrier 구조체 사용, sType은 자동 설정됩니다.
@@ -197,6 +197,8 @@ namespace Daydream
             nullptr, // BufferMemoryBarriers
             barrier  // ImageMemoryBarrier
         );
+
+        device->EndSingleTimeCommands(commandBuffer);
         // 루프에서 처리되지 않은 마지막 Mipmap 레벨의 레이아웃을 변경
         //barrier.subresourceRange.baseMipLevel = mipLevels - 1;
         //barrier.oldLayout = vk::ImageLayout::eTransferDstOptimal;

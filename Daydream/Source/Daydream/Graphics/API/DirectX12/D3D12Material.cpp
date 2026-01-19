@@ -6,12 +6,11 @@
 
 namespace Daydream
 {
-	D3D12Material::D3D12Material(D3D12RenderDevice* _device, D3D12PipelineState* _pso)
+	D3D12Material::D3D12Material(D3D12RenderDevice* _device, PipelineState* _pso)
 	{
 		device = _device;
-		pso = _pso;
 
-		for (ShaderReflectionData data : pso->GetShaderGroup()->GetShaderResourceData())
+		for (ShaderReflectionData data : _pso->GetShaderGroup()->GetShaderResourceData())
 		{
 			bindingMap[data.name] = data;
 			//switch (info.shaderResourceType)

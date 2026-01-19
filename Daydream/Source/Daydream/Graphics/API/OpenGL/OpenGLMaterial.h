@@ -8,7 +8,7 @@ namespace Daydream
 	class OpenGLMaterial : public Material
 	{
 	public:
-		OpenGLMaterial(OpenGLPipelineState* _pso);
+		OpenGLMaterial(PipelineState* _pso);
 
 		virtual void Bind() override;
 		

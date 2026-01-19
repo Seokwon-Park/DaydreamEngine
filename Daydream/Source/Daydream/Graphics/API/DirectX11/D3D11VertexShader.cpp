@@ -9,7 +9,7 @@ namespace Daydream
 	{
 		RenderFormat ConvertToRenderFormat(const D3D11_SIGNATURE_PARAMETER_DESC& paramDesc)
 		{
-			int componentCount = __popcnt(paramDesc.Mask); // 비트 수 세는 함수
+			int componentCount = Math::BitCount(paramDesc.Mask); // 비트 수 세는 함수
 
 			switch (componentCount)
 			{
@@ -55,7 +55,7 @@ namespace Daydream
 		}
 	}
 
-	D3D11VertexShader::D3D11VertexShader(D3D11RenderDevice* _device, const std::string& _src, const ShaderLoadMode& _mode)
+	D3D11VertexShader::D3D11VertexShader(D3D11RenderDevice* _device, const String& _src, const ShaderLoadMode& _mode)
 		:D3D11Shader(_device, _src, ShaderType::Vertex, _mode)
 	{
 		device->GetDevice()->CreateVertexShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), nullptr, vertexShader.GetAddressOf());

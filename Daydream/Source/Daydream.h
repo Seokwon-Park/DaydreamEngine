@@ -28,6 +28,7 @@
 // ---Renderer------------------------------------
 #include "Daydream/Graphics/Core/Renderer.h"
 #include "Daydream/Graphics/Core/Renderer2D.h"
+#include "Daydream/Graphics/Core/SceneRenderer.h"
 #include "Daydream/Graphics/Core/RenderCommand.h"
 #include "Daydream/Graphics/Resources/RenderPass.h"
 #include "Daydream/Graphics/Resources/PipelineState.h"

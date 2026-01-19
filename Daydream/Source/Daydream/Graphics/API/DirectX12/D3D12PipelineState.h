@@ -14,7 +14,7 @@ namespace Daydream
 		virtual ~D3D12PipelineState();
 
 		virtual void Bind() const override;
-		virtual Shared<Material> CreateMaterial() override;
+		//virtual Shared<Material> CreateMaterial() override;
 
 	protected:
 

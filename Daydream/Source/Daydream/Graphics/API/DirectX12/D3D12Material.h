@@ -9,7 +9,7 @@ namespace Daydream
 	class D3D12Material : public Material
 	{
 	public:
-		D3D12Material(D3D12RenderDevice* _device, D3D12PipelineState* _pso);
+		D3D12Material(D3D12RenderDevice* _device, PipelineState* _pso);
 
 		virtual void Bind() override;
 
@@ -18,7 +18,6 @@ namespace Daydream
 		//virtual void SetConstantBuffer(const std::string& _name, Shared<ConstantBuffer> _buffer)override;
 	private:
 		D3D12RenderDevice* device;
-		D3D12PipelineState* pso;
 
 		//HashMap<String, Shared<ConstantBuffer>> cbuffers;
 		//HashMap<String, Shared<Texture2D>> textures;

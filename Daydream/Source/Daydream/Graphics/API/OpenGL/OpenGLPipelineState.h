@@ -12,7 +12,7 @@ namespace Daydream
 		virtual ~OpenGLPipelineState();
 
 		virtual void Bind() const;
-		virtual Shared<Material> CreateMaterial() override;
+		//virtual Shared<Material> CreateMaterial() override;
 	private:
 		UInt32 inputDataIndex = 0;
 

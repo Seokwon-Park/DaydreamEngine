@@ -8,44 +8,41 @@
 
 namespace Daydream
 {
-	Renderer* Renderer::instance = nullptr;
-
-	Renderer::Renderer(RendererAPIType _API)
-	{
-		currentWindow = nullptr;
-		renderDevice = RenderDevice::Create(_API);
-		DAYDREAM_CORE_ASSERT(renderDevice, "Failed to create graphics device!");
-		renderer = renderDevice->CreateImGuiRenderer();
-	}
+	//Renderer* Renderer::instance = nullptr;
 
 	void Renderer::Init(RendererAPIType _API)
 	{
-		DAYDREAM_CORE_ASSERT(instance == nullptr, "Renderer Already Initialized!");
-		instance = new Renderer(_API);
-		instance->renderDevice->Init();
+		//DAYDREAM_CORE_ASSERT(instance == nullptr, "Renderer Already Initialized!");
+		//instance = new Renderer(_API);
+		currentWindow = nullptr;
+		renderDevice = RenderDevice::Create(_API);
+		DAYDREAM_CORE_ASSERT(renderDevice, "Failed to create graphics device!");
+		renderDevice->Init();
+		renderer = renderDevice->CreateImGuiRenderer();
+		renderContext = renderDevice->CreateContext();
 		ShaderCompileHelper::Init();
-		RenderCommand::Init(instance->renderDevice.get());
+		/*	RenderCommand::Init(renderDevice.get());*/
 	}
 
 	void Renderer::Shutdown()
 	{
 		//Renderer2D::Shutdown();
 		ShaderCompileHelper::Shutdown();
-		instance->renderer->Shutdown();
-		instance->renderDevice.reset();
-		delete instance;
-		instance = nullptr;
+		renderer->Shutdown();
+		renderDevice.reset();
+		//delete instance;
+		//instance = nullptr;
 	}
 
 	void Renderer::CreateSwapchainForWindow(DaydreamWindow* _window)
 	{
-		instance->renderDevice->CreateSwapchainForWindow(_window);
+		renderDevice->CreateSwapchainForWindow(_window);
 	}
 
 	void Renderer::OnWindowResize(UInt32 _width, UInt32 _height)
 	{
-		RenderCommand::SetViewport(_width, _height);
-		instance->currentWindow->GetSwapchain()->ResizeSwapchain(_width, _height);
+		renderContext->SetViewport(0, 0, _width, _height);
+		currentWindow->GetSwapchain()->ResizeSwapchain(_width, _height);
 	}
 
 	void Renderer::BeginSwapchainRenderPass(DaydreamWindow* _window)
@@ -59,10 +56,6 @@ namespace Daydream
 
 	}
 
-	void Renderer::BeginScene(const Camera& _camera)
-	{
-		
-	}
 
 	void Renderer::EndScene()
 	{
@@ -77,7 +70,7 @@ namespace Daydream
 		_shader->SetMat4("u_Transform", _transform);*/
 
 		//_vertexArray->Bind();
-		RenderCommand::DrawIndexed(_indexCount);
+		renderContext->DrawIndexed(_indexCount);
 	}
 
 

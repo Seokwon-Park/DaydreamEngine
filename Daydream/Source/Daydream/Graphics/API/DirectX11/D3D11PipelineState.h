@@ -11,7 +11,7 @@ namespace Daydream
 		D3D11PipelineState(D3D11RenderDevice* _device, PipelineStateDesc _desc);
 
 		virtual void Bind() const override;
-		virtual Shared<Material> CreateMaterial() override;
+		//virtual Shared<Material> CreateMaterial() override;
 	private:
 		D3D11RenderDevice* device;
 		ComPtr<ID3D11RasterizerState> rasterizer;

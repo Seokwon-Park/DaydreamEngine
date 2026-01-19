@@ -7,7 +7,7 @@
 
 namespace Daydream
 {
-	OpenGLMaterial::OpenGLMaterial(OpenGLPipelineState* _pso)
+	OpenGLMaterial::OpenGLMaterial(PipelineState* _pso)
 	{
 		for (auto shader : _pso->GetShaders())
 		{

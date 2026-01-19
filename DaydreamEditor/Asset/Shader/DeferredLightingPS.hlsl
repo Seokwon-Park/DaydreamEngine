@@ -73,54 +73,54 @@ cbuffer EditorData : register(b3) // 기존 Material이 b3였다면 b4로 밀거나 통합하
 //// G-Buffer 샘플링을 위한 샘플러 (Point Sampler 권장)
 //SamplerState g_PointSampler : register(s8);
 
-[[vk::combinedImageSampler]][[vk::binding(0, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(4, 0)]]
 Texture2D PositionTexture : register(t0);
-[[vk::combinedImageSampler]][[vk::binding(0, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(4, 0)]]
 SamplerState PositionTextureSampler : register(s0);
 
-[[vk::combinedImageSampler]][[vk::binding(1, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(5, 0)]]
 Texture2D AlbedoTexture : register(t1);
-[[vk::combinedImageSampler]][[vk::binding(1, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(5, 0)]]
 SamplerState AlbedoTextureSampler : register(s1);
 
-[[vk::combinedImageSampler]][[vk::binding(2, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(6, 0)]]
 Texture2D NormalTexture : register(t2);
-[[vk::combinedImageSampler]][[vk::binding(2, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(6, 0)]]
 SamplerState NormalTextureSampler : register(s2);
 
-[[vk::combinedImageSampler]][[vk::binding(3, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(7, 0)]]
 Texture2D RMAOTexture : register(t3);
-[[vk::combinedImageSampler]][[vk::binding(3, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(7, 0)]]
 SamplerState RMAOTextureSampler : register(s3);
 
-[[vk::combinedImageSampler]][[vk::binding(4, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(8, 0)]]
 TextureCube IrradianceTexture : register(t4);
-[[vk::combinedImageSampler]][[vk::binding(4, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(8, 0)]]
 SamplerState IrradianceTextureSampler : register(s4);
 
-[[vk::combinedImageSampler]][[vk::binding(5, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(9, 0)]]
 TextureCube Prefilter : register(t5);
-[[vk::combinedImageSampler]][[vk::binding(5, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(9, 0)]]
 SamplerState PrefilterSampler : register(s5);
 
-[[vk::combinedImageSampler]][[vk::binding(6, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(10, 0)]]
 Texture2D BRDFLUT : register(t6);
-[[vk::combinedImageSampler]][[vk::binding(6, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(10, 0)]]
 SamplerState BRDFLUTSampler : register(s6);
 
-[[vk::combinedImageSampler]][[vk::binding(7, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(11, 0)]]
 Texture2D<uint> EntityIDTexture : register(t7);
-[[vk::combinedImageSampler]][[vk::binding(7, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(11, 0)]]
 SamplerState EntityIDTextureSampler : register(s7);
 
-[[vk::combinedImageSampler]][[vk::binding(8, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(12, 0)]]
 Texture2D<uint> OutlineTexture : register(t8);
-[[vk::combinedImageSampler]][[vk::binding(8, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(12, 0)]]
 SamplerState OutlineTextureSampler : register(s8);
 
-[[vk::combinedImageSampler]][[vk::binding(9, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(13, 0)]]
 Texture2D DepthTexture : register(t9);
-[[vk::combinedImageSampler]][[vk::binding(9, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(13, 0)]]
 SamplerState DepthTextureSampler : register(s9);
 
 //================================================================================

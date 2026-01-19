@@ -15,7 +15,7 @@ namespace Daydream
 		virtual void Shutdown() override;
 		virtual void Render() override;
 
-		virtual Shared<RenderContext> CreateContext() override;
+		virtual Unique<RenderContext> CreateContext() override;
 		virtual Shared<VertexBuffer> CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize = 0, const void* _initialData = nullptr) override;
 		virtual Shared<VertexBuffer> CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData) override;
 		virtual Shared<IndexBuffer> CreateIndexBuffer(const UInt32 * _indices, UInt32 _count) override;

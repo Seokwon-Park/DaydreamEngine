@@ -9,7 +9,7 @@ namespace Daydream
 	class VulkanMaterial : public Material
 	{
 	public:
-		VulkanMaterial(VulkanRenderDevice* _device, VulkanPipelineState* _pso);
+		VulkanMaterial(VulkanRenderDevice* _device, Shared<PipelineState> _pso);
 		virtual ~VulkanMaterial() override;
 		virtual void Bind() override;
 
@@ -18,7 +18,9 @@ namespace Daydream
 		//virtual void SetConstantBuffer(const std::string& _name, Shared<ConstantBuffer> _buffer)override;
 	private:
 		VulkanRenderDevice* device;
-		VulkanPipelineState* pso;
+		Shared<VulkanPipelineState> pso;
+
+		vk::PipelineLayout psoLayout;
 		Array<vk::UniqueDescriptorSet> sets;
 		Array<vk::DescriptorSet> rawSets;
 

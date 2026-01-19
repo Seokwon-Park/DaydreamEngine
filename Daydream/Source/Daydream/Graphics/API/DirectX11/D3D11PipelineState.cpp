@@ -59,8 +59,8 @@ namespace Daydream
 		device->GetContext()->IASetInputLayout(inputLayout.Get());
 		device->GetContext()->RSSetState(rasterizer.Get());
 	}
-	Shared<Material> D3D11PipelineState::CreateMaterial()
-	{
-		return MakeShared<D3D11Material>(device, this);
-	}
+	//Shared<Material> D3D11PipelineState::CreateMaterial()
+	//{
+	//	return MakeShared<D3D11Material>(device, this);
+	//}
 }

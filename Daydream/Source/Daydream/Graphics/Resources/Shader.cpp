@@ -10,7 +10,7 @@
 
 namespace Daydream
 {
-	Shared<Shader> Daydream::Shader::Create(const String& _src, const ShaderType& _type, const ShaderLoadMode& _mode)
+	Shared<Shader> Shader::Create(const String& _src, const ShaderType& _type, const ShaderLoadMode& _mode)
 	{
 		return Renderer::GetRenderDevice()->CreateShader(_src, _type, _mode);
 	}

@@ -140,9 +140,9 @@ namespace Daydream
 	}
 
 
-	Shared<RenderContext> D3D11RenderDevice::CreateContext()
+	Unique<RenderContext> D3D11RenderDevice::CreateContext()
 	{
-		return MakeShared<D3D11GraphicsContext>(this);
+		return MakeUnique<D3D11GraphicsContext>(this);
 	}
 
 	Shared<VertexBuffer> D3D11RenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
@@ -258,7 +258,7 @@ namespace Daydream
 
 	Shared<Material> D3D11RenderDevice::CreateMaterial(Shared<PipelineState> _pipeline)
 	{
-		return _pipeline->CreateMaterial();
+		return MakeShared<D3D11Material>(this, _pipeline);
 	}
 	void D3D11RenderDevice::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
 	{

@@ -16,34 +16,34 @@ struct PSOutput
     uint entityHandle : SV_Target4;
 };
 
-cbuffer Entity : register(b3)
+cbuffer Entity : register(b2)
 {
     uint entityHandle;
 };
 
-[[vk::combinedImageSampler]][[vk::binding(0, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(3, 0)]]
 Texture2D AlbedoTexture : register(t0);
-[[vk::combinedImageSampler]][[vk::binding(0, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(3, 0)]]
 SamplerState AlbedoTextureSampler : register(s0);
 
-[[vk::combinedImageSampler]][[vk::binding(1, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(4, 0)]]
 Texture2D NormalTexture : register(t1);
-[[vk::combinedImageSampler]][[vk::binding(1, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(4, 0)]]
 SamplerState NormalTextureSampler : register(s1);
 
-[[vk::combinedImageSampler]][[vk::binding(2, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(5, 0)]]
 Texture2D RoughnessTexture : register(t2);
-[[vk::combinedImageSampler]][[vk::binding(2, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(5, 0)]]
 SamplerState RoughnessTextureSampler : register(s2);
 
-[[vk::combinedImageSampler]][[vk::binding(3, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(6, 0)]]
 Texture2D MetallicTexture : register(t3);
-[[vk::combinedImageSampler]][[vk::binding(3, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(6, 0)]]
 SamplerState MetallicTextureSampler : register(s3);
 
-[[vk::combinedImageSampler]][[vk::binding(4, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(7, 0)]]
 Texture2D AOTexture : register(t4);
-[[vk::combinedImageSampler]][[vk::binding(4, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(7, 0)]]
 SamplerState AOTextureSampler : register(s4);
 
 PSOutput PSMain(PSInput input)

@@ -30,8 +30,10 @@ _pixelShaderPath);
 			Shared<Shader> _pixelShader);
 
 		const Array<ShaderReflectionData>& GetInputData() { return inputReflectionData; }
-		const Array<ShaderReflectionData>& GetShaderResourceData() { return shaderResourceReflectionData; }
+		const Array<ShaderReflectionData>& GetShaderResourceData() const { return shaderResourceReflectionData; }
 		Array<ShaderReflectionData>& GetShaderResourceDataRef() { return shaderResourceReflectionData; }
+
+		UInt32 GetSetCount() const { return setCount; }
 	private:
 		ShaderGroup(Shared<Shader> _vertexShader, Shared<Shader> _hullShader, Shared<Shader> _domainShader, Shared<Shader> _geometryShader, Shared<Shader> _pixelShader);
 
@@ -40,6 +42,8 @@ _pixelShaderPath);
 
 		void ValidateInterface() { /* ... */ }
 		void GenerateUnifiedReflection() { /* ... */ }
+
+		UInt32 setCount = 0;
 
 		Shared<Shader> vertexShader = nullptr;
 		Shared<Shader> hullShader = nullptr;

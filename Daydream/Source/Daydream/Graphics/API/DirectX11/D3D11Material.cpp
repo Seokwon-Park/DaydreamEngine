@@ -7,7 +7,7 @@
 
 namespace Daydream
 {
-	D3D11Material::D3D11Material(D3D11RenderDevice* _device, D3D11PipelineState* _pso)
+	D3D11Material::D3D11Material(D3D11RenderDevice* _device, Shared<PipelineState> _pso)
 	{
 		device = _device;
 		for (auto shader : _pso->GetShaders())

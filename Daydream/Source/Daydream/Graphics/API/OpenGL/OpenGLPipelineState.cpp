@@ -218,8 +218,8 @@ namespace Daydream
 		glBindVertexArray(vao);
 		glBindProgramPipeline(pipeline);
 	}
-	Shared<Material> OpenGLPipelineState::CreateMaterial()
-	{
-		return MakeShared<OpenGLMaterial>(this);
-	}
+	//Shared<Material> OpenGLPipelineState::CreateMaterial()
+	//{
+	//	return MakeShared<OpenGLMaterial>(this);
+	//}
 }

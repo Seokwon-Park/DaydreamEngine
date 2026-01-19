@@ -40,7 +40,7 @@ namespace Daydream
 		virtual void Shutdown() = 0;
 		virtual void Render() = 0;
 
-		virtual Shared<RenderContext> CreateContext() = 0;
+		virtual Unique<RenderContext> CreateContext() = 0;
 		virtual Shared<VertexBuffer> CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize = 0, const void* _initialData = nullptr) = 0;
 		virtual Shared<VertexBuffer> CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData) = 0;
 		virtual Shared<IndexBuffer> CreateIndexBuffer(const UInt32* _indices, UInt32 _count) = 0;

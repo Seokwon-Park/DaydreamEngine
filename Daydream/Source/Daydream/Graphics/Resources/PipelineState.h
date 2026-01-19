@@ -43,7 +43,7 @@ namespace Daydream
 		virtual ~PipelineState() = default;
 
 		virtual void Bind() const = 0;
-		virtual Shared<Material> CreateMaterial() = 0;
+		//virtual Shared<Material> CreateMaterial() = 0;
 
 		const Shared<ShaderGroup>& GetShaderGroup() { return shaderGroup; }
 		const Array<Shared<Shader>>& GetShaders() { return shaderGroup->GetShaders(); };
@@ -51,10 +51,13 @@ namespace Daydream
 		static Shared<PipelineState> Create(const PipelineStateDesc& _desc);
 	protected:
 		Shared<ShaderGroup> shaderGroup;
-
 		Shared<RenderPass> renderPass;
 
 		PipelineStateDesc desc;
+
+		HashMap<String, ShaderReflectionData> globalBindingMap;
+		HashMap<String, ShaderReflectionData> materialBindingMap;
+		HashMap<String, ShaderReflectionData> entityBindingMap;
 		//rtv, dsv;
 		//blend, rast, ds;
 

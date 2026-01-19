@@ -6,25 +6,26 @@
 
 namespace Daydream
 {
-	VulkanMaterial::VulkanMaterial(VulkanRenderDevice* _device, VulkanPipelineState* _pso)
+	VulkanMaterial::VulkanMaterial(VulkanRenderDevice* _device, Shared<PipelineState> _pso)
 	{
 		device = _device;
-		pso = _pso;
+		pso = static_pointer_cast<VulkanPipelineState>(_pso);
+		psoLayout = pso->GetPipelineLayout();
 		vk::DescriptorPoolCreateInfo poolCreateInfo;
 
-		const auto& layouts = _pso->GetLayout();
+		const auto& layouts = pso->GetLayout();
 
-		vk::DescriptorSetAllocateInfo allocInfo{};
-		allocInfo.descriptorPool = _device->GetDescriptorPool();
-		allocInfo.descriptorSetCount = (UInt32)layouts.size();
-		allocInfo.pSetLayouts = layouts.data();
+		//vk::DescriptorSetAllocateInfo allocInfo{};
+		//allocInfo.descriptorPool = _device->GetDescriptorPool();
+		//allocInfo.descriptorSetCount = (UInt32)layouts.size();
+		//allocInfo.pSetLayouts = layouts.data();
 
-		sets = _device->GetDevice().allocateDescriptorSetsUnique(allocInfo);
+		////sets = _device->GetDevice().allocateDescriptorSetsUnique(allocInfo);
 
-		for (auto& set : sets)
-		{
-			rawSets.push_back(set.get());
-		}
+		//for (auto& set : sets)
+		//{
+		//	rawSets.push_back(set.get());
+		//}
 
 		auto resources = pso->GetShaderGroup()->GetShaderResourceData();
 		for (auto resource : resources)
@@ -53,13 +54,19 @@ namespace Daydream
 			imageInfo.sampler = vulkanTexture->GetSampler();
 
 			vk::WriteDescriptorSet writeSet = {};
-			writeSet.dstSet = sets[resourceInfo.set].get();
+			//writeSet.dstSet = sets[resourceInfo.set].get();
 			writeSet.dstBinding = resourceInfo.binding;  // 특정 binding만 업데이트
 			writeSet.descriptorCount = 1;
 			writeSet.descriptorType = vk::DescriptorType::eCombinedImageSampler;
 			writeSet.pImageInfo = &imageInfo;
 
-			device->GetDevice().updateDescriptorSets(1, &writeSet, 0, nullptr);
+			device->GetCommandBuffer().pushDescriptorSet(
+				vk::PipelineBindPoint::eGraphics,
+				psoLayout,
+				resourceInfo.set,
+				1,
+				&writeSet
+			);
 		}
 
 		for (auto [name, texture] : textureCubes)
@@ -74,13 +81,19 @@ namespace Daydream
 			imageInfo.sampler = vulkanTexture->GetSampler();
 
 			vk::WriteDescriptorSet writeSet = {};
-			writeSet.dstSet = sets[resourceInfo.set].get();
+			//writeSet.dstSet = sets[resourceInfo.set].get();
 			writeSet.dstBinding = resourceInfo.binding;  // 특정 binding만 업데이트
 			writeSet.descriptorCount = 1;
 			writeSet.descriptorType = vk::DescriptorType::eCombinedImageSampler;
 			writeSet.pImageInfo = &imageInfo;
 
-			device->GetDevice().updateDescriptorSets(1, &writeSet, 0, nullptr);
+			device->GetCommandBuffer().pushDescriptorSet(
+				vk::PipelineBindPoint::eGraphics,
+				psoLayout,
+				resourceInfo.set,
+				1,
+				&writeSet
+			);
 		}
 
 		for (auto [name, cbuffer] : cbuffers)
@@ -96,17 +109,22 @@ namespace Daydream
 			bufferInfo.range = buffer->GetSize();
 
 			vk::WriteDescriptorSet writeSet = {};
-			writeSet.dstSet = sets[resourceInfo.set].get();
+			//writeSet.dstSet = sets[resourceInfo.set].get();
 			writeSet.dstBinding = resourceInfo.binding;
 			writeSet.descriptorCount = 1;
 			writeSet.descriptorType = vk::DescriptorType::eUniformBuffer;
 			writeSet.pBufferInfo = &bufferInfo;
 
-			device->GetDevice().updateDescriptorSets(1, &writeSet, 0, nullptr);
-
+			device->GetCommandBuffer().pushDescriptorSet(
+				vk::PipelineBindPoint::eGraphics,
+				psoLayout,
+				resourceInfo.set,
+				1,
+				&writeSet
+			);
 		}
 
-		device->GetCommandBuffer().bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pso->GetPipelineLayout(), 0, (UInt32)rawSets.size(), rawSets.data(), 0, nullptr);
+		//device->GetCommandBuffer().bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pso->GetPipelineLayout(), 0, (UInt32)rawSets.size(), rawSets.data(), 0, nullptr);
 	}
 	//void VulkanMaterial::SetTexture2D(const std::string& _name, Shared<Texture2D> _texture)
 	//{

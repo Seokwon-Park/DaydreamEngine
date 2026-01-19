@@ -133,14 +133,14 @@ struct PSOutput
 //SamplerState TextureSampler : register(s0);
 
 
-[[vk::combinedImageSampler]][[vk::binding(0, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(3, 0)]]
 Texture2D AlbedoTexture : register(t0);
-[[vk::combinedImageSampler]][[vk::binding(0, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(3, 0)]]
 SamplerState AlbedoTextureSampler : register(s0);
 
-[[vk::combinedImageSampler]][[vk::binding(1, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(4, 0)]]
 Texture2D NormalTexture : register(t1);
-[[vk::combinedImageSampler]][[vk::binding(1, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(4, 0)]]
 SamplerState NormalTextureSampler : register(s1);
 
 

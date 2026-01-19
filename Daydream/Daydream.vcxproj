@@ -239,6 +239,10 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Source\Daydream\Graphics\Core\SceneRenderer.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\Resources\PipelineState.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderCommand.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderContext.h" />
@@ -831,6 +835,10 @@
     <ClCompile Include="Source\Daydream\Graphics\Core\EditorCamera.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\OrthographicCamera.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderThread.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Source\Daydream\Graphics\Core\SceneRenderer.cpp">
       <SubType>
       </SubType>
     </ClCompile>

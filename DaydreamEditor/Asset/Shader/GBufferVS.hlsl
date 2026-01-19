@@ -6,17 +6,19 @@ struct VSInput
     float2 uv : TEXCOORD0;
 };
 
-cbuffer World : register(b0)
-{
-    matrix world;
-    matrix invTranspose;
-};
 
-cbuffer Camera : register(b1)
+cbuffer Camera : register(b0)
 {
     matrix view;
     matrix projection;
     matrix viewProjection;
+};
+
+
+cbuffer World : register(b1)
+{
+    matrix world;
+    matrix invTranspose;
 };
 
 struct VSOutput

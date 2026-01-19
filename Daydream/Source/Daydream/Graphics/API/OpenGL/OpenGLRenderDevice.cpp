@@ -10,6 +10,7 @@
 #include "OpenGLRenderDevice.h"
 #include "OpenGLRenderContext.h"
 #include "OpenGLPipelineState.h"
+#include "OpenGLMaterial.h"
 #include "OpenGLImGuiRenderer.h"
 
 #include "glad/glad.h"
@@ -56,9 +57,9 @@ namespace Daydream
 	}
 
 
-	Shared<RenderContext> OpenGLRenderDevice::CreateContext()
+	Unique<RenderContext> OpenGLRenderDevice::CreateContext()
 	{
-		return MakeShared<OpenGLGraphicsContext>();
+		return MakeUnique<OpenGLGraphicsContext>();
 	}
 
 	Shared<VertexBuffer> OpenGLRenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
@@ -160,7 +161,7 @@ namespace Daydream
 
 	Shared<Material> OpenGLRenderDevice::CreateMaterial(Shared<PipelineState> _pipeline)
 	{
-		return _pipeline->CreateMaterial();
+		return MakeShared<OpenGLMaterial>(_pipeline.get());
 	}
 
 	void OpenGLRenderDevice::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
@@ -182,7 +183,7 @@ namespace Daydream
 		);
 	}
 
-	void Daydream::OpenGLRenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel)
+	void OpenGLRenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel)
 	{
 		OpenGLTexture2D* src = static_cast<OpenGLTexture2D*>(_srcTexture2D);
 		OpenGLTextureCube* dst = static_cast<OpenGLTextureCube*>(_dstCubemap);

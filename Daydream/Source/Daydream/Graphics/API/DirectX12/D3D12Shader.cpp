@@ -151,7 +151,7 @@ namespace Daydream
 
 				sr.name = name;
 				sr.shaderResourceType = ShaderResourceType::ConstantBuffer;
-				sr.set = 0; 
+				sr.set = bindDesc.Space;
 				sr.binding = bindDesc.BindPoint;
 				sr.count = bindDesc.BindCount;
 				sr.size = cbufferDesc.Size;
@@ -163,7 +163,7 @@ namespace Daydream
 			{
 				sr.name = name;
 				sr.shaderResourceType = ShaderResourceType::Texture;
-				sr.set = 0;
+				sr.set = bindDesc.Space;
 				sr.binding = bindDesc.BindPoint;
 				sr.count = bindDesc.BindCount;
 				reflectionDatas.push_back(sr);
@@ -174,7 +174,7 @@ namespace Daydream
 			{
 				sr.name = name;
 				sr.shaderResourceType = ShaderResourceType::Sampler;
-				sr.set = 0; 
+				sr.set = bindDesc.Space;
 				sr.binding = bindDesc.BindPoint;
 				sr.count = bindDesc.BindCount;
 				reflectionDatas.push_back(sr);

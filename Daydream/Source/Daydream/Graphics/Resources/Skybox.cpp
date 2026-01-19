@@ -174,7 +174,6 @@ namespace Daydream
 		FramebufferDesc fbDesc;
 		fbDesc.width = diffuseResolution;
 		fbDesc.height = diffuseResolution;
-
 		irradianceFramebuffer = Framebuffer::Create(irradianceRenderPass, fbDesc);
 
 		irradianceResultTextures.clear();

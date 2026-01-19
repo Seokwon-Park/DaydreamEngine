@@ -9,7 +9,7 @@ namespace Daydream
 	class D3D11Material : public Material
 	{
 	public:
-		D3D11Material(D3D11RenderDevice* _device, D3D11PipelineState* _pso);
+		D3D11Material(D3D11RenderDevice* _device, Shared<PipelineState> _pso);
 
 		virtual void Bind() override;
 		virtual void Unbind() override;

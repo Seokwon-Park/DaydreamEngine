@@ -44,7 +44,7 @@ namespace Daydream
 				D3D12_ROOT_PARAMETER rootParam = {};
 				rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 				rootParam.Descriptor.ShaderRegister = shaderResourceData[i].binding;
-				rootParam.Descriptor.RegisterSpace = 0;
+				rootParam.Descriptor.RegisterSpace = shaderResourceData[i].set;
 				rootParam.ShaderVisibility = GraphicsUtility::DirectX12::GetDX12ShaderVisibility(shaderResourceData[i].shaderType);
 				rootParameters.push_back(rootParam);
 				break;
@@ -56,7 +56,7 @@ namespace Daydream
 				srvRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 				srvRange.NumDescriptors = 1;
 				srvRange.BaseShaderRegister = shaderResourceData[i].binding;
-				srvRange.RegisterSpace = 0;
+				srvRange.RegisterSpace = shaderResourceData[i].set;
 				srvRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 				srvRanges.push_back(srvRange);
 
@@ -74,7 +74,7 @@ namespace Daydream
 				samplerRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER;
 				samplerRange.NumDescriptors = 1;
 				samplerRange.BaseShaderRegister = shaderResourceData[i].binding;
-				samplerRange.RegisterSpace = 0;
+				samplerRange.RegisterSpace = shaderResourceData[i].set;
 				samplerRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 				samplerRanges.push_back(samplerRange);
 
@@ -240,9 +240,9 @@ namespace Daydream
 		device->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
 		device->GetCommandList()->SetPipelineState(pipeline.Get());
 	}
-	Shared<Material> D3D12PipelineState::CreateMaterial()
-	{
-		return MakeShared<D3D12Material>(device, this);
-	}
+	//Shared<Material> D3D12PipelineState::CreateMaterial()
+	//{
+	//	return MakeShared<D3D12Material>(device, this);
+	//}
 }
 

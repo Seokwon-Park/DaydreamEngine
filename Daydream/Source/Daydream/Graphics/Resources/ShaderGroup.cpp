@@ -76,6 +76,7 @@ namespace Daydream
 				if (data.shaderResourceType != ShaderResourceType::Input)
 				{
 					shaderResourceReflectionData.push_back(data);
+					setCount = Math::Max(setCount, data.set+1);
 				}
 			}
 		}
@@ -103,7 +104,7 @@ namespace Daydream
 			return geometryShader;
 			break;
 		case ShaderType::Pixel:
-			DAYDREAM_CORE_WARN("PS is nullptr!");
+			//DAYDREAM_CORE_WARN("PS is nullptr!");
 			return pixelShader;
 			break;
 		case ShaderType::Compute:

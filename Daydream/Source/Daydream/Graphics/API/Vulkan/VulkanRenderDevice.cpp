@@ -148,9 +148,9 @@ namespace Daydream
 	{
 	}
 
-	Shared<RenderContext> VulkanRenderDevice::CreateContext()
+	Unique<RenderContext> VulkanRenderDevice::CreateContext()
 	{
-		return MakeShared<VulkanGraphicsContext>(this);
+		return MakeUnique<VulkanGraphicsContext>(this);
 	}
 
 	Shared<VertexBuffer> VulkanRenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
@@ -345,7 +345,7 @@ namespace Daydream
 		barrier.subresourceRange.baseArrayLayer = 0;
 		barrier.subresourceRange.baseMipLevel = 0;
 		barrier.subresourceRange.layerCount = 6;
-		barrier.subresourceRange.levelCount = _desc.mipLevels;
+		barrier.subresourceRange.levelCount = 1;
 
 		TransitionImageLayout(barrier);
 
@@ -355,6 +355,20 @@ namespace Daydream
 	Shared<TextureCube> VulkanRenderDevice::CreateEmptyTextureCube(const TextureDesc& _desc)
 	{
 		auto textureCube = MakeShared<VulkanTextureCube>(this, _desc);
+
+		vk::ImageMemoryBarrier barrier{};
+		barrier.oldLayout = vk::ImageLayout::eTransferDstOptimal;
+		barrier.newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier.image = textureCube->GetImage();
+		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+		barrier.subresourceRange.baseArrayLayer = 0;
+		barrier.subresourceRange.baseMipLevel = 0;
+		barrier.subresourceRange.layerCount = 6;
+		barrier.subresourceRange.levelCount = 1;
+
+		TransitionImageLayout(barrier);
 
 		return textureCube;
 	}
@@ -376,7 +390,7 @@ namespace Daydream
 
 	Shared<Material> VulkanRenderDevice::CreateMaterial(Shared<PipelineState> _pipeline)
 	{
-		return _pipeline->CreateMaterial();
+		return MakeShared<VulkanMaterial>(this, _pipeline);
 	}
 
 	void VulkanRenderDevice::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
@@ -388,7 +402,7 @@ namespace Daydream
 		VulkanTexture2D* dst = (VulkanTexture2D*)_dst.get();
 
 		// 원본 이미지를 TRANSFER_SRC로 변경
-		barriers[0].oldLayout = vk::ImageLayout::eUndefined; // 또는 현재 레이아웃
+		barriers[0].oldLayout = vk::ImageLayout::eShaderReadOnlyOptimal; // 또는 현재 레이아웃
 		barriers[0].newLayout = vk::ImageLayout::eTransferSrcOptimal;
 		barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
@@ -398,8 +412,6 @@ namespace Daydream
 		barriers[0].subresourceRange.levelCount = 1;
 		barriers[0].subresourceRange.baseArrayLayer = 0;
 		barriers[0].subresourceRange.layerCount = 1;
-		barriers[0].srcAccessMask = {}; // 이전 작업이 없다고 가정
-		barriers[0].dstAccessMask = vk::AccessFlagBits::eTransferRead;
 
 		// 대상 이미지를 TRANSFER_DST로 변경
 		barriers[1].oldLayout = vk::ImageLayout::eUndefined; // 또는 현재 레이아웃
@@ -412,17 +424,11 @@ namespace Daydream
 		barriers[1].subresourceRange.levelCount = 1;
 		barriers[1].subresourceRange.baseArrayLayer = 0;
 		barriers[1].subresourceRange.layerCount = 1;
-		barriers[1].srcAccessMask = {};
-		barriers[1].dstAccessMask = vk::AccessFlagBits::eTransferWrite;
 
-		currentCommandBuffer.pipelineBarrier(
-			vk::PipelineStageFlagBits::eTopOfPipe,  // 이전 작업 단계
-			vk::PipelineStageFlagBits::eTransfer,     // 다음 작업 단계 (전송)
-			{},
-			0, nullptr,
-			0, nullptr,
-			2, barriers
-		);
+		TransitionImageLayout(barriers[0]);
+		TransitionImageLayout(barriers[1]);
+
+		vk::CommandBuffer transCommandBuffer = BeginSingleTimeCommands();
 
 		// 2. 복사 명령 기록
 		vk::ImageCopy copyRegion = {};
@@ -434,12 +440,13 @@ namespace Daydream
 		copyRegion.extent.height = src->GetHeight();
 		copyRegion.extent.depth = 1;
 
-		currentCommandBuffer.copyImage(
+		transCommandBuffer.copyImage(
 			src->GetImage(), vk::ImageLayout::eTransferSrcOptimal,
 			dst->GetImage(), vk::ImageLayout::eTransferDstOptimal,
 			1, &copyRegion
 		);
 
+		EndSingleTimeCommands(transCommandBuffer);
 
 		// 원본 이미지를 TRANSFER_SRC로 변경
 		barriers[0].oldLayout = vk::ImageLayout::eTransferSrcOptimal; // 또는 현재 레이아웃
@@ -469,20 +476,17 @@ namespace Daydream
 		barriers[1].srcAccessMask = vk::AccessFlagBits::eTransferWrite;
 		barriers[1].dstAccessMask = {};
 
-		currentCommandBuffer.pipelineBarrier(
-			vk::PipelineStageFlagBits::eTransfer,  // 이전 작업 단계
-			vk::PipelineStageFlagBits::eFragmentShader,     // 다음 작업 단계 (전송)
-			{},
-			0, nullptr,
-			0, nullptr,
-			2, barriers
-		);
+		TransitionImageLayout(barriers[0]);
+		TransitionImageLayout(barriers[1]);
+
 	}
 
 	void VulkanRenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel)
 	{
 		VulkanTextureCube* dst = static_cast<VulkanTextureCube*>(_dstCubemap);
 		VulkanTexture2D* src = static_cast<VulkanTexture2D*>(_srcTexture2D);
+
+		vk::CommandBuffer transCommandBuffer = BeginSingleTimeCommands();
 
 		vk::ImageMemoryBarrier barriers[2] = {};
 
@@ -514,7 +518,7 @@ namespace Daydream
 		barriers[1].srcAccessMask = {};
 		barriers[1].dstAccessMask = vk::AccessFlagBits::eTransferWrite;
 
-		currentCommandBuffer.pipelineBarrier(
+		transCommandBuffer.pipelineBarrier(
 			vk::PipelineStageFlagBits::eTopOfPipe,  // 이전 작업 단계
 			vk::PipelineStageFlagBits::eTransfer,     // 다음 작업 단계 (전송)
 			{},
@@ -558,7 +562,7 @@ namespace Daydream
 		copyRegion.extent.height = _srcTexture2D->GetHeight();
 		copyRegion.extent.depth = 1;
 
-		currentCommandBuffer.copyImage(
+		transCommandBuffer.copyImage(
 			src->GetImage(), vk::ImageLayout::eTransferSrcOptimal,
 			dst->GetImage(), vk::ImageLayout::eTransferDstOptimal,
 			1, &copyRegion
@@ -590,7 +594,7 @@ namespace Daydream
 		barriers[1].srcAccessMask = vk::AccessFlagBits::eTransferWrite;
 		barriers[1].dstAccessMask = {};
 
-		currentCommandBuffer.pipelineBarrier(
+		transCommandBuffer.pipelineBarrier(
 			vk::PipelineStageFlagBits::eTransfer,  // 이전 작업 단계
 			vk::PipelineStageFlagBits::eFragmentShader,     // 다음 작업 단계 (전송)
 			{},
@@ -598,6 +602,8 @@ namespace Daydream
 			0, nullptr,
 			2, barriers
 		);
+
+		EndSingleTimeCommands(transCommandBuffer);
 
 
 		//barrier.oldLayout = vk::ImageLayout::eTransferDstOptimal;
@@ -1004,7 +1010,7 @@ namespace Daydream
 			VK_VERSION_1_4,
 			"DaydreamEngine",
 			VK_VERSION_1_4,
-			VK_API_VERSION_1_3
+			VK_API_VERSION_1_4
 		);
 
 		Array<const char*> extensions = GetRequiredExtensions();

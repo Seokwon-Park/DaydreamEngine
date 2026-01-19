@@ -10,6 +10,7 @@
 #include "D3D12ImGuiRenderer.h"
 #include "D3D12Texture.h"
 #include "D3D12TextureCube.h"
+#include "D3D12Material.h"
 #include "D3D12Sampler.h"
 #include "Daydream/Graphics/Utility/GraphicsUtility.h"
 
@@ -235,9 +236,9 @@ namespace Daydream
 	{
 	}
 
-	Shared<RenderContext> D3D12RenderDevice::CreateContext()
+	Unique<RenderContext> D3D12RenderDevice::CreateContext()
 	{
-		return MakeShared<D3D12GraphicsContext>(this);
+		return MakeUnique<D3D12GraphicsContext>(this);
 	}
 
 	Shared<VertexBuffer> D3D12RenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
@@ -456,7 +457,7 @@ namespace Daydream
 
 	Shared<Material> D3D12RenderDevice::CreateMaterial(Shared<PipelineState> _pipeline)
 	{
-		return _pipeline->CreateMaterial();
+		return MakeShared<D3D12Material>(this, _pipeline.get());
 	}
 
 	void D3D12RenderDevice::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)

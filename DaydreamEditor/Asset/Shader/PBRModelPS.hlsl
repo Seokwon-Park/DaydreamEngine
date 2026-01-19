@@ -10,7 +10,6 @@ struct PSInput
 struct PSOutput
 {
     float4 color : SV_Target0;
-    uint entityID : SV_Target1;
 };
 
 //================================================================================
@@ -73,44 +72,44 @@ cbuffer Material : register(b3)
     float metallicMat;
 }
 
-[[vk::combinedImageSampler]][[vk::binding(0, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(4, 0)]]
 Texture2D AlbedoTexture : register(t0);
-[[vk::combinedImageSampler]][[vk::binding(0, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(4, 0)]]
 SamplerState AlbedoTextureSampler : register(s0);
 
-[[vk::combinedImageSampler]][[vk::binding(1, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(5, 0)]]
 Texture2D NormalTexture : register(t1);
-[[vk::combinedImageSampler]][[vk::binding(1, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(5, 0)]]
 SamplerState NormalTextureSampler : register(s1);
 
-[[vk::combinedImageSampler]][[vk::binding(2, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(6, 0)]]
 Texture2D RoughnessTexture : register(t2);
-[[vk::combinedImageSampler]][[vk::binding(2, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(6, 0)]]
 SamplerState RoughnessTextureSampler : register(s2);
 
-[[vk::combinedImageSampler]][[vk::binding(3, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(7, 0)]]
 Texture2D MetallicTexture : register(t3);
-[[vk::combinedImageSampler]][[vk::binding(3, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(7, 0)]]
 SamplerState MetallicTextureSampler : register(s3);
 
-[[vk::combinedImageSampler]][[vk::binding(4, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(8, 0)]]
 Texture2D AOTexture : register(t4);
-[[vk::combinedImageSampler]][[vk::binding(4, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(8, 0)]]
 SamplerState AOTextureSampler : register(s4);
 
-[[vk::combinedImageSampler]][[vk::binding(5, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(9, 0)]]
 TextureCube IrradianceTexture : register(t5);
-[[vk::combinedImageSampler]][[vk::binding(5, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(9, 0)]]
 SamplerState IrradianceTextureSampler : register(s5);
 
-[[vk::combinedImageSampler]][[vk::binding(6, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(10, 0)]]
 TextureCube Prefilter : register(t6);
-[[vk::combinedImageSampler]][[vk::binding(6, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(10, 0)]]
 SamplerState PrefilterSampler : register(s6);
 
-[[vk::combinedImageSampler]][[vk::binding(7, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(11, 0)]]
 Texture2D BRDFLUT : register(t7);
-[[vk::combinedImageSampler]][[vk::binding(7, 1)]]
+[[vk::combinedImageSampler]][[vk::binding(11, 0)]]
 SamplerState BRDFLUTSampler : register(s7);
 
 //================================================================================
