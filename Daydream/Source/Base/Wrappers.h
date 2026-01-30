@@ -33,4 +33,7 @@ namespace Daydream
 	{
 		return std::make_shared<T>(std::forward<Args>(_args)...);
 	}
+
+	template<typename T>
+	using FunctionPtr = std::function<T>;
 }

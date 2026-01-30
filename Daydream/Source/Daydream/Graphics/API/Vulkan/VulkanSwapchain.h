@@ -27,7 +27,7 @@ namespace Daydream
 		virtual ~VulkanSwapchain() override;
 
 		virtual void SetVSync(bool _enabled) override;
-		virtual void SwapBuffers() override;
+		virtual void Present() override;
 		virtual void ResizeSwapchain(UInt32 _width, UInt32 _height) override;
 
 		virtual void BeginFrame() override;

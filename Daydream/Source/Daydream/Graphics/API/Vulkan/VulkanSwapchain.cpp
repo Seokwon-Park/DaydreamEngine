@@ -58,7 +58,7 @@ namespace Daydream
 		{
 			framebuffers[i] = MakeShared<VulkanFramebuffer>(device, this, renderPass.get(), swapchainImages[i]);
 		}
-		BeginFrame();
+		//BeginFrame();
 		//framebuffers[imageIndex]->Begin();
 	}
 	void VulkanSwapchain::CreateSwapchain()
@@ -123,6 +123,7 @@ namespace Daydream
 
 		commandBuffers = device->GetDevice().allocateCommandBuffersUnique(allocInfo);
 	}
+
 	VulkanSwapchain::~VulkanSwapchain()
 	{
 		device->GetDevice().waitIdle();
@@ -139,13 +140,32 @@ namespace Daydream
 	void VulkanSwapchain::SetVSync(bool _enabled)
 	{
 	}
-	void VulkanSwapchain::SwapBuffers()
+	void VulkanSwapchain::Present()
 	{
-		EndFrame();
+		//EndFrame();
 
-		BeginFrame();
+		vk::PresentInfoKHR presentInfo{};
+		presentInfo.waitSemaphoreCount = 1;
+		presentInfo.pWaitSemaphores = &renderFinishedSemaphores[currentFrame].get();
 
-		ResizeFramebuffers();
+		//vk::SwapchainKHR Swapchains[] = { swapchain };
+		presentInfo.swapchainCount = 1;
+		presentInfo.pSwapchains = &swapchain.get();
+		presentInfo.pImageIndices = &imageIndex;
+
+		try
+		{
+			vk::Result result = device->GetGraphicsQueue().presentKHR(presentInfo);
+		}
+		catch (const vk::OutOfDateKHRError& e)
+		{
+			RecreateSwapchain();
+		}
+
+		currentFrame = (currentFrame + 1) % imageCount;
+
+		//BeginFrame();
+
 
 		//framebuffers[currentFrame]->Begin();
 	}
@@ -154,41 +174,14 @@ namespace Daydream
 	{
 		desc.width = _width;
 		desc.height = _height;
-		// EndFrame();
-		// 1. 모든 GPU 작업 완료 대기
-	
-
-		//commandBuffers[currentFrame]->end();
-		//commandBuffers[currentFrame]->reset({});
-		//currentFrame = (currentFrame + 1) % imageCount;
-
-		//BeginFrame();
-
-		//VkViewport viewport{};
-		////viewport.x = 0.0f;
-		////viewport.y = (float)extent.height;
-		////viewport.width = (float)extent.width;
-		////viewport.height = -(float)extent.height;
-		//viewport.x = 0.0f;
-		//viewport.y = 0.0f;
-		//viewport.width = (float)extent.width;
-		//viewport.height = (float)extent.height;
-		//viewport.minDepth = 0.0f;
-		//viewport.maxDepth = 1.0f;
-		//vkCmdSetViewport(device->GetCommandBuffer(), 0, 1, &viewport);
-
-		//VkRect2D scissor{};
-		//scissor.offset = { 0, 0 };
-		//scissor.extent = extent;
-		//vkCmdSetScissor(device->GetCommandBuffer(), 0, 1, &scissor);
 	}
 
 
 	void VulkanSwapchain::BeginFrame()
 	{
+
 		//이전 프레임의 GPU 작업 완료됐다는 신호를 inFlightFence로 받기로 하고 대기
 		auto result = device->GetDevice().waitForFences(1, &inFlightFences[currentFrame].get(), VK_FALSE, UINT64_MAX);
-
 
 		//완료 됐으면 펜스 상태는 신호받기 전으로
 		result = device->GetDevice().resetFences(1, &inFlightFences[currentFrame].get());
@@ -205,10 +198,11 @@ namespace Daydream
 		commandBuffers[currentFrame]->reset({});
 		//fb->Bind();
 
-		VkCommandBufferBeginInfo beginInfo{};
-		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		vk::CommandBufferBeginInfo beginInfo{};
 
 		commandBuffers[currentFrame]->begin(beginInfo);
+
+		ResizeFramebuffers();
 	}
 
 	void VulkanSwapchain::EndFrame()
@@ -232,26 +226,6 @@ namespace Daydream
 		submitInfo.pSignalSemaphores = &renderFinishedSemaphores[currentFrame].get();
 
 		vk::Result result = device->GetGraphicsQueue().submit(1, &submitInfo, inFlightFences[currentFrame].get());
-
-		vk::PresentInfoKHR presentInfo{};
-		presentInfo.waitSemaphoreCount = 1;
-		presentInfo.pWaitSemaphores = &renderFinishedSemaphores[currentFrame].get();
-
-		//vk::SwapchainKHR Swapchains[] = { swapchain };
-		presentInfo.swapchainCount = 1;
-		presentInfo.pSwapchains = &swapchain.get();
-		presentInfo.pImageIndices = &imageIndex;
-
-		try
-		{
-			result = device->GetGraphicsQueue().presentKHR(presentInfo);
-		}
-		catch (const vk::OutOfDateKHRError& e)
-		{
-			RecreateSwapchain();
-		}
-
-		currentFrame = (currentFrame + 1) % imageCount;
 	}
 
 	void VulkanSwapchain::RecreateSwapchain()

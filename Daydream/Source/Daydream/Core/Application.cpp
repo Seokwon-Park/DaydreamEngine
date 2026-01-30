@@ -25,14 +25,6 @@ namespace Daydream
 		prop.title = _specification.Name;
 		prop.rendererAPI = _specification.rendererAPI;
 
-		//프로그램 윈도우 생성
-		mainWindow = DaydreamWindow::Create(prop);
-		if (mainWindow == nullptr)
-		{
-			DAYDREAM_CORE_ASSERT(false, "No Main Window")
-		}
-		mainWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
-		mainWindow->SetVSync(true);
 		
 		//prop.width = 960;
 		//prop.height = 540;
@@ -78,18 +70,31 @@ namespace Daydream
 	bool Application::Init()
 	{
 		isRunning = true;
+
+		//1. 윈도우 매니저 초기화
 		WindowManager::Init();
+		//2. 메인 윈도우 생성 및 등록
+		mainWindow = DaydreamWindow::Create(prop);
+		if (mainWindow == nullptr)
+		{
+			DAYDREAM_CORE_ASSERT(false, "No Main Window")
+		}
+		mainWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
+		mainWindow->SetVSync(true);
 		WindowManager::RegisterWindow(prop.title, mainWindow.get());
 
+		//에셋 매니저 초기화
 		AssetManager::Init();
 		AssetManager::LoadAssetMetadataFromDirectory("Asset");
+
 		//렌더러 초기화
 		Renderer::Init(prop.rendererAPI);
 
 		AssetManager::LoadAssets(LoadPhase::Early);// 셰이더 때문에 renderer초기화 이후로 미룸
-
-		//렌더러에 윈도우 
+		
+		//렌더러에서 윈도우에 대한 스왑체인 생성
 		Renderer::CreateSwapchainForWindow(mainWindow.get());
+		//렌더러가 사용할 윈도우 설정
 		Renderer::SetCurrentWindow(mainWindow.get());
 		//Renderer::RegisterWindow("TestWindow", testWindow.get());
 
@@ -111,12 +116,14 @@ namespace Daydream
 			timeStep.UpdateTime();
 			float deltaTime = timeStep.GetDeltaTime();
 
+			Renderer::BeginCommandList();
 			for (Layer* layer : layerStack)
 			{
 				layer->OnUpdate(deltaTime);
 			}
+			Renderer::EndCommandList();
 
-
+			mainWindow->GetSwapchain()->BeginFrame();
 			imGuiLayer->BeginImGui();
 			{
 				for (Layer* layer : layerStack)
@@ -155,6 +162,9 @@ namespace Daydream
 
 			mainWindow->OnUpdateInputState();
 			mainWindow->OnUpdate();
+			mainWindow->GetSwapchain()->EndFrame();
+			mainWindow->GetSwapchain()->Present();
+			
 			//testWindow->OnUpdate();
 		}
 		return true;

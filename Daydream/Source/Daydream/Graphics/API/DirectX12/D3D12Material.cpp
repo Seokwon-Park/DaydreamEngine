@@ -9,34 +9,10 @@ namespace Daydream
 	D3D12Material::D3D12Material(D3D12RenderDevice* _device, PipelineState* _pso)
 	{
 		device = _device;
-
-		for (ShaderReflectionData data : _pso->GetShaderGroup()->GetShaderResourceData())
-		{
-			bindingMap[data.name] = data;
-			//switch (info.shaderResourceType)
-			//{
-			//case ShaderResourceType::ConstantBuffer:
-			//{
-			//	cbuffers[info.name] = nullptr;
-			//	break;
-			//}
-			//case ShaderResourceType::Texture:
-			//{
-			//	textures[info.name] = nullptr;
-			//	break;
-			//}
-			//case ShaderResourceType::Sampler:
-			//{
-			//	break;
-			//}
-			//default:
-			//	break;
-			//}
-		}
 	}
 	void D3D12Material::Bind()
 	{
-		for (auto [name, texture] : textures)
+		/*for (auto [name, texture] : textures)
 		{
 			if (texture == nullptr) continue;
 			DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
@@ -65,7 +41,7 @@ namespace Daydream
 			DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
 			Shared<D3D12ConstantBuffer> d3d12Buffer = static_pointer_cast<D3D12ConstantBuffer>(cbuffer);
 			device->GetCommandList()->SetGraphicsRootConstantBufferView(bindingMap[name].descriptorTableIndex, d3d12Buffer->GetGPUVirtualAddress());
-		}
+		}*/
 	}
 	//void D3D12Material::SetTexture2D(const std::string& _name, Shared<Texture2D> _texture)
 	//{

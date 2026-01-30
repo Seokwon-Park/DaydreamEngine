@@ -24,17 +24,4 @@ namespace Daydream
 		default: return nullptr;
 		}
 	}
-	void RenderDevice::CreateSwapchainForWindow(DaydreamWindow* _window)
-	{
-		SwapchainDesc desc;
-		desc.width = _window->GetWidth();
-		desc.height = _window->GetHeight();
-		desc.bufferCount = 3;
-		desc.format = RenderFormat::R8G8B8A8_UNORM;
-		desc.isFullscreen = false;
-		desc.isVSync = _window->IsVSync();
-
-		Shared<Swapchain> swapchain = CreateSwapchain(_window, desc);
-		_window->SetSwapchain(swapchain);
-	}
 }

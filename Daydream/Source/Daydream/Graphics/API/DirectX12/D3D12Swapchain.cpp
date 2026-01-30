@@ -104,7 +104,7 @@ namespace Daydream
 	{
 	}
 
-	void D3D12Swapchain::SwapBuffers()
+	void D3D12Swapchain::Present()
 	{
 		EndFrame();
 

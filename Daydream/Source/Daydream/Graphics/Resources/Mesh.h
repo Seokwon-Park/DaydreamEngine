@@ -66,6 +66,7 @@ namespace Daydream
 		~Mesh();
 
 		Shared<VertexBuffer> GetVertexBuffer() { return vertexBuffer; }
+		Shared<IndexBuffer> GetIndexBuffer() { return indexBuffer; }
 		UInt32 GetIndexCount() { return indexBuffer->GetIndexCount(); }
 
 		void Bind();

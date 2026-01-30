@@ -7,10 +7,10 @@
 
 namespace Daydream
 {
-    Shared<Material> Material::Create(Shared<PipelineState> _pipeline)
-    {
-        return Renderer::GetRenderDevice()->CreateMaterial(_pipeline);
-    }
+	Material::Material(Shared<ShaderGroup> _shaderGroup)
+	{
+		materialMap = _shaderGroup->GetMaterialMap();
+	}
 
 	Material::~Material()
 	{
@@ -21,7 +21,7 @@ namespace Daydream
 
 	void Material::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
 	{
-		if (bindingMap.find(_name) != bindingMap.end())
+		if (materialMap.find(_name) != materialMap.end())
 		{
 			if (!_texture->HasSampler())
 			{
@@ -34,17 +34,22 @@ namespace Daydream
 
 	void Material::SetTextureCube(const String& _name, Shared<TextureCube> _texture)
 	{
-		if (bindingMap.find(_name) != bindingMap.end())
+		if (materialMap.find(_name) != materialMap.end())
 		{
 			textureCubes[_name] = _texture;
 		}
 	}
 
-	void Material::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
+	void Material::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _constantBuffer)
 	{
-		if (bindingMap.find(_name) != bindingMap.end())
+		if (materialMap.find(_name) != materialMap.end())
 		{
-			cbuffers[_name] = _buffer;
+			cbuffers[_name] = _constantBuffer;
 		}
+	}
+
+	Shared<Material> Material::Create(Shared<PipelineState> _pipeline)
+	{
+		return MakeShared<Material>(_pipeline->GetShaderGroup());
 	}
 }

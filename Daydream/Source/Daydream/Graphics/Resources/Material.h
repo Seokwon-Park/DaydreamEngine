@@ -4,6 +4,7 @@
 
 namespace Daydream
 {
+	class ShaderGroup;
 	class Sampler;
 	class PipelineState;
 	class Texture2D;
@@ -47,28 +48,27 @@ namespace Daydream
 	class Material : public Asset
 	{
 	public:
+		Material() = default;
+		Material(Shared<ShaderGroup> _shaderGroup);
 		virtual ~Material();
-		virtual void Bind() = 0;
+		virtual void Bind() {};
 		virtual void Unbind() {};
 		
 		void SetTexture2D(const String& _name, Shared<Texture2D> _texture);
 		void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube);
-		void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer);
+		void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _constantBuffer);
 
 		inline const HashMap<String, Shared<Texture2D>>& GetAllTexture2D() { return textures; }
 		inline const HashMap<String, Shared<TextureCube>>& GetAllTextureCube() { return textureCubes; }
-
-		inline const HashMap<String, ShaderReflectionData>& GetBindings() { return bindingMap; }
-
+		inline const HashMap<String, Shared<ConstantBuffer>>& GetAllConstantBuffer() { return cbuffers; }
 
 		static Shared<Material> Create(Shared<PipelineState> _pipeline);
 	protected:
-		HashMap<String, ShaderReflectionData> bindingMap;
+		HashMap<String, ShaderResourceType> materialMap;
 
 		HashMap<String, Shared<ConstantBuffer>> cbuffers;
 		HashMap<String, Shared<Texture2D>> textures;
 		HashMap<String, Shared<TextureCube>> textureCubes;
 	private:
-
 	};
 }

@@ -18,7 +18,7 @@ namespace Daydream
 		}
 		mainWindow = _window;
 		GLFWwindow* window = (GLFWwindow*)_window->GetNativeWindow();
-		switch (Renderer::GetRenderDevice()->GetAPI())
+		switch (Renderer::GetAPI())
 		{
 		case RendererAPIType::None:
 			DAYDREAM_CORE_ERROR("None API is not supported");

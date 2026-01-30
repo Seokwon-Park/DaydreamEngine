@@ -156,10 +156,6 @@
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Core\ThreadPool.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
     <ClInclude Include="Source\Daydream\Core\Timestep.h" />
     <ClInclude Include="Source\Daydream\Core\UUID.h" />
     <ClInclude Include="Source\Daydream\Core\Window.h" />
@@ -234,6 +230,10 @@
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanUtility.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\Camera.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\CameraController.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Core\RenderCommandList.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\Core\EditorCamera.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderThread.h">
       <SubType>
@@ -260,7 +260,6 @@
     <ClInclude Include="Source\Daydream\Graphics\Manager\ShaderGroupRegistry.h" />
     <ClInclude Include="Source\Daydream\Graphics\Manager\ShaderRegistry.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Buffer.h" />
-    <ClInclude Include="Source\Daydream\Graphics\Resources\ShaderBinder.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Framebuffer.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Light.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Material.h" />
@@ -761,10 +760,6 @@
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Source\Daydream\Core\ThreadPool.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
     <ClCompile Include="Source\Daydream\Core\UUID.cpp" />
     <ClCompile Include="Source\Daydream\Core\Window.cpp" />
     <ClCompile Include="Source\Daydream\Core\WindowManager.cpp" />
@@ -832,6 +827,10 @@
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanTextureCube.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanUtility.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\Camera.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Core\RenderCommandList.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\Core\EditorCamera.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\OrthographicCamera.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderThread.cpp">

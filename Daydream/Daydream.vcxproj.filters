@@ -531,9 +531,6 @@
     <ClInclude Include="Source\Daydream\Graphics\Resources\Buffer.h">
       <Filter>Source\Daydream\Graphics\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\Resources\ShaderBinder.h">
-      <Filter>Source\Daydream\Graphics\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\Resources\Framebuffer.h">
       <Filter>Source\Daydream\Graphics\Resources</Filter>
     </ClInclude>
@@ -1918,10 +1915,10 @@
     <ClInclude Include="Source\Daydream\Graphics\Resources\SkeletalModel.h" />
     <ClInclude Include="Source\Daydream\Scene\Components\MeshRendererComponent.h" />
     <ClInclude Include="Source\Daydream\Asset\AssetDefaults.h" />
-    <ClInclude Include="Source\Daydream\Core\ThreadPool.h" />
     <ClInclude Include="Source\Daydream\Core\Thread.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderThread.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\SceneRenderer.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Core\RenderCommandList.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\Directory.cpp">
@@ -2356,9 +2353,9 @@
     <ClCompile Include="Source\Daydream\Asset\AssetImporter.cpp" />
     <ClCompile Include="Source\Daydream\Scene\Components\MeshRendererComponent.cpp" />
     <ClCompile Include="Source\Daydream\Asset\AssetDefaults.cpp" />
-    <ClCompile Include="Source\Daydream\Core\ThreadPool.cpp" />
     <ClCompile Include="Source\Daydream\Core\Thread.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderThread.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\SceneRenderer.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Core\RenderCommandList.cpp" />
   </ItemGroup>
 </Project>

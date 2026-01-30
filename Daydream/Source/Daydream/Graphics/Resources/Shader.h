@@ -41,7 +41,7 @@ namespace Daydream
 		virtual void* GetNativeHandle() = 0;
 
 		ShaderType GetType() const { return shaderType; }
-		Array<ShaderReflectionData>& GetShaderReflectionData() { return reflectionDatas; }
+		const Array<ShaderReflectionData>& GetShaderReflectionData() const { return reflectionDatas; }
 
 		static Shared<Shader> Create(const String& _src, const ShaderType& _type, const ShaderLoadMode& _mode);
 	protected:

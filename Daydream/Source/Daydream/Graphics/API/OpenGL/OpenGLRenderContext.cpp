@@ -5,7 +5,7 @@
 
 namespace Daydream
 {
-	void OpenGLGraphicsContext::Begin()
+	void OpenGLGraphicsContext::BeginCommandList()
 	{
 	}
 	void OpenGLGraphicsContext::SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height)

@@ -12,6 +12,8 @@ namespace Daydream
 
 		virtual UInt32 GetWidth() const { return width; }
 		virtual UInt32 GetHeight() const { return height; }
+		virtual UInt32 GetLayerCount() const { return 6; }
+		virtual UInt32 GetMipLevels() const { return desc.mipLevels; }
 
 		void Update(UInt32 _faceIndex, Shared<Texture2D> _texture);
 		virtual void GenerateMips() {};

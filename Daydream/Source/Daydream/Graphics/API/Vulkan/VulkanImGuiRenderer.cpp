@@ -44,6 +44,5 @@ namespace Daydream
 		ImGuiRenderer::Render();
 		//swapChain->FrameRender();
 		ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), device->GetCommandBuffer());
-
 	}
 }

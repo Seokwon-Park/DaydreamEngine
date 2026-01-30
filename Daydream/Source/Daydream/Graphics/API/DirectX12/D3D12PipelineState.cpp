@@ -31,21 +31,21 @@ namespace Daydream
 		}
 
 		UInt32 index = 0;
-		UInt64 resourceSize = shaderGroup->GetShaderResourceData().size();
+		UInt64 resourceSize = shaderGroup->GetShaderBindingMap().size();
 		srvRanges.reserve(resourceSize);
 		samplerRanges.reserve(resourceSize);
-		auto& shaderResourceData = shaderGroup->GetShaderResourceDataRef();
-		for (int i = 0; i < shaderGroup->GetShaderResourceDataRef().size(); i++)
+		
+		for (auto [name, data] : shaderGroup->GetShaderBindingMap())
 		{
-			switch (shaderResourceData[i].shaderResourceType)
+			switch (data.shaderResourceType)
 			{
 			case ShaderResourceType::ConstantBuffer:
 			{
 				D3D12_ROOT_PARAMETER rootParam = {};
 				rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-				rootParam.Descriptor.ShaderRegister = shaderResourceData[i].binding;
-				rootParam.Descriptor.RegisterSpace = shaderResourceData[i].set;
-				rootParam.ShaderVisibility = GraphicsUtility::DirectX12::GetDX12ShaderVisibility(shaderResourceData[i].shaderType);
+				rootParam.Descriptor.ShaderRegister = data.binding;
+				rootParam.Descriptor.RegisterSpace = data.set;
+				rootParam.ShaderVisibility = GraphicsUtility::DirectX12::GetDX12ShaderVisibility(data.shaderType);
 				rootParameters.push_back(rootParam);
 				break;
 			}
@@ -55,8 +55,8 @@ namespace Daydream
 				D3D12_DESCRIPTOR_RANGE srvRange{};
 				srvRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 				srvRange.NumDescriptors = 1;
-				srvRange.BaseShaderRegister = shaderResourceData[i].binding;
-				srvRange.RegisterSpace = shaderResourceData[i].set;
+				srvRange.BaseShaderRegister = data.binding;
+				srvRange.RegisterSpace = data.set;
 				srvRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 				srvRanges.push_back(srvRange);
 
@@ -73,8 +73,8 @@ namespace Daydream
 				D3D12_DESCRIPTOR_RANGE samplerRange{};
 				samplerRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER;
 				samplerRange.NumDescriptors = 1;
-				samplerRange.BaseShaderRegister = shaderResourceData[i].binding;
-				samplerRange.RegisterSpace = shaderResourceData[i].set;
+				samplerRange.BaseShaderRegister = data.binding;
+				samplerRange.RegisterSpace = data.set;
 				samplerRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 				samplerRanges.push_back(samplerRange);
 
@@ -87,7 +87,6 @@ namespace Daydream
 				break;
 			}
 			}
-			shaderResourceData[i].descriptorTableIndex = i;
 		}
 
 		D3D12_ROOT_DESCRIPTOR rootDescriptor;

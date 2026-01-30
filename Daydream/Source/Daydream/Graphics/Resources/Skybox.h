@@ -58,6 +58,7 @@ namespace Daydream
         Array<Shared<ConstantBuffer>> cubeFaceConstantBuffers;
         Array<Shared<ConstantBuffer>> roughnessConstantBuffers;
 
+        Shared<Material> equirectangularMaterial;
         Array<Shared<Material>> equirectangularMaterials;
         Array<Shared<Material>> irradianceMaterials;
         Array<Shared<Material>> prefilterMaterials;

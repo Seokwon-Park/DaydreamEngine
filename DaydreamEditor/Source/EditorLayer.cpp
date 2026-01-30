@@ -16,11 +16,14 @@ namespace Daydream
 
 	void EditorLayer::OnAttach()
 	{
+
 		AssetManager::LoadAssetMetadataFromDirectory("Resource");
 		AssetManager::LoadAssets(LoadPhase::Early);
 
 		editorCamera = MakeShared<EditorCamera>();
+		Renderer::BeginCommandList();
 		activeScene = MakeShared<Scene>("MainScene");
+		Renderer::EndCommandList();
 
 		editorCamera->SetPosition({ 0.0f,0.0f,-2.0f });
 		viewProjMat = ConstantBuffer::Create(sizeof(Daydream::Matrix4x4));
@@ -208,32 +211,44 @@ namespace Daydream
 		//squareVB->Bind();
 		//squareIB->Bind();
 		//material->Bind();
-		depthRenderPass->Begin(depthFramebuffer);
-		depthPSO->Bind();
+		Renderer::BeginRenderPass(depthRenderPass, depthFramebuffer);
+		Renderer::BindPipelineState(depthPSO);
+		for (const auto entityHandle : activeScene->GetAllEntities())
+		{
+			GameEntity* entity = activeScene->GetEntity(entityHandle);
+			Renderer::SetConstantBuffer("World", entity->GetComponent<TransformComponent>()->GetWorldMatrixConstantBuffer());
+		}
 		activeScene->RenderDepth();
-		depthRenderPass->End();
+		Renderer::EndRenderPass(depthRenderPass);
 
 
 		//Renderer::Submit(squareIB->GetCount());
-		gBufferRenderPass->Begin(gBufferFramebuffer);
-		gBufferPSO->Bind();
+		Renderer::BeginRenderPass(gBufferRenderPass, gBufferFramebuffer);
+		Renderer::BindPipelineState(gBufferPSO);
+		Renderer::SetConstantBuffer("Camera", editorCamera->GetViewProjectionConstantBuffer());
+		for (const auto entityHandle : activeScene->GetAllEntities())
+		{
+			GameEntity* entity = activeScene->GetEntity(entityHandle);
+			Renderer::SetConstantBuffer("World", entity->GetComponent<TransformComponent>()->GetWorldMatrixConstantBuffer());
+			...
+		}
 		//pso3d->Bind();
-		activeScene->Update(_deltaTime);
-		gBufferRenderPass->End();
+		//activeScene->Update(_deltaTime);
+		Renderer::EndRenderPass(gBufferRenderPass);
 
 		// selectionFramebuffer는 반드시 "검은색(0)"으로 Clear 되어 있어야 함.
 
 		GameEntity* selectedEntity = sceneHierarchyPanel->GetSelectedEntity(); // 선택된 객체 가져오기
 
-		maskRenderPass->Begin(maskFramebuffer);
+		Renderer::BeginRenderPass(maskRenderPass, maskFramebuffer);
 		if (selectedEntity != nullptr && selectedEntity->GetComponent<MeshRendererComponent>())
 		{
-			maskPSO->Bind();
+			Renderer::BindPipelineState(maskPSO);
 			selectedEntity->GetComponent<MeshRendererComponent>()->RenderMeshOnly();
 		}
-		maskRenderPass->End();
+		Renderer::EndRenderPass(maskRenderPass);
 
-		renderPass->Begin(viewportFramebuffer);
+		Renderer::BeginRenderPass(renderPass, viewportFramebuffer);
 
 		for (int i = 0; i < 5; i++)
 		{
@@ -248,36 +263,35 @@ namespace Daydream
 		}
 		maskFramebuffer->GetColorAttachmentTexture(0)->SetSampler(ResourceManager::GetResource<Sampler>("NearestRepeat"));
 
-		deferredLightingPSO->Bind();
-		deferredLightingMaterial->SetTexture2D("PositionTexture", gBufferFramebuffer->GetColorAttachmentTexture(0));
-		deferredLightingMaterial->SetTexture2D("NormalTexture", gBufferFramebuffer->GetColorAttachmentTexture(1));
-		deferredLightingMaterial->SetTexture2D("AlbedoTexture", gBufferFramebuffer->GetColorAttachmentTexture(2));
-		deferredLightingMaterial->SetTexture2D("RMAOTexture", gBufferFramebuffer->GetColorAttachmentTexture(3));
-		deferredLightingMaterial->SetTexture2D("BRDFLUT", activeScene->GetSkybox()->GetBRDF());
-		deferredLightingMaterial->SetTexture2D("EntityIDTexture", gBufferFramebuffer->GetColorAttachmentTexture(4));
-		deferredLightingMaterial->SetTexture2D("OutlineTexture", maskFramebuffer->GetColorAttachmentTexture(0));
-		deferredLightingMaterial->SetTexture2D("DepthTexture", depthFramebuffer->GetDepthAttachmentTexture());
-		deferredLightingMaterial->SetConstantBuffer("Lights", activeScene->GetLightConstantBuffer());
-		deferredLightingMaterial->SetConstantBuffer("EditorData", entityBuffer);
-		deferredLightingMaterial->SetTextureCube("IrradianceTexture", activeScene->GetSkybox()->GetIrradianceTexture());
-		deferredLightingMaterial->SetTextureCube("Prefilter", activeScene->GetSkybox()->GetPrefilterTexture());
-		deferredLightingMaterial->Bind();
-		ResourceManager::GetResource<Mesh>("Quad")->Bind();
-		Renderer::Submit(ResourceManager::GetResource<Mesh>("Quad")->GetIndexCount());
+		Renderer::BindPipelineState(deferredLightingPSO);
+		Renderer::SetTexture2D("PositionTexture", gBufferFramebuffer->GetColorAttachmentTexture(0));
+		Renderer::SetTexture2D("NormalTexture", gBufferFramebuffer->GetColorAttachmentTexture(1));
+		Renderer::SetTexture2D("AlbedoTexture", gBufferFramebuffer->GetColorAttachmentTexture(2));
+		Renderer::SetTexture2D("RMAOTexture", gBufferFramebuffer->GetColorAttachmentTexture(3));
+		Renderer::SetTexture2D("BRDFLUT", activeScene->GetSkybox()->GetBRDF());
+		Renderer::SetTexture2D("EntityIDTexture", gBufferFramebuffer->GetColorAttachmentTexture(4));
+		Renderer::SetTexture2D("OutlineTexture", maskFramebuffer->GetColorAttachmentTexture(0));
+		Renderer::SetTexture2D("DepthTexture", depthFramebuffer->GetDepthAttachmentTexture());
+		Renderer::SetConstantBuffer("Lights", activeScene->GetLightConstantBuffer());
+		Renderer::SetConstantBuffer("EditorData", entityBuffer);
+		Renderer::SetTextureCube("IrradianceTexture", activeScene->GetSkybox()->GetIrradianceTexture());
+		Renderer::SetTextureCube("Prefilter", activeScene->GetSkybox()->GetPrefilterTexture());
+		//deferredLightingMaterial->Bind();
+		Renderer::BindMesh(ResourceManager::GetResource<Mesh>("Quad"));
+		Renderer::DrawIndexed(ResourceManager::GetResource<Mesh>("Quad")->GetIndexCount());
 
 		//pso3d->Bind();
 		//activeScene->Update(_deltaTime);
 
 		if (skyboxPanel->IsUsingSkybox())
 		{
-			skyboxPipeline->Bind();
-			mesh->Bind();
-			materialcube->SetTextureCube("TextureCubemap", activeScene->GetSkybox()->GetSkyboxTexture());
-			materialcube->Bind();
-			Renderer::Submit(mesh->GetIndexCount());
+			Renderer::BindPipelineState(skyboxPipeline);
+			Renderer::BindMesh(mesh);
+			Renderer::SetConstantBuffer("Camera", viewProjMat);
+			Renderer::SetTextureCube("TextureCubemap", activeScene->GetSkybox()->GetSkyboxTexture());
+			Renderer::DrawIndexed(mesh->GetIndexCount());
 		}
-		renderPass->End();
-		deferredLightingMaterial->Unbind();
+		Renderer::EndRenderPass(renderPass);
 	}
 
 	void EditorLayer::OnImGuiRender()
@@ -290,7 +304,10 @@ namespace Daydream
 		//if (ImGui::Button("Normal"))index = 1;
 		//if (ImGui::Button("Albedo"))index = 2;
 		//if (ImGui::Button("AORM"))index = 3;
-		ImGui::Image((ImTextureID)depthFramebuffer->GetDepthAttachmentTexture()->GetImGuiHandle(), ImVec2{viewportSize.x / 3,viewportSize.y / 3});
+		ImGui::Image(AssetManager::GetAssetByPath<Texture2D>("Resource/skybox.hdr")->GetImGuiHandle(), ImVec2{ 100,100 });
+
+		ImGui::Image((ImTextureID)depthFramebuffer->GetDepthAttachmentTexture()->GetImGuiHandle(), ImVec2{ viewportSize.x / 3,viewportSize.y / 3 });
+		//ImGui::Image((ImTextureID)AssetManager::GetAssetByPath<Texture2D>("Resource/skybox.hdr")->GetImGuiHandle(), ImVec2{ viewportSize.x / 3,viewportSize.y / 3 });
 
 		for (int i = 0; i < 4; i++)
 		{

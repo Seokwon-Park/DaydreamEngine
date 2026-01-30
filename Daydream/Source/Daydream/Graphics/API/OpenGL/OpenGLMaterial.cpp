@@ -9,7 +9,7 @@ namespace Daydream
 {
 	OpenGLMaterial::OpenGLMaterial(PipelineState* _pso)
 	{
-		for (auto shader : _pso->GetShaders())
+		/*for (auto shader : _pso->GetShaders())
 		{
 			auto resourceInfo = shader->GetShaderReflectionData();
 			for (auto& info : resourceInfo)
@@ -31,11 +31,11 @@ namespace Daydream
 					break;
 				}
 			}
-		}
+		}*/
 	}
 	void OpenGLMaterial::Bind()
 	{
-		for (auto [name, texture] : textures)
+		/*for (auto [name, texture] : textures)
 		{
 			if (texture == nullptr) continue;
 			Shared<OpenGLTexture2D> glTextexture = static_pointer_cast<OpenGLTexture2D>(texture);
@@ -55,6 +55,6 @@ namespace Daydream
 		{
 			if (cbuffer == nullptr) continue;
 			glBindBufferBase(GL_UNIFORM_BUFFER, bindingMap[name].binding, static_cast<UInt32>(reinterpret_cast<uintptr_t>(cbuffer->GetNativeHandle())));
-		}
+		}*/
 	}
 }

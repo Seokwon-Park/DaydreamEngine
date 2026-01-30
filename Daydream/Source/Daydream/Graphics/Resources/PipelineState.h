@@ -45,21 +45,20 @@ namespace Daydream
 		virtual void Bind() const = 0;
 		//virtual Shared<Material> CreateMaterial() = 0;
 
-		const Shared<ShaderGroup>& GetShaderGroup() { return shaderGroup; }
-		const Array<Shared<Shader>>& GetShaders() { return shaderGroup->GetShaders(); };
+		//ShaderGroup Functions
+		inline const Shared<ShaderGroup>& GetShaderGroup() const { return shaderGroup; }
+		inline const Array<Shared<Shader>>& GetShaders() const { return shaderGroup->GetShaders(); };
+		inline const ShaderReflectionData* GetBindingInfo(const String& _name) const {return shaderGroup->GetShaderBindingInfo(_name);
+		}
 				
 		static Shared<PipelineState> Create(const PipelineStateDesc& _desc);
 	protected:
+
 		Shared<ShaderGroup> shaderGroup;
 		Shared<RenderPass> renderPass;
 
 		PipelineStateDesc desc;
-
-		HashMap<String, ShaderReflectionData> globalBindingMap;
-		HashMap<String, ShaderReflectionData> materialBindingMap;
-		HashMap<String, ShaderReflectionData> entityBindingMap;
 		//rtv, dsv;
 		//blend, rast, ds;
-
 	};
 }

@@ -268,16 +268,15 @@ namespace Daydream::GraphicsUtility::Vulkan
 		info.addressModeU = ConvertToVkAddressMode(_desc.wrapU);
 		info.addressModeV = ConvertToVkAddressMode(_desc.wrapV);
 		info.addressModeW = ConvertToVkAddressMode(_desc.wrapW);
+		info.mipLodBias = 0.0f; // Optional
 		info.anisotropyEnable = VK_FALSE;
 		info.maxAnisotropy = _desc.maxAnisotropy;
-		info.borderColor = vk::BorderColor::eIntTransparentBlack;
-		info.unnormalizedCoordinates = VK_FALSE;
 		info.compareEnable = VK_FALSE;
 		info.compareOp = ConvertToVkCompareOp(_desc.comparisonFunc);
-		info.mipmapMode = vk::SamplerMipmapMode::eLinear;
 		info.minLod = 0.0f; // Optional
 		info.maxLod = VK_LOD_CLAMP_NONE;
-		info.mipLodBias = 0.0f; // Optional
+		info.borderColor = vk::BorderColor::eIntTransparentBlack;
+		info.unnormalizedCoordinates = VK_FALSE;
 
 		return info;
 	}

@@ -140,7 +140,7 @@ namespace Daydream
 	}
 
 
-	Unique<RenderContext> D3D11RenderDevice::CreateContext()
+	Unique<RenderContext> Daydream::D3D11RenderDevice::CreateContext(UInt32 _framesInFlight)
 	{
 		return MakeUnique<D3D11GraphicsContext>(this);
 	}

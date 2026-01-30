@@ -179,7 +179,6 @@ namespace Daydream
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
-		swapChain->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool _enabled)

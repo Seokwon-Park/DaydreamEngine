@@ -33,9 +33,7 @@ namespace Daydream
 		:PipelineState(_desc)
 	{
 		device = _device;
-
 		
-
 		vk::VertexInputBindingDescription vertexInputdesc;
 		vertexInputdesc.binding = 0;
 		vertexInputdesc.stride = 0;
@@ -73,15 +71,15 @@ namespace Daydream
 
 		UInt32 setCount = shaderGroup->GetSetCount();
 		Array<Array<vk::DescriptorSetLayoutBinding>> setBindings(setCount);
-		for (const auto& info : shaderGroup->GetShaderResourceData())
+		for (const auto& [name, data] : shaderGroup->GetShaderBindingMap())
 		{
 			vk::DescriptorSetLayoutBinding binding = {};
-			binding.binding = info.binding;
-			binding.descriptorType = ToVkDescType(info.shaderResourceType);
+			binding.binding = data.binding;
+			binding.descriptorType = ToVkDescType(data.shaderResourceType);
 			binding.descriptorCount = 1;
-			binding.stageFlags = GraphicsUtility::Vulkan::ConvertToShaderStageFlagBit(info.shaderType);
+			binding.stageFlags = GraphicsUtility::Vulkan::ConvertToShaderStageFlagBit(data.shaderType);
 			binding.pImmutableSamplers = nullptr;
-			setBindings[info.set].push_back(binding);
+			setBindings[data.set].push_back(binding);
 		}
 
 		//descriptorSetLayouts.resize(setCount);

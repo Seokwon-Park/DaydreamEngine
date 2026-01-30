@@ -35,7 +35,7 @@ namespace Daydream
 		glfwSwapInterval(desc.isVSync);
 	}
 
-	void OpenGLSwapchain::SwapBuffers()
+	void OpenGLSwapchain::Present()
 	{
 		glfwSwapBuffers(window);
 		ResizeFramebuffers();

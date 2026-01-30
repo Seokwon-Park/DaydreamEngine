@@ -33,7 +33,6 @@ namespace Daydream
 		AssetHandle meshHandle;
 		AssetHandle materialHandle;
 
-		Shared<ConstantBuffer> worldMatrixConstantBuffer;
 		Shared<ConstantBuffer> entityHandle;
 
 		Shared<Material> maskMaterial;

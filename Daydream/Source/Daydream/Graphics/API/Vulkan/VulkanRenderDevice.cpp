@@ -148,9 +148,9 @@ namespace Daydream
 	{
 	}
 
-	Unique<RenderContext> VulkanRenderDevice::CreateContext()
+	Unique<RenderContext> Daydream::VulkanRenderDevice::CreateContext(UInt32 _framesInFlight)
 	{
-		return MakeUnique<VulkanGraphicsContext>(this);
+		return MakeUnique<VulkanRenderContext>(this, _framesInFlight);
 	}
 
 	Shared<VertexBuffer> VulkanRenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
@@ -395,7 +395,6 @@ namespace Daydream
 
 	void VulkanRenderDevice::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
 	{
-		// 1. 레이아웃 변경: 복사를 위한 준비
 		vk::ImageMemoryBarrier barriers[2] = {};
 
 		VulkanTexture2D* src = (VulkanTexture2D*)_src.get();
@@ -412,6 +411,8 @@ namespace Daydream
 		barriers[0].subresourceRange.levelCount = 1;
 		barriers[0].subresourceRange.baseArrayLayer = 0;
 		barriers[0].subresourceRange.layerCount = 1;
+		barriers[0].srcAccessMask = {}; // 이전 작업이 없다고 가정
+		barriers[0].dstAccessMask = vk::AccessFlagBits::eTransferRead;
 
 		// 대상 이미지를 TRANSFER_DST로 변경
 		barriers[1].oldLayout = vk::ImageLayout::eUndefined; // 또는 현재 레이아웃
@@ -424,11 +425,17 @@ namespace Daydream
 		barriers[1].subresourceRange.levelCount = 1;
 		barriers[1].subresourceRange.baseArrayLayer = 0;
 		barriers[1].subresourceRange.layerCount = 1;
+		barriers[1].srcAccessMask = {};
+		barriers[1].dstAccessMask = vk::AccessFlagBits::eTransferWrite;
 
-		TransitionImageLayout(barriers[0]);
-		TransitionImageLayout(barriers[1]);
-
-		vk::CommandBuffer transCommandBuffer = BeginSingleTimeCommands();
+		currentCommandBuffer.pipelineBarrier(
+			vk::PipelineStageFlagBits::eTopOfPipe,  // 이전 작업 단계
+			vk::PipelineStageFlagBits::eTransfer,     // 다음 작업 단계 (전송)
+			{},
+			0, nullptr,
+			0, nullptr,
+			2, barriers
+		);
 
 		// 2. 복사 명령 기록
 		vk::ImageCopy copyRegion = {};
@@ -440,13 +447,12 @@ namespace Daydream
 		copyRegion.extent.height = src->GetHeight();
 		copyRegion.extent.depth = 1;
 
-		transCommandBuffer.copyImage(
+		currentCommandBuffer.copyImage(
 			src->GetImage(), vk::ImageLayout::eTransferSrcOptimal,
 			dst->GetImage(), vk::ImageLayout::eTransferDstOptimal,
 			1, &copyRegion
 		);
 
-		EndSingleTimeCommands(transCommandBuffer);
 
 		// 원본 이미지를 TRANSFER_SRC로 변경
 		barriers[0].oldLayout = vk::ImageLayout::eTransferSrcOptimal; // 또는 현재 레이아웃
@@ -476,9 +482,14 @@ namespace Daydream
 		barriers[1].srcAccessMask = vk::AccessFlagBits::eTransferWrite;
 		barriers[1].dstAccessMask = {};
 
-		TransitionImageLayout(barriers[0]);
-		TransitionImageLayout(barriers[1]);
-
+		currentCommandBuffer.pipelineBarrier(
+			vk::PipelineStageFlagBits::eTransfer,  // 이전 작업 단계
+			vk::PipelineStageFlagBits::eFragmentShader,     // 다음 작업 단계 (전송)
+			{},
+			0, nullptr,
+			0, nullptr,
+			2, barriers
+		);
 	}
 
 	void VulkanRenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel)
@@ -486,12 +497,10 @@ namespace Daydream
 		VulkanTextureCube* dst = static_cast<VulkanTextureCube*>(_dstCubemap);
 		VulkanTexture2D* src = static_cast<VulkanTexture2D*>(_srcTexture2D);
 
-		vk::CommandBuffer transCommandBuffer = BeginSingleTimeCommands();
-
 		vk::ImageMemoryBarrier barriers[2] = {};
 
 		// 원본 이미지를 TRANSFER_SRC로 변경
-		barriers[0].oldLayout = vk::ImageLayout::eUndefined; // 또는 현재 레이아웃
+		barriers[0].oldLayout = vk::ImageLayout::eShaderReadOnlyOptimal; // 또는 현재 레이아웃
 		barriers[0].newLayout = vk::ImageLayout::eTransferSrcOptimal;
 		barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
@@ -518,7 +527,7 @@ namespace Daydream
 		barriers[1].srcAccessMask = {};
 		barriers[1].dstAccessMask = vk::AccessFlagBits::eTransferWrite;
 
-		transCommandBuffer.pipelineBarrier(
+		currentCommandBuffer.pipelineBarrier(
 			vk::PipelineStageFlagBits::eTopOfPipe,  // 이전 작업 단계
 			vk::PipelineStageFlagBits::eTransfer,     // 다음 작업 단계 (전송)
 			{},
@@ -562,7 +571,7 @@ namespace Daydream
 		copyRegion.extent.height = _srcTexture2D->GetHeight();
 		copyRegion.extent.depth = 1;
 
-		transCommandBuffer.copyImage(
+		currentCommandBuffer.copyImage(
 			src->GetImage(), vk::ImageLayout::eTransferSrcOptimal,
 			dst->GetImage(), vk::ImageLayout::eTransferDstOptimal,
 			1, &copyRegion
@@ -594,7 +603,7 @@ namespace Daydream
 		barriers[1].srcAccessMask = vk::AccessFlagBits::eTransferWrite;
 		barriers[1].dstAccessMask = {};
 
-		transCommandBuffer.pipelineBarrier(
+		currentCommandBuffer.pipelineBarrier(
 			vk::PipelineStageFlagBits::eTransfer,  // 이전 작업 단계
 			vk::PipelineStageFlagBits::eFragmentShader,     // 다음 작업 단계 (전송)
 			{},
@@ -603,7 +612,6 @@ namespace Daydream
 			2, barriers
 		);
 
-		EndSingleTimeCommands(transCommandBuffer);
 
 
 		//barrier.oldLayout = vk::ImageLayout::eTransferDstOptimal;

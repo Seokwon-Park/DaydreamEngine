@@ -27,11 +27,7 @@ namespace Daydream
 		//	rawSets.push_back(set.get());
 		//}
 
-		auto resources = pso->GetShaderGroup()->GetShaderResourceData();
-		for (auto resource : resources)
-		{
-			bindingMap[resource.name] = resource;
-		}
+
 	}
 	VulkanMaterial::~VulkanMaterial()
 	{
@@ -44,85 +40,85 @@ namespace Daydream
 	{
 		for (auto [name, texture] : textures)
 		{
-			if (texture == nullptr) continue;
-			auto resourceInfo = bindingMap[name];
-			Shared<VulkanTexture2D> vulkanTexture = static_pointer_cast<VulkanTexture2D>(texture);
+			//if (texture == nullptr) continue;
+			//auto resourceInfo = bindingMap[name];
+			//Shared<VulkanTexture2D> vulkanTexture = static_pointer_cast<VulkanTexture2D>(texture);
 
-			vk::DescriptorImageInfo imageInfo{};
-			imageInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
-			imageInfo.imageView = vulkanTexture->GetImageView();
-			imageInfo.sampler = vulkanTexture->GetSampler();
+			//vk::DescriptorImageInfo imageInfo{};
+			//imageInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+			//imageInfo.imageView = vulkanTexture->GetImageView();
+			//imageInfo.sampler = vulkanTexture->GetSampler();
 
-			vk::WriteDescriptorSet writeSet = {};
-			//writeSet.dstSet = sets[resourceInfo.set].get();
-			writeSet.dstBinding = resourceInfo.binding;  // 특정 binding만 업데이트
-			writeSet.descriptorCount = 1;
-			writeSet.descriptorType = vk::DescriptorType::eCombinedImageSampler;
-			writeSet.pImageInfo = &imageInfo;
+			//vk::WriteDescriptorSet writeSet = {};
+			////writeSet.dstSet = sets[resourceInfo.set].get();
+			//writeSet.dstBinding = resourceInfo.binding;  // 특정 binding만 업데이트
+			//writeSet.descriptorCount = 1;
+			//writeSet.descriptorType = vk::DescriptorType::eCombinedImageSampler;
+			//writeSet.pImageInfo = &imageInfo;
 
-			device->GetCommandBuffer().pushDescriptorSet(
-				vk::PipelineBindPoint::eGraphics,
-				psoLayout,
-				resourceInfo.set,
-				1,
-				&writeSet
-			);
+			//device->GetCommandBuffer().pushDescriptorSet(
+			//	vk::PipelineBindPoint::eGraphics,
+			//	psoLayout,
+			//	resourceInfo.set,
+			//	1,
+			//	&writeSet
+			//);
 		}
 
-		for (auto [name, texture] : textureCubes)
-		{
-			if (texture == nullptr) continue;
-			auto resourceInfo = bindingMap[name];
-			Shared<VulkanTextureCube> vulkanTexture = static_pointer_cast<VulkanTextureCube>(texture);
+		//for (auto [name, texture] : textureCubes)
+		//{
+		//	if (texture == nullptr) continue;
+		//	auto resourceInfo = bindingMap[name];
+		//	Shared<VulkanTextureCube> vulkanTexture = static_pointer_cast<VulkanTextureCube>(texture);
 
-			vk::DescriptorImageInfo imageInfo{};
-			imageInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
-			imageInfo.imageView = vulkanTexture->GetImageView();
-			imageInfo.sampler = vulkanTexture->GetSampler();
+		//	vk::DescriptorImageInfo imageInfo{};
+		//	imageInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+		//	imageInfo.imageView = vulkanTexture->GetImageView();
+		//	imageInfo.sampler = vulkanTexture->GetSampler();
 
-			vk::WriteDescriptorSet writeSet = {};
-			//writeSet.dstSet = sets[resourceInfo.set].get();
-			writeSet.dstBinding = resourceInfo.binding;  // 특정 binding만 업데이트
-			writeSet.descriptorCount = 1;
-			writeSet.descriptorType = vk::DescriptorType::eCombinedImageSampler;
-			writeSet.pImageInfo = &imageInfo;
+		//	vk::WriteDescriptorSet writeSet = {};
+		//	//writeSet.dstSet = sets[resourceInfo.set].get();
+		//	writeSet.dstBinding = resourceInfo.binding;  // 특정 binding만 업데이트
+		//	writeSet.descriptorCount = 1;
+		//	writeSet.descriptorType = vk::DescriptorType::eCombinedImageSampler;
+		//	writeSet.pImageInfo = &imageInfo;
 
-			device->GetCommandBuffer().pushDescriptorSet(
-				vk::PipelineBindPoint::eGraphics,
-				psoLayout,
-				resourceInfo.set,
-				1,
-				&writeSet
-			);
-		}
+		//	device->GetCommandBuffer().pushDescriptorSet(
+		//		vk::PipelineBindPoint::eGraphics,
+		//		psoLayout,
+		//		resourceInfo.set,
+		//		1,
+		//		&writeSet
+		//	);
+		//}
 
-		for (auto [name, cbuffer] : cbuffers)
-		{
-			if (cbuffer == nullptr) continue;
-			auto resourceInfo = bindingMap[name];
-			if (resourceInfo.shaderResourceType != ShaderResourceType::ConstantBuffer) return;
+		//for (auto [name, cbuffer] : cbuffers)
+		//{
+		//	if (cbuffer == nullptr) continue;
+		//	auto resourceInfo = bindingMap[name];
+		//	if (resourceInfo.shaderResourceType != ShaderResourceType::ConstantBuffer) return;
 
-			Shared<VulkanConstantBuffer> buffer = static_pointer_cast<VulkanConstantBuffer>(cbuffer);
-			vk::DescriptorBufferInfo bufferInfo{};
-			bufferInfo.buffer = (VkBuffer)cbuffer->GetNativeHandle();
-			bufferInfo.offset = 0;
-			bufferInfo.range = buffer->GetSize();
+		//	Shared<VulkanConstantBuffer> buffer = static_pointer_cast<VulkanConstantBuffer>(cbuffer);
+		//	vk::DescriptorBufferInfo bufferInfo{};
+		//	bufferInfo.buffer = (VkBuffer)cbuffer->GetNativeHandle();
+		//	bufferInfo.offset = 0;
+		//	bufferInfo.range = buffer->GetSize();
 
-			vk::WriteDescriptorSet writeSet = {};
-			//writeSet.dstSet = sets[resourceInfo.set].get();
-			writeSet.dstBinding = resourceInfo.binding;
-			writeSet.descriptorCount = 1;
-			writeSet.descriptorType = vk::DescriptorType::eUniformBuffer;
-			writeSet.pBufferInfo = &bufferInfo;
+		//	vk::WriteDescriptorSet writeSet = {};
+		//	//writeSet.dstSet = sets[resourceInfo.set].get();
+		//	writeSet.dstBinding = resourceInfo.binding;
+		//	writeSet.descriptorCount = 1;
+		//	writeSet.descriptorType = vk::DescriptorType::eUniformBuffer;
+		//	writeSet.pBufferInfo = &bufferInfo;
 
-			device->GetCommandBuffer().pushDescriptorSet(
-				vk::PipelineBindPoint::eGraphics,
-				psoLayout,
-				resourceInfo.set,
-				1,
-				&writeSet
-			);
-		}
+		//	device->GetCommandBuffer().pushDescriptorSet(
+		//		vk::PipelineBindPoint::eGraphics,
+		//		psoLayout,
+		//		resourceInfo.set,
+		//		1,
+		//		&writeSet
+		//	);
+		//}
 
 		//device->GetCommandBuffer().bindDescriptorSets(vk::PipelineBindPoint::eGraphics, pso->GetPipelineLayout(), 0, (UInt32)rawSets.size(), rawSets.data(), 0, nullptr);
 	}

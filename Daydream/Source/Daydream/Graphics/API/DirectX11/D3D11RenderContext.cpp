@@ -10,7 +10,7 @@ namespace Daydream
 	{
 		device = _device;
 	}
-	void D3D11GraphicsContext::Begin()
+	void D3D11GraphicsContext::BeginCommandList()
 	{
 	}
 	void D3D11GraphicsContext::SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height)

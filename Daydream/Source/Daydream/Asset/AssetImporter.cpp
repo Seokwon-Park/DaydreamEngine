@@ -204,11 +204,11 @@ namespace Daydream
 					ao = AssetManager::GetAsset<Texture2D>(AssetDefaults::DefaultAOHandle);
 				}
 
-				newMaterial->SetTexture2D("AlbedoTexture", albedo);
-				newMaterial->SetTexture2D("NormalTexture", normal);
-				newMaterial->SetTexture2D("RoughnessTexture", roughness);
-				newMaterial->SetTexture2D("MetallicTexture", metallic);
-				newMaterial->SetTexture2D("AOTexture", ao);
+				newMaterial->SetTexture2D("mat_AlbedoMap", albedo);
+				newMaterial->SetTexture2D("mat_NormalMap", normal);
+				newMaterial->SetTexture2D("mat_RoughnessMap", roughness);
+				newMaterial->SetTexture2D("mat_MetallicMap", metallic);
+				newMaterial->SetTexture2D("mat_AOMap", ao);
 
 				materialHandle = AssetHandle::Generate();
 				newMaterial->SetAssetHandle(materialHandle);

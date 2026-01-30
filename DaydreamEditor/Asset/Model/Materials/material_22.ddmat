@@ -1,8 +1,8 @@
 Material:
   PSO: GBufferPSO
   Textures:
-    AOTexture: 756abf2b-c9b3-44af-93df-03d490a15039
-    AlbedoTexture: b461ea45-063d-46ec-8585-e82420a24a02
-    MetallicTexture: 756abf2b-c9b3-44af-93df-03d490a15039
-    RoughnessTexture: 756abf2b-c9b3-44af-93df-03d490a15039
-    NormalTexture: 67bf9198-b8e5-4ad1-bef9-93e530216680
+    mat_MetallicMap: 756abf2b-c9b3-44af-93df-03d490a15039
+    mat_AlbedoMap: b461ea45-063d-46ec-8585-e82420a24a02
+    mat_NormalMap: 67bf9198-b8e5-4ad1-bef9-93e530216680
+    mat_RoughnessMap: 756abf2b-c9b3-44af-93df-03d490a15039
+    mat_AOMap: 756abf2b-c9b3-44af-93df-03d490a15039

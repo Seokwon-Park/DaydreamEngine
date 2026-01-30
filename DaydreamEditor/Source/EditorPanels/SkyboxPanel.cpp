@@ -87,8 +87,6 @@ namespace Daydream
 		}
 		//UI::DrawMaterialController("SkyboxTextures", skyboxMaterial.get());
 
-
-
 		ImGui::Text("BRDF");
 		if (skybox->GetBRDF() != nullptr)
 		{

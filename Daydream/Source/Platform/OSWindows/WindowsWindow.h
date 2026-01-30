@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(DAYDREAM_PLATFORM_WINDOWS)
+
 #include "Daydream/Core/Window.h"
 #include "Daydream/Graphics/Core/RenderDevice.h"
 
@@ -69,4 +71,6 @@ namespace Daydream
 		WindowData windowData;
 	};
 }
+
+#endif
 

@@ -17,6 +17,7 @@ namespace Daydream
 		void CreateShaderStageInfo(const Shared<Shader>& _shader);
 		Array<vk::DescriptorSetLayout> GetLayout() { return rawDescriptorSetLayouts; };
 		vk::PipelineLayout GetPipelineLayout() { return pipelineLayout.get(); }
+		vk::Pipeline GetPipeline() const { return pipeline.get(); }
 	private:
 
 		VulkanRenderDevice* device;

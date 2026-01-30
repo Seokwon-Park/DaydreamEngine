@@ -35,10 +35,25 @@ namespace Daydream
 		));
 
 		shaderGroup->CreateInputReflectionData();
-		shaderGroup->CreateShaderResourceReflectionData();
+		shaderGroup->CreateShaderBindingMap();
+		shaderGroup->CreateMaterialMap();
 
 		return shaderGroup;
 	}
+
+	const ShaderReflectionData* ShaderGroup::GetShaderBindingInfo(const String& _name) const
+	{
+		auto itr = shaderBindingMap.find(_name);
+
+		if (itr == shaderBindingMap.end())
+		{
+			DAYDREAM_CORE_WARN("{} is not valid ShaderResource Name!", _name);
+			return nullptr;
+		}
+
+		return &itr->second;
+	}
+
 	ShaderGroup::ShaderGroup(Shared<Shader> _vertexShader, Shared<Shader> _hullShader, Shared<Shader> _domainShader, Shared<Shader> _geometryShader, Shared<Shader> _pixelShader)
 	{
 		DAYDREAM_CORE_ASSERT(_vertexShader, "VS can't be nullptr!");
@@ -67,20 +82,35 @@ namespace Daydream
 		}
 	}
 
-	void ShaderGroup::CreateShaderResourceReflectionData()
+	void ShaderGroup::CreateShaderBindingMap()
 	{
+		int descriptorTableIndex = 0;
 		for (const Shared<Shader>& shader : shaders)
 		{
 			for (ShaderReflectionData data : shader->GetShaderReflectionData())
 			{
 				if (data.shaderResourceType != ShaderResourceType::Input)
 				{
-					shaderResourceReflectionData.push_back(data);
+					data.descriptorTableIndex = descriptorTableIndex++;
+					shaderBindingMap.insert({ data.name, data });
 					setCount = Math::Max(setCount, data.set+1);
 				}
 			}
 		}
 	}
+
+	void ShaderGroup::CreateMaterialMap()
+	{
+		for (const auto& [name, data] : shaderBindingMap)
+		{
+			if (data.name.find("mat_") != String::npos)
+			{
+				materialMap.insert({ data.name,data.shaderResourceType });
+			}
+		}
+	}
+
+
 
 	const Shared<Shader> ShaderGroup::GetShader(ShaderType _type)
 	{
@@ -116,7 +146,7 @@ namespace Daydream
 		return Shared<Shader>();
 	}
 	Shared<ShaderGroup> ShaderGroup::Create(const Path& _vertexShaderPath, const Path&
-_pixelShaderPath)
+		_pixelShaderPath)
 	{
 		auto vertexShader = AssetManager::GetAssetByPath<Shader>(_vertexShaderPath);
 		auto pixelShader = AssetManager::GetAssetByPath<Shader>(_pixelShaderPath);

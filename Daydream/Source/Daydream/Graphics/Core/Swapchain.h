@@ -23,7 +23,7 @@ namespace Daydream
 		bool GetVSync() const { return desc.isVSync; }
 		virtual void SetVSync(bool _enabled) = 0;
 
-		virtual void SwapBuffers() = 0;
+		virtual void Present() = 0;
 		virtual void ResizeSwapchain(UInt32 _width, UInt32 height) = 0;
 
 		virtual void BeginFrame() = 0;

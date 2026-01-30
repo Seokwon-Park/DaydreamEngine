@@ -29,16 +29,18 @@ _pixelShaderPath);
 			Shared<Shader> _geometryShader,
 			Shared<Shader> _pixelShader);
 
-		const Array<ShaderReflectionData>& GetInputData() { return inputReflectionData; }
-		const Array<ShaderReflectionData>& GetShaderResourceData() const { return shaderResourceReflectionData; }
-		Array<ShaderReflectionData>& GetShaderResourceDataRef() { return shaderResourceReflectionData; }
+		const Array<ShaderReflectionData>& GetInputData() const { return inputReflectionData; }
+		const HashMap<String, ShaderReflectionData>& GetShaderBindingMap() const { return shaderBindingMap; }
+		const HashMap<String, ShaderResourceType>& GetMaterialMap() const { return materialMap; }
+		const ShaderReflectionData* GetShaderBindingInfo(const String& _name) const;
 
 		UInt32 GetSetCount() const { return setCount; }
 	private:
 		ShaderGroup(Shared<Shader> _vertexShader, Shared<Shader> _hullShader, Shared<Shader> _domainShader, Shared<Shader> _geometryShader, Shared<Shader> _pixelShader);
 
 		void CreateInputReflectionData();
-		void CreateShaderResourceReflectionData();
+		void CreateShaderBindingMap();
+		void CreateMaterialMap();
 
 		void ValidateInterface() { /* ... */ }
 		void GenerateUnifiedReflection() { /* ... */ }
@@ -54,6 +56,7 @@ _pixelShaderPath);
 		Array<Shared<Shader>> shaders;
 
 		Array<ShaderReflectionData> inputReflectionData;
-		Array<ShaderReflectionData> shaderResourceReflectionData;
+		HashMap<String, ShaderReflectionData> shaderBindingMap;
+		HashMap<String, ShaderResourceType> materialMap;
 	};
 }

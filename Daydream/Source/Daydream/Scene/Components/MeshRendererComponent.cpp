@@ -31,13 +31,13 @@ namespace Daydream
 
 	void MeshRendererComponent::Render()
 	{
-		TransformComponent* transform = GetOwner()->GetComponent<TransformComponent>();
-		TransformConstantBufferData data;
-		data.world = transform->GetWorldMatrix().GetTranspose();
-		data.invTranspose = data.world;
-		data.invTranspose.Invert();
-		data.invTranspose.Transpose();
-		worldMatrixConstantBuffer->Update(&data, sizeof(TransformConstantBufferData));
+		//TransformComponent* transform = GetOwner()->GetComponent<TransformComponent>();
+		//TransformConstantBufferData data;
+		//data.world = transform->GetWorldMatrix().GetTranspose();
+		//data.invTranspose = data.world;
+		//data.invTranspose.Invert();
+		//data.invTranspose.Transpose();
+		//worldMatrixConstantBuffer->Update(&data, sizeof(TransformConstantBufferData));
 
 		Shared<Mesh> mesh;
 		Shared<Material> material;
@@ -48,23 +48,22 @@ namespace Daydream
 
 		if (mesh)
 		{
-			mesh->Bind();
+			Renderer::BindMesh(mesh);
 		}
 		if (material)
 		{
-			material->SetConstantBuffer("World", worldMatrixConstantBuffer);
-			material->SetConstantBuffer("Entity", entityHandle);
+			Renderer::SetConstantBuffer("Entity", entityHandle);
 
 			material->SetConstantBuffer("Camera", GetOwner()->GetScene()->GetCurrentCamera()->GetViewProjectionConstantBuffer());
 			material->SetConstantBuffer("Lights", GetOwner()->GetScene()->GetLightConstantBuffer());
 			material->SetTexture2D("BRDFLUT", GetOwner()->GetScene()->GetSkybox()->GetBRDF());
 			material->SetTextureCube("IrradianceTexture", GetOwner()->GetScene()->GetSkybox()->GetIrradianceTexture());
 			material->SetTextureCube("Prefilter", GetOwner()->GetScene()->GetSkybox()->GetPrefilterTexture());
-			material->Bind();
+			Renderer::SetMaterial(material);
 		}
 		if (mesh && material)
 		{
-			Renderer::Submit(mesh->GetIndexCount());
+			Renderer::DrawIndexed(mesh->GetIndexCount());
 		}
 
 		//	material->SetTexture2D("Texture", mesh->GetDiffuseTexture());
@@ -119,7 +118,7 @@ namespace Daydream
 		{
 			mesh->Bind();
 			maskMaterial->Bind();
-			Renderer::Submit(mesh->GetIndexCount());
+			Renderer::DrawIndexed(mesh->GetIndexCount());
 		}
 		//for (int i = 0; i < meshes.size(); i++)
 		//{
@@ -150,14 +149,14 @@ namespace Daydream
 		lightMaterial->SetConstantBuffer("World", worldMatrixConstantBuffer);
 		if (GetOwner()->GetScene()->GetLightComponent())
 		{
-			lightMaterial->SetConstantBuffer("LightSpace", GetOwner()->GetScene()->GetLightComponent()->GetLight().lightViewProjectionBuffer);
+			Renderer::SetConstantBuffer("LightSpace", GetOwner()->GetScene()->GetLightComponent()->GetLight().lightViewProjectionBuffer);
 		}
 
 		if (mesh)
 		{
-			mesh->Bind();
+			Renderer::BindMesh(mesh);
 			lightMaterial->Bind();
-			Renderer::Submit(mesh->GetIndexCount());
+			Renderer::DrawIndexed(mesh->GetIndexCount());
 		}
 	}
 
