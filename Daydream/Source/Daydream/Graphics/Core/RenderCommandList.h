@@ -6,7 +6,7 @@ namespace Daydream
 	{
 	public:
 		RenderCommandList() {};
-		~RenderCommandList() {};
+		~RenderCommandList() { commandList.clear(); };
 
 		void AddCommand(FunctionPtr<void()> _command);
 		void Execute();

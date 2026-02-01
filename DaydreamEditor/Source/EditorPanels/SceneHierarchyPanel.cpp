@@ -88,7 +88,7 @@ namespace Daydream
 		if (!_entity) return;
 
 		// 검색 필터링
-		const String& name = _entity->GetName();
+		String name = _entity->GetName();
 		if (searchQuery[0] != '\0' && name.find(searchQuery) == String::npos)
 		{
 			return;

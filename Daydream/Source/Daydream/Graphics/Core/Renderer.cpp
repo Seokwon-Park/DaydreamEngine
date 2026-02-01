@@ -85,7 +85,7 @@ namespace Daydream
 	void Renderer::BindPipelineState(Shared<PipelineState> _pso)
 	{
 		renderContext->BindPipelineState(_pso);
-		commandLists[0]->AddCommand([=]() {renderContext->BindPipelineState(_pso); });
+		//commandLists[0]->AddCommand([=]() {renderContext->BindPipelineState(_pso); });
 	}
 
 	void Renderer::BindMesh(Shared<Mesh> _mesh)
@@ -96,22 +96,22 @@ namespace Daydream
 	void Renderer::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
 	{
 		renderContext->SetTexture2D(_name, _texture);
-		commandLists[0]->AddCommand([=]() {renderContext->SetTexture2D(_name, _texture); });
+		//commandLists[0]->AddCommand([=]() {renderContext->SetTexture2D(_name, _texture); });
 	}
 	void Renderer::SetTextureCube(const String& _name, Shared<TextureCube> _textureCube)
 	{
 		renderContext->SetTextureCube(_name, _textureCube);
-		commandLists[0]->AddCommand([=]() {renderContext->SetTextureCube(_name, _textureCube); });
+		//commandLists[0]->AddCommand([=]() {renderContext->SetTextureCube(_name, _textureCube); });
 	}
 	void Renderer::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
 	{
 		renderContext->SetConstantBuffer(_name, _buffer);
-		commandLists[0]->AddCommand([=]() {renderContext->SetConstantBuffer(_name, _buffer); });
+		//commandLists[0]->AddCommand([=]() {renderContext->SetConstantBuffer(_name, _buffer); });
 	}
 	void Renderer::SetMaterial(Shared<Material> _material)
 	{
 		renderContext->SetMaterial(_material);
-		commandLists[0]->AddCommand([=]() {renderContext->SetMaterial(_material); });
+		//commandLists[0]->AddCommand([=]() {renderContext->SetMaterial(_material); });
 	}
 
 	void Renderer::DrawIndexed(UInt32 _indexCount)
@@ -122,7 +122,7 @@ namespace Daydream
 
 		//_vertexArray->Bind();
 		renderContext->DrawIndexed(_indexCount);
-		commandLists[0]->AddCommand([=]() {renderContext->DrawIndexed(_indexCount); });
+		//commandLists[0]->AddCommand([=]() {renderContext->DrawIndexed(_indexCount); });
 	}
 
 	void Renderer::Submit()

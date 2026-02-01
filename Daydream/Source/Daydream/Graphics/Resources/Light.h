@@ -51,7 +51,7 @@ namespace Daydream
         Light();
 
         UInt32 type = LightType::Directional;
-        Float32 intensity = 1.0f;
+        Float32 intensity = 100.0f;
         Vector3 color = Vector3(1.0f, 1.0f, 1.0f);
         Float32 range = 10.0f;   // Point, Spot 타입이 사용
         Float32 spotInnerAngle = 20.0f;  // Spot 타입만 사용

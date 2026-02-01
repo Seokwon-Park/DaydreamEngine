@@ -9,6 +9,7 @@ namespace Daydream
 	{
 	public:
 		SkyboxPanel();
+		~SkyboxPanel();
 		
 		void SetSkybox(Shared<Skybox> _skybox)
 		{

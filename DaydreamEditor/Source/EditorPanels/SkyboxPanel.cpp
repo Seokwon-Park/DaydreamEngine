@@ -7,6 +7,12 @@ namespace Daydream
 		equirectangularDropTarget = AssetManager::GetAssetByPath<Texture2D>("Resource/NoTexture.png");
 	}
 
+	SkyboxPanel::~SkyboxPanel()
+	{
+		skybox = nullptr;
+		equirectangularDropTarget = nullptr;
+	}
+
 	void SkyboxPanel::OnImGuiRender()
 	{
 		ImGui::Begin("SkyboxSettings");

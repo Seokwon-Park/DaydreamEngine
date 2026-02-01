@@ -69,6 +69,7 @@ namespace Daydream
 	}
 	VulkanTextureCube::~VulkanTextureCube()
 	{
+
 	}
 
 	void VulkanTextureCube::SetSampler(Shared<Sampler> _sampler)

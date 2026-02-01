@@ -14,12 +14,13 @@ namespace Daydream
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
+
+		virtual void* GetNativeHandle() const override { return (void*)&vertexBufferView; };
 		virtual void SetData(const void * _data, UInt32 _dataSize) override;
 		
 		ID3D12Resource* GetDX12Buffer() { return vertexBuffer.Get(); }
 	private:
 		UInt32 bufferSize;
-		UInt32 stride;
 		D3D12RenderDevice* device;
 		ComPtr<ID3D12Resource> vertexBuffer;
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
@@ -34,6 +35,7 @@ namespace Daydream
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
 
+		virtual void* GetNativeHandle() const override { return (void*)&indexBufferView; };
 		ID3D12Resource* GetDX12Buffer() { return indexBuffer.Get(); }
 	private :
 		D3D12RenderDevice* device;

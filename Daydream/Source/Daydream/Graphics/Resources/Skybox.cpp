@@ -78,6 +78,12 @@ namespace Daydream
 
 	Skybox::~Skybox()
 	{
+		//oldTextures.clear();
+		//skyboxTextureCube = nullptr;
+		//equirectangularTexture = nullptr;
+		//captureFramebuffer = nullptr;
+		//equirectangularResultTextures.clear();
+
 		equirectangularMaterials.clear();
 		irradianceMaterials.clear();
 		prefilterMaterials.clear();
@@ -116,7 +122,7 @@ namespace Daydream
 		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
 		skyboxTextureCube = TextureCube::CreateEmpty(textureDesc);
 		skyboxTextureCube->SetSampler(ResourceManager::GetResource<Sampler>("LinearClampToEdge"));
-		oldTextures.push_back(skyboxTextureCube);
+		//oldTextures.push_back(skyboxTextureCube);
 
 		equirectangularTexture = _texture;
 
@@ -149,7 +155,7 @@ namespace Daydream
 			Renderer::CopyTexture2D(captureFramebuffer->GetColorAttachmentTexture(0), equirectangularResultTextures[i]);
 			Renderer::CopyTextureToCubemapFace(skyboxTextureCube, i, equirectangularResultTextures[i], 0);
 			skyboxTextureCube->Update(i, equirectangularResultTextures[i]);
-			oldTextures.push_back(equirectangularResultTextures[i]);
+			//oldTextures.push_back(equirectangularResultTextures[i]);
 		}
 		Renderer::GenerateMips(skyboxTextureCube);
 	}
@@ -165,7 +171,7 @@ namespace Daydream
 
 		irradianceTextureCube = TextureCube::CreateEmpty(textureDesc);
 		irradianceTextureCube->SetSampler(ResourceManager::GetResource<Sampler>("LinearClampToEdge"));
-		oldTextures.push_back(irradianceTextureCube);
+		//oldTextures.push_back(irradianceTextureCube);
 
 		FramebufferDesc fbDesc;
 		fbDesc.width = diffuseResolution;
@@ -193,7 +199,7 @@ namespace Daydream
 			Renderer::CopyTexture2D(irradianceFramebuffer->GetColorAttachmentTexture(0), irradianceResultTextures[i]);
 			Renderer::CopyTextureToCubemapFace(irradianceTextureCube, i, irradianceResultTextures[i], 0);
 			irradianceTextureCube->Update(i, irradianceResultTextures[i]);
-			oldTextures.push_back(irradianceResultTextures[i]);
+			//oldTextures.push_back(irradianceResultTextures[i]);
 		}
 	}
 
@@ -231,7 +237,7 @@ namespace Daydream
 
 		prefilterTextureCube = TextureCube::CreateEmpty(textureDesc);
 		prefilterTextureCube->SetSampler(ResourceManager::GetResource<Sampler>("LinearClampToEdge"));
-		oldTextures.push_back(prefilterTextureCube);
+		//oldTextures.push_back(prefilterTextureCube);
 
 		prefilterResultTextures.clear();
 		prefilterResultTextures.resize(6 * prefilterMipLevels);
@@ -271,7 +277,7 @@ namespace Daydream
 				{
 					prefilterTextureCube->Update(face, prefilterResultTextures[index]);
 				}
-				oldTextures.push_back(prefilterResultTextures[face]);
+				//oldTextures.push_back(prefilterResultTextures[face]);
 			}
 		}
 

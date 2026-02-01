@@ -12,10 +12,11 @@ namespace Daydream
 
 		virtual void Bind() const;
 		virtual void Unbind() const;
+
+		virtual void* GetNativeHandle() const override { return reinterpret_cast<void*>(static_cast<UInt64>(bufferID)); };
 		virtual void SetData(const void * _data, UInt32 _dataSize) override;
 	private:
 		UInt32 bufferID;
-		UInt32 stride;
 	};
 
 	class OpenGLIndexBuffer : public IndexBuffer
@@ -24,6 +25,7 @@ namespace Daydream
 		OpenGLIndexBuffer(const UInt32* _indices, UInt32 _IndexCount);
 		virtual ~OpenGLIndexBuffer();
 
+		virtual void* GetNativeHandle() const override { return reinterpret_cast<void*>(static_cast<UInt64>(bufferID)); };
 		virtual void Bind() const;
 		virtual void Unbind() const;
 

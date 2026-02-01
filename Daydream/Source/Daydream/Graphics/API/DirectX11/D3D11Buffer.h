@@ -15,6 +15,7 @@ namespace Daydream
 		virtual void Bind() const;
 		virtual void Unbind() const;
 
+		virtual void* GetNativeHandle() const override { return vertexBuffer.Get(); };
 		virtual void SetData(const void * _data, UInt32 _dataSize) override;
 	private:
 		UInt32 stride;
@@ -31,6 +32,7 @@ namespace Daydream
 		virtual void Bind() const;
 		virtual void Unbind() const;
 
+		virtual void* GetNativeHandle() const override { return indexBuffer.Get(); };
 	private:
 		D3D11RenderDevice* device;
 		ComPtr<ID3D11Buffer> indexBuffer;

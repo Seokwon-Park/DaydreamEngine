@@ -18,7 +18,10 @@ namespace Daydream
 		virtual void Update(Float32 _deltaTime) override {};
 
 		inline void SetMesh(const AssetHandle _meshHandle) { meshHandle = _meshHandle; }
+		inline AssetHandle GetMesh() { return meshHandle; }
 		inline void SetMaterial(const AssetHandle _materialHandle) { materialHandle = _materialHandle; }
+		inline AssetHandle GetMaterial() { return materialHandle; }
+
 		void Render();
 		void RenderMeshOnly();
 		void RenderDepth();
@@ -33,7 +36,6 @@ namespace Daydream
 		AssetHandle meshHandle;
 		AssetHandle materialHandle;
 
-		Shared<ConstantBuffer> entityHandle;
 
 		Shared<Material> maskMaterial;
 		Shared<Material> lightMaterial;

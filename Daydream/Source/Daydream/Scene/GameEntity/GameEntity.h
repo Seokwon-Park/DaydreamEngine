@@ -32,7 +32,7 @@ namespace Daydream
 
 		EntityHandle GetParentHandle() const { return parentHandle; }
 		GameEntity* GetParent();
-		
+
 		void SetParent(EntityHandle _parentHandle);
 		void RemoveParent();
 
@@ -69,7 +69,7 @@ namespace Daydream
 			components.push_back(std::move(newComponent));
 			return rawPtr;
 		};
-	
+
 		template <class ComponentType>
 		bool HasComponent()
 		{
@@ -91,7 +91,8 @@ namespace Daydream
 		}
 
 		void ReorderChild(EntityHandle _childHandle, UInt64 _newIndex);
-	
+
+		Shared<ConstantBuffer> GetEntityHandleConstantBuffer() { return entityHandleConstantBuffer; }
 	protected:
 
 	private:
@@ -110,6 +111,8 @@ namespace Daydream
 
 		EntityHandle parentHandle;
 		Array<EntityHandle> childrenHandles;
+
+		Shared<ConstantBuffer> entityHandleConstantBuffer;
 
 		String name;
 	};

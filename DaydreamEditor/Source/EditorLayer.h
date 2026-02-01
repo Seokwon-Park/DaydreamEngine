@@ -84,10 +84,9 @@ namespace Daydream
 		Shared<Material> deferredLightingMaterial;
 		Shared<Material> material;
 		Shared<Material> material3d;
-		Shared<Material> materialcube;
 		Shared<Material> maskMaterial;
 
-		Shared<Mesh> mesh;
+		Shared<Mesh> cubeMesh;
 		Shared<Model> model;
 
 		Shared<Scene> activeScene;

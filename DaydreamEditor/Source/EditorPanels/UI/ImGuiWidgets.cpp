@@ -167,16 +167,16 @@ namespace Daydream::UI
 		switch (_light.type)
 		{
 		case Directional:
-			DrawFloatController("Intensity", _light.intensity, 0.005f, 0.0f, 10.0f);
+			DrawFloatController("Intensity", _light.intensity, 0.1f, 0.0f, 10000.0f);
 			DrawColorController("Color", _light.color);
 			break;
 		case Point:
-			DrawFloatController("Intensity", _light.intensity, 0.001f, 0.0f, 1.0f);
+			DrawFloatController("Intensity", _light.intensity, 0.1f, 0.0f, 10000.0f);
 			DrawFloatController("Range", _light.range, 0.1f, 0.0f, 0.0f);
 			DrawColorController("Color", _light.color);
 			break;
 		case Spot:
-			DrawFloatController("Intensity", _light.intensity, 0.001f, 0.0f, 1.0f);
+			DrawFloatController("Intensity", _light.intensity, 0.1f, 0.0f, 10000.0f);
 			DrawFloatController("Range", _light.range, 0.1f, 0.0f, 0.0f);
 			DrawFloatController("InnerConeAngle", _light.spotInnerAngle, 0.1f, 0.0f, _light.spotOuterAngle);
 			DrawFloatController("OuterConeAngle", _light.spotOuterAngle, 0.1f, 0.0f, 360.0f);

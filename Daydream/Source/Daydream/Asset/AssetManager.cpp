@@ -263,7 +263,7 @@ namespace Daydream
 		auto itr = assetRegistry.find(_uuid);
 		if (itr == assetRegistry.end())
 		{
-			DAYDREAM_CORE_WARN("Cannot find AssetMetaData!");
+			//DAYDREAM_CORE_WARN("Cannot find AssetMetaData!");
 			return nullptr;
 		}
 

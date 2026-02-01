@@ -28,7 +28,6 @@ namespace Daydream
 
 	protected:
 		GameEntity* owner = nullptr;
-		
 	};
 }
 

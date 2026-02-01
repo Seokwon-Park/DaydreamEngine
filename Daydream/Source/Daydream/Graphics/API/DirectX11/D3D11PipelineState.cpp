@@ -4,6 +4,8 @@
 
 #include "D3D11Utility.h"
 
+#include "D3D11VertexShader.h"
+
 namespace Daydream
 {
 	D3D11PipelineState::D3D11PipelineState(D3D11RenderDevice* _device, PipelineStateDesc _desc)
@@ -28,15 +30,29 @@ namespace Daydream
 			inputLayoutDesc.push_back(elementDesc);
 		}
 
+		
+
+
+		Shared<D3D11VertexShader> vs = static_pointer_cast<D3D11VertexShader>(shaderGroup->GetShader(ShaderType::Vertex));
+		DAYDREAM_CORE_ASSERT(vs, "Vertex Shader is nullptr!");
+		ID3DBlob* vsBlob = vs->GetShaderBlob();
+		DAYDREAM_CORE_ASSERT(vsBlob, "Vertex Shader Blob is nullptr!");
+
 		// 입력 레이아웃 생성
 		HRESULT hr = device->GetDevice()->CreateInputLayout(
 			inputLayoutDesc.data(),
 			(UINT)inputLayoutDesc.size(),
-			static_cast<ID3DBlob*>(shaderGroup->GetShader(ShaderType::Vertex)->GetNativeHandle())->GetBufferPointer(),
-			static_cast<ID3DBlob*>(shaderGroup->GetShader(ShaderType::Vertex)->GetNativeHandle())->GetBufferSize(),
+			vsBlob->GetBufferPointer(),
+			vsBlob->GetBufferSize(),
 			inputLayout.GetAddressOf()
 		);
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create inputlayout!");
+
+		vertexShader = (ID3D11VertexShader*)vs->GetNativeHandle();
+		pixelShader = (ID3D11PixelShader*)shaderGroup->GetShader(ShaderType::Pixel)->GetNativeHandle();
+		//hullShader = (ID3D11HullShader*)shaderGroup->GetShader(ShaderType::Hull)->GetNativeHandle();
+		//domainShader = (ID3D11DomainShader*)shaderGroup->GetShader(ShaderType::Domain)->GetNativeHandle();
+		//geometryShader = (ID3D11GeometryShader*)shaderGroup->GetShader(ShaderType::Geometry)->GetNativeHandle();
 
 		//CW
 		D3D11_RASTERIZER_DESC rastDesc = GraphicsUtility::DirectX11::TranslateToD3D11RasterizerDesc(_desc.rasterizerState);
@@ -47,15 +63,16 @@ namespace Daydream
 
 	void D3D11PipelineState::Bind() const
 	{
-		device->GetContext()->PSSetShader(nullptr, nullptr, 0);
+
+	}
+	void D3D11PipelineState::BindPipelineState()
+	{
+		device->GetContext()->VSSetShader(vertexShader, nullptr, 0);
+		device->GetContext()->PSSetShader(pixelShader, nullptr, 0);
 		device->GetContext()->GSSetShader(nullptr, nullptr, 0);
 		device->GetContext()->HSSetShader(nullptr, nullptr, 0);
 		device->GetContext()->DSSetShader(nullptr, nullptr, 0);
-		device->GetContext()->VSSetShader(nullptr, nullptr, 0);
-		for (auto shader : shaderGroup->GetShaders())
-		{
-			shader->Bind();
-		}
+
 		device->GetContext()->IASetInputLayout(inputLayout.Get());
 		device->GetContext()->RSSetState(rasterizer.Get());
 	}

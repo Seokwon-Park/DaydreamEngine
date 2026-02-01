@@ -35,6 +35,7 @@ namespace Daydream
 	}
 	VulkanRenderContext::~VulkanRenderContext()
 	{
+		device->GetGraphicsQueue().waitIdle();
 	}
 	void VulkanRenderContext::BeginCommandList()
 	{
@@ -142,9 +143,8 @@ namespace Daydream
 	}
 	void VulkanRenderContext::BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer)
 	{
-		Shared<VulkanVertexBuffer> vertexBuffer = static_pointer_cast<VulkanVertexBuffer>(_vertexBuffer);
 		vk::DeviceSize offset = 0;
-		GetActiveCommandBuffer().bindVertexBuffers(0, { vertexBuffer->GetVkBuffer() }, { offset });
+		GetActiveCommandBuffer().bindVertexBuffers(0, { (vk::Buffer)((VkBuffer)_vertexBuffer->GetNativeHandle()) }, { offset });
 	}
 	void VulkanRenderContext::BindIndexBuffer(Shared<IndexBuffer> _indexBuffer)
 	{
@@ -487,8 +487,6 @@ namespace Daydream
 	void VulkanRenderContext::GenerateMips(Shared<Texture> _texture)
 	{
 		//vk::CommandBuffer commandBuffer = device->BeginSingleTimeCommands(); // 이 함수는 vk::CommandBuffer를 반환한다고 가정
-		vk::CommandBuffer commandBuffer = device->GetCommandBuffer();
-
 		vk::Image image = (VkImage)_texture->GetNativeHandle();
 		// vk::ImageMemoryBarrier 구조체 사용, sType은 자동 설정됩니다.
 		vk::ImageMemoryBarrier barrier{};

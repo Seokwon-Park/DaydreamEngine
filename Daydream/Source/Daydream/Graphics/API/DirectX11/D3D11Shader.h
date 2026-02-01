@@ -15,12 +15,10 @@ namespace Daydream
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
-
-		virtual void* GetNativeHandle() { return shaderBlob.Get(); }
-		//virtual void SetMat4(const std::string& _name, const Matrix4x4& _value) override;
+		
+		ID3DBlob* GetShaderBlob() const { return shaderBlob.Get(); }
 	protected:
 		D3D11RenderDevice* device;
-		//ComPtr<IDxcBlob> shaderBlob;
 		ComPtr<ID3DBlob> shaderBlob;
 		ComPtr<ID3DBlob> errorBlob;
 		ComPtr<ID3D11ShaderReflection> reflection;
@@ -36,7 +34,7 @@ namespace Daydream
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
 
-		//virtual void SetMat4(const std::string& _name, const Matrix4x4& _value) override;
+		virtual void* GetNativeHandle() { return pixelShader.Get(); }
 
 	private:
 		ComPtr<ID3D11PixelShader> pixelShader;

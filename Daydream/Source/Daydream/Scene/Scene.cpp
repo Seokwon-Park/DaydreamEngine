@@ -20,6 +20,7 @@ namespace Daydream
 
 	Scene::~Scene()
 	{
+		skybox = nullptr;
 	}
 
 	GameEntity* Scene::CreateGameEntity(const String& _name)
@@ -153,11 +154,11 @@ namespace Daydream
 			if (!entity) continue; // °Ë»ç
 
 			//ModelRendererComponent* renderComponent = entity->GetComponent<ModelRendererComponent>();
-			MeshRendererComponent* renderComponent = entity->GetComponent<MeshRendererComponent>();
+			/*MeshRendererComponent* renderComponent = entity->GetComponent<MeshRendererComponent>();
 			if (renderComponent != nullptr)
 			{
 				renderComponent->Render();
-			}
+			}*/
 
 			LightComponent* lightComponent = entity->GetComponent<LightComponent>();
 			Transform transform = entity->GetComponent<TransformComponent>()->GetTransform();
@@ -209,7 +210,7 @@ namespace Daydream
 		}
 		lightBuffer->Update(&lightData, sizeof(LightData));
 
-		skybox->Update();
+		//skybox->Update();
 	}
 
 	void Scene::RenderDepth()

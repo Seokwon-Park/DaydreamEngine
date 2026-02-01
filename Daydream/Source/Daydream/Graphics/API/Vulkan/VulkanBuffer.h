@@ -14,6 +14,8 @@ namespace Daydream
 
 		virtual void Bind() const;
 		virtual void Unbind() const {};
+
+		virtual void* GetNativeHandle() const override { return vertexBuffer.get(); };
 		virtual void SetData(const void* _data, UInt32 _dataSize) override;
 
 		const vk::Buffer GetVkBuffer() const { return vertexBuffer.get(); }
@@ -34,6 +36,8 @@ namespace Daydream
 		virtual void Bind() const;
 		virtual void Unbind() const {};
 
+
+		virtual void* GetNativeHandle() const override { return indexBuffer.get(); };
 		vk::Buffer GetVkBuffer() { return indexBuffer.get(); }
 	private:
 		VulkanRenderDevice* device;

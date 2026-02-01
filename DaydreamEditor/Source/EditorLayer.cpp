@@ -105,11 +105,6 @@ namespace Daydream
 
 		material3d->SetConstantBuffer("Camera", viewProjMat);
 
-		materialcube = Material::Create(skyboxPipeline);
-		materialcube->SetConstantBuffer("Camera", viewProjMat);
-		materialcube->SetTextureCube("TextureCubemap", activeScene->GetSkybox()->GetSkyboxTexture());
-		//materialcube->SetTexture2D("Texture", texture);
-
 		deferredLightingMaterial = Material::Create(deferredLightingPSO);
 
 
@@ -132,17 +127,16 @@ namespace Daydream
 
 		cubeVBO = VertexBuffer::CreateStatic(sizeof(Vector3) * positions.size(), 12, positions.data());
 		cubeIBO = IndexBuffer::Create(meshData.indices.data(), meshData.indices.size());
-		mesh = Mesh::Create(cubeVBO, cubeIBO);
+		cubeMesh = Mesh::Create(cubeVBO, cubeIBO);
 		/////////////////////////////////////////////////////////////////////////////////////
 
-
-		//model = MakeShared<Model>(mesh);
-		model = MakeShared<Model>();
-		//model->Load("Asset/Model/Lowpoly_tree_sample.fbx");
-		//model->Load("Asset/Model/cerberusgun/scene.gltf");
-		model->Load("Asset/Model/scene.gltf");
-
 		//cubeIBO = IndexBuffer::Create(squareIndices2, sizeof(squareIndices2) / sizeof(uint32_t));
+
+		////model = MakeShared<Model>(mesh);
+		//model = MakeShared<Model>();
+		////model->Load("Asset/Model/Lowpoly_tree_sample.fbx");
+		////model->Load("Asset/Model/cerberusgun/scene.gltf");
+		//model->Load("Asset/Model/scene.gltf");
 
 		ModelRendererComponent* component = entity->AddComponent<ModelRendererComponent>();
 		component->SetModel(model);
@@ -206,6 +200,7 @@ namespace Daydream
 
 		entityBuffer->Update(&info, sizeof(EntityInfo));
 
+		activeScene->Update(_deltaTime);
 
 		//pso->Bind();
 		//squareVB->Bind();
@@ -213,12 +208,27 @@ namespace Daydream
 		//material->Bind();
 		Renderer::BeginRenderPass(depthRenderPass, depthFramebuffer);
 		Renderer::BindPipelineState(depthPSO);
+		if (activeScene->GetLightComponent())
+		{
+			Renderer::SetConstantBuffer("LightSpace", activeScene->GetLightComponent()->GetLight().lightViewProjectionBuffer);
+		}
+
 		for (const auto entityHandle : activeScene->GetAllEntities())
 		{
 			GameEntity* entity = activeScene->GetEntity(entityHandle);
-			Renderer::SetConstantBuffer("World", entity->GetComponent<TransformComponent>()->GetWorldMatrixConstantBuffer());
+
+			MeshRendererComponent* meshrenderer = entity->GetComponent<MeshRendererComponent>();
+			if (meshrenderer)
+			{
+				Renderer::SetConstantBuffer("World", entity->GetComponent<TransformComponent>()->GetWorldMatrixConstantBuffer());
+				auto mesh = AssetManager::GetAsset<Mesh>(meshrenderer->GetMesh());
+				if (mesh)
+				{
+					Renderer::BindMesh(mesh);
+					Renderer::DrawIndexed(mesh->GetIndexCount());
+				}
+			}
 		}
-		activeScene->RenderDepth();
 		Renderer::EndRenderPass(depthRenderPass);
 
 
@@ -229,11 +239,20 @@ namespace Daydream
 		for (const auto entityHandle : activeScene->GetAllEntities())
 		{
 			GameEntity* entity = activeScene->GetEntity(entityHandle);
+			MeshRendererComponent* meshRenderer = entity->GetComponent<MeshRendererComponent>();
+			if (meshRenderer == nullptr) continue;
 			Renderer::SetConstantBuffer("World", entity->GetComponent<TransformComponent>()->GetWorldMatrixConstantBuffer());
-			...
+			Renderer::SetConstantBuffer("Entity", entity->GetEntityHandleConstantBuffer());
+			auto mesh = AssetManager::GetAsset<Mesh>(meshRenderer->GetMesh());
+			auto material = AssetManager::GetAsset<Material>(meshRenderer->GetMaterial());
+			if (mesh && material)
+			{
+				Renderer::BindMesh(mesh);
+				Renderer::SetMaterial(material);
+				Renderer::DrawIndexed(mesh->GetIndexCount());
+			}
 		}
 		//pso3d->Bind();
-		//activeScene->Update(_deltaTime);
 		Renderer::EndRenderPass(gBufferRenderPass);
 
 		// selectionFramebuffer는 반드시 "검은색(0)"으로 Clear 되어 있어야 함.
@@ -243,8 +262,20 @@ namespace Daydream
 		Renderer::BeginRenderPass(maskRenderPass, maskFramebuffer);
 		if (selectedEntity != nullptr && selectedEntity->GetComponent<MeshRendererComponent>())
 		{
-			Renderer::BindPipelineState(maskPSO);
-			selectedEntity->GetComponent<MeshRendererComponent>()->RenderMeshOnly();
+			MeshRendererComponent* meshRenderer = entity->GetComponent<MeshRendererComponent>();
+			if (meshRenderer != nullptr)
+			{
+				auto mesh = AssetManager::GetAsset<Mesh>(meshRenderer->GetMesh());
+
+				Renderer::BindPipelineState(maskPSO);
+				Renderer::SetConstantBuffer("World", entity->GetComponent<TransformComponent>()->GetWorldMatrixConstantBuffer());
+				Renderer::SetConstantBuffer("Camera", editorCamera->GetViewProjectionConstantBuffer());
+				if (mesh)
+				{
+					Renderer::BindMesh(mesh);
+					Renderer::DrawIndexed(mesh->GetIndexCount());
+				}
+			}
 		}
 		Renderer::EndRenderPass(maskRenderPass);
 
@@ -286,10 +317,10 @@ namespace Daydream
 		if (skyboxPanel->IsUsingSkybox())
 		{
 			Renderer::BindPipelineState(skyboxPipeline);
-			Renderer::BindMesh(mesh);
+			Renderer::BindMesh(cubeMesh);
 			Renderer::SetConstantBuffer("Camera", viewProjMat);
 			Renderer::SetTextureCube("TextureCubemap", activeScene->GetSkybox()->GetSkyboxTexture());
-			Renderer::DrawIndexed(mesh->GetIndexCount());
+			Renderer::DrawIndexed(cubeMesh->GetIndexCount());
 		}
 		Renderer::EndRenderPass(renderPass);
 	}
@@ -423,10 +454,10 @@ namespace Daydream
 				AssetHandle* pHandle = (AssetHandle*)payload->Data;
 				activeScene->CreateGameEntityFromModel(*pHandle);
 
-				for (auto x : model->GetMeshes())
-				{
-					DAYDREAM_CORE_INFO("{}", x.ToString());
-				}
+				//for (auto x : model->GetMeshes())
+				//{
+				//	DAYDREAM_CORE_INFO("{}", x.ToString());
+				//}
 			}
 			ImGui::EndDragDropTarget();
 		}
@@ -507,8 +538,6 @@ namespace Daydream
 		ImGui::End();
 
 		sceneHierarchyPanel->OnImGuiRender();
-
-
 		propertyPanel->SetSelectedEntity(selectedEntity);
 		propertyPanel->OnImGuiRender();
 		assetBrowserPanel->OnImGuiRender();
@@ -583,6 +612,11 @@ namespace Daydream
 
 	void EditorLayer::OnDetach()
 	{
+		viewportPanel = nullptr;
+		propertyPanel = nullptr;
+		sceneHierarchyPanel = nullptr;
+		assetBrowserPanel = nullptr;
+		skyboxPanel = nullptr;
 		viewportFramebuffer = nullptr;
 	}
 

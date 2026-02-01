@@ -14,8 +14,7 @@ namespace Daydream
 {
 	MeshRendererComponent::MeshRendererComponent()
 	{
-		worldMatrixConstantBuffer = ConstantBuffer::Create(sizeof(TransformConstantBufferData));
-		entityHandle = ConstantBuffer::Create(16);
+		
 
 		maskMaterial = Material::Create(ResourceManager::GetResource<PipelineState>("MaskPSO"));
 		lightMaterial = Material::Create(ResourceManager::GetResource<PipelineState>("DepthPSO"));
@@ -26,7 +25,6 @@ namespace Daydream
 	}
 	void MeshRendererComponent::Init()
 	{
-		entityHandle->Update(&GetOwner()->GetHandle().id, sizeof(UInt32));
 	}
 
 	void MeshRendererComponent::Render()
@@ -52,7 +50,6 @@ namespace Daydream
 		}
 		if (material)
 		{
-			Renderer::SetConstantBuffer("Entity", entityHandle);
 
 			material->SetConstantBuffer("Camera", GetOwner()->GetScene()->GetCurrentCamera()->GetViewProjectionConstantBuffer());
 			material->SetConstantBuffer("Lights", GetOwner()->GetScene()->GetLightConstantBuffer());
@@ -63,7 +60,6 @@ namespace Daydream
 		}
 		if (mesh && material)
 		{
-			Renderer::DrawIndexed(mesh->GetIndexCount());
 		}
 
 		//	material->SetTexture2D("Texture", mesh->GetDiffuseTexture());
@@ -94,19 +90,19 @@ namespace Daydream
 	void MeshRendererComponent::RenderMeshOnly()
 	{
 		// 1. Transform 업데이트 (기존 로직 유지)
-		TransformComponent* transform = GetOwner()->GetComponent<TransformComponent>();
-		TransformConstantBufferData data;
-		data.world = transform->GetWorldMatrix().GetTranspose();
-		data.invTranspose = data.world;
-		data.invTranspose.Invert();
-		data.invTranspose.Transpose();
-		worldMatrixConstantBuffer->Update(&data, sizeof(data));
+		//TransformComponent* transform = GetOwner()->GetComponent<TransformComponent>();
+		//TransformConstantBufferData data;
+		//data.world = transform->GetWorldMatrix().GetTranspose();
+		//data.invTranspose = data.world;
+		//data.invTranspose.Invert();
+		//data.invTranspose.Transpose();
+		//worldMatrixConstantBuffer->Update(&data, sizeof(data));
 
 		Shared<Mesh> mesh;
 		// 2. Mesh 순회 (Material Bind는 스킵!)				
 		if (meshHandle.IsValid())
 			mesh = AssetManager::GetAsset<Mesh>(meshHandle);
-		maskMaterial->SetConstantBuffer("World", worldMatrixConstantBuffer);
+		//maskMaterial->SetConstantBuffer("World", worldMatrixConstantBuffer);
 		maskMaterial->SetConstantBuffer("Camera", GetOwner()->GetScene()->GetCurrentCamera()->GetViewProjectionConstantBuffer());
 		//lightMaterial->SetConstantBuffer("World", worldMatrixConstantBuffer);
 		//if (GetOwner()->GetScene()->GetLightComponent())
@@ -133,31 +129,23 @@ namespace Daydream
 	void MeshRendererComponent::RenderDepth()
 	{
 		// 1. Transform 업데이트 (기존 로직 유지)
-		TransformComponent* transform = GetOwner()->GetComponent<TransformComponent>();
-		TransformConstantBufferData data;
-		data.world = transform->GetWorldMatrix().GetTranspose();
-		data.invTranspose = data.world;
-		data.invTranspose.Invert();
-		data.invTranspose.Transpose();
-		worldMatrixConstantBuffer->Update(&data, sizeof(data));
+		//TransformComponent* transform = GetOwner()->GetComponent<TransformComponent>();
+		//TransformConstantBufferData data;
+		//data.world = transform->GetWorldMatrix().GetTranspose();
+		//data.invTranspose = data.world;
+		//data.invTranspose.Invert();
+		//data.invTranspose.Transpose();
+		//worldMatrixConstantBuffer->Update(&data, sizeof(data));
 
 		Shared<Mesh> mesh;
 		// 2. Mesh 순회 (Material Bind는 스킵!)				
 		if (meshHandle.IsValid())
 			mesh = AssetManager::GetAsset<Mesh>(meshHandle);
 
-		lightMaterial->SetConstantBuffer("World", worldMatrixConstantBuffer);
-		if (GetOwner()->GetScene()->GetLightComponent())
-		{
-			Renderer::SetConstantBuffer("LightSpace", GetOwner()->GetScene()->GetLightComponent()->GetLight().lightViewProjectionBuffer);
-		}
+		//lightMaterial->SetConstantBuffer("World", worldMatrixConstantBuffer);
 
-		if (mesh)
-		{
-			Renderer::BindMesh(mesh);
-			lightMaterial->Bind();
-			Renderer::DrawIndexed(mesh->GetIndexCount());
-		}
+
+
 	}
 
 }

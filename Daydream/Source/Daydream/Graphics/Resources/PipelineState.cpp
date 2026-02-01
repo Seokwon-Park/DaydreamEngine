@@ -14,7 +14,7 @@ namespace Daydream
 		renderPass = _desc.renderPass;
 	}
 
-		Shared<PipelineState> PipelineState::Create(const PipelineStateDesc& _desc)
+	Shared<PipelineState> PipelineState::Create(const PipelineStateDesc& _desc)
 	{
 		return Renderer::GetRenderDevice()->CreatePipelineState(_desc);
 	}

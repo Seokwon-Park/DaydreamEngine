@@ -74,7 +74,7 @@ namespace Daydream
 					if (p.is_directory())
 					{
 						// 폴더 아이콘 로드 (ResourceManager에 미리 로드해두세요)
-						thumbnail = AssetManager::GetAssetByPath<Texture2D>("Resource\\DirectoryIcon.png");
+						thumbnail = AssetManager::GetAssetByPath<Texture2D>("Resource/DirectoryIcon.png");
 						ImGui::ImageButton(pathString.c_str(), (ImTextureID)thumbnail->GetImGuiHandle(), { thumbnailSize, thumbnailSize });
 					}
 					else // 파일인 경우
