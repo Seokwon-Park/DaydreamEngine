@@ -238,7 +238,7 @@ namespace Daydream
 
 	Unique<RenderContext> D3D12RenderDevice::CreateContext(UInt32 _framesInFlight)
 	{
-		return MakeUnique<D3D12GraphicsContext>(this, _framesInFlight);
+		return MakeUnique<D3D12RenderContext>(this, _framesInFlight);
 	}
 
 	Shared<VertexBuffer> D3D12RenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)

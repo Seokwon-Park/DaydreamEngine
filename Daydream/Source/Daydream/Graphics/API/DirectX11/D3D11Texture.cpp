@@ -8,19 +8,17 @@
 namespace Daydream
 {
 	D3D11Texture2D::D3D11Texture2D(D3D11RenderDevice* _device, const TextureDesc& _desc, const void* _initialData)
+		:Texture2D(_desc)
 	{
 		device = _device;
-
-		width = _desc.width;
-		height = _desc.height;
 
 		DXGI_FORMAT textureFormat = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(_desc.format);
 		DXGI_FORMAT srvFormat = textureFormat;
 		DXGI_FORMAT dsvFormat = textureFormat;
 
 		D3D11_TEXTURE2D_DESC textureDesc = {};
-		textureDesc.Width = width;
-		textureDesc.Height = height;
+		textureDesc.Width = desc.width;
+		textureDesc.Height = desc.height;
 		textureDesc.MipLevels = 1;
 		textureDesc.ArraySize = 1;
 		textureDesc.Format = textureFormat;

@@ -8,12 +8,10 @@ namespace Daydream
 	class TextureCube : public Texture
 	{
 	public:
+		TextureCube(const TextureDesc& _dsec);
 		virtual ~TextureCube();
 
-		virtual UInt32 GetWidth() const { return width; }
-		virtual UInt32 GetHeight() const { return height; }
 		virtual UInt32 GetLayerCount() const { return 6; }
-		virtual UInt32 GetMipLevels() const { return desc.mipLevels; }
 
 		void Update(UInt32 _faceIndex, Shared<Texture2D> _texture);
 		virtual void GenerateMips() {};
@@ -25,9 +23,6 @@ namespace Daydream
 		static Shared<TextureCube> Create(const Array<Shared<Texture2D>>& _textures, const TextureDesc& _desc);
 		static Shared<TextureCube> CreateEmpty(const TextureDesc& _desc);
 	protected:
-		TextureDesc desc;
 		Array<Shared<Texture2D>> textures;
-		Int32 width = 0;
-		Int32 height = 0;
 	};
 }

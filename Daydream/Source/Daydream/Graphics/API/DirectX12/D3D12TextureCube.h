@@ -20,8 +20,6 @@ namespace Daydream
 
 		virtual inline void* GetNativeHandle() override { return texture.Get(); }
 
-		UInt32 GetMipLevels() { return mipLevels; }
-
 		ID3D12Resource* GetID3D12Resource() { return texture.Get(); }
 		inline D3D12_CPU_DESCRIPTOR_HANDLE GetSRVCPUHandle() { return srvCpuHandle; }
 		inline D3D12_GPU_DESCRIPTOR_HANDLE GetSRVGPUHandle() { return srvGpuHandle; }
@@ -53,7 +51,6 @@ namespace Daydream
 		D3D12_CPU_DESCRIPTOR_HANDLE uavCpuHandle = {};
 		D3D12_GPU_DESCRIPTOR_HANDLE uavGpuHandle = {};
 
-		UInt32 mipLevels;
 		DXGI_FORMAT format;
 		Shared<Material> resizeMaterial;
 

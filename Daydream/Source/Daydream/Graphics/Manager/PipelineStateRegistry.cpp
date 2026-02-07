@@ -71,6 +71,7 @@ namespace Daydream
 		psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("DepthRenderPass");
 		registry["DepthPSO"] = PipelineState::Create(psoDesc);
 
+
 		//Cubemap 렌더링 파이프라인
 		psoDesc.rasterizerState = rastDesc;
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Cubemap");

@@ -11,7 +11,7 @@
 
 namespace Daydream
 {
-	
+
 	D3D11Swapchain::D3D11Swapchain(D3D11RenderDevice* _device, DaydreamWindow* _window, const SwapchainDesc& _desc)
 	{
 		device = _device;
@@ -58,7 +58,7 @@ namespace Daydream
 		viewport.TopLeftX = 0;
 		viewport.TopLeftY = 0;
 		viewport.Width = Cast<Float32>(_desc.width);
-		viewport.Height= Cast<Float32>(_desc.height);
+		viewport.Height = Cast<Float32>(_desc.height);
 		viewport.MinDepth = 0.0f;
 		viewport.MaxDepth = 1.0f;
 
@@ -75,7 +75,6 @@ namespace Daydream
 	void D3D11Swapchain::Present()
 	{
 		swapChain->Present(desc.isVSync, 0);
-		ResizeFramebuffers();
 	}
 
 	void D3D11Swapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
@@ -88,10 +87,27 @@ namespace Daydream
 
 	void D3D11Swapchain::BeginFrame()
 	{
+		ResizeFramebuffers();
+
+		Array<ID3D11RenderTargetView*> rtvs = framebuffer->GetRenderTargetViews();
+		for (auto rtv : rtvs)
+		{
+			device->GetContext()->ClearRenderTargetView(rtv, mainRenderPass->GetClearColor().color);
+		}
+		if (framebuffer->HasDepthAttachment())
+		{
+			device->GetContext()->ClearDepthStencilView(framebuffer->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+			device->GetContext()->OMSetRenderTargets((UInt32)rtvs.size(), rtvs.data(), framebuffer->GetDepthStencilView());
+		}
+		else
+		{
+			device->GetContext()->OMSetRenderTargets((UInt32)rtvs.size(), rtvs.data(), nullptr);
+		}
 	}
 
 	void D3D11Swapchain::EndFrame()
 	{
+		device->GetContext()->OMSetRenderTargets(0, nullptr, nullptr);
 	}
 
 }

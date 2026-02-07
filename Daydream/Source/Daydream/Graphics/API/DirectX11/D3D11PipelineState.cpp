@@ -30,33 +30,51 @@ namespace Daydream
 			inputLayoutDesc.push_back(elementDesc);
 		}
 
-		
+		for (const auto& shader : shaderGroup->GetShaders())
+		{
+			switch (shader->GetType())
+			{
+			case ShaderType::Vertex:
+			{
+				Shared<D3D11VertexShader> vs = static_pointer_cast<D3D11VertexShader>(shaderGroup->GetShader(ShaderType::Vertex));
+				DAYDREAM_CORE_ASSERT(vs, "Vertex Shader is nullptr!");
+				ID3DBlob* vsBlob = vs->GetShaderBlob();
+				DAYDREAM_CORE_ASSERT(vsBlob, "Vertex Shader Blob is nullptr!");
 
+				// 입력 레이아웃 생성
+				HRESULT hr = device->GetDevice()->CreateInputLayout(
+					inputLayoutDesc.data(),
+					(UINT)inputLayoutDesc.size(),
+					vsBlob->GetBufferPointer(),
+					vsBlob->GetBufferSize(),
+					inputLayout.GetAddressOf()
+				);
+				DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create inputlayout!");
 
-		Shared<D3D11VertexShader> vs = static_pointer_cast<D3D11VertexShader>(shaderGroup->GetShader(ShaderType::Vertex));
-		DAYDREAM_CORE_ASSERT(vs, "Vertex Shader is nullptr!");
-		ID3DBlob* vsBlob = vs->GetShaderBlob();
-		DAYDREAM_CORE_ASSERT(vsBlob, "Vertex Shader Blob is nullptr!");
+				vertexShader = (ID3D11VertexShader*)vs->GetNativeHandle();
+				break;
+			}
+			case ShaderType::Pixel:
+			{
+				pixelShader = (ID3D11PixelShader*)shaderGroup->GetShader(ShaderType::Pixel)->GetNativeHandle();
+				break;
+			}
+			default:
+			{
+				break;
+			}
+			}
+		}
 
-		// 입력 레이아웃 생성
-		HRESULT hr = device->GetDevice()->CreateInputLayout(
-			inputLayoutDesc.data(),
-			(UINT)inputLayoutDesc.size(),
-			vsBlob->GetBufferPointer(),
-			vsBlob->GetBufferSize(),
-			inputLayout.GetAddressOf()
-		);
-		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create inputlayout!");
-
-		vertexShader = (ID3D11VertexShader*)vs->GetNativeHandle();
-		pixelShader = (ID3D11PixelShader*)shaderGroup->GetShader(ShaderType::Pixel)->GetNativeHandle();
 		//hullShader = (ID3D11HullShader*)shaderGroup->GetShader(ShaderType::Hull)->GetNativeHandle();
 		//domainShader = (ID3D11DomainShader*)shaderGroup->GetShader(ShaderType::Domain)->GetNativeHandle();
 		//geometryShader = (ID3D11GeometryShader*)shaderGroup->GetShader(ShaderType::Geometry)->GetNativeHandle();
 
 		//CW
 		D3D11_RASTERIZER_DESC rastDesc = GraphicsUtility::DirectX11::TranslateToD3D11RasterizerDesc(_desc.rasterizerState);
-		
+
+		//D3D11_DEPTH_STENCIL_DESC depthDesc;
+		//D3D11_BLEND_DESC blendDesc;
 		
 		_device->GetDevice()->CreateRasterizerState(&rastDesc, rasterizer.GetAddressOf());
 	}
@@ -69,11 +87,12 @@ namespace Daydream
 	{
 		device->GetContext()->VSSetShader(vertexShader, nullptr, 0);
 		device->GetContext()->PSSetShader(pixelShader, nullptr, 0);
-		device->GetContext()->GSSetShader(nullptr, nullptr, 0);
-		device->GetContext()->HSSetShader(nullptr, nullptr, 0);
-		device->GetContext()->DSSetShader(nullptr, nullptr, 0);
+		device->GetContext()->HSSetShader(hullShader, nullptr, 0);
+		device->GetContext()->DSSetShader(domainShader, nullptr, 0);
+		device->GetContext()->GSSetShader(geometryShader, nullptr, 0);
 
 		device->GetContext()->IASetInputLayout(inputLayout.Get());
+		device->GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		device->GetContext()->RSSetState(rasterizer.Get());
 	}
 	//Shared<Material> D3D11PipelineState::CreateMaterial()

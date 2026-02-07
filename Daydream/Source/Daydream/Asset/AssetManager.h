@@ -65,7 +65,7 @@ namespace Daydream
 			auto itr = instance->loadedAssetCache.find(_uuid);
 			if (itr != instance->loadedAssetCache.end())
 			{
-				return std::static_pointer_cast<AssetType>(itr->second);
+				return SharedCast<AssetType>(itr->second);
 			}
 			
 			Shared<Asset> newAsset = instance->LoadAssetCache(_uuid);

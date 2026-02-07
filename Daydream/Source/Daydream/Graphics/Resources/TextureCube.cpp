@@ -9,6 +9,11 @@
 
 namespace Daydream
 {
+	TextureCube::TextureCube(const TextureDesc& _desc)
+		:Texture(_desc)
+	{
+		textures.resize(6);
+	}
 	TextureCube::~TextureCube()
 	{
 		textures.clear();

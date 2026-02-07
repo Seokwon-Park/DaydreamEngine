@@ -58,19 +58,19 @@ namespace Daydream
 
 	void Renderer::OnWindowResize(UInt32 _width, UInt32 _height)
 	{
-		renderContext->SetViewport(0, 0, _width, _height);
-		currentWindow->GetSwapchain()->ResizeSwapchain(_width, _height);
+		//renderContext->SetViewport(0, 0, _width, _height);
+		//currentWindow->GetSwapchain()->ResizeSwapchain(_width, _height);
 	}
 
-	void Renderer::BeginSwapchainRenderPass(DaydreamWindow* _window)
+	void Renderer::BeginFrame(Swapchain* _swapchain)
 	{
-		_window->GetSwapchain()->BeginRenderPass();
+		_swapchain->BeginFrame();
 	}
 
-	void Renderer::EndSwapchainRenderPass(DaydreamWindow* _window)
+	void Renderer::EndFrame(Swapchain* _swapchain)
 	{
-		_window->GetSwapchain()->EndRenderPass();
-
+		_swapchain->EndFrame();
+		_swapchain->Present();
 	}
 
 	void Renderer::BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer)
@@ -108,9 +108,9 @@ namespace Daydream
 		renderContext->SetConstantBuffer(_name, _buffer);
 		//commandLists[0]->AddCommand([=]() {renderContext->SetConstantBuffer(_name, _buffer); });
 	}
-	void Renderer::SetMaterial(Shared<Material> _material)
+	void Renderer::BindMaterial(Shared<Material> _material)
 	{
-		renderContext->SetMaterial(_material);
+		renderContext->BindMaterial(_material);
 		//commandLists[0]->AddCommand([=]() {renderContext->SetMaterial(_material); });
 	}
 

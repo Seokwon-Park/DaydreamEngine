@@ -9,7 +9,7 @@ namespace Daydream
 	{
 		device = _device;
 		desc = _desc;
-		window = Cast<GLFWwindow>(_window->GetNativeWindow());
+		window = Cast<GLFWwindow*>(_window->GetNativeWindow());
 		//#if defined(DAYDREAM_PLATFORM_WINDOWS)
 		//		VkWin32SurfaceCreateInfoKHR createInfo{};
 		//		createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
@@ -203,10 +203,58 @@ namespace Daydream
 		commandBuffers[currentFrame]->begin(beginInfo);
 
 		ResizeFramebuffers();
+
+		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::Vulkan, "Wrong API");
+
+		vk::RenderPassBeginInfo renderPassInfo{};
+		renderPassInfo.renderPass = renderPass->GetVkRenderPass();
+		renderPassInfo.framebuffer = framebuffers[imageIndex]->GetFramebuffer();
+		renderPassInfo.renderArea.offset = vk::Offset2D(0, 0);
+		renderPassInfo.renderArea.extent = framebuffers[imageIndex]->GetExtent();
+
+		Array<vk::ClearValue> colors;
+		for (int i = 0; i < imageCount; i++)
+		{
+			vk::ClearValue vulkanClearColor;
+			vulkanClearColor.setColor({ 0.0f, 0.0f, 1.0f, 1.0f });
+			colors.push_back(vulkanClearColor);
+		}
+
+		if (framebuffers[imageIndex]->HasDepthAttachment())
+		{
+			vk::ClearValue vulkanClearDepthStencil;
+			vulkanClearDepthStencil.depthStencil.depth = 1.0f; // 또는 0.0f
+			vulkanClearDepthStencil.depthStencil.stencil = 0;   // 스텐실 값도 함께 초기화
+			colors.push_back(vulkanClearDepthStencil);
+		}
+
+		renderPassInfo.clearValueCount = colors.size();
+		renderPassInfo.pClearValues = colors.data();
+
+		commandBuffers[currentFrame]->beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
+		device->SetCurrentRenderPass(renderPass->GetVkRenderPass());
+		vk::Viewport viewport{};
+		//viewport.x = 0.0f;
+		//viewport.y = (float)extent.height;
+		//viewport.width = (float)extent.width;
+		//viewport.height = -(float)extent.height;
+		viewport.x = 0.0f;
+		viewport.y = 0.0f;
+		viewport.width = (float)framebuffers[imageIndex]->GetExtent().width;
+		viewport.height = (float)framebuffers[imageIndex]->GetExtent().height;
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		commandBuffers[currentFrame]->setViewport(0, 1, &viewport);
+
+		vk::Rect2D scissor{};
+		scissor.offset = vk::Offset2D(0, 0);
+		scissor.extent = framebuffers[imageIndex]->GetExtent();
+		commandBuffers[currentFrame]->setScissor(0, 1, &scissor);
 	}
 
 	void VulkanSwapchain::EndFrame()
 	{
+		commandBuffers[currentFrame]->endRenderPass();
 		commandBuffers[currentFrame]->end();
 
 		vk::SubmitInfo submitInfo{};
@@ -233,13 +281,13 @@ namespace Daydream
 		device->GetDevice().waitIdle();
 
 		//commandBuffers[currentFrame]->reset({});
-		framebuffers.clear();
+
 		swapchainImages.clear();
 		swapchain.reset();
 		CreateSwapchain();
 		swapchainImages = device->GetDevice().getSwapchainImagesKHR(swapchain.get());
 
-		framebuffers.resize(desc.bufferCount);
+		framebuffers.assign(desc.bufferCount, nullptr);
 		for (UInt32 i = 0; i < desc.bufferCount; i++)
 		{
 			framebuffers[i] = MakeShared<VulkanFramebuffer>(device, this, renderPass.get(), swapchainImages[i]);

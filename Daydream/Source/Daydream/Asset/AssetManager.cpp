@@ -315,6 +315,7 @@ namespace Daydream
 		desc.width = 1;
 		desc.height = 1;
 		desc.format = RenderFormat::R8G8B8A8_UNORM;
+		desc.type = TextureType::Texture2D;
 		UInt32 imageSize = desc.width * desc.height;
 
 		Array<UInt8> pixelData;

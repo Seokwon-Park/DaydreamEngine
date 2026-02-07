@@ -5,10 +5,10 @@
 
 namespace Daydream
 {
-	class D3D11GraphicsContext : public RenderContext
+	class D3D11RenderContext : public RenderContext
 	{
 	public:
-		D3D11GraphicsContext(D3D11RenderDevice* _device);
+		D3D11RenderContext(D3D11RenderDevice* _device);
 
 		virtual void BeginCommandList() override {};
 		virtual void EndCommandList() override {};
@@ -24,12 +24,10 @@ namespace Daydream
 
 		virtual void BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer) override;
 		virtual void BindIndexBuffer(Shared<IndexBuffer> _indexBuffer) override;
-		virtual void BindMesh(Shared<Mesh> _mesh) override;
 
 		virtual void SetTexture2D(const String& _name, Shared<Texture2D> _texture) override;
 		virtual void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube) override;
 		virtual void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer) override;
-		virtual void SetMaterial(Shared<Material> _material) override;
 
 		virtual void Submit() override;
 
@@ -39,6 +37,8 @@ namespace Daydream
 		virtual void GenerateMips(Shared<Texture> _texture)override;
 
 	private:
+		inline static Array<ID3D11ShaderResourceView*> nullSRVs = Array<ID3D11ShaderResourceView*>(128, nullptr); 
+
 		D3D11RenderDevice* device;
 		Color clearColor = Color();
 	};

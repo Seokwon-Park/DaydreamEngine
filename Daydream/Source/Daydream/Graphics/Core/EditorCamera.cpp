@@ -24,7 +24,6 @@ namespace Daydream
 	{
 		transform.rotation.y += mouseDelta.x * rotationSpeed;
 		transform.rotation.x += mouseDelta.y * rotationSpeed;
-
 	}
 
 	void EditorCamera::CameraMove(Float32 _deltaTime)

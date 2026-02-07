@@ -360,7 +360,6 @@ PSOutput PSMain(PSInput input)
                 }
             }
 
-        // 9개 샘플의 평균을 구함 (0.0 ~ 1.0 사이의 부드러운 값)
         shadowFactor = shadowSum / 9.0;
 
         // --- [수정된 부분 끝] ---

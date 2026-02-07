@@ -34,8 +34,9 @@ namespace Daydream
 		static void OnWindowResize(UInt32 _width, UInt32 _height);
 
 
-		static void BeginSwapchainRenderPass(DaydreamWindow* _window);
-		static void EndSwapchainRenderPass(DaydreamWindow* _window);
+		static void BeginFrame(Swapchain* _swapchain);
+		static void EndFrame(Swapchain* _swapchain);
+		
 
 		static void BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer); 
 		static void EndRenderPass(Shared<RenderPass> _renderPass); 
@@ -47,7 +48,7 @@ namespace Daydream
 		static void SetTexture2D(const String& _name, Shared<Texture2D> _texture);
 		static void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube);
 		static void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer);
-		static void SetMaterial(Shared<Material> _material);
+		static void BindMaterial(Shared<Material> _material);
 
 		static void DrawIndexed(UInt32 _indexCount);
 

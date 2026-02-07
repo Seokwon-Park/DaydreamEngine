@@ -27,7 +27,7 @@ namespace Daydream
 
 
 		Array<ID3D11RenderTargetView*> GetRenderTargetViews() { return renderTargetViews; }
-		ComPtr<ID3D11DepthStencilView> GetDepthStencilView() { return depthAttachment->GetDSV(); }
+		ID3D11DepthStencilView* GetDepthStencilView() { return depthAttachment->GetDSV(); }
 
 	private:
 		D3D11RenderDevice* device;
@@ -35,7 +35,6 @@ namespace Daydream
 		Array<Shared<D3D11Texture2D>> colorAttachments;
 		Array<ID3D11RenderTargetView*> renderTargetViews;
 		Shared<D3D11Texture2D> depthAttachment;
-		ComPtr<ID3D11DepthStencilView> depthStencilView;
 
 		Shared<D3D11Texture2D> entityTexture = 0;
 		ComPtr<ID3D11Texture2D> readTexture;

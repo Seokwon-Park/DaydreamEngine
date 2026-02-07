@@ -59,7 +59,7 @@ namespace Daydream
 		vk::Result result = device->GetGraphicsQueue().submit(1, &submitInfo, waitFences[commandBufferIndex].get());
 
 		commandBufferIndex = (commandBufferIndex + 1) % 3;
-		
+
 		device->GetGraphicsQueue().waitIdle();
 	}
 	void VulkanRenderContext::SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height)
@@ -131,7 +131,6 @@ namespace Daydream
 	void VulkanRenderContext::EndRenderPass(Shared<RenderPass> _renderPass)
 	{
 		GetActiveCommandBuffer().endRenderPass();
-
 	}
 	void VulkanRenderContext::BindPipelineState(Shared<PipelineState> _pipelineState)
 	{
@@ -144,17 +143,13 @@ namespace Daydream
 	void VulkanRenderContext::BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer)
 	{
 		vk::DeviceSize offset = 0;
-		GetActiveCommandBuffer().bindVertexBuffers(0, { (vk::Buffer)((VkBuffer)_vertexBuffer->GetNativeHandle()) }, { offset });
+		Shared<VulkanVertexBuffer> vertexBuffer = SharedCast<VulkanVertexBuffer>(_vertexBuffer);
+		GetActiveCommandBuffer().bindVertexBuffers(0, { vertexBuffer->GetVkBuffer() }, { offset });
 	}
 	void VulkanRenderContext::BindIndexBuffer(Shared<IndexBuffer> _indexBuffer)
 	{
-		Shared<VulkanIndexBuffer> indexBuffer = static_pointer_cast<VulkanIndexBuffer>(_indexBuffer);
+		Shared<VulkanIndexBuffer> indexBuffer = SharedCast<VulkanIndexBuffer>(_indexBuffer);
 		GetActiveCommandBuffer().bindIndexBuffer(indexBuffer->GetVkBuffer(), 0, vk::IndexType::eUint32);
-	}
-	void VulkanRenderContext::BindMesh(Shared<Mesh> _mesh)
-	{
-		BindVertexBuffer(_mesh->GetVertexBuffer());
-		BindIndexBuffer(_mesh->GetIndexBuffer());
 	}
 
 	void VulkanRenderContext::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
@@ -163,8 +158,8 @@ namespace Daydream
 		const ShaderReflectionData* resourceInfo = currentPipelineState->GetBindingInfo(_name);
 		if (resourceInfo == nullptr) return;
 
-		Shared<VulkanTexture2D> vulkanTexture = std::static_pointer_cast<VulkanTexture2D>(_texture);
-		Shared<VulkanPipelineState> vulkanPSO = std::static_pointer_cast<VulkanPipelineState>(currentPipelineState);
+		Shared<VulkanTexture2D> vulkanTexture = SharedCast<VulkanTexture2D>(_texture);
+		Shared<VulkanPipelineState> vulkanPSO = SharedCast<VulkanPipelineState>(currentPipelineState);
 
 		vk::DescriptorImageInfo imageInfo{};
 		imageInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
@@ -242,42 +237,20 @@ namespace Daydream
 			&writeSet
 		);
 	}
-	void VulkanRenderContext::SetMaterial(Shared<Material> _material)
-	{
-		const auto& textureInfo = _material->GetAllTexture2D();
-		for (auto [name, texture] : textureInfo)
-		{
-			if (texture == nullptr) continue;
-			SetTexture2D(name, texture);
-		}
 
-		const auto& textureCubeInfo = _material->GetAllTextureCube();
-		for (auto [name, textureCube] : textureCubeInfo)
-		{
-			if (textureCube == nullptr) continue;
-			SetTextureCube(name, textureCube);
-		}
-
-		const auto& constantBufferInfo = _material->GetAllConstantBuffer();
-		for (auto [name, cbuffer] : constantBufferInfo)
-		{
-			if (cbuffer == nullptr) continue;
-			SetConstantBuffer(name, cbuffer);
-		}
-	}
 	void VulkanRenderContext::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
 	{
 		vk::ImageMemoryBarrier barriers[2] = {};
 
-		VulkanTexture2D* src = (VulkanTexture2D*)_src.get();
-		VulkanTexture2D* dst = (VulkanTexture2D*)_dst.get();
+		Shared<VulkanTexture2D> dst = SharedCast<VulkanTexture2D>(_dst);
+		Shared<VulkanTexture2D> src = SharedCast<VulkanTexture2D>(_src);
 
 		// 원본 이미지를 TRANSFER_SRC로 변경
 		barriers[0].oldLayout = vk::ImageLayout::eShaderReadOnlyOptimal; // 또는 현재 레이아웃
 		barriers[0].newLayout = vk::ImageLayout::eTransferSrcOptimal;
 		barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barriers[0].image = src->GetImage();
+		barriers[0].image = src->GetVkImage();
 		barriers[0].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
 		barriers[0].subresourceRange.baseMipLevel = 0;
 		barriers[0].subresourceRange.levelCount = 1;
@@ -291,7 +264,7 @@ namespace Daydream
 		barriers[1].newLayout = vk::ImageLayout::eTransferDstOptimal;
 		barriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barriers[1].image = dst->GetImage();
+		barriers[1].image = dst->GetVkImage();;
 		barriers[1].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
 		barriers[1].subresourceRange.baseMipLevel = 0;
 		barriers[1].subresourceRange.levelCount = 1;
@@ -315,13 +288,13 @@ namespace Daydream
 		copyRegion.srcSubresource.layerCount = 1;
 		copyRegion.dstSubresource.aspectMask = vk::ImageAspectFlagBits::eColor;
 		copyRegion.dstSubresource.layerCount = 1;
-		copyRegion.extent.width = src->GetWidth();
-		copyRegion.extent.height = src->GetHeight();
+		copyRegion.extent.width = _src->GetWidth();
+		copyRegion.extent.height = _src->GetHeight();
 		copyRegion.extent.depth = 1;
 
 		GetActiveCommandBuffer().copyImage(
-			src->GetImage(), vk::ImageLayout::eTransferSrcOptimal,
-			dst->GetImage(), vk::ImageLayout::eTransferDstOptimal,
+			src->GetVkImage(), vk::ImageLayout::eTransferSrcOptimal,
+			dst->GetVkImage(), vk::ImageLayout::eTransferDstOptimal,
 			1, &copyRegion
 		);
 
@@ -331,7 +304,7 @@ namespace Daydream
 		barriers[0].newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 		barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barriers[0].image = src->GetImage();
+		barriers[0].image = src->GetVkImage();
 		barriers[0].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
 		barriers[0].subresourceRange.baseMipLevel = 0;
 		barriers[0].subresourceRange.levelCount = 1;
@@ -345,7 +318,7 @@ namespace Daydream
 		barriers[1].newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 		barriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barriers[1].image = dst->GetImage();
+		barriers[1].image = dst->GetVkImage();;
 		barriers[1].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
 		barriers[1].subresourceRange.baseMipLevel = 0;
 		barriers[1].subresourceRange.levelCount = 1;
@@ -365,8 +338,8 @@ namespace Daydream
 	}
 	void VulkanRenderContext::CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel)
 	{
-		Shared<VulkanTextureCube> dst = static_pointer_cast<VulkanTextureCube>(_dstCubemap);
-		Shared<VulkanTexture2D> src = static_pointer_cast<VulkanTexture2D>(_srcTexture2D);
+		Shared<VulkanTextureCube> dst = SharedCast<VulkanTextureCube>(_dstCubemap);
+		Shared<VulkanTexture2D> src = SharedCast<VulkanTexture2D>(_srcTexture2D);
 
 		vk::ImageMemoryBarrier barriers[2] = {};
 
@@ -375,7 +348,7 @@ namespace Daydream
 		barriers[0].newLayout = vk::ImageLayout::eTransferSrcOptimal;
 		barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barriers[0].image = src->GetImage();
+		barriers[0].image = src->GetVkImage();
 		barriers[0].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
 		barriers[0].subresourceRange.baseMipLevel = 0;
 		barriers[0].subresourceRange.levelCount = 1;
@@ -389,7 +362,7 @@ namespace Daydream
 		barriers[1].newLayout = vk::ImageLayout::eTransferDstOptimal;
 		barriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barriers[1].image = dst->GetImage();
+		barriers[1].image = dst->GetVkImage();;
 		barriers[1].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
 		barriers[1].subresourceRange.baseMipLevel = _mipLevel;
 		barriers[1].subresourceRange.levelCount = 1;
@@ -411,7 +384,7 @@ namespace Daydream
 		//barrier.newLayout = vk::ImageLayout::eTransferDstOptimal;
 		//barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		//barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		//barrier.image = dst->GetImage();
+		//barrier.image = dst->GetVkImage();->GetImage();
 		//barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
 		//barrier.subresourceRange.baseArrayLayer = _faceIndex;
 		//barrier.subresourceRange.baseMipLevel = 0;
@@ -443,8 +416,8 @@ namespace Daydream
 		copyRegion.extent.depth = 1;
 
 		GetActiveCommandBuffer().copyImage(
-			src->GetImage(), vk::ImageLayout::eTransferSrcOptimal,
-			dst->GetImage(), vk::ImageLayout::eTransferDstOptimal,
+			src->GetVkImage(), vk::ImageLayout::eTransferSrcOptimal,
+			dst->GetVkImage(), vk::ImageLayout::eTransferDstOptimal,
 			1, &copyRegion
 		);
 
@@ -452,7 +425,7 @@ namespace Daydream
 		barriers[0].newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 		barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barriers[0].image = src->GetImage();
+		barriers[0].image = src->GetVkImage();
 		barriers[0].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
 		barriers[0].subresourceRange.baseMipLevel = 0;
 		barriers[0].subresourceRange.levelCount = 1;
@@ -465,7 +438,7 @@ namespace Daydream
 		barriers[1].newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 		barriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barriers[1].image = dst->GetImage();
+		barriers[1].image = dst->GetVkImage();
 		barriers[1].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
 		barriers[1].subresourceRange.baseMipLevel = _mipLevel;
 		barriers[1].subresourceRange.levelCount = 1;
@@ -487,7 +460,23 @@ namespace Daydream
 	void VulkanRenderContext::GenerateMips(Shared<Texture> _texture)
 	{
 		//vk::CommandBuffer commandBuffer = device->BeginSingleTimeCommands(); // 이 함수는 vk::CommandBuffer를 반환한다고 가정
-		vk::Image image = (VkImage)_texture->GetNativeHandle();
+
+		Int32 mipWidth = _texture->GetWidth();
+		Int32 mipHeight = _texture->GetHeight();
+		UInt32 layerCount = _texture->GetLayerCount();
+		UInt32 mipLevels = _texture->GetMipLevels();
+		vk::Image image;
+
+		switch (_texture->GetType())
+		{
+		case TextureType::Texture2D:
+			image = SharedCast<VulkanTexture2D>(_texture)->GetVkImage();
+			break;
+		case TextureType::TextureCube:
+			image = SharedCast<VulkanTextureCube>(_texture)->GetVkImage();
+			break;
+		}
+
 		// vk::ImageMemoryBarrier 구조체 사용, sType은 자동 설정됩니다.
 		vk::ImageMemoryBarrier barrier{};
 		barrier.image = image;
@@ -495,7 +484,7 @@ namespace Daydream
 		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
 		barrier.subresourceRange.baseArrayLayer = 0;
-		barrier.subresourceRange.layerCount = 6;
+		barrier.subresourceRange.layerCount = layerCount;
 		barrier.subresourceRange.baseMipLevel = 0;
 		barrier.subresourceRange.levelCount = 1;
 		barrier.oldLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
@@ -513,9 +502,6 @@ namespace Daydream
 		);
 
 
-		Int32 mipWidth = _texture->GetWidth();
-		Int32 mipHeight = _texture->GetHeight();
-		UInt32 layerCount = _texture->GetLayerCount();
 
 		for (UInt32 i = 1; i < _texture->GetMipLevels(); i++)
 		{
@@ -583,7 +569,7 @@ namespace Daydream
 		barrier.subresourceRange.baseArrayLayer = 0;
 		barrier.subresourceRange.layerCount = layerCount;
 		barrier.subresourceRange.baseMipLevel = 0;
-		barrier.subresourceRange.levelCount = _texture->GetMipLevels();
+		barrier.subresourceRange.levelCount = mipLevels;
 		barrier.oldLayout = vk::ImageLayout::eTransferDstOptimal;
 		barrier.newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 		barrier.srcAccessMask = vk::AccessFlagBits::eTransferWrite;

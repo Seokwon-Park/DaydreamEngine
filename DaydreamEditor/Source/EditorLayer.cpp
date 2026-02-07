@@ -248,7 +248,7 @@ namespace Daydream
 			if (mesh && material)
 			{
 				Renderer::BindMesh(mesh);
-				Renderer::SetMaterial(material);
+				Renderer::BindMaterial(material);
 				Renderer::DrawIndexed(mesh->GetIndexCount());
 			}
 		}
@@ -311,8 +311,8 @@ namespace Daydream
 		Renderer::BindMesh(ResourceManager::GetResource<Mesh>("Quad"));
 		Renderer::DrawIndexed(ResourceManager::GetResource<Mesh>("Quad")->GetIndexCount());
 
-		//pso3d->Bind();
-		//activeScene->Update(_deltaTime);
+		////pso3d->Bind();
+		////activeScene->Update(_deltaTime);
 
 		if (skyboxPanel->IsUsingSkybox())
 		{

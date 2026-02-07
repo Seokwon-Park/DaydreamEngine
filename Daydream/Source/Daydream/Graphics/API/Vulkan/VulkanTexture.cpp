@@ -9,20 +9,18 @@
 namespace Daydream
 {
 	VulkanTexture2D::VulkanTexture2D(VulkanRenderDevice* _device, const TextureDesc& _desc)
+		:Texture2D(_desc)
 	{
 		device = _device;
-		desc = _desc;
 
-		width = _desc.width;
-		height = _desc.height;
 		vk::Format imageFormat = GraphicsUtility::Vulkan::ConvertRenderFormatToVkFormat(_desc.format);
 
 		vk::ImageCreateInfo imageInfo{};
 		vma::AllocationCreateInfo allocInfo{};
 
 		imageInfo.imageType = vk::ImageType::e2D;
-		imageInfo.extent.width = static_cast<UInt32>(width);
-		imageInfo.extent.height = static_cast<UInt32>(height);
+		imageInfo.extent.width = static_cast<UInt32>(desc.width);
+		imageInfo.extent.height = static_cast<UInt32>(desc.height);
 		imageInfo.extent.depth = 1;
 		imageInfo.mipLevels = 1;
 		imageInfo.arrayLayers = 1;
@@ -37,17 +35,6 @@ namespace Daydream
 		allocInfo.flags = {};
 
 		std::tie(textureImage, textureImageAllocation) = device->CreateImage(imageInfo, allocInfo);
-
-		//vk::ImageMemoryBarrier barrier{};
-		//barrier.oldLayout = vk::ImageLayout::eUndefined;
-		//barrier.newLayout = vk::ImageLayout::eTransferDstOptimal;
-		//barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		//barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		//barrier.image = textureImage.get();
-		//barrier.subresourceRange.baseArrayLayer = 0;
-		//barrier.subresourceRange.baseMipLevel = 0;
-		//barrier.subresourceRange.layerCount = 1;
-		//barrier.subresourceRange.levelCount = 1;
 
 		if (imageFormat == vk::Format::eD24UnormS8Uint)
 		{
@@ -92,15 +79,4 @@ namespace Daydream
 		auto imguiSampler = static_cast<VulkanSampler*>(ResourceManager::GetResource<Sampler>("LinearRepeat").get());
 		return ImGuiDescriptorSet = ImGui_ImplVulkan_AddTexture(imguiSampler->GetSampler(), srv.get(), VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 	}
-
-	//void VulkanTexture2D::AllocateDescriptorSet(vk::DescriptorSetLayout _layout)
-	//{
-	//	vk::DescriptorSetAllocateInfo allocInfo{};
-	//	allocInfo.descriptorPool = device->GetDescriptorPool();
-	//	allocInfo.descriptorSetCount = 1;
-	//	allocInfo.pSetLayouts = &_layout;
-
-	//	textureSet = device->GetDevice().allocateDescriptorSetsUnique(allocInfo);
-	//}
-
 }

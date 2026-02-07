@@ -12,11 +12,12 @@ namespace Daydream
 		virtual ~OpenGLPipelineState();
 
 		virtual void Bind() const;
+
+		void BindPipelineState();
+
 		//virtual Shared<Material> CreateMaterial() override;
 	private:
-		UInt32 inputDataIndex = 0;
-
-		GLuint vao;
+		GLuint inputLayoutID;
 		GLuint pipeline;
 	};
 }

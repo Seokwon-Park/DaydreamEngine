@@ -11,9 +11,9 @@
 
 namespace Daydream
 {
-	D3D12Swapchain::D3D12Swapchain(RenderDevice* _device, DaydreamWindow* _window, const SwapchainDesc& _desc)
+	D3D12Swapchain::D3D12Swapchain(D3D12RenderDevice* _device, DaydreamWindow* _window, const SwapchainDesc& _desc)
 	{
-		device = Cast<D3D12RenderDevice>(_device);
+		device = _device;
 		desc = _desc;
 		bufferCount = _desc.bufferCount;
 		format = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(_desc.format);;

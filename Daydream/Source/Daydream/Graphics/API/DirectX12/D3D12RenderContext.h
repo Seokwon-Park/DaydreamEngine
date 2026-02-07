@@ -6,11 +6,11 @@
 
 namespace Daydream
 {
-	class D3D12GraphicsContext : public RenderContext
+	class D3D12RenderContext : public RenderContext
 	{
 	public:
-		D3D12GraphicsContext(D3D12RenderDevice* _device, UInt32 _framesInFlight);
-		virtual ~D3D12GraphicsContext() {};
+		D3D12RenderContext(D3D12RenderDevice* _device, UInt32 _framesInFlight);
+		virtual ~D3D12RenderContext() {};
 
 		virtual void BeginCommandList() override;
 		virtual void SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height) override {};

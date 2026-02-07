@@ -7,66 +7,11 @@
 
 namespace Daydream
 {
-	//namespace
-	//{
-	//	bool CreateDebugCubemap(ID3D11Device* device, ID3D11Texture2D** texture, ID3D11ShaderResourceView** srv) {
-	//		const UINT size = 256;
-	//		const UINT faces = 6;
-
-	//		// 각 면의 색상
-	//		UINT colors[6] = {
-	//			0xFF0000FF, // +X: Red
-	//			0xFF00FF00, // -X: Green  
-	//			0xFFFF0000, // +Y: Blue
-	//			0xFF00FFFF, // -Y: Cyan
-	//			0xFFFF00FF, // +Z: Magenta
-	//			0xFFFFFF00  // -Z: Yellow
-	//		};
-
-	//		std::vector<std::vector<UINT>> faceData(faces);
-	//		for (int face = 0; face < faces; ++face) {
-	//			faceData[face].resize(size * size, colors[face]);
-	//		}
-
-	//		D3D11_TEXTURE2D_DESC texDesc = {};
-	//		texDesc.Width = size;
-	//		texDesc.Height = size;
-	//		texDesc.MipLevels = 1;
-	//		texDesc.ArraySize = faces;
-	//		texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-	//		texDesc.SampleDesc.Count = 1;
-	//		texDesc.Usage = D3D11_USAGE_IMMUTABLE;
-	//		texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	//		texDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
-
-	//		std::vector<D3D11_SUBRESOURCE_DATA> subResources(faces);
-	//		for (int face = 0; face < faces; ++face) {
-	//			subResources[face].pSysMem = faceData[face].data();
-	//			subResources[face].SysMemPitch = size * 4;
-	//			subResources[face].SysMemSlicePitch = 0;
-	//		}
-
-	//		HRESULT hr = device->CreateTexture2D(&texDesc, subResources.data(), texture);
-	//		if (FAILED(hr)) return false;
-
-	//		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-	//		srvDesc.Format = texDesc.Format;
-	//		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
-	//		srvDesc.TextureCube.MipLevels = 1;
-
-	//		hr = device->CreateShaderResourceView(*texture, &srvDesc, srv);
-	//		return SUCCEEDED(hr);
-	//	}
-	//}
 	D3D11TextureCube::D3D11TextureCube(D3D11RenderDevice* _device, const TextureDesc& _desc, Array<const void*>& _initialData)
+		:TextureCube(_desc)
 	{
 		device = _device;
-		desc = _desc;
 
-		width = _desc.width;
-		height = _desc.height;
-
-		textures.resize(6);
 
 		D3D11_TEXTURE2D_DESC textureDesc = {};
 		textureDesc.Width = desc.width;
@@ -148,10 +93,6 @@ namespace Daydream
 	void D3D11TextureCube::SetSampler(Shared<Sampler> _sampler)
 	{
 		auto sampler = static_pointer_cast<D3D11Sampler>(_sampler);
-		textureSampler = sampler->GetSampler();
-	}
-	void D3D11TextureCube::GenerateMips()
-	{
-		device->GetContext()->GenerateMips(views.srv.Get());
+		textureSampler = sampler.get();
 	}
 }

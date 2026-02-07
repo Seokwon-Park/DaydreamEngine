@@ -142,7 +142,7 @@ namespace Daydream
 
 	Unique<RenderContext> Daydream::D3D11RenderDevice::CreateContext(UInt32 _framesInFlight)
 	{
-		return MakeUnique<D3D11GraphicsContext>(this);
+		return MakeUnique<D3D11RenderContext>(this);
 	}
 
 	Shared<VertexBuffer> D3D11RenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
@@ -267,32 +267,6 @@ namespace Daydream
 
 	void D3D11RenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel)
 	{
-		D3D11TextureCube* dst = static_cast<D3D11TextureCube*>(_dstCubemap);
-		D3D11Texture2D* src = static_cast<D3D11Texture2D*>(_srcTexture2D);
-		// 큐브맵의 MipLevels 정보를 가져와야 Subresource 인덱스를 계산할 수 있습니다.
-		D3D11_TEXTURE2D_DESC cubeDesc;
-		static_cast<ID3D11Texture2D*>(_dstCubemap->GetNativeHandle())->GetDesc(&cubeDesc);
 
-		// 1. 핵심: 대상 Subresource 인덱스를 계산합니다.
-		// 밉맵 레벨 0, 배열 슬라이스 faceIndex에 해당하는 Subresource를 찾습니다.
-		UINT dstSubresourceIndex = D3D11CalcSubresource(
-			_mipLevel, 
-			_faceIndex,
-			cubeDesc.MipLevels
-		);
-
-		// 2. 원본 Subresource 인덱스는 항상 0입니다 (2D 텍스처는 Subresource가 하나).
-		UINT srcSubresourceIndex = 0;
-
-		// 3. 복사 명령을 즉시 실행합니다.
-		// DX11에서는 별도의 리소스 배리어가 필요 없습니다.
-		deviceContext->CopySubresourceRegion(
-			dst->GetID3D11Resource(),           // 대상 리소스
-			dstSubresourceIndex,  // 대상 Subresource
-			0, 0, 0,              // 대상 좌표 (x, y, z)
-			src->GetID3D11Resource(),         // 원본 리소스
-			srcSubresourceIndex,  // 원본 Subresource
-			nullptr               // 원본 영역 (nullptr은 전체를 의미)
-		);
 	}
 }

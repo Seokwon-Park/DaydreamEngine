@@ -29,11 +29,10 @@ namespace Daydream
 		virtual void BeginFrame() = 0;
 		virtual void EndFrame() = 0;
 
-		void ResizeFramebuffers();
-		void BeginRenderPass() { return mainRenderPass->Begin(GetBackFramebuffer()); }
-		void EndRenderPass() { return mainRenderPass->End(); }
-
 		virtual Shared<Framebuffer> GetBackFramebuffer() = 0;
+
+		void ResizeFramebuffers();
+
 		static Shared<Swapchain> Create(DaydreamWindow* _window, const SwapchainDesc& _desc);
 	protected:
 		SwapchainDesc desc;

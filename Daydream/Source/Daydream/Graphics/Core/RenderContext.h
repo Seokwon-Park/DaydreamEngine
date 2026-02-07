@@ -34,12 +34,12 @@ namespace Daydream
 
 		virtual void BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer) {};
 		virtual void BindIndexBuffer(Shared<IndexBuffer> _indexBuffer) {};
-		virtual void BindMesh(Shared<Mesh> _mesh) {};
+		void BindMesh(Shared<Mesh> _mesh);
 
 		virtual void SetTexture2D(const String& _name, Shared<Texture2D> _texture) ;
 		virtual void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube) {};
 		virtual void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer) {};
-		virtual void SetMaterial(Shared<Material> _material) {};
+		void BindMaterial(Shared<Material> _material);
 
 		virtual void Submit() {};
 

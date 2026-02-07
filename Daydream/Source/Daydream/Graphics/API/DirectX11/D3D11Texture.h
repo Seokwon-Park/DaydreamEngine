@@ -20,15 +20,15 @@ namespace Daydream
 		virtual bool HasSampler() override { return textureSampler != nullptr; }
 
 		inline virtual void* GetNativeHandle() override { return texture.Get(); }
-		inline virtual void* GetImGuiHandle() { return GetSRV().Get(); }
+		inline virtual void* GetImGuiHandle() { return views.srv.Get(); }
 
-		inline ID3D11Resource* GetID3D11Resource() { return texture.Get(); }
+		inline ID3D11Texture2D* GetID3D11Texture2D() { return texture.Get(); }
 
-		inline ComPtr<ID3D11ShaderResourceView> GetSRV() { return views.srv; }
-		inline ComPtr<ID3D11DepthStencilView> GetDSV() {return views.dsv;}
-		inline ComPtr<ID3D11RenderTargetView> GetRTV() {return views.rtv;}
-		inline ComPtr<ID3D11UnorderedAccessView> GetUAV() { return views.uav; };
-		inline ComPtr<ID3D11SamplerState> GetSampler() { return textureSampler->GetSampler(); }
+		inline ID3D11ShaderResourceView* GetSRV() { return views.srv.Get(); }
+		inline ID3D11DepthStencilView* GetDSV() {return views.dsv.Get();}
+		inline ID3D11RenderTargetView* GetRTV() {return views.rtv.Get();}
+		inline ID3D11UnorderedAccessView* GetUAV() { return views.uav.Get(); };
+		inline ID3D11SamplerState* GetSampler() { return textureSampler->GetSampler(); }
 	protected:
 
 	private:

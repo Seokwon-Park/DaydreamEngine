@@ -233,8 +233,8 @@ namespace Daydream
 			meshData.vertices.push_back(vertex);
 		}
 
-		DAYDREAM_CORE_TRACE("{},{},{}", minBound.x, minBound.y, minBound.z);
-		DAYDREAM_CORE_TRACE("{},{},{}", maxBound.x, maxBound.y, maxBound.z);
+		//DAYDREAM_CORE_TRACE("{},{},{}", minBound.x, minBound.y, minBound.z);
+		//DAYDREAM_CORE_TRACE("{},{},{}", maxBound.x, maxBound.y, maxBound.z);
 		Vector3 center = (minBound + maxBound) * 0.5f;
 		meshData.centerOffset = center;
 

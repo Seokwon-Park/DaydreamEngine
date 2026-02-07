@@ -56,7 +56,7 @@ namespace Daydream
 			material->SetTexture2D("BRDFLUT", GetOwner()->GetScene()->GetSkybox()->GetBRDF());
 			material->SetTextureCube("IrradianceTexture", GetOwner()->GetScene()->GetSkybox()->GetIrradianceTexture());
 			material->SetTextureCube("Prefilter", GetOwner()->GetScene()->GetSkybox()->GetPrefilterTexture());
-			Renderer::SetMaterial(material);
+			Renderer::BindMaterial(material);
 		}
 		if (mesh && material)
 		{

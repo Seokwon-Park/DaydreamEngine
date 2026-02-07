@@ -6,34 +6,30 @@
 namespace Daydream
 {
 	D3D12Texture2D::D3D12Texture2D(D3D12RenderDevice* _device, const TextureDesc& _desc)
+		:Texture2D(_desc)
 	{
 		device = _device;
 
-		width = _desc.width;
-		height = _desc.height;
-
-
-		DXGI_FORMAT textureFormat = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(_desc.format);
+		DXGI_FORMAT textureFormat = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(desc.format);
 		DXGI_FORMAT srvFormat = textureFormat;
 		DXGI_FORMAT dsvFormat = textureFormat;
 
 		D3D12_RESOURCE_DESC textureDesc = {};
 		textureDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-		textureDesc.Width = width;
-		textureDesc.Height = height;
+		textureDesc.Width = desc.width;
+		textureDesc.Height = desc.height;
 		textureDesc.DepthOrArraySize = 1;
-		textureDesc.MipLevels = 1;
+		textureDesc.MipLevels = desc.mipLevels;
 		textureDesc.Format = textureFormat;
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN; // vk::ImageTiling::eOptimal¿¡ ÇØ´ç
-		textureDesc.Flags = GraphicsUtility::DirectX12::ConvertToD3D12BindFlags(_desc.bindFlags);
+		textureDesc.Flags = GraphicsUtility::DirectX12::ConvertToD3D12BindFlags(desc.bindFlags);
 
 		texture = device->CreateTexture(textureDesc, D3D12_RESOURCE_STATE_COPY_DEST);
 		SetCurrentState(D3D12_RESOURCE_STATE_COPY_DEST);
 
 
-
-		if (GraphicsUtility::HasFlag(_desc.bindFlags, RenderBindFlags::ShaderResource) && GraphicsUtility::HasFlag(_desc.bindFlags, RenderBindFlags::DepthStencil))
+		if (GraphicsUtility::HasFlag(desc.bindFlags, RenderBindFlags::ShaderResource) && GraphicsUtility::HasFlag(desc.bindFlags, RenderBindFlags::DepthStencil))
 		{
 			srvFormat = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
 			dsvFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -41,12 +37,12 @@ namespace Daydream
 
 
 		if (!(textureDesc.Flags & D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE) &&
-			GraphicsUtility::HasFlag(_desc.bindFlags, RenderBindFlags::ShaderResource))
+			GraphicsUtility::HasFlag(desc.bindFlags, RenderBindFlags::ShaderResource))
 		{ 
 			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 			srvDesc.Format = srvFormat;
 			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-			srvDesc.Texture2D.MipLevels = textureDesc.MipLevels;
+			srvDesc.Texture2D.MipLevels = desc.mipLevels;
 			srvDesc.Texture2D.MostDetailedMip = 0;
 			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 			device->GetCBVSRVUAVHeapAlloc().Alloc(&srvCpuHandle, &srvGpuHandle);

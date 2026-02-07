@@ -1,33 +1,27 @@
 #pragma once
+#include "Wrappers.h"
 
 namespace Daydream
 {
 	//Type to Type
 	template <typename To, typename From>
-	To Cast(From&& from)
+	To Cast(From&& _from)
 	{
-		return static_cast<To>(std::forward<From>(from));
+		return static_cast<To>(std::forward<From>(_from));
 	}
 
-	////Pointer To Pointer
-	template <typename To, typename From>
-	To* Cast(From* from)
+	template<typename To, typename From>
+	Shared<To> SharedCast(const Shared<From>& src)
 	{
-		return static_cast<To*>(from);
+		auto castedPtr = Cast<To*>(src.get());
+		return Shared<To>(src, castedPtr);
 	}
 
 	//Type to Type
 	template <typename To, typename From>
-	To SafeCast(From&& from)
+	To SafeCast(From&& _from)
 	{
-		return dynamic_cast<To>(std::forward<From>(from));
-	}
-
-	//Pointer To Pointer
-	template <typename To, typename From>
-	To* SafeCast(From* from)
-	{
-		return dynamic_cast<To*>(from);
+		return dynamic_cast<To>(std::forward<From>(_from));
 	}
 
 	template <typename To, typename From>
@@ -35,4 +29,8 @@ namespace Daydream
 	{
 		return reinterpret_cast<To>(from);
 	}
+
+
+
+
 }

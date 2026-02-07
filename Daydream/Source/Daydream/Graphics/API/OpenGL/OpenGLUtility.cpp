@@ -68,10 +68,10 @@ namespace Daydream::GraphicsUtility::OpenGL
 		case RenderFormat::R32_FLOAT:              return GL_R32F;
 
 			// 32-bit float formats
-		case RenderFormat::R32G32B32A32_UINT:     return GL_RGBA32UI;
-		case RenderFormat::R32G32B32_UINT:        return GL_RGB32UI;
-		case RenderFormat::R32G32_UINT:           return GL_RG32UI;
-		case RenderFormat::R32_UINT:              return GL_R32UI;
+		case RenderFormat::R32G32B32A32_UINT:      return GL_RGBA32UI;
+		case RenderFormat::R32G32B32_UINT:         return GL_RGB32UI;
+		case RenderFormat::R32G32_UINT:            return GL_RG32UI;
+		case RenderFormat::R32_UINT:               return GL_R32UI;
 
 			// 16-bit float formats
 		case RenderFormat::R16G16B16A16_FLOAT:     return GL_RGBA16F;
@@ -106,6 +106,8 @@ namespace Daydream::GraphicsUtility::OpenGL
 			// Depth formats
 		case RenderFormat::D32_FLOAT:              return GL_DEPTH_COMPONENT32F;
 		case RenderFormat::D24_UNORM_S8_UINT:      return GL_DEPTH24_STENCIL8;
+		case RenderFormat::R24_UNORM_X8_TYPELESS:  return GL_DEPTH24_STENCIL8;
+		case RenderFormat::R24G8_TYPELESS:		   return GL_DEPTH24_STENCIL8;
 		case RenderFormat::D16_UNORM:              return GL_DEPTH_COMPONENT16;
 		case RenderFormat::D32_FLOAT_S8X24_UINT:   return GL_DEPTH32F_STENCIL8;
 
@@ -157,9 +159,12 @@ namespace Daydream::GraphicsUtility::OpenGL
 		case RenderFormat::R10G10B10A2_UINT:       return GL_RGBA_INTEGER;
 			// Depth formats
 		case RenderFormat::D32_FLOAT:              return GL_DEPTH_COMPONENT;
-		case RenderFormat::D24_UNORM_S8_UINT:      return GL_DEPTH_STENCIL;
 		case RenderFormat::D16_UNORM:              return GL_DEPTH_COMPONENT;
+		case RenderFormat::D24_UNORM_S8_UINT:      return GL_DEPTH_STENCIL;
+		case RenderFormat::R24G8_TYPELESS:		   return GL_DEPTH_STENCIL;
 		case RenderFormat::D32_FLOAT_S8X24_UINT:   return GL_DEPTH_STENCIL;
+		case RenderFormat::R24_UNORM_X8_TYPELESS:  return GL_DEPTH_STENCIL;
+
 			// Compressed formats는 data format이 필요없음 (NULL 데이터와 함께 사용)
 		case RenderFormat::BC7_UNORM:              return GL_RGBA;
 		case RenderFormat::BC7_UNORM_SRGB:         return GL_RGBA;
@@ -226,6 +231,8 @@ namespace Daydream::GraphicsUtility::OpenGL
 		case RenderFormat::D16_UNORM:
 			return GL_UNSIGNED_SHORT;
 		case RenderFormat::D24_UNORM_S8_UINT:
+		case RenderFormat::R24_UNORM_X8_TYPELESS:
+		case RenderFormat::R24G8_TYPELESS:
 			return GL_UNSIGNED_INT_24_8;
 		case RenderFormat::D32_FLOAT_S8X24_UINT:
 			return GL_FLOAT_32_UNSIGNED_INT_24_8_REV;

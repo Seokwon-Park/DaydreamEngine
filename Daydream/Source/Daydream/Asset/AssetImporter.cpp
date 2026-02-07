@@ -42,6 +42,7 @@ namespace Daydream
 			// 8비트 텍스처 (sRGB 또는 Linear)
 			desc.format = isSRGB ? RenderFormat::R8G8B8A8_UNORM_SRGB : RenderFormat::R8G8B8A8_UNORM;
 		}
+		desc.type = TextureType::Texture2D;
 		auto newTexture = Texture2D::Create(data.GetRawDataPtr(), desc);
 
 		return newTexture;

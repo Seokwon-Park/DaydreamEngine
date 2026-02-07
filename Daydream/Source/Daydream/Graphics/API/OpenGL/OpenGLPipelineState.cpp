@@ -15,19 +15,20 @@ namespace Daydream
 	OpenGLPipelineState::OpenGLPipelineState(PipelineStateDesc _desc)
 		:PipelineState(_desc)
 	{
-		glCreateVertexArrays(1, &vao);
+		glCreateVertexArrays(1, &inputLayoutID);
 		//for (const BufferElement& element : layout)
 		UInt32 offset = 0;
+		UInt32 inputDataIndex = 0;
 		for(const auto& info : shaderGroup->GetShader(ShaderType::Vertex)->GetShaderReflectionData())
 		{
 			if (info.shaderResourceType != ShaderResourceType::Input) continue;
-			glEnableVertexArrayAttrib(vao, inputDataIndex);
-			glVertexArrayAttribFormat(vao, inputDataIndex,
+			glEnableVertexArrayAttrib(inputLayoutID, inputDataIndex);
+			glVertexArrayAttribFormat(inputLayoutID, inputDataIndex,
 				info.count,
 				GraphicsUtility::OpenGL::ConvertRenderFormatToGLDataType(info.format),
 				GL_FALSE,
 				offset);
-			glVertexArrayAttribBinding(vao, inputDataIndex, 0);
+			glVertexArrayAttribBinding(inputLayoutID, inputDataIndex, 0);
 			offset += (UInt32)info.size;
 			inputDataIndex++;
 		}
@@ -70,90 +71,16 @@ namespace Daydream
 			glGetProgramPipelineInfoLog(pipeline, 512, NULL, infoLog);
 			DAYDREAM_CORE_ERROR("pipeline validation failed!\n {0}", infoLog);
 		}
-
-		//GLuint samplerID;
-		//glGenSamplers(1, &samplerID);
-		//glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		//glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		//glSamplerParameteri(samplerID, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		//glSamplerParameteri(samplerID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		//glBindSampler(0, samplerID);
-
-		//GLuint shaderID = static_cast<GLuint>(reinterpret_cast<uintptr_t>(shader->GetNativeHandle()));
-		//	glShaderIDs.push_back(shader);
-			//rendererID = glCreateProgram();
-			//Array<GLuint> glShaderIDs;
-
-			//for (auto [type, shaderSource] : shaderSources)
-			//{
-			//	GLuint shader = glCreateShader(ShaderTypeToGLShader(type));
-			//	const GLchar* source = shaderSource.c_str();
-
-			//	glShaderSource(shader, 1, &source, 0);
-			//	glCompileShader(shader);
-			//	
-			//	GLint isCompiled = 0;
-			//	glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
-			//	if (isCompiled == GL_FALSE)
-			//	{
-			//		GLint maxLength = 0;
-			//		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
-
-			//		// The maxLength includes the NULL character
-			//		Array<GLchar> infoLog(maxLength);
-			//		glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
-
-			//		// We don't need the shader anymore.
-			//		glDeleteShader(shader);
-
-			//		DAYDREAM_CORE_ERROR("{0}", infoLog.data());
-			//		DAYDREAM_CORE_ASSERT(false, "Shader compilation failure!");
-			//		return;
-			//	}
-			//	glAttachShader(rendererID, shader);
-			//	glShaderIDs.push_back(shader);
-
-			//}
-
-			//GLuint program = rendererID;
-			//glLinkProgram(program);
-
-			//GLint isLinked = 0;
-			//glGetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
-			//if (isLinked == GL_FALSE)
-			//{
-			//	GLint maxLength = 0;
-			//	glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
-
-			//	// The maxLength includes the NULL character
-			//	Array<GLchar> infoLog(maxLength);
-			//	glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
-
-			//	// We don't need the program anymore.
-			//	glDeleteProgram(program);
-			//	// Don't leak shaders either.
-			//	for (GLuint id : glShaderIDs)
-			//	{
-			//		glDeleteShader(id);
-			//	}
-
-			//	DAYDREAM_CORE_ERROR("{0}", infoLog.data());
-			//	DAYDREAM_CORE_ASSERT(false, "Shader link failure!");
-			//	return;
-			//}
-
-			//for (GLuint id : glShaderIDs)
-			//{
-			//	glDetachShader(program, id);
-
-			//}
 	}
 	OpenGLPipelineState::~OpenGLPipelineState()
 	{
 
 	}
 	void OpenGLPipelineState::Bind() const
+	{
+
+	}
+	void OpenGLPipelineState::BindPipelineState()
 	{
 		const auto& rsDesc = desc.rasterizerState;
 		// Fill Mode (Solid vs Wireframe)
@@ -215,7 +142,7 @@ namespace Daydream
 		//{
 		//	glDisable(GL_POLYGON_OFFSET_FILL);
 		//}
-		glBindVertexArray(vao);
+		glBindVertexArray(inputLayoutID);
 		glBindProgramPipeline(pipeline);
 	}
 	//Shared<Material> OpenGLPipelineState::CreateMaterial()

@@ -11,23 +11,20 @@
 namespace Daydream
 {
 	D3D12TextureCube::D3D12TextureCube(D3D12RenderDevice* _device, const TextureDesc& _desc)
+		:TextureCube(_desc)
 	{
 		device = _device;
 
-		width = _desc.width;
-		height = _desc.height;
-
-		mipLevels = _desc.mipLevels;
-		format = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(_desc.format);
+		format = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(desc.format);
 
 		textures.resize(6);
 
 		D3D12_RESOURCE_DESC textureDesc = {};
 		textureDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-		textureDesc.Width = width;
-		textureDesc.Height = height;
+		textureDesc.Width = desc.width;
+		textureDesc.Height = desc.height;
 		textureDesc.DepthOrArraySize = 6;
-		textureDesc.MipLevels = mipLevels;
+		textureDesc.MipLevels = desc.mipLevels;
 		textureDesc.Format = format;
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.SampleDesc.Quality = 0;
@@ -59,24 +56,24 @@ namespace Daydream
 		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 		srvDesc.Format = textureDesc.Format;
 		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
-		srvDesc.TextureCube.MipLevels = mipLevels;
+		srvDesc.TextureCube.MipLevels = desc.mipLevels;
 		srvDesc.TextureCube.MostDetailedMip = 0;
 		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 		srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
 		device->GetCBVSRVUAVHeapAlloc().Alloc(&srvCpuHandle, &srvGpuHandle);
 		device->GetDevice()->CreateShaderResourceView(texture.Get(), &srvDesc, srvCpuHandle);
 
-		if (mipLevels > 1)
+		if (desc.mipLevels > 1)
 		{
 
-			rtvCpuHandles.resize(mipLevels * 6);
-			mipSrvCpuHandles.resize(mipLevels * 6);
-			mipSrvGpuHandles.resize(mipLevels * 6);
-			for (UInt32 mip = 0; mip < mipLevels; mip++)
+			rtvCpuHandles.resize(desc.mipLevels * 6);
+			mipSrvCpuHandles.resize(desc.mipLevels * 6);
+			mipSrvGpuHandles.resize(desc.mipLevels * 6);
+			for (UInt32 mip = 0; mip < desc.mipLevels; mip++)
 			{
 				for (UInt32 face = 0; face < 6; face++)
 				{
-					UInt32 index = mipLevels * face + mip;
+					UInt32 index = desc.mipLevels * face + mip;
 
 					D3D12_RENDER_TARGET_VIEW_DESC rtvDesc = {};
 					rtvDesc.Format = format;
@@ -146,6 +143,8 @@ namespace Daydream
 		//		device->GetCommandList()->ClearRenderTargetView(rtvCpuHandles[mip*6+face], color, 0, nullptr);
 		//	}
 		//}
+
+		UInt32 mipLevels = desc.mipLevels;
 		for (UInt32 mip = 1; mip < mipLevels; mip++)
 		{
 			for (UInt32 face = 0; face < 6; face++)
@@ -169,14 +168,14 @@ namespace Daydream
 				D3D12_RECT rect;
 				rect.left = 0;
 				rect.top = 0;
-				rect.right = std::max(1, width >> mip);
-				rect.bottom = std::max(1, height >> mip);
+				rect.right = std::max(1U, desc.width >> mip);
+				rect.bottom = std::max(1U, desc.height >> mip);
 
 				device->GetCommandList()->RSSetScissorRects(1, &rect);
 
 				D3D12_VIEWPORT viewport = {};
-				viewport.Width = (Float32)std::max(1, width >> mip);
-				viewport.Height = (Float32)std::max(1, height >> mip);
+				viewport.Width = (Float32)std::max(1U, desc.width >> mip);
+				viewport.Height = (Float32)std::max(1U, desc.height >> mip);
 				viewport.MinDepth = 0.0f;
 				viewport.MaxDepth = 1.0f;
 				viewport.TopLeftX = 0;

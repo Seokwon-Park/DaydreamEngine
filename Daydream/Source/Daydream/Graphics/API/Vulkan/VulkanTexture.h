@@ -20,7 +20,7 @@ namespace Daydream
 		virtual void* GetNativeHandle() override { return textureImage.get(); }
 		virtual void* GetImGuiHandle() override;
 
-		vk::Image GetImage() { return textureImage.get(); }
+		vk::Image GetVkImage() { return textureImage.get(); }
 		vk::ImageView GetImageView() { return srv.get(); }
 		vk::Sampler GetSampler() { return textureSampler->GetSampler(); }
 

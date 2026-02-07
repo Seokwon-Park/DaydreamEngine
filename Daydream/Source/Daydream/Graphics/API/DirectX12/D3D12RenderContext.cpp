@@ -3,7 +3,7 @@
 
 namespace Daydream
 {
-	D3D12GraphicsContext::D3D12GraphicsContext(D3D12RenderDevice* _device, UInt32 _framesInFlight)
+	D3D12RenderContext::D3D12RenderContext(D3D12RenderDevice* _device, UInt32 _framesInFlight)
 	{
 		device = _device;
 
@@ -20,18 +20,18 @@ namespace Daydream
 			commandLists[i]->Close();
 		}
 	}
-	void D3D12GraphicsContext::BeginCommandList()
+	void D3D12RenderContext::BeginCommandList()
 	{
 	}
-	void D3D12GraphicsContext::SetClearColor(const Color& _color)
-	{
-	}
-
-	void D3D12GraphicsContext::Clear()
+	void D3D12RenderContext::SetClearColor(const Color& _color)
 	{
 	}
 
-	void D3D12GraphicsContext::DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex)
+	void D3D12RenderContext::Clear()
+	{
+	}
+
+	void D3D12RenderContext::DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex)
 	{
 		device->GetCommandList()->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		device->GetCommandList()->DrawIndexedInstanced(_indexCount, 1, _startIndex, _baseVertex, 0);

@@ -16,13 +16,11 @@ namespace Daydream
 		virtual void SetSampler(Shared<Sampler> _sampler) override;
 		virtual bool HasSampler() override { return textureSampler != nullptr; }
 
-		virtual void GenerateMips() override;
+		virtual void GenerateMips() override {};
 		
 		virtual inline void* GetNativeHandle() override { return textureImage.get(); }
 
-		UInt32 GetMipLevels() { return mipLevels; }
-
-		vk::Image GetImage() { return textureImage.get(); }
+		vk::Image GetVkImage() { return textureImage.get(); }
 		vk::ImageView GetImageView() { return textureImageView.get(); }
 		vk::Sampler GetSampler() { return textureSampler->GetSampler(); }
 	private:
@@ -34,7 +32,5 @@ namespace Daydream
 		vk::UniqueImageView textureImageView;
 
 		vk::Format imageFormat;
-		UInt32 mipLevels = 0;
-
 	};
 }

@@ -15,6 +15,8 @@ namespace Daydream
 
 		virtual void* GetNativeHandle() const override { return reinterpret_cast<void*>(static_cast<UInt64>(bufferID)); };
 		virtual void SetData(const void * _data, UInt32 _dataSize) override;
+
+		UInt32 GetBufferID() const { return bufferID; }
 	private:
 		UInt32 bufferID;
 	};
@@ -29,6 +31,7 @@ namespace Daydream
 		virtual void Bind() const;
 		virtual void Unbind() const;
 
+		UInt32 GetBufferID() const { return bufferID; }
 	private:
 		UInt32 bufferID;
 	};
@@ -45,6 +48,7 @@ namespace Daydream
 
 		virtual void* GetNativeHandle() override { return reinterpret_cast<void*>(static_cast<uintptr_t>(bufferID)); }
 
+		UInt32 GetBufferID() const { return bufferID; }
 	private:
 		UInt32 bufferID;
 	};

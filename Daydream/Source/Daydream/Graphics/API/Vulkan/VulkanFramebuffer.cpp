@@ -82,7 +82,7 @@ namespace Daydream
 
 	UInt32 VulkanFramebuffer::ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY)
 	{
-		vk::Image srcImage = entityTexture->GetImage(); // Entity ID가 담긴 소스 이미지
+		vk::Image srcImage = entityTexture->GetVkImage(); // Entity ID가 담긴 소스 이미지
 
 		vk::CommandBuffer cmd = device->BeginSingleTimeCommands();
 
@@ -161,7 +161,7 @@ namespace Daydream
 			barrier.newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 			barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 			barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-			barrier.image = colorTexture->GetImage();
+			barrier.image = colorTexture->GetVkImage();
 			barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
 			barrier.subresourceRange.baseArrayLayer = 0;
 			barrier.subresourceRange.baseMipLevel = 0;

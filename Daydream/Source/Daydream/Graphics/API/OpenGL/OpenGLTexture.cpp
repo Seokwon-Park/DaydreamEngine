@@ -8,20 +8,18 @@
 namespace Daydream
 {
 	OpenGLTexture2D::OpenGLTexture2D(const TextureDesc& _desc, const void* _initialData)
+		:Texture2D(_desc)
 	{
 		glCreateTextures(GL_TEXTURE_2D, 1, &textureID);
 
-		width = _desc.width;
-		height = _desc.height;
-
 		GLenum internalFormat = 0, dataFormat = 0;
-		internalFormat = GraphicsUtility::OpenGL::ConvertRenderFormatToGLFormat(_desc.format);
-		dataFormat = GraphicsUtility::OpenGL::ConvertRenderFormatToGLDataFormat(_desc.format);
+		internalFormat = GraphicsUtility::OpenGL::ConvertRenderFormatToGLFormat(desc.format);
+		dataFormat = GraphicsUtility::OpenGL::ConvertRenderFormatToGLDataFormat(desc.format);
 
 		DAYDREAM_CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");
 
 		// 텍스처 저장공간 할당 (데이터는 nullptr)
-		glTextureStorage2D(textureID, 1, internalFormat, width, height);
+		glTextureStorage2D(textureID, 1, internalFormat, desc.width, desc.height);
 
 		//// 필터링 설정
 		//glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -41,7 +39,7 @@ namespace Daydream
 		//}
 		if (_initialData)
 		{
-			glTextureSubImage2D(textureID, 0, 0, 0, width, height, dataFormat, GraphicsUtility::OpenGL::ConvertRenderFormatToGLDataType(_desc.format), _initialData);
+			glTextureSubImage2D(textureID, 0, 0, 0, desc.width, desc.height, dataFormat, GraphicsUtility::OpenGL::ConvertRenderFormatToGLDataType(desc.format), _initialData);
 		}
 
 		//glTextureSubImage2D(textureID, 0, 0, 0, width, height, dataFormat, GL_UNSIGNED_BYTE, redData.data());

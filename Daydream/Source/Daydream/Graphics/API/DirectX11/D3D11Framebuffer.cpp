@@ -41,6 +41,7 @@ namespace Daydream
 			textureDesc.height = height;
 			textureDesc.format = colorAttachmentDesc.format;
 			textureDesc.bindFlags = RenderBindFlags::RenderTarget | RenderBindFlags::ShaderResource;
+			textureDesc.type = TextureType::Texture2D;
 
 			Shared<D3D11Texture2D> colorTexture = MakeShared<D3D11Texture2D>(device, textureDesc);
 			if (colorAttachmentDesc.type == AttachmentType::EntityHandle)
@@ -48,7 +49,7 @@ namespace Daydream
 				entityTexture = colorTexture;
 			}
 			colorAttachments.push_back(colorTexture);
-			renderTargetViews.push_back(colorTexture->GetRTV().Get());
+			renderTargetViews.push_back(colorTexture->GetRTV());
 		}
 
 		if (renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
@@ -58,10 +59,10 @@ namespace Daydream
 			textureDesc.height = height;
 			textureDesc.format = renderPassDesc.depthAttachment.format;
 			textureDesc.bindFlags = RenderBindFlags::DepthStencil | RenderBindFlags::ShaderResource;
+			textureDesc.type = TextureType::Texture2D;
 
 			Shared<D3D11Texture2D> depthTexture = MakeShared<D3D11Texture2D>(device, textureDesc);
 			depthAttachment = depthTexture;
-			depthStencilView = depthTexture->GetDSV();
 		}
 	}
 	D3D11Framebuffer::D3D11Framebuffer(D3D11RenderDevice* _device, RenderPass* _renderPass, D3D11Swapchain* _swapChain)
@@ -92,7 +93,6 @@ namespace Daydream
 		device = nullptr;
 		colorAttachments.clear();
 		renderTargetViews.clear();
-		depthStencilView = nullptr;
 		depthAttachment = nullptr;
 	}
 	//void D3D11Framebuffer::Begin() const
@@ -121,7 +121,6 @@ namespace Daydream
 
 		colorAttachments.clear();
 		renderTargetViews.clear();
-		depthStencilView = nullptr;
 		depthAttachment = nullptr;
 
 		CreateAttachments();
@@ -139,7 +138,7 @@ namespace Daydream
 		device->GetContext()->CopySubresourceRegion(
 			readTexture.Get(), 0,
 			0, 0, 0,
-			entityTexture->GetID3D11Resource(), 0,
+			entityTexture->GetID3D11Texture2D(), 0,
 			&sourceRegion
 		);
 
