@@ -120,7 +120,7 @@ namespace Daydream
 			for (Layer* layer : layerStack)
 			{
 				layer->OnUpdate(deltaTime);
-			}
+			} 
 			Renderer::EndCommandList();
 
 			
@@ -158,10 +158,10 @@ namespace Daydream
 			//{
 			//	DAYDREAM_CORE_TRACE("KEY UP TEST");
 			//}
+			Renderer::EndFrame(mainWindow->GetSwapchain());
 
 			mainWindow->OnUpdateInputState();
 			mainWindow->OnUpdate();
-			Renderer::EndFrame(mainWindow->GetSwapchain());
 			
 			//testWindow->OnUpdate();
 		}

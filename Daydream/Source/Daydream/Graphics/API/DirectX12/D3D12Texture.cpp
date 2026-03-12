@@ -35,7 +35,6 @@ namespace Daydream
 			dsvFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		}
 
-
 		if (!(textureDesc.Flags & D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE) &&
 			GraphicsUtility::HasFlag(desc.bindFlags, RenderBindFlags::ShaderResource))
 		{ 

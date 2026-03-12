@@ -34,7 +34,7 @@ namespace Daydream
 			dsv->SetCurrentState(D3D12_RESOURCE_STATE_DEPTH_WRITE);
 		}
 
-		Array<D3D12_CPU_DESCRIPTOR_HANDLE>& rtHandles = currentFramebuffer->GetRenderTargetHandles();
+		const Array<D3D12_CPU_DESCRIPTOR_HANDLE>& rtHandles = currentFramebuffer->GetRenderTargetHandles();
 		//
 		//for (auto texture : currentFramebuffer->GetColorAttachments())
 		//{

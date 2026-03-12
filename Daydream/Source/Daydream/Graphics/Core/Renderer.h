@@ -74,7 +74,7 @@ namespace Daydream
 		inline static Unique<RenderContext> renderContext = nullptr;
 		inline static Unique<ImGuiRenderer> imguiRenderer = nullptr;
 
-		inline static Array<Unique<RenderCommandList>> commandLists;
+		inline static Array<Unique<RenderCommandQueue>> commandLists;
 	};
 }
 

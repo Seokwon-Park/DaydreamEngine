@@ -25,7 +25,7 @@ namespace Daydream
 		commandLists.resize(maxCommandListsInFlight);
 		for (auto& commandList : commandLists)
 		{
-			commandList = MakeUnique<RenderCommandList>();
+			commandList = MakeUnique<RenderCommandQueue>();
 		}
 		ShaderCompileHelper::Init();
 		/*	RenderCommand::Init(renderDevice.get());*/

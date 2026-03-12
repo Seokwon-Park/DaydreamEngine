@@ -264,8 +264,14 @@ namespace Daydream
 
 		CopyBuffer(uploadBuffer.Get(), vertexBuffer->GetDX12Buffer(), _size);
 
-		TransitionResourceState(commandList.Get(), vertexBuffer->GetDX12Buffer(), D3D12_RESOURCE_STATE_COPY_DEST,
-			D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+		D3D12_RESOURCE_BARRIER barrier = {};
+		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barrier.Transition.pResource = vertexBuffer->GetDX12Buffer();
+		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
+		TransitionResourceStateImmediate(barrier);
 
 		return vertexBuffer;
 	}
@@ -286,8 +292,15 @@ namespace Daydream
 
 		CopyBuffer(uploadBuffer.Get(), indexBuffer->GetDX12Buffer(), bufferSize);
 
-		TransitionResourceState(commandList.Get(), indexBuffer->GetDX12Buffer(), D3D12_RESOURCE_STATE_COPY_DEST,
-			D3D12_RESOURCE_STATE_INDEX_BUFFER);
+		D3D12_RESOURCE_BARRIER barrier = {};
+		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barrier.Transition.pResource = indexBuffer->GetDX12Buffer();
+		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_INDEX_BUFFER;
+		TransitionResourceStateImmediate(barrier);
+
 		return indexBuffer;
 	}
 
@@ -355,25 +368,8 @@ namespace Daydream
 			uploadBuffer->SetName(L"Check");
 
 			CopyBufferToImage(uploadBuffer.Get(), texture->GetID3D12Resource(), { placedFootprint });
-
-			//ExecuteSingleTimeCommands([&](ID3D12GraphicsCommandList* _commandList)
-			//	{
-			//		TransitionResourceState(_commandList, texture->GetID3D12Resource(), texture->GetCurrentState(),
-			//			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-			//	});
-			//texture->SetCurrentState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-
-
-			//TransitionResourceState(commandList.Get(), texture->GetID3D12Resource(), texture->GetCurrentState(),
-			//	D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-			//texture->SetCurrentState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 		}
-		else
-		{
-			//TransitionResourceState(commandList.Get(), texture->GetID3D12Resource(), texture->GetCurrentState(),
-			//	D3D12_RESOURCE_STATE_COMMON);
-			//texture->SetCurrentState(D3D12_RESOURCE_STATE_COMMON);
-		}
+
 
 		return texture;
 	}
@@ -419,16 +415,7 @@ namespace Daydream
 
 
 		CopyBufferToImage(uploadBuffer.Get(), texture->GetID3D12Resource(), layouts);
-		//TransitionResourceState(commandList.Get(), texture->GetID3D12Resource(), D3D12_RESOURCE_STATE_COPY_DEST,
-		//	D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
-		//ExecuteSingleTimeCommands(
-		//	[&](ID3D12GraphicsCommandList* _commandList)
-		//	{
-		//		TransitionResourceState(texture->GetID3D12Resource(), D3D12_RESOURCE_STATE_COPY_DEST,
-		//			D3D12_RESOURCE_STATE_COMMON);
-		//	}
-		//);
 
 		return texture;
 	}
@@ -665,6 +652,15 @@ namespace Daydream
 		barrier.Transition.StateAfter = _stateAfter;
 
 		_commandList->ResourceBarrier(1, &barrier);
+	}
+
+	void D3D12RenderDevice::TransitionResourceStateImmediate(D3D12_RESOURCE_BARRIER _barrier)
+	{
+		ExecuteSingleTimeCommands([&](ID3D12GraphicsCommandList* _commandList)
+			{
+				_commandList->ResourceBarrier(1, &_barrier);
+			}
+		);
 	}
 
 

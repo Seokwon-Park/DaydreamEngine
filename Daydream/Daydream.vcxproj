@@ -215,6 +215,10 @@
     <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLTextureCube.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLUtility.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanBuffer.h" />
+    <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanRenderCommandList.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanFramebuffer.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanImGuiRenderer.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanMaterial.h" />
@@ -234,6 +238,10 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Source\Daydream\Graphics\Core\RenderCommandQueue.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\Core\EditorCamera.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderThread.h">
       <SubType>
@@ -244,7 +252,6 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\Resources\PipelineState.h" />
-    <ClInclude Include="Source\Daydream\Graphics\Core\RenderCommand.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderContext.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderDevice.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\RenderPass.h" />
@@ -813,6 +820,10 @@
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLTextureCube.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLUtility.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanBuffer.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanRenderCommandList.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanFramebuffer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanImGuiRenderer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanMaterial.cpp" />
@@ -831,6 +842,10 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Source\Daydream\Graphics\Core\RenderCommandQueue.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\Core\EditorCamera.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\OrthographicCamera.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderThread.cpp">
@@ -842,7 +857,6 @@
       </SubType>
     </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\Resources\PipelineState.cpp" />
-    <ClCompile Include="Source\Daydream\Graphics\Core\RenderCommand.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderContext.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderDevice.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\RenderPass.cpp" />

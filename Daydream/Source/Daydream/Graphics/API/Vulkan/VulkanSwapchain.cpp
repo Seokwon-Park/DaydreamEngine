@@ -35,7 +35,7 @@ namespace Daydream
 
 		imageAvailableSemaphores.resize(imageCount);
 		renderFinishedSemaphores.resize(imageCount);
-		inFlightFences.resize(imageCount);
+		inFlightFences.resize(imageCount); 
 		for (UInt32 i = 0; i < imageCount; i++)
 		{
 			imageAvailableSemaphores[i] = device->GetDevice().createSemaphoreUnique(semaphoreInfo);
@@ -179,7 +179,6 @@ namespace Daydream
 
 	void VulkanSwapchain::BeginFrame()
 	{
-
 		//이전 프레임의 GPU 작업 완료됐다는 신호를 inFlightFence로 받기로 하고 대기
 		auto result = device->GetDevice().waitForFences(1, &inFlightFences[currentFrame].get(), VK_FALSE, UINT64_MAX);
 

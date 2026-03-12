@@ -16,7 +16,6 @@ namespace Daydream
 
 	void EditorLayer::OnAttach()
 	{
-
 		AssetManager::LoadAssetMetadataFromDirectory("Resource");
 		AssetManager::LoadAssets(LoadPhase::Early);
 

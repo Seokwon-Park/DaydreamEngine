@@ -7,6 +7,7 @@
 #include "Daydream/Graphics/Core/RenderDevice.h"
 #include "Daydream/Core/Window.h"
 
+#include "VulkanCommandList.h"
 #include "VulkanRenderPass.h"
 #include "VulkanFrameBuffer.h"
 #include "VulkanRenderDevice.h"
@@ -49,6 +50,7 @@ namespace Daydream
 
 		VulkanRenderDevice* device;
 		Array<vk::UniqueCommandBuffer> commandBuffers;
+		Array<VulkanCommandList> commandBuffers;
 		Array<Shared<VulkanFramebuffer>> framebuffers;
 		Shared<VulkanRenderPass> renderPass;
 

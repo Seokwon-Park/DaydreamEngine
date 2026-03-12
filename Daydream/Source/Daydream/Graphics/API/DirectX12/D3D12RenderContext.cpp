@@ -20,7 +20,7 @@ namespace Daydream
 			commandLists[i]->Close();
 		}
 	}
-	void D3D12RenderContext::BeginCommandList()
+	void D3D12RenderContext::SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height)
 	{
 	}
 	void D3D12RenderContext::SetClearColor(const Color& _color)
@@ -36,5 +36,38 @@ namespace Daydream
 		device->GetCommandList()->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		device->GetCommandList()->DrawIndexedInstanced(_indexCount, 1, _startIndex, _baseVertex, 0);
 		//device->GetCommandList()->DrawInstanced(3, 1, 0, 0);
+	}
+	void D3D12RenderContext::BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer)
+	{
+	}
+	void D3D12RenderContext::EndRenderPass(Shared<RenderPass> _renderPass)
+	{
+	}
+	void D3D12RenderContext::BindPipelineState(Shared<PipelineState> _pipelineState)
+	{
+	}
+	void D3D12RenderContext::BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer)
+	{
+	}
+	void D3D12RenderContext::BindIndexBuffer(Shared<IndexBuffer> _indexBuffer)
+	{
+	}
+	void D3D12RenderContext::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
+	{
+	}
+	void D3D12RenderContext::SetTextureCube(const String& _name, Shared<TextureCube> _textureCube)
+	{
+	}
+	void D3D12RenderContext::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
+	{
+	}
+	void D3D12RenderContext::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
+	{
+	}
+	void D3D12RenderContext::CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel)
+	{
+	}
+	void D3D12RenderContext::GenerateMips(Shared<Texture> _texture)
+	{
 	}
 }

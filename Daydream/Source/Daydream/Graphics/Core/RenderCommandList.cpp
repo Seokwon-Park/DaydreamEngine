@@ -3,17 +3,12 @@
 
 namespace Daydream
 {
-	void RenderCommandList::AddCommand(FunctionPtr<void()> _command)
+	RenderCommandList::RenderCommandList()
 	{
-		commandList.push_back(_command);
 	}
 
-	void RenderCommandList::Execute()
+	RenderCommandList::~RenderCommandList()
 	{
-		for (FunctionPtr command : commandList)
-		{
-			command();
-		}
 	}
 }
 
