@@ -144,7 +144,6 @@ namespace Daydream
 	{
 		return MakeUnique<D3D11RenderContext>(this);
 	}
-
 	Shared<VertexBuffer> D3D11RenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
 	{
 		Shared<D3D11VertexBuffer> buffer = MakeShared<D3D11VertexBuffer>(this, BufferUsage::Dynamic, _size, _stride, nullptr);

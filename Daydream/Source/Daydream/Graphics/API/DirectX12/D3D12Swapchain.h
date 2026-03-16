@@ -20,7 +20,9 @@ namespace Daydream
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
 
-		virtual Shared<Framebuffer> GetBackFramebuffer() { return framebuffers[frameIndex]; };
+		virtual Shared<Framebuffer> GetCurrentFramebuffer()const { return framebuffers[frameIndex]; };
+		virtual Shared<RenderCommandList> GetCurrentCommandList() const { return nullptr; };
+
 
 		void WaitForGPU();
 		void MoveToNextFrame();
@@ -40,7 +42,7 @@ namespace Daydream
 		UInt32 bufferCount = 0;
 		DXGI_FORMAT format;
 
-		Array<ComPtr<ID3D12Resource>> backBuffers;
+		Array<ComPtr<ID3D12Resource>> d3d12Backbuffers;
 
 		ComPtr<ID3D12Fence> fence;
 		Array<UINT64> fenceValues;

@@ -16,7 +16,7 @@ namespace Daydream
 	{
 		DirectionalLight dirLights[2] = {};
 		PointLight pointLights[4] = {};
-		SpotLight spotLights[4] = {}; // ÃÖ´ë 32°³ ¶óÀÌÆ®
+		SpotLight spotLights[4] = {}; // ìµœëŒ€ 32ê°œ ë¼ì´íŠ¸
 		Vector3 eyePos;
 		UInt32 dirLightCount = 0;
 		Vector2 padding1;
@@ -62,8 +62,8 @@ namespace Daydream
 
 		Array<Unique<GameEntity>> entityPool;
 
-		Array<UInt32> generations; //indexÀÇ generation
-		Queue<UInt32> freeIndices; //»ç¿ë°¡´ÉÇÑ ÀÎµ¦½º
+		Array<UInt32> generations; //indexì˜ generation
+		Queue<UInt32> freeIndices; //ì‚¬ìš©ê°€ëŠ¥í•œ ì¸ë±ìŠ¤
 
 		Array<EntityHandle> activeEntities;
 		Array<EntityHandle> rootEntities;
@@ -76,7 +76,7 @@ namespace Daydream
 		LightData lightData;
 		Shared<ConstantBuffer> lightBuffer; 
 		//Array<SpriteRendererComponent*> spriteRenderers;
-		Shared<Skybox> skybox;
+		Skybox* skybox;
 
 		//temp
 		LightComponent* firstLightComponent = nullptr;

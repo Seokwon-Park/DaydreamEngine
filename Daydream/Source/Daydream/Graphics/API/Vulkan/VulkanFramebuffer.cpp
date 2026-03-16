@@ -49,6 +49,7 @@ namespace Daydream
 
 	VulkanFramebuffer::~VulkanFramebuffer()
 	{
+		oldAttachments.clear();
 		colorAttachments.clear();
 	}
 
@@ -59,8 +60,6 @@ namespace Daydream
 
 	void VulkanFramebuffer::Resize(UInt32 _width, UInt32 _height)
 	{
-		vkDeviceWaitIdle(device->GetDevice());
-
 		width = _width;
 		height = _height;
 		extent.width = _width;
@@ -74,9 +73,10 @@ namespace Daydream
 		depthAttachment = nullptr;
 		depthStencilView = VK_NULL_HANDLE;
 
-		vk::CommandBufferBeginInfo beginInfo{};
-		device->GetCommandBuffer().reset({});
-		device->GetCommandBuffer().begin(beginInfo);
+		//vk::CommandBufferBeginInfo beginInfo{};
+		//device->GetCommandBuffer().reset({});
+		//device->GetCommandBuffer().begin(beginInfo);
+		
 		CreateAttachments();
 	}
 

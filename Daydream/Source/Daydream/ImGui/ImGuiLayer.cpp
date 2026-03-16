@@ -71,7 +71,8 @@ namespace Daydream
 		Application& app = Application::GetInstance();
 		io.DisplaySize = ImVec2(static_cast<Float32>(app.GetMainWindow().GetWidth()), static_cast<Float32>(app.GetMainWindow().GetHeight()));
 
-		Renderer::GetImGuiRenderer()->Render();
+		RenderCommandList* activeCommandList = Renderer::GetActiveCommandList();
+		Renderer::GetImGuiRenderer()->Render(activeCommandList);
 
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{

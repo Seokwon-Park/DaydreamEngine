@@ -17,13 +17,13 @@ namespace Daydream
 		static constexpr UInt32 maxFramesInFlight = 3;
 		static constexpr UInt32 maxCommandListsInFlight = 2;
 
-		static void BeginCommandList() { renderContext->BeginCommandList(); }
-		static void EndCommandList() { renderContext->EndCommandList(); }
+		static void BeginFrameRendering() { renderContext->BeginFrameRendering(); }
+		static void EndFrameRendering() { renderContext->EndFrameRendering(); }
 
 		template<typename Func>
 		static void Record(Func&& _command)
 		{
-			commandLists[0]->AddCommand(std::forward<Func>(_command));
+			commandQueues[0]->AddCommand(std::forward<Func>(_command));
 		}
 
 		//static RenderCommandList* GetCurrentCommandQueue();
@@ -36,10 +36,9 @@ namespace Daydream
 		static DaydreamWindow* GetCurrentWindow() { return currentWindow; }
 		static void OnWindowResize(UInt32 _width, UInt32 _height);
 
-
 		static void BeginFrame(Swapchain* _swapchain);
 		static void EndFrame(Swapchain* _swapchain);
-		
+		static void ExecuteSingleTimeCommands(FunctionPtr<void()> _func);
 
 		static void BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer); 
 		static void EndRenderPass(Shared<RenderPass> _renderPass); 
@@ -61,17 +60,16 @@ namespace Daydream
 		static void CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel = 0);
 		static void GenerateMips(Shared<Texture> _texture);
 
+		static void MakeSkybox();
+
 		static ImGuiRenderer* GetImGuiRenderer() { return imguiRenderer.get(); }
 
 		//static Renderer& Get() { return *instance; }
 		static inline RendererAPIType GetAPI() { return renderDevice->GetAPI(); }
 		static inline RenderDevice* GetRenderDevice() { return renderDevice.get(); }
 		static inline RenderContext* GetRenderContext() { return renderContext.get(); }
-
 		static inline Skybox* GetSkybox() { return skybox.get(); }
-
-		static void ExecuteSingleCommand(FunctionPtr<void()> _func);
-
+		static inline RenderCommandList* GetActiveCommandList() { return renderContext->GetActiveCommandList().get(); }
 	private:
 		Renderer() = default;
 
@@ -82,7 +80,7 @@ namespace Daydream
 		inline static Unique<ImGuiRenderer> imguiRenderer = nullptr;
 		inline static Unique<Skybox> skybox = nullptr;
 
-		inline static Array<Unique<RenderCommandQueue>> commandLists;
+		inline static Array<Unique<RenderCommandQueue>> commandQueues;
 	};
 }
 

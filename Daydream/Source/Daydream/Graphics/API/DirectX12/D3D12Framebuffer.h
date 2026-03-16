@@ -26,9 +26,10 @@ namespace Daydream
 		const Shared<D3D12Texture2D>& GetDepthAttachment() { return depthAttachment; }
 
 		const D3D12_CPU_DESCRIPTOR_HANDLE& GetDepthStencilView() { return depthAttachment->GetDSVCPUHandle(); }
-		Array<D3D12_CPU_DESCRIPTOR_HANDLE>& GetRenderTargetHandles() { return renderTargetHandles; }
-		void CreateAttachments();
+		const Array<D3D12_CPU_DESCRIPTOR_HANDLE>& GetRenderTargetHandles() { return renderTargetHandles; }
 
+		void CreateAttachments();
+		
 	private:
 		D3D12RenderDevice* device;
 		D3D12_CPU_DESCRIPTOR_HANDLE swapchainRTVHandle;

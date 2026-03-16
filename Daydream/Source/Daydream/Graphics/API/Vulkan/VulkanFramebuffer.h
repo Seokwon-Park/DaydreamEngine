@@ -18,7 +18,8 @@ namespace Daydream
 
 		virtual ~VulkanFramebuffer() override;
 
-		virtual UInt32 GetColorAttachmentSize() override { return (UInt32)colorAttachments.size(); }
+		//To Be Fixed(Swapchain 이미지의 경우 ColorAttachments에 push_back 되지 않기 때문에)
+		virtual UInt32 GetColorAttachmentSize() override { return (UInt32)attachmentImageViews.size(); }
 		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) override;
 		virtual Shared<Texture2D> GetDepthAttachmentTexture() override { return depthAttachment; };
 		virtual inline bool HasDepthAttachment() override { return depthAttachment != nullptr; }
@@ -28,7 +29,6 @@ namespace Daydream
 		vk::Framebuffer GetFramebuffer() { return framebuffer.get(); }
 		vk::Extent2D GetExtent() { return extent; }
 		void CreateAttachments();
-
 	private:
 		VulkanRenderDevice* device;
 		VulkanRenderPass* vkRenderPass;

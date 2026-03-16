@@ -14,7 +14,7 @@ namespace Daydream
 		virtual void Begin() override;
 		virtual void End() override;
 		virtual void WaitForCompletion() override;
-
+		
 		vk::CommandBuffer GetVkCommandBuffer() const { return commandBuffer.get(); }
 		vk::Fence GetVkFence() const { return inFlightFence.get(); }
 	protected:

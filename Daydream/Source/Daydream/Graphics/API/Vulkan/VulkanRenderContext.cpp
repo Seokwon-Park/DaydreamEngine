@@ -15,54 +15,35 @@ namespace Daydream
 	VulkanRenderContext::VulkanRenderContext(VulkanRenderDevice* _device, UInt32 _framesInFlight)
 	{
 		device = _device;
-
-		//commandBuffers.resize(_framesInFlight);
-		//vk::CommandBufferAllocateInfo allocInfo{};
-		//allocInfo.commandPool = device->GetCommandPool();
-		//allocInfo.level = vk::CommandBufferLevel::ePrimary;
-		//allocInfo.commandBufferCount = (UInt32)commandBuffers.size();
-
-		//commandBuffers = device->GetDevice().allocateCommandBuffersUnique(allocInfo);
-		//commandBufferIndex = 0;
-
-		//vk::FenceCreateInfo fenceInfo{};
-		//fenceInfo.flags = vk::FenceCreateFlagBits::eSignaled;
-
-		//waitFences.resize(_framesInFlight);
-		//for (UInt32 i = 0; i < _framesInFlight; i++)
-		//{
-		//	waitFences[i] = device->GetDevice().createFenceUnique(fenceInfo);
-		//}
 	}
 	VulkanRenderContext::~VulkanRenderContext()
 	{
 		device->GetGraphicsQueue().waitIdle();
 	}
-	void VulkanRenderContext::BeginCommandList()
+	void VulkanRenderContext::BeginFrameRendering()
 	{
-		//active = commandBuffers[commandBufferIndex].get();
-		//vk::Result result = device->GetDevice().waitForFences(1, &waitFences[commandBufferIndex].get(), VK_FALSE, UINT64_MAX);
-		//result = device->GetDevice().resetFences(1, &waitFences[commandBufferIndex].get());
+		/*vk::Result result = device->GetDevice().waitForFences(1, &waitFences[commandBufferIndex].get(), VK_FALSE, UINT64_MAX);
+		result = device->GetDevice().resetFences(1, &waitFences[commandBufferIndex].get());
 
 		//GetActiveCommandBuffer().reset({});
 
-		//vk::CommandBufferBeginInfo beginInfo{};
-		//GetActiveCommandBuffer().begin(beginInfo);
+		vk::CommandBufferBeginInfo beginInfo{};
+		GetActiveCommandBuffer().begin(beginInfo); */
 	}
 
-	void VulkanRenderContext::EndCommandList()
+	void VulkanRenderContext::EndFrameRendering()
 	{
-		/*GetActiveCommandBuffer().end();
+		//GetActiveCommandBuffer().end();
 
-		vk::SubmitInfo submitInfo{};
-		submitInfo.commandBufferCount = 1;
-		submitInfo.pCommandBuffers = &commandBuffers[commandBufferIndex].get();
+		//vk::SubmitInfo submitInfo{};
+		//submitInfo.commandBufferCount = 1;
+		//submitInfo.pCommandBuffers = &commandBuffers[commandBufferIndex].get();
 
-		vk::Result result = device->GetGraphicsQueue().submit(1, &submitInfo, waitFences[commandBufferIndex].get());
+		//vk::Result result = device->GetGraphicsQueue().submit(1, &submitInfo, waitFences[commandBufferIndex].get());
 
-		commandBufferIndex = (commandBufferIndex + 1) % 3;
+		//commandBufferIndex = (commandBufferIndex + 1) % 3;
 
-		device->GetGraphicsQueue().waitIdle();*/
+		//device->GetGraphicsQueue().waitIdle();
 	}
 	void VulkanRenderContext::SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height)
 	{
@@ -118,8 +99,8 @@ namespace Daydream
 		if (currentFramebuffer->HasDepthAttachment())
 		{
 			vk::ClearValue vulkanClearDepthStencil;
-			vulkanClearDepthStencil.depthStencil.depth = 1.0f; // ¶Ç´Â 0.0f
-			vulkanClearDepthStencil.depthStencil.stencil = 0;   // ½ºÅÙ½Ç °ªµµ ÇÔ²² ÃÊ±âÈ­
+			vulkanClearDepthStencil.depthStencil.depth = 1.0f; // ë˜ëŠ” 0.0f
+			vulkanClearDepthStencil.depthStencil.stencil = 0;   // ìŠ¤í…ì‹¤ ê°’ë„ í•¨ê»˜ ì´ˆê¸°í™”
 			colors.push_back(vulkanClearDepthStencil);
 		}
 
@@ -137,7 +118,7 @@ namespace Daydream
 	void VulkanRenderContext::BindPipelineState(Shared<PipelineState> _pipelineState)
 	{
 		RenderContext::BindPipelineState(_pipelineState);
-		currentPipelineState = _pipelineState;
+		activePipelineState = _pipelineState;
 		Shared<VulkanPipelineState> pipelineState = static_pointer_cast<VulkanPipelineState>(_pipelineState);
 
 		GetActiveCommandBuffer().bindPipeline(vk::PipelineBindPoint::eGraphics, pipelineState->GetPipeline());
@@ -156,12 +137,13 @@ namespace Daydream
 
 	void VulkanRenderContext::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
 	{
+		if (_texture == nullptr) return;
 		RenderContext::SetTexture2D(_name, _texture);
-		const ShaderReflectionData* resourceInfo = currentPipelineState->GetBindingInfo(_name);
+		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
 		if (resourceInfo == nullptr) return;
 
 		Shared<VulkanTexture2D> vulkanTexture = SharedCast<VulkanTexture2D>(_texture);
-		Shared<VulkanPipelineState> vulkanPSO = SharedCast<VulkanPipelineState>(currentPipelineState);
+		Shared<VulkanPipelineState> vulkanPSO = SharedCast<VulkanPipelineState>(activePipelineState);
 
 		vk::DescriptorImageInfo imageInfo{};
 		imageInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
@@ -170,7 +152,7 @@ namespace Daydream
 
 		vk::WriteDescriptorSet writeSet = {};
 		//writeSet.dstSet = sets[resourceInfo.set].get();
-		writeSet.dstBinding = resourceInfo->binding;  // Æ¯Á¤ binding¸¸ ¾÷µ¥ÀÌÆ®
+		writeSet.dstBinding = resourceInfo->binding;  // íŠ¹ì • bindingë§Œ ì—…ë°ì´íŠ¸
 		writeSet.descriptorCount = 1;
 		writeSet.descriptorType = vk::DescriptorType::eCombinedImageSampler;
 		writeSet.pImageInfo = &imageInfo;
@@ -185,11 +167,12 @@ namespace Daydream
 	}
 	void VulkanRenderContext::SetTextureCube(const String& _name, Shared<TextureCube> _textureCube)
 	{
-		const ShaderReflectionData* resourceInfo = currentPipelineState->GetBindingInfo(_name);
+		if (_textureCube == nullptr) return;
+		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
 		if (resourceInfo == nullptr) return;
 
 		Shared<VulkanTextureCube> vulkanTexture = std::static_pointer_cast<VulkanTextureCube>(_textureCube);
-		Shared<VulkanPipelineState> vulkanPSO = std::static_pointer_cast<VulkanPipelineState>(currentPipelineState);
+		Shared<VulkanPipelineState> vulkanPSO = std::static_pointer_cast<VulkanPipelineState>(activePipelineState);
 
 		vk::DescriptorImageInfo imageInfo{};
 		imageInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
@@ -198,7 +181,7 @@ namespace Daydream
 
 		vk::WriteDescriptorSet writeSet = {};
 		//writeSet.dstSet = sets[resourceInfo.set].get();
-		writeSet.dstBinding = resourceInfo->binding;  // Æ¯Á¤ binding¸¸ ¾÷µ¥ÀÌÆ®
+		writeSet.dstBinding = resourceInfo->binding;  // íŠ¹ì • bindingë§Œ ì—…ë°ì´íŠ¸
 		writeSet.descriptorCount = 1;
 		writeSet.descriptorType = vk::DescriptorType::eCombinedImageSampler;
 		writeSet.pImageInfo = &imageInfo;
@@ -213,11 +196,12 @@ namespace Daydream
 	}
 	void VulkanRenderContext::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
 	{
-		const ShaderReflectionData* resourceInfo = currentPipelineState->GetBindingInfo(_name);
+		if (_buffer == nullptr) return;
+		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
 		if (resourceInfo == nullptr) return;
 
 		Shared<VulkanConstantBuffer> vulkanBuffer = std::static_pointer_cast<VulkanConstantBuffer>(_buffer);
-		Shared<VulkanPipelineState> vulkanPSO = std::static_pointer_cast<VulkanPipelineState>(currentPipelineState);
+		Shared<VulkanPipelineState> vulkanPSO = std::static_pointer_cast<VulkanPipelineState>(activePipelineState);
 
 		vk::DescriptorBufferInfo bufferInfo{};
 		bufferInfo.buffer = (VkBuffer)vulkanBuffer->GetNativeHandle();
@@ -226,7 +210,7 @@ namespace Daydream
 
 		vk::WriteDescriptorSet writeSet = {};
 		//writeSet.dstSet = sets[resourceInfo.set].get();
-		writeSet.dstBinding = resourceInfo->binding;  // Æ¯Á¤ binding¸¸ ¾÷µ¥ÀÌÆ®
+		writeSet.dstBinding = resourceInfo->binding;  // íŠ¹ì • bindingë§Œ ì—…ë°ì´íŠ¸
 		writeSet.descriptorCount = 1;
 		writeSet.descriptorType = vk::DescriptorType::eUniformBuffer;
 		writeSet.pBufferInfo = &bufferInfo;
@@ -247,8 +231,8 @@ namespace Daydream
 		Shared<VulkanTexture2D> dst = SharedCast<VulkanTexture2D>(_dst);
 		Shared<VulkanTexture2D> src = SharedCast<VulkanTexture2D>(_src);
 
-		// ¿øº» ÀÌ¹ÌÁö¸¦ TRANSFER_SRC·Î º¯°æ
-		barriers[0].oldLayout = vk::ImageLayout::eShaderReadOnlyOptimal; // ¶Ç´Â ÇöÀç ·¹ÀÌ¾Æ¿ô
+		// ì›ë³¸ ì´ë¯¸ì§€ë¥¼ TRANSFER_SRCë¡œ ë³€ê²½
+		barriers[0].oldLayout = vk::ImageLayout::eShaderReadOnlyOptimal; // ë˜ëŠ” í˜„ì¬ ë ˆì´ì•„ì›ƒ
 		barriers[0].newLayout = vk::ImageLayout::eTransferSrcOptimal;
 		barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
@@ -258,11 +242,11 @@ namespace Daydream
 		barriers[0].subresourceRange.levelCount = 1;
 		barriers[0].subresourceRange.baseArrayLayer = 0;
 		barriers[0].subresourceRange.layerCount = 1;
-		barriers[0].srcAccessMask = {}; // ÀÌÀü ÀÛ¾÷ÀÌ ¾ø´Ù°í °¡Á¤
+		barriers[0].srcAccessMask = {}; // ì´ì „ ì‘ì—…ì´ ì—†ë‹¤ê³  ê°€ì •
 		barriers[0].dstAccessMask = vk::AccessFlagBits::eTransferRead;
 
-		// ´ë»ó ÀÌ¹ÌÁö¸¦ TRANSFER_DST·Î º¯°æ
-		barriers[1].oldLayout = vk::ImageLayout::eUndefined; // ¶Ç´Â ÇöÀç ·¹ÀÌ¾Æ¿ô
+		// ëŒ€ìƒ ì´ë¯¸ì§€ë¥¼ TRANSFER_DSTë¡œ ë³€ê²½
+		barriers[1].oldLayout = vk::ImageLayout::eUndefined; // ë˜ëŠ” í˜„ì¬ ë ˆì´ì•„ì›ƒ
 		barriers[1].newLayout = vk::ImageLayout::eTransferDstOptimal;
 		barriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
@@ -276,15 +260,15 @@ namespace Daydream
 		barriers[1].dstAccessMask = vk::AccessFlagBits::eTransferWrite;
 
 		GetActiveCommandBuffer().pipelineBarrier(
-			vk::PipelineStageFlagBits::eTopOfPipe,  // ÀÌÀü ÀÛ¾÷ ´Ü°è
-			vk::PipelineStageFlagBits::eTransfer,     // ´ÙÀ½ ÀÛ¾÷ ´Ü°è (Àü¼Û)
+			vk::PipelineStageFlagBits::eTopOfPipe,  // ì´ì „ ì‘ì—… ë‹¨ê³„
+			vk::PipelineStageFlagBits::eTransfer,     // ë‹¤ìŒ ì‘ì—… ë‹¨ê³„ (ì „ì†¡)
 			{},
 			0, nullptr,
 			0, nullptr,
 			2, barriers
 		);
 
-		// 2. º¹»ç ¸í·É ±â·Ï
+		// 2. ë³µì‚¬ ëª…ë ¹ ê¸°ë¡
 		vk::ImageCopy copyRegion = {};
 		copyRegion.srcSubresource.aspectMask = vk::ImageAspectFlagBits::eColor;
 		copyRegion.srcSubresource.layerCount = 1;
@@ -301,8 +285,8 @@ namespace Daydream
 		);
 
 
-		// ¿øº» ÀÌ¹ÌÁö¸¦ TRANSFER_SRC·Î º¯°æ
-		barriers[0].oldLayout = vk::ImageLayout::eTransferSrcOptimal; // ¶Ç´Â ÇöÀç ·¹ÀÌ¾Æ¿ô
+		// ì›ë³¸ ì´ë¯¸ì§€ë¥¼ TRANSFER_SRCë¡œ ë³€ê²½
+		barriers[0].oldLayout = vk::ImageLayout::eTransferSrcOptimal; // ë˜ëŠ” í˜„ì¬ ë ˆì´ì•„ì›ƒ
 		barriers[0].newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 		barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
@@ -312,11 +296,11 @@ namespace Daydream
 		barriers[0].subresourceRange.levelCount = 1;
 		barriers[0].subresourceRange.baseArrayLayer = 0;
 		barriers[0].subresourceRange.layerCount = 1;
-		barriers[0].srcAccessMask = vk::AccessFlagBits::eTransferRead; // ÀÌÀü ÀÛ¾÷ÀÌ ¾ø´Ù°í °¡Á¤
+		barriers[0].srcAccessMask = vk::AccessFlagBits::eTransferRead; // ì´ì „ ì‘ì—…ì´ ì—†ë‹¤ê³  ê°€ì •
 		barriers[0].dstAccessMask = {};
 
-		// ´ë»ó ÀÌ¹ÌÁö¸¦ TRANSFER_DST·Î º¯°æ
-		barriers[1].oldLayout = vk::ImageLayout::eTransferDstOptimal; // ¶Ç´Â ÇöÀç ·¹ÀÌ¾Æ¿ô
+		// ëŒ€ìƒ ì´ë¯¸ì§€ë¥¼ TRANSFER_DSTë¡œ ë³€ê²½
+		barriers[1].oldLayout = vk::ImageLayout::eTransferDstOptimal; // ë˜ëŠ” í˜„ì¬ ë ˆì´ì•„ì›ƒ
 		barriers[1].newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 		barriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
@@ -330,8 +314,8 @@ namespace Daydream
 		barriers[1].dstAccessMask = {};
 
 		GetActiveCommandBuffer().pipelineBarrier(
-			vk::PipelineStageFlagBits::eTransfer,  // ÀÌÀü ÀÛ¾÷ ´Ü°è
-			vk::PipelineStageFlagBits::eFragmentShader,     // ´ÙÀ½ ÀÛ¾÷ ´Ü°è (Àü¼Û)
+			vk::PipelineStageFlagBits::eTransfer,  // ì´ì „ ì‘ì—… ë‹¨ê³„
+			vk::PipelineStageFlagBits::eFragmentShader,     // ë‹¤ìŒ ì‘ì—… ë‹¨ê³„ (ì „ì†¡)
 			{},
 			0, nullptr,
 			0, nullptr,
@@ -345,8 +329,8 @@ namespace Daydream
 
 		vk::ImageMemoryBarrier barriers[2] = {};
 
-		// ¿øº» ÀÌ¹ÌÁö¸¦ TRANSFER_SRC·Î º¯°æ
-		barriers[0].oldLayout = vk::ImageLayout::eShaderReadOnlyOptimal; // ¶Ç´Â ÇöÀç ·¹ÀÌ¾Æ¿ô
+		// ì›ë³¸ ì´ë¯¸ì§€ë¥¼ TRANSFER_SRCë¡œ ë³€ê²½
+		barriers[0].oldLayout = vk::ImageLayout::eShaderReadOnlyOptimal; // ë˜ëŠ” í˜„ì¬ ë ˆì´ì•„ì›ƒ
 		barriers[0].newLayout = vk::ImageLayout::eTransferSrcOptimal;
 		barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
@@ -356,11 +340,11 @@ namespace Daydream
 		barriers[0].subresourceRange.levelCount = 1;
 		barriers[0].subresourceRange.baseArrayLayer = 0;
 		barriers[0].subresourceRange.layerCount = 1;
-		barriers[0].srcAccessMask = {}; // ÀÌÀü ÀÛ¾÷ÀÌ ¾ø´Ù°í °¡Á¤
+		barriers[0].srcAccessMask = {}; // ì´ì „ ì‘ì—…ì´ ì—†ë‹¤ê³  ê°€ì •
 		barriers[0].dstAccessMask = vk::AccessFlagBits::eTransferRead;
 
-		// ´ë»ó ÀÌ¹ÌÁö¸¦ TRANSFER_DST·Î º¯°æ
-		barriers[1].oldLayout = vk::ImageLayout::eUndefined; // ¶Ç´Â ÇöÀç ·¹ÀÌ¾Æ¿ô
+		// ëŒ€ìƒ ì´ë¯¸ì§€ë¥¼ TRANSFER_DSTë¡œ ë³€ê²½
+		barriers[1].oldLayout = vk::ImageLayout::eUndefined; // ë˜ëŠ” í˜„ì¬ ë ˆì´ì•„ì›ƒ
 		barriers[1].newLayout = vk::ImageLayout::eTransferDstOptimal;
 		barriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
@@ -374,8 +358,8 @@ namespace Daydream
 		barriers[1].dstAccessMask = vk::AccessFlagBits::eTransferWrite;
 
 		GetActiveCommandBuffer().pipelineBarrier(
-			vk::PipelineStageFlagBits::eTopOfPipe,  // ÀÌÀü ÀÛ¾÷ ´Ü°è
-			vk::PipelineStageFlagBits::eTransfer,     // ´ÙÀ½ ÀÛ¾÷ ´Ü°è (Àü¼Û)
+			vk::PipelineStageFlagBits::eTopOfPipe,  // ì´ì „ ì‘ì—… ë‹¨ê³„
+			vk::PipelineStageFlagBits::eTransfer,     // ë‹¤ìŒ ì‘ì—… ë‹¨ê³„ (ì „ì†¡)
 			{},
 			0, nullptr,
 			0, nullptr,
@@ -395,24 +379,24 @@ namespace Daydream
 
 		//TransitionImageLayout(barrier);
 
-		// --- 3. vkCmdCopyImage ¸í·É ±â·Ï ---
+		// --- 3. vkCmdCopyImage ëª…ë ¹ ê¸°ë¡ ---
 		vk::ImageCopy copyRegion{};
 
-		// ¼Ò½º ¼­ºê¸®¼Ò½º ¼³Á¤
+		// ì†ŒìŠ¤ ì„œë¸Œë¦¬ì†ŒìŠ¤ ì„¤ì •
 		copyRegion.srcSubresource.aspectMask = vk::ImageAspectFlagBits::eColor;
 		copyRegion.srcSubresource.mipLevel = 0;
-		copyRegion.srcSubresource.baseArrayLayer = 0; // 2D ÅØ½ºÃ³ÀÌ¹Ç·Î 0
+		copyRegion.srcSubresource.baseArrayLayer = 0; // 2D í…ìŠ¤ì²˜ì´ë¯€ë¡œ 0
 		copyRegion.srcSubresource.layerCount = 1;
 		copyRegion.srcOffset = vk::Offset3D{ 0, 0, 0 };
 
-		// ¸ñÀûÁö ¼­ºê¸®¼Ò½º ¼³Á¤
+		// ëª©ì ì§€ ì„œë¸Œë¦¬ì†ŒìŠ¤ ì„¤ì •
 		copyRegion.dstSubresource.aspectMask = vk::ImageAspectFlagBits::eColor;
 		copyRegion.dstSubresource.mipLevel = _mipLevel;
-		copyRegion.dstSubresource.baseArrayLayer = _faceIndex; // Å¥ºê¸ÊÀÇ Æ¯Á¤ ¸éÀ» °¡¸®Å´
+		copyRegion.dstSubresource.baseArrayLayer = _faceIndex; // íë¸Œë§µì˜ íŠ¹ì • ë©´ì„ ê°€ë¦¬í‚´
 		copyRegion.dstSubresource.layerCount = 1;
 		copyRegion.dstOffset = vk::Offset3D{ 0, 0, 0 };
 
-		// º¹»çÇÒ ¿µ¿ªÀÇ Å©±â
+		// ë³µì‚¬í•  ì˜ì—­ì˜ í¬ê¸°
 		copyRegion.extent.width = _srcTexture2D->GetWidth();
 		copyRegion.extent.height = _srcTexture2D->GetHeight();
 		copyRegion.extent.depth = 1;
@@ -423,7 +407,7 @@ namespace Daydream
 			1, &copyRegion
 		);
 
-		barriers[0].oldLayout = vk::ImageLayout::eTransferSrcOptimal; // ¶Ç´Â ÇöÀç ·¹ÀÌ¾Æ¿ô
+		barriers[0].oldLayout = vk::ImageLayout::eTransferSrcOptimal; // ë˜ëŠ” í˜„ì¬ ë ˆì´ì•„ì›ƒ
 		barriers[0].newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 		barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
@@ -433,10 +417,10 @@ namespace Daydream
 		barriers[0].subresourceRange.levelCount = 1;
 		barriers[0].subresourceRange.baseArrayLayer = 0;
 		barriers[0].subresourceRange.layerCount = 1;
-		barriers[0].srcAccessMask = vk::AccessFlagBits::eTransferRead; // ÀÌÀü ÀÛ¾÷ÀÌ ¾ø´Ù°í °¡Á¤
+		barriers[0].srcAccessMask = vk::AccessFlagBits::eTransferRead; // ì´ì „ ì‘ì—…ì´ ì—†ë‹¤ê³  ê°€ì •
 		barriers[0].dstAccessMask = {};
 
-		barriers[1].oldLayout = vk::ImageLayout::eTransferDstOptimal; // ¶Ç´Â ÇöÀç ·¹ÀÌ¾Æ¿ô
+		barriers[1].oldLayout = vk::ImageLayout::eTransferDstOptimal; // ë˜ëŠ” í˜„ì¬ ë ˆì´ì•„ì›ƒ
 		barriers[1].newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 		barriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
@@ -450,8 +434,8 @@ namespace Daydream
 		barriers[1].dstAccessMask = {};
 
 		GetActiveCommandBuffer().pipelineBarrier(
-			vk::PipelineStageFlagBits::eTransfer,  // ÀÌÀü ÀÛ¾÷ ´Ü°è
-			vk::PipelineStageFlagBits::eFragmentShader,     // ´ÙÀ½ ÀÛ¾÷ ´Ü°è (Àü¼Û)
+			vk::PipelineStageFlagBits::eTransfer,  // ì´ì „ ì‘ì—… ë‹¨ê³„
+			vk::PipelineStageFlagBits::eFragmentShader,     // ë‹¤ìŒ ì‘ì—… ë‹¨ê³„ (ì „ì†¡)
 			{},
 			0, nullptr,
 			0, nullptr,
@@ -461,7 +445,7 @@ namespace Daydream
 
 	void VulkanRenderContext::GenerateMips(Shared<Texture> _texture)
 	{
-		//vk::CommandBuffer commandBuffer = device->BeginSingleTimeCommands(); // ÀÌ ÇÔ¼ö´Â vk::CommandBuffer¸¦ ¹İÈ¯ÇÑ´Ù°í °¡Á¤
+		//vk::CommandBuffer commandBuffer = device->BeginSingleTimeCommands(); // ì´ í•¨ìˆ˜ëŠ” vk::CommandBufferë¥¼ ë°˜í™˜í•œë‹¤ê³  ê°€ì •
 
 		Int32 mipWidth = _texture->GetWidth();
 		Int32 mipHeight = _texture->GetHeight();
@@ -479,10 +463,10 @@ namespace Daydream
 			break;
 		}
 
-		// vk::ImageMemoryBarrier ±¸Á¶Ã¼ »ç¿ë, sTypeÀº ÀÚµ¿ ¼³Á¤µË´Ï´Ù.
+		// vk::ImageMemoryBarrier êµ¬ì¡°ì²´ ì‚¬ìš©, sTypeì€ ìë™ ì„¤ì •ë©ë‹ˆë‹¤.
 		vk::ImageMemoryBarrier barrier{};
 		barrier.image = image;
-		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED; // ÀÏºÎ ¸ÅÅ©·Î´Â ±×´ë·Î »ç¿ë
+		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED; // ì¼ë¶€ ë§¤í¬ë¡œëŠ” ê·¸ëŒ€ë¡œ ì‚¬ìš©
 		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
 		barrier.subresourceRange.baseArrayLayer = 0;
@@ -494,7 +478,7 @@ namespace Daydream
 		barrier.srcAccessMask = vk::AccessFlagBits::eShaderRead;
 		barrier.dstAccessMask = vk::AccessFlagBits::eTransferWrite;
 
-		// commandBufferÀÇ ¸â¹ö ÇÔ¼ö pipelineBarrier È£Ãâ
+		// commandBufferì˜ ë©¤ë²„ í•¨ìˆ˜ pipelineBarrier í˜¸ì¶œ
 		GetActiveCommandBuffer().pipelineBarrier(
 			vk::PipelineStageFlagBits::eFragmentShader, vk::PipelineStageFlagBits::eTransfer,
 			{}, // vk::DependencyFlags
@@ -514,7 +498,7 @@ namespace Daydream
 			barrier.srcAccessMask = vk::AccessFlagBits::eTransferWrite;
 			barrier.dstAccessMask = vk::AccessFlagBits::eTransferRead;
 
-			// commandBufferÀÇ ¸â¹ö ÇÔ¼ö pipelineBarrier È£Ãâ
+			// commandBufferì˜ ë©¤ë²„ í•¨ìˆ˜ pipelineBarrier í˜¸ì¶œ
 			GetActiveCommandBuffer().pipelineBarrier(
 				vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eTransfer,
 				{}, // vk::DependencyFlags
@@ -537,8 +521,8 @@ namespace Daydream
 			blit.dstSubresource.baseArrayLayer = 0;
 			blit.dstSubresource.layerCount = layerCount;
 
-			// commandBufferÀÇ ¸â¹ö ÇÔ¼ö blitImage È£Ãâ
-			// ¹è¿­ÀÌ ¾Æ´Ñ ´ÜÀÏ blit °´Ã¼¸¦ Á÷Á¢ Àü´ŞÇÕ´Ï´Ù.
+			// commandBufferì˜ ë©¤ë²„ í•¨ìˆ˜ blitImage í˜¸ì¶œ
+			// ë°°ì—´ì´ ì•„ë‹Œ ë‹¨ì¼ blit ê°ì²´ë¥¼ ì§ì ‘ ì „ë‹¬í•©ë‹ˆë‹¤.
 			GetActiveCommandBuffer().blitImage(
 				image, vk::ImageLayout::eTransferSrcOptimal,
 				image, vk::ImageLayout::eTransferDstOptimal,
@@ -546,7 +530,7 @@ namespace Daydream
 				vk::Filter::eLinear
 			);
 
-			// ÀÌÀü ·çÇÁ¿¡¼­ SRC·Î ¹Ù²Û ·¹ÀÌ¾Æ¿ôÀ» ÃÖÁ¾ ¸ñÀûÀÎ SHADER_READ_ONLY·Î º¯°æ
+			// ì´ì „ ë£¨í”„ì—ì„œ SRCë¡œ ë°”ê¾¼ ë ˆì´ì•„ì›ƒì„ ìµœì¢… ëª©ì ì¸ SHADER_READ_ONLYë¡œ ë³€ê²½
 			barrier.oldLayout = vk::ImageLayout::eTransferSrcOptimal;
 			barrier.newLayout = vk::ImageLayout::eTransferDstOptimal;
 			barrier.srcAccessMask = vk::AccessFlagBits::eTransferRead;
@@ -565,7 +549,7 @@ namespace Daydream
 		}
 
 		barrier.image = image;
-		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED; // ÀÏºÎ ¸ÅÅ©·Î´Â ±×´ë·Î »ç¿ë
+		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED; // ì¼ë¶€ ë§¤í¬ë¡œëŠ” ê·¸ëŒ€ë¡œ ì‚¬ìš©
 		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
 		barrier.subresourceRange.baseArrayLayer = 0;
@@ -577,7 +561,7 @@ namespace Daydream
 		barrier.srcAccessMask = vk::AccessFlagBits::eTransferWrite;
 		barrier.dstAccessMask = vk::AccessFlagBits::eShaderRead;
 
-		// commandBufferÀÇ ¸â¹ö ÇÔ¼ö pipelineBarrier È£Ãâ
+		// commandBufferì˜ ë©¤ë²„ í•¨ìˆ˜ pipelineBarrier í˜¸ì¶œ
 		GetActiveCommandBuffer().pipelineBarrier(
 			vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eFragmentShader,
 			{}, // vk::DependencyFlags

@@ -7,7 +7,7 @@
 
 namespace Daydream
 {
-	class D3D12TextureCube : public TextureCube, public D3D12ResourceState, public std::enable_shared_from_this<D3D12TextureCube>
+	class D3D12TextureCube : public TextureCube, public D3D12ResourceState
 	{
 	public:
 		// Constrcuter Destructer

@@ -10,13 +10,10 @@ namespace Daydream
 	public:
 		SkyboxPanel();
 		~SkyboxPanel();
-		
-		void SetSkybox(Skybox* _skybox)
-		{
-			skybox = _skybox;
-		}
 
-		inline bool IsUsingSkybox() const  { return isUsingSkybox; };
+		inline void SetSkybox(Skybox* _skybox) { skybox = _skybox; }
+
+		inline bool IsUsingSkybox() const { return isUsingSkybox; };
 
 		void OnImGuiRender();
 	private:

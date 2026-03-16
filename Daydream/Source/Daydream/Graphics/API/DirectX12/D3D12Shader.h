@@ -19,7 +19,6 @@ namespace Daydream
 	private:
 		D3D12RenderDevice* device;
 		D3D12_SHADER_BYTECODE shaderByteCode;
-		//ComPtr<ID3DBlob> shaderBlob;
 		ComPtr<IDxcBlob> shaderBlob;
 	};
 }

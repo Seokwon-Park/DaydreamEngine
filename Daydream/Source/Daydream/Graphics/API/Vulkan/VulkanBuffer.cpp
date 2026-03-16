@@ -48,7 +48,6 @@ namespace Daydream
 	void VulkanVertexBuffer::Bind() const
 	{
 		vk::DeviceSize offset = 0;
-		device->GetCommandBuffer().bindVertexBuffers(0, 1, &vertexBuffer.get(), &offset);
 	}
 
 	void VulkanVertexBuffer::SetData(const void* _data, UInt32 _dataSize)
@@ -85,7 +84,6 @@ namespace Daydream
 
 	void VulkanIndexBuffer::Bind() const
 	{
-		device->GetCommandBuffer().bindIndexBuffer(*indexBuffer, 0, vk::IndexType::eUint32);
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////

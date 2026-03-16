@@ -53,9 +53,9 @@ namespace Daydream
 
 			material->SetConstantBuffer("Camera", GetOwner()->GetScene()->GetCurrentCamera()->GetViewProjectionConstantBuffer());
 			material->SetConstantBuffer("Lights", GetOwner()->GetScene()->GetLightConstantBuffer());
-			material->SetTexture2D("BRDFLUT", GetOwner()->GetScene()->GetSkybox()->GetBRDF());
-			material->SetTextureCube("IrradianceTexture", GetOwner()->GetScene()->GetSkybox()->GetIrradianceTexture());
-			material->SetTextureCube("Prefilter", GetOwner()->GetScene()->GetSkybox()->GetPrefilterTexture());
+			material->SetTexture2D("BRDFLUT", Renderer::GetSkybox()->GetBRDF());
+			material->SetTextureCube("IrradianceTexture", Renderer::GetSkybox()->GetIrradianceTexture());
+			material->SetTextureCube("Prefilter", Renderer::GetSkybox()->GetPrefilterTexture());
 			Renderer::BindMaterial(material);
 		}
 		if (mesh && material)

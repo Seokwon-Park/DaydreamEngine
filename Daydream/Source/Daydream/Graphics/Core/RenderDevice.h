@@ -42,7 +42,7 @@ namespace Daydream
 		virtual void Render() = 0;
 
 		virtual Unique<RenderContext> CreateContext(UInt32 _framesInFlight) = 0;
-		virtual Shared<RenderCommandList> CreateCmd() { return nullptr; };
+		virtual Shared<RenderCommandList> CreateRenderCommandList() = 0;
 		virtual Shared<VertexBuffer> CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize = 0, const void* _initialData = nullptr) = 0;
 		virtual Shared<VertexBuffer> CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData) = 0;
 		virtual Shared<IndexBuffer> CreateIndexBuffer(const UInt32* _indices, UInt32 _count) = 0;
@@ -51,7 +51,7 @@ namespace Daydream
 		virtual Shared<PipelineState> CreatePipelineState(const PipelineStateDesc& _desc) = 0;
 		virtual Shared<Shader> CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode) = 0;
 		virtual Shared<Swapchain> CreateSwapchain(DaydreamWindow* _window, const SwapchainDesc& _desc) = 0;
-		virtual Shared<Texture2D> CreateEmptyTexture2D(const TextureDesc& _desc) = 0; // TODO : ÀÌ ±â´ÉÀÌ ÇÊ¿äÇÑÁö ¾Æ´ÑÁö ¸ğ¸§
+		virtual Shared<Texture2D> CreateEmptyTexture2D(const TextureDesc& _desc) = 0; // TODO : ì´ ê¸°ëŠ¥ì´ í•„ìš”í•œì§€ ì•„ë‹Œì§€ ëª¨ë¦„
 		virtual Shared<Texture2D> CreateTexture2D(const void* _imageData, const TextureDesc& _desc)  = 0;
 		virtual Shared<TextureCube> CreateTextureCube(Array<const void*>& _imagePixels, const TextureDesc& _desc) = 0;
 		virtual Shared<TextureCube> CreateTextureCube(const Array<Shared<Texture2D>>& _textures, const TextureDesc& _desc) { return nullptr; };

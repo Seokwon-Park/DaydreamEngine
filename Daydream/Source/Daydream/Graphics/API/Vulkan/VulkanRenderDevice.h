@@ -26,7 +26,7 @@ namespace Daydream
 	struct QueueFamilyIndices
 	{
 		std::optional<UInt32> graphicsFamily;
-		//std::optional<UInt32> presentFamily; // Áö±İÀº ÇÊ¿ä¾ø´Âµí.
+		//std::optional<UInt32> presentFamily; // ì§€ê¸ˆì€ í•„ìš”ì—†ëŠ”ë“¯.
 
 		bool IsComplete()
 		{
@@ -36,11 +36,11 @@ namespace Daydream
 
 	struct SwapchainSupportDetails
 	{
-		//gpu¿Í surface Á¶ÇÕ¿¡¼­ Áö¿øµÇ´Â ÃÖ¼Ò/ÃÖ´ë ÀÌ¹ÌÁö Å©±âÁ¤º¸
+		//gpuì™€ surface ì¡°í•©ì—ì„œ ì§€ì›ë˜ëŠ” ìµœì†Œ/ìµœëŒ€ ì´ë¯¸ì§€ í¬ê¸°ì •ë³´
 		vk::SurfaceCapabilitiesKHR capabilities;
-		//»ö»ó format
+		//ìƒ‰ìƒ format
 		Array<vk::SurfaceFormatKHR> formats;
-		//present ¹æ½Ä
+		//present ë°©ì‹
 		Array<vk::PresentModeKHR> presentModes;
 	};
 
@@ -55,7 +55,7 @@ namespace Daydream
 		virtual void Render() override;
 
 		virtual Unique<RenderContext> CreateContext(UInt32 _framesInFlight) override;
-		virtual Shared<RenderCommandList> CreateCmd() override ;
+		virtual Shared<RenderCommandList> CreateRenderCommandList() override;
 		virtual Shared<VertexBuffer> CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize = 0, const void* _initialData = nullptr) override;
 		virtual Shared<VertexBuffer> CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void * _initialData) override;
 		virtual Shared<IndexBuffer> CreateIndexBuffer(const UInt32 * _indices, UInt32 _count) override;

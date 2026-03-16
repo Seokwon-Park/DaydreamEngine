@@ -55,9 +55,9 @@ namespace Daydream
 	void Application::ReadConfig(const String& _fileName)
 	{
 		std::ifstream file(_fileName.data());
-		DAYDREAM_CORE_ASSERT(!file.is_open(), "Cannot Open Configuration File!")
+		DAYDREAM_CORE_ASSERT(!file.is_open(), "Cannot Open Configuration File!");
 
-			std::string line;
+		std::string line;
 
 		/*while (std::getline(file, line)) {
 			if (line.find("API=") != std::string::npos) {
@@ -71,9 +71,9 @@ namespace Daydream
 	{
 		isRunning = true;
 
-		//1. À©µµ¿ì ¸Å´ÏÀú ÃÊ±âÈ­
+		//1. ìœˆë„ìš° ë§¤ë‹ˆì € ì´ˆê¸°í™”
 		WindowManager::Init();
-		//2. ¸ŞÀÎ À©µµ¿ì »ı¼º ¹× µî·Ï
+		//2. ë©”ì¸ ìœˆë„ìš° ìƒì„± ë° ë“±ë¡
 		mainWindow = DaydreamWindow::Create(prop);
 		if (mainWindow == nullptr)
 		{
@@ -83,24 +83,23 @@ namespace Daydream
 		mainWindow->SetVSync(true);
 		WindowManager::RegisterWindow(prop.title, mainWindow.get());
 
-		//¿¡¼Â ¸Å´ÏÀú ÃÊ±âÈ­
+		//ì—ì…‹ ë§¤ë‹ˆì € ì´ˆê¸°í™”
 		AssetManager::Init();
 		AssetManager::LoadAssetMetadataFromDirectory("Asset");
 
-		//·»´õ·¯ ÃÊ±âÈ­
+		//ë Œë”ëŸ¬ ì´ˆê¸°í™”
 		Renderer::Init(prop.rendererAPI);
 
-		AssetManager::LoadAssets(LoadPhase::Early);// ¼ÎÀÌ´õ ¶§¹®¿¡ rendererÃÊ±âÈ­ ÀÌÈÄ·Î ¹Ì·ë
+		AssetManager::LoadAssets(LoadPhase::Early);// ì…°ì´ë” ë•Œë¬¸ì— rendererì´ˆê¸°í™” ì´í›„ë¡œ ë¯¸ë£¸
 
-		//·»´õ·¯¿¡¼­ À©µµ¿ì¿¡ ´ëÇÑ ½º¿ÒÃ¼ÀÎ »ı¼º
+		//ë Œë”ëŸ¬ì—ì„œ ìœˆë„ìš°ì— ëŒ€í•œ ìŠ¤ì™‘ì²´ì¸ ìƒì„±
 		Renderer::CreateSwapchainForWindow(mainWindow.get());
-		//·»´õ·¯°¡ »ç¿ëÇÒ À©µµ¿ì ¼³Á¤
+		//ë Œë”ëŸ¬ê°€ ì‚¬ìš©í•  ìœˆë„ìš° ì„¤ì •
 		Renderer::SetCurrentWindow(mainWindow.get());
 		//Renderer::RegisterWindow("TestWindow", testWindow.get());
-
 		ResourceManager::Init();
 
-		AssetManager::LoadAssets(LoadPhase::Normal);// ¸ğµ¨À» ·ÎµåÇÏ±â À§ÇØ¼­´Â pipelineÀÌ ºôµåµÈ »óÅÂ¿©¾ßÇÔ
+		AssetManager::LoadAssets(LoadPhase::Normal);// ëª¨ë¸ì„ ë¡œë“œí•˜ê¸° ìœ„í•´ì„œëŠ” pipelineì´ ë¹Œë“œëœ ìƒíƒœì—¬ì•¼í•¨
 
 		imGuiLayer = new ImGuiLayer();
 		AttachOverlay(imGuiLayer);
@@ -122,15 +121,14 @@ namespace Daydream
 			{
 				layer->OnUpdate(deltaTime);
 			}
-
-			mainWindow->GetSwapchain()->BeginRenderPass();
+			Renderer::BeginRenderPass(mainWindow->GetSwapchain()->GetRenderPass(), mainWindow->GetSwapchain()->GetCurrentFramebuffer());
 			imGuiLayer->BeginImGui();
 			{
 				for (Layer* layer : layerStack)
 					layer->OnImGuiRender();
 			}
 			imGuiLayer->EndImGui();
-			mainWindow->GetSwapchain()->EndRenderPass();
+			Renderer::EndRenderPass(mainWindow->GetSwapchain()->GetRenderPass());
 			//auto [x, y] = Input::GetMousePosition();
 			////DAYDREAM_CORE_TRACE("{0}, {1}", x, y);
 
@@ -158,10 +156,10 @@ namespace Daydream
 			//{
 			//	DAYDREAM_CORE_TRACE("KEY UP TEST");
 			//}
+			Renderer::EndFrame(mainWindow->GetSwapchain());
 
 			mainWindow->OnUpdateInputState();
 			mainWindow->OnUpdate();
-			Renderer::EndFrame(mainWindow->GetSwapchain());
 
 			//testWindow->OnUpdate();
 		}
@@ -184,7 +182,7 @@ namespace Daydream
 	void Application::OnEvent(Event& _event)
 	{
 		EventDispatcher dispatcher(_event);
-		//_eventÀÇ Å¸ÀÔÀÌ WindowCloseEvent¿¡ ÇØ´çÇÏ¸é OnWindowClose¸¦ ½ÇÇà½ÃÅ²´Ù.
+		//_eventì˜ íƒ€ì…ì´ WindowCloseEventì— í•´ë‹¹í•˜ë©´ OnWindowCloseë¥¼ ì‹¤í–‰ì‹œí‚¨ë‹¤.
 		dispatcher.Dispatch<WindowFocusEvent>(BIND_EVENT_FN(OnWindowFocused));
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));

@@ -30,12 +30,9 @@ namespace Daydream
 		virtual void BeginFrame() = 0;
 		virtual void EndFrame() = 0;
 
-		virtual void BeginRenderPass() {};
-		virtual void EndRenderPass() {};
-
-		virtual Shared<Framebuffer> GetBackFramebuffer() = 0;
-		virtual Shared<RenderCommandList> GetRenderCommandList() { return nullptr; };
-
+		virtual Shared<Framebuffer> GetCurrentFramebuffer() const = 0;
+		virtual Shared<RenderCommandList> GetCurrentCommandList() const = 0;
+		inline virtual Shared<RenderPass> GetRenderPass() const { return mainRenderPass; }
 
 		void ResizeFramebuffers();
 
@@ -43,5 +40,6 @@ namespace Daydream
 	protected:
 		SwapchainDesc desc;
 		Shared<RenderPass> mainRenderPass;
+
 	};
 }

@@ -27,8 +27,8 @@ namespace Daydream
 		imguiRenderer = renderDevice->CreateImGuiRenderer();
 		renderContext = renderDevice->CreateContext(Renderer::maxFramesInFlight);
 		skybox = MakeUnique<Skybox>();
-		commandLists.resize(maxCommandListsInFlight);
-		for (auto& commandList : commandLists)
+		commandQueues.resize(maxCommandListsInFlight);
+		for (auto& commandList : commandQueues)
 		{
 			commandList = MakeUnique<RenderCommandQueue>();
 		}
@@ -70,7 +70,7 @@ namespace Daydream
 
 	void Renderer::BeginFrame(Swapchain* _swapchain)
 	{
-		renderContext->SetCommandList(_swapchain->GetRenderCommandList().get());
+		renderContext->SetActiveCommandList(_swapchain->GetCurrentCommandList());
 		_swapchain->BeginFrame();
 	}
 
@@ -80,14 +80,14 @@ namespace Daydream
 		_swapchain->Present();
 	}
 
-	void Renderer::ExecuteSingleCommand(FunctionPtr<void()> _func)
+	void Renderer::ExecuteSingleTimeCommands(FunctionPtr<void()> _func)
 	{
-		auto cmd = renderDevice->CreateCmd();
-		renderContext->SetCommandList(cmd.get());
-		cmd->Begin();
+		Shared<RenderCommandList> singleTimeCommandList = renderDevice->CreateRenderCommandList();
+		singleTimeCommandList->Begin();
+		renderContext->SetActiveCommandList(singleTimeCommandList);
 		_func();
-		cmd->End();
-		cmd->WaitForCompletion();
+		singleTimeCommandList->End();
+		singleTimeCommandList->WaitForCompletion();
 	}
 
 	void Renderer::BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer)
@@ -144,7 +144,7 @@ namespace Daydream
 
 	void Renderer::Submit()
 	{
-		commandLists[0]->Execute();
+		commandQueues[0]->Execute();
 	}
 
 	void Renderer::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
@@ -161,6 +161,11 @@ namespace Daydream
 	void Renderer::GenerateMips(Shared<Texture> _texture)
 	{
 		renderContext->GenerateMips(_texture);
+	}
+
+	void Renderer::MakeSkybox()
+	{
+		ExecuteSingleTimeCommands([&]() {skybox->Init(); });
 	}
 
 }

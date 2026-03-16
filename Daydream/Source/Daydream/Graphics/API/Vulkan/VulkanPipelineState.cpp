@@ -238,7 +238,6 @@ namespace Daydream
 	void VulkanPipelineState::Bind() const
 	{
 		//vkCmdBindDescriptorSets(device->GetCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, descriptorSets.data(), 0, nullptr);
-		device->GetCommandBuffer().bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline.get());
 	}
 
 	void VulkanPipelineState::CreateShaderStageInfo(const Shared<Shader>& _shader)

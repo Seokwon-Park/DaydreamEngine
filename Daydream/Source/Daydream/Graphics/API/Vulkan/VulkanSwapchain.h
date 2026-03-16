@@ -26,7 +26,7 @@ namespace Daydream
 		void CreateSwapchain();
 		void CreateCommandBuffers();
 		virtual ~VulkanSwapchain() override;
-
+https://github.com/Seokwon-Park/DaydreamEngine/pull/1/conflict?name=Daydream%252FSource%252FDaydream%252FGraphics%252FCore%252FRenderCommandList.h&ancestor_oid=3d4d527580183bc68be80b477bb72635cb1062b7&base_oid=3b82b3486ab76ec3bbf479244cd4ea62817323a9&head_oid=6cc67456c30a3d009bb86e840b28dd71d8226add
 		virtual void SetVSync(bool _enabled) override;
 		virtual void Present() override;
 		virtual void ResizeSwapchain(UInt32 _width, UInt32 _height) override;
@@ -58,6 +58,7 @@ namespace Daydream
 		Array<Shared<VulkanRenderCommandList>> commandLists;
 		Array<Shared<VulkanFramebuffer>> framebuffers;
 		Shared<VulkanRenderPass> renderPass;
+		Array<Shared<VulkanFramebuffer>> framebuffers;
 
 		vk::UniqueSurfaceKHR surface; // Vulkan window surface
 		vk::UniqueSwapchainKHR swapchain;

@@ -483,9 +483,6 @@
     <ClInclude Include="Source\Daydream\Graphics\Resources\PipelineState.h">
       <Filter>Source\Daydream\Graphics\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\Core\RenderCommand.h">
-      <Filter>Source\Daydream\Graphics\Core</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderContext.h">
       <Filter>Source\Daydream\Graphics\Core</Filter>
     </ClInclude>
@@ -2194,9 +2191,6 @@
       <Filter>Source\Daydream\Graphics\Core</Filter>
     </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\Resources\PipelineState.cpp">
-      <Filter>Source\Daydream\Graphics\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Daydream\Graphics\Core\RenderCommand.cpp">
       <Filter>Source\Daydream\Graphics\Core</Filter>
     </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderContext.cpp">

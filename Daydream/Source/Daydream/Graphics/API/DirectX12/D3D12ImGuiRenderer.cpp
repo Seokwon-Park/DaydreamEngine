@@ -42,9 +42,9 @@ namespace Daydream
 		ImGui_ImplDX12_NewFrame();
 		ImGuiRenderer::NewFrame();
 	}
-	void D3D12ImGuiRenderer::Render()
+	void Daydream::D3D12ImGuiRenderer::Render(RenderCommandList* _activeCommandList)
 	{
-		ImGuiRenderer::Render();
+		ImGuiRenderer::Render(_activeCommandList);
 		ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), device->GetCommandList());
 	}
 }
