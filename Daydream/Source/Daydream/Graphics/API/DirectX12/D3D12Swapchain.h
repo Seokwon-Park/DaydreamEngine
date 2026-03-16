@@ -20,7 +20,9 @@ namespace Daydream
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
 
-		virtual Shared<Framebuffer> GetBackFramebuffer() { return framebuffers[frameIndex]; };
+		virtual Shared<Framebuffer> GetCurrentFramebuffer()const { return framebuffers[frameIndex]; };
+		virtual Shared<RenderCommandList> GetCurrentCommandList() const { return nullptr; };
+
 
 		void WaitForGPU();
 		void MoveToNextFrame();

@@ -8,7 +8,7 @@ namespace Daydream
 {
     void RenderContext::BindPipelineState(Shared<PipelineState> _pipelineState)
     {
-        currentPipelineState = _pipelineState;
+        activePipelineState = _pipelineState;
     }
 
     void RenderContext::BindMesh(Shared<Mesh> _mesh)

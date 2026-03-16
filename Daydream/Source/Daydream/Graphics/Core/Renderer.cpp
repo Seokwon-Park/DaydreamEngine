@@ -8,6 +8,7 @@
 
 #include "Daydream/Graphics/Resources/Mesh.h"
 
+
 namespace Daydream
 {
 	//Renderer* Renderer::instance = nullptr;
@@ -22,8 +23,9 @@ namespace Daydream
 		renderDevice->Init();
 		imguiRenderer = renderDevice->CreateImGuiRenderer();
 		renderContext = renderDevice->CreateContext(Renderer::maxFramesInFlight);
-		commandLists.resize(maxCommandListsInFlight);
-		for (auto& commandList : commandLists)
+		skybox = MakeUnique<Skybox>();
+		commandQueues.resize(maxCommandListsInFlight);
+		for (auto& commandList : commandQueues)
 		{
 			commandList = MakeUnique<RenderCommandQueue>();
 		}
@@ -35,6 +37,7 @@ namespace Daydream
 	{
 		//Renderer2D::Shutdown();
 		ShaderCompileHelper::Shutdown();
+		skybox = nullptr;
 		imguiRenderer->Shutdown();
 		renderContext.reset();
 		renderDevice.reset();
@@ -64,6 +67,7 @@ namespace Daydream
 
 	void Renderer::BeginFrame(Swapchain* _swapchain)
 	{
+		renderContext->SetActiveCommandList(_swapchain->GetCurrentCommandList());
 		_swapchain->BeginFrame();
 	}
 
@@ -71,6 +75,16 @@ namespace Daydream
 	{
 		_swapchain->EndFrame();
 		_swapchain->Present();
+	}
+
+	void Renderer::ExecuteSingleTimeCommands(FunctionPtr<void()> _func)
+	{
+		Shared<RenderCommandList> singleTimeCommandList = renderDevice->CreateRenderCommandList();
+		singleTimeCommandList->Begin();
+		renderContext->SetActiveCommandList(singleTimeCommandList);
+		_func();
+		singleTimeCommandList->End();
+		singleTimeCommandList->WaitForCompletion();
 	}
 
 	void Renderer::BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer)
@@ -127,7 +141,7 @@ namespace Daydream
 
 	void Renderer::Submit()
 	{
-		commandLists[0]->Execute();
+		commandQueues[0]->Execute();
 	}
 
 	void Renderer::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
@@ -144,6 +158,11 @@ namespace Daydream
 	void Renderer::GenerateMips(Shared<Texture> _texture)
 	{
 		renderContext->GenerateMips(_texture);
+	}
+
+	void Renderer::MakeSkybox()
+	{
+		ExecuteSingleTimeCommands([&]() {skybox->Init(); });
 	}
 
 }

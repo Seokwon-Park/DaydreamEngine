@@ -10,13 +10,10 @@ namespace Daydream
 	public:
 		SkyboxPanel();
 		~SkyboxPanel();
-		
-		void SetSkybox(Shared<Skybox> _skybox)
-		{
-			skybox = _skybox;
-		}
 
-		inline bool IsUsingSkybox() const  { return isUsingSkybox; };
+		inline void SetSkybox(Skybox* _skybox) { skybox = _skybox; }
+
+		inline bool IsUsingSkybox() const { return isUsingSkybox; };
 
 		void OnImGuiRender();
 	private:
@@ -32,7 +29,7 @@ namespace Daydream
 		int diffuseIndex = 0;
 		int specularIndex = 3;
 
-		Shared<Skybox> skybox;
+		Skybox* skybox;
 		Shared<Texture2D> equirectangularDropTarget;
 	};
 }

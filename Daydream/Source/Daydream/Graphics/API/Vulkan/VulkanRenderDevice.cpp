@@ -1,6 +1,7 @@
 #include "DaydreamPCH.h"
 #include "VulkanRenderDevice.h"
 #include "VulkanRenderContext.h"
+#include "VulkanRenderCommandList.h"
 #include "VulkanBuffer.h"
 #include "VulkanRenderPass.h"
 #include "VulkanFramebuffer.h"
@@ -88,8 +89,8 @@ namespace Daydream
 
 	VulkanRenderDevice::~VulkanRenderDevice()
 	{
-
 	}
+
 	void VulkanRenderDevice::Init()
 	{
 		CreateInstance();
@@ -151,6 +152,11 @@ namespace Daydream
 	Unique<RenderContext> Daydream::VulkanRenderDevice::CreateContext(UInt32 _framesInFlight)
 	{
 		return MakeUnique<VulkanRenderContext>(this, _framesInFlight);
+	}
+
+	Shared<RenderCommandList> VulkanRenderDevice::CreateRenderCommandList()
+	{
+		return MakeShared<VulkanRenderCommandList>(this);
 	}
 
 	Shared<VertexBuffer> VulkanRenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)

@@ -7,8 +7,8 @@ namespace Daydream
 	class OpenGLRenderContext : public RenderContext
 	{
 	public:
-		virtual void BeginCommandList() override {};
-		virtual void EndCommandList() override {};
+		virtual void BeginFrameRendering() override {};
+		virtual void EndFrameRendering() override {};
 		virtual void SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height)  override;
 		virtual void SetClearColor(const Color& _color)  override;
 		virtual void Clear()  override;

@@ -20,10 +20,12 @@ namespace Daydream
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
 
-		virtual Shared<Framebuffer> GetBackFramebuffer() { return framebuffer; };
+		virtual Shared<Framebuffer> GetCurrentFramebuffer()const { return framebuffer; };
+		virtual Shared<RenderCommandList> GetCurrentCommandList() const { return nullptr; };
+
 	private:
 		GLFWwindow* window;
 		Shared<OpenGLFramebuffer> framebuffer;
-		
+
 	};
 }

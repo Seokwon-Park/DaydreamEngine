@@ -43,7 +43,7 @@ namespace Daydream
 
 		inline Shared<ConstantBuffer> GetLightConstantBuffer() const { return lightBuffer; }
 
-		inline Shared<Skybox> GetSkybox() const { return skybox; }
+		inline Skybox* GetSkybox() const { return skybox; }
 
 		void Update(Float32 _deltaTime);
 		void RenderDepth();
@@ -76,7 +76,7 @@ namespace Daydream
 		LightData lightData;
 		Shared<ConstantBuffer> lightBuffer; 
 		//Array<SpriteRendererComponent*> spriteRenderers;
-		Shared<Skybox> skybox;
+		Skybox* skybox;
 
 		//temp
 		LightComponent* firstLightComponent = nullptr;

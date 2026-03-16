@@ -7,10 +7,10 @@
 #include "Daydream/Graphics/Core/RenderDevice.h"
 #include "Daydream/Core/Window.h"
 
-#include "VulkanCommandList.h"
 #include "VulkanRenderPass.h"
 #include "VulkanFrameBuffer.h"
 #include "VulkanRenderDevice.h"
+#include "VulkanRenderCommandList.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -34,7 +34,8 @@ namespace Daydream
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
 
-		virtual Shared<Framebuffer> GetBackFramebuffer() { return framebuffers[imageIndex]; };
+		inline virtual Shared<Framebuffer> GetCurrentFramebuffer() const { return framebuffers[imageIndex]; };
+		inline virtual Shared<RenderCommandList> GetCurrentCommandList() const override { return commandLists[currentFrame]; }
 
 		void RecreateSwapchain();
 
@@ -49,10 +50,13 @@ namespace Daydream
 		vk::Extent2D ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& _capabilities);
 
 		VulkanRenderDevice* device;
-		Array<vk::UniqueCommandBuffer> commandBuffers;
-		Array<VulkanCommandList> commandBuffers;
-		Array<Shared<VulkanFramebuffer>> framebuffers;
+		/*Array<vk::UniqueCommandBuffer> commandLists;*/
+		Array<Shared<VulkanRenderCommandList>> commandLists;
+		vk::CommandBuffer currentCommandBuffer;
+		vk::Fence currentFence;
+
 		Shared<VulkanRenderPass> renderPass;
+		Array<Shared<VulkanFramebuffer>> framebuffers;
 
 		vk::UniqueSurfaceKHR surface; // Vulkan window surface
 		vk::UniqueSwapchainKHR swapchain;

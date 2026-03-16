@@ -12,8 +12,8 @@ namespace Daydream
 		D3D12RenderContext(D3D12RenderDevice* _device, UInt32 _framesInFlight);
 		virtual ~D3D12RenderContext() {};
 
-		virtual void BeginCommandList() override {};
-		virtual void EndCommandList() override {};
+		virtual void BeginFrameRendering() override {};
+		virtual void EndFrameRendering() override {};
 		virtual void SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height)  override;
 		virtual void SetClearColor(const Color& _color)  override;
 		virtual void Clear()  override;

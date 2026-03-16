@@ -11,8 +11,8 @@ namespace Daydream
 	Scene::Scene(const String& _name)
 	{
 		lightBuffer = ConstantBuffer::Create(sizeof(LightData));
-		skybox = MakeShared<Skybox>();
-		skybox->Init();
+		skybox = Renderer::GetSkybox();
+		//skybox->Init();
 
 		entityPool.push_back(nullptr);
 		generations.push_back(0); // 0번 인덱스의 generation은 0
@@ -20,7 +20,7 @@ namespace Daydream
 
 	Scene::~Scene()
 	{
-		skybox = nullptr;
+		
 	}
 
 	GameEntity* Scene::CreateGameEntity(const String& _name)

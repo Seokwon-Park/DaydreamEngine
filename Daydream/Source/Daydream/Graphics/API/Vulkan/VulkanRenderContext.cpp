@@ -14,53 +14,35 @@ namespace Daydream
 	VulkanRenderContext::VulkanRenderContext(VulkanRenderDevice* _device, UInt32 _framesInFlight)
 	{
 		device = _device;
-
-		commandBuffers.resize(_framesInFlight);
-		vk::CommandBufferAllocateInfo allocInfo{};
-		allocInfo.commandPool = device->GetCommandPool();
-		allocInfo.level = vk::CommandBufferLevel::ePrimary;
-		allocInfo.commandBufferCount = (UInt32)commandBuffers.size();
-
-		commandBuffers = device->GetDevice().allocateCommandBuffersUnique(allocInfo);
-		commandBufferIndex = 0;
-
-		vk::FenceCreateInfo fenceInfo{};
-		fenceInfo.flags = vk::FenceCreateFlagBits::eSignaled;
-
-		waitFences.resize(_framesInFlight);
-		for (UInt32 i = 0; i < _framesInFlight; i++)
-		{
-			waitFences[i] = device->GetDevice().createFenceUnique(fenceInfo);
-		}
 	}
 	VulkanRenderContext::~VulkanRenderContext()
 	{
 		device->GetGraphicsQueue().waitIdle();
 	}
-	void VulkanRenderContext::BeginCommandList()
+	void VulkanRenderContext::BeginFrameRendering()
 	{
-		vk::Result result = device->GetDevice().waitForFences(1, &waitFences[commandBufferIndex].get(), VK_FALSE, UINT64_MAX);
+		/*vk::Result result = device->GetDevice().waitForFences(1, &waitFences[commandBufferIndex].get(), VK_FALSE, UINT64_MAX);
 		result = device->GetDevice().resetFences(1, &waitFences[commandBufferIndex].get());
 
 		GetActiveCommandBuffer().reset({});
 
 		vk::CommandBufferBeginInfo beginInfo{};
-		GetActiveCommandBuffer().begin(beginInfo);
+		GetActiveCommandBuffer().begin(beginInfo); */
 	}
 
-	void VulkanRenderContext::EndCommandList()
+	void VulkanRenderContext::EndFrameRendering()
 	{
-		GetActiveCommandBuffer().end();
+		//GetActiveCommandBuffer().end();
 
-		vk::SubmitInfo submitInfo{};
-		submitInfo.commandBufferCount = 1;
-		submitInfo.pCommandBuffers = &commandBuffers[commandBufferIndex].get();
+		//vk::SubmitInfo submitInfo{};
+		//submitInfo.commandBufferCount = 1;
+		//submitInfo.pCommandBuffers = &commandBuffers[commandBufferIndex].get();
 
-		vk::Result result = device->GetGraphicsQueue().submit(1, &submitInfo, waitFences[commandBufferIndex].get());
+		//vk::Result result = device->GetGraphicsQueue().submit(1, &submitInfo, waitFences[commandBufferIndex].get());
 
-		commandBufferIndex = (commandBufferIndex + 1) % 3;
+		//commandBufferIndex = (commandBufferIndex + 1) % 3;
 
-		device->GetGraphicsQueue().waitIdle();
+		//device->GetGraphicsQueue().waitIdle();
 	}
 	void VulkanRenderContext::SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height)
 	{
@@ -135,7 +117,7 @@ namespace Daydream
 	void VulkanRenderContext::BindPipelineState(Shared<PipelineState> _pipelineState)
 	{
 		RenderContext::BindPipelineState(_pipelineState);
-		currentPipelineState = _pipelineState;
+		activePipelineState = _pipelineState;
 		Shared<VulkanPipelineState> pipelineState = static_pointer_cast<VulkanPipelineState>(_pipelineState);
 
 		GetActiveCommandBuffer().bindPipeline(vk::PipelineBindPoint::eGraphics, pipelineState->GetPipeline());
@@ -154,12 +136,13 @@ namespace Daydream
 
 	void VulkanRenderContext::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
 	{
+		if (_texture == nullptr) return;
 		RenderContext::SetTexture2D(_name, _texture);
-		const ShaderReflectionData* resourceInfo = currentPipelineState->GetBindingInfo(_name);
+		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
 		if (resourceInfo == nullptr) return;
 
 		Shared<VulkanTexture2D> vulkanTexture = SharedCast<VulkanTexture2D>(_texture);
-		Shared<VulkanPipelineState> vulkanPSO = SharedCast<VulkanPipelineState>(currentPipelineState);
+		Shared<VulkanPipelineState> vulkanPSO = SharedCast<VulkanPipelineState>(activePipelineState);
 
 		vk::DescriptorImageInfo imageInfo{};
 		imageInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
@@ -183,11 +166,12 @@ namespace Daydream
 	}
 	void VulkanRenderContext::SetTextureCube(const String& _name, Shared<TextureCube> _textureCube)
 	{
-		const ShaderReflectionData* resourceInfo = currentPipelineState->GetBindingInfo(_name);
+		if (_textureCube == nullptr) return;
+		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
 		if (resourceInfo == nullptr) return;
 
 		Shared<VulkanTextureCube> vulkanTexture = std::static_pointer_cast<VulkanTextureCube>(_textureCube);
-		Shared<VulkanPipelineState> vulkanPSO = std::static_pointer_cast<VulkanPipelineState>(currentPipelineState);
+		Shared<VulkanPipelineState> vulkanPSO = std::static_pointer_cast<VulkanPipelineState>(activePipelineState);
 
 		vk::DescriptorImageInfo imageInfo{};
 		imageInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
@@ -211,11 +195,12 @@ namespace Daydream
 	}
 	void VulkanRenderContext::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
 	{
-		const ShaderReflectionData* resourceInfo = currentPipelineState->GetBindingInfo(_name);
+		if (_buffer == nullptr) return;
+		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
 		if (resourceInfo == nullptr) return;
 
 		Shared<VulkanConstantBuffer> vulkanBuffer = std::static_pointer_cast<VulkanConstantBuffer>(_buffer);
-		Shared<VulkanPipelineState> vulkanPSO = std::static_pointer_cast<VulkanPipelineState>(currentPipelineState);
+		Shared<VulkanPipelineState> vulkanPSO = std::static_pointer_cast<VulkanPipelineState>(activePipelineState);
 
 		vk::DescriptorBufferInfo bufferInfo{};
 		bufferInfo.buffer = (VkBuffer)vulkanBuffer->GetNativeHandle();
@@ -586,6 +571,6 @@ namespace Daydream
 	}
 	vk::CommandBuffer VulkanRenderContext::GetActiveCommandBuffer()
 	{
-		return commandBuffers[commandBufferIndex].get();
+		return SharedCast<VulkanRenderCommandList>(activeCommandList)->GetVkCommandBuffer();
 	}
 }

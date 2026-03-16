@@ -6,7 +6,11 @@ namespace Daydream
 	{
 	public:
 		RenderCommandList();
-		~RenderCommandList();
+		virtual ~RenderCommandList();
+
+		virtual void Begin(){};
+		virtual void End() {};
+		virtual void WaitForCompletion() {}
 	protected:
 
 	private:

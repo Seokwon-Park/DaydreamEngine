@@ -113,7 +113,6 @@ namespace Daydream
 		renderPassInfo.clearValueCount = colors.size();
 		renderPassInfo.pClearValues = colors.data();
 
-		device->GetCommandBuffer().beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
 		device->SetCurrentRenderPass(renderPass.get());
 		vk::Viewport viewport{};
 		//viewport.x = 0.0f;
@@ -126,16 +125,13 @@ namespace Daydream
 		viewport.height = (float)currentFramebuffer->GetExtent().height;
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
-		device->GetCommandBuffer().setViewport(0, 1, &viewport);
 
 		vk::Rect2D scissor{};
 		scissor.offset = vk::Offset2D(0, 0);
 		scissor.extent = currentFramebuffer->GetExtent();
-		device->GetCommandBuffer().setScissor(0, 1, &scissor);
 	}
 	void VulkanRenderPass::End()
 	{
-		device->GetCommandBuffer().endRenderPass();
 		currentFramebuffer = nullptr;
 	}
 	Shared<Framebuffer> VulkanRenderPass::CreateFramebuffer(const FramebufferDesc& _desc)

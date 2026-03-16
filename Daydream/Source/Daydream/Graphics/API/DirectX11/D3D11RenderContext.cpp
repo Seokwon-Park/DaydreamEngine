@@ -70,7 +70,7 @@ namespace Daydream
 	void D3D11RenderContext::BindPipelineState(Shared<PipelineState> _pipelineState)
 	{
 		RenderContext::BindPipelineState(_pipelineState);
-		D3D11PipelineState* pso = Cast<D3D11PipelineState*>(currentPipelineState.get());
+		D3D11PipelineState* pso = Cast<D3D11PipelineState*>(activePipelineState.get());
 		pso->BindPipelineState();
 	}
 	void D3D11RenderContext::BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer)
@@ -91,7 +91,7 @@ namespace Daydream
 	void D3D11RenderContext::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
 	{
 		RenderContext::SetTexture2D(_name, _texture);
-		const ShaderReflectionData* resourceInfo = currentPipelineState->GetBindingInfo(_name);
+		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
 		if (resourceInfo == nullptr) return;
 
 		//	DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX11, "Wrong API!");
@@ -131,7 +131,7 @@ namespace Daydream
 
 	void D3D11RenderContext::SetTextureCube(const String& _name, Shared<TextureCube> _textureCube)
 	{
-		const ShaderReflectionData* bindingInfo = currentPipelineState->GetBindingInfo(_name);
+		const ShaderReflectionData* bindingInfo = activePipelineState->GetBindingInfo(_name);
 		if (bindingInfo == nullptr) return;
 		//DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX11, "Wrong API!");
 		Shared<D3D11TextureCube> d3d11Texture = static_pointer_cast<D3D11TextureCube>(_textureCube);
@@ -168,7 +168,7 @@ namespace Daydream
 	}
 	void D3D11RenderContext::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
 	{
-		const ShaderReflectionData* resourceInfo = currentPipelineState->GetBindingInfo(_name);
+		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
 		if (resourceInfo == nullptr) return;
 		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX11, "Wrong API!");
 		Shared<D3D11ConstantBuffer> d3d11Buffer = static_pointer_cast<D3D11ConstantBuffer>(_buffer);

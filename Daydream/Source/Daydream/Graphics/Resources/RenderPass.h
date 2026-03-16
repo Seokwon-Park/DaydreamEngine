@@ -63,6 +63,6 @@ namespace Daydream
 		static Shared<RenderPass> Create(const RenderPassDesc& _desc);
 	protected:
 		RenderPassDesc desc;
-		Color clearColor = Color(0.0f,0.0f,0.0f,0.0f);
+		Color clearColor = Color(0.0f,0.0f,1.0f,1.0f);
 	};
 }

@@ -29,9 +29,9 @@ namespace Daydream
 		ImGuiRenderer::NewFrame();
 	}
 
-	void OpenGLImGuiRenderer::Render()
+	void Daydream::OpenGLImGuiRenderer::Render(RenderCommandList* _activeCommandList)
 	{
-		ImGuiRenderer::Render();
+		ImGuiRenderer::Render(_activeCommandList);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
 

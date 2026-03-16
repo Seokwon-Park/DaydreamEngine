@@ -19,10 +19,11 @@ namespace Daydream
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
 
-		virtual Shared<Framebuffer> GetBackFramebuffer() { return framebuffer; };
+		virtual Shared<Framebuffer> GetCurrentFramebuffer() const { return framebuffer; };
+		virtual Shared<RenderCommandList> GetCurrentCommandList() const { return nullptr; };
 
 		inline IDXGISwapChain* GetDXGISwapchain() { return swapChain.Get(); }
-		
+
 	private:
 		D3D11RenderDevice* device;
 		ComPtr<IDXGISwapChain> swapChain;

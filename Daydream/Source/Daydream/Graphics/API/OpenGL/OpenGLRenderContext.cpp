@@ -63,7 +63,7 @@ namespace Daydream
 	void OpenGLRenderContext::BindPipelineState(Shared<PipelineState> _pipelineState)
 	{
 		RenderContext::BindPipelineState(_pipelineState);
-		OpenGLPipelineState* pso = Cast<OpenGLPipelineState*>(currentPipelineState.get());
+		OpenGLPipelineState* pso = Cast<OpenGLPipelineState*>(activePipelineState.get());
 		pso->BindPipelineState();
 	}
 	void OpenGLRenderContext::BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer)
@@ -86,7 +86,7 @@ namespace Daydream
 	{
 		RenderContext::SetTexture2D(_name, _texture);
 
-		const ShaderReflectionData* bindingInfo = currentPipelineState->GetBindingInfo(_name);
+		const ShaderReflectionData* bindingInfo = activePipelineState->GetBindingInfo(_name);
 		if (bindingInfo == nullptr) return;
 
 		OpenGLTexture2D* glTexture = Cast<OpenGLTexture2D*>(_texture.get());
@@ -95,7 +95,7 @@ namespace Daydream
 	}
 	void OpenGLRenderContext::SetTextureCube(const String& _name, Shared<TextureCube> _textureCube)
 	{
-		const ShaderReflectionData* bindingInfo = currentPipelineState->GetBindingInfo(_name);
+		const ShaderReflectionData* bindingInfo = activePipelineState->GetBindingInfo(_name);
 		if (bindingInfo == nullptr) return;
 
 		OpenGLTextureCube* glTexture = Cast<OpenGLTextureCube*>(_textureCube.get());
@@ -104,7 +104,7 @@ namespace Daydream
 	}
 	void OpenGLRenderContext::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
 	{
-		const ShaderReflectionData* bindingInfo = currentPipelineState->GetBindingInfo(_name);
+		const ShaderReflectionData* bindingInfo = activePipelineState->GetBindingInfo(_name);
 		if (bindingInfo == nullptr) return;
 
 		OpenGLConstantBuffer* glBuffer = Cast<OpenGLConstantBuffer*>(_buffer.get());

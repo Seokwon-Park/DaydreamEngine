@@ -1,4 +1,6 @@
 #pragma once
+
+#include "RenderCommandList.h"
 #include "Daydream/Enum/RendererEnums.h"
 #include "Daydream/Graphics/Resources/Framebuffer.h"
 
@@ -20,8 +22,8 @@ namespace Daydream
 	public:
 		virtual ~RenderContext() = default;
 				
-		virtual void BeginCommandList() = 0;
-		virtual void EndCommandList() {};
+		virtual void BeginFrameRendering() = 0;
+		virtual void EndFrameRendering() {};
 		virtual void SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height) = 0;
 		virtual void SetClearColor(const Color& _color) = 0;
 		virtual void Clear() = 0;
@@ -48,9 +50,11 @@ namespace Daydream
 
 		void BindMesh(Shared<Mesh> _mesh);
 		void BindMaterial(Shared<Material> _material);
+		void SetActiveCommandList(Shared<RenderCommandList> _commandList) { activeCommandList = _commandList; };
+		Shared<RenderCommandList> GetActiveCommandList() const { return activeCommandList; }
 	protected:
-		Shared<PipelineState> currentPipelineState;
-		Shared<Swapchain> swapchain;
+		Shared<PipelineState> activePipelineState;
+		Shared<RenderCommandList> activeCommandList;
 	private:
 	};
 }
