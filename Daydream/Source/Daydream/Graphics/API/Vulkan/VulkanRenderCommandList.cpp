@@ -11,7 +11,7 @@ namespace Daydream
 		allocInfo.commandPool = device->GetCommandPool();
 		allocInfo.level = vk::CommandBufferLevel::ePrimary;
 		allocInfo.commandBufferCount = 1;
-		
+
 		commandBuffer = std::move(device->GetDevice().allocateCommandBuffersUnique(allocInfo).front());
 
 		vk::FenceCreateInfo fenceInfo{};
@@ -26,7 +26,7 @@ namespace Daydream
 	{
 		vk::Result result = device->GetDevice().waitForFences(1, &inFlightFence.get(), VK_FALSE, UINT64_MAX);
 
-		//¿Ï·á µÆÀ¸¸é Ææ½º »óÅÂ´Â ½ÅÈ£¹Ş±â ÀüÀ¸·Î
+		//ì™„ë£Œ ëìœ¼ë©´ íœìŠ¤ ìƒíƒœëŠ” ì‹ í˜¸ë°›ê¸° ì „ìœ¼ë¡œ
 		result = device->GetDevice().resetFences(1, &inFlightFence.get());
 
 		commandBuffer->reset({});

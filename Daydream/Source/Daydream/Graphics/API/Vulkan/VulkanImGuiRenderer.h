@@ -1,6 +1,7 @@
 #pragma once
 
 #include "VulkanRenderDevice.h"
+#include "VulkanSwapchain.h"
 #include "Daydream/ImGui/ImGuiRenderer.h"
 
 namespace Daydream
@@ -16,6 +17,7 @@ namespace Daydream
 		virtual void Render(RenderCommandList* _activeCommandList)override;
 	private:
 		VulkanRenderDevice* device;
+		VulkanSwapchain* swapchain;
 	};
 }
 

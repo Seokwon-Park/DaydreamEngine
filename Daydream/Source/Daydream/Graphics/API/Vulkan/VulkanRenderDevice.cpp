@@ -13,6 +13,7 @@
 #include "VulkanTextureCube.h"
 #include "VulkanSampler.h"
 #include "VulkanMaterial.h"
+#include "VulkanRenderCommandList.h"
 #include "Daydream/Graphics/Utility/GraphicsUtility.h"
 #include "Daydream/Graphics/Utility/ImageLoader.h"
 
@@ -127,7 +128,7 @@ namespace Daydream
 		allocatorInfo.physicalDevice = physicalDevice; // vk::PhysicalDevice
 		allocatorInfo.device = device.get();             // vk::Device
 		allocatorInfo.instance = instance.get();           // vk::Instance
-		allocatorInfo.vulkanApiVersion = VK_API_VERSION_1_4; // »ç¿ë ÁßÀÎ Vulkan ¹öÀü
+		allocatorInfo.vulkanApiVersion = VK_API_VERSION_1_4; // ì‚¬ìš© ì¤‘ì¸ Vulkan ë²„ì „
 
 		allocator = vma::createAllocatorUnique(allocatorInfo);
 
@@ -199,11 +200,11 @@ namespace Daydream
 			vma::AllocationCreateFlagBits::eMapped);
 
 		vma::AllocationInfo allocationInfo;
-		// GetAllocator()´Â VmaAllocator ÇÚµéÀ» ¹İÈ¯ÇÏ´Â ÇÔ¼ö¶ó°í °¡Á¤ÇÕ´Ï´Ù.
+		// GetAllocator()ëŠ” VmaAllocator í•¸ë“¤ì„ ë°˜í™˜í•˜ëŠ” í•¨ìˆ˜ë¼ê³  ê°€ì •í•©ë‹ˆë‹¤.
 		allocator->getAllocationInfo(uploadBufferAllocation.get(), &allocationInfo);
 		memcpy(allocationInfo.pMappedData, _indices, bufferSize);
 
-		CopyBuffer(uploadBuffer.get(), indexBuffer->GetVkBuffer(), bufferSize); // CopyBuffer´Â vkCmdCopyBuffer¸¦ È£ÃâÇÏ´Â ÇïÆÛ ÇÔ¼ö
+		CopyBuffer(uploadBuffer.get(), indexBuffer->GetVkBuffer(), bufferSize); // CopyBufferëŠ” vkCmdCopyBufferë¥¼ í˜¸ì¶œí•˜ëŠ” í—¬í¼ í•¨ìˆ˜
 
 		return indexBuffer;
 	}
@@ -312,7 +313,7 @@ namespace Daydream
 		UInt32 bufferSize = imageSize * 6;
 		vk::BufferCreateInfo bufferInfo;
 		bufferInfo.size = bufferSize;
-		bufferInfo.usage = vk::BufferUsageFlagBits::eTransferSrc; // º¹»ç ¼Ò½º
+		bufferInfo.usage = vk::BufferUsageFlagBits::eTransferSrc; // ë³µì‚¬ ì†ŒìŠ¤
 
 		vma::AllocationCreateInfo allocInfo = {};
 		allocInfo.usage = vma::MemoryUsage::eAuto;
@@ -406,8 +407,8 @@ namespace Daydream
 		VulkanTexture2D* src = (VulkanTexture2D*)_src.get();
 		VulkanTexture2D* dst = (VulkanTexture2D*)_dst.get();
 
-		// ¿øº» ÀÌ¹ÌÁö¸¦ TRANSFER_SRC·Î º¯°æ
-		barriers[0].oldLayout = vk::ImageLayout::eShaderReadOnlyOptimal; // ¶Ç´Â ÇöÀç ·¹ÀÌ¾Æ¿ô
+		// ì›ë³¸ ì´ë¯¸ì§€ë¥¼ TRANSFER_SRCë¡œ ë³€ê²½
+		barriers[0].oldLayout = vk::ImageLayout::eShaderReadOnlyOptimal; // ë˜ëŠ” í˜„ì¬ ë ˆì´ì•„ì›ƒ
 		barriers[0].newLayout = vk::ImageLayout::eTransferSrcOptimal;
 		barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
@@ -417,11 +418,11 @@ namespace Daydream
 		barriers[0].subresourceRange.levelCount = 1;
 		barriers[0].subresourceRange.baseArrayLayer = 0;
 		barriers[0].subresourceRange.layerCount = 1;
-		barriers[0].srcAccessMask = {}; // ÀÌÀü ÀÛ¾÷ÀÌ ¾ø´Ù°í °¡Á¤
+		barriers[0].srcAccessMask = {}; // ì´ì „ ì‘ì—…ì´ ì—†ë‹¤ê³  ê°€ì •
 		barriers[0].dstAccessMask = vk::AccessFlagBits::eTransferRead;
 
-		// ´ë»ó ÀÌ¹ÌÁö¸¦ TRANSFER_DST·Î º¯°æ
-		barriers[1].oldLayout = vk::ImageLayout::eUndefined; // ¶Ç´Â ÇöÀç ·¹ÀÌ¾Æ¿ô
+		// ëŒ€ìƒ ì´ë¯¸ì§€ë¥¼ TRANSFER_DSTë¡œ ë³€ê²½
+		barriers[1].oldLayout = vk::ImageLayout::eUndefined; // ë˜ëŠ” í˜„ì¬ ë ˆì´ì•„ì›ƒ
 		barriers[1].newLayout = vk::ImageLayout::eTransferDstOptimal;
 		barriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
@@ -435,15 +436,15 @@ namespace Daydream
 		barriers[1].dstAccessMask = vk::AccessFlagBits::eTransferWrite;
 
 		currentCommandBuffer.pipelineBarrier(
-			vk::PipelineStageFlagBits::eTopOfPipe,  // ÀÌÀü ÀÛ¾÷ ´Ü°è
-			vk::PipelineStageFlagBits::eTransfer,     // ´ÙÀ½ ÀÛ¾÷ ´Ü°è (Àü¼Û)
+			vk::PipelineStageFlagBits::eTopOfPipe,  // ì´ì „ ì‘ì—… ë‹¨ê³„
+			vk::PipelineStageFlagBits::eTransfer,     // ë‹¤ìŒ ì‘ì—… ë‹¨ê³„ (ì „ì†¡)
 			{},
 			0, nullptr,
 			0, nullptr,
 			2, barriers
 		);
 
-		// 2. º¹»ç ¸í·É ±â·Ï
+		// 2. ë³µì‚¬ ëª…ë ¹ ê¸°ë¡
 		vk::ImageCopy copyRegion = {};
 		copyRegion.srcSubresource.aspectMask = vk::ImageAspectFlagBits::eColor;
 		copyRegion.srcSubresource.layerCount = 1;
@@ -460,8 +461,8 @@ namespace Daydream
 		);
 
 
-		// ¿øº» ÀÌ¹ÌÁö¸¦ TRANSFER_SRC·Î º¯°æ
-		barriers[0].oldLayout = vk::ImageLayout::eTransferSrcOptimal; // ¶Ç´Â ÇöÀç ·¹ÀÌ¾Æ¿ô
+		// ì›ë³¸ ì´ë¯¸ì§€ë¥¼ TRANSFER_SRCë¡œ ë³€ê²½
+		barriers[0].oldLayout = vk::ImageLayout::eTransferSrcOptimal; // ë˜ëŠ” í˜„ì¬ ë ˆì´ì•„ì›ƒ
 		barriers[0].newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 		barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
@@ -471,11 +472,11 @@ namespace Daydream
 		barriers[0].subresourceRange.levelCount = 1;
 		barriers[0].subresourceRange.baseArrayLayer = 0;
 		barriers[0].subresourceRange.layerCount = 1;
-		barriers[0].srcAccessMask = vk::AccessFlagBits::eTransferRead; // ÀÌÀü ÀÛ¾÷ÀÌ ¾ø´Ù°í °¡Á¤
+		barriers[0].srcAccessMask = vk::AccessFlagBits::eTransferRead; // ì´ì „ ì‘ì—…ì´ ì—†ë‹¤ê³  ê°€ì •
 		barriers[0].dstAccessMask = {};
 
-		// ´ë»ó ÀÌ¹ÌÁö¸¦ TRANSFER_DST·Î º¯°æ
-		barriers[1].oldLayout = vk::ImageLayout::eTransferDstOptimal; // ¶Ç´Â ÇöÀç ·¹ÀÌ¾Æ¿ô
+		// ëŒ€ìƒ ì´ë¯¸ì§€ë¥¼ TRANSFER_DSTë¡œ ë³€ê²½
+		barriers[1].oldLayout = vk::ImageLayout::eTransferDstOptimal; // ë˜ëŠ” í˜„ì¬ ë ˆì´ì•„ì›ƒ
 		barriers[1].newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 		barriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
@@ -489,8 +490,8 @@ namespace Daydream
 		barriers[1].dstAccessMask = {};
 
 		currentCommandBuffer.pipelineBarrier(
-			vk::PipelineStageFlagBits::eTransfer,  // ÀÌÀü ÀÛ¾÷ ´Ü°è
-			vk::PipelineStageFlagBits::eFragmentShader,     // ´ÙÀ½ ÀÛ¾÷ ´Ü°è (Àü¼Û)
+			vk::PipelineStageFlagBits::eTransfer,  // ì´ì „ ì‘ì—… ë‹¨ê³„
+			vk::PipelineStageFlagBits::eFragmentShader,     // ë‹¤ìŒ ì‘ì—… ë‹¨ê³„ (ì „ì†¡)
 			{},
 			0, nullptr,
 			0, nullptr,
@@ -724,7 +725,7 @@ namespace Daydream
 		vk::PipelineStageFlags dstStage{};
 
 		using enum vk::PipelineStageFlagBits;
-		// ÆĞÅÏº°·Î ±×·ìÈ­
+		// íŒ¨í„´ë³„ë¡œ ê·¸ë£¹í™”
 		switch (_oldLayout)
 		{
 		case vk::ImageLayout::eUndefined:
@@ -766,8 +767,8 @@ namespace Daydream
 			dstStage = vk::PipelineStageFlagBits::eEarlyFragmentTests;
 			break;
 		case vk::ImageLayout::ePresentSrcKHR:
-			dstAccess = {}; // ¶Ç´Â VK_ACCESS_NONE (Vulkan 1.3 ÀÌ»ó)
-			dstStage = vk::PipelineStageFlagBits::eBottomOfPipe; // ¶Ç´Â VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT
+			dstAccess = {}; // ë˜ëŠ” VK_ACCESS_NONE (Vulkan 1.3 ì´ìƒ)
+			dstStage = vk::PipelineStageFlagBits::eBottomOfPipe; // ë˜ëŠ” VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT
 			break;
 		default:
 			throw std::invalid_argument("Unsupported new layout!");
@@ -846,8 +847,8 @@ namespace Daydream
 			dstStage = vk::PipelineStageFlagBits::eEarlyFragmentTests;
 			break;
 		case vk::ImageLayout::ePresentSrcKHR:
-			dstAccess = {}; // ¶Ç´Â VK_ACCESS_NONE (Vulkan 1.3 ÀÌ»ó)
-			dstStage = vk::PipelineStageFlagBits::eBottomOfPipe; // ¶Ç´Â VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT
+			dstAccess = {}; // ë˜ëŠ” VK_ACCESS_NONE (Vulkan 1.3 ì´ìƒ)
+			dstStage = vk::PipelineStageFlagBits::eBottomOfPipe; // ë˜ëŠ” VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT
 			break;
 		default:
 			throw std::invalid_argument("Unsupported new layout!");
@@ -1015,7 +1016,7 @@ namespace Daydream
 		_createInfo.messageSeverity = eVerbose | eWarning | eError;
 		_createInfo.messageType = eGeneral | eValidation | ePerformance;
 		_createInfo.pfnUserCallback = DebugCallback;
-		_createInfo.pUserData = nullptr; // ¿øÇÑ´Ù¸é this Æ÷ÀÎÅÍ µîÀ» Àü´ŞÇÒ ¼ö ÀÖÀ½
+		_createInfo.pUserData = nullptr; // ì›í•œë‹¤ë©´ this í¬ì¸í„° ë“±ì„ ì „ë‹¬í•  ìˆ˜ ìˆìŒ
 	}
 	bool VulkanRenderDevice::IsDeviceSuitable(vk::PhysicalDevice _physicalDevice)
 	{
@@ -1024,7 +1025,7 @@ namespace Daydream
 		vk::PhysicalDeviceProperties properties = _physicalDevice.getProperties();
 		auto feautures = _physicalDevice.getFeatures();
 
-		//ÀÌ GPU°¡ swapchainÀ» Áö¿øÇÒ ¼ö ÀÖ´ÂÁö È®ÀÎ?
+		//ì´ GPUê°€ swapchainì„ ì§€ì›í•  ìˆ˜ ìˆëŠ”ì§€ í™•ì¸?
 		bool extensionSupported = CheckDeviceExtensionSupport(_physicalDevice);
 
 		QueueFamilyIndices indices = FindQueueFamilies(_physicalDevice);

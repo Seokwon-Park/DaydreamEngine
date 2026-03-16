@@ -5,9 +5,12 @@
 #include <Daydream/Scene/Components/ModelRendererComponent.h>
 #include "Daydream/Graphics/Utility/ModelLoader.h"
 #include "Daydream/Graphics/Utility/ShaderCompileHelper.h"
+#include "Daydream/Graphics/API/Vulkan/VulkanRenderCommandList.h"
 
 #include "Daydream/Graphics/Resources/Mesh.h"
 
+
+#include "Daydream/Scene/Scene.h"
 
 namespace Daydream
 {

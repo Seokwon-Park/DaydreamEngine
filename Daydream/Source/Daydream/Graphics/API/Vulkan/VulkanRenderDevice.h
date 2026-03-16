@@ -26,7 +26,7 @@ namespace Daydream
 	struct QueueFamilyIndices
 	{
 		std::optional<UInt32> graphicsFamily;
-		//std::optional<UInt32> presentFamily; // Áö±İÀº ÇÊ¿ä¾ø´Âµí.
+		//std::optional<UInt32> presentFamily; // ì§€ê¸ˆì€ í•„ìš”ì—†ëŠ”ë“¯.
 
 		bool IsComplete()
 		{
@@ -36,11 +36,11 @@ namespace Daydream
 
 	struct SwapchainSupportDetails
 	{
-		//gpu¿Í surface Á¶ÇÕ¿¡¼­ Áö¿øµÇ´Â ÃÖ¼Ò/ÃÖ´ë ÀÌ¹ÌÁö Å©±âÁ¤º¸
+		//gpuì™€ surface ì¡°í•©ì—ì„œ ì§€ì›ë˜ëŠ” ìµœì†Œ/ìµœëŒ€ ì´ë¯¸ì§€ í¬ê¸°ì •ë³´
 		vk::SurfaceCapabilitiesKHR capabilities;
-		//»ö»ó format
+		//ìƒ‰ìƒ format
 		Array<vk::SurfaceFormatKHR> formats;
-		//present ¹æ½Ä
+		//present ë°©ì‹
 		Array<vk::PresentModeKHR> presentModes;
 	};
 

@@ -14,6 +14,7 @@ namespace Daydream
 	void VulkanImGuiRenderer::Init(DaydreamWindow* _window)
 	{
 		ImGuiRenderer::Init(_window);
+		swapchain = Cast<VulkanSwapchain*>(_window->GetSwapchain());
 		ImGui_ImplVulkan_InitInfo info{};
 		//info.ApiVersion =;
 		info.Instance = device->GetInstance();

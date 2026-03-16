@@ -76,7 +76,7 @@ namespace Daydream
 
 		imageCount = desc.bufferCount;
 
-		// ¼­ÇÇ½º Á¦ÇÑ È®ÀÎ
+		// ì„œí”¼ìŠ¤ ì œí•œ í™•ì¸
 		if (imageCount < SwapchainSupport.capabilities.minImageCount)
 		{
 			imageCount = SwapchainSupport.capabilities.minImageCount;
@@ -115,19 +115,7 @@ namespace Daydream
 	}
 	void VulkanSwapchain::CreateCommandBuffers()
 	{
-		//commandLists.resize(imageCount);
-		//vk::CommandBufferAllocateInfo allocInfo{};
-		//allocInfo.commandPool = device->GetCommandPool();
-		//allocInfo.level = vk::CommandBufferLevel::ePrimary;
-		//allocInfo.commandBufferCount = (UInt32)commandLists.size();
-
-		//commandLists = device->GetDevice().allocateCommandBuffersUnique(allocInfo);
-
-		commandLists.resize(imageCount);
-		for (int i = 0; i < imageCount; i++)
-		{
-			commandLists[i] = MakeShared<VulkanRenderCommandList>(device);
-		}
+		commandLists.assign(imageCount, MakeUnique<VulkanRenderCommandList>(device));
 	}
 
 	VulkanSwapchain::~VulkanSwapchain()
@@ -185,41 +173,74 @@ namespace Daydream
 	void VulkanSwapchain::BeginFrame()
 	{
 
-		////ÀÌÀü ÇÁ·¹ÀÓÀÇ GPU ÀÛ¾÷ ¿Ï·áµÆ´Ù´Â ½ÅÈ£¸¦ inFlightFence·Î ¹Ş±â·Î ÇÏ°í ´ë±â
-		//auto result = device->GetDevice().waitForFences(1, &inFlightFences[currentFrame].get(), VK_FALSE, UINT64_MAX);
+		//ì´ì „ í”„ë ˆì„ì˜ GPU ì‘ì—… ì™„ë£Œëë‹¤ëŠ” ì‹ í˜¸ë¥¼ inFlightFenceë¡œ ë°›ê¸°ë¡œ í•˜ê³  ëŒ€ê¸°
+		auto fence = commandLists[currentFrame]->GetVkFence();
+		auto result = device->GetDevice().waitForFences(1, &fence, VK_FALSE, UINT64_MAX);
 
-		////¿Ï·á µÆÀ¸¸é Ææ½º »óÅÂ´Â ½ÅÈ£¹Ş±â ÀüÀ¸·Î
-		//result = device->GetDevice().resetFences(1, &inFlightFences[currentFrame].get());
-		commandLists[currentFrame]->Begin();
-		currentCommandBuffer = commandLists[currentFrame]->GetVkCommandBuffer();
-		currentFence = commandLists[currentFrame]->GetVkFence();
+		//ì™„ë£Œ ëìœ¼ë©´ íœìŠ¤ ìƒíƒœëŠ” ì‹ í˜¸ë°›ê¸° ì „ìœ¼ë¡œ
+		result = device->GetDevice().resetFences(1, &fence);
 
-		//ÀÌ¹ÌÁö¸¦ GPU¿¡ ¿äÃ». »ç¿ë°¡´ÉÇÑ ÀÌ¹ÌÁöÀÇ ÀÎµ¦½º¸¦ imageIndex·Î Àü´ŞÇÏ°í imageAvailableSemaphore¿¡ ½ÅÈ£¸¦ Àü´ŞÇÏ¶ó´Â ¸í·É
+		//ì´ë¯¸ì§€ë¥¼ GPUì— ìš”ì²­. ì‚¬ìš©ê°€ëŠ¥í•œ ì´ë¯¸ì§€ì˜ ì¸ë±ìŠ¤ë¥¼ imageIndexë¡œ ì „ë‹¬í•˜ê³  imageAvailableSemaphoreì— ì‹ í˜¸ë¥¼ ì „ë‹¬í•˜ë¼ëŠ” ëª…ë ¹
 		auto result = device->GetDevice().acquireNextImageKHR(swapchain.get(), UINT64_MAX, imageAvailableSemaphores[currentFrame].get(), VK_NULL_HANDLE, &imageIndex);
 		if (result == vk::Result::eErrorOutOfDateKHR)
 		{
 			RecreateSwapchain();
 		}
-		
-		//ÀÌ¹ÌÁö ¿äÃ»¸¸ ÇØ³õ°í ÀÏ´Ü Ä¿¸Çµå ¹Ş±â ½ÃÀÛ
-		//activeCommandBuffer = commandLists[currentFrame]->GetVkCommandBuffer();
-		//device->SetCommandBuffer(activeCommandBuffer);
-		//activeCommandBuffer.reset({});
-		////fb->Bind();
+
+		auto cmd = commandLists[currentFrame]->GetVkCommandBuffer();
+		//ì´ë¯¸ì§€ ìš”ì²­ë§Œ í•´ë†“ê³  ì¼ë‹¨ ì»¤ë§¨ë“œ ë°›ê¸° ì‹œì‘
+		device->SetCommandBuffer(cmd);
+		cmd.reset({});
+		//fb->Bind();
 
 		//vk::CommandBufferBeginInfo beginInfo{};
 
-		//activeCommandBuffer.begin(beginInfo);
+		cmd.begin(beginInfo);
 
 		ResizeFramebuffers();
 
 		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::Vulkan, "Wrong API");
 
-		//vk::RenderPassBeginInfo renderPassInfo{};
-		//renderPassInfo.renderPass = renderPass->GetVkRenderPass();
-		//renderPassInfo.framebuffer = framebuffers[imageIndex]->GetFramebuffer();
-		//renderPassInfo.renderArea.offset = vk::Offset2D(0, 0);
-		//renderPassInfo.renderArea.extent = framebuffers[imageIndex]->GetExtent();
+		
+	}
+
+	void VulkanSwapchain::EndFrame()
+	{
+		auto fence = commandLists[currentFrame]->GetVkFence();
+		auto cmd = commandLists[currentFrame]->GetVkCommandBuffer();
+
+
+		cmd.end();
+
+		vk::SubmitInfo submitInfo{};
+
+		vk::PipelineStageFlags waitStages[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
+		submitInfo.waitSemaphoreCount = 1;
+		//ì´ ì„¸ë§ˆí¬ì–´ë“¤ì— ì‹ í˜¸ê°€ ë‹¤ ì™€ì•¼ Submitì„ í•œë‹¤.
+		submitInfo.pWaitSemaphores = &imageAvailableSemaphores[currentFrame].get();
+		submitInfo.pWaitDstStageMask = waitStages;
+		submitInfo.commandBufferCount = 1;
+
+		submitInfo.pCommandBuffers = &cmd;
+
+		//ë Œë”ë§ì´ ëë‚˜ë©´ ì—¬ê¸°ë‹¤ê°€ ì‹ í˜¸ë¥¼ ë³´ë‚´ë¼.
+		//VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
+		submitInfo.signalSemaphoreCount = 1;
+		submitInfo.pSignalSemaphores = &renderFinishedSemaphores[currentFrame].get();
+
+		vk::Result result = device->GetGraphicsQueue().submit(1, &submitInfo, fence);
+	}
+
+	void VulkanSwapchain::BeginRenderPass()
+	{
+		auto cmd = commandLists[currentFrame]->GetVkCommandBuffer();
+
+
+		vk::RenderPassBeginInfo renderPassInfo{};
+		renderPassInfo.renderPass = renderPass->GetVkRenderPass();
+		renderPassInfo.framebuffer = framebuffers[imageIndex]->GetFramebuffer();
+		renderPassInfo.renderArea.offset = vk::Offset2D(0, 0);
+		renderPassInfo.renderArea.extent = framebuffers[imageIndex]->GetExtent();
 
 		//Array<vk::ClearValue> colors;
 		//for (int i = 0; i < imageCount; i++)
@@ -232,65 +253,47 @@ namespace Daydream
 		//if (framebuffers[imageIndex]->HasDepthAttachment())
 		//{
 		//	vk::ClearValue vulkanClearDepthStencil;
-		//	vulkanClearDepthStencil.depthStencil.depth = 1.0f; // ¶Ç´Â 0.0f
-		//	vulkanClearDepthStencil.depthStencil.stencil = 0;   // ½ºÅÙ½Ç °ªµµ ÇÔ²² ÃÊ±âÈ­
+		//	vulkanClearDepthStencil.depthStencil.depth = 1.0f; // ë˜ëŠ” 0.0f
+		//	vulkanClearDepthStencil.depthStencil.stencil = 0;   // ìŠ¤í…ì‹¤ ê°’ë„ í•¨ê»˜ ì´ˆê¸°í™”
 		//	colors.push_back(vulkanClearDepthStencil);
 		//}
 
 		//renderPassInfo.clearValueCount = colors.size();
 		//renderPassInfo.pClearValues = colors.data();
 
-		//activeCommandBuffer.beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
-		//device->SetCurrentRenderPass(renderPass->GetVkRenderPass());
-		//vk::Viewport viewport{};
-		////viewport.x = 0.0f;
-		////viewport.y = (float)extent.height;
-		////viewport.width = (float)extent.width;
-		////viewport.height = -(float)extent.height;
+		cmd.beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
+		device->SetCurrentRenderPass(renderPass->GetVkRenderPass());
+		vk::Viewport viewport{};
 		//viewport.x = 0.0f;
-		//viewport.y = 0.0f;
-		//viewport.width = (float)framebuffers[imageIndex]->GetExtent().width;
-		//viewport.height = (float)framebuffers[imageIndex]->GetExtent().height;
-		//viewport.minDepth = 0.0f;
-		//viewport.maxDepth = 1.0f;
-		//activeCommandBuffer.setViewport(0, 1, &viewport);
+		//viewport.y = (float)extent.height;
+		//viewport.width = (float)extent.width;
+		//viewport.height = -(float)extent.height;
+		viewport.x = 0.0f;
+		viewport.y = 0.0f;
+		viewport.width = (float)framebuffers[imageIndex]->GetExtent().width;
+		viewport.height = (float)framebuffers[imageIndex]->GetExtent().height;
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		cmd.setViewport(0, 1, &viewport);
 
-		//vk::Rect2D scissor{};
-		//scissor.offset = vk::Offset2D(0, 0);
-		//scissor.extent = framebuffers[imageIndex]->GetExtent();
-		//activeCommandBuffer.setScissor(0, 1, &scissor);
+		vk::Rect2D scissor{};
+		scissor.offset = vk::Offset2D(0, 0);
+		scissor.extent = framebuffers[imageIndex]->GetExtent();
+		cmd.setScissor(0, 1, &scissor);
 	}
 
-	void VulkanSwapchain::EndFrame()
+	void VulkanSwapchain::EndRenderPass()
 	{
-		//activeCommandBuffer.endRenderPass();
-		commandLists[currentFrame]->End();
+		auto cmd = commandLists[currentFrame]->GetVkCommandBuffer();
 
-		vk::SubmitInfo submitInfo{};
-
-		vk::PipelineStageFlags waitStages[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
-		submitInfo.waitSemaphoreCount = 1;
-		//ÀÌ ¼¼¸¶Æ÷¾îµé¿¡ ½ÅÈ£°¡ ´Ù ¿Í¾ß SubmitÀ» ÇÑ´Ù.
-		submitInfo.pWaitSemaphores = &imageAvailableSemaphores[currentFrame].get();
-		submitInfo.pWaitDstStageMask = waitStages;
-		submitInfo.commandBufferCount = 1;
-
-		submitInfo.pCommandBuffers = &currentCommandBuffer;
-
-		//·»´õ¸µÀÌ ³¡³ª¸é ¿©±â´Ù°¡ ½ÅÈ£¸¦ º¸³»¶ó.
-		//VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
-		submitInfo.signalSemaphoreCount = 1;
-		submitInfo.pSignalSemaphores = &renderFinishedSemaphores[currentFrame].get();
-
-		vk::Result result = device->GetGraphicsQueue().submit(1, &submitInfo, 
-			currentFence);
+		cmd.endRenderPass();
 	}
 
 	void VulkanSwapchain::RecreateSwapchain()
 	{
 		device->GetDevice().waitIdle();
 
-		//commandBuffers[currentFrame]->reset({});
+		//cmd.reset({});
 
 		swapchainImages.clear();
 		swapchain.reset();

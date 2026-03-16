@@ -3,6 +3,7 @@
 #include "RenderCommandList.h"
 #include "Daydream/Enum/RendererEnums.h"
 #include "Daydream/Graphics/Resources/Framebuffer.h"
+#include "Daydream/Graphics/Core/RenderCommandList.h"
 
 
 namespace Daydream

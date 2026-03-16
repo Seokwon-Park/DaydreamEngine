@@ -1,15 +1,16 @@
 #pragma once
 
 #include "Daydream/Graphics/Core/RenderDevice.h"
-#include "Daydream/Graphics/Core/RenderContext.h"
-#include "RenderCommandList.h"
+#include "RenderCommand.h"
 #include "RenderCommandQueue.h"
-#include "Daydream/Scene/Scene.h"
+
 #include "Daydream/Graphics/Core/Camera.h"
 #include "Daydream/Graphics/Resources/Skybox.h"
 
 namespace Daydream
 {
+	class Scene;
+
 	class Renderer
 	{
 	public:
