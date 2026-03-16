@@ -5,14 +5,15 @@ namespace Daydream
 	class RenderCommandList
 	{
 	public:
-		RenderCommandList() {};
-		~RenderCommandList() { commandList.clear(); };
+		RenderCommandList();
+		virtual ~RenderCommandList();
 
-		void AddCommand(FunctionPtr<void()> _command);
-		void Execute();
+		virtual void Begin() {};
+		virtual void End() {};
+		virtual void WaitForCompletion() {}
 	protected:
 
 	private:
-		Array<FunctionPtr<void()>> commandList;
+
 	};
 }

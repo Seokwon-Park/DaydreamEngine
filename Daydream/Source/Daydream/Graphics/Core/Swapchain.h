@@ -1,6 +1,7 @@
 #pragma once
 #include "Daydream/Enum/RendererEnums.h"
 #include "Daydream/Graphics/Resources/Framebuffer.h"
+#include "Daydream/Graphics/Core/RenderCommandList.h"
 
 namespace Daydream
 {
@@ -29,7 +30,12 @@ namespace Daydream
 		virtual void BeginFrame() = 0;
 		virtual void EndFrame() = 0;
 
+		virtual void BeginRenderPass() {};
+		virtual void EndRenderPass() {};
+
 		virtual Shared<Framebuffer> GetBackFramebuffer() = 0;
+		virtual Shared<RenderCommandList> GetRenderCommandList() { return nullptr; };
+
 
 		void ResizeFramebuffers();
 

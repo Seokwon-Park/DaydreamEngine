@@ -12,6 +12,7 @@
 #include "VulkanTextureCube.h"
 #include "VulkanSampler.h"
 #include "VulkanMaterial.h"
+#include "VulkanRenderCommandList.h"
 #include "Daydream/Graphics/Utility/GraphicsUtility.h"
 #include "Daydream/Graphics/Utility/ImageLoader.h"
 
@@ -151,6 +152,11 @@ namespace Daydream
 	Unique<RenderContext> Daydream::VulkanRenderDevice::CreateContext(UInt32 _framesInFlight)
 	{
 		return MakeUnique<VulkanRenderContext>(this, _framesInFlight);
+	}
+
+	Shared<RenderCommandList> VulkanRenderDevice::CreateCmd()
+	{
+		return MakeShared<VulkanRenderCommandList>(this);
 	}
 
 	Shared<VertexBuffer> VulkanRenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)

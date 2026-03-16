@@ -5,8 +5,12 @@
 #include <Daydream/Scene/Components/ModelRendererComponent.h>
 #include "Daydream/Graphics/Utility/ModelLoader.h"
 #include "Daydream/Graphics/Utility/ShaderCompileHelper.h"
+#include "Daydream/Graphics/API/Vulkan/VulkanRenderCommandList.h"
 
 #include "Daydream/Graphics/Resources/Mesh.h"
+
+
+#include "Daydream/Scene/Scene.h"
 
 namespace Daydream
 {
@@ -22,10 +26,11 @@ namespace Daydream
 		renderDevice->Init();
 		imguiRenderer = renderDevice->CreateImGuiRenderer();
 		renderContext = renderDevice->CreateContext(Renderer::maxFramesInFlight);
+		skybox = MakeUnique<Skybox>();
 		commandLists.resize(maxCommandListsInFlight);
 		for (auto& commandList : commandLists)
 		{
-			commandList = MakeUnique<RenderCommandList>();
+			commandList = MakeUnique<RenderCommandQueue>();
 		}
 		ShaderCompileHelper::Init();
 		/*	RenderCommand::Init(renderDevice.get());*/
@@ -35,6 +40,7 @@ namespace Daydream
 	{
 		//Renderer2D::Shutdown();
 		ShaderCompileHelper::Shutdown();
+		skybox = nullptr;
 		imguiRenderer->Shutdown();
 		renderContext.reset();
 		renderDevice.reset();
@@ -64,6 +70,7 @@ namespace Daydream
 
 	void Renderer::BeginFrame(Swapchain* _swapchain)
 	{
+		renderContext->SetCommandList(_swapchain->GetRenderCommandList().get());
 		_swapchain->BeginFrame();
 	}
 
@@ -71,6 +78,16 @@ namespace Daydream
 	{
 		_swapchain->EndFrame();
 		_swapchain->Present();
+	}
+
+	void Renderer::ExecuteSingleCommand(FunctionPtr<void()> _func)
+	{
+		auto cmd = renderDevice->CreateCmd();
+		renderContext->SetCommandList(cmd.get());
+		cmd->Begin();
+		_func();
+		cmd->End();
+		cmd->WaitForCompletion();
 	}
 
 	void Renderer::BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer)

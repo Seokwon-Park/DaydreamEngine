@@ -21,9 +21,8 @@ namespace Daydream
 		AssetManager::LoadAssets(LoadPhase::Early);
 
 		editorCamera = MakeShared<EditorCamera>();
-		Renderer::BeginCommandList();
+		
 		activeScene = MakeShared<Scene>("MainScene");
-		Renderer::EndCommandList();
 
 		editorCamera->SetPosition({ 0.0f,0.0f,-2.0f });
 		viewProjMat = ConstantBuffer::Create(sizeof(Daydream::Matrix4x4));

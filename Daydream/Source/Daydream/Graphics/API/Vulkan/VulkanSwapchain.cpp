@@ -115,13 +115,7 @@ namespace Daydream
 	}
 	void VulkanSwapchain::CreateCommandBuffers()
 	{
-		commandBuffers.resize(imageCount);
-		vk::CommandBufferAllocateInfo allocInfo{};
-		allocInfo.commandPool = device->GetCommandPool();
-		allocInfo.level = vk::CommandBufferLevel::ePrimary;
-		allocInfo.commandBufferCount = (UInt32)commandBuffers.size();
-
-		commandBuffers = device->GetDevice().allocateCommandBuffersUnique(allocInfo);
+		commandLists.assign(imageCount, MakeUnique<VulkanRenderCommandList>(device));
 	}
 
 	VulkanSwapchain::~VulkanSwapchain()
@@ -181,10 +175,11 @@ namespace Daydream
 	{
 
 		//이전 프레임의 GPU 작업 완료됐다는 신호를 inFlightFence로 받기로 하고 대기
-		auto result = device->GetDevice().waitForFences(1, &inFlightFences[currentFrame].get(), VK_FALSE, UINT64_MAX);
+		auto fence = commandLists[currentFrame]->GetVkFence();
+		auto result = device->GetDevice().waitForFences(1, &fence, VK_FALSE, UINT64_MAX);
 
 		//완료 됐으면 펜스 상태는 신호받기 전으로
-		result = device->GetDevice().resetFences(1, &inFlightFences[currentFrame].get());
+		result = device->GetDevice().resetFences(1, &fence);
 
 		//이미지를 GPU에 요청. 사용가능한 이미지의 인덱스를 imageIndex로 전달하고 imageAvailableSemaphore에 신호를 전달하라는 명령
 		result = device->GetDevice().acquireNextImageKHR(swapchain.get(), UINT64_MAX, imageAvailableSemaphores[currentFrame].get(), VK_NULL_HANDLE, &imageIndex);
@@ -193,18 +188,54 @@ namespace Daydream
 			RecreateSwapchain();
 		}
 
+		auto cmd = commandLists[currentFrame]->GetVkCommandBuffer();
 		//이미지 요청만 해놓고 일단 커맨드 받기 시작
-		device->SetCommandBuffer(commandBuffers[currentFrame].get());
-		commandBuffers[currentFrame]->reset({});
+		device->SetCommandBuffer(cmd);
+		cmd.reset({});
 		//fb->Bind();
 
 		vk::CommandBufferBeginInfo beginInfo{};
 
-		commandBuffers[currentFrame]->begin(beginInfo);
+		cmd.begin(beginInfo);
 
 		ResizeFramebuffers();
 
 		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::Vulkan, "Wrong API");
+
+		
+	}
+
+	void VulkanSwapchain::EndFrame()
+	{
+		auto fence = commandLists[currentFrame]->GetVkFence();
+		auto cmd = commandLists[currentFrame]->GetVkCommandBuffer();
+
+
+		cmd.end();
+
+		vk::SubmitInfo submitInfo{};
+
+		vk::PipelineStageFlags waitStages[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
+		submitInfo.waitSemaphoreCount = 1;
+		//이 세마포어들에 신호가 다 와야 Submit을 한다.
+		submitInfo.pWaitSemaphores = &imageAvailableSemaphores[currentFrame].get();
+		submitInfo.pWaitDstStageMask = waitStages;
+		submitInfo.commandBufferCount = 1;
+
+		submitInfo.pCommandBuffers = &cmd;
+
+		//렌더링이 끝나면 여기다가 신호를 보내라.
+		//VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
+		submitInfo.signalSemaphoreCount = 1;
+		submitInfo.pSignalSemaphores = &renderFinishedSemaphores[currentFrame].get();
+
+		vk::Result result = device->GetGraphicsQueue().submit(1, &submitInfo, fence);
+	}
+
+	void VulkanSwapchain::BeginRenderPass()
+	{
+		auto cmd = commandLists[currentFrame]->GetVkCommandBuffer();
+
 
 		vk::RenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.renderPass = renderPass->GetVkRenderPass();
@@ -231,7 +262,7 @@ namespace Daydream
 		renderPassInfo.clearValueCount = colors.size();
 		renderPassInfo.pClearValues = colors.data();
 
-		commandBuffers[currentFrame]->beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
+		cmd.beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
 		device->SetCurrentRenderPass(renderPass->GetVkRenderPass());
 		vk::Viewport viewport{};
 		//viewport.x = 0.0f;
@@ -244,43 +275,26 @@ namespace Daydream
 		viewport.height = (float)framebuffers[imageIndex]->GetExtent().height;
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
-		commandBuffers[currentFrame]->setViewport(0, 1, &viewport);
+		cmd.setViewport(0, 1, &viewport);
 
 		vk::Rect2D scissor{};
 		scissor.offset = vk::Offset2D(0, 0);
 		scissor.extent = framebuffers[imageIndex]->GetExtent();
-		commandBuffers[currentFrame]->setScissor(0, 1, &scissor);
+		cmd.setScissor(0, 1, &scissor);
 	}
 
-	void VulkanSwapchain::EndFrame()
+	void VulkanSwapchain::EndRenderPass()
 	{
-		commandBuffers[currentFrame]->endRenderPass();
-		commandBuffers[currentFrame]->end();
+		auto cmd = commandLists[currentFrame]->GetVkCommandBuffer();
 
-		vk::SubmitInfo submitInfo{};
-
-		vk::PipelineStageFlags waitStages[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
-		submitInfo.waitSemaphoreCount = 1;
-		//이 세마포어들에 신호가 다 와야 Submit을 한다.
-		submitInfo.pWaitSemaphores = &imageAvailableSemaphores[currentFrame].get();
-		submitInfo.pWaitDstStageMask = waitStages;
-		submitInfo.commandBufferCount = 1;
-
-		submitInfo.pCommandBuffers = &commandBuffers[currentFrame].get();
-
-		//렌더링이 끝나면 여기다가 신호를 보내라.
-		//VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
-		submitInfo.signalSemaphoreCount = 1;
-		submitInfo.pSignalSemaphores = &renderFinishedSemaphores[currentFrame].get();
-
-		vk::Result result = device->GetGraphicsQueue().submit(1, &submitInfo, inFlightFences[currentFrame].get());
+		cmd.endRenderPass();
 	}
 
 	void VulkanSwapchain::RecreateSwapchain()
 	{
 		device->GetDevice().waitIdle();
 
-		//commandBuffers[currentFrame]->reset({});
+		//cmd.reset({});
 
 		swapchainImages.clear();
 		swapchain.reset();

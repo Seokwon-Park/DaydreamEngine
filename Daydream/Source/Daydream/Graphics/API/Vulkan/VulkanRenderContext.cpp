@@ -6,6 +6,7 @@
 #include "VulkanTextureCube.h"
 #include "VulkanBuffer.h"
 #include "VulkanFramebuffer.h"
+#include "VulkanRenderCommandList.h"
 #include "Daydream/Graphics/Resources/Mesh.h"
 
 
@@ -15,23 +16,23 @@ namespace Daydream
 	{
 		device = _device;
 
-		commandBuffers.resize(_framesInFlight);
-		vk::CommandBufferAllocateInfo allocInfo{};
-		allocInfo.commandPool = device->GetCommandPool();
-		allocInfo.level = vk::CommandBufferLevel::ePrimary;
-		allocInfo.commandBufferCount = (UInt32)commandBuffers.size();
+		//commandBuffers.resize(_framesInFlight);
+		//vk::CommandBufferAllocateInfo allocInfo{};
+		//allocInfo.commandPool = device->GetCommandPool();
+		//allocInfo.level = vk::CommandBufferLevel::ePrimary;
+		//allocInfo.commandBufferCount = (UInt32)commandBuffers.size();
 
-		commandBuffers = device->GetDevice().allocateCommandBuffersUnique(allocInfo);
-		commandBufferIndex = 0;
+		//commandBuffers = device->GetDevice().allocateCommandBuffersUnique(allocInfo);
+		//commandBufferIndex = 0;
 
-		vk::FenceCreateInfo fenceInfo{};
-		fenceInfo.flags = vk::FenceCreateFlagBits::eSignaled;
+		//vk::FenceCreateInfo fenceInfo{};
+		//fenceInfo.flags = vk::FenceCreateFlagBits::eSignaled;
 
-		waitFences.resize(_framesInFlight);
-		for (UInt32 i = 0; i < _framesInFlight; i++)
-		{
-			waitFences[i] = device->GetDevice().createFenceUnique(fenceInfo);
-		}
+		//waitFences.resize(_framesInFlight);
+		//for (UInt32 i = 0; i < _framesInFlight; i++)
+		//{
+		//	waitFences[i] = device->GetDevice().createFenceUnique(fenceInfo);
+		//}
 	}
 	VulkanRenderContext::~VulkanRenderContext()
 	{
@@ -39,18 +40,19 @@ namespace Daydream
 	}
 	void VulkanRenderContext::BeginCommandList()
 	{
-		vk::Result result = device->GetDevice().waitForFences(1, &waitFences[commandBufferIndex].get(), VK_FALSE, UINT64_MAX);
-		result = device->GetDevice().resetFences(1, &waitFences[commandBufferIndex].get());
+		//active = commandBuffers[commandBufferIndex].get();
+		//vk::Result result = device->GetDevice().waitForFences(1, &waitFences[commandBufferIndex].get(), VK_FALSE, UINT64_MAX);
+		//result = device->GetDevice().resetFences(1, &waitFences[commandBufferIndex].get());
 
-		GetActiveCommandBuffer().reset({});
+		//GetActiveCommandBuffer().reset({});
 
-		vk::CommandBufferBeginInfo beginInfo{};
-		GetActiveCommandBuffer().begin(beginInfo);
+		//vk::CommandBufferBeginInfo beginInfo{};
+		//GetActiveCommandBuffer().begin(beginInfo);
 	}
 
 	void VulkanRenderContext::EndCommandList()
 	{
-		GetActiveCommandBuffer().end();
+		/*GetActiveCommandBuffer().end();
 
 		vk::SubmitInfo submitInfo{};
 		submitInfo.commandBufferCount = 1;
@@ -60,7 +62,7 @@ namespace Daydream
 
 		commandBufferIndex = (commandBufferIndex + 1) % 3;
 
-		device->GetGraphicsQueue().waitIdle();
+		device->GetGraphicsQueue().waitIdle();*/
 	}
 	void VulkanRenderContext::SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height)
 	{
@@ -584,8 +586,12 @@ namespace Daydream
 			barrier  // ImageMemoryBarrier
 		);
 	}
+	void VulkanRenderContext::SetCommandList(RenderCommandList* _cmd)
+	{
+		active = Cast<VulkanRenderCommandList*>(_cmd)->GetVkCommandBuffer();;
+	}
 	vk::CommandBuffer VulkanRenderContext::GetActiveCommandBuffer()
 	{
-		return commandBuffers[commandBufferIndex].get();
+		return active;
 	}
 }

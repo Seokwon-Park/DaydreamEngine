@@ -43,7 +43,7 @@ namespace Daydream
 
 		inline Shared<ConstantBuffer> GetLightConstantBuffer() const { return lightBuffer; }
 
-		inline Shared<Skybox> GetSkybox() const { return skybox; }
+		Skybox* GetSkybox() const;
 
 		void Update(Float32 _deltaTime);
 		void RenderDepth();

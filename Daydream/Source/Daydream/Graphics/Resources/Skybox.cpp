@@ -33,47 +33,6 @@ namespace Daydream
 		}
 
 
-		equirectangularRenderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
-		equirectangularPSO = ResourceManager::GetResource<PipelineState>("EquirectangularPSO");
-
-		equirectangularMaterials.resize(6);
-		equirectangularResultTextures.resize(6);
-		for (int i = 0; i < equirectangularMaterials.size(); i++)
-		{
-			equirectangularMaterials[i] = Material::Create(equirectangularPSO);
-			equirectangularMaterials[i]->SetConstantBuffer("Camera", cubeFaceConstantBuffers[i]);
-		}
-
-		// Resize Capture setup
-		resizeRenderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
-		resizePSO = ResourceManager::GetResource<PipelineState>("ResizePSO");
-
-		irradianceRenderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
-		irradiancePSO = ResourceManager::GetResource<PipelineState>("IrradiancePSO");
-		irradianceMaterials.resize(6);
-		irradianceResultTextures.resize(6);
-		for (int i = 0; i < 6; i++)
-		{
-			irradianceMaterials[i] = Material::Create(irradiancePSO);
-			irradianceMaterials[i]->SetConstantBuffer("Camera", cubeFaceConstantBuffers[i]);
-		}
-
-		prefilterPSO = ResourceManager::GetResource<PipelineState>("PrefilterPSO");
-		equirectangularDropTarget = AssetManager::GetAssetByPath<Texture2D>("Resource/NoTexture.png");
-
-		brdfPSO = ResourceManager::GetResource<PipelineState>("BRDFPSO");
-
-		quadMesh = ResourceManager::GetResource<Mesh>("Quad");
-
-		auto meshData = MeshGenerator::CreateCube();
-		Array<Vector3> positions;
-		for (Vertex v : meshData.vertices)
-		{
-			positions.push_back(v.position);
-		}
-		//boxVB = VertexBuffer::CreateStatic(sizeof(Vector3) * (UInt32)positions.size(), 12, positions.data());
-		//boxIB = IndexBuffer::Create(meshData.indices.data(), (UInt32)meshData.indices.size());
-		boxMesh = ResourceManager::GetResource<Mesh>("Box");
 	}
 
 	Skybox::~Skybox()
@@ -92,6 +51,35 @@ namespace Daydream
 
 	void Skybox::Init()
 	{
+
+		equirectangularRenderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
+		equirectangularPSO = ResourceManager::GetResource<PipelineState>("EquirectangularPSO");
+
+
+		// Resize Capture setup
+		resizeRenderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
+		resizePSO = ResourceManager::GetResource<PipelineState>("ResizePSO");
+
+		irradianceRenderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
+		irradiancePSO = ResourceManager::GetResource<PipelineState>("IrradiancePSO");
+
+
+		prefilterPSO = ResourceManager::GetResource<PipelineState>("PrefilterPSO");
+		equirectangularDropTarget = AssetManager::GetAssetByPath<Texture2D>("Resource/NoTexture.png");
+
+		brdfPSO = ResourceManager::GetResource<PipelineState>("BRDFPSO");
+
+		quadMesh = ResourceManager::GetResource<Mesh>("Quad");
+
+		auto meshData = MeshGenerator::CreateCube();
+		Array<Vector3> positions;
+		for (Vertex v : meshData.vertices)
+		{
+			positions.push_back(v.position);
+		}
+		//boxVB = VertexBuffer::CreateStatic(sizeof(Vector3) * (UInt32)positions.size(), 12, positions.data());
+		//boxIB = IndexBuffer::Create(meshData.indices.data(), (UInt32)meshData.indices.size());
+		boxMesh = ResourceManager::GetResource<Mesh>("Box");
 		//////////////////////////////////////Create Default Skybox TextureCubes;
 		skyboxMipLevels = (UInt32)std::log2f((Float32)skyboxResolution);
 		equirectangularTexture = AssetManager::GetAssetByPath<Texture2D>("Resource/skybox.hdr");

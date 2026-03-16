@@ -4,6 +4,7 @@
 #include "Components/LightComponent.h"
 #include "Components/ModelRendererComponent.h"
 #include "Components/MeshRendererComponent.h"
+#include "Daydream/Graphics/Core/Renderer.h"
 #include "Daydream/Graphics/Resources/Skybox.h"
 
 namespace Daydream
@@ -11,8 +12,6 @@ namespace Daydream
 	Scene::Scene(const String& _name)
 	{
 		lightBuffer = ConstantBuffer::Create(sizeof(LightData));
-		skybox = MakeShared<Skybox>();
-		skybox->Init();
 
 		entityPool.push_back(nullptr);
 		generations.push_back(0); // 0번 인덱스의 generation은 0
@@ -131,6 +130,11 @@ namespace Daydream
 
 		// 핸들의 generation과 슬롯의 generation이 일치하는지 확인
 		return generations[index] == _handle.GetGeneration();
+	}
+
+	Skybox* Scene::GetSkybox() const
+	{
+		return Renderer::GetSkybox();
 	}
 
 	void Scene::Update(Float32 _deltaTime)

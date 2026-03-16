@@ -11,7 +11,7 @@ namespace Daydream
 		SkyboxPanel();
 		~SkyboxPanel();
 		
-		void SetSkybox(Shared<Skybox> _skybox)
+		void SetSkybox(Skybox* _skybox)
 		{
 			skybox = _skybox;
 		}
@@ -32,7 +32,7 @@ namespace Daydream
 		int diffuseIndex = 0;
 		int specularIndex = 3;
 
-		Shared<Skybox> skybox;
+		Skybox* skybox;
 		Shared<Texture2D> equirectangularDropTarget;
 	};
 }

@@ -34,10 +34,14 @@ namespace Daydream
 		virtual void CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel = 0) override;
 
 		virtual void GenerateMips(Shared<Texture> _texture) override;
+
+		virtual void SetCommandList(RenderCommandList* _cmd) override;
 	private:
 		vk::CommandBuffer GetActiveCommandBuffer();
 		
 		VulkanRenderDevice* device;
+
+		vk::CommandBuffer active;
 
 		Array<vk::UniqueFence> waitFences;
 		Array<vk::UniqueCommandBuffer> commandBuffers;

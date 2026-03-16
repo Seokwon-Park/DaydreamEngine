@@ -1,6 +1,7 @@
 #pragma once
 #include "Daydream/Enum/RendererEnums.h"
 #include "Daydream/Graphics/Resources/Framebuffer.h"
+#include "Daydream/Graphics/Core/RenderCommandList.h"
 
 
 namespace Daydream
@@ -48,8 +49,12 @@ namespace Daydream
 
 		virtual void GenerateMips(Shared<Texture> _texture) {}
 
+
+		virtual void SetCommandList(RenderCommandList* _cmd) {}
+
 	protected:
 		Shared<PipelineState> currentPipelineState;
+		RenderCommandList* cmd;
 	private:
 	};
 }

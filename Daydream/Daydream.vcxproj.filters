@@ -1918,7 +1918,9 @@
     <ClInclude Include="Source\Daydream\Core\Thread.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderThread.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\SceneRenderer.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Core\RenderCommandQueue.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderCommandList.h" />
+    <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanRenderCommandList.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\Directory.cpp">
@@ -2356,6 +2358,8 @@
     <ClCompile Include="Source\Daydream\Core\Thread.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderThread.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\SceneRenderer.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Core\RenderCommandQueue.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderCommandList.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanRenderCommandList.cpp" />
   </ItemGroup>
 </Project>

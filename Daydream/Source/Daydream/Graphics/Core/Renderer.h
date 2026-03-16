@@ -2,12 +2,15 @@
 
 #include "Daydream/Graphics/Core/RenderDevice.h"
 #include "RenderCommand.h"
-#include "RenderCommandList.h"
-#include "Daydream/Scene/Scene.h"
+#include "RenderCommandQueue.h"
+
 #include "Daydream/Graphics/Core/Camera.h"
+#include "Daydream/Graphics/Resources/Skybox.h"
 
 namespace Daydream
 {
+	class Scene;
+
 	class Renderer
 	{
 	public:
@@ -65,6 +68,10 @@ namespace Daydream
 		static inline RenderDevice* GetRenderDevice() { return renderDevice.get(); }
 		static inline RenderContext* GetRenderContext() { return renderContext.get(); }
 
+		static inline Skybox* GetSkybox() { return skybox.get(); }
+
+		static void ExecuteSingleCommand(FunctionPtr<void()> _func);
+
 	private:
 		Renderer() = default;
 
@@ -73,8 +80,9 @@ namespace Daydream
 		inline static Unique<RenderDevice> renderDevice = nullptr;
 		inline static Unique<RenderContext> renderContext = nullptr;
 		inline static Unique<ImGuiRenderer> imguiRenderer = nullptr;
+		inline static Unique<Skybox> skybox = nullptr;
 
-		inline static Array<Unique<RenderCommandList>> commandLists;
+		inline static Array<Unique<RenderCommandQueue>> commandLists;
 	};
 }
 

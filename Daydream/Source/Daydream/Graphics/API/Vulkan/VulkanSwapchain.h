@@ -10,6 +10,7 @@
 #include "VulkanRenderPass.h"
 #include "VulkanFrameBuffer.h"
 #include "VulkanRenderDevice.h"
+#include "VulkanRenderCommandList.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -33,7 +34,13 @@ namespace Daydream
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
 
+
+		virtual void BeginRenderPass() override;
+		virtual void EndRenderPass() override;
+
+
 		virtual Shared<Framebuffer> GetBackFramebuffer() { return framebuffers[imageIndex]; };
+		virtual Shared<RenderCommandList> GetRenderCommandList() { return commandLists[currentFrame]; };
 
 		void RecreateSwapchain();
 
@@ -48,7 +55,7 @@ namespace Daydream
 		vk::Extent2D ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& _capabilities);
 
 		VulkanRenderDevice* device;
-		Array<vk::UniqueCommandBuffer> commandBuffers;
+		Array<Shared<VulkanRenderCommandList>> commandLists;
 		Array<Shared<VulkanFramebuffer>> framebuffers;
 		Shared<VulkanRenderPass> renderPass;
 
