@@ -13,6 +13,7 @@ namespace Daydream
 		renderPass = _renderPass;
 		vkRenderPass = _renderPass;
 
+		colorAttachmentCount = _renderPass->GetDesc().colorAttachments.size();
 		CreateAttachments();
 
 		if (entityTexture)
@@ -43,6 +44,7 @@ namespace Daydream
 			_swapchain->GetFormat(),
 			vk::ImageAspectFlagBits::eColor);
 		attachmentImageViews.push_back(swapchainImageView.get());
+		colorAttachmentCount = 1;
 
 		CreateAttachments();
 	}

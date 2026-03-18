@@ -3,10 +3,12 @@
 #include "Renderer2D.h"
 
 #include <Daydream/Scene/Components/ModelRendererComponent.h>
+#include "Daydream/Scene/Scene.h"
 #include "Daydream/Graphics/Utility/ModelLoader.h"
 #include "Daydream/Graphics/Utility/ShaderCompileHelper.h"
 
 #include "Daydream/Graphics/Resources/Mesh.h"
+#include "Daydream/Graphics/Resources/Skybox.h"
 
 
 namespace Daydream
@@ -77,11 +79,11 @@ namespace Daydream
 		_swapchain->Present();
 	}
 
-	void Renderer::ExecuteSingleTimeCommands(FunctionPtr<void()> _func)
+	void Renderer::ExecuteSingleTimeCommand(FunctionPtr<void()> _func)
 	{
 		Shared<RenderCommandList> singleTimeCommandList = renderDevice->CreateRenderCommandList();
-		singleTimeCommandList->Begin();
 		renderContext->SetActiveCommandList(singleTimeCommandList);
+		singleTimeCommandList->Begin();
 		_func();
 		singleTimeCommandList->End();
 		singleTimeCommandList->WaitForCompletion();
@@ -162,7 +164,7 @@ namespace Daydream
 
 	void Renderer::MakeSkybox()
 	{
-		ExecuteSingleTimeCommands([&]() {skybox->Init(); });
+		skybox->Init();
 	}
 
 }

@@ -115,33 +115,12 @@ namespace Daydream
 	}
 	void VulkanSwapchain::CreateCommandBuffers()
 	{
-		//commandLists.resize(imageCount);
-		//vk::CommandBufferAllocateInfo allocInfo{};
-		//allocInfo.commandPool = device->GetCommandPool();
-		//allocInfo.level = vk::CommandBufferLevel::ePrimary;
-		//allocInfo.commandBufferCount = (UInt32)commandLists.size();
-
-		//commandLists = device->GetDevice().allocateCommandBuffersUnique(allocInfo);
-
-		commandLists.resize(imageCount);
-		for (int i = 0; i < imageCount; i++)
-		{
-			commandLists[i] = MakeShared<VulkanRenderCommandList>(device);
-		}
+		commandLists.assign(imageCount, MakeUnique<VulkanRenderCommandList>(device));
 	}
 
 	VulkanSwapchain::~VulkanSwapchain()
 	{
 		device->GetDevice().waitIdle();
-		//for (UInt32 i = 0; i < imageCount; i++)
-		//{
-		//	vkDestroySemaphore(device->GetDevice(), imageAvailableSemaphores[i], nullptr);
-		//	vkDestroySemaphore(device->GetDevice(), renderFinishedSemaphores[i], nullptr);
-		//	vkDestroyFence(device->GetDevice(), inFlightFences[i], nullptr);
-		//}
-
-		//vkDestroySwapchainKHR(device->GetDevice(), swapchain, nullptr);
-		//vkDestroySurfaceKHR(device->GetInstance(), surface, nullptr);
 	}
 	void VulkanSwapchain::SetVSync(bool _enabled)
 	{
@@ -185,86 +164,36 @@ namespace Daydream
 	void VulkanSwapchain::BeginFrame()
 	{
 
-		////이전 프레임의 GPU 작업 완료됐다는 신호를 inFlightFence로 받기로 하고 대기
-		//auto result = device->GetDevice().waitForFences(1, &inFlightFences[currentFrame].get(), VK_FALSE, UINT64_MAX);
+		//이전 프레임의 GPU 작업 완료됐다는 신호를 inFlightFence로 받기로 하고 대기
+		auto fence = commandLists[currentFrame]->GetVkFence();
+		auto result = device->GetDevice().waitForFences(1, &fence, VK_FALSE, UINT64_MAX);
 
-		////완료 됐으면 펜스 상태는 신호받기 전으로
-		//result = device->GetDevice().resetFences(1, &inFlightFences[currentFrame].get());
-		commandLists[currentFrame]->Begin();
-		currentCommandBuffer = commandLists[currentFrame]->GetVkCommandBuffer();
-		currentFence = commandLists[currentFrame]->GetVkFence();
+		result = device->GetDevice().resetFences(1, &fence);
 
 		//이미지를 GPU에 요청. 사용가능한 이미지의 인덱스를 imageIndex로 전달하고 imageAvailableSemaphore에 신호를 전달하라는 명령
-		auto result = device->GetDevice().acquireNextImageKHR(swapchain.get(), UINT64_MAX, imageAvailableSemaphores[currentFrame].get(), VK_NULL_HANDLE, &imageIndex);
+		result = device->GetDevice().acquireNextImageKHR(swapchain.get(), UINT64_MAX, imageAvailableSemaphores[currentFrame].get(), VK_NULL_HANDLE, &imageIndex);
 		if (result == vk::Result::eErrorOutOfDateKHR)
 		{
 			RecreateSwapchain();
 		}
-		
-		//이미지 요청만 해놓고 일단 커맨드 받기 시작
-		//activeCommandBuffer = commandLists[currentFrame]->GetVkCommandBuffer();
-		//device->SetCommandBuffer(activeCommandBuffer);
-		//activeCommandBuffer.reset({});
-		////fb->Bind();
 
-		//vk::CommandBufferBeginInfo beginInfo{};
+		currentCommandBuffer = commandLists[currentFrame]->GetVkCommandBuffer();
+		device->SetCommandBuffer(currentCommandBuffer);
+		currentCommandBuffer.reset({});
 
-		//activeCommandBuffer.begin(beginInfo);
+		vk::CommandBufferBeginInfo beginInfo{};
+		currentCommandBuffer.begin(beginInfo);
 
 		ResizeFramebuffers();
 
 		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::Vulkan, "Wrong API");
 
-		//vk::RenderPassBeginInfo renderPassInfo{};
-		//renderPassInfo.renderPass = renderPass->GetVkRenderPass();
-		//renderPassInfo.framebuffer = framebuffers[imageIndex]->GetFramebuffer();
-		//renderPassInfo.renderArea.offset = vk::Offset2D(0, 0);
-		//renderPassInfo.renderArea.extent = framebuffers[imageIndex]->GetExtent();
-
-		//Array<vk::ClearValue> colors;
-		//for (int i = 0; i < imageCount; i++)
-		//{
-		//	vk::ClearValue vulkanClearColor;
-		//	vulkanClearColor.setColor({ 0.0f, 0.0f, 1.0f, 1.0f });
-		//	colors.push_back(vulkanClearColor);
-		//}
-
-		//if (framebuffers[imageIndex]->HasDepthAttachment())
-		//{
-		//	vk::ClearValue vulkanClearDepthStencil;
-		//	vulkanClearDepthStencil.depthStencil.depth = 1.0f; // 또는 0.0f
-		//	vulkanClearDepthStencil.depthStencil.stencil = 0;   // 스텐실 값도 함께 초기화
-		//	colors.push_back(vulkanClearDepthStencil);
-		//}
-
-		//renderPassInfo.clearValueCount = colors.size();
-		//renderPassInfo.pClearValues = colors.data();
-
-		//activeCommandBuffer.beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
-		//device->SetCurrentRenderPass(renderPass->GetVkRenderPass());
-		//vk::Viewport viewport{};
-		////viewport.x = 0.0f;
-		////viewport.y = (float)extent.height;
-		////viewport.width = (float)extent.width;
-		////viewport.height = -(float)extent.height;
-		//viewport.x = 0.0f;
-		//viewport.y = 0.0f;
-		//viewport.width = (float)framebuffers[imageIndex]->GetExtent().width;
-		//viewport.height = (float)framebuffers[imageIndex]->GetExtent().height;
-		//viewport.minDepth = 0.0f;
-		//viewport.maxDepth = 1.0f;
-		//activeCommandBuffer.setViewport(0, 1, &viewport);
-
-		//vk::Rect2D scissor{};
-		//scissor.offset = vk::Offset2D(0, 0);
-		//scissor.extent = framebuffers[imageIndex]->GetExtent();
-		//activeCommandBuffer.setScissor(0, 1, &scissor);
 	}
 
 	void VulkanSwapchain::EndFrame()
 	{
-		//activeCommandBuffer.endRenderPass();
-		commandLists[currentFrame]->End();
+		auto fence = commandLists[currentFrame]->GetVkFence();
+		currentCommandBuffer.end();
 
 		vk::SubmitInfo submitInfo{};
 
@@ -282,9 +211,67 @@ namespace Daydream
 		submitInfo.signalSemaphoreCount = 1;
 		submitInfo.pSignalSemaphores = &renderFinishedSemaphores[currentFrame].get();
 
-		vk::Result result = device->GetGraphicsQueue().submit(1, &submitInfo, 
-			currentFence);
+		vk::Result result = device->GetGraphicsQueue().submit(1, &submitInfo, fence);
 	}
+
+	//void VulkanSwapchain::BeginRenderPass()
+	//{
+	//	auto currentCommandBuffer = commandLists[currentFrame]->GetVkCommandBuffer();
+
+
+	//	vk::RenderPassBeginInfo renderPassInfo{};
+	//	renderPassInfo.renderPass = renderPass->GetVkRenderPass();
+	//	renderPassInfo.framebuffer = framebuffers[imageIndex]->GetFramebuffer();
+	//	renderPassInfo.renderArea.offset = vk::Offset2D(0, 0);
+	//	renderPassInfo.renderArea.extent = framebuffers[imageIndex]->GetExtent();
+
+	//	Array<vk::ClearValue> colors;
+	//	for (int i = 0; i < imageCount; i++)
+	//	{
+	//		vk::ClearValue vulkanClearColor;
+	//		vulkanClearColor.setColor({ 0.0f, 0.0f, 1.0f, 1.0f });
+	//		colors.push_back(vulkanClearColor);
+	//	}
+
+	//	if (framebuffers[imageIndex]->HasDepthAttachment())
+	//	{
+	//		vk::ClearValue vulkanClearDepthStencil;
+	//		vulkanClearDepthStencil.depthStencil.depth = 1.0f; // 또는 0.0f
+	//		vulkanClearDepthStencil.depthStencil.stencil = 0;   // 스텐실 값도 함께 초기화
+	//		colors.push_back(vulkanClearDepthStencil);
+	//	}
+
+	//	renderPassInfo.clearValueCount = colors.size();
+	//	renderPassInfo.pClearValues = colors.data();
+
+	//	currentCommandBuffer.beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
+	//	device->SetCurrentRenderPass(renderPass->GetVkRenderPass());
+	//	vk::Viewport viewport{};
+	//	//viewport.x = 0.0f;
+	//	//viewport.y = (float)extent.height;
+	//	//viewport.width = (float)extent.width;
+	//	//viewport.height = -(float)extent.height;
+	//	viewport.x = 0.0f;
+	//	viewport.y = 0.0f;
+	//	viewport.width = (float)framebuffers[imageIndex]->GetExtent().width;
+	//	viewport.height = (float)framebuffers[imageIndex]->GetExtent().height;
+	//	viewport.minDepth = 0.0f;
+	//	viewport.maxDepth = 1.0f;
+	//	currentCommandBuffer.setViewport(0, 1, &viewport);
+
+	//	vk::Rect2D scissor{};
+	//	scissor.offset = vk::Offset2D(0, 0);
+	//	scissor.extent = framebuffers[imageIndex]->GetExtent();
+	//	currentCommandBuffer.setScissor(0, 1, &scissor);
+	//}
+
+	//void VulkanSwapchain::EndRenderPass()
+	//{
+	//	auto currentCommandBuffer = commandLists[currentFrame]->GetVkCommandBuffer();
+
+	//	currentCommandBuffer.endRenderPass();
+	//}
+
 
 	void VulkanSwapchain::RecreateSwapchain()
 	{

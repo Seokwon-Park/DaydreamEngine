@@ -34,6 +34,9 @@ namespace Daydream
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
 
+		//virtual void BeginRenderPass() override;
+		//virtual void EndRenderPass() override;
+
 		inline virtual Shared<Framebuffer> GetCurrentFramebuffer() const { return framebuffers[imageIndex]; };
 		inline virtual Shared<RenderCommandList> GetCurrentCommandList() const override { return commandLists[currentFrame]; }
 
@@ -50,7 +53,6 @@ namespace Daydream
 		vk::Extent2D ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& _capabilities);
 
 		VulkanRenderDevice* device;
-		/*Array<vk::UniqueCommandBuffer> commandLists;*/
 		Array<Shared<VulkanRenderCommandList>> commandLists;
 		vk::CommandBuffer currentCommandBuffer;
 		vk::Fence currentFence;

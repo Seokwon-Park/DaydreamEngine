@@ -16,6 +16,7 @@ namespace Daydream
 
 	void EditorLayer::OnAttach()
 	{
+
 		AssetManager::LoadAssetMetadataFromDirectory("Resource");
 		AssetManager::LoadAssets(LoadPhase::Early);
 
@@ -157,7 +158,8 @@ namespace Daydream
 
 		assetBrowserPanel = MakeUnique<AssetBrowserPanel>();
 		skyboxPanel = MakeUnique<SkyboxPanel>();
-		skyboxPanel->SetSkybox(Renderer::GetSkybox());
+
+		skyboxPanel->SetSkybox(activeScene->GetSkybox());
 	}
 
 	void EditorLayer::OnUpdate(Float32 _deltaTime)
@@ -251,8 +253,6 @@ namespace Daydream
 		//pso3d->Bind();
 		Renderer::EndRenderPass(gBufferRenderPass);
 
-		// selectionFramebuffer는 반드시 "검은색(0)"으로 Clear 되어 있어야 함.
-
 		GameEntity* selectedEntity = sceneHierarchyPanel->GetSelectedEntity(); // 선택된 객체 가져오기
 
 		Renderer::BeginRenderPass(maskRenderPass, maskFramebuffer);
@@ -295,14 +295,14 @@ namespace Daydream
 		Renderer::SetTexture2D("NormalTexture", gBufferFramebuffer->GetColorAttachmentTexture(1));
 		Renderer::SetTexture2D("AlbedoTexture", gBufferFramebuffer->GetColorAttachmentTexture(2));
 		Renderer::SetTexture2D("RMAOTexture", gBufferFramebuffer->GetColorAttachmentTexture(3));
-		Renderer::SetTexture2D("BRDFLUT", Renderer::GetSkybox()->GetBRDF());
+		Renderer::SetTexture2D("BRDFLUT", activeScene->GetSkybox()->GetBRDF());
 		Renderer::SetTexture2D("EntityIDTexture", gBufferFramebuffer->GetColorAttachmentTexture(4));
 		Renderer::SetTexture2D("OutlineTexture", maskFramebuffer->GetColorAttachmentTexture(0));
 		Renderer::SetTexture2D("DepthTexture", depthFramebuffer->GetDepthAttachmentTexture());
 		Renderer::SetConstantBuffer("Lights", activeScene->GetLightConstantBuffer());
 		Renderer::SetConstantBuffer("EditorData", entityBuffer);
-		Renderer::SetTextureCube("IrradianceTexture", Renderer::GetSkybox()->GetIrradianceTexture());
-		Renderer::SetTextureCube("Prefilter", Renderer::GetSkybox()->GetPrefilterTexture());
+		Renderer::SetTextureCube("IrradianceTexture", activeScene->GetSkybox()->GetIrradianceTexture());
+		Renderer::SetTextureCube("Prefilter", activeScene->GetSkybox()->GetPrefilterTexture());
 		//deferredLightingMaterial->Bind();
 		Renderer::BindMesh(ResourceManager::GetResource<Mesh>("Quad"));
 		Renderer::DrawIndexed(ResourceManager::GetResource<Mesh>("Quad")->GetIndexCount());
@@ -315,7 +315,7 @@ namespace Daydream
 			Renderer::BindPipelineState(skyboxPipeline);
 			Renderer::BindMesh(cubeMesh);
 			Renderer::SetConstantBuffer("Camera", viewProjMat);
-			Renderer::SetTextureCube("TextureCubemap", Renderer::GetSkybox()->GetSkyboxTexture());
+			Renderer::SetTextureCube("TextureCubemap", activeScene->GetSkybox()->GetSkyboxTexture());
 			Renderer::DrawIndexed(cubeMesh->GetIndexCount());
 		}
 		Renderer::EndRenderPass(renderPass);
@@ -332,7 +332,6 @@ namespace Daydream
 		//if (ImGui::Button("Albedo"))index = 2;
 		//if (ImGui::Button("AORM"))index = 3;
 		ImGui::Image(AssetManager::GetAssetByPath<Texture2D>("Resource/skybox.hdr")->GetImGuiHandle(), ImVec2{ 100,100 });
-		ImGui::Image(Renderer::GetSkybox()->GetBRDF()->GetImGuiHandle(), ImVec2{100,100});
 
 		ImGui::Image((ImTextureID)depthFramebuffer->GetDepthAttachmentTexture()->GetImGuiHandle(), ImVec2{ viewportSize.x / 3,viewportSize.y / 3 });
 		//ImGui::Image((ImTextureID)AssetManager::GetAssetByPath<Texture2D>("Resource/skybox.hdr")->GetImGuiHandle(), ImVec2{ viewportSize.x / 3,viewportSize.y / 3 });

@@ -110,7 +110,7 @@ namespace Daydream
 	}
 	bool Application::Run()
 	{
-		Renderer::MakeSkybox();
+		Renderer::ExecuteSingleTimeCommand([]() {Renderer::MakeSkybox(); });
 		while (isRunning)
 		{
 			timeStep.UpdateTime();

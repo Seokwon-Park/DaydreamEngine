@@ -4,20 +4,21 @@
 #include "Daydream/Graphics/Core/RenderContext.h"
 #include "RenderCommandList.h"
 #include "RenderCommandQueue.h"
-#include "Daydream/Scene/Scene.h"
 #include "Daydream/Graphics/Core/Camera.h"
 #include "Daydream/Graphics/Resources/Skybox.h"
 
 namespace Daydream
 {
+	class Scene;
 	class Renderer
 	{
 	public:
 		static constexpr UInt32 maxFramesInFlight = 3;
 		static constexpr UInt32 maxCommandListsInFlight = 2;
 
-		static void BeginFrameRendering() { renderContext->BeginFrameRendering(); }
-		static void EndFrameRendering() { renderContext->EndFrameRendering(); }
+		static void BeginCommandList() { renderContext->BeginCommandList(); }
+		static void EndCommandList() { renderContext->EndCommandList(); }
+
 
 		template<typename Func>
 		static void Record(Func&& _command)
@@ -37,7 +38,7 @@ namespace Daydream
 
 		static void BeginFrame(Swapchain* _swapchain);
 		static void EndFrame(Swapchain* _swapchain);
-		static void ExecuteSingleTimeCommands(FunctionPtr<void()> _func);
+		static void ExecuteSingleTimeCommand(FunctionPtr<void()> _func);
 
 		static void BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer); 
 		static void EndRenderPass(Shared<RenderPass> _renderPass); 

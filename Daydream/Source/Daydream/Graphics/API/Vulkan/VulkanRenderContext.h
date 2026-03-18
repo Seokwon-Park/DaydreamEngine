@@ -12,8 +12,8 @@ namespace Daydream
 		VulkanRenderContext(VulkanRenderDevice* _device, UInt32 _framesInFlight);
 		virtual ~VulkanRenderContext();
 
-		virtual void BeginFrameRendering() override;
-		virtual void EndFrameRendering() override;
+		virtual void BeginCommandList() override;
+		virtual void EndCommandList() override;
 		virtual void SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height) override;
 		virtual void SetClearColor(const Color& _color) override;
 		virtual void Clear() override;
@@ -35,9 +35,17 @@ namespace Daydream
 		virtual void CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel = 0) override;
 
 		virtual void GenerateMips(Shared<Texture> _texture) override;
+
+		virtual void SetActiveCommandList(Shared<RenderCommandList> _commandList) override;
+
 	private:
 		vk::CommandBuffer GetActiveCommandBuffer();
 		
 		VulkanRenderDevice* device;
+		vk::CommandBuffer activeCommandBuffer;
+
+		Array<vk::UniqueFence> waitFences;
+		Array<vk::UniqueCommandBuffer> commandBuffers;
+		UInt32 commandBufferIndex;
 	};
 }

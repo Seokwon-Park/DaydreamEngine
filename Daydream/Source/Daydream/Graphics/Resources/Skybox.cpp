@@ -26,11 +26,13 @@ namespace Daydream
 			cubeFaceConstantBuffers[i] = ConstantBuffer::Create(sizeof(Matrix4x4));
 			Matrix4x4 captureViewProjection = cubeFaceViewMatrices[i] * cubeFaceProjMatrix;
 			captureViewProjection.Transpose();
-				
+
 			captureViewProjections.push_back(cubeFaceViewMatrices[i] * cubeFaceProjMatrix);
 			captureViewProjections[i].Transpose();
 			cubeFaceConstantBuffers[i]->Update(&captureViewProjections[i], sizeof(Matrix4x4));
 		}
+
+
 	}
 
 	Skybox::~Skybox()
@@ -49,8 +51,10 @@ namespace Daydream
 
 	void Skybox::Init()
 	{
+
 		equirectangularRenderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
 		equirectangularPSO = ResourceManager::GetResource<PipelineState>("EquirectangularPSO");
+
 
 		// Resize Capture setup
 		resizeRenderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
@@ -58,6 +62,7 @@ namespace Daydream
 
 		irradianceRenderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
 		irradiancePSO = ResourceManager::GetResource<PipelineState>("IrradiancePSO");
+
 
 		prefilterPSO = ResourceManager::GetResource<PipelineState>("PrefilterPSO");
 		equirectangularDropTarget = AssetManager::GetAssetByPath<Texture2D>("Resource/NoTexture.png");

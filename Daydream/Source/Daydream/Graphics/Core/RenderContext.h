@@ -22,8 +22,8 @@ namespace Daydream
 	public:
 		virtual ~RenderContext() = default;
 				
-		virtual void BeginFrameRendering() = 0;
-		virtual void EndFrameRendering() {};
+		virtual void BeginCommandList() = 0;
+		virtual void EndCommandList() {};
 		virtual void SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height) = 0;
 		virtual void SetClearColor(const Color& _color) = 0;
 		virtual void Clear() = 0;
@@ -48,9 +48,10 @@ namespace Daydream
 
 		virtual void GenerateMips(Shared<Texture> _texture) {}
 
+		virtual void SetActiveCommandList(Shared<RenderCommandList> _commandList) {};
+
 		void BindMesh(Shared<Mesh> _mesh);
 		void BindMaterial(Shared<Material> _material);
-		void SetActiveCommandList(Shared<RenderCommandList> _commandList) { activeCommandList = _commandList; };
 		Shared<RenderCommandList> GetActiveCommandList() const { return activeCommandList; }
 	protected:
 		Shared<PipelineState> activePipelineState;
