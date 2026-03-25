@@ -7,7 +7,7 @@
 
 namespace Daydream
 {
-	class D3D12Texture2D : public Texture2D, public D3D12ResourceState
+	class D3D12Texture2D : public Texture2D
 	{
 	public:
 		D3D12Texture2D(D3D12RenderDevice* _device, const TextureDesc& _desc);

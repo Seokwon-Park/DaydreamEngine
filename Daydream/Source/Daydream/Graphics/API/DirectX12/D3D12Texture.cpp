@@ -26,8 +26,6 @@ namespace Daydream
 		textureDesc.Flags = GraphicsUtility::DirectX12::ConvertToD3D12BindFlags(desc.bindFlags);
 
 		texture = device->CreateTexture(textureDesc, D3D12_RESOURCE_STATE_COPY_DEST);
-		SetCurrentState(D3D12_RESOURCE_STATE_COPY_DEST);
-
 
 		if (GraphicsUtility::HasFlag(desc.bindFlags, RenderBindFlags::ShaderResource) && GraphicsUtility::HasFlag(desc.bindFlags, RenderBindFlags::DepthStencil))
 		{

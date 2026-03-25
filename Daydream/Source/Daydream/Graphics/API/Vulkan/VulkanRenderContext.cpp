@@ -11,7 +11,7 @@
 
 namespace Daydream
 {
-	VulkanRenderContext::VulkanRenderContext(VulkanRenderDevice* _device, UInt32 _framesInFlight)
+	VulkanRenderContext::VulkanRenderContext(VulkanRenderDevice* _device)
 	{
 		device = _device;
 
@@ -39,19 +39,19 @@ namespace Daydream
 	}
 	void VulkanRenderContext::BeginCommandList()
 	{
-		//activeCommandBuffer = commandBuffers[commandBufferIndex].get();
-		vk::Result result = device->GetDevice().waitForFences(1, &waitFences[commandBufferIndex].get(), VK_FALSE, UINT64_MAX);
-		result = device->GetDevice().resetFences(1, &waitFences[commandBufferIndex].get());
+		////activeCommandBuffer = commandBuffers[commandBufferIndex].get();
+		//vk::Result result = device->GetDevice().waitForFences(1, &waitFences[commandBufferIndex].get(), VK_FALSE, UINT64_MAX);
+		//result = device->GetDevice().resetFences(1, &waitFences[commandBufferIndex].get());
 
-		GetActiveCommandBuffer().reset({});
+		//GetActiveCommandBuffer().reset({});
 
-		vk::CommandBufferBeginInfo beginInfo{};
-		GetActiveCommandBuffer().begin(beginInfo);
+		//vk::CommandBufferBeginInfo beginInfo{};
+		//GetActiveCommandBuffer().begin(beginInfo);
 	}
 
 	void VulkanRenderContext::EndCommandList()
 	{
-		GetActiveCommandBuffer().end();
+		/*GetActiveCommandBuffer().end();
 
 		vk::SubmitInfo submitInfo{};
 		submitInfo.commandBufferCount = 1;
@@ -61,7 +61,7 @@ namespace Daydream
 
 		commandBufferIndex = (commandBufferIndex + 1) % 3;
 
-		device->GetGraphicsQueue().waitIdle();
+		device->GetGraphicsQueue().waitIdle();*/
 	}
 
 	void VulkanRenderContext::SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height)

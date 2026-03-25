@@ -9,7 +9,7 @@ namespace Daydream
 	class VulkanRenderContext : public RenderContext
 	{
 	public:
-		VulkanRenderContext(VulkanRenderDevice* _device, UInt32 _framesInFlight);
+		VulkanRenderContext(VulkanRenderDevice* _device);
 		virtual ~VulkanRenderContext();
 
 		virtual void BeginCommandList() override;
@@ -43,9 +43,5 @@ namespace Daydream
 		
 		VulkanRenderDevice* device;
 		vk::CommandBuffer activeCommandBuffer;
-
-		Array<vk::UniqueFence> waitFences;
-		Array<vk::UniqueCommandBuffer> commandBuffers;
-		UInt32 commandBufferIndex;
 	};
 }

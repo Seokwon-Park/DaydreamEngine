@@ -23,8 +23,6 @@ namespace Daydream
 		VulkanRenderDevice* device;
 		vk::UniqueShaderModule shader;
 		vk::ShaderStageFlagBits stageBit;
-
-
 		// Inherited via Shader
 	};
 }

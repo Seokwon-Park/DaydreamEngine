@@ -57,9 +57,14 @@ namespace Daydream
 	}
 
 
-	Unique<RenderContext> Daydream::OpenGLRenderDevice::CreateContext(UInt32 _framesInFlight)
+	Unique<RenderContext> Daydream::OpenGLRenderDevice::CreateContext()
 	{
 		return MakeUnique<OpenGLRenderContext>();
+	}
+
+	Shared<RenderCommandList> OpenGLRenderDevice::CreateRenderCommandList()
+	{
+		return MakeUnique<RenderCommandList>();
 	}
 
 	Shared<VertexBuffer> OpenGLRenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)

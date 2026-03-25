@@ -19,7 +19,7 @@ namespace Daydream
 	{
 		currentFramebuffer = static_cast<D3D12Framebuffer*>(_framebuffer.get());
 
-		for (auto tex : currentFramebuffer->GetColorAttachmentsRef())
+		/*for (auto tex : currentFramebuffer->GetColorAttachments())
 		{
 			device->TransitionResourceState(device->GetCommandList(), tex->GetID3D12Resource(), tex->GetCurrentState(),
 				D3D12_RESOURCE_STATE_RENDER_TARGET);
@@ -32,7 +32,7 @@ namespace Daydream
 			device->TransitionResourceState(device->GetCommandList(), dsv->GetID3D12Resource(), dsv->GetCurrentState(),
 				D3D12_RESOURCE_STATE_DEPTH_WRITE);
 			dsv->SetCurrentState(D3D12_RESOURCE_STATE_DEPTH_WRITE);
-		}
+		}*/
 
 		const Array<D3D12_CPU_DESCRIPTOR_HANDLE>& rtHandles = currentFramebuffer->GetRenderTargetHandles();
 		//

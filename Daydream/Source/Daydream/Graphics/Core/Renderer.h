@@ -16,6 +16,9 @@ namespace Daydream
 		static constexpr UInt32 maxFramesInFlight = 3;
 		static constexpr UInt32 maxCommandListsInFlight = 2;
 
+		static void SetRenderThreadEnabled(bool _enabled) { useRenderThread = _enabled; }
+		static bool IsRenderThreadEnabled() { return useRenderThread; }
+
 		static void BeginCommandList() { renderContext->BeginCommandList(); }
 		static void EndCommandList() { renderContext->EndCommandList(); }
 
@@ -72,6 +75,8 @@ namespace Daydream
 		static inline RenderCommandList* GetActiveCommandList() { return renderContext->GetActiveCommandList().get(); }
 	private:
 		Renderer() = default;
+
+		inline static bool useRenderThread = true;
 
 		inline static DaydreamWindow* currentWindow = nullptr;
 

@@ -7,7 +7,7 @@
 
 namespace Daydream
 {
-	class D3D12TextureCube : public TextureCube, public D3D12ResourceState
+	class D3D12TextureCube : public TextureCube
 	{
 	public:
 		// Constrcuter Destructer
@@ -23,7 +23,11 @@ namespace Daydream
 		ID3D12Resource* GetID3D12Resource() { return texture.Get(); }
 		inline D3D12_CPU_DESCRIPTOR_HANDLE GetSRVCPUHandle() { return srvCpuHandle; }
 		inline D3D12_GPU_DESCRIPTOR_HANDLE GetSRVGPUHandle() { return srvGpuHandle; }
-		//inline D3D12_CPU_DESCRIPTOR_HANDLE GetRTVCPUHandle() { return rtvCpuHandle; }
+		inline D3D12_CPU_DESCRIPTOR_HANDLE GetMipSRVCPUHandle(UInt32 _index) { return mipSrvCpuHandles[_index]; }
+		inline D3D12_GPU_DESCRIPTOR_HANDLE GetMipSRVGPUHandle(UInt32 _index) { return mipSrvGpuHandles[_index]; }
+
+		inline D3D12_CPU_DESCRIPTOR_HANDLE GetRTVCPUHandle(UInt32 _index) { return rtvCpuHandles[_index]; }
+
 		//inline const D3D12_CPU_DESCRIPTOR_HANDLE& GetDSVCPUHandle() { return dsvCpuHandle; }
 		inline D3D12_CPU_DESCRIPTOR_HANDLE GetUAVCPUHandle() { return uavCpuHandle; }
 		inline D3D12_GPU_DESCRIPTOR_HANDLE GetUAVGPUHandle() { return uavGpuHandle; }

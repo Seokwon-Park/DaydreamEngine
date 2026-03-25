@@ -91,7 +91,6 @@ namespace Daydream
 			{
 				if (data.shaderResourceType != ShaderResourceType::Input)
 				{
-					data.descriptorTableIndex = descriptorTableIndex++;
 					shaderBindingMap.insert({ data.name, data });
 					setCount = Math::Max(setCount, data.set+1);
 				}

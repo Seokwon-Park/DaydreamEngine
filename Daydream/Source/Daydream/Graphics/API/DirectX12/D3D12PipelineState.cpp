@@ -30,11 +30,11 @@ namespace Daydream
 			inputLayoutDesc.push_back(elementDesc);
 		}
 
-		UInt32 index = 0;
 		UInt64 resourceSize = shaderGroup->GetShaderBindingMap().size();
 		srvRanges.reserve(resourceSize);
 		samplerRanges.reserve(resourceSize);
 		
+		UInt32 index = 0;
 		for (auto [name, data] : shaderGroup->GetShaderBindingMap())
 		{
 			switch (data.shaderResourceType)
@@ -46,7 +46,7 @@ namespace Daydream
 				rootParam.Descriptor.ShaderRegister = data.binding;
 				rootParam.Descriptor.RegisterSpace = data.set;
 				rootParam.ShaderVisibility = GraphicsUtility::DirectX12::GetDX12ShaderVisibility(data.shaderType);
-				rootParameters.push_back(rootParam);
+				rootParameters.push_back(rootParam);				
 				break;
 			}
 
@@ -86,7 +86,10 @@ namespace Daydream
 				rootParameters.push_back(rootParam);
 				break;
 			}
+			default:
+				break;
 			}
+			descriptorTable[name] = rootParameters.size()-1;
 		}
 
 		D3D12_ROOT_DESCRIPTOR rootDescriptor;
@@ -238,6 +241,15 @@ namespace Daydream
 	{
 		device->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
 		device->GetCommandList()->SetPipelineState(pipeline.Get());
+	}
+	UInt32 D3D12PipelineState::GetDescriptorTableIndex(String _resourceName)
+	{
+		auto itr = descriptorTable.find(_resourceName);
+		if (itr == descriptorTable.end())
+		{
+			DAYDREAM_CORE_WARN("{} is not valid resource name", _resourceName);
+		}
+		return itr->second;
 	}
 	//Shared<Material> D3D12PipelineState::CreateMaterial()
 	//{

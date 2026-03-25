@@ -166,6 +166,10 @@
     <ClInclude Include="Source\Daydream\Event\Event.h" />
     <ClInclude Include="Source\Daydream\Event\KeyEvent.h" />
     <ClInclude Include="Source\Daydream\Event\MouseEvent.h" />
+    <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12RenderCommandList.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX\D3DUtility.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Buffer.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Common.h" />
@@ -770,6 +774,10 @@
     <ClCompile Include="Source\Daydream\Core\UUID.cpp" />
     <ClCompile Include="Source\Daydream\Core\Window.cpp" />
     <ClCompile Include="Source\Daydream\Core\WindowManager.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12RenderCommandList.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX\D3DUtility.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Buffer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Common.cpp" />

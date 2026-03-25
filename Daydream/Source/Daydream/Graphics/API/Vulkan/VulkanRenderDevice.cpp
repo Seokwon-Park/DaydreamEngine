@@ -149,9 +149,9 @@ namespace Daydream
 	{
 	}
 
-	Unique<RenderContext> Daydream::VulkanRenderDevice::CreateContext(UInt32 _framesInFlight)
+	Unique<RenderContext> VulkanRenderDevice::CreateContext()
 	{
-		return MakeUnique<VulkanRenderContext>(this, _framesInFlight);
+		return MakeUnique<VulkanRenderContext>(this);
 	}
 
 	Shared<RenderCommandList> VulkanRenderDevice::CreateRenderCommandList()

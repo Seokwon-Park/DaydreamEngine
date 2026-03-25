@@ -24,7 +24,7 @@ namespace Daydream
 		DAYDREAM_CORE_ASSERT(renderDevice, "Failed to create graphics device!");
 		renderDevice->Init();
 		imguiRenderer = renderDevice->CreateImGuiRenderer();
-		renderContext = renderDevice->CreateContext(Renderer::maxFramesInFlight);
+		renderContext = renderDevice->CreateContext();
 		skybox = MakeUnique<Skybox>();
 		commandQueues.resize(maxCommandListsInFlight);
 		for (auto& commandList : commandQueues)

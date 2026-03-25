@@ -16,7 +16,6 @@ namespace Daydream
 	{
 		UInt32 set; // or location
 		UInt32 binding;
-		UInt32 descriptorTableIndex; // DX12;
 		UInt32 count;
 		UInt64 size;
 		ShaderType shaderType;

@@ -49,18 +49,7 @@ namespace Daydream
 		swapChain1->QueryInterface(swapchain.GetAddressOf());
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create swapChain!");
 
-		commandLists.resize(_desc.bufferCount);
-		commandAllocators.resize(_desc.bufferCount);
-		for (UInt32 i = 0; i < _desc.bufferCount; i++)
-		{
-			HRESULT hr = device->GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(commandAllocators[i].GetAddressOf()));
-			DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create command allocator {0}", i);
-
-			hr = device->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocators[i].Get(), nullptr, IID_PPV_ARGS(commandLists[i].GetAddressOf()));
-			DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create commandlist");
-
-			commandLists[i]->Close();
-		}
+		commandLists.assign(_desc.bufferCount, MakeShared<D3D12RenderCommandList>(device));
 
 		RenderPassAttachmentDesc colorDesc;
 		colorDesc.format = _desc.format;
@@ -84,8 +73,7 @@ namespace Daydream
 		fenceValues.resize(_desc.bufferCount);
 		//fence가 0까지는 완료된 상태로 생성
 		hr = device->GetDevice()->CreateFence(fenceValues[frameIndex], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fence.GetAddressOf()));
-		//다음 펜스값은 1을 보내야함
-		fenceValues[frameIndex]++;
+		//fenceValues[frameIndex]++;
 		//fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
 		fenceEvent.Attach(CreateEventEx(nullptr, nullptr, 0, EVENT_MODIFY_STATE | SYNCHRONIZE));
 		if (fenceEvent == nullptr)
@@ -105,8 +93,6 @@ namespace Daydream
 	void D3D12Swapchain::Present()
 	{
 		swapchain->Present(desc.isVSync, 0);
-
-		MoveToNextFrame();
 	}
 	void D3D12Swapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
 	{
@@ -138,59 +124,17 @@ namespace Daydream
 
 	void D3D12Swapchain::BeginFrame()
 	{
-		device->SetCommandAlloc(commandAllocators[frameIndex]);
-		commandAllocators[frameIndex]->Reset();
-		device->SetCommandList(commandLists[frameIndex]);
-		device->GetCommandList()->Reset(commandAllocators[frameIndex].Get(), nullptr);
+		if (fence->GetCompletedValue() < fenceValues[frameIndex])
+		{
+			fence->SetEventOnCompletion(fenceValues[frameIndex], fenceEvent.Get());
+			WaitForSingleObjectEx(fenceEvent.Get(), INFINITE, FALSE);
+		}
 
-		ID3D12DescriptorHeap* heaps[] = { device->GetCBVSRVUAVHeap(), device->GetSamplerHeap() };
-		device->GetCommandList()->SetDescriptorHeaps(2, heaps);
+		currentCommandList = commandLists[frameIndex]->GetID3D12GraphicsCommandList();
+
+		commandLists[frameIndex]->Begin();
 
 		ResizeFramebuffers();
-
-		D3D12_RESOURCE_BARRIER barr{};
-		barr.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		barr.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barr.Transition.pResource = d3d12Backbuffers[frameIndex].Get();
-		barr.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-		barr.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-		device->GetCommandList()->ResourceBarrier(1, &barr);
-
-		const Array<D3D12_CPU_DESCRIPTOR_HANDLE>& rtHandles = framebuffers[frameIndex]->GetRenderTargetHandles();
-		Color clearColor = { 0.f,0.f,1.f,1.f };
-		for (auto rtHandle : rtHandles)
-		{
-			device->GetCommandList()->ClearRenderTargetView(rtHandle, clearColor.color, 0, nullptr);
-		}
-
-		if (framebuffers[frameIndex]->HasDepthAttachment())
-		{
-			device->GetCommandList()->ClearDepthStencilView(framebuffers[frameIndex]->GetDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
-			device->GetCommandList()->OMSetRenderTargets((UInt32)rtHandles.size(), rtHandles.data(), false, &framebuffers[frameIndex]->GetDepthStencilView());
-		}
-		else
-		{
-			device->GetCommandList()->OMSetRenderTargets((UInt32)rtHandles.size(), rtHandles.data(), false, nullptr);
-		}
-
-		D3D12_RECT rect;
-		rect.left = 0;
-		rect.top = 0;
-		rect.right = framebuffers[frameIndex]->GetWidth();
-		rect.bottom = framebuffers[frameIndex]->GetHeight();
-
-		device->GetCommandList()->RSSetScissorRects(1, &rect);
-
-		D3D12_VIEWPORT viewport = {};
-		viewport.Width = static_cast<float>(framebuffers[frameIndex]->GetWidth());
-		viewport.Height = static_cast<float>(framebuffers[frameIndex]->GetHeight());
-		viewport.MinDepth = 0.0f;
-		viewport.MaxDepth = 1.0f;
-		viewport.TopLeftX = 0;
-		viewport.TopLeftY = 0;
-
-		device->GetCommandList()->RSSetViewports(1, &viewport);
 	}
 
 	void D3D12Swapchain::EndFrame()
@@ -205,10 +149,15 @@ namespace Daydream
 		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 		device->GetCommandList()->ResourceBarrier(1, &barr);
 
-		device->GetCommandList()->Close();
+		commandLists[frameIndex]->End();
 
-		Array<ID3D12CommandList*> execCommandLists = { commandLists[frameIndex].Get() };
+		Array<ID3D12CommandList*> execCommandLists = { currentCommandList };
 		device->GetCommandQueue()->ExecuteCommandLists((UInt32)execCommandLists.size(), execCommandLists.data());
+
+		const UInt64 currentFenceValue = fenceValues[frameIndex] + 1;
+		device->GetCommandQueue()->Signal(fence.Get(), currentFenceValue);
+		frameIndex = swapchain->GetCurrentBackBufferIndex();
+		fenceValues[frameIndex] = currentFenceValue;
 	}
 
 	//모든 GPU작업이 끝날때까지 대기

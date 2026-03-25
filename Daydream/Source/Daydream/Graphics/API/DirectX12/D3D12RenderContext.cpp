@@ -1,27 +1,40 @@
 #include "DaydreamPCH.h"
 #include "D3D12RenderContext.h"
 
+#include "D3D12PipelineState.h"
+#include "D3D12Texture.h"
+#include "D3D12TextureCube.h"
+#include "D3D12Buffer.h"
+#include "D3D12Framebuffer.h"
+#include "Daydream/Graphics/Resources/Mesh.h"
+#include "Daydream/Graphics/Manager/ResourceManager.h"
+#include "Daydream/Graphics/Core/Renderer.h"
+
 namespace Daydream
 {
-	D3D12RenderContext::D3D12RenderContext(D3D12RenderDevice* _device, UInt32 _framesInFlight)
+	D3D12RenderContext::D3D12RenderContext(D3D12RenderDevice* _device)
 	{
 		device = _device;
-
-		commandLists.resize(_framesInFlight);
-		commandAllocators.resize(_framesInFlight);
-		for (UInt32 i = 0; i < _framesInFlight; i++)
-		{
-			HRESULT hr = device->GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(commandAllocators[i].GetAddressOf()));
-			DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create command allocator {0}", i);
-
-			hr = device->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocators[i].Get(), nullptr, IID_PPV_ARGS(commandLists[i].GetAddressOf()));
-			DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create commandlist");
-
-			commandLists[i]->Close();
-		}
 	}
 	void D3D12RenderContext::SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height)
 	{
+		D3D12_RECT rect;
+		rect.left = _x;
+		rect.top = _y;
+		rect.right = _width;
+		rect.bottom = _height;
+
+		GetD3D12ActiveCommandList()->RSSetScissorRects(1, &rect);
+
+		D3D12_VIEWPORT viewport = {};
+		viewport.Width = Cast<Float32>(_width);
+		viewport.Height = Cast<Float32>(_height);
+		viewport.MinDepth = 0.0f;
+		viewport.MaxDepth = 1.0f;
+		viewport.TopLeftX = _x;
+		viewport.TopLeftY = _y;
+
+		GetD3D12ActiveCommandList()->RSSetViewports(1, &viewport);
 	}
 	void D3D12RenderContext::SetClearColor(const Color& _color)
 	{
@@ -33,18 +46,55 @@ namespace Daydream
 
 	void D3D12RenderContext::DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex)
 	{
-		device->GetCommandList()->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		device->GetCommandList()->DrawIndexedInstanced(_indexCount, 1, _startIndex, _baseVertex, 0);
-		//device->GetCommandList()->DrawInstanced(3, 1, 0, 0);
+		GetD3D12ActiveCommandList()->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		GetD3D12ActiveCommandList()->DrawIndexedInstanced(_indexCount, 1, _startIndex, _baseVertex, 0);
+		//GetD3D12ActiveCommandList()->DrawInstanced(3, 1, 0, 0);
 	}
 	void D3D12RenderContext::BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer)
 	{
+		Shared<D3D12Framebuffer> currentFramebuffer = SharedCast<D3D12Framebuffer>(_framebuffer);
+		Shared<D3D12RenderPass> renderPass = SharedCast<D3D12RenderPass>(_renderPass);
+		for (Shared<D3D12Texture2D> texture : currentFramebuffer->GetColorAttachments())
+		{
+		}
+
+		if (currentFramebuffer->HasDepthAttachment())
+		{
+			auto depthStencilView = currentFramebuffer->GetDepthAttachment();
+			//device->TransitionResourceState(GetD3D12ActiveCommandList(), dsv->GetID3D12Resource(), dsv->GetCurrentState(), D3D12_RESOURCE_STATE_DEPTH_WRITE);
+		}
+
+
+		const Array<D3D12_CPU_DESCRIPTOR_HANDLE>& rtHandles = currentFramebuffer->GetRenderTargetHandles();
+		for (auto rtHandle : rtHandles)
+		{
+			GetD3D12ActiveCommandList()->ClearRenderTargetView(rtHandle, _renderPass->GetClearColor().color, 0, nullptr);
+		}
+
+		if (currentFramebuffer->HasDepthAttachment())
+		{
+			GetD3D12ActiveCommandList()->ClearDepthStencilView(currentFramebuffer->GetDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
+			GetD3D12ActiveCommandList()->OMSetRenderTargets((UInt32)rtHandles.size(), rtHandles.data(), false, &currentFramebuffer->GetDepthStencilView());
+		}
+		else
+		{
+			GetD3D12ActiveCommandList()->OMSetRenderTargets((UInt32)rtHandles.size(), rtHandles.data(), false, nullptr);
+		}
+
+		SetViewport(0, 0, currentFramebuffer->GetWidth(), currentFramebuffer->GetHeight());
 	}
+
 	void D3D12RenderContext::EndRenderPass(Shared<RenderPass> _renderPass)
 	{
+		//??
 	}
 	void D3D12RenderContext::BindPipelineState(Shared<PipelineState> _pipelineState)
 	{
+		RenderContext::BindPipelineState(_pipelineState);
+		Shared<D3D12PipelineState> d3d12PipelineState = SharedCast<D3D12PipelineState>(_pipelineState);
+
+		GetD3D12ActiveCommandList()->SetGraphicsRootSignature(d3d12PipelineState->GetID3D12RootSignature());
+		GetD3D12ActiveCommandList()->SetPipelineState(d3d12PipelineState->GetID3D12PipelineState());
 	}
 	void D3D12RenderContext::BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer)
 	{
@@ -54,20 +104,126 @@ namespace Daydream
 	}
 	void D3D12RenderContext::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
 	{
+		if (_texture == nullptr) return;
+		RenderContext::SetTexture2D(_name, _texture);
+		D3D12PipelineState* d3d12PipelineState = Cast<D3D12PipelineState*>(activePipelineState.get());
+		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
+		if (resourceInfo == nullptr) return;
+		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
+		Shared<D3D12Texture2D> d3d12Tex = SharedCast<D3D12Texture2D>(_texture);
+		GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex(_name), d3d12Tex->GetSRVGPUHandle());
+		String samplerName = _name + "Sampler";
+		const ShaderReflectionData* samplerInfo = activePipelineState->GetBindingInfo(samplerName);
+		GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex(samplerName), d3d12Tex->GetSamplerHandle());
 	}
 	void D3D12RenderContext::SetTextureCube(const String& _name, Shared<TextureCube> _textureCube)
 	{
+		if (_textureCube == nullptr) return;
+		D3D12PipelineState* d3d12PipelineState = Cast<D3D12PipelineState*>(activePipelineState.get());
+		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
+		if (resourceInfo == nullptr) return;
+
+		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
+		Shared<D3D12TextureCube> d3d12Tex = SharedCast<D3D12TextureCube>(_textureCube);
+		GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex(_name), d3d12Tex->GetSRVGPUHandle());
+		String samplerName = _name + "Sampler";
+		const ShaderReflectionData* samplerInfo = activePipelineState->GetBindingInfo(_name);
+		GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex(samplerName), d3d12Tex->GetSamplerHandle());
 	}
 	void D3D12RenderContext::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
 	{
+		if (_buffer == nullptr) return;
+		D3D12PipelineState* d3d12PipelineState = Cast<D3D12PipelineState*>(activePipelineState.get());
+		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
+		if (resourceInfo == nullptr) return;
+		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
+		Shared<D3D12ConstantBuffer> d3d12Buffer = SharedCast<D3D12ConstantBuffer>(_buffer);
+		GetD3D12ActiveCommandList()->SetGraphicsRootConstantBufferView(d3d12PipelineState->GetDescriptorTableIndex(_name), d3d12Buffer->GetGPUVirtualAddress());
 	}
 	void D3D12RenderContext::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
 	{
+		//D3D12Texture2D* src = (D3D12Texture2D*)_src.get();
+		//D3D12Texture2D* dst = (D3D12Texture2D*)_dst.get();
+		//D3D12_RESOURCE_BARRIER barrier = {};
+		//barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		//barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		//barrier.Transition.pResource = src->GetID3D12Resource();
+		//barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		//barrier.Transition.StateBefore = _stateBefore;
+		//barrier.Transition.StateAfter = _stateAfter;
+		//GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
+		//GetD3D12ActiveCommandList()->CopyResource(dst->GetID3D12Resource(), src->GetID3D12Resource());
 	}
 	void D3D12RenderContext::CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel)
 	{
 	}
 	void D3D12RenderContext::GenerateMips(Shared<Texture> _texture)
 	{
+		//device->TransitionResourceState(GetD3D12ActiveCommandList(), texture.Get(), GetCurrentState(), D3D12_RESOURCE_STATE_RENDER_TARGET);
+		//SetCurrentState(D3D12_RESOURCE_STATE_RENDER_TARGET);
+		//float color[4] = { 1,1,1,1 };
+		//for (UInt32 mip = 1; mip < mipLevels; mip++)
+		//{
+		//	for (UInt32 face = 0; face < 6; face++)
+		//	{
+		//		GetD3D12ActiveCommandList()->ClearRenderTargetView(rtvCpuHandles[mip*6+face], color, 0, nullptr);
+		//	}
+		//}
+
+		D3D12TextureCube* d3d12Tex = Cast<D3D12TextureCube*>(_texture.get());
+
+		UInt32 mipLevels = _texture->GetMipLevels();
+		for (UInt32 mip = 1; mip < mipLevels; mip++)
+		{
+			for (UInt32 face = 0; face < 6; face++)
+			{
+				UInt32 index = mipLevels * face + mip;
+
+				auto resizePSO = ResourceManager::GetResource<PipelineState>("GenerateMipsPSO");
+				auto quadMesh = ResourceManager::GetResource<Mesh>("Quad");
+
+				D3D12_RECT rect;
+				rect.left = 0;
+				rect.top = 0;
+				rect.right = std::max(1U, _texture->GetWidth() >> mip);
+				rect.bottom = std::max(1U, _texture->GetHeight() >> mip);
+
+				GetD3D12ActiveCommandList()->RSSetScissorRects(1, &rect);
+
+				D3D12_VIEWPORT viewport = {};
+				viewport.Width = Cast<Float32>(std::max(1U, _texture->GetWidth() >> mip));
+				viewport.Height = Cast<Float32>(std::max(1U, _texture->GetHeight() >> mip));
+				viewport.MinDepth = 0.0f;
+				viewport.MaxDepth = 1.0f;
+				viewport.TopLeftX = 0;
+				viewport.TopLeftY = 0;
+
+				GetD3D12ActiveCommandList()->RSSetViewports(1, &viewport);
+
+				float color[4] = { 0,0,1,1 };
+
+				//device->TransitionResourceState(GetD3D12ActiveCommandList(), texture.Get(), GetCurrentState(), D3D12_RESOURCE_STATE_RENDER_TARGET);
+				//SetCurrentState(D3D12_RESOURCE_STATE_RENDER_TARGET);
+				Renderer::BindPipelineState(resizePSO);
+				D3D12PipelineState* d3d12PipelineState = Cast<D3D12PipelineState*>(activePipelineState.get());
+				GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex("Texture"), d3d12Tex->GetMipSRVGPUHandle(mipLevels * face + mip - 1));
+				GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex("TextureSampler"), d3d12Tex->GetSamplerHandle());
+				Renderer::BindMesh(quadMesh);
+				GetD3D12ActiveCommandList()->ClearRenderTargetView(d3d12Tex->GetRTVCPUHandle(index), color, 0, nullptr);
+				auto handle = d3d12Tex->GetRTVCPUHandle(index);
+				GetD3D12ActiveCommandList()->OMSetRenderTargets(1, &handle, false, nullptr);
+
+				GetD3D12ActiveCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+				GetD3D12ActiveCommandList()->DrawIndexedInstanced(quadMesh->GetIndexCount(), 1, 0, 0, 0);
+				//resizeRenderPass->End();
+				//device->TransitionResourceState(GetD3D12ActiveCommandList(), texture.Get(), GetCurrentState(), D3D12_RESOURCE_STATE_COMMON);
+				//SetCurrentState(D3D12_RESOURCE_STATE_COMMON);
+			}
+		}
+	}
+	void D3D12RenderContext::SetActiveCommandList(Shared<RenderCommandList> _commandList)
+	{
+		activeCommandList = _commandList;
+		activeD3D12CommandList = SharedCast<D3D12RenderCommandList>(_commandList)->GetID3D12GraphicsCommandList();
 	}
 }

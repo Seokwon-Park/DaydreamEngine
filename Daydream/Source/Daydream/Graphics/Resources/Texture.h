@@ -37,7 +37,6 @@ namespace Daydream
 		UInt32 GetMipLevels() const { return desc.mipLevels; }
 		virtual UInt32 GetLayerCount() const = 0;
 
-
 		virtual void SetSampler(Shared<Sampler> _sampler) = 0;
 		virtual bool HasSampler() = 0;
 

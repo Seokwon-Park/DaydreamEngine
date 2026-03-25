@@ -3,6 +3,7 @@
 #include "Daydream/Graphics/Core/Swapchain.h"
 #include "D3D12RenderDevice.h"
 #include "D3D12Framebuffer.h"
+#include "D3D12RenderCommandList.h"
 
 
 namespace Daydream
@@ -21,7 +22,7 @@ namespace Daydream
 		virtual void EndFrame() override;
 
 		virtual Shared<Framebuffer> GetCurrentFramebuffer()const { return framebuffers[frameIndex]; };
-		virtual Shared<RenderCommandList> GetCurrentCommandList() const { return nullptr; };
+		virtual Shared<RenderCommandList> GetCurrentCommandList() const { return commandLists[frameIndex]; };
 
 
 		void WaitForGPU();
@@ -35,8 +36,10 @@ namespace Daydream
 		ComPtr<IDXGISwapChain3> swapchain;
 		Array<Shared<D3D12Framebuffer>> framebuffers;
 		Array<Shared<D3D12Framebuffer>> oldFramebuffers;
-		Array<ComPtr<ID3D12GraphicsCommandList>> commandLists;
-		Array<ComPtr<ID3D12CommandAllocator>> commandAllocators;
+		Array<Shared<D3D12RenderCommandList>> commandLists;
+		ID3D12GraphicsCommandList* currentCommandList;
+		//Array<ComPtr<ID3D12GraphicsCommandList>> commandLists;
+		//Array<ComPtr<ID3D12CommandAllocator>> commandAllocators;
 
 		Int32 frameIndex = 0;
 		UInt32 bufferCount = 0;
@@ -45,7 +48,7 @@ namespace Daydream
 		Array<ComPtr<ID3D12Resource>> d3d12Backbuffers;
 
 		ComPtr<ID3D12Fence> fence;
-		Array<UINT64> fenceValues;
+		Array<UInt64> fenceValues;
 		Wrappers::Event fenceEvent;
 
 		HWND windowHandle;

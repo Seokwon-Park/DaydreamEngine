@@ -140,9 +140,13 @@ namespace Daydream
 	}
 
 
-	Unique<RenderContext> Daydream::D3D11RenderDevice::CreateContext(UInt32 _framesInFlight)
+	Unique<RenderContext> D3D11RenderDevice::CreateContext()
 	{
 		return MakeUnique<D3D11RenderContext>(this);
+	}
+	Shared<RenderCommandList> D3D11RenderDevice::CreateRenderCommandList()
+	{
+		return MakeShared<RenderCommandList>();
 	}
 	Shared<VertexBuffer> D3D11RenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
 	{

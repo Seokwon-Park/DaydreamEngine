@@ -163,26 +163,15 @@ namespace Daydream
 
 	void VulkanSwapchain::BeginFrame()
 	{
-
-		//이전 프레임의 GPU 작업 완료됐다는 신호를 inFlightFence로 받기로 하고 대기
-		auto fence = commandLists[currentFrame]->GetVkFence();
-		auto result = device->GetDevice().waitForFences(1, &fence, VK_FALSE, UINT64_MAX);
-
-		result = device->GetDevice().resetFences(1, &fence);
+		currentCommandBuffer = commandLists[currentFrame]->GetVkCommandBuffer();
+		commandLists[currentFrame]->Begin();
 
 		//이미지를 GPU에 요청. 사용가능한 이미지의 인덱스를 imageIndex로 전달하고 imageAvailableSemaphore에 신호를 전달하라는 명령
-		result = device->GetDevice().acquireNextImageKHR(swapchain.get(), UINT64_MAX, imageAvailableSemaphores[currentFrame].get(), VK_NULL_HANDLE, &imageIndex);
+		auto result = device->GetDevice().acquireNextImageKHR(swapchain.get(), UINT64_MAX, imageAvailableSemaphores[currentFrame].get(), VK_NULL_HANDLE, &imageIndex);
 		if (result == vk::Result::eErrorOutOfDateKHR)
 		{
 			RecreateSwapchain();
 		}
-
-		currentCommandBuffer = commandLists[currentFrame]->GetVkCommandBuffer();
-		device->SetCommandBuffer(currentCommandBuffer);
-		currentCommandBuffer.reset({});
-
-		vk::CommandBufferBeginInfo beginInfo{};
-		currentCommandBuffer.begin(beginInfo);
 
 		ResizeFramebuffers();
 

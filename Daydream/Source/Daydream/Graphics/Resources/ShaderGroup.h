@@ -48,7 +48,7 @@ _pixelShaderPath);
 		UInt32 setCount = 0;
 
 		Shared<Shader> vertexShader = nullptr;
-		Shared<Shader> hullShader = nullptr;
+		Shared<Shader> hullShader = nullptr; 
 		Shared<Shader> domainShader = nullptr;
 		Shared<Shader> geometryShader = nullptr;
 		Shared<Shader> pixelShader = nullptr;

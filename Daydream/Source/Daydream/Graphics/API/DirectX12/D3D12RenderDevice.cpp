@@ -236,9 +236,14 @@ namespace Daydream
 	{
 	}
 
-	Unique<RenderContext> D3D12RenderDevice::CreateContext(UInt32 _framesInFlight)
+	Unique<RenderContext> D3D12RenderDevice::CreateContext()
 	{
-		return MakeUnique<D3D12RenderContext>(this, _framesInFlight);
+		return MakeUnique<D3D12RenderContext>(this);
+	}
+
+	Shared<RenderCommandList> D3D12RenderDevice::CreateRenderCommandList()
+	{
+		return MakeShared<D3D12RenderCommandList>(this);
 	}
 
 	Shared<VertexBuffer> D3D12RenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
@@ -368,6 +373,16 @@ namespace Daydream
 			uploadBuffer->SetName(L"Check");
 
 			CopyBufferToImage(uploadBuffer.Get(), texture->GetID3D12Resource(), { placedFootprint });
+
+			D3D12_RESOURCE_BARRIER barrier = {};
+			barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+			barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+			barrier.Transition.pResource = texture->GetID3D12Resource();
+			barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+			barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+			barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COMMON;
+			TransitionResourceStateImmediate(barrier);
+
 		}
 
 
@@ -449,13 +464,13 @@ namespace Daydream
 
 	void D3D12RenderDevice::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
 	{
-		D3D12Texture2D* src = (D3D12Texture2D*)_src.get();
-		D3D12Texture2D* dst = (D3D12Texture2D*)_dst.get();
-		TransitionResourceState(commandList.Get(), src->GetID3D12Resource(), src->GetCurrentState(),
-			D3D12_RESOURCE_STATE_COPY_SOURCE);
-		src->SetCurrentState(D3D12_RESOURCE_STATE_COPY_SOURCE);
-		commandList->CopyResource(dst->GetID3D12Resource(), src->GetID3D12Resource());
-		dst->SetCurrentState(D3D12_RESOURCE_STATE_COPY_DEST);
+		//D3D12Texture2D* src = (D3D12Texture2D*)_src.get();
+		//D3D12Texture2D* dst = (D3D12Texture2D*)_dst.get();
+		//TransitionResourceState(commandList.Get(), src->GetID3D12Resource(), src->GetCurrentState(),
+		//	D3D12_RESOURCE_STATE_COPY_SOURCE);
+		//src->SetCurrentState(D3D12_RESOURCE_STATE_COPY_SOURCE);
+		//commandList->CopyResource(dst->GetID3D12Resource(), src->GetID3D12Resource());
+		//dst->SetCurrentState(D3D12_RESOURCE_STATE_COPY_DEST);
 	}
 
 	void Daydream::D3D12RenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel)
@@ -465,38 +480,38 @@ namespace Daydream
 		//TransitionResourceState(commandList.Get(), _dstCubemap, D3D12_RESOURCE_STATE_COPY_SOURCE,
 		//	D3D12_RESOURCE_STATE_COPY_DEST);
 
-		D3D12Texture2D* src = (D3D12Texture2D*)_srcTexture2D;
+		//D3D12Texture2D* src = (D3D12Texture2D*)_srcTexture2D;
 
-		D3D12TextureCube* dst = (D3D12TextureCube*)_dstCubemap;
-		
+		//D3D12TextureCube* dst = (D3D12TextureCube*)_dstCubemap;
 
-		TransitionResourceState(commandList.Get(), src->GetID3D12Resource(), src->GetCurrentState(),
-			D3D12_RESOURCE_STATE_COPY_SOURCE);
-		src->SetCurrentState(D3D12_RESOURCE_STATE_COPY_SOURCE);
-		TransitionResourceState(commandList.Get(), dst->GetID3D12Resource(), dst->GetCurrentState(),
-			D3D12_RESOURCE_STATE_COPY_DEST);
-		dst->SetCurrentState(D3D12_RESOURCE_STATE_COPY_DEST);
 
-		D3D12_TEXTURE_COPY_LOCATION srcLocation = {};
-		srcLocation.pResource = src->GetID3D12Resource();
-		srcLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
-		srcLocation.SubresourceIndex = 0; 
+		//TransitionResourceState(commandList.Get(), src->GetID3D12Resource(), src->GetCurrentState(),
+		//	D3D12_RESOURCE_STATE_COPY_SOURCE);
+		//src->SetCurrentState(D3D12_RESOURCE_STATE_COPY_SOURCE);
+		//TransitionResourceState(commandList.Get(), dst->GetID3D12Resource(), dst->GetCurrentState(),
+		//	D3D12_RESOURCE_STATE_COPY_DEST);
+		//dst->SetCurrentState(D3D12_RESOURCE_STATE_COPY_DEST);
 
-		D3D12_TEXTURE_COPY_LOCATION dstLocation = {};
-		dstLocation.pResource = dst->GetID3D12Resource();
-		dstLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
-		// 핵심: faceIndex를 사용하여 큐브맵의 특정 면을 Subresource로 지정합니다.
-		dstLocation.SubresourceIndex = _mipLevel + _faceIndex * dst->GetMipLevels();
+		//D3D12_TEXTURE_COPY_LOCATION srcLocation = {};
+		//srcLocation.pResource = src->GetID3D12Resource();
+		//srcLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+		//srcLocation.SubresourceIndex = 0;
 
-		// 3. 복사 명령을 기록합니다.
-		commandList->CopyTextureRegion(&dstLocation, 0, 0, 0, &srcLocation, nullptr);
+		//D3D12_TEXTURE_COPY_LOCATION dstLocation = {};
+		//dstLocation.pResource = dst->GetID3D12Resource();
+		//dstLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+		//// 핵심: faceIndex를 사용하여 큐브맵의 특정 면을 Subresource로 지정합니다.
+		//dstLocation.SubresourceIndex = _mipLevel + _faceIndex * dst->GetMipLevels();
 
-		TransitionResourceState(commandList.Get(), src->GetID3D12Resource(), src->GetCurrentState(),
-			D3D12_RESOURCE_STATE_COMMON);
-		src->SetCurrentState(D3D12_RESOURCE_STATE_COMMON);
-		TransitionResourceState(commandList.Get(), dst->GetID3D12Resource(), dst->GetCurrentState(),
-			D3D12_RESOURCE_STATE_COMMON);
-		dst->SetCurrentState(D3D12_RESOURCE_STATE_COMMON);
+		//// 3. 복사 명령을 기록합니다.
+		//commandList->CopyTextureRegion(&dstLocation, 0, 0, 0, &srcLocation, nullptr);
+
+		//TransitionResourceState(commandList.Get(), src->GetID3D12Resource(), src->GetCurrentState(),
+		//	D3D12_RESOURCE_STATE_COMMON);
+		//src->SetCurrentState(D3D12_RESOURCE_STATE_COMMON);
+		//TransitionResourceState(commandList.Get(), dst->GetID3D12Resource(), dst->GetCurrentState(),
+		//	D3D12_RESOURCE_STATE_COMMON);
+		//dst->SetCurrentState(D3D12_RESOURCE_STATE_COMMON);
 	}
 
 

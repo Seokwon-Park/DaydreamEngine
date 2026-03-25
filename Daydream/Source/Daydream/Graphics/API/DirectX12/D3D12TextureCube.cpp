@@ -32,7 +32,6 @@ namespace Daydream
 		textureDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
 
 		texture = device->CreateTexture(textureDesc, D3D12_RESOURCE_STATE_COPY_DEST);
-		SetCurrentState(D3D12_RESOURCE_STATE_COPY_DEST);
 
 		//D3D12_SAMPLER_DESC samplerDesc = {};
 		//samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; // 선형 필터링
@@ -87,7 +86,7 @@ namespace Daydream
 
 					srvDesc.Format = format;
 					srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-
+					
 					// [핵심 1] 뷰 차원을 2D가 아닌 2D_ARRAY로 지정
 					srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DARRAY;
 
@@ -133,74 +132,7 @@ namespace Daydream
 	}
 	void D3D12TextureCube::GenerateMips()
 	{
-		//device->TransitionResourceState(device->GetCommandList(), texture.Get(), GetCurrentState(), D3D12_RESOURCE_STATE_RENDER_TARGET);
-		//SetCurrentState(D3D12_RESOURCE_STATE_RENDER_TARGET);
-		//float color[4] = { 1,1,1,1 };
-		//for (UInt32 mip = 1; mip < mipLevels; mip++)
-		//{
-		//	for (UInt32 face = 0; face < 6; face++)
-		//	{
-		//		device->GetCommandList()->ClearRenderTargetView(rtvCpuHandles[mip*6+face], color, 0, nullptr);
-		//	}
-		//}
-
-		UInt32 mipLevels = desc.mipLevels;
-		for (UInt32 mip = 1; mip < mipLevels; mip++)
-		{
-			for (UInt32 face = 0; face < 6; face++)
-			{
-				UInt32 index = mipLevels * face + mip;
-
-				//auto resizeRenderPass = ResourceManager::GetResource<RenderPass>("MipmapRenderPass");
-				auto resizePSO = ResourceManager::GetResource<PipelineState>("GenerateMipsPSO");
-				auto quadMesh = ResourceManager::GetResource<Mesh>("Quad");
-
-				////TextureDesc textureDesc{};
-				////textureDesc.width = fbDesc.width;
-				////textureDesc.height = fbDesc.height;
-				////textureDesc.bindFlags = Daydream::RenderBindFlags::ShaderResource;
-				////textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;c
-
-				//
-				//resizeMaterial->SetTexture2D("Texture", textures[face]);
-				//resizeMaterial->SetConstantBuffer("Camera", cubeFaceConstantBuffers[face]);
-
-				D3D12_RECT rect;
-				rect.left = 0;
-				rect.top = 0;
-				rect.right = std::max(1U, desc.width >> mip);
-				rect.bottom = std::max(1U, desc.height >> mip);
-
-				device->GetCommandList()->RSSetScissorRects(1, &rect);
-
-				D3D12_VIEWPORT viewport = {};
-				viewport.Width = (Float32)std::max(1U, desc.width >> mip);
-				viewport.Height = (Float32)std::max(1U, desc.height >> mip);
-				viewport.MinDepth = 0.0f;
-				viewport.MaxDepth = 1.0f;
-				viewport.TopLeftX = 0;
-				viewport.TopLeftY = 0;
-
-				device->GetCommandList()->RSSetViewports(1, &viewport);
-
-				float color[4] = { 0,0,1,1 };
-
-				device->TransitionResourceState(device->GetCommandList(), texture.Get(), GetCurrentState(), D3D12_RESOURCE_STATE_RENDER_TARGET);
-				SetCurrentState(D3D12_RESOURCE_STATE_RENDER_TARGET);
-				resizePSO->Bind();
-				device->GetCommandList()->SetGraphicsRootDescriptorTable(1, mipSrvGpuHandles[mipLevels * face + mip - 1]);
-				device->GetCommandList()->SetGraphicsRootDescriptorTable(0, textureSampler->GetSamplerHandle());
-				quadMesh->Bind();
-				device->GetCommandList()->ClearRenderTargetView(rtvCpuHandles[index], color, 0, nullptr);
-				device->GetCommandList()->OMSetRenderTargets(1, &rtvCpuHandles[index], false, nullptr);
-
-				device->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-				device->GetCommandList()->DrawIndexedInstanced(quadMesh->GetIndexCount(), 1, 0, 0, 0);
-				//resizeRenderPass->End();
-				device->TransitionResourceState(device->GetCommandList(), texture.Get(), GetCurrentState(), D3D12_RESOURCE_STATE_COMMON);
-				SetCurrentState(D3D12_RESOURCE_STATE_COMMON);
-			}
-		}
+		
 	}
 }
 

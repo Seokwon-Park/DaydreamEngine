@@ -16,12 +16,17 @@ namespace Daydream
 		virtual void Bind() const override;
 		//virtual Shared<Material> CreateMaterial() override;
 
+		ID3D12RootSignature* GetID3D12RootSignature() const { return rootSignature.Get(); }
+		ID3D12PipelineState* GetID3D12PipelineState() const { return pipeline.Get(); }
+		UInt32 GetDescriptorTableIndex(String _resourceName);
 	protected:
-
+		 
 	private:
 		D3D12RenderDevice* device;
 		ComPtr<ID3D12RootSignature> rootSignature;
 		ComPtr<ID3D12PipelineState> pipeline;
+
+		HashMap<String, UInt32> descriptorTable;
 
 		Array<D3D12_ROOT_PARAMETER> rootParameters;
 		Array<D3D12_DESCRIPTOR_RANGE> srvRanges;
