@@ -43,6 +43,7 @@ namespace Daydream
 
 		Int32 frameIndex = 0;
 		UInt32 bufferCount = 0;
+		UInt64 currentFenceValue = 0;
 		DXGI_FORMAT format;
 
 		Array<ComPtr<ID3D12Resource>> d3d12Backbuffers;

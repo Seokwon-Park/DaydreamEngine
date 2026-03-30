@@ -6,7 +6,6 @@
 
 namespace Daydream
 {
-
 	// Texture
 	enum class TextureType {
 		Unknown,
@@ -24,7 +23,6 @@ namespace Daydream
 		RenderBindFlags bindFlags;
 		TextureType type = TextureType::Unknown;
 	};
-
 
 	class Texture : public Asset
 	{
@@ -54,7 +52,6 @@ namespace Daydream
 	public:
 		Texture2D(const TextureDesc& _desc);
 		virtual ~Texture2D() = default;
-
 		
 		virtual UInt32 GetLayerCount() const { return 1; }
 

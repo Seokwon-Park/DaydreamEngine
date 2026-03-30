@@ -14,7 +14,6 @@ namespace Daydream
 	{
 	public:
 		D3D11Framebuffer(D3D11RenderDevice* _device, RenderPass* _renderPass, const FramebufferDesc& _desc);
-		void CreateAttachments();
 		D3D11Framebuffer(D3D11RenderDevice* _device, RenderPass* _renderPass, D3D11Swapchain* _swapChain);
 		virtual ~D3D11Framebuffer() override;
 
@@ -25,7 +24,7 @@ namespace Daydream
 		virtual UInt32 ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY) override;
 		//virtual Shared<Texture2D> GetDepthAttachemntTexture(UInt32 _index) override;
 
-
+		void CreateAttachments();
 		Array<ID3D11RenderTargetView*> GetRenderTargetViews() { return renderTargetViews; }
 		ID3D11DepthStencilView* GetDepthStencilView() { return depthAttachment->GetDSV(); }
 
@@ -38,6 +37,5 @@ namespace Daydream
 
 		Shared<D3D11Texture2D> entityTexture = 0;
 		ComPtr<ID3D11Texture2D> readTexture;
-
 	};
 }

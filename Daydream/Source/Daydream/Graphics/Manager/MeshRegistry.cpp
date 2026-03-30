@@ -27,7 +27,7 @@ namespace Daydream
 
 		auto meshData = MeshGenerator::CreateCube();
 		Array<Vector3> positions;
-		for (Vertex v : meshData.vertices)
+		for (const Vertex& v : meshData.vertices)
 		{
 			positions.push_back(v.position);
 		}

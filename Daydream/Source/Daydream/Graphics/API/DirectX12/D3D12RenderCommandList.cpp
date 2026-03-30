@@ -33,6 +33,18 @@ namespace Daydream
 	}
 	void D3D12RenderCommandList::WaitForCompletion()
 	{
+		Array<ID3D12CommandList*> execCommandLists = { commandList.Get() };
+		device->GetCommandQueue()->ExecuteCommandLists((UInt32)execCommandLists.size(), execCommandLists.data());
+
+		// 5. Fence를 사용하여 작업이 완료될 때까지 대기
+		uploadFenceValue++;
+		commandQueue->Signal(uploadFence.Get(), uploadFenceValue);
+
+		if (uploadFence->GetCompletedValue() < uploadFenceValue)
+		{
+			uploadFence->SetEventOnCompletion(uploadFenceValue, uploadFenceEvent);
+			WaitForSingleObject(uploadFenceEvent, INFINITE);
+		}
 	}
 }
 

@@ -19,9 +19,6 @@ namespace Daydream
 			return;
 		}
 
-		const Array<String> supportedExtensions = { ".hlsl" , /* ".frag", ".vert" , ".spv" */};
-
-		// 디렉토리 순회
 		for (const FileSystem::directory_entry& entry : FileSystem::directory_iterator(_directory))
 		{
 			if (entry.is_regular_file())

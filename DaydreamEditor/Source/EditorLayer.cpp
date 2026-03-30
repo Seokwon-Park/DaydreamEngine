@@ -82,8 +82,8 @@ namespace Daydream
 
 		maskFramebuffer = Framebuffer::Create(maskRenderPass, fbDesc);
 
-		fbDesc.width = 4096;
-		fbDesc.height = 4096;
+		fbDesc.width = 1024;
+		fbDesc.height = 1024;
 		depthFramebuffer = Framebuffer::Create(depthRenderPass, fbDesc);
 
 		pso = ResourceManager::GetResource<PipelineState>("SpritePSO");
@@ -326,12 +326,7 @@ namespace Daydream
 		CreateDockspace();
 
 		ImGui::Begin("Test");
-		//static int index = 0;
-		//if (ImGui::Button("Position"))index = 0;
-		//if (ImGui::Button("Normal"))index = 1;
-		//if (ImGui::Button("Albedo"))index = 2;
-		//if (ImGui::Button("AORM"))index = 3;
-		ImGui::Image(AssetManager::GetAssetByPath<Texture2D>("Resource/skybox.hdr")->GetImGuiHandle(), ImVec2{ 100,100 });
+		ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
 
 		ImGui::Image((ImTextureID)depthFramebuffer->GetDepthAttachmentTexture()->GetImGuiHandle(), ImVec2{ viewportSize.x / 3,viewportSize.y / 3 });
 		//ImGui::Image((ImTextureID)AssetManager::GetAssetByPath<Texture2D>("Resource/skybox.hdr")->GetImGuiHandle(), ImVec2{ viewportSize.x / 3,viewportSize.y / 3 });

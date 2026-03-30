@@ -24,5 +24,9 @@ namespace Daydream
 
 		ComPtr<ID3D12GraphicsCommandList> commandList;
 		ComPtr<ID3D12CommandAllocator> commandAllocator;
+
+		ComPtr<ID3D12Fence> singleTimeFence;
+		UInt64 uploadFenceValue;
+		HANDLE uploadFenceEvent;
 	};
 }

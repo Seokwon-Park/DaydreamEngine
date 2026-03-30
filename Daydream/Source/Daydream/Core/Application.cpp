@@ -33,8 +33,6 @@ namespace Daydream
 
 		//testWindow = DaydreamWindow::Create(prop);
 		//testWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
-
-
 	}
 
 	Application::~Application()

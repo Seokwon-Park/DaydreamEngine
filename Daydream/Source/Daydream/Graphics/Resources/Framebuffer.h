@@ -31,13 +31,17 @@ namespace Daydream
 		virtual UInt32 ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY) { return 0; };
 		//virtual Shared<Texture2D> GetDepthAttachemntTexture(UInt32 _index) = 0;
 		
+		bool IsSwapchainBuffer() const { return isSwapchainBuffer; }
+
 		void RequestResize(UInt32 _width, UInt32 _height);
 		UInt32 GetWidth() { return width; }
 		UInt32 GetHeight() { return height; }
 		static Shared<Framebuffer> Create(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc);
 	protected:
+		bool isSwapchainBuffer = false;
 		UInt32 width;
 		UInt32 height;
+		UInt32 colorAttachmentCount = 0;
 		RenderPass* renderPass;
 	private:
 	};

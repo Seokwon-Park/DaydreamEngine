@@ -91,7 +91,9 @@ namespace Daydream
 			// 필요 없는 메시지는 필터링도 가능
 			D3D12_MESSAGE_ID denyIds[] = {
 				D3D12_MESSAGE_ID_MAP_INVALID_NULLRANGE,
-				D3D12_MESSAGE_ID_UNMAP_INVALID_NULLRANGE
+				D3D12_MESSAGE_ID_UNMAP_INVALID_NULLRANGE,
+				D3D12_MESSAGE_ID_CLEARDEPTHSTENCILVIEW_MISMATCHINGCLEARVALUE,
+				D3D12_MESSAGE_ID_CLEARRENDERTARGETVIEW_MISMATCHINGCLEARVALUE
 			};
 			D3D12_INFO_QUEUE_FILTER filter = {};
 			filter.DenyList.NumIDs = _countof(denyIds);
@@ -267,12 +269,12 @@ namespace Daydream
 		memcpy(bufferData, _initialData, _size);
 		uploadBuffer->Unmap(0, nullptr);
 
-		CopyBuffer(uploadBuffer.Get(), vertexBuffer->GetDX12Buffer(), _size);
+		CopyBuffer(uploadBuffer.Get(), vertexBuffer->GetID3D12Resource(), _size);
 
 		D3D12_RESOURCE_BARRIER barrier = {};
 		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barrier.Transition.pResource = vertexBuffer->GetDX12Buffer();
+		barrier.Transition.pResource = vertexBuffer->GetID3D12Resource();
 		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
 		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
@@ -295,12 +297,12 @@ namespace Daydream
 		memcpy(bufferData, _indices, bufferSize);
 		uploadBuffer->Unmap(0, nullptr);
 
-		CopyBuffer(uploadBuffer.Get(), indexBuffer->GetDX12Buffer(), bufferSize);
+		CopyBuffer(uploadBuffer.Get(), indexBuffer->GetID3D12Resource(), bufferSize);
 
 		D3D12_RESOURCE_BARRIER barrier = {};
 		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barrier.Transition.pResource = indexBuffer->GetDX12Buffer();
+		barrier.Transition.pResource = indexBuffer->GetID3D12Resource();
 		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
 		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_INDEX_BUFFER;
@@ -380,7 +382,7 @@ namespace Daydream
 			barrier.Transition.pResource = texture->GetID3D12Resource();
 			barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 			barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-			barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COMMON;
+			barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 			TransitionResourceStateImmediate(barrier);
 
 		}
@@ -392,6 +394,15 @@ namespace Daydream
 	Shared<Texture2D> D3D12RenderDevice::CreateEmptyTexture2D(const TextureDesc& _desc)
 	{
 		Shared<D3D12Texture2D> texture = MakeShared<D3D12Texture2D>(this, _desc);
+
+		D3D12_RESOURCE_BARRIER barrier = {};
+		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barrier.Transition.pResource = texture->GetID3D12Resource();
+		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+		TransitionResourceStateImmediate(barrier);
 		return texture;
 	}
 
@@ -428,9 +439,16 @@ namespace Daydream
 		}
 		uploadBuffer->Unmap(0, nullptr);
 
-
 		CopyBufferToImage(uploadBuffer.Get(), texture->GetID3D12Resource(), layouts);
 
+		D3D12_RESOURCE_BARRIER barrier = {};
+		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barrier.Transition.pResource = texture->GetID3D12Resource();
+		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+		TransitionResourceStateImmediate(barrier);
 
 		return texture;
 	}
@@ -438,6 +456,15 @@ namespace Daydream
 	Shared<TextureCube> D3D12RenderDevice::CreateEmptyTextureCube(const TextureDesc& _desc)
 	{
 		auto textureCube = MakeShared<D3D12TextureCube>(this, _desc);
+
+		D3D12_RESOURCE_BARRIER barrier = {};
+		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barrier.Transition.pResource = textureCube->GetID3D12Resource();
+		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+		TransitionResourceStateImmediate(barrier);
 
 		return textureCube;
 	}
@@ -677,32 +704,6 @@ namespace Daydream
 			}
 		);
 	}
-
-
-	//void D3D12RenderDevice::WaitForGPU(IDXGISwapChain3* _swapChain)
-	//{
-	//	HRESULT hr;
-
-	//	// swap the current rtv buffer index so we draw on the correct buffer
-	//	int frameIndex = _swapChain->GetCurrentBackBufferIndex();
-
-	//	// if the current fence value is still less than "fenceValue", then we know the GPU has not finished executing
-	//	// the command queue since it has not reached the "commandQueue->Signal(fence, fenceValue)" command
-	//	if (fence[frameIndex]->GetCompletedValue() < fenceValue[frameIndex])
-	//	{
-	//		// we have the fence create an event which is signaled once the fence's current value is "fenceValue"
-	//		hr = fence[frameIndex]->SetEventOnCompletion(fenceValue[frameIndex], fenceEvent);
-	//		// We will wait until the fence has triggered the event that it's current value has reached "fenceValue". once it's value
-	//		// has reached "fenceValue", we know the command queue has finished executing
-	//		WaitForSingleObject(fenceEvent, INFINITE);
-	//	}
-
-	//	// increment fenceValue for next frame
-	//	fenceValue[frameIndex]++;
-	//}
-
-
-
 }
 
 

@@ -1,6 +1,8 @@
 #include "DaydreamPCH.h"
 #include "D3D12ImGuiRenderer.h"
 
+#include "D3D12RenderCommandList.h"
+
 #include "backends/imgui_impl_dx12.h"
 
 namespace Daydream
@@ -45,6 +47,6 @@ namespace Daydream
 	void Daydream::D3D12ImGuiRenderer::Render(RenderCommandList* _activeCommandList)
 	{
 		ImGuiRenderer::Render(_activeCommandList);
-		ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), device->GetCommandList());
+		ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), Cast<D3D12RenderCommandList*>(_activeCommandList)->GetID3D12GraphicsCommandList());
 	}
 }

@@ -30,7 +30,7 @@ namespace Daydream
 	void OpenGLRenderContext::BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer)
 	{
 		OpenGLFramebuffer* currentFramebuffer = Cast<OpenGLFramebuffer*>(_framebuffer.get());
-		if (currentFramebuffer->IsBackbuffer() == true)
+		if (currentFramebuffer->IsSwapchainBuffer() == true)
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			glClearColor(0.0f, 0.0f, 1.0f, 1.0f);

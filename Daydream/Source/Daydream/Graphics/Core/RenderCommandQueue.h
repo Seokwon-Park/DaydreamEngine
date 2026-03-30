@@ -2,17 +2,19 @@
 
 namespace Daydream
 {
+	using RenderCommand = FunctionPtr<void()>;
+
 	class RenderCommandQueue
 	{
 	public:
 		RenderCommandQueue() {};
-		~RenderCommandQueue() { commandList.clear(); };
+		~RenderCommandQueue() { while (!renderCommandQueue.empty()) renderCommandQueue.pop(); };
 
-		void AddCommand(FunctionPtr<void()> _command);
+		void AddRenderCommand(RenderCommand _command);
 		void Execute();
 	protected:
 
 	private:
-		Array<FunctionPtr<void()>> commandList;
+		Queue<FunctionPtr<void()>> renderCommandQueue;
 	};
 }

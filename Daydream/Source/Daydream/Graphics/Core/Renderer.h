@@ -26,7 +26,7 @@ namespace Daydream
 		template<typename Func>
 		static void Record(Func&& _command)
 		{
-			commandQueues[0]->AddCommand(std::forward<Func>(_command));
+			commandQueues[0]->AddRenderCommand(std::forward<Func>(_command));
 		}
 
 		//static RenderCommandList* GetCurrentCommandQueue();
@@ -84,6 +84,8 @@ namespace Daydream
 		inline static Unique<RenderContext> renderContext = nullptr;
 		inline static Unique<ImGuiRenderer> imguiRenderer = nullptr;
 		inline static Unique<Skybox> skybox = nullptr;
+
+		inline static Queue<FunctionPtr<void()>> singleCommandQueue;
 
 		inline static Array<Unique<RenderCommandQueue>> commandQueues;
 	};

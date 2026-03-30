@@ -20,7 +20,7 @@ namespace Daydream
 
 	OpenGLFramebuffer::OpenGLFramebuffer(OpenGLSwapchain* _desc)
 	{
-		isBackbuffer = true;
+		isSwapchainBuffer = true;
 	}
 
 	void OpenGLFramebuffer::AttachTextures()

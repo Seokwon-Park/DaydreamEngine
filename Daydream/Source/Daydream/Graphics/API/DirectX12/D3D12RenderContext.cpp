@@ -52,16 +52,34 @@ namespace Daydream
 	}
 	void D3D12RenderContext::BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer)
 	{
-		Shared<D3D12Framebuffer> currentFramebuffer = SharedCast<D3D12Framebuffer>(_framebuffer);
+		currentFramebuffer = Cast<D3D12Framebuffer*>(_framebuffer.get());
 		Shared<D3D12RenderPass> renderPass = SharedCast<D3D12RenderPass>(_renderPass);
-		for (Shared<D3D12Texture2D> texture : currentFramebuffer->GetColorAttachments())
+		if (!currentFramebuffer->IsSwapchainBuffer())
 		{
-		}
+			for (Shared<D3D12Texture2D> texture : currentFramebuffer->GetColorAttachments())
+			{
+				D3D12_RESOURCE_BARRIER barrier = {};
+				barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+				barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+				barrier.Transition.pResource = texture->GetID3D12Resource();
+				barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+				barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+				barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+				GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
+			}
 
-		if (currentFramebuffer->HasDepthAttachment())
-		{
-			auto depthStencilView = currentFramebuffer->GetDepthAttachment();
-			//device->TransitionResourceState(GetD3D12ActiveCommandList(), dsv->GetID3D12Resource(), dsv->GetCurrentState(), D3D12_RESOURCE_STATE_DEPTH_WRITE);
+			if (currentFramebuffer->HasDepthAttachment())
+			{
+				auto depthStencilView = currentFramebuffer->GetDepthAttachment();
+				D3D12_RESOURCE_BARRIER barrier = {};
+				barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+				barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+				barrier.Transition.pResource = depthStencilView->GetID3D12Resource();
+				barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+				barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_DEPTH_READ;
+				barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+				GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
+			}
 		}
 
 
@@ -86,7 +104,33 @@ namespace Daydream
 
 	void D3D12RenderContext::EndRenderPass(Shared<RenderPass> _renderPass)
 	{
-		//??
+		if (!currentFramebuffer->IsSwapchainBuffer())
+		{
+			for (Shared<D3D12Texture2D> texture : currentFramebuffer->GetColorAttachments())
+			{
+				D3D12_RESOURCE_BARRIER barrier = {};
+				barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+				barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+				barrier.Transition.pResource = texture->GetID3D12Resource();
+				barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+				barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+				barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+				GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
+			}
+
+			if (currentFramebuffer->HasDepthAttachment())
+			{
+				auto depthStencilView = currentFramebuffer->GetDepthAttachment();
+				D3D12_RESOURCE_BARRIER barrier = {};
+				barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+				barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+				barrier.Transition.pResource = depthStencilView->GetID3D12Resource();
+				barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+				barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+				barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_DEPTH_READ;
+				GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
+			}
+		}
 	}
 	void D3D12RenderContext::BindPipelineState(Shared<PipelineState> _pipelineState)
 	{
@@ -98,9 +142,15 @@ namespace Daydream
 	}
 	void D3D12RenderContext::BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer)
 	{
+		D3D12VertexBuffer* vertexBuffer = Cast<D3D12VertexBuffer*>(_vertexBuffer.get());
+		D3D12_VERTEX_BUFFER_VIEW vertexBufferView = vertexBuffer->GetVertexBufferView();
+		GetD3D12ActiveCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);
 	}
 	void D3D12RenderContext::BindIndexBuffer(Shared<IndexBuffer> _indexBuffer)
 	{
+		D3D12IndexBuffer* indexBuffer = Cast<D3D12IndexBuffer*>(_indexBuffer.get());
+		D3D12_INDEX_BUFFER_VIEW indexBufferView = indexBuffer->GetIndexBufferView();
+		GetD3D12ActiveCommandList()->IASetIndexBuffer(&indexBufferView);
 	}
 	void D3D12RenderContext::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
 	{
@@ -114,7 +164,10 @@ namespace Daydream
 		GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex(_name), d3d12Tex->GetSRVGPUHandle());
 		String samplerName = _name + "Sampler";
 		const ShaderReflectionData* samplerInfo = activePipelineState->GetBindingInfo(samplerName);
-		GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex(samplerName), d3d12Tex->GetSamplerHandle());
+		if (samplerInfo)
+		{
+			GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex(samplerName), d3d12Tex->GetSamplerHandle());
+		}
 	}
 	void D3D12RenderContext::SetTextureCube(const String& _name, Shared<TextureCube> _textureCube)
 	{
@@ -128,7 +181,10 @@ namespace Daydream
 		GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex(_name), d3d12Tex->GetSRVGPUHandle());
 		String samplerName = _name + "Sampler";
 		const ShaderReflectionData* samplerInfo = activePipelineState->GetBindingInfo(_name);
-		GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex(samplerName), d3d12Tex->GetSamplerHandle());
+		if (samplerInfo)
+		{
+			GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex(samplerName), d3d12Tex->GetSamplerHandle());
+		}
 	}
 	void D3D12RenderContext::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
 	{
@@ -142,35 +198,107 @@ namespace Daydream
 	}
 	void D3D12RenderContext::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
 	{
-		//D3D12Texture2D* src = (D3D12Texture2D*)_src.get();
-		//D3D12Texture2D* dst = (D3D12Texture2D*)_dst.get();
-		//D3D12_RESOURCE_BARRIER barrier = {};
-		//barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		//barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		//barrier.Transition.pResource = src->GetID3D12Resource();
-		//barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-		//barrier.Transition.StateBefore = _stateBefore;
-		//barrier.Transition.StateAfter = _stateAfter;
-		//GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
-		//GetD3D12ActiveCommandList()->CopyResource(dst->GetID3D12Resource(), src->GetID3D12Resource());
+		D3D12Texture2D* src = (D3D12Texture2D*)_src.get();
+		D3D12Texture2D* dst = (D3D12Texture2D*)_dst.get();
+
+		D3D12_RESOURCE_BARRIER barriers[2] = {};
+
+		barriers[0].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barriers[0].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barriers[0].Transition.pResource = src->GetID3D12Resource();
+		barriers[0].Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+		barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE;
+
+		barriers[1].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barriers[1].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barriers[1].Transition.pResource = dst->GetID3D12Resource();
+		barriers[1].Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		barriers[1].Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+		barriers[1].Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST;
+		GetD3D12ActiveCommandList()->ResourceBarrier(2, barriers);
+
+		GetD3D12ActiveCommandList()->CopyResource(dst->GetID3D12Resource(), src->GetID3D12Resource());
+
+		barriers[0].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barriers[0].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barriers[0].Transition.pResource = src->GetID3D12Resource();
+		barriers[0].Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE;
+		barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+
+		barriers[1].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barriers[1].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barriers[1].Transition.pResource = dst->GetID3D12Resource();
+		barriers[1].Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		barriers[1].Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+		barriers[1].Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+		GetD3D12ActiveCommandList()->ResourceBarrier(2, barriers);
 	}
 	void D3D12RenderContext::CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel)
 	{
+		D3D12TextureCube* dst = Cast<D3D12TextureCube*>(_dstCubemap.get());
+		D3D12Texture2D* src = Cast<D3D12Texture2D*>(_srcTexture2D.get());
+
+		D3D12_RESOURCE_BARRIER barriers[2] = {}; 
+
+		barriers[0].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barriers[0].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barriers[0].Transition.pResource = src->GetID3D12Resource();
+		barriers[0].Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+		barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE;
+
+		barriers[1].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barriers[1].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barriers[1].Transition.pResource = dst->GetID3D12Resource();
+		barriers[1].Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		barriers[1].Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+		barriers[1].Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST;
+		GetD3D12ActiveCommandList()->ResourceBarrier(2, barriers);
+
+		D3D12_TEXTURE_COPY_LOCATION srcLocation = {};
+		srcLocation.pResource = src->GetID3D12Resource();
+		srcLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+		srcLocation.SubresourceIndex = 0;
+
+		D3D12_TEXTURE_COPY_LOCATION dstLocation = {};
+		dstLocation.pResource = dst->GetID3D12Resource();
+		dstLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+		// 핵심: faceIndex를 사용하여 큐브맵의 특정 면을 Subresource로 지정합니다.
+		dstLocation.SubresourceIndex = _mipLevel + _faceIndex * dst->GetMipLevels();
+
+		// 3. 복사 명령을 기록합니다.
+		GetD3D12ActiveCommandList()->CopyTextureRegion(&dstLocation, 0, 0, 0, &srcLocation, nullptr);
+
+		barriers[0].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barriers[0].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barriers[0].Transition.pResource = src->GetID3D12Resource();
+		barriers[0].Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE;
+		barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+
+		barriers[1].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barriers[1].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barriers[1].Transition.pResource = dst->GetID3D12Resource();
+		barriers[1].Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		barriers[1].Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+		barriers[1].Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+		GetD3D12ActiveCommandList()->ResourceBarrier(2, barriers);
 	}
+
 	void D3D12RenderContext::GenerateMips(Shared<Texture> _texture)
 	{
-		//device->TransitionResourceState(GetD3D12ActiveCommandList(), texture.Get(), GetCurrentState(), D3D12_RESOURCE_STATE_RENDER_TARGET);
-		//SetCurrentState(D3D12_RESOURCE_STATE_RENDER_TARGET);
-		//float color[4] = { 1,1,1,1 };
-		//for (UInt32 mip = 1; mip < mipLevels; mip++)
-		//{
-		//	for (UInt32 face = 0; face < 6; face++)
-		//	{
-		//		GetD3D12ActiveCommandList()->ClearRenderTargetView(rtvCpuHandles[mip*6+face], color, 0, nullptr);
-		//	}
-		//}
-
 		D3D12TextureCube* d3d12Tex = Cast<D3D12TextureCube*>(_texture.get());
+
+		D3D12_RESOURCE_BARRIER barrier = {};
+		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barrier.Transition.pResource = d3d12Tex->GetID3D12Resource();
+		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+		GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
 
 		UInt32 mipLevels = _texture->GetMipLevels();
 		for (UInt32 mip = 1; mip < mipLevels; mip++)
@@ -209,17 +337,30 @@ namespace Daydream
 				GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex("Texture"), d3d12Tex->GetMipSRVGPUHandle(mipLevels * face + mip - 1));
 				GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex("TextureSampler"), d3d12Tex->GetSamplerHandle());
 				Renderer::BindMesh(quadMesh);
+
+
+
 				GetD3D12ActiveCommandList()->ClearRenderTargetView(d3d12Tex->GetRTVCPUHandle(index), color, 0, nullptr);
 				auto handle = d3d12Tex->GetRTVCPUHandle(index);
 				GetD3D12ActiveCommandList()->OMSetRenderTargets(1, &handle, false, nullptr);
 
 				GetD3D12ActiveCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 				GetD3D12ActiveCommandList()->DrawIndexedInstanced(quadMesh->GetIndexCount(), 1, 0, 0, 0);
+
 				//resizeRenderPass->End();
 				//device->TransitionResourceState(GetD3D12ActiveCommandList(), texture.Get(), GetCurrentState(), D3D12_RESOURCE_STATE_COMMON);
 				//SetCurrentState(D3D12_RESOURCE_STATE_COMMON);
 			}
 		}
+
+		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barrier.Transition.pResource = d3d12Tex->GetID3D12Resource();
+		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+		GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
+
 	}
 	void D3D12RenderContext::SetActiveCommandList(Shared<RenderCommandList> _commandList)
 	{

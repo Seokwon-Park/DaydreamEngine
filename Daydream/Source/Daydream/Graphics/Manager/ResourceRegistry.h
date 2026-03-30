@@ -31,7 +31,7 @@ namespace Daydream
 			{
 				//DAYDREAM_CORE_INFO("Resource {0} changed {1} -> {2}", _name, itr->second, _resource.get());
 			}
-			registry[_name] = _resource;
+			itr->second = _resource;
 		}
 
 	protected:

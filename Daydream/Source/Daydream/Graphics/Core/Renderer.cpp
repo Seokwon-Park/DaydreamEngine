@@ -81,12 +81,7 @@ namespace Daydream
 
 	void Renderer::ExecuteSingleTimeCommand(FunctionPtr<void()> _func)
 	{
-		Shared<RenderCommandList> singleTimeCommandList = renderDevice->CreateRenderCommandList();
-		renderContext->SetActiveCommandList(singleTimeCommandList);
-		singleTimeCommandList->Begin();
-		_func();
-		singleTimeCommandList->End();
-		singleTimeCommandList->WaitForCompletion();
+		singleCommandQueue.push(_func);
 	}
 
 	void Renderer::BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer)

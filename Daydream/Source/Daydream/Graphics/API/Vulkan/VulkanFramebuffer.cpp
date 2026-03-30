@@ -39,6 +39,7 @@ namespace Daydream
 		height = extent.height;
 		renderPass = _renderPass;
 		vkRenderPass = _renderPass;
+		isSwapchainBuffer = true;
 
 		swapchainImageView = device->CreateImageView(_swapchainImage,
 			_swapchain->GetFormat(),

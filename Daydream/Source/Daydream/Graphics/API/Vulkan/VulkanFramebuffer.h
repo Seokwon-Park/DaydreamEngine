@@ -17,7 +17,6 @@ namespace Daydream
 		VulkanFramebuffer(VulkanRenderDevice* _device, VulkanSwapchain* _swapchain, VulkanRenderPass* _renderPass, vk::Image _swapchainImage);
 
 		virtual ~VulkanFramebuffer() override;
-
 		
 		virtual UInt32 GetColorAttachmentSize() override { return colorAttachmentCount; }
 		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) override;
@@ -40,7 +39,6 @@ namespace Daydream
 		vk::ImageView depthStencilView;
 
 		Array<Shared<VulkanTexture2D>> colorAttachments;
-		UInt32 colorAttachmentCount = 0;
 		Shared<VulkanTexture2D> depthAttachment;
 
 		Array<Shared<VulkanTexture2D>> oldAttachments;

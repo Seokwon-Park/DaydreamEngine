@@ -3,6 +3,7 @@
 #include "Daydream/Graphics/Core/RenderContext.h"
 
 #include "D3D12RenderDevice.h"
+#include "D3D12Framebuffer.h"
 #include "D3D12RenderCommandList.h"
 
 namespace Daydream
@@ -44,6 +45,7 @@ namespace Daydream
 		inline ID3D12GraphicsCommandList* GetD3D12ActiveCommandList() const { return activeD3D12CommandList.Get(); }
 
 		D3D12RenderDevice* device;
+		D3D12Framebuffer* currentFramebuffer = nullptr;
 
 		ComPtr<ID3D12GraphicsCommandList> activeD3D12CommandList;
 	};

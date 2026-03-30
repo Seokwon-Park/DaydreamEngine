@@ -133,7 +133,7 @@ namespace Daydream
 				D3D12_RESOURCE_BARRIER barrier = {};
 				barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 				barrier.Transition.pResource = entityTexture->GetID3D12Resource();
-				barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; // 혹은 COMMON/PIXEL_SHADER_RESOURCE
+				barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; 
 				barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE;
 				barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 				_commandList->ResourceBarrier(1, &barrier);
@@ -161,7 +161,7 @@ namespace Daydream
 
 				// 7. Resource Barrier 복구 (CopySource -> RenderTarget)
 				barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE;
-				barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; // 원래 상태로 복구
+				barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 원래 상태로 복구
 				_commandList->ResourceBarrier(1, &barrier);
 			});
 
@@ -195,6 +195,15 @@ namespace Daydream
 			textureDesc.bindFlags = RenderBindFlags::RenderTarget | RenderBindFlags::ShaderResource;
 
 			Shared<D3D12Texture2D> colorTexture = MakeShared<D3D12Texture2D>(device, textureDesc);
+			D3D12_RESOURCE_BARRIER barrier = {};
+			barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+			barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+			barrier.Transition.pResource = colorTexture->GetID3D12Resource();
+			barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+			barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+			barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+			device->TransitionResourceStateImmediate(barrier);
+
 			if (colorAttachmentDesc.type == AttachmentType::EntityHandle)
 			{
 				entityTexture = colorTexture;
@@ -212,6 +221,15 @@ namespace Daydream
 			textureDesc.bindFlags = RenderBindFlags::DepthStencil | RenderBindFlags::ShaderResource;
 
 			Shared<D3D12Texture2D> depthTexture = MakeShared<D3D12Texture2D>(device, textureDesc);
+			D3D12_RESOURCE_BARRIER barrier = {};
+			barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+			barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+			barrier.Transition.pResource = depthTexture->GetID3D12Resource();
+			barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+			barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+			barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_DEPTH_READ;
+			device->TransitionResourceStateImmediate(barrier);
+
 			depthAttachment = depthTexture;
 			depthStencilHandle = depthTexture->GetDSVCPUHandle();
 		}

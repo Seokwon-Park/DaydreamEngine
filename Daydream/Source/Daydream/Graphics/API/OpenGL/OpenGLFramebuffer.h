@@ -21,7 +21,6 @@ namespace Daydream
 		virtual UInt32 ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY) override;
 
 		void AttachTextures();
-		bool IsBackbuffer() { return isBackbuffer; }
 		UInt32 GetFramebufferID() { return framebufferID; }
 		void CreateAttachments();
 	private:
@@ -30,6 +29,5 @@ namespace Daydream
 		Shared<OpenGLTexture2D> depthAttachment;
 
 		Shared<OpenGLTexture2D> entityTexture;
-		bool isBackbuffer = false;
 	};
 }

@@ -89,7 +89,7 @@ namespace Daydream
 			default:
 				break;
 			}
-			descriptorTable[name] = rootParameters.size()-1;
+			descriptorTable[name] = Cast<UInt32>(rootParameters.size()-1);
 		}
 
 		D3D12_ROOT_DESCRIPTOR rootDescriptor;

@@ -80,6 +80,8 @@ namespace Daydream
 		{
 			DAYDREAM_CORE_ERROR("Failed to Create FenceEvent!");
 		}
+
+		currentFenceValue = 0;
 	}
 	D3D12Swapchain::~D3D12Swapchain()
 	{
@@ -93,6 +95,8 @@ namespace Daydream
 	void D3D12Swapchain::Present()
 	{
 		swapchain->Present(desc.isVSync, 0);
+		frameIndex = swapchain->GetCurrentBackBufferIndex();
+		fenceValues[frameIndex] = currentFenceValue;
 	}
 	void D3D12Swapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
 	{
@@ -134,6 +138,15 @@ namespace Daydream
 
 		commandLists[frameIndex]->Begin();
 
+		D3D12_RESOURCE_BARRIER barr{};
+		barr.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barr.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barr.Transition.pResource = d3d12Backbuffers[frameIndex].Get();
+		barr.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+		barr.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		currentCommandList->ResourceBarrier(1, &barr);
+
 		ResizeFramebuffers();
 	}
 
@@ -147,17 +160,15 @@ namespace Daydream
 		barr.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 		barr.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-		device->GetCommandList()->ResourceBarrier(1, &barr);
+		currentCommandList->ResourceBarrier(1, &barr);
 
 		commandLists[frameIndex]->End();
 
 		Array<ID3D12CommandList*> execCommandLists = { currentCommandList };
 		device->GetCommandQueue()->ExecuteCommandLists((UInt32)execCommandLists.size(), execCommandLists.data());
 
-		const UInt64 currentFenceValue = fenceValues[frameIndex] + 1;
+		currentFenceValue = fenceValues[frameIndex] + 1;
 		device->GetCommandQueue()->Signal(fence.Get(), currentFenceValue);
-		frameIndex = swapchain->GetCurrentBackBufferIndex();
-		fenceValues[frameIndex] = currentFenceValue;
 	}
 
 	//모든 GPU작업이 끝날때까지 대기
