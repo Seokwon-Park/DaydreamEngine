@@ -39,10 +39,9 @@ namespace Daydream
 		ImGui_ImplVulkan_NewFrame();
 		ImGuiRenderer::NewFrame();
 	}
-	void Daydream::VulkanImGuiRenderer::Render(RenderCommandList* _activeCommandList)
+	void VulkanImGuiRenderer::RenderDrawData(RenderCommandList* _activeCommandList, ImDrawData* _drawData)
 	{
-		ImGuiRenderer::Render(_activeCommandList);
-		//swapChain->FrameRender();
+		ImGuiRenderer::RenderDrawData(_activeCommandList, _drawData);
 		ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), Cast<VulkanRenderCommandList*>(_activeCommandList)->GetVkCommandBuffer());
 	}
 }

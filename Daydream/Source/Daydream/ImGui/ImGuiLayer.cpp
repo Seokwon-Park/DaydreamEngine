@@ -1,7 +1,7 @@
 #include "DaydreamPCH.h"
 #include "ImGuiLayer.h"
 
-#include <imgui.h>
+#include "imgui.h"
 #include "ImGuizmo.h"
 
 #include <GLFW/glfw3.h>
@@ -12,6 +12,24 @@
 
 namespace Daydream
 {
+	namespace
+	{
+		void DestroyClonedDrawData(ImDrawData* _drawData)
+		{
+			if (_drawData == nullptr)
+			{
+				return;
+			}
+
+			for (int i = 0; i < _drawData->CmdListsCount; ++i)
+			{
+				IM_DELETE(_drawData->CmdLists[i]);
+			}
+			IM_FREE(_drawData->CmdLists.Data);
+			IM_DELETE(_drawData);
+		}
+	}
+
 	ImGuiLayer::ImGuiLayer()
 		: Layer("ImGuiLayer")
 	{
@@ -71,8 +89,13 @@ namespace Daydream
 		Application& app = Application::GetInstance();
 		io.DisplaySize = ImVec2(static_cast<Float32>(app.GetMainWindow().GetWidth()), static_cast<Float32>(app.GetMainWindow().GetHeight()));
 
-		RenderCommandList* activeCommandList = Renderer::GetActiveCommandList();
-		Renderer::GetImGuiRenderer()->Render(activeCommandList);
+		ImGui::Render();
+		ImDrawData* clonedDrawData = ImGui::GetDrawData() ? ImGui::GetDrawData()->CloneOutput() : nullptr;
+		Renderer::Enqueue([clonedDrawData]()
+			{
+				Renderer::GetImGuiRenderer()->RenderDrawData(Renderer::GetActiveCommandList(), clonedDrawData);
+				DestroyClonedDrawData(clonedDrawData);
+			});
 
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{

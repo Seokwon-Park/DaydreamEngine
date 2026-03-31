@@ -13,7 +13,7 @@ namespace Daydream
 		virtual void Init(DaydreamWindow* _window);
 		virtual void Shutdown();
 		virtual void NewFrame();
-		virtual void Render(RenderCommandList* _activeCommandList);
+		virtual void RenderDrawData(RenderCommandList* _activeCommandList, ImDrawData* _drawData);
 	private:
 		D3D12RenderDevice* device;
 	};

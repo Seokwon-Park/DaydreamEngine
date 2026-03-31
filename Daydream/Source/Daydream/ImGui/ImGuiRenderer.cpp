@@ -54,9 +54,8 @@ namespace Daydream
 		ImGui_ImplGlfw_NewFrame();
 	}
 
-	void Daydream::ImGuiRenderer::Render(RenderCommandList* _activeCommandList)
+	void ImGuiRenderer::RenderDrawData(RenderCommandList* _activeCommandList, ImDrawData* _drawData)
 	{
-		ImGui::Render();
 		//mainWindow->GetSwapchain()->GetBackFramebuffer()->Bind();
 	}		
 }

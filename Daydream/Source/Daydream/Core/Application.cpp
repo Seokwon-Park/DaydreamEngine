@@ -108,7 +108,7 @@ namespace Daydream
 	}
 	bool Application::Run()
 	{
-		Renderer::ExecuteSingleTimeCommand([]() {Renderer::MakeSkybox(); });
+		Renderer::InitSkybox();
 		while (isRunning)
 		{
 			timeStep.UpdateTime();
@@ -155,6 +155,7 @@ namespace Daydream
 			//	DAYDREAM_CORE_TRACE("KEY UP TEST");
 			//}
 			Renderer::EndFrame(mainWindow->GetSwapchain());
+			Renderer::Submit();
 
 			mainWindow->OnUpdateInputState();
 			mainWindow->OnUpdate();

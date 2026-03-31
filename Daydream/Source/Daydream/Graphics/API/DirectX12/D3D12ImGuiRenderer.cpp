@@ -44,9 +44,9 @@ namespace Daydream
 		ImGui_ImplDX12_NewFrame();
 		ImGuiRenderer::NewFrame();
 	}
-	void Daydream::D3D12ImGuiRenderer::Render(RenderCommandList* _activeCommandList)
+	void D3D12ImGuiRenderer::RenderDrawData(RenderCommandList* _activeCommandList, ImDrawData* _drawData)
 	{
-		ImGuiRenderer::Render(_activeCommandList);
+		ImGuiRenderer::RenderDrawData(_activeCommandList, _drawData);
 		ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), Cast<D3D12RenderCommandList*>(_activeCommandList)->GetID3D12GraphicsCommandList());
 	}
 }

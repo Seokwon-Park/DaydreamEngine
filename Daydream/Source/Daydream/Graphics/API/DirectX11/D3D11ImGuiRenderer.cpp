@@ -28,10 +28,9 @@ namespace Daydream
 		ImGuiRenderer::NewFrame();
 	}
 
-	void Daydream::D3D11ImGuiRenderer::Render(RenderCommandList* _activeCommandList)
+	void D3D11ImGuiRenderer::RenderDrawData(RenderCommandList* _activeCommandList, ImDrawData* _drawData)
 	{
-		ImGuiRenderer::Render(_activeCommandList);
-		//device->GetContext()->OMSetRenderTargets(1, , nullptr);
+		ImGuiRenderer::RenderDrawData(_activeCommandList, _drawData);
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	}
 }
