@@ -82,10 +82,10 @@ namespace Daydream
 		_window->SetSwapchain(swapchain);
 	}
 
-	void Renderer::OnWindowResize(UInt32 _width, UInt32 _height)
+	void Renderer::OnWindowResize(DaydreamWindow* _window, UInt32 _width, UInt32 _height)
 	{
 		//renderContext->SetViewport(0, 0, _width, _height);
-		//currentWindow->GetSwapchain()->ResizeSwapchain(_width, _height);
+		_window->GetSwapchain()->ResizeSwapchain(_width, _height);
 	}
 
 	void Renderer::SetRenderThreadEnabled(bool _enabled)
@@ -223,6 +223,17 @@ namespace Daydream
 			{
 				skybox->Init();
 			});
+	}
+
+	void Renderer::FlushSingleTimeCommands()
+	{
+		//Queue<FunctionPtr<void()>> queuedCommands;
+		//std::swap(queuedCommands, singleTimeCommandQueue);
+		while (!singleTimeCommandQueue.empty())
+		{
+			singleTimeCommandQueue.front()();
+			singleTimeCommandQueue.pop();
+		}
 	}
 
 	void Renderer::Submit()

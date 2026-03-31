@@ -98,33 +98,33 @@ namespace Daydream
 		frameIndex = swapchain->GetCurrentBackBufferIndex();
 		fenceValues[frameIndex] = currentFenceValue;
 	}
-	void D3D12Swapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
-	{
-		EndFrame();
+	//void D3D12Swapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
+	//{
+	//	EndFrame();
 
-		WaitForGPU();
+	//	WaitForGPU();
 
-		d3d12Backbuffers.clear();
-		framebuffers.clear();
-		for (UInt32 i = 0; i < desc.bufferCount; i++)
-		{
-			fenceValues[i] = fenceValues[frameIndex];
-		}
-		swapchain->ResizeBuffers(desc.bufferCount, _width, _height, DXGI_FORMAT_UNKNOWN, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH | DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING);
+	//	d3d12Backbuffers.clear();
+	//	framebuffers.clear();
+	//	for (UInt32 i = 0; i < desc.bufferCount; i++)
+	//	{
+	//		fenceValues[i] = fenceValues[frameIndex];
+	//	}
+	//	swapchain->ResizeBuffers(desc.bufferCount, _width, _height, DXGI_FORMAT_UNKNOWN, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH | DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING);
 
-		framebuffers.resize(desc.bufferCount);
-		for (UInt32 i = 0; i < desc.bufferCount; i++)
-		{
-			ComPtr<ID3D12Resource> backBuffer;
-			swapchain->GetBuffer(i, IID_PPV_ARGS(backBuffer.GetAddressOf()));
-			framebuffers[i] = MakeShared<D3D12Framebuffer>(device, mainRenderPass.get(), this, backBuffer.Get());
-			d3d12Backbuffers.push_back(backBuffer);
-		}
-		frameIndex = swapchain->GetCurrentBackBufferIndex();
-		fenceValues[frameIndex]++;
+	//	framebuffers.resize(desc.bufferCount);
+	//	for (UInt32 i = 0; i < desc.bufferCount; i++)
+	//	{
+	//		ComPtr<ID3D12Resource> backBuffer;
+	//		swapchain->GetBuffer(i, IID_PPV_ARGS(backBuffer.GetAddressOf()));
+	//		framebuffers[i] = MakeShared<D3D12Framebuffer>(device, mainRenderPass.get(), this, backBuffer.Get());
+	//		d3d12Backbuffers.push_back(backBuffer);
+	//	}
+	//	frameIndex = swapchain->GetCurrentBackBufferIndex();
+	//	fenceValues[frameIndex]++;
 
-		BeginFrame();
-	}
+	//	BeginFrame();
+	//}
 
 	void D3D12Swapchain::BeginFrame()
 	{
@@ -132,6 +132,11 @@ namespace Daydream
 		{
 			fence->SetEventOnCompletion(fenceValues[frameIndex], fenceEvent.Get());
 			WaitForSingleObjectEx(fenceEvent.Get(), INFINITE, FALSE);
+		}
+
+		if(isSwapchainResized)
+		{
+
 		}
 
 		currentCommandList = commandLists[frameIndex]->GetID3D12GraphicsCommandList();

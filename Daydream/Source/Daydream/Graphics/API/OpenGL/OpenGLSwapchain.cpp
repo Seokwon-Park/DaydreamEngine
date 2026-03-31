@@ -40,10 +40,10 @@ namespace Daydream
 		glfwSwapBuffers(window);
 		ResizeFramebuffers();
 	}
-	void OpenGLSwapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
-	{
-		glViewport(0, 0, _width, _height);
-	}
+	//void OpenGLSwapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
+	//{
+	//	glViewport(0, 0, _width, _height);
+	//}
 	void OpenGLSwapchain::BeginFrame()
 	{
 	}

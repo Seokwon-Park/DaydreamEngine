@@ -31,8 +31,8 @@ namespace Daydream
 		viewport.Height = Cast<Float32>(_height);
 		viewport.MinDepth = 0.0f;
 		viewport.MaxDepth = 1.0f;
-		viewport.TopLeftX = _x;
-		viewport.TopLeftY = _y;
+		viewport.TopLeftX = Cast<Float32>(_x);
+		viewport.TopLeftY = Cast<Float32>(_y);
 
 		GetD3D12ActiveCommandList()->RSSetViewports(1, &viewport);
 	}

@@ -77,13 +77,13 @@ namespace Daydream
 		swapChain->Present(desc.isVSync, 0);
 	}
 
-	void D3D11Swapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
-	{
-		framebuffer.reset();
-		swapChain->ResizeBuffers(0, _width, _height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+	//void D3D11Swapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
+	//{
+	//	framebuffer.reset();
+	//	swapChain->ResizeBuffers(0, _width, _height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
 
-		framebuffer = MakeShared<D3D11Framebuffer>(device, mainRenderPass.get(), this);
-	}
+	//	framebuffer = MakeShared<D3D11Framebuffer>(device, mainRenderPass.get(), this);
+	//}
 
 	void D3D11Swapchain::BeginFrame()
 	{

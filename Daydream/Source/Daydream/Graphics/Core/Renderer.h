@@ -34,18 +34,9 @@ namespace Daydream
 		}
 
 		template<typename RenderFunction>
-		static void EnqueueSingleTimeCommand(RenderFunction&& Function)
+		static void EnqueueSingleTimeCommand(RenderFunction&& _command)
 		{
-			if (useRenderThread)
-			{
-				// 멀티스레드
-				commandQueues[recordingQueueIndex]->AddRenderCommand(std::forward<RenderFunction>(_command));
-			}
-			else
-			{
-				// 싱글스레드(디버깅)용 모드
-				_command();
-			}
+			singleTimeCommandQueue.push(_command);
 		}
 
 		//static RenderCommandList* GetCurrentCommandQueue();
@@ -56,7 +47,7 @@ namespace Daydream
 		static void CreateSwapchainForWindow(DaydreamWindow* _window);
 		static void SetCurrentWindow(DaydreamWindow* _window) { currentWindow = _window; }
 		static DaydreamWindow* GetCurrentWindow() { return currentWindow; }
-		static void OnWindowResize(UInt32 _width, UInt32 _height);
+		static void OnWindowResize(DaydreamWindow* _window, UInt32 _width, UInt32 _height);
 
 		static void SetRenderThreadEnabled(bool _enabled);
 		static bool IsRenderThreadEnabled() { return useRenderThread; }
@@ -87,8 +78,6 @@ namespace Daydream
 
 		static void Submit();
 
-	
-
 		static ImGuiRenderer* GetImGuiRenderer() { return imguiRenderer.get(); }
 
 		//static Renderer& Get() { return *instance; }
@@ -107,9 +96,9 @@ namespace Daydream
 		inline static Unique<Skybox> skybox = nullptr;
 
 		/////////////////////////////////  RenderThread  ///////////////////////////////// 
-		inline static bool useRenderThread = false;
+		inline static bool useRenderThread = 1;
 
-		inline static Queue<FunctionPtr<void()>> singleTimeCommandQueue;
+		inline static Queue<RenderCommand> singleTimeCommandQueue;
 		inline static Array<Unique<RenderCommandQueue>> commandQueues;
 		//이 큐가 현재 렌더 스레드에서 사용중인지
 		inline static std::array<std::atomic<bool>, maxCommandListsInFlight> commandQueueBusyFlags;

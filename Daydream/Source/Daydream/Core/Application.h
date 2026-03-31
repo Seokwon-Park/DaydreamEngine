@@ -59,8 +59,8 @@ namespace Daydream
 		friend int ::main(int argc, char** argv);
 
 		void OnEvent(Event& _e);
-		bool OnWindowClose(WindowCloseEvent& _e);
-		bool OnWindowResize(WindowResizeEvent& _e);
+		bool OnWindowClosed(WindowCloseEvent& _e);
+		bool OnWindowResized(WindowResizeEvent& _e);
 		bool OnWindowFocused(WindowFocusEvent& _e);
 
 		Unique<DaydreamWindow> mainWindow;

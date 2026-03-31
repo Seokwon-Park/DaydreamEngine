@@ -25,7 +25,6 @@ namespace Daydream
 		virtual void SetVSync(bool _enabled) = 0;
 
 		virtual void Present() = 0;
-		virtual void ResizeSwapchain(UInt32 _width, UInt32 height) = 0;
 
 		virtual void BeginFrame() = 0;
 		virtual void EndFrame() = 0;
@@ -35,9 +34,11 @@ namespace Daydream
 		inline virtual Shared<RenderPass> GetRenderPass() const { return mainRenderPass; }
 
 		void ResizeFramebuffers();
+		void ResizeSwapchain(UInt32 _width, UInt32 _height);
 
 		static Shared<Swapchain> Create(DaydreamWindow* _window, const SwapchainDesc& _desc);
 	protected:
+		bool isSwapchainResized = false;
 		SwapchainDesc desc;
 		Shared<RenderPass> mainRenderPass;
 

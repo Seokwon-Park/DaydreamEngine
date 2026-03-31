@@ -8,7 +8,9 @@
 #include <algorithm>
 #include <functional>
 #include <thread>
-#include <future>
+#include <mutex>
+#include <shared_mutex>
+#include <condition_variable>
 
 #include <bit>
 #include <string>

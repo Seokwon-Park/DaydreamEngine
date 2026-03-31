@@ -154,26 +154,19 @@ namespace Daydream
 		//framebuffers[currentFrame]->Begin();
 	}
 
-	void VulkanSwapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
-	{
-		desc.width = _width;
-		desc.height = _height;
-	}
-
-
 	void VulkanSwapchain::BeginFrame()
 	{
+		ResizeFramebuffers();
+
 		currentCommandBuffer = commandLists[currentFrame]->GetVkCommandBuffer();
 		commandLists[currentFrame]->Begin();
-
 		//이미지를 GPU에 요청. 사용가능한 이미지의 인덱스를 imageIndex로 전달하고 imageAvailableSemaphore에 신호를 전달하라는 명령
+
 		auto result = device->GetDevice().acquireNextImageKHR(swapchain.get(), UINT64_MAX, imageAvailableSemaphores[currentFrame].get(), VK_NULL_HANDLE, &imageIndex);
 		if (result == vk::Result::eErrorOutOfDateKHR)
 		{
 			RecreateSwapchain();
 		}
-
-		ResizeFramebuffers();
 
 		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::Vulkan, "Wrong API");
 
@@ -203,70 +196,9 @@ namespace Daydream
 		vk::Result result = device->GetGraphicsQueue().submit(1, &submitInfo, fence);
 	}
 
-	//void VulkanSwapchain::BeginRenderPass()
-	//{
-	//	auto currentCommandBuffer = commandLists[currentFrame]->GetVkCommandBuffer();
-
-
-	//	vk::RenderPassBeginInfo renderPassInfo{};
-	//	renderPassInfo.renderPass = renderPass->GetVkRenderPass();
-	//	renderPassInfo.framebuffer = framebuffers[imageIndex]->GetFramebuffer();
-	//	renderPassInfo.renderArea.offset = vk::Offset2D(0, 0);
-	//	renderPassInfo.renderArea.extent = framebuffers[imageIndex]->GetExtent();
-
-	//	Array<vk::ClearValue> colors;
-	//	for (int i = 0; i < imageCount; i++)
-	//	{
-	//		vk::ClearValue vulkanClearColor;
-	//		vulkanClearColor.setColor({ 0.0f, 0.0f, 1.0f, 1.0f });
-	//		colors.push_back(vulkanClearColor);
-	//	}
-
-	//	if (framebuffers[imageIndex]->HasDepthAttachment())
-	//	{
-	//		vk::ClearValue vulkanClearDepthStencil;
-	//		vulkanClearDepthStencil.depthStencil.depth = 1.0f; // 또는 0.0f
-	//		vulkanClearDepthStencil.depthStencil.stencil = 0;   // 스텐실 값도 함께 초기화
-	//		colors.push_back(vulkanClearDepthStencil);
-	//	}
-
-	//	renderPassInfo.clearValueCount = colors.size();
-	//	renderPassInfo.pClearValues = colors.data();
-
-	//	currentCommandBuffer.beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
-	//	device->SetCurrentRenderPass(renderPass->GetVkRenderPass());
-	//	vk::Viewport viewport{};
-	//	//viewport.x = 0.0f;
-	//	//viewport.y = (float)extent.height;
-	//	//viewport.width = (float)extent.width;
-	//	//viewport.height = -(float)extent.height;
-	//	viewport.x = 0.0f;
-	//	viewport.y = 0.0f;
-	//	viewport.width = (float)framebuffers[imageIndex]->GetExtent().width;
-	//	viewport.height = (float)framebuffers[imageIndex]->GetExtent().height;
-	//	viewport.minDepth = 0.0f;
-	//	viewport.maxDepth = 1.0f;
-	//	currentCommandBuffer.setViewport(0, 1, &viewport);
-
-	//	vk::Rect2D scissor{};
-	//	scissor.offset = vk::Offset2D(0, 0);
-	//	scissor.extent = framebuffers[imageIndex]->GetExtent();
-	//	currentCommandBuffer.setScissor(0, 1, &scissor);
-	//}
-
-	//void VulkanSwapchain::EndRenderPass()
-	//{
-	//	auto currentCommandBuffer = commandLists[currentFrame]->GetVkCommandBuffer();
-
-	//	currentCommandBuffer.endRenderPass();
-	//}
-
-
 	void VulkanSwapchain::RecreateSwapchain()
 	{
 		device->GetDevice().waitIdle();
-
-		//commandBuffers[currentFrame]->reset({});
 
 		swapchainImages.clear();
 		swapchain.reset();

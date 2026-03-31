@@ -2083,9 +2083,6 @@
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Shader.cpp">
       <Filter>Source\Daydream\Graphics\API\DirectX12</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Swapchain.cpp">
-      <Filter>Source\Daydream\Graphics\API\DirectX12</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Texture.cpp">
       <Filter>Source\Daydream\Graphics\API\DirectX12</Filter>
     </ClCompile>
@@ -2357,5 +2354,6 @@
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderCommandList.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanRenderCommandList.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12RenderCommandList.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Swapchain.cpp" />
   </ItemGroup>
 </Project>

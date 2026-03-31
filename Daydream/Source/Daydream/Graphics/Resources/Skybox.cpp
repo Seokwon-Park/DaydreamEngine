@@ -32,7 +32,44 @@ namespace Daydream
 			cubeFaceConstantBuffers[i]->Update(&captureViewProjections[i], sizeof(Matrix4x4));
 		}
 
+		skyboxMipLevels = (UInt32)std::log2f((Float32)skyboxResolution);
+		
+		TextureDesc textureDesc{};
+		textureDesc.width = skyboxResolution;
+		textureDesc.height = skyboxResolution;
+		textureDesc.mipLevels = skyboxMipLevels;
+		textureDesc.bindFlags = RenderBindFlags::ShaderResource;
+		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
+		textureDesc.type = TextureType::TextureCube;
+		skyboxTextureCube = TextureCube::CreateEmpty(textureDesc);
 
+		textureDesc.width = diffuseResolution;
+		textureDesc.height = diffuseResolution;
+		textureDesc.mipLevels = 1;
+		textureDesc.bindFlags = RenderBindFlags::ShaderResource;
+		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
+		textureDesc.type = TextureType::TextureCube;
+
+		irradianceTextureCube = TextureCube::CreateEmpty(textureDesc);
+
+		prefilterMipLevels = (UInt32)std::log2f((Float32)specularResolution);
+
+		textureDesc.width = specularResolution;
+		textureDesc.height = specularResolution;
+		textureDesc.mipLevels = prefilterMipLevels;
+		textureDesc.bindFlags = RenderBindFlags::ShaderResource;
+		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
+		textureDesc.type = TextureType::TextureCube;
+
+		prefilterTextureCube = TextureCube::CreateEmpty(textureDesc);
+
+		textureDesc.width = skyboxTextureCube->GetWidth();
+		textureDesc.height = skyboxTextureCube->GetHeight();
+		textureDesc.bindFlags = RenderBindFlags::ShaderResource;
+		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
+		textureDesc.type = TextureType::Texture2D;
+
+		BRDFTexture = Texture2D::CreateEmpty(textureDesc);
 	}
 
 	Skybox::~Skybox()
@@ -51,10 +88,8 @@ namespace Daydream
 
 	void Skybox::Init()
 	{
-
 		equirectangularRenderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
 		equirectangularPSO = ResourceManager::GetResource<PipelineState>("EquirectangularPSO");
-
 
 		// Resize Capture setup
 		resizeRenderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
@@ -100,28 +135,15 @@ namespace Daydream
 
 	void Skybox::GenerateHDRCubemap(Shared<Texture2D> _texture)
 	{
-		skyboxMipLevels = (UInt32)std::log2f((Float32)skyboxResolution);
-
-		TextureDesc textureDesc{};
-		textureDesc.width = skyboxResolution;
-		textureDesc.height = skyboxResolution;
-		textureDesc.mipLevels = skyboxMipLevels;
-		textureDesc.bindFlags = RenderBindFlags::ShaderResource;
-		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
-		textureDesc.type = TextureType::TextureCube;
-		skyboxTextureCube = TextureCube::CreateEmpty(textureDesc);
-		skyboxTextureCube->SetSampler(ResourceManager::GetResource<Sampler>("LinearClampToEdge"));
-		//oldTextures.push_back(skyboxTextureCube);
-
 		equirectangularTexture = _texture;
-
-		//equirectangularMaterials[i]->SetTexture2D("Texture", equirectangularTexture);
+		skyboxTextureCube->SetSampler(ResourceManager::GetResource<Sampler>("LinearClampToEdge"));
 
 		FramebufferDesc fbDesc;
 		fbDesc.width = skyboxTextureCube->GetWidth();
 		fbDesc.height = skyboxTextureCube->GetHeight();
 		captureFramebuffer = Framebuffer::Create(equirectangularRenderPass, fbDesc);
 
+		TextureDesc textureDesc{};
 		equirectangularResultTextures.clear();
 		equirectangularResultTextures.resize(6);
 		textureDesc.width = skyboxTextureCube->GetWidth();
@@ -145,24 +167,14 @@ namespace Daydream
 			Renderer::CopyTexture2D(captureFramebuffer->GetColorAttachmentTexture(0), equirectangularResultTextures[i]);
 			Renderer::CopyTextureToCubemapFace(skyboxTextureCube, i, equirectangularResultTextures[i], 0);
 			skyboxTextureCube->Update(i, equirectangularResultTextures[i]);
-			//oldTextures.push_back(equirectangularResultTextures[i]);
 		}
 		Renderer::GenerateMips(skyboxTextureCube);
 	}
 
 	void Skybox::GenerateIrradianceCubemap()
 	{
-		TextureDesc textureDesc{};
-		textureDesc.width = diffuseResolution;
-		textureDesc.height = diffuseResolution;
-		textureDesc.mipLevels = 1;
-		textureDesc.bindFlags = RenderBindFlags::ShaderResource;
-		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
-		textureDesc.type = TextureType::TextureCube;
-
-		irradianceTextureCube = TextureCube::CreateEmpty(textureDesc);
 		irradianceTextureCube->SetSampler(ResourceManager::GetResource<Sampler>("LinearClampToEdge"));
-		//oldTextures.push_back(irradianceTextureCube);
+
 
 		FramebufferDesc fbDesc;
 		fbDesc.width = diffuseResolution;
@@ -171,6 +183,7 @@ namespace Daydream
 
 		irradianceResultTextures.clear();
 		irradianceResultTextures.resize(6);
+		TextureDesc textureDesc{};
 		textureDesc.width = diffuseResolution;
 		textureDesc.height = diffuseResolution;
 		textureDesc.bindFlags = RenderBindFlags::ShaderResource;
@@ -191,15 +204,12 @@ namespace Daydream
 			Renderer::CopyTexture2D(irradianceFramebuffer->GetColorAttachmentTexture(0), irradianceResultTextures[i]);
 			Renderer::CopyTextureToCubemapFace(irradianceTextureCube, i, irradianceResultTextures[i], 0);
 			irradianceTextureCube->Update(i, irradianceResultTextures[i]);
-			//oldTextures.push_back(irradianceResultTextures[i]);
 		}
 	}
 
 	void Skybox::GeneratePrefilterCubemap()
 	{
-		UInt32 result = (UInt32)std::log2f((Float32)specularResolution);
-
-		prefilterMipLevels = result;
+		prefilterTextureCube->SetSampler(ResourceManager::GetResource<Sampler>("LinearClampToEdge"));
 
 		prefilterMaterials.resize(6 * prefilterMipLevels);
 		for (UInt32 mip = 0; mip < prefilterMipLevels; mip++)
@@ -220,21 +230,10 @@ namespace Daydream
 			roughnessConstantBuffers[mip]->Update(&roughness, sizeof(Vector4));
 		}
 
-		TextureDesc textureDesc{};
-		textureDesc.width = specularResolution;
-		textureDesc.height = specularResolution;
-		textureDesc.mipLevels = prefilterMipLevels;
-		textureDesc.bindFlags = RenderBindFlags::ShaderResource;
-		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
-		textureDesc.type = TextureType::TextureCube;
-
-		prefilterTextureCube = TextureCube::CreateEmpty(textureDesc);
-		prefilterTextureCube->SetSampler(ResourceManager::GetResource<Sampler>("LinearClampToEdge"));
-		//oldTextures.push_back(prefilterTextureCube);
-
 		prefilterResultTextures.clear();
 		prefilterResultTextures.resize(6 * prefilterMipLevels);
 		prefilterFramebuffers.resize(prefilterMipLevels);
+		TextureDesc textureDesc{};
 		for (UInt32 mip = 0; mip < prefilterMipLevels; mip++)
 		{
 			textureDesc.width = std::max(1U, specularResolution >> mip);
@@ -285,20 +284,12 @@ namespace Daydream
 		fbDesc.width = skyboxTextureCube->GetWidth();
 		fbDesc.height = skyboxTextureCube->GetHeight();
 
-		TextureDesc textureDesc{};
-		textureDesc.width = skyboxTextureCube->GetWidth();
-		textureDesc.height = skyboxTextureCube->GetHeight();
-		textureDesc.bindFlags = RenderBindFlags::ShaderResource;
-		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
-		textureDesc.type = TextureType::Texture2D;
-
 		Renderer::BeginRenderPass(equirectangularRenderPass, captureFramebuffer);
 		Renderer::BindPipelineState(brdfPSO);
 		Renderer::BindMesh(quadMesh);
 		Renderer::DrawIndexed(quadMesh->GetIndexCount());
 		Renderer::EndRenderPass(equirectangularRenderPass);
 
-		BRDFTexture = Texture2D::CreateEmpty(textureDesc);
 		BRDFTexture->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
 		Renderer::CopyTexture2D(captureFramebuffer->GetColorAttachmentTexture(0), BRDFTexture);
 	}

@@ -23,4 +23,10 @@ namespace Daydream
     {
         return Renderer::GetRenderDevice()->CreateSwapchain(_window, _desc);
     }
+	void Swapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
+	{
+		isSwapchainResized = true;
+		desc.width = _width;
+		desc.height = _height;
+	}
 }

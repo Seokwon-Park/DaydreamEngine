@@ -108,7 +108,7 @@ namespace Daydream
 	}
 	bool Application::Run()
 	{
-		Renderer::EnqueueSingleTimeCommand([]() {Renderer::InitSkybox(); });
+		Renderer::EnqueueSingleTimeCommand([]() {Renderer::GetSkybox()->Init(); });
 
 		while (isRunning)
 		{
@@ -185,8 +185,8 @@ namespace Daydream
 		EventDispatcher dispatcher(_event);
 		//_event의 타입이 WindowCloseEvent에 해당하면 OnWindowClose를 실행시킨다.
 		dispatcher.Dispatch<WindowFocusEvent>(BIND_EVENT_FN(OnWindowFocused));
-		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
-		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
+		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClosed));
+		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResized));
 
 		for (Array<Layer*>::iterator itr = layerStack.end(); itr != layerStack.begin();)
 		{
@@ -199,12 +199,12 @@ namespace Daydream
 		//DAYDREAM_CORE_TRACE("{0}", _event.ToString());
 	}
 
-	bool Application::OnWindowClose(WindowCloseEvent& _event)
+	bool Application::OnWindowClosed(WindowCloseEvent& _event)
 	{
 		isRunning = false;
 		return true;
 	}
-	bool Application::OnWindowResize(WindowResizeEvent& _event)
+	bool Application::OnWindowResized(WindowResizeEvent& _event)
 	{
 		if (_event.GetWidth() == 0 || _event.GetHeight() == 0)
 		{
@@ -214,7 +214,13 @@ namespace Daydream
 
 		//DAYDREAM_CORE_INFO("Window Resized : [ {0} , {1} ]", _event.GetWidth(), _event.GetHeight());
 		isMinimized = false;
-		Renderer::OnWindowResize(_event.GetWidth(), _event.GetHeight());
+		DaydreamWindow* window = WindowManager::GetWindow(_event.GetWindowName());
+		if (window == nullptr)
+		{
+			DAYDREAM_CORE_ASSERT(false, "Window Resize Error!");
+			return true;
+		}
+		Renderer::OnWindowResize(window, _event.GetWidth(), _event.GetHeight());
 
 		return false;
 	}

@@ -76,7 +76,7 @@ namespace Daydream
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(_window);
 				data.width = _width;
 				data.height = _height;
-				WindowResizeEvent event(_width, _height);
+				WindowResizeEvent event(data.title, _width, _height);
 				data.eventCallbackFn(event);
 			});
 		glfwSetWindowCloseCallback(glfwWindow, [](GLFWwindow* _window)

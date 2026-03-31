@@ -58,11 +58,15 @@ namespace Daydream
 
 	Shared<Texture2D> VulkanFramebuffer::GetColorAttachmentTexture(UInt32 _index)
 	{
+		std::unique_lock<std::shared_mutex> lock(mutex);
+
 		return colorAttachments[_index];
 	}
 
 	void VulkanFramebuffer::Resize(UInt32 _width, UInt32 _height)
 	{
+		std::unique_lock<std::shared_mutex> lock(mutex);
+
 		width = _width;
 		height = _height;
 		extent.width = _width;

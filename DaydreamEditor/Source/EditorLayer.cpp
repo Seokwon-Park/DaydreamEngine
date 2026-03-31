@@ -20,6 +20,8 @@ namespace Daydream
 		AssetManager::LoadAssetMetadataFromDirectory("Resource");
 		AssetManager::LoadAssets(LoadPhase::Early);
 
+		AssetManager::GetAssetByPath<Texture2D>("Resource/skybox.hdr");
+
 		editorCamera = MakeShared<EditorCamera>();
 		activeScene = MakeShared<Scene>("MainScene");
 
@@ -295,14 +297,14 @@ namespace Daydream
 		Renderer::SetTexture2D("NormalTexture", gBufferFramebuffer->GetColorAttachmentTexture(1));
 		Renderer::SetTexture2D("AlbedoTexture", gBufferFramebuffer->GetColorAttachmentTexture(2));
 		Renderer::SetTexture2D("RMAOTexture", gBufferFramebuffer->GetColorAttachmentTexture(3));
-		Renderer::SetTexture2D("BRDFLUT", activeScene->GetSkybox()->GetBRDF());
+		Renderer::SetTexture2D("BRDFLUT", Renderer::GetSkybox()->GetBRDF());
 		Renderer::SetTexture2D("EntityIDTexture", gBufferFramebuffer->GetColorAttachmentTexture(4));
 		Renderer::SetTexture2D("OutlineTexture", maskFramebuffer->GetColorAttachmentTexture(0));
 		Renderer::SetTexture2D("DepthTexture", depthFramebuffer->GetDepthAttachmentTexture());
 		Renderer::SetConstantBuffer("Lights", activeScene->GetLightConstantBuffer());
 		Renderer::SetConstantBuffer("EditorData", entityBuffer);
-		Renderer::SetTextureCube("IrradianceTexture", activeScene->GetSkybox()->GetIrradianceTexture());
-		Renderer::SetTextureCube("Prefilter", activeScene->GetSkybox()->GetPrefilterTexture());
+		Renderer::SetTextureCube("IrradianceTexture", Renderer::GetSkybox()->GetIrradianceTexture());
+		Renderer::SetTextureCube("Prefilter", Renderer::GetSkybox()->GetPrefilterTexture());
 		//deferredLightingMaterial->Bind();
 		Renderer::BindMesh(ResourceManager::GetResource<Mesh>("Quad"));
 		Renderer::DrawIndexed(ResourceManager::GetResource<Mesh>("Quad")->GetIndexCount());

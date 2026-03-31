@@ -778,6 +778,7 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Swapchain.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX\D3DUtility.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Buffer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Common.cpp" />
@@ -808,7 +809,6 @@
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12ResourceState.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Sampler.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Shader.cpp" />
-    <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Swapchain.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Texture.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12TextureCube.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Utility.cpp" />

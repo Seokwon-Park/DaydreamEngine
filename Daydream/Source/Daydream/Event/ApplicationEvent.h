@@ -7,8 +7,11 @@ namespace Daydream
 	class WindowResizeEvent : public Event
 	{
 	public:
-		WindowResizeEvent(UInt32 _width, UInt32 _height)
-			: width(_width), height(_height) {}
+		WindowResizeEvent(String _name, UInt32 _width, UInt32 _height)
+			: name(_name), width(_width), height(_height) {
+		}
+
+		inline String GetWindowName() const { return name; }
 		inline UInt32 GetWidth() const { return width; }
 		inline UInt32 GetHeight() const { return height; }
 		std::string ToString() const override
@@ -18,8 +21,9 @@ namespace Daydream
 			return ss.str();
 		}
 		EVENT_CLASS_TYPE(WindowResize)
-		EVENT_CLASS_CATEGORY(EventCategoryApplication)
+			EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	private:
+		String name;
 		UInt32 width, height;
 	};
 	class WindowCloseEvent : public Event
@@ -27,13 +31,14 @@ namespace Daydream
 	public:
 		WindowCloseEvent() {}
 		EVENT_CLASS_TYPE(WindowClose)
-		EVENT_CLASS_CATEGORY(EventCategoryApplication)
+			EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
-		class WindowFocusEvent : public Event
+	class WindowFocusEvent : public Event
 	{
 	public:
-		WindowFocusEvent(bool _isFocused, String _name) 
-			: isFocused(_isFocused), name(_name){}
+		WindowFocusEvent(bool _isFocused, String _name)
+			: isFocused(_isFocused), name(_name) {
+		}
 		inline bool GetIsFocused() { return isFocused; }
 		inline String GetWindowName() { return name; }
 		std::string ToString() const override
@@ -43,7 +48,7 @@ namespace Daydream
 			return ss.str();
 		}
 		EVENT_CLASS_TYPE(WindowFocus)
-		EVENT_CLASS_CATEGORY(EventCategoryApplication)
+			EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	private:
 		String name;
 		bool isFocused;
@@ -53,21 +58,21 @@ namespace Daydream
 	public:
 		AppTickEvent() {}
 		EVENT_CLASS_TYPE(AppTick)
-		EVENT_CLASS_CATEGORY(EventCategoryApplication)
+			EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 	class AppUpdateEvent : public Event
 	{
 	public:
 		AppUpdateEvent() {}
 		EVENT_CLASS_TYPE(AppUpdate)
-		EVENT_CLASS_CATEGORY(EventCategoryApplication)
+			EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 	class AppRenderEvent : public Event
 	{
 	public:
 		AppRenderEvent() {}
 		EVENT_CLASS_TYPE(AppRender)
-		EVENT_CLASS_CATEGORY(EventCategoryApplication)
+			EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 }
 
