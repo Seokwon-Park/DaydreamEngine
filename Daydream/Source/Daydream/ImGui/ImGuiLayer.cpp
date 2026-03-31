@@ -14,6 +14,26 @@ namespace Daydream
 {
 	namespace
 	{
+		ImDrawData* CloneDrawData(const ::ImDrawData* _srcDrawData)
+		{
+			if (_srcDrawData == nullptr)
+			{
+				return nullptr;
+			}
+
+			::ImDrawData* clonedDrawData = IM_NEW(ImDrawData)(*_srcDrawData);
+			clonedDrawData->CmdLists = ImVector<ImDrawList*>();
+			clonedDrawData->CmdLists.reserve(_srcDrawData->CmdListsCount);
+			for (int i = 0; i < _srcDrawData->CmdListsCount; ++i)
+			{
+				clonedDrawData->CmdLists.push_back(_srcDrawData->CmdLists[i]->CloneOutput());
+			}
+			clonedDrawData->CmdListsCount = clonedDrawData->CmdLists.Size;
+
+			return clonedDrawData;
+		}
+
+
 		void DestroyClonedDrawData(ImDrawData* _drawData)
 		{
 			if (_drawData == nullptr)
@@ -25,7 +45,7 @@ namespace Daydream
 			{
 				IM_DELETE(_drawData->CmdLists[i]);
 			}
-			IM_FREE(_drawData->CmdLists.Data);
+			//IM_FREE(_drawData->CmdLists.Data);
 			IM_DELETE(_drawData);
 		}
 	}
@@ -90,7 +110,7 @@ namespace Daydream
 		io.DisplaySize = ImVec2(static_cast<Float32>(app.GetMainWindow().GetWidth()), static_cast<Float32>(app.GetMainWindow().GetHeight()));
 
 		ImGui::Render();
-		ImDrawData* clonedDrawData = ImGui::GetDrawData() ? ImGui::GetDrawData()->CloneOutput() : nullptr;
+		ImDrawData* clonedDrawData = CloneDrawData(ImGui::GetDrawData());
 		Renderer::Enqueue([clonedDrawData]()
 			{
 				Renderer::GetImGuiRenderer()->RenderDrawData(Renderer::GetActiveCommandList(), clonedDrawData);

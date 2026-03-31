@@ -21,7 +21,31 @@ namespace Daydream
 		template<typename RenderFunction>
 		static void Enqueue(RenderFunction&& _command)
 		{
-			commandQueues[recordingQueueIndex]->AddRenderCommand(std::forward<RenderFunction>(_command));
+			if (useRenderThread)
+			{
+				// 멀티스레드
+				commandQueues[recordingQueueIndex]->AddRenderCommand(std::forward<RenderFunction>(_command));
+			}
+			else
+			{
+				// 싱글스레드(디버깅)용 모드
+				_command();
+			}
+		}
+
+		template<typename RenderFunction>
+		static void EnqueueSingleTimeCommand(RenderFunction&& Function)
+		{
+			if (useRenderThread)
+			{
+				// 멀티스레드
+				commandQueues[recordingQueueIndex]->AddRenderCommand(std::forward<RenderFunction>(_command));
+			}
+			else
+			{
+				// 싱글스레드(디버깅)용 모드
+				_command();
+			}
 		}
 
 		//static RenderCommandList* GetCurrentCommandQueue();
@@ -54,14 +78,16 @@ namespace Daydream
 
 		static void DrawIndexed(UInt32 _indexCount);
 
-
 		static void CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst);
 		static void CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel = 0);
 		static void GenerateMips(Shared<Texture> _texture);
 
 		static void InitSkybox();
+		static void FlushSingleTimeCommands();
 
 		static void Submit();
+
+	
 
 		static ImGuiRenderer* GetImGuiRenderer() { return imguiRenderer.get(); }
 
@@ -81,7 +107,9 @@ namespace Daydream
 		inline static Unique<Skybox> skybox = nullptr;
 
 		/////////////////////////////////  RenderThread  ///////////////////////////////// 
-		inline static bool useRenderThread = true;
+		inline static bool useRenderThread = false;
+
+		inline static Queue<FunctionPtr<void()>> singleTimeCommandQueue;
 		inline static Array<Unique<RenderCommandQueue>> commandQueues;
 		//이 큐가 현재 렌더 스레드에서 사용중인지
 		inline static std::array<std::atomic<bool>, maxCommandListsInFlight> commandQueueBusyFlags;

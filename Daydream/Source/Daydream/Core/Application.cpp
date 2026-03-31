@@ -108,13 +108,15 @@ namespace Daydream
 	}
 	bool Application::Run()
 	{
-		Renderer::InitSkybox();
+		Renderer::EnqueueSingleTimeCommand([]() {Renderer::InitSkybox(); });
+
 		while (isRunning)
 		{
 			timeStep.UpdateTime();
 			float deltaTime = timeStep.GetDeltaTime();
 
 			Renderer::BeginFrame(mainWindow->GetSwapchain());
+			Renderer::FlushSingleTimeCommands(); // 실행할게 있을때만
 			for (Layer* layer : layerStack)
 			{
 				layer->OnUpdate(deltaTime);

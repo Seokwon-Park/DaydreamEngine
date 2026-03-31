@@ -31,6 +31,6 @@ namespace Daydream
 	void D3D11ImGuiRenderer::RenderDrawData(RenderCommandList* _activeCommandList, ImDrawData* _drawData)
 	{
 		ImGuiRenderer::RenderDrawData(_activeCommandList, _drawData);
-		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+		ImGui_ImplDX11_RenderDrawData(_drawData);
 	}
 }

@@ -8,7 +8,7 @@ namespace Daydream
 		RenderCommandList();
 		virtual ~RenderCommandList();
 
-		virtual void Begin(){};
+		virtual void Begin() {};
 		virtual void End() {};
 		virtual void WaitForCompletion() {}
 	protected:

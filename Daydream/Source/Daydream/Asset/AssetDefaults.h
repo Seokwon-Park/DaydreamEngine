@@ -13,5 +13,7 @@ namespace Daydream
         static const AssetHandle DefaultAOHandle;        // º¸Åë Èò»ö
 
         static const AssetHandle DefaultMaterial;        // º¸Åë Èò»ö
+
+        static const AssetHandle QuadMesh;        // º¸Åë Èò»ö
     };
 }

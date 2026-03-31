@@ -22,10 +22,11 @@ namespace Daydream
 		info.QueueFamily = device->GetGraphicsFamilyIndex();
 		info.Queue = device->GetGraphicsQueue();
 		info.DescriptorPool = device->GetDescriptorPool();
-		info.RenderPass = Cast<VulkanSwapchain*>(_window->GetSwapchain())->GetVkRenderPass();
 		info.MinImageCount = 3;
 		info.ImageCount = 3;
-		info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+
+		info.PipelineInfoMain.RenderPass = Cast<VulkanSwapchain*>(_window->GetSwapchain())->GetVkRenderPass();
+		info.PipelineInfoMain.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
 
 		ImGui_ImplVulkan_Init(&info);
 	}
@@ -42,6 +43,6 @@ namespace Daydream
 	void VulkanImGuiRenderer::RenderDrawData(RenderCommandList* _activeCommandList, ImDrawData* _drawData)
 	{
 		ImGuiRenderer::RenderDrawData(_activeCommandList, _drawData);
-		ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), Cast<VulkanRenderCommandList*>(_activeCommandList)->GetVkCommandBuffer());
+		ImGui_ImplVulkan_RenderDrawData(_drawData, Cast<VulkanRenderCommandList*>(_activeCommandList)->GetVkCommandBuffer());
 	}
 }

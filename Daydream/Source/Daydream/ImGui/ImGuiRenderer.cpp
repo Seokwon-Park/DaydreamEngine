@@ -2,6 +2,7 @@
 #include "ImGuiRenderer.h"
 #include "Daydream/Core/Application.h"
 
+#include "imgui.h"
 #include "Daydream/Graphics/Core/Renderer.h"
 #include "backends/imgui_impl_glfw.h"
 
@@ -56,6 +57,9 @@ namespace Daydream
 
 	void ImGuiRenderer::RenderDrawData(RenderCommandList* _activeCommandList, ImDrawData* _drawData)
 	{
-		//mainWindow->GetSwapchain()->GetBackFramebuffer()->Bind();
+		if (_drawData == nullptr)
+		{
+			return;
+		}
 	}		
 }

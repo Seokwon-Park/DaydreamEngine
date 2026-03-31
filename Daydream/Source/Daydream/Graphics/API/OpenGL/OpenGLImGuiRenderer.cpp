@@ -1,6 +1,7 @@
 #include "DaydreamPCH.h"
 #include "OpenGLImGuiRenderer.h"
 
+#include "imgui.h"
 #include "backends/imgui_impl_opengl3.h"
 
 
@@ -32,6 +33,6 @@ namespace Daydream
 	void OpenGLImGuiRenderer::RenderDrawData(RenderCommandList* _activeCommandList, ImDrawData* _drawData)
 	{
 		ImGuiRenderer::RenderDrawData(_activeCommandList, _drawData);
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		ImGui_ImplOpenGL3_RenderDrawData(_drawData);
 	}
 }

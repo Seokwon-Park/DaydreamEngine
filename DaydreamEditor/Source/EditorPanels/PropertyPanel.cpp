@@ -47,10 +47,10 @@ namespace Daydream
             }
             ImGui::Separator(); // 이름 입력창 아래에 구분선을 추가
             
-			const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen
-				| ImGuiTreeNodeFlags_Framed
-				| ImGuiTreeNodeFlags_SpanAvailWidth
-				| ImGuiTreeNodeFlags_AllowItemOverlap;
+            const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen
+                | ImGuiTreeNodeFlags_Framed
+                | ImGuiTreeNodeFlags_SpanAvailWidth
+				| ImGuiTreeNodeFlags_AllowOverlap;
 
             auto& components = selectedEntity->GetAllComponents();
             for (size_t i = 0; i < components.size(); ++i)
