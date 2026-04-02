@@ -26,7 +26,7 @@ namespace Daydream
 		surface = vk::UniqueSurfaceKHR(tempSurface, vk::detail::ObjectDestroy<vk::Instance, vk::detail::DispatchLoaderDynamic>(device->GetInstance()));
 
 		CreateSwapchain();
-		CreateCommandBuffers();
+		CreateCommandLists();
 
 		vk::SemaphoreCreateInfo semaphoreInfo{};
 
@@ -35,7 +35,7 @@ namespace Daydream
 
 		imageAvailableSemaphores.resize(imageCount);
 		renderFinishedSemaphores.resize(imageCount);
-		inFlightFences.resize(imageCount); 
+		inFlightFences.resize(imageCount);
 		for (UInt32 i = 0; i < imageCount; i++)
 		{
 			imageAvailableSemaphores[i] = device->GetDevice().createSemaphoreUnique(semaphoreInfo);
@@ -111,9 +111,9 @@ namespace Daydream
 		swapchain = vk::UniqueSwapchainKHR(newSwapchain, vk::detail::ObjectDestroy<vk::Device, vk::detail::DispatchLoaderDynamic>(device->GetDevice()));
 
 		swapchainImages = device->GetDevice().getSwapchainImagesKHR(swapchain.get());
-
+			
 	}
-	void VulkanSwapchain::CreateCommandBuffers()
+	void VulkanSwapchain::CreateCommandLists()
 	{
 		commandLists.assign(imageCount, MakeUnique<VulkanRenderCommandList>(device));
 	}
@@ -148,10 +148,6 @@ namespace Daydream
 		}
 
 		currentFrame = (currentFrame + 1) % imageCount;
-		//BeginFrame();
-
-
-		//framebuffers[currentFrame]->Begin();
 	}
 
 	void VulkanSwapchain::BeginFrame()
@@ -161,15 +157,14 @@ namespace Daydream
 		currentCommandBuffer = commandLists[currentFrame]->GetVkCommandBuffer();
 		commandLists[currentFrame]->Begin();
 		//이미지를 GPU에 요청. 사용가능한 이미지의 인덱스를 imageIndex로 전달하고 imageAvailableSemaphore에 신호를 전달하라는 명령
-
-		auto result = device->GetDevice().acquireNextImageKHR(swapchain.get(), UINT64_MAX, imageAvailableSemaphores[currentFrame].get(), VK_NULL_HANDLE, &imageIndex);
-		if (result == vk::Result::eErrorOutOfDateKHR)
+		if (isSwapchainResized)
 		{
 			RecreateSwapchain();
+			isSwapchainResized = false;
 		}
+		vk::Result result = device->GetDevice().acquireNextImageKHR(swapchain.get(), UINT64_MAX, imageAvailableSemaphores[currentFrame].get(), VK_NULL_HANDLE, &imageIndex);
 
 		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::Vulkan, "Wrong API");
-
 	}
 
 	void VulkanSwapchain::EndFrame()

@@ -58,6 +58,9 @@ namespace Daydream
 		static void BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer);
 		static void EndRenderPass(Shared<RenderPass> _renderPass);
 
+		static void BeginSwapchainRenderPass(Swapchain* _swapchain);
+		static void EndSwapchainRenderPass(Swapchain* _swapchain);
+
 		static void BindPipelineState(Shared<PipelineState> _pipelineState);
 
 		static void BindMesh(Shared<Mesh> _mesh);

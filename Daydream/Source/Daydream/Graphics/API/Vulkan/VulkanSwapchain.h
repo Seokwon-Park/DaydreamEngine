@@ -23,8 +23,6 @@ namespace Daydream
 	{
 	public:
 		VulkanSwapchain(VulkanRenderDevice* _device, DaydreamWindow* _window, const SwapchainDesc& _desc);
-		void CreateSwapchain();
-		void CreateCommandBuffers();
 		virtual ~VulkanSwapchain() override;
 
 		virtual void SetVSync(bool _enabled) override;
@@ -36,7 +34,10 @@ namespace Daydream
 		//virtual void BeginRenderPass() override;
 		//virtual void EndRenderPass() override;
 
-		inline virtual Shared<Framebuffer> GetCurrentFramebuffer() const { return framebuffers[imageIndex]; };
+		inline virtual Shared<Framebuffer> GetCurrentFramebuffer() const 
+		{ 
+			return framebuffers[imageIndex]; 
+		};
 		inline virtual Shared<RenderCommandList> GetCurrentCommandList() const override { return commandLists[currentFrame]; }
 
 		void RecreateSwapchain();
@@ -47,6 +48,9 @@ namespace Daydream
 		inline vk::RenderPass GetVkRenderPass() const { return renderPass->GetVkRenderPass(); }
 		inline Array<vk::Image> GetSwapchainImages() const { return swapchainImages; };
 	private:
+		void CreateSwapchain();
+		void CreateCommandLists();
+
 		vk::SurfaceFormatKHR ChooseSwapSurfaceFormat(const Array<vk::SurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat);
 		vk::PresentModeKHR ChooseSwapPresentMode(const Array<vk::PresentModeKHR>& _availablePresentModes);
 		vk::Extent2D ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& _capabilities);

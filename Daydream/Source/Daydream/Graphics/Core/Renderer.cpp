@@ -139,6 +139,22 @@ namespace Daydream
 			});
 	}
 
+	void Renderer::BeginSwapchainRenderPass(Swapchain* _swapchain)
+	{
+		Enqueue([_swapchain]()
+			{
+				renderContext->BeginRenderPass(_swapchain->GetRenderPass(), _swapchain->GetCurrentFramebuffer());
+			});
+	}
+
+	void Renderer::EndSwapchainRenderPass(Swapchain* _swapchain)
+	{
+		Enqueue([_swapchain]()
+			{
+				renderContext->EndRenderPass(_swapchain->GetRenderPass());
+			});
+	}
+
 	void Renderer::BindPipelineState(Shared<PipelineState> _pipelineState)
 	{
 		Enqueue([_pipelineState]()

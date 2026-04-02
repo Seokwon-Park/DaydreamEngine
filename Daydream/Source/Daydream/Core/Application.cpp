@@ -121,14 +121,14 @@ namespace Daydream
 			{
 				layer->OnUpdate(deltaTime);
 			}
-			Renderer::BeginRenderPass(mainWindow->GetSwapchain()->GetRenderPass(), mainWindow->GetSwapchain()->GetCurrentFramebuffer());
+			Renderer::BeginSwapchainRenderPass(mainWindow->GetSwapchain());
 			imGuiLayer->BeginImGui();
 			{
 				for (Layer* layer : layerStack)
 					layer->OnImGuiRender();
 			}
 			imGuiLayer->EndImGui();
-			Renderer::EndRenderPass(mainWindow->GetSwapchain()->GetRenderPass());
+			Renderer::EndSwapchainRenderPass(mainWindow->GetSwapchain());
 			//auto [x, y] = Input::GetMousePosition();
 			////DAYDREAM_CORE_TRACE("{0}, {1}", x, y);
 
