@@ -1,9 +1,41 @@
 #include "DaydreamPCH.h"
 #include "VulkanBuffer.h"
+#include "VulkanUtility.h"
 
 namespace Daydream
 {
-	VulkanVertexBuffer::VulkanVertexBuffer(VulkanRenderDevice* _device, BufferUsage _usage, UInt32 _size)
+	VulkanGPUBuffer::VulkanGPUBuffer(VulkanRenderDevice* _device, const BufferDesc& _desc)
+		:GPUBuffer(_desc)
+	{
+		device = _device;
+
+		// 1. 유틸리티를 통해 구조체 변환
+		vk::BufferCreateInfo bufferInfo = GraphicsUtility::Vulkan::ConvertToVulkanCreateInfo(_desc);
+		vma::AllocationCreateInfo allocInfo = GraphicsUtility::Vulkan::ConvertToVMAAllocationInfo(_desc);
+
+		std::tie(buffer, bufferAllocation) = device->CreateBuffer(bufferInfo, allocInfo);
+
+		vma::AllocationInfo allocationInfo;
+		device->GetAllocator().getAllocationInfo(bufferAllocation.get(), &allocationInfo);
+
+	}
+
+	VulkanGPUBuffer::~VulkanGPUBuffer()
+	{
+	}
+
+	void* VulkanGPUBuffer::Map()
+	{
+		return nullptr;
+	}
+	void VulkanGPUBuffer::Unmap()
+	{
+	}
+	void VulkanGPUBuffer::Update(const void* _data, UInt32 _size)
+	{
+	}
+
+	VulkanVertexBuffer::VulkanVertexBuffer(VulkanRenderDevice* _device, MemoryUsage _usage, UInt32 _size)
 	{
 		device = _device;
 		size = _size;
@@ -12,7 +44,7 @@ namespace Daydream
 		vk::BufferCreateInfo bufferInfo{};
 		vma::AllocationCreateInfo allocInfo{};
 
-		if (usage == BufferUsage::Static)
+		if (usage == MemoryUsage::Static)
 		{
 			bufferInfo.size = _size;
 			bufferInfo.usage = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer;
@@ -23,7 +55,7 @@ namespace Daydream
 
 			std::tie(vertexBuffer, vertexBufferAllocation) = device->CreateBuffer(bufferInfo, allocInfo);
 		}
-		else if (usage == BufferUsage::Dynamic)
+		else if (usage == MemoryUsage::Dynamic)
 		{
 			bufferInfo.size = _size;
 			bufferInfo.usage = vk::BufferUsageFlagBits::eVertexBuffer;
@@ -52,7 +84,7 @@ namespace Daydream
 
 	void VulkanVertexBuffer::SetData(const void* _data, UInt32 _dataSize)
 	{
-		if (usage == BufferUsage::Static)
+		if (usage == MemoryUsage::Static)
 		{
 			DAYDREAM_CORE_ASSERT(false, "Cannot call SetData on a static buffer after creation!");
 		}

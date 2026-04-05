@@ -3,18 +3,18 @@
 
 namespace Daydream
 {
-	D3D12VertexBuffer::D3D12VertexBuffer(D3D12RenderDevice* _device, BufferUsage _usage, UInt32 _size, UInt32 _stride)
+	D3D12VertexBuffer::D3D12VertexBuffer(D3D12RenderDevice* _device, MemoryUsage _usage, UInt32 _size, UInt32 _stride)
 	{
 		device = _device;
 		usage = _usage;
 		bufferSize = _size;
 		stride = _stride;
 
-		if (usage == BufferUsage::Static)
+		if (usage == MemoryUsage::Static)
 		{
 			vertexBuffer = _device->CreateBuffer(_size, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_COPY_DEST);
 		}
-		else if (usage == BufferUsage::Dynamic)
+		else if (usage == MemoryUsage::Dynamic)
 		{
 			vertexBuffer = _device->CreateBuffer(_size, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
 

@@ -150,7 +150,7 @@ namespace Daydream
 	}
 	Shared<VertexBuffer> D3D11RenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
 	{
-		Shared<D3D11VertexBuffer> buffer = MakeShared<D3D11VertexBuffer>(this, BufferUsage::Dynamic, _size, _stride, nullptr);
+		Shared<D3D11VertexBuffer> buffer = MakeShared<D3D11VertexBuffer>(this, MemoryUsage::Dynamic, _size, _stride, nullptr);
 		if (_initialData != nullptr)
 		{
 			buffer->SetData(_initialData, _initialDataSize);
@@ -161,7 +161,7 @@ namespace Daydream
 	Shared<VertexBuffer> D3D11RenderDevice::CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData)
 	{
 		//return MakeShared<D3D11VertexBuffer>();
-		return MakeShared<D3D11VertexBuffer>(this, BufferUsage::Static, _size, _stride, _initialData);
+		return MakeShared<D3D11VertexBuffer>(this, MemoryUsage::Static, _size, _stride, _initialData);
 	}
 
 	Shared<IndexBuffer> Daydream::D3D11RenderDevice::CreateIndexBuffer(const UInt32* _indices, UInt32 _count)

@@ -17,6 +17,7 @@ namespace Daydream
 		{
 			Application::Init();
 			AttachLayer(new EditorLayer());
+			Application::GetMainWindow().ReleaseContext();
 			return true;
 		}
 	};
@@ -26,7 +27,7 @@ namespace Daydream
 		ApplicationSpecification spec;
 		spec.Name = "Daydream Engine Editor";
 		spec.WorkingDirectory = "../Lab";
-		spec.rendererAPI = RendererAPIType::Vulkan;
+		spec.rendererAPI = RendererAPIType::OpenGL;
 		return new EditorApplication(spec);
 	}
 }

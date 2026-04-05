@@ -140,7 +140,6 @@ namespace Daydream
 			fout.close();
 		}
 
-
 		Path materialDir = modelPath.parent_path() / "Materials";
 		if (!FileSystem::exists(materialDir))
 			FileSystem::create_directory(materialDir);
@@ -313,11 +312,11 @@ namespace Daydream
 		YAML::Node textureNode = matNode["Textures"];
 		if (textureNode)
 		{
-			// YAML::const_iterator를 사용하여 Key(슬롯이름)와 Value(UUID)를 쌍으로 가져옵니다.
+			// YAML::const_iterator를 사용하여 Key(슬롯이름)와 Value(UUID)를 쌍으로 가져오기
 			for (auto it = textureNode.begin(); it != textureNode.end(); ++it)
 			{
-				String slotName = it->first.as<String>();      // 예: "AlbedoTexture"
-				String handleStr = it->second.as<String>();    // 예: "de27a743-..."
+				String slotName = it->first.as<String>();      // 예) "AlbedoTexture"
+				String handleStr = it->second.as<String>();    // 예) "de27a743-..."
 
 				// 문자열 UUID를 AssetHandle로 변환
 				AssetHandle handle(handleStr);
@@ -341,8 +340,6 @@ namespace Daydream
 				}
 			}
 		}
-
-
 
 		return newMaterial;
 

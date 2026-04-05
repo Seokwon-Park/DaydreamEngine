@@ -16,8 +16,7 @@ namespace Daydream
 
 	void EditorLayer::OnAttach()
 	{
-
-		AssetManager::LoadAssetMetadataFromDirectory("Resource");
+		//AssetManager::LoadAssetMetadataFromDirectory("Resource");
 		AssetManager::LoadAssets(LoadPhase::Early);
 
 		AssetManager::GetAssetByPath<Texture2D>("Resource/skybox.hdr");
@@ -687,11 +686,11 @@ namespace Daydream
 		if (isViewportHovered && !isGuizmoInteract && Input::GetMouseDown(Mouse::ButtonLeft))
 		{
 			//DAYDREAM_INFO("{}", gBufferFramebuffer->ReadEntityHandleFromPixel(GetViewportMousePos()));
-			int test = gBufferFramebuffer->ReadEntityHandleFromPixel(GetViewportMousePos());
-			if (test != 0)
-			{
-				sceneHierarchyPanel->SetSelectedEntity(activeScene->GetEntity(EntityHandle(test)));
-			}
+			//int test = gBufferFramebuffer->ReadEntityHandleFromPixel(GetViewportMousePos());
+			//if (test != 0)
+			//{
+			//	sceneHierarchyPanel->SetSelectedEntity(activeScene->GetEntity(EntityHandle(test)));
+			//}
 		}
 		//DAYDREAM_INFO("Mouse Coord = {0}, {1}", GetViewportMousePos().first, GetViewportMousePos().second);
 

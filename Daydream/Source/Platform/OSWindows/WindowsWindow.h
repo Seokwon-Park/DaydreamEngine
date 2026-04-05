@@ -24,12 +24,12 @@ namespace Daydream
 		inline UInt32 GetWidth() const override { return windowData.width; }
 		inline UInt32 GetHeight() const override { return windowData.height; }
 
-		inline void SetEventCallback(const EventCallbackFn& _callbackFn) override { windowData.eventCallbackFn = _callbackFn; }
-		void SetVSync(bool _enabled) override;
-		bool IsVSync() const override;
+		inline virtual void SetEventCallback(const EventCallbackFn& _callbackFn) override { windowData.eventCallbackFn = _callbackFn; }
+		virtual void SetVSync(bool _enabled) override;
+		virtual bool IsVSync() const override;
 
-		inline int GetKeyState(int _key) const override { return windowData.keyStates[_key]; }
-		inline int GetMouseState(int _button) const override { return windowData.mouseStates[_button]; }
+		inline virtual int GetKeyState(int _key) const override { return windowData.keyStates[_key]; }
+		inline virtual int GetMouseState(int _button) const override { return windowData.mouseStates[_button]; }
 
 		inline Pair<Float32, Float32> GetMousePos() const override
 		{
@@ -44,10 +44,11 @@ namespace Daydream
 		inline bool GetIsKeyDown(int _key) const override { return windowData.keyDownChecker[_key]; }
 		inline void SetKeyDown(int _key) override { windowData.keyDownChecker[_key] = true; }
 
-		inline bool GetIsMouseDown(int _key) const override { return windowData.mouseDownChecker[_key]; }
-		inline void SetMouseDown(int _key) override { windowData.mouseDownChecker[_key] = true; }
-		void OnUpdateInputState() override;
+		inline virtual bool GetIsMouseDown(int _key) const override { return windowData.mouseDownChecker[_key]; }
+		inline virtual void SetMouseDown(int _key) override { windowData.mouseDownChecker[_key] = true; }
+		virtual void OnUpdateInputState() override;
 
+		virtual void ReleaseContext() override;
 	private:
 		void Init(const WindowProps& _props);
 		void Shutdown();

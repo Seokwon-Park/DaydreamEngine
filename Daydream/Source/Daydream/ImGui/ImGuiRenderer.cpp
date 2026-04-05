@@ -52,7 +52,6 @@ namespace Daydream
 
 	void ImGuiRenderer::NewFrame()
 	{
-		ImGui_ImplGlfw_NewFrame();
 	}
 
 	void ImGuiRenderer::RenderDrawData(RenderCommandList* _activeCommandList, ImDrawData* _drawData)

@@ -4,6 +4,31 @@
 
 namespace Daydream
 {
+	struct BufferDesc
+	{
+		UInt32 size = 0;
+		BufferUsage bufferUsage = BufferUsage::None;
+		MemoryUsage memoryUsage = MemoryUsage::Static;
+	};
+
+	class GPUBuffer
+	{
+	public:
+		GPUBuffer(const BufferDesc& _desc);
+		virtual ~GPUBuffer() {}
+
+		virtual void* Map() = 0;
+		virtual void Unmap() = 0;
+		virtual void Update(const void* _data, UInt32 _size) = 0;
+		
+
+		BufferDesc GetDesc() const { return desc; }
+
+		/*static Shared<GPUBuffer> Create(const BufferDesc& _desc);*/
+	protected:
+		BufferDesc desc;
+	};
+
 	class VertexBuffer
 	{
 	public:
@@ -14,14 +39,14 @@ namespace Daydream
 
 		virtual void* GetNativeHandle() const = 0;
 		virtual void SetData(const void* _data, UInt32 _dataSize) = 0;
-		
+
 		inline UInt32 GetStride() const { return stride; };
 
 		static Shared<VertexBuffer> CreateDynamic(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize = 0, const void* _initialData = nullptr);
 		static Shared<VertexBuffer> CreateStatic(UInt32 _size, UInt32 _stride, const void* _initialData);
 	protected:
 		UInt32 stride;
-		BufferUsage usage;
+		MemoryUsage usage;
 	};
 
 	class IndexBuffer
@@ -57,8 +82,8 @@ namespace Daydream
 	protected:
 		void* data;
 		UInt32 size;
-
 	};
+
 
 }
 

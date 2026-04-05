@@ -10,7 +10,8 @@ namespace Daydream
         Skybox();
         ~Skybox();
 
-        void Init();
+        void CreateResources();
+        void Generate();
         void Update();
 
         void GenerateHDRCubemap(Shared<Texture2D> _texture);

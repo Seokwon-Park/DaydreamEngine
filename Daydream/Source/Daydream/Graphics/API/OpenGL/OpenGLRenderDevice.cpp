@@ -57,7 +57,7 @@ namespace Daydream
 	}
 
 
-	Unique<RenderContext> Daydream::OpenGLRenderDevice::CreateContext()
+	Unique<RenderContext> OpenGLRenderDevice::CreateContext()
 	{
 		return MakeUnique<OpenGLRenderContext>();
 	}

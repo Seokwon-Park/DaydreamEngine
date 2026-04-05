@@ -1,6 +1,7 @@
 #include "DaydreamPCH.h"
 #include "VulkanFramebuffer.h"
 #include "VulkanSwapchain.h"
+#include "Daydream/Graphics/Core/RenderCommandList.h"
 
 namespace Daydream
 {
@@ -89,12 +90,14 @@ namespace Daydream
 
 	UInt32 VulkanFramebuffer::ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY)
 	{
+		if (entityTexture == nullptr)
+		{
+			DAYDREAM_CORE_WARN("This Framebuffer has no EntityTexture!");
+		}
 		vk::Image srcImage = entityTexture->GetVkImage(); // Entity ID가 담긴 소스 이미지
 
 		vk::CommandBuffer cmd = device->BeginSingleTimeCommands();
 
-		// 3. 이미지 레이아웃 변경 (Barrier): ??? -> TRANSFER_SRC_OPTIMAL
-		// 현재 레이아웃을 추적해야 하지만, 보통 COLOR_ATTACHMENT_OPTIMAL이거나 SHADER_READ_ONLY_OPTIMAL 일 것입니다.
 		vk::ImageMemoryBarrier barrierToTransfer{};
 		barrierToTransfer.oldLayout = vk::ImageLayout::eShaderReadOnlyOptimal; // 혹은 추적된 현재 레이아웃
 		barrierToTransfer.newLayout = vk::ImageLayout::eTransferSrcOptimal;

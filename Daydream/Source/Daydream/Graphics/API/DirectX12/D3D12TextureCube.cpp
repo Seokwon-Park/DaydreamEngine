@@ -102,10 +102,7 @@ namespace Daydream
 					device->GetDevice()->CreateShaderResourceView(texture.Get(), &srvDesc, mipSrvCpuHandles[index]);
 				}
 			}
-
-			resizeMaterial = Material::Create(ResourceManager::GetResource<PipelineState>("GenerateMipsPSO"));
 		}
-
 		//cubeFaceConstantBuffers.resize(6);
 		//for (int i = 0; i < 6; i++)
 		//{

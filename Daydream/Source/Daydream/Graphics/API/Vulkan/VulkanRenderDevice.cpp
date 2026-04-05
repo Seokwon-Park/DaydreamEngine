@@ -161,7 +161,7 @@ namespace Daydream
 
 	Shared<VertexBuffer> VulkanRenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
 	{
-		auto vertexBuffer = MakeShared<VulkanVertexBuffer>(this, BufferUsage::Dynamic, _size);
+		auto vertexBuffer = MakeShared<VulkanVertexBuffer>(this, MemoryUsage::Dynamic, _size);
 		if (_initialData)
 		{
 			vertexBuffer->SetData(_initialData, _initialDataSize);
@@ -171,7 +171,7 @@ namespace Daydream
 
 	Shared<VertexBuffer> VulkanRenderDevice::CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData)
 	{
-		auto vertexBuffer = MakeShared<VulkanVertexBuffer>(this, BufferUsage::Static, _size);
+		auto vertexBuffer = MakeShared<VulkanVertexBuffer>(this, MemoryUsage::Static, _size);
 
 		auto [uploadBuffer, uploadBufferAllocation] = CreateBuffer(
 			_size,

@@ -15,6 +15,7 @@ namespace Daydream
 		static bool GetMouseDown(MouseCode _button);
 		static bool GetMousePressed(MouseCode _button);
 		static bool GetMouseReleased(MouseCode _button);
+
 		static Pair<Float32, Float32> GetMousePosition();
 		static Float32 GetMouseX();
 		static Float32 GetMouseY();

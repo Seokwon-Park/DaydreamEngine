@@ -9,7 +9,7 @@ namespace Daydream
 	class D3D12VertexBuffer : public VertexBuffer
 	{
 	public:
-		D3D12VertexBuffer(D3D12RenderDevice* _device, BufferUsage _usage, UInt32 _size, UInt32 _stride);
+		D3D12VertexBuffer(D3D12RenderDevice* _device, MemoryUsage _usage, UInt32 _size, UInt32 _stride);
 		virtual ~D3D12VertexBuffer();
 
 		virtual void Bind() const override;

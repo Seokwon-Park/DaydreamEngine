@@ -6,17 +6,33 @@
 
 namespace Daydream
 {
+	class D3D11GPUBuffer : public GPUBuffer
+	{
+	public:
+		D3D11GPUBuffer(D3D11RenderDevice _device, BufferDesc _desc);
+		virtual ~D3D11GPUBuffer();
+
+		virtual void* Map() override;
+		virtual void Unmap() override;
+		virtual void Update(const void* _data, UInt32 _size) override;
+
+		static Shared<GPUBuffer> Create(UInt32 _size);
+	protected:
+		D3D11RenderDevice* device;
+		ComPtr<ID3D11Buffer> vertexBuffer;
+	};
+
 	class D3D11VertexBuffer : public VertexBuffer
 	{
 	public:
-		D3D11VertexBuffer(D3D11RenderDevice* _device, BufferUsage _usage, UInt32 _size, UInt32 _stride, const void* _initialData);
+		D3D11VertexBuffer(D3D11RenderDevice* _device, MemoryUsage _usage, UInt32 _size, UInt32 _stride, const void* _initialData);
 		virtual ~D3D11VertexBuffer();
 
 		virtual void Bind() const;
 		virtual void Unbind() const;
 
 		virtual void* GetNativeHandle() const override { return vertexBuffer.Get(); };
-		virtual void SetData(const void * _data, UInt32 _dataSize) override;
+		virtual void SetData(const void* _data, UInt32 _dataSize) override;
 
 		ID3D11Buffer* GetID3D11Buffer() const { return vertexBuffer.Get(); }
 	private:

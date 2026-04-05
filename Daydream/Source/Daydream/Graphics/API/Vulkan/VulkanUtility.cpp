@@ -4,6 +4,60 @@
 
 namespace Daydream::GraphicsUtility::Vulkan
 {
+	vk::BufferCreateInfo ConvertToVulkanCreateInfo(const BufferDesc& _desc)
+	{
+		vk::BufferCreateInfo bufferInfo{};
+		bufferInfo.size = _desc.size;
+
+		// 비트 플래그 매핑 (Bitwise Mapping)
+		vk::BufferUsageFlags flags;
+
+		if ((_desc.bufferUsage & BufferUsage::Vertex) != BufferUsage::None)
+			flags |= vk::BufferUsageFlagBits::eVertexBuffer;
+
+		if ((_desc.bufferUsage & BufferUsage::Index) != BufferUsage::None)
+			flags |= vk::BufferUsageFlagBits::eIndexBuffer;
+
+		if ((_desc.bufferUsage & BufferUsage::Constant) != BufferUsage::None)
+			flags |= vk::BufferUsageFlagBits::eUniformBuffer;
+
+		if ((_desc.bufferUsage & BufferUsage::Staging) != BufferUsage::None)
+			flags |= vk::BufferUsageFlagBits::eTransferSrc;
+
+		if ((_desc.bufferUsage & BufferUsage::Readback) != BufferUsage::None)
+			flags |= vk::BufferUsageFlagBits::eTransferDst;
+
+		bufferInfo.usage = flags;
+		return bufferInfo;
+	}
+
+	vma::AllocationCreateInfo ConvertToVMAAllocationInfo(const BufferDesc& _desc)
+	{
+		vma::AllocationCreateInfo allocInfo{};
+
+		switch (_desc.memoryUsage)
+		{
+		case MemoryUsage::Static:
+			// GPU 전용 (가장 빠름)
+			allocInfo.usage = vma::MemoryUsage::eGpuOnly;
+			break;
+
+		case MemoryUsage::Dynamic:
+			// 매 프레임 CPU가 쓰는 용도
+			allocInfo.usage = vma::MemoryUsage::eCpuToGpu;
+			break;
+
+		case MemoryUsage::Readback:
+			// CPU가 GPU 결과값을 읽어오는 용도 (엔티티 피킹 등)
+			allocInfo.usage = vma::MemoryUsage::eGpuToCpu;
+			// Map()을 편하게 하기 위해 미리 매핑해두는 플래그
+			allocInfo.flags = vma::AllocationCreateFlagBits::eMapped;
+			break;
+		}
+
+		return allocInfo;
+	}
+
 	vk::Format ConvertRenderFormatToVkFormat(RenderFormat _format)
 	{
 		switch (_format)

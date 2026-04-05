@@ -300,7 +300,7 @@ namespace Daydream
 			return nullptr;
 		}
 
-		// 3. 로드 성공! 캐시에 저장
+		// 3. 로드 성공 -> 캐시에 저장
 		loadedAssetCache[_uuid] = loadedAsset;
 		loadedAsset->SetAssetName(metadata.name);
 

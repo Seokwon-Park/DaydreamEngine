@@ -45,6 +45,7 @@ namespace Daydream
 
 		virtual void CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst) {};
 		virtual void CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel = 0) {};
+		//virtual void CopyTextureToBuffer(Shared<Texture2D> _srcTexture, Shared<Buffer> _dstBuffer, UInt32 _offsetX, UInt32 _offsetY, UInt32 _width, UInt32 _height) = 0;
 
 		virtual void GenerateMips(Shared<Texture> _texture) {}
 

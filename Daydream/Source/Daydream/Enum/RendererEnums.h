@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Base/MathTypes.h"
+
 namespace Daydream
 {
 	enum class RendererAPIType
@@ -38,10 +40,32 @@ namespace Daydream
 		return static_cast<RenderBindFlags>(static_cast<int>(a) & static_cast<int>(b));
 	}
 
-	enum class BufferUsage
+	enum class BufferUsage : UInt32
+	{
+		None = 0,
+		Vertex = 1 << 0,
+		Index = 1 << 1,
+		Constant = 1 << 2,
+		Storage = 1 << 3,
+		Staging = 1 << 4,
+		Readback = 1 << 5
+	};
+
+	inline BufferUsage operator|(BufferUsage a, BufferUsage b)
+	{
+		return static_cast<BufferUsage>(static_cast<UInt32>(a) | static_cast<UInt32>(b));
+	}
+
+	inline BufferUsage operator&(BufferUsage a, BufferUsage b)
+	{
+		return static_cast<BufferUsage>(static_cast<UInt32>(a) & static_cast<UInt32>(b));
+	}
+
+	enum class MemoryUsage
 	{
 		Static,
-		Dynamic
+		Dynamic,
+		Readback
 	};
 
 	enum class ShaderType
@@ -57,12 +81,12 @@ namespace Daydream
 
 	enum ShaderStage
 	{
-		DaydreamVertexBit		= 1 << 0,
-		DaydreamHullBit		= 1 << 1,
-		DaydreamDomainBit		= 1 << 2,
-		DaydreamGeometryBit	= 1 << 3,
-		DaydreamPixelBit		= 1 << 4,
-		DaydreamComputeBit	= 1 << 5,
+		DaydreamVertexBit = 1 << 0,
+		DaydreamHullBit = 1 << 1,
+		DaydreamDomainBit = 1 << 2,
+		DaydreamGeometryBit = 1 << 3,
+		DaydreamPixelBit = 1 << 4,
+		DaydreamComputeBit = 1 << 5,
 		ShaderAllBit = DaydreamVertexBit | DaydreamHullBit | DaydreamDomainBit | DaydreamGeometryBit | DaydreamPixelBit | DaydreamComputeBit
 	};
 
@@ -194,7 +218,6 @@ namespace Daydream
 		SAMPLER_FEEDBACK_MIP_REGION_USED_OPAQUE = 190,
 
 		A4B4G4R4_UNORM = 191,
-
 
 		//FORCE_UINT = 0xffffffff
 	};

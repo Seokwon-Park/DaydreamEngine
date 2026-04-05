@@ -69,9 +69,10 @@ namespace Daydream
 	{
 		isRunning = true;
 
-		//1. 윈도우 매니저 초기화
+		//1. Initialize WindowManager
 		WindowManager::Init();
-		//2. 메인 윈도우 생성 및 등록
+
+		//2. Create Main Window
 		mainWindow = DaydreamWindow::Create(prop);
 		if (mainWindow == nullptr)
 		{
@@ -79,11 +80,12 @@ namespace Daydream
 		}
 		mainWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
 		mainWindow->SetVSync(true);
-		WindowManager::RegisterWindow(prop.title, mainWindow.get());
+		WindowManager::RegisterWindow(prop.title, &GetMainWindow());
 
 		//에셋 매니저 초기화
 		AssetManager::Init();
 		AssetManager::LoadAssetMetadataFromDirectory("Asset");
+		AssetManager::LoadAssetMetadataFromDirectory("Resource");
 
 		//렌더러 초기화
 		Renderer::Init(prop.rendererAPI);
@@ -99,6 +101,8 @@ namespace Daydream
 
 		AssetManager::LoadAssets(LoadPhase::Normal);// 모델을 로드하기 위해서는 pipeline이 빌드된 상태여야함
 
+		Renderer::GetSkybox()->CreateResources();
+
 		imGuiLayer = new ImGuiLayer();
 		AttachOverlay(imGuiLayer);
 
@@ -108,7 +112,7 @@ namespace Daydream
 	}
 	bool Application::Run()
 	{
-		Renderer::EnqueueSingleTimeCommand([]() {Renderer::GetSkybox()->Init(); });
+		Renderer::EnqueueSingleTimeCommand([]() {Renderer::GetSkybox()->Generate(); });
 
 		while (isRunning)
 		{

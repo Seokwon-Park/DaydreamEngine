@@ -6,10 +6,32 @@
 
 namespace Daydream
 {
+	class VulkanGPUBuffer : public GPUBuffer
+	{
+	public:
+		VulkanGPUBuffer(VulkanRenderDevice* _device, const BufferDesc& _desc);
+		virtual ~VulkanGPUBuffer();
+
+		vk::Buffer GetVkBuffer() const { return buffer.get(); }
+
+		static Shared<GPUBuffer> Create(UInt32 _size);
+	protected:
+		VulkanRenderDevice* device;
+		vma::UniqueBuffer buffer;
+		vma::UniqueAllocation bufferAllocation;
+		vk::DeviceSize size;
+		void* mappedData;
+
+		// Inherited via GPUBuffer
+		void* Map() override;
+		void Unmap() override;
+		void Update(const void* _data, UInt32 _size) override;
+	};
+
 	class VulkanVertexBuffer : public VertexBuffer
 	{
 	public:
-		VulkanVertexBuffer(VulkanRenderDevice* _device, BufferUsage _usage, UInt32 _size);
+		VulkanVertexBuffer(VulkanRenderDevice* _device, MemoryUsage _usage, UInt32 _size);
 		virtual ~VulkanVertexBuffer() override;
 
 		virtual void Bind() const;

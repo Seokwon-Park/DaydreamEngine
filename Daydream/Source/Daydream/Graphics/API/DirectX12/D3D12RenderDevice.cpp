@@ -250,7 +250,7 @@ namespace Daydream
 
 	Shared<VertexBuffer> D3D12RenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
 	{
-		auto vertexBuffer = MakeShared<D3D12VertexBuffer>(this, BufferUsage::Dynamic, _size, _stride);
+		auto vertexBuffer = MakeShared<D3D12VertexBuffer>(this, MemoryUsage::Dynamic, _size, _stride);
 
 		vertexBuffer->SetData(_initialData, _initialDataSize);
 
@@ -259,7 +259,7 @@ namespace Daydream
 
 	Shared<VertexBuffer> D3D12RenderDevice::CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData)
 	{
-		auto vertexBuffer = MakeShared<D3D12VertexBuffer>(this, BufferUsage::Static, _size, _stride);
+		auto vertexBuffer = MakeShared<D3D12VertexBuffer>(this, MemoryUsage::Static, _size, _stride);
 
 		auto uploadBuffer = CreateBuffer(_size, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
 

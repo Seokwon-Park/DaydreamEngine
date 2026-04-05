@@ -208,4 +208,8 @@ namespace Daydream
 			}
 		}
 	}
+	void WindowsWindow::ReleaseContext()
+	{
+		glfwMakeContextCurrent(nullptr);
+	}
 }

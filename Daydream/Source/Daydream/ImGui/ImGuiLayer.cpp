@@ -3,6 +3,7 @@
 
 #include "imgui.h"
 #include "ImGuizmo.h"
+#include "backends/imgui_impl_glfw.h"
 
 #include <GLFW/glfw3.h>
 
@@ -79,7 +80,7 @@ namespace Daydream
 		//}
 
 		SetDarkThemeColors();
-		
+
 		Renderer::GetImGuiRenderer()->Init(&Application::GetInstance().GetMainWindow());
 
 		//ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -99,10 +100,15 @@ namespace Daydream
 	}
 	void ImGuiLayer::BeginImGui()
 	{
-		Renderer::GetImGuiRenderer()->NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		Renderer::Enqueue([]()
+			{
+				Renderer::GetImGuiRenderer()->NewFrame();
+			});
 		ImGui::NewFrame();
 		ImGuizmo::BeginFrame();
 	}
+
 	void ImGuiLayer::EndImGui()
 	{
 		ImGuiIO& io = ImGui::GetIO();

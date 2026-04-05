@@ -5,7 +5,29 @@
 
 namespace Daydream
 {
-	D3D11VertexBuffer::D3D11VertexBuffer(D3D11RenderDevice* _device, BufferUsage _usage, UInt32 _size, UInt32 _stride, const void* _initialData)
+	D3D11GPUBuffer::D3D11GPUBuffer(D3D11RenderDevice _device, BufferDesc _desc)
+		:GPUBuffer(_desc)
+	{
+	}
+
+	D3D11GPUBuffer::~D3D11GPUBuffer()
+	{
+	}
+
+	void* D3D11GPUBuffer::Map()
+	{
+		return nullptr;
+	}
+
+	void D3D11GPUBuffer::Unmap()
+	{
+	}
+
+	void D3D11GPUBuffer::Update(const void* _data, UInt32 _size)
+	{
+	}
+
+	D3D11VertexBuffer::D3D11VertexBuffer(D3D11RenderDevice* _device, MemoryUsage _usage, UInt32 _size, UInt32 _stride, const void* _initialData)
 	{
 		device = _device;
 		stride = _stride;
@@ -19,7 +41,7 @@ namespace Daydream
 		bufferDesc.StructureByteStride = 0;
 		
 		HRESULT hr;
-		if (usage == BufferUsage::Static)
+		if (usage == MemoryUsage::Static)
 		{
 			bufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 			bufferDesc.CPUAccessFlags = 0;
@@ -53,7 +75,7 @@ namespace Daydream
 	}
 	void Daydream::D3D11VertexBuffer::SetData(const void* _data, UInt32 _dataSize)
 	{
-		if (usage == BufferUsage::Static)
+		if (usage == MemoryUsage::Static)
 		{
 			DAYDREAM_CORE_ASSERT(false, "Cannot call SetData on a static buffer after creation!");
 			return;

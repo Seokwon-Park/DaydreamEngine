@@ -14,14 +14,12 @@ namespace Daydream
 	{
 		desc = _desc;
 		window = (GLFWwindow*)_window->GetNativeWindow();
-		glfwMakeContextCurrent(window);
-
+		
 		RenderPassAttachmentDesc colorDesc;
 		colorDesc.format = _desc.format;
 		colorDesc.isSwapchain = true;
 		RenderPassDesc rpDesc{};
 		rpDesc.colorAttachments.push_back(colorDesc);
-		
 
 		mainRenderPass = MakeShared<OpenGLRenderPass>(rpDesc);
 
@@ -46,6 +44,11 @@ namespace Daydream
 	//}
 	void OpenGLSwapchain::BeginFrame()
 	{
+		GLFWwindow* currentContext = glfwGetCurrentContext();
+		if (currentContext != window)
+		{
+			glfwMakeContextCurrent(window);
+		}
 	}
 	void OpenGLSwapchain::EndFrame()
 	{

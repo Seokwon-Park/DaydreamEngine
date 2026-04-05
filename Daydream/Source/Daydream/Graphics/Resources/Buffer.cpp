@@ -5,6 +5,7 @@
 #include "Daydream/Graphics/Core/Renderer.h"
 #include "Daydream/Graphics/Core/RenderContext.h"
 
+
 namespace Daydream
 {
 	Shared<VertexBuffer> VertexBuffer::CreateDynamic(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
@@ -21,9 +22,16 @@ namespace Daydream
 	{
 		return Renderer::GetRenderDevice()->CreateIndexBuffer(_indices, _size);
 	}
+
 	Shared<ConstantBuffer> ConstantBuffer::Create(UInt32 _size)
 	{
 		return Renderer::GetRenderDevice()->CreateConstantBuffer(_size);
+	}
+
+
+	GPUBuffer::GPUBuffer(const BufferDesc& _desc)
+	{
+		desc = _desc;
 	}
 }
 

@@ -1,17 +1,21 @@
 #pragma once
 
 #include "vulkan/vulkan.hpp"
+#include "vk_mem_alloc.hpp"
 
 #include "Daydream/Enum/RendererEnums.h"
 #include "Daydream/Graphics/Utility/GraphicsUtility.h"
 
+#include "Daydream/Graphics/Resources/Buffer.h"
 #include "Daydream/Graphics/Resources/Sampler.h"
 #include "Daydream/Graphics/States/RasterizerState.h"
 
 
-
 namespace Daydream::GraphicsUtility::Vulkan
 {
+	vk::BufferCreateInfo ConvertToVulkanCreateInfo(const BufferDesc& _desc);
+	vma::AllocationCreateInfo ConvertToVMAAllocationInfo(const BufferDesc& _desc);
+
 	vk::Format ConvertRenderFormatToVkFormat(RenderFormat _format);
 	vk::ShaderStageFlagBits ConvertToShaderStageFlagBit(ShaderType _type);
 	vk::ImageUsageFlags ConvertToVkImageUsageFlags(RenderBindFlags usageFlags);

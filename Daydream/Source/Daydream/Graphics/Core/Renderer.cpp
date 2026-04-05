@@ -233,14 +233,6 @@ namespace Daydream
 			});
 	}
 
-	void Renderer::InitSkybox()
-	{
-		Enqueue([]()
-			{
-				skybox->Init();
-			});
-	}
-
 	void Renderer::FlushSingleTimeCommands()
 	{
 		//Queue<FunctionPtr<void()>> queuedCommands;
@@ -278,8 +270,8 @@ namespace Daydream
 			std::unique_lock<std::mutex> lock(commandQueueStateMutex);
 			commandQueueStateCV.wait(lock, []()
 				{
-					// 메인 스레드가 다음으로 쓰려고 하는 큐를, 렌더 스레드가 아직도 지우지 못하고(true)있다면
-					// 메인 스레드는 CPU를 점유하지 않고 여기서 대기(Wait).
+					// 메인 스레드가 다음으로 쓰려고 하는 큐를, 렌더 스레드가 아직도 지우지 못하고있다면
+					// 메인 스레드는 CPU를 점유하지 않고 여기서 대기
 					// 렌더 스레드가 아까 제출할 콜백을 통해 false로 바꿔주면 깨어나서 다음 프레임 로직을 진행
 					return !commandQueueBusyFlags[recordingQueueIndex].load(std::memory_order_acquire);
 				});
