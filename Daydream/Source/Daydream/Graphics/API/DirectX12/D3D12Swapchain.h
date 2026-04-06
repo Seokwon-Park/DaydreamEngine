@@ -11,7 +11,7 @@ namespace Daydream
 	class D3D12Swapchain : public Swapchain
 	{
 	public:
-		D3D12Swapchain(D3D12RenderDevice* _device, DaydreamWindow* _window, const SwapchainDesc& _desc);
+		D3D12Swapchain(D3D12RenderDevice* _device, const DaydreamWindow& _window, const SwapchainDesc& _desc);
 		virtual ~D3D12Swapchain() override;
 
 		virtual void SetVSync(bool _enabled) override;

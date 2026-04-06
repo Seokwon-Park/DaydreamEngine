@@ -5,11 +5,11 @@
 
 namespace Daydream
 {
-	VulkanSwapchain::VulkanSwapchain(VulkanRenderDevice* _device, DaydreamWindow* _window, const SwapchainDesc& _desc)
+	VulkanSwapchain::VulkanSwapchain(VulkanRenderDevice* _device, const DaydreamWindow& _window, const SwapchainDesc& _desc)
 	{
 		device = _device;
 		desc = _desc;
-		window = Cast<GLFWwindow*>(_window->GetNativeWindow());
+		window = Cast<GLFWwindow*>(_window.GetNativeWindow());
 		//#if defined(DAYDREAM_PLATFORM_WINDOWS)
 		//		VkWin32SurfaceCreateInfoKHR createInfo{};
 		//		createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;

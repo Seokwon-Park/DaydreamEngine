@@ -44,7 +44,9 @@ namespace Daydream
 		//Do Not Call twice
 		static void Init(RendererAPIType _API);
 		static void Shutdown();
-		static void CreateSwapchainForWindow(DaydreamWindow* _window);
+
+		static void Start(DaydreamWindow* _window);
+		static bool CreateSwapchainForWindow(DaydreamWindow& _window);
 		static void SetCurrentWindow(DaydreamWindow* _window) { currentWindow = _window; }
 		static DaydreamWindow* GetCurrentWindow() { return currentWindow; }
 		static void OnWindowResize(DaydreamWindow* _window, UInt32 _width, UInt32 _height);
@@ -63,11 +65,21 @@ namespace Daydream
 
 		static void BindPipelineState(Shared<PipelineState> _pipelineState);
 
-		static void BindMesh(Shared<Mesh> _mesh);
 
 		static void SetTexture2D(const String& _name, Shared<Texture2D> _texture);
 		static void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube);
 		static void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer);
+
+		template <typename DataType>
+		static void UpdateConstantBuffer(Shared<ConstantBuffer> _buffer, const DataType& _data)
+		{
+			Enqueue([_buffer, _data]()
+				{
+					_buffer->Update(&_data, sizeof(DataType));
+				});
+		}
+
+		static void BindMesh(Shared<Mesh> _mesh);
 		static void BindMaterial(Shared<Material> _material);
 
 		static void DrawIndexed(UInt32 _indexCount);

@@ -10,7 +10,7 @@ namespace Daydream
 	class OpenGLSwapchain : public Swapchain
 	{
 	public:
-		OpenGLSwapchain(DaydreamWindow* _window, const SwapchainDesc& _desc);
+		OpenGLSwapchain(const DaydreamWindow& _window, const SwapchainDesc& _desc);
 		virtual ~OpenGLSwapchain() override;
 
 		virtual void SetVSync(bool _enabled) override;

@@ -7,7 +7,7 @@ namespace Daydream
 {
 	GameEntity::GameEntity()
 	{
-		entityHandleConstantBuffer = ConstantBuffer::Create(16);
+		
 	}
 
 	GameEntity::~GameEntity()
@@ -17,7 +17,6 @@ namespace Daydream
 	void GameEntity::Init()
 	{
 		AddComponent<TransformComponent>();
-		entityHandleConstantBuffer->Update(&GetHandle().id, sizeof(UInt32));
 	}
 
 	void GameEntity::Update(Float32 _deltaTime)

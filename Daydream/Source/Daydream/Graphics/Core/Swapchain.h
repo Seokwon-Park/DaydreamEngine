@@ -36,7 +36,7 @@ namespace Daydream
 		void ResizeFramebuffers();
 		void ResizeSwapchain(UInt32 _width, UInt32 _height);
 
-		static Shared<Swapchain> Create(DaydreamWindow* _window, const SwapchainDesc& _desc);
+		static Shared<Swapchain> Create(const DaydreamWindow& _window, const SwapchainDesc& _desc);
 	protected:
 		bool isSwapchainResized = false;
 		SwapchainDesc desc;

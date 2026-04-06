@@ -26,7 +26,7 @@ namespace Daydream
 
 		editorCamera->SetPosition({ 0.0f,0.0f,-2.0f });
 		viewProjMat = ConstantBuffer::Create(sizeof(Daydream::Matrix4x4));
-		viewProjMat->Update(&editorCamera->GetViewProjectionMatrix(), sizeof(Daydream::Matrix4x4));
+		//viewProjMat->Update(&editorCamera->GetViewProjectionMatrix(), sizeof(Daydream::Matrix4x4));
 
 		entityBuffer = ConstantBuffer::Create(sizeof(EntityInfo));
 		info.entityID = 0;
@@ -167,7 +167,10 @@ namespace Daydream
 	{
 		editorCamera->Update(_deltaTime);
 		sceneHierarchyPanel->Update();
-		viewProjMat->Update(&editorCamera->GetViewProjectionMatrix(), sizeof(Daydream::Matrix4x4));
+		Renderer::Enqueue([this]()
+			{
+				viewProjMat->Update(&editorCamera->GetViewProjectionMatrix(), sizeof(Daydream::Matrix4x4));
+			});
 
 		static bool isViewControlled = false;
 		if (isViewportHovered && Input::GetMouseDown(Mouse::ButtonRight))
@@ -216,11 +219,11 @@ namespace Daydream
 		{
 			GameEntity* entity = activeScene->GetEntity(entityHandle);
 
-			MeshRendererComponent* meshrenderer = entity->GetComponent<MeshRendererComponent>();
-			if (meshrenderer)
+			MeshRendererComponent* meshRenderer = entity->GetComponent<MeshRendererComponent>();
+			if (meshRenderer)
 			{
-				Renderer::SetConstantBuffer("World", entity->GetComponent<TransformComponent>()->GetWorldMatrixConstantBuffer());
-				auto mesh = AssetManager::GetAsset<Mesh>(meshrenderer->GetMesh());
+				Renderer::SetConstantBuffer("World", meshRenderer->GetWorldMatrixConstantBuffer());
+				auto mesh = AssetManager::GetAsset<Mesh>(meshRenderer->GetMesh());
 				if (mesh)
 				{
 					Renderer::BindMesh(mesh);
@@ -240,8 +243,8 @@ namespace Daydream
 			GameEntity* entity = activeScene->GetEntity(entityHandle);
 			MeshRendererComponent* meshRenderer = entity->GetComponent<MeshRendererComponent>();
 			if (meshRenderer == nullptr) continue;
-			Renderer::SetConstantBuffer("World", entity->GetComponent<TransformComponent>()->GetWorldMatrixConstantBuffer());
-			Renderer::SetConstantBuffer("Entity", entity->GetEntityHandleConstantBuffer());
+			Renderer::SetConstantBuffer("World", meshRenderer->GetWorldMatrixConstantBuffer());
+			Renderer::SetConstantBuffer("Entity", meshRenderer->GetEntityHandleConstantBuffer());
 			auto mesh = AssetManager::GetAsset<Mesh>(meshRenderer->GetMesh());
 			auto material = AssetManager::GetAsset<Material>(meshRenderer->GetMaterial());
 			if (mesh && material)
@@ -265,7 +268,7 @@ namespace Daydream
 				auto mesh = AssetManager::GetAsset<Mesh>(meshRenderer->GetMesh());
 
 				Renderer::BindPipelineState(maskPSO);
-				Renderer::SetConstantBuffer("World", entity->GetComponent<TransformComponent>()->GetWorldMatrixConstantBuffer());
+				Renderer::SetConstantBuffer("World", meshRenderer->GetWorldMatrixConstantBuffer());
 				Renderer::SetConstantBuffer("Camera", editorCamera->GetViewProjectionConstantBuffer());
 				if (mesh)
 				{

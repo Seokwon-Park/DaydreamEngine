@@ -10,10 +10,10 @@
 
 namespace Daydream
 {
-	OpenGLSwapchain::OpenGLSwapchain(DaydreamWindow* _window, const SwapchainDesc& _desc)
+	OpenGLSwapchain::OpenGLSwapchain(const DaydreamWindow& _window, const SwapchainDesc& _desc)
 	{
 		desc = _desc;
-		window = (GLFWwindow*)_window->GetNativeWindow();
+		window = (GLFWwindow*)_window.GetNativeWindow();
 		
 		RenderPassAttachmentDesc colorDesc;
 		colorDesc.format = _desc.format;

@@ -16,7 +16,7 @@ namespace Daydream
 	{
 	public:
 		// constrcuter destructer
-		WindowsWindow(const WindowProps& _props);
+		WindowsWindow(const WindowDesc& _desc);
 		virtual ~WindowsWindow() override;
 
 		void OnUpdate() override;
@@ -48,9 +48,10 @@ namespace Daydream
 		inline virtual void SetMouseDown(int _key) override { windowData.mouseDownChecker[_key] = true; }
 		virtual void OnUpdateInputState() override;
 
+		virtual void MakeContext() override;
 		virtual void ReleaseContext() override;
 	private:
-		void Init(const WindowProps& _props);
+		void Init();
 		void Shutdown();
 
 		GLFWwindow* glfwWindow = nullptr;

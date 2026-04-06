@@ -5,6 +5,8 @@
 
 #include "glm/gtc/type_ptr.hpp"
 
+#include "Daydream/Graphics/Core/Renderer.h"
+
 namespace Daydream {
 
 	/////////////////////////////////////////////////////////////////////////////
@@ -32,7 +34,7 @@ namespace Daydream {
 
 	void OpenGLVertexBuffer::Bind() const
 	{
-		GLint currentVAO = 0; 
+		GLint currentVAO = 0;
 		glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &currentVAO);
 		glVertexArrayVertexBuffer(currentVAO, 0, bufferID, 0, stride);
 	}
@@ -42,7 +44,7 @@ namespace Daydream {
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	void OpenGLVertexBuffer::SetData(const void * _data, UInt32 _dataSize)
+	void OpenGLVertexBuffer::SetData(const void* _data, UInt32 _dataSize)
 	{
 		glNamedBufferSubData(bufferID, 0, _dataSize, _data);
 	}
@@ -95,7 +97,7 @@ namespace Daydream {
 	//{
 	//	glBindBufferBase(GL_UNIFORM_BUFFER, 0, bufferID);
 
-	
+
 	void OpenGLConstantBuffer::Update(const void* _data, UInt32 _size)
 	{
 		glNamedBufferSubData(bufferID, 0, _size, _data);

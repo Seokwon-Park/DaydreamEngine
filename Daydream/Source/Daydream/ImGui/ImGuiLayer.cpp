@@ -100,11 +100,8 @@ namespace Daydream
 	}
 	void ImGuiLayer::BeginImGui()
 	{
+		Renderer::GetImGuiRenderer()->NewFrame();
 		ImGui_ImplGlfw_NewFrame();
-		Renderer::Enqueue([]()
-			{
-				Renderer::GetImGuiRenderer()->NewFrame();
-			});
 		ImGui::NewFrame();
 		ImGuizmo::BeginFrame();
 	}
@@ -112,8 +109,8 @@ namespace Daydream
 	void ImGuiLayer::EndImGui()
 	{
 		ImGuiIO& io = ImGui::GetIO();
-		Application& app = Application::GetInstance();
-		io.DisplaySize = ImVec2(static_cast<Float32>(app.GetMainWindow().GetWidth()), static_cast<Float32>(app.GetMainWindow().GetHeight()));
+		//Application& app = Application::GetInstance();
+		//io.DisplaySize = ImVec2(static_cast<Float32>(app.GetMainWindow().GetWidth()), static_cast<Float32>(app.GetMainWindow().GetHeight()));
 
 		ImGui::Render();
 		ImDrawData* clonedDrawData = CloneDrawData(ImGui::GetDrawData());

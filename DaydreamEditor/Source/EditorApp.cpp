@@ -17,7 +17,7 @@ namespace Daydream
 		{
 			Application::Init();
 			AttachLayer(new EditorLayer());
-			Application::GetMainWindow().ReleaseContext();
+			//Application::GetMainWindow().ReleaseContext();
 			return true;
 		}
 	};

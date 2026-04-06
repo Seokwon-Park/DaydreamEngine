@@ -24,7 +24,7 @@ namespace Daydream
 
 	void ModelRendererComponent::Init()
 	{
-		entityHandle->Update(&GetOwner()->GetHandle().id, sizeof(UInt32));
+		Renderer::UpdateConstantBuffer(entityHandle, GetOwner()->GetHandle().id);
 	}
 
 	void ModelRendererComponent::SetModel(Shared<Model> _model)

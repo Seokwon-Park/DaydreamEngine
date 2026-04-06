@@ -214,7 +214,7 @@ namespace Daydream
 				}
 			}
 		}
-		lightBuffer->Update(&lightData, sizeof(LightData));
+		Renderer::UpdateConstantBuffer(lightBuffer, lightData);
 
 		//skybox->Update();
 	}

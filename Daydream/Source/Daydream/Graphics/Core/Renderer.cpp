@@ -68,18 +68,26 @@ namespace Daydream
 		//instance = nullptr;
 	}
 
-	void Renderer::CreateSwapchainForWindow(DaydreamWindow* _window)
+	void Renderer::Start(DaydreamWindow* _window)
+	{
+		_window->ReleaseContext();
+		Enqueue([_window]() {_window->MakeContext(); });
+	}
+
+	bool Renderer::CreateSwapchainForWindow(DaydreamWindow& _window)
 	{
 		SwapchainDesc desc;
-		desc.width = _window->GetWidth();
-		desc.height = _window->GetHeight();
+		desc.width = _window.GetWidth();
+		desc.height = _window.GetHeight();
 		desc.bufferCount = Renderer::maxFramesInFlight;
 		desc.format = RenderFormat::R8G8B8A8_UNORM;
 		desc.isFullscreen = false;
-		desc.isVSync = _window->IsVSync();
+		desc.isVSync = _window.IsVSync();
 
 		Shared<Swapchain> swapchain = renderDevice->CreateSwapchain(_window, desc);
-		_window->SetSwapchain(swapchain);
+		if (swapchain == nullptr) return false;
+		_window.SetSwapchain(swapchain);
+		return true;
 	}
 
 	void Renderer::OnWindowResize(DaydreamWindow* _window, UInt32 _width, UInt32 _height)
@@ -163,13 +171,7 @@ namespace Daydream
 			});
 	}
 
-	void Renderer::BindMesh(Shared<Mesh> _mesh)
-	{
-		Enqueue([_mesh]()
-			{
-				renderContext->BindMesh(_mesh);
-			});
-	}
+
 
 	void Renderer::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
 	{
@@ -192,11 +194,40 @@ namespace Daydream
 				renderContext->SetConstantBuffer(_name, _buffer);
 			});
 	}
+
+	void Renderer::BindMesh(Shared<Mesh> _mesh)
+	{
+		Enqueue([_mesh]()
+			{
+				renderContext->BindVertexBuffer(_mesh->GetVertexBuffer());
+				renderContext->BindIndexBuffer(_mesh->GetIndexBuffer());
+			});
+	}
+
 	void Renderer::BindMaterial(Shared<Material> _material)
 	{
 		Enqueue([_material]()
 			{
-				renderContext->BindMaterial(_material);
+				const auto& textureInfo = _material->GetAllTexture2D();
+				for (auto [name, texture] : textureInfo)
+				{
+					if (texture == nullptr) continue;
+					renderContext->SetTexture2D(name, texture);
+				}
+
+				const auto& textureCubeInfo = _material->GetAllTextureCube();
+				for (auto [name, textureCube] : textureCubeInfo)
+				{
+					if (textureCube == nullptr) continue;
+					renderContext->SetTextureCube(name, textureCube);
+				}
+
+				const auto& constantBufferInfo = _material->GetAllConstantBuffer();
+				for (auto [name, cbuffer] : constantBufferInfo)
+				{
+					if (cbuffer == nullptr) continue;
+					renderContext->SetConstantBuffer(name, cbuffer);
+				}
 			});
 	}
 

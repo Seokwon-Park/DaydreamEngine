@@ -40,6 +40,8 @@ namespace Daydream
 		virtual void SetTexture2D(const String& _name, Shared<Texture2D> _texture) ;
 		virtual void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube) {};
 		virtual void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer) {};
+
+		virtual void UpdateConstantBuffer(Shared<ConstantBuffer> _buffer, void* _newData, UInt32 _size) {};
 		
 		virtual void Submit() {};
 
@@ -51,8 +53,7 @@ namespace Daydream
 
 		virtual void SetActiveCommandList(Shared<RenderCommandList> _commandList) {};
 
-		void BindMesh(Shared<Mesh> _mesh);
-		void BindMaterial(Shared<Material> _material);
+		
 		Shared<RenderCommandList> GetActiveCommandList() const { return activeCommandList; }
 	protected:
 		Shared<PipelineState> activePipelineState;

@@ -157,10 +157,7 @@ namespace Daydream
 
 	void AssetManager::LoadAssets(LoadPhase _phase)
 	{
-		if (_phase == LoadPhase::Early)
-		{
-			instance->CreateBuiltinTexture2D();
-		}
+		instance->CreateBuiltinTexture2D();
 		for (auto [handle, metadata] : instance->assetRegistry)
 		{
 			if (instance->loadedAssetCache.find(handle) != instance->loadedAssetCache.end())
@@ -170,7 +167,8 @@ namespace Daydream
 
 			LoadPhase phase = GetAssetLoadPhase(metadata.type);
 
-			if (phase != _phase) continue;
+			//LoadAssetCache(metadata.handle);
+			//if (phase != _phase) continue;
 		}
 
 		//	Shared<Asset> newAsset = instance->LoadAssetCache(metadata.handle);
@@ -320,10 +318,10 @@ namespace Daydream
 
 		Array<UInt8> pixelData;
 		pixelData.resize(imageSize * 4);
-		pixelData[3] = 255;
 		pixelData[0] = 255;
 		pixelData[1] = 255;
 		pixelData[2] = 255;
+		pixelData[3] = 255;
 		assetPathMap["DefaultTexture"] = AssetDefaults::DefaultAlbedoHandle;
 		loadedAssetCache[AssetDefaults::DefaultAlbedoHandle] = Texture2D::Create(pixelData.data(), desc);
 

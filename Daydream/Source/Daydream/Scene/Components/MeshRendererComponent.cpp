@@ -14,8 +14,9 @@ namespace Daydream
 {
 	MeshRendererComponent::MeshRendererComponent()
 	{
+		worldMatrixConstantBuffer = ConstantBuffer::Create(sizeof(TransformConstantBufferData));
+		entityHandleConstantBuffer = ConstantBuffer::Create(16);
 		
-
 		maskMaterial = Material::Create(ResourceManager::GetResource<PipelineState>("MaskPSO"));
 		lightMaterial = Material::Create(ResourceManager::GetResource<PipelineState>("DepthPSO"));
 	}
@@ -25,6 +26,17 @@ namespace Daydream
 	}
 	void MeshRendererComponent::Init()
 	{
+		Renderer::UpdateConstantBuffer(entityHandleConstantBuffer, GetOwner()->GetHandle().id);
+	}
+
+	void MeshRendererComponent::Update(Float32 _deltaTime)
+	{
+		TransformConstantBufferData data;
+		data.world = GetOwner()->GetComponent<TransformComponent>()->GetWorldMatrix().GetTranspose();
+		data.invTranspose = data.world;
+		data.invTranspose.Invert();
+		data.invTranspose.Transpose();
+		worldMatrixConstantBuffer->Update(&data, sizeof(TransformConstantBufferData));
 	}
 
 	void MeshRendererComponent::Render()

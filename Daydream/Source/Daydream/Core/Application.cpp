@@ -25,6 +25,8 @@ namespace Daydream
 		prop.title = _specification.Name;
 		prop.rendererAPI = _specification.rendererAPI;
 
+		imGuiLayer = nullptr;
+
 
 		//prop.width = 960;
 		//prop.height = 540;
@@ -69,39 +71,27 @@ namespace Daydream
 	{
 		isRunning = true;
 
-		//1. Initialize WindowManager
-		WindowManager::Init();
-
-		//2. Create Main Window
-		mainWindow = DaydreamWindow::Create(prop);
-		if (mainWindow == nullptr)
+		if (!InitWindow())
 		{
-			DAYDREAM_CORE_ASSERT(false, "No Main Window")
+			DAYDREAM_CORE_ERROR("Failed To Initialize Main Window!");
+			return false;
 		}
-		mainWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
-		mainWindow->SetVSync(true);
-		WindowManager::RegisterWindow(prop.title, &GetMainWindow());
+
+		if (!InitRenderer())
+		{
+			DAYDREAM_CORE_ERROR("Failed To Initialize Renderer!");
+			return false;
+		}
 
 		//에셋 매니저 초기화
 		AssetManager::Init();
 		AssetManager::LoadAssetMetadataFromDirectory("Asset");
 		AssetManager::LoadAssetMetadataFromDirectory("Resource");
 
-		//렌더러 초기화
-		Renderer::Init(prop.rendererAPI);
-
 		AssetManager::LoadAssets(LoadPhase::Early);// 셰이더 때문에 renderer초기화 이후로 미룸
-
-		//렌더러에서 윈도우에 대한 스왑체인 생성
-		Renderer::CreateSwapchainForWindow(mainWindow.get());
-		//렌더러가 사용할 윈도우 설정
-		Renderer::SetCurrentWindow(mainWindow.get());
-		//Renderer::RegisterWindow("TestWindow", testWindow.get());
-		ResourceManager::Init();
-
 		AssetManager::LoadAssets(LoadPhase::Normal);// 모델을 로드하기 위해서는 pipeline이 빌드된 상태여야함
 
-		Renderer::GetSkybox()->CreateResources();
+		ResourceManager::Init();
 
 		imGuiLayer = new ImGuiLayer();
 		AttachOverlay(imGuiLayer);
@@ -110,8 +100,12 @@ namespace Daydream
 
 		return true;
 	}
+
 	bool Application::Run()
 	{
+		//Temp
+		Renderer::GetSkybox()->CreateResources();
+		Renderer::Start(mainWindow.get());
 		Renderer::EnqueueSingleTimeCommand([]() {Renderer::GetSkybox()->Generate(); });
 
 		while (isRunning)
@@ -181,6 +175,40 @@ namespace Daydream
 		WindowManager::Shutdown();
 		mainWindow = nullptr;
 
+		return true;
+	}
+
+	bool Application::InitWindow()
+	{
+		WindowManager::Init();
+
+		//2. Create Main Window
+		mainWindow = DaydreamWindow::Create(prop);
+		if (mainWindow == nullptr)
+		{
+			DAYDREAM_CORE_ASSERT(false, "Main Window is not created!");
+			return false;
+		}
+		mainWindow->SetEventCallback(BIND_EVENT_FN(OnEvent));
+		mainWindow->SetVSync(true);
+
+		//렌더러가 사용할 윈도우 설정
+		//Renderer::RegisterWindow("TestWindow", testWindow.get());
+
+		WindowManager::RegisterWindow(prop.title, &GetMainWindow());
+		return true;
+	}
+
+	bool Application::InitRenderer()
+	{
+		//렌더러 초기화
+		Renderer::Init(prop.rendererAPI);
+		//렌더러에서 윈도우에 대한 스왑체인 생성
+		if (!Renderer::CreateSwapchainForWindow(*mainWindow))
+		{
+			return false;
+		}
+		Renderer::SetCurrentWindow(mainWindow.get());
 		return true;
 	}
 

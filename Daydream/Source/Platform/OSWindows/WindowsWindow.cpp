@@ -21,9 +21,10 @@ namespace Daydream
 		}
 	}
 
-	WindowsWindow::WindowsWindow(const WindowProps& _props)
+	WindowsWindow::WindowsWindow(const WindowDesc& _desc)
 	{
-		Init(_props);
+		desc = _desc;
+		Init();
 	}
 
 	WindowsWindow::~WindowsWindow()
@@ -31,11 +32,11 @@ namespace Daydream
 		Shutdown();
 	}
 
-	void WindowsWindow::Init(const WindowProps& _props)
+	void WindowsWindow::Init()
 	{
-		windowData.title = _props.title;
-		windowData.width = _props.width;
-		windowData.height = _props.height;
+		windowData.title = desc.title;
+		windowData.width = desc.width;
+		windowData.height = desc.height;
 		windowData.keyStates.resize(GLFW_KEY_LAST + 1, 0);
 		windowData.keyDownChecker.resize(GLFW_KEY_LAST + 1, 0);
 		windowData.mouseStates.resize(GLFW_MOUSE_BUTTON_LAST + 1, 0);
@@ -43,7 +44,7 @@ namespace Daydream
 
 		//std::wstring title(windowData.title.begin(), windowData.title.end());
 
-		DAYDREAM_CORE_INFO("Create Window {0} ({1}, {2})", _props.title, _props.width, _props.height);
+		DAYDREAM_CORE_INFO("Create Window {0} ({1}, {2})", desc.title, desc.width, desc.height);
 
 		if (false == isGLFWInitialized)
 		{
@@ -55,20 +56,20 @@ namespace Daydream
 
 		//glfwWindowHint(GLFW_TITLEBAR, false);
 
-		if (_props.rendererAPI != RendererAPIType::OpenGL)
+		if (desc.rendererAPI != RendererAPIType::OpenGL)
 		{
 			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		}
-		glfwWindow = glfwCreateWindow((Int32)_props.width, (Int32)_props.height, _props.title.c_str(), nullptr, nullptr);
+		glfwWindow = glfwCreateWindow((Int32)desc.width, (Int32)desc.height, desc.title.c_str(), nullptr, nullptr);
 		glfwCount++;
 
-		if (_props.rendererAPI == RendererAPIType::OpenGL)
+		if (desc.rendererAPI == RendererAPIType::OpenGL)
 		{
 			glfwMakeContextCurrent(glfwWindow);
 		}
 
 		glfwSetWindowUserPointer(glfwWindow, &windowData);
-		
+
 		windowHandle = glfwGetWin32Window(glfwWindow);
 
 		glfwSetWindowSizeCallback(glfwWindow, [](GLFWwindow* _window, int _width, int _height)
@@ -85,7 +86,7 @@ namespace Daydream
 				WindowCloseEvent event;
 				data.eventCallbackFn(event);
 			});
-		
+
 		glfwSetKeyCallback(glfwWindow, [](GLFWwindow* _window, int _key, int _scancode, int _action, int _mods)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(_window);
@@ -206,6 +207,13 @@ namespace Daydream
 			{
 				windowData.mouseStates[i] = DAYDREAM_IDLE;
 			}
+		}
+	}
+	void WindowsWindow::MakeContext()
+	{
+		if (desc.rendererAPI == RendererAPIType::OpenGL)
+		{
+			glfwMakeContextCurrent(glfwWindow);
 		}
 	}
 	void WindowsWindow::ReleaseContext()

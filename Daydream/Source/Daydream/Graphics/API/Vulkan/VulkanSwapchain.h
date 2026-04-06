@@ -22,7 +22,7 @@ namespace Daydream
 	class VulkanSwapchain : public Swapchain
 	{
 	public:
-		VulkanSwapchain(VulkanRenderDevice* _device, DaydreamWindow* _window, const SwapchainDesc& _desc);
+		VulkanSwapchain(VulkanRenderDevice* _device, const DaydreamWindow& _window, const SwapchainDesc& _desc);
 		virtual ~VulkanSwapchain() override;
 
 		virtual void SetVSync(bool _enabled) override;

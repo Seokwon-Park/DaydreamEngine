@@ -55,6 +55,8 @@ namespace Daydream
 		virtual bool Run();
 		virtual bool Exit();
 
+		bool InitWindow();
+		bool InitRenderer();
 	private:
 		friend int ::main(int argc, char** argv);
 
@@ -70,7 +72,7 @@ namespace Daydream
 		bool isMinimized = false;
 		static Application* instance;
 
-		WindowProps prop;
+		WindowDesc prop;
 
 		//Layers
 		ImGuiLayer* imGuiLayer;

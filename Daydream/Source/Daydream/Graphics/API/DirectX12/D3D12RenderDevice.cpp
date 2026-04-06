@@ -331,7 +331,7 @@ namespace Daydream
 		return MakeShared<D3D12Shader>(this, _src, _type, _mode);
 	}
 
-	Shared<Swapchain> D3D12RenderDevice::CreateSwapchain(DaydreamWindow* _window, const SwapchainDesc& _desc)
+	Shared<Swapchain> Daydream::D3D12RenderDevice::CreateSwapchain(const DaydreamWindow& _window, const SwapchainDesc& _desc)
 	{
 		return MakeShared<D3D12Swapchain>(this, _window, _desc);
 	}

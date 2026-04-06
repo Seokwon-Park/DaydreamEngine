@@ -23,7 +23,7 @@ namespace Daydream
 		virtual void Update(Float32 _deltaTime) override;
 
 		Matrix4x4 GetWorldMatrix();
-		inline Shared<ConstantBuffer> GetWorldMatrixConstantBuffer() { return worldMatrixConstantBuffer; }
+		
 		void SetTransform(Transform _transform);
 		void SetTransform(Vector3 _position, Vector3 _rotation, Vector3 _scale);
 		const Transform GetTransform() { return transform; }
@@ -34,6 +34,5 @@ namespace Daydream
 	private:
 		Transform transform = Transform();
 
-		Shared<ConstantBuffer> worldMatrixConstantBuffer;
 	};
 }

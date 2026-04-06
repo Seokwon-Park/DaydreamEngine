@@ -15,12 +15,15 @@ namespace Daydream
 		virtual ~MeshRendererComponent();
 
 		virtual void Init() override;
-		virtual void Update(Float32 _deltaTime) override {};
+		virtual void Update(Float32 _deltaTime) override;
 
 		inline void SetMesh(const AssetHandle _meshHandle) { meshHandle = _meshHandle; }
 		inline AssetHandle GetMesh() { return meshHandle; }
 		inline void SetMaterial(const AssetHandle _materialHandle) { materialHandle = _materialHandle; }
 		inline AssetHandle GetMaterial() { return materialHandle; }
+
+		inline Shared<ConstantBuffer> GetWorldMatrixConstantBuffer() { return worldMatrixConstantBuffer; }
+		Shared<ConstantBuffer> GetEntityHandleConstantBuffer() { return entityHandleConstantBuffer; }
 
 		void Render();
 		void RenderMeshOnly();
@@ -36,8 +39,10 @@ namespace Daydream
 		AssetHandle meshHandle;
 		AssetHandle materialHandle;
 
-
 		Shared<Material> maskMaterial;
 		Shared<Material> lightMaterial;
+
+		Shared<ConstantBuffer> worldMatrixConstantBuffer;
+		Shared<ConstantBuffer> entityHandleConstantBuffer;
 	};
 }

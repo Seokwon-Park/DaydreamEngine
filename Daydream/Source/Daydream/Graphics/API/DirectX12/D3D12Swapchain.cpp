@@ -11,7 +11,7 @@
 
 namespace Daydream
 {
-	D3D12Swapchain::D3D12Swapchain(D3D12RenderDevice* _device, DaydreamWindow* _window, const SwapchainDesc& _desc)
+	D3D12Swapchain::D3D12Swapchain(D3D12RenderDevice* _device, const DaydreamWindow& _window, const SwapchainDesc& _desc)
 	{
 		device = _device;
 		desc = _desc;
@@ -35,7 +35,7 @@ namespace Daydream
 		swapchainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
 		swapchainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH | DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
 
-		windowHandle = glfwGetWin32Window((GLFWwindow*)_window->GetNativeWindow());
+		windowHandle = glfwGetWin32Window((GLFWwindow*)_window.GetNativeWindow());
 
 		ComPtr<IDXGISwapChain1> swapChain1;
 		HRESULT hr = device->GetFactory()->CreateSwapChainForHwnd(

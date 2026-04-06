@@ -91,8 +91,6 @@ namespace Daydream
 		}
 
 		void ReorderChild(EntityHandle _childHandle, UInt64 _newIndex);
-
-		Shared<ConstantBuffer> GetEntityHandleConstantBuffer() { return entityHandleConstantBuffer; }
 	protected:
 
 	private:
@@ -112,7 +110,6 @@ namespace Daydream
 		EntityHandle parentHandle;
 		Array<EntityHandle> childrenHandles;
 
-		Shared<ConstantBuffer> entityHandleConstantBuffer;
 
 		String name;
 	};

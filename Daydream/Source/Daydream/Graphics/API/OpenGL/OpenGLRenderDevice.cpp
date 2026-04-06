@@ -108,7 +108,7 @@ namespace Daydream
 	}
 
 
-	Shared<Swapchain> OpenGLRenderDevice::CreateSwapchain(DaydreamWindow* _window, const SwapchainDesc& _desc)
+	Shared<Swapchain> Daydream::OpenGLRenderDevice::CreateSwapchain(const DaydreamWindow& _window, const SwapchainDesc& _desc)
 	{
 		return MakeShared<OpenGLSwapchain>(_window, _desc);
 	}

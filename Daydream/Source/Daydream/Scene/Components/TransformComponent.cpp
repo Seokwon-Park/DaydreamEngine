@@ -7,7 +7,6 @@ namespace Daydream
 {
 	TransformComponent::TransformComponent()
 	{
-		worldMatrixConstantBuffer = ConstantBuffer::Create(sizeof(TransformConstantBufferData));
 	}
 	TransformComponent::~TransformComponent()
 	{
@@ -18,12 +17,7 @@ namespace Daydream
 
 	void TransformComponent::Update(Float32 _deltaTime)
 	{
-		TransformConstantBufferData data;
-		data.world = GetWorldMatrix().GetTranspose();
-		data.invTranspose = data.world;
-		data.invTranspose.Invert();
-		data.invTranspose.Transpose();
-		worldMatrixConstantBuffer->Update(&data, sizeof(TransformConstantBufferData));
+
 	}
 
 	Matrix4x4 TransformComponent::GetWorldMatrix()

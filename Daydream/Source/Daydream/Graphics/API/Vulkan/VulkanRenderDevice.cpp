@@ -228,7 +228,7 @@ namespace Daydream
 		return MakeShared<VulkanShader>(this, _src, _type, _mode);
 	}
 
-	Shared<Swapchain> VulkanRenderDevice::CreateSwapchain(DaydreamWindow* _window, const SwapchainDesc& _desc)
+	Shared<Swapchain> VulkanRenderDevice::CreateSwapchain(const DaydreamWindow& _window, const SwapchainDesc& _desc)
 	{
 		return MakeShared<VulkanSwapchain>(this, _window, _desc);
 	}

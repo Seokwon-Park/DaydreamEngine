@@ -72,6 +72,7 @@ namespace Daydream
 	private:
 		D3D11RenderDevice* device;
 		ComPtr<ID3D11Buffer> constantBuffer;
+		D3D11_MAPPED_SUBRESOURCE data;
 	};
 }
 

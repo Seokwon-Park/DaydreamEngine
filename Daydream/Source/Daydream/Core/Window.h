@@ -6,14 +6,14 @@
 
 namespace Daydream
 {
-	struct WindowProps
+	struct WindowDesc
 	{
 		std::string title;
 		UInt32 width;
 		UInt32 height;
 		RendererAPIType rendererAPI;
 
-		WindowProps(const std::string& _title = "Daydream; Engine",
+		WindowDesc(const std::string& _title = "Daydream Engine",
 			UInt32 _width = 1280,
 			UInt32 _height = 720)
 			:title(_title), width(_width), height(_height), rendererAPI(RendererAPIType::None)
@@ -54,13 +54,15 @@ namespace Daydream
 		virtual void SetMouseDown(int _key) = 0;
 		virtual void OnUpdateInputState() = 0;
 
+		virtual void MakeContext() = 0;
 		virtual void ReleaseContext() = 0;
 
 		void SetSwapchain(Shared<Swapchain> _swapchain) { swapChain = _swapchain; }
 		Swapchain* GetSwapchain() const { return swapChain.get(); }
 
-		static Unique<DaydreamWindow> Create(const WindowProps& _props = WindowProps());
+		static Unique<DaydreamWindow> Create(const WindowDesc& _desc = WindowDesc());
 	protected:
+		WindowDesc desc;
 		Shared<Swapchain> swapChain = nullptr;
 	private:
 	};

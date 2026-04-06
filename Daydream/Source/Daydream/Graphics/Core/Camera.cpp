@@ -1,6 +1,8 @@
 #include "DaydreamPCH.h"
 #include "Camera.h"
 
+#include "Daydream/Graphics/Core/Renderer.h"
+
 namespace Daydream
 {
 	Camera::Camera()
@@ -71,7 +73,7 @@ namespace Daydream
 		data.projection = projectionMatrix;
 		data.viewProjection = viewProjectionMatrix;
 
-		viewProjectionBuffer->Update(&data, sizeof(CameraConstantBufferData));
+		Renderer::UpdateConstantBuffer(viewProjectionBuffer, data);
 	}
 	void Camera::UpdateViewMatrix()
 	{

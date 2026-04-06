@@ -19,7 +19,7 @@ namespace Daydream
 			requestArray.clear();
 		}
 	}
-	Shared<Swapchain> Swapchain::Create(DaydreamWindow* _window, const SwapchainDesc& _desc)
+	Shared<Swapchain> Swapchain::Create(const DaydreamWindow& _window, const SwapchainDesc& _desc)
     {
         return Renderer::GetRenderDevice()->CreateSwapchain(_window, _desc);
     }

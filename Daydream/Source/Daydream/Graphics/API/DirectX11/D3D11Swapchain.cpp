@@ -12,7 +12,7 @@
 namespace Daydream
 {
 
-	D3D11Swapchain::D3D11Swapchain(D3D11RenderDevice* _device, DaydreamWindow* _window, const SwapchainDesc& _desc)
+	D3D11Swapchain::D3D11Swapchain(D3D11RenderDevice* _device, const DaydreamWindow& _window, const SwapchainDesc& _desc)
 	{
 		device = _device;
 		desc = _desc;
@@ -35,7 +35,7 @@ namespace Daydream
 		desc.SampleDesc = sampleDesc;
 		desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		desc.BufferCount = _desc.bufferCount;
-		desc.OutputWindow = glfwGetWin32Window((GLFWwindow*)_window->GetNativeWindow());
+		desc.OutputWindow = glfwGetWin32Window((GLFWwindow*)_window.GetNativeWindow());
 		desc.Windowed = true;
 		desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 		desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;

@@ -29,47 +29,7 @@ namespace Daydream
 
 			captureViewProjections.push_back(cubeFaceViewMatrices[i] * cubeFaceProjMatrix);
 			captureViewProjections[i].Transpose();
-			cubeFaceConstantBuffers[i]->Update(&captureViewProjections[i], sizeof(Matrix4x4));
 		}
-
-		skyboxMipLevels = (UInt32)std::log2f((Float32)skyboxResolution);
-
-		TextureDesc textureDesc{};
-		textureDesc.width = skyboxResolution;
-		textureDesc.height = skyboxResolution;
-		textureDesc.mipLevels = skyboxMipLevels;
-		textureDesc.bindFlags = RenderBindFlags::ShaderResource;
-		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
-		textureDesc.type = TextureType::TextureCube;
-		skyboxTextureCube = TextureCube::CreateEmpty(textureDesc);
-
-		textureDesc.width = diffuseResolution;
-		textureDesc.height = diffuseResolution;
-		textureDesc.mipLevels = 1;
-		textureDesc.bindFlags = RenderBindFlags::ShaderResource;
-		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
-		textureDesc.type = TextureType::TextureCube;
-
-		irradianceTextureCube = TextureCube::CreateEmpty(textureDesc);
-
-		prefilterMipLevels = (UInt32)std::log2f((Float32)specularResolution);
-
-		textureDesc.width = specularResolution;
-		textureDesc.height = specularResolution;
-		textureDesc.mipLevels = prefilterMipLevels;
-		textureDesc.bindFlags = RenderBindFlags::ShaderResource;
-		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
-		textureDesc.type = TextureType::TextureCube;
-
-		prefilterTextureCube = TextureCube::CreateEmpty(textureDesc);
-
-		textureDesc.width = skyboxTextureCube->GetWidth();
-		textureDesc.height = skyboxTextureCube->GetHeight();
-		textureDesc.bindFlags = RenderBindFlags::ShaderResource;
-		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
-		textureDesc.type = TextureType::Texture2D;
-
-		BRDFTexture = Texture2D::CreateEmpty(textureDesc);
 	}
 
 	Skybox::~Skybox()
@@ -116,15 +76,53 @@ namespace Daydream
 		//boxIB = IndexBuffer::Create(meshData.indices.data(), (UInt32)meshData.indices.size());
 		boxMesh = ResourceManager::GetResource<Mesh>("Box");
 		//////////////////////////////////////Create Default Skybox TextureCubes;
+
 		skyboxMipLevels = (UInt32)std::log2f((Float32)skyboxResolution);
+
+		TextureDesc textureDesc{};
+		textureDesc.width = skyboxResolution;
+		textureDesc.height = skyboxResolution;
+		textureDesc.mipLevels = skyboxMipLevels;
+		textureDesc.bindFlags = RenderBindFlags::ShaderResource;
+		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
+		textureDesc.type = TextureType::TextureCube;
+		skyboxTextureCube = TextureCube::CreateEmpty(textureDesc);
+
+		textureDesc.width = diffuseResolution;
+		textureDesc.height = diffuseResolution;
+		textureDesc.mipLevels = 1;
+		textureDesc.bindFlags = RenderBindFlags::ShaderResource;
+		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
+		textureDesc.type = TextureType::TextureCube;
+
+		irradianceTextureCube = TextureCube::CreateEmpty(textureDesc);
+
+		prefilterMipLevels = (UInt32)std::log2f((Float32)specularResolution);
+
+		textureDesc.width = specularResolution;
+		textureDesc.height = specularResolution;
+		textureDesc.mipLevels = prefilterMipLevels;
+		textureDesc.bindFlags = RenderBindFlags::ShaderResource;
+		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
+		textureDesc.type = TextureType::TextureCube;
+
+		prefilterTextureCube = TextureCube::CreateEmpty(textureDesc);
+
+		textureDesc.width = skyboxTextureCube->GetWidth();
+		textureDesc.height = skyboxTextureCube->GetHeight();
+		textureDesc.bindFlags = RenderBindFlags::ShaderResource;
+		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
+		textureDesc.type = TextureType::Texture2D;
+
+		BRDFTexture = Texture2D::CreateEmpty(textureDesc);
+
 		equirectangularTexture = AssetManager::GetAssetByPath<Texture2D>("Resource/skybox.hdr");
 
 		FramebufferDesc fbDesc;
 		fbDesc.width = skyboxTextureCube->GetWidth();
 		fbDesc.height = skyboxTextureCube->GetHeight();
 		captureFramebuffer = Framebuffer::Create(equirectangularRenderPass, fbDesc);
-
-		TextureDesc textureDesc{};
+				
 		equirectangularResultTextures.clear();
 		equirectangularResultTextures.resize(6);
 		textureDesc.width = skyboxTextureCube->GetWidth();
@@ -155,8 +153,6 @@ namespace Daydream
 		for (UInt32 mip = 0; mip < prefilterMipLevels; mip++)
 		{
 			roughnessConstantBuffers[mip] = ConstantBuffer::Create(sizeof(Vector4));
-			roughness = Vector4(0.0f, 0.0f, 0.0f, (float)mip / (prefilterMipLevels - 1));
-			roughnessConstantBuffers[mip]->Update(&roughness, sizeof(Vector4));
 		}
 
 		prefilterResultTextures.clear();
@@ -225,8 +221,9 @@ namespace Daydream
 
 		for (int i = 0; i < 6; i++)
 		{
-			Renderer::BeginRenderPass(equirectangularRenderPass, captureFramebuffer);
+			Renderer::UpdateConstantBuffer(cubeFaceConstantBuffers[i], captureViewProjections[i]);
 
+			Renderer::BeginRenderPass(equirectangularRenderPass, captureFramebuffer);
 			Renderer::BindPipelineState(equirectangularPSO);
 			Renderer::SetConstantBuffer("Camera", cubeFaceConstantBuffers[i]);
 			Renderer::SetTexture2D("Texture", equirectangularTexture);
@@ -265,20 +262,22 @@ namespace Daydream
 	{
 		prefilterTextureCube->SetSampler(ResourceManager::GetResource<Sampler>("LinearClampToEdge"));
 
-	/*	prefilterMaterials.resize(6 * prefilterMipLevels);
-		for (UInt32 mip = 0; mip < prefilterMipLevels; mip++)
-		{
-			for (UInt32 face = 0; face < 6; face++)
+		/*	prefilterMaterials.resize(6 * prefilterMipLevels);
+			for (UInt32 mip = 0; mip < prefilterMipLevels; mip++)
 			{
-				UInt32 index = prefilterMipLevels * face + mip;
-				prefilterMaterials[index] = Material::Create(prefilterPSO);
-				prefilterMaterials[index]->SetConstantBuffer("Camera", cubeFaceConstantBuffers[face]);
-			}
-		}*/
+				for (UInt32 face = 0; face < 6; face++)
+				{
+					UInt32 index = prefilterMipLevels * face + mip;
+					prefilterMaterials[index] = Material::Create(prefilterPSO);
+					prefilterMaterials[index]->SetConstantBuffer("Camera", cubeFaceConstantBuffers[face]);
+				}
+			}*/
 
 		TextureDesc textureDesc{};
 		for (UInt32 mip = 0; mip < prefilterMipLevels; mip++)
 		{
+			roughness = Vector4(0.0f, 0.0f, 0.0f, (float)mip / (prefilterMipLevels - 1));
+			Renderer::UpdateConstantBuffer(roughnessConstantBuffers[mip], roughness);
 			for (int face = 0; face < 6; face++)
 			{
 				UInt32 index = prefilterMipLevels * face + mip;
