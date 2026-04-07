@@ -50,6 +50,7 @@ namespace Daydream
 	class Texture2D : public Texture
 	{
 	public:
+		ASSET_CLASS_TYPE(Texture2D)
 		Texture2D(const TextureDesc& _desc);
 		virtual ~Texture2D() = default;
 		

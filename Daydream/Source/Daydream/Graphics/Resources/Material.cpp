@@ -9,44 +9,55 @@ namespace Daydream
 {
 	Material::Material(Shared<ShaderGroup> _shaderGroup)
 	{
-		materialMap = _shaderGroup->GetMaterialMap();
+		textureBindingMap = _shaderGroup->GetMaterialMap();
 	}
 
 	Material::~Material()
 	{
 		textures.clear();
-		cbuffers.clear();
-		textureCubes.clear();
+		//cbuffers.clear();
+		//textureCubes.clear();
 	}
 
-	void Material::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
+	void Material::SetTextureBinding(const String& _name, AssetHandle _textureHandle)
 	{
-		if (materialMap.find(_name) != materialMap.end())
+		if (textureBindingMap.find(_name) == textureBindingMap.end())
 		{
-			if (!_texture->HasSampler())
-			{
-				_texture->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
-			}
-			textures[_name] = _texture;
-			
+			//if (!_texture->HasSampler())
+			//{
+			//	_texture->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
+			//}
+			DAYDREAM_CORE_ERROR("[Material] There is no Texture Name {}", _name);
+			return;
 		}
+		textures[_name].handle = _textureHandle;
 	}
 
-	void Material::SetTextureCube(const String& _name, Shared<TextureCube> _texture)
+	void Material::LoadMaterialAsset(const String& _name)
 	{
-		if (materialMap.find(_name) != materialMap.end())
+		if (textures.find(_name) == textures.end())
 		{
-			textureCubes[_name] = _texture;
+			DAYDREAM_CORE_ERROR("[Material] There is no Texture Name {}", _name);
+			return;
 		}
+		textures[_name].cache = AssetManager::GetAsset<Texture2D>(textures[_name].handle);
 	}
 
-	void Material::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _constantBuffer)
-	{
-		if (materialMap.find(_name) != materialMap.end())
-		{
-			cbuffers[_name] = _constantBuffer;
-		}
-	}
+	//void Material::SetTextureCube(const String& _name, Shared<TextureCube> _texture)
+	//{
+	//	if (materialMap.find(_name) != materialMap.end())
+	//	{
+	//		textureCubes[_name] = _texture;
+	//	}
+	//}
+
+	//void Material::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _constantBuffer)
+	//{
+	//	if (materialMap.find(_name) != materialMap.end())
+	//	{
+	//		cbuffers[_name] = _constantBuffer;
+	//	}
+	//}
 
 	Shared<Material> Material::Create(Shared<PipelineState> _pipeline)
 	{

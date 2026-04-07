@@ -43,7 +43,7 @@ namespace Daydream
 			desc.format = isSRGB ? RenderFormat::R8G8B8A8_UNORM_SRGB : RenderFormat::R8G8B8A8_UNORM;
 		}
 		desc.type = TextureType::Texture2D;
-		auto newTexture = Texture2D::Create(data.GetRawDataPtr(), desc);
+		Shared<Texture2D> newTexture = Texture2D::Create(data.GetRawDataPtr(), desc);
 
 		return newTexture;
 	}
@@ -174,41 +174,41 @@ namespace Daydream
 			else
 			{
 				Shared<Material> newMaterial = Material::Create(ResourceManager::GetResource<PipelineState>("GBufferPSO"));
-				Shared<Texture2D> albedo = AssetManager::GetAssetByPath<Texture2D>(modelData->materials[i].albedoMapPath);
-				Shared<Texture2D> normal = AssetManager::GetAssetByPath<Texture2D>(modelData->materials[i].normalMapPath);
-				Shared<Texture2D> roughness = AssetManager::GetAssetByPath<Texture2D>(modelData->materials[i].roughnessMapPath);
-				Shared<Texture2D> metallic = AssetManager::GetAssetByPath<Texture2D>(modelData->materials[i].metallicMapPath);
-				Shared<Texture2D> ao = AssetManager::GetAssetByPath<Texture2D>(modelData->materials[i].AOMapPath);
+				AssetHandle albedo = AssetManager::GetAssetHandleByPath(modelData->materials[i].albedoMapPath);
+				AssetHandle normal = AssetManager::GetAssetHandleByPath(modelData->materials[i].normalMapPath);
+				AssetHandle roughness = AssetManager::GetAssetHandleByPath(modelData->materials[i].roughnessMapPath);
+				AssetHandle metallic = AssetManager::GetAssetHandleByPath(modelData->materials[i].metallicMapPath);
+				AssetHandle ao = AssetManager::GetAssetHandleByPath(modelData->materials[i].AOMapPath);
 
-				if (albedo == nullptr)
+				if (!albedo.IsValid())
 				{
-					albedo = AssetManager::GetAsset<Texture2D>(AssetDefaults::DefaultAlbedoHandle);
+					albedo = AssetDefaults::DefaultAlbedoHandle;
 				}
 
-				if (normal == nullptr)
+				if (!normal.IsValid())
 				{
-					normal = AssetManager::GetAsset<Texture2D>(AssetDefaults::DefaultNormalHandle);
+					normal = AssetDefaults::DefaultNormalHandle;
 				}
 
-				if (roughness == nullptr)
+				if (!roughness.IsValid())
 				{
-					roughness = AssetManager::GetAsset<Texture2D>(AssetDefaults::DefaultRoughnessHandle);
+					roughness = AssetDefaults::DefaultRoughnessHandle;
 				}
 
-				if (metallic == nullptr)
+				if (!metallic.IsValid())
 				{
-					metallic = AssetManager::GetAsset<Texture2D>(AssetDefaults::DefaultMetallicHandle);
+					metallic = AssetDefaults::DefaultMetallicHandle;
 				}
-				if (ao == nullptr)
+				if (!ao.IsValid())
 				{
-					ao = AssetManager::GetAsset<Texture2D>(AssetDefaults::DefaultAOHandle);
+					ao = AssetDefaults::DefaultAOHandle;
 				}
 
-				newMaterial->SetTexture2D("mat_AlbedoMap", albedo);
-				newMaterial->SetTexture2D("mat_NormalMap", normal);
-				newMaterial->SetTexture2D("mat_RoughnessMap", roughness);
-				newMaterial->SetTexture2D("mat_MetallicMap", metallic);
-				newMaterial->SetTexture2D("mat_AOMap", ao);
+				newMaterial->SetTextureBinding("mat_AlbedoMap", albedo);
+				newMaterial->SetTextureBinding("mat_NormalMap", normal);
+				newMaterial->SetTextureBinding("mat_RoughnessMap", roughness);
+				newMaterial->SetTextureBinding("mat_MetallicMap", metallic);
+				newMaterial->SetTextureBinding("mat_AOMap", ao);
 
 				materialHandle = AssetHandle::Generate();
 				newMaterial->SetAssetHandle(materialHandle);
@@ -217,7 +217,7 @@ namespace Daydream
 				AssetMetadata matMetadata;
 				matMetadata.handle = materialHandle;
 				matMetadata.filePath = materialPathString;
-				matMetadata.type = AssetType::Material; // [중요] 타입 수정
+				matMetadata.type = AssetType::Material;
 				matMetadata.name = materialName;
 				AssetManager::CreateMetaDataFile(matMetadata);
 				AssetManager::Register(matMetadata); // 여기서 .ddmat.ddmeta 파일이 생성
@@ -239,9 +239,9 @@ namespace Daydream
 				// 텍스처 저장
 				out << YAML::Key << "Textures";
 				out << YAML::BeginMap;
-				for (auto& [name, resources] : newMaterial->GetAllTexture2D())
+				for (const auto& [name, textureBinding] : newMaterial->GetTextureBindings())
 				{
-					out << YAML::Key << name << YAML::Value << resources->GetAssetHandle().ToString();
+					out << YAML::Key << name << YAML::Value << textureBinding.cache->GetAssetHandle().ToString();
 				}
 				out << YAML::EndMap;
 				out << YAML::EndMap;
@@ -292,6 +292,7 @@ namespace Daydream
 
 		return newShader;
 	}
+
 	Shared<Material> AssetImporter::LoadMaterial(const AssetMetadata& _metaData)
 	{
 		Path materialPath = _metaData.filePath;
@@ -323,20 +324,7 @@ namespace Daydream
 
 				if (handle.IsValid())
 				{
-					// AssetManager에게 해당 핸들의 텍스처를 달라고 요청
-					// 이미 로드되어 있다면 캐시에서 줄 것이고, 없다면 로드해서 줄 것입니다.
-					Shared<Texture2D> texture = AssetManager::GetAsset<Texture2D>(handle);
-
-					if (texture)
-					{
-						newMaterial->SetTexture2D(slotName, texture);
-					}
-					else
-					{
-						// 해당 핸들의 텍스처가 로드 실패했거나 삭제된 경우
-						// 기본 텍스처로 대체하거나, null로 두면 쉐이더에서 처리
-						// newMaterial->SetTexture2D(slotName, AssetManager::GetDefaultTexture()); 
-					}
+					newMaterial->SetTextureBinding(slotName, handle);
 				}
 			}
 		}

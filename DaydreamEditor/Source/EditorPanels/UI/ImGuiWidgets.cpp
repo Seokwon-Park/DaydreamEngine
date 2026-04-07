@@ -132,19 +132,19 @@ namespace Daydream::UI
 		ImGui::Text(_label.c_str());
 		ImGui::Separator();
 
-		for (auto& [name, texture] : _material->GetAllTexture2D())
+		for (auto& [name, textureBinding] : _material->GetTextureBindings())
 		{
 			ImGui::Text(name.c_str());
-			if (texture != nullptr)
-				ImGui::Image(texture->GetImGuiHandle(), ImVec2{ 100,100 });
+			if (textureBinding.cache != nullptr)
+				ImGui::Image(textureBinding.cache->GetImGuiHandle(), ImVec2{ 100,100 });
 			if (ImGui::BeginDragDropTarget())
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(AssetManager::AssetTypeToString(AssetType::Texture2D).c_str()))
 				{
 					AssetHandle* pHandle = (AssetHandle*)payload->Data;
 					AssetHandle handle = *pHandle;
-					auto texture = AssetManager::GetAsset<Texture2D>(handle);
-					_material->SetTexture2D(name, texture);
+					// auto texture = AssetManager::GetAsset<Texture2D>(handle);
+					_material->SetTextureBinding(name, handle);
 				}
 				ImGui::EndDragDropTarget();
 			}

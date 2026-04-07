@@ -63,11 +63,11 @@ namespace Daydream
 		if (material)
 		{
 
-			material->SetConstantBuffer("Camera", GetOwner()->GetScene()->GetCurrentCamera()->GetViewProjectionConstantBuffer());
-			material->SetConstantBuffer("Lights", GetOwner()->GetScene()->GetLightConstantBuffer());
-			material->SetTexture2D("BRDFLUT", Renderer::GetSkybox()->GetBRDF());
-			material->SetTextureCube("IrradianceTexture", Renderer::GetSkybox()->GetIrradianceTexture());
-			material->SetTextureCube("Prefilter", Renderer::GetSkybox()->GetPrefilterTexture());
+			//material->SetConstantBuffer("Camera", GetOwner()->GetScene()->GetCurrentCamera()->GetViewProjectionConstantBuffer());
+			//material->SetConstantBuffer("Lights", GetOwner()->GetScene()->GetLightConstantBuffer());
+			//material->SetTexture2D("BRDFLUT", Renderer::GetSkybox()->GetBRDF());
+			//material->SetTextureCube("IrradianceTexture", Renderer::GetSkybox()->GetIrradianceTexture());
+			//material->SetTextureCube("Prefilter", Renderer::GetSkybox()->GetPrefilterTexture());
 			Renderer::BindMaterial(material);
 		}
 		if (mesh && material)
@@ -115,7 +115,7 @@ namespace Daydream
 		if (meshHandle.IsValid())
 			mesh = AssetManager::GetAsset<Mesh>(meshHandle);
 		//maskMaterial->SetConstantBuffer("World", worldMatrixConstantBuffer);
-		maskMaterial->SetConstantBuffer("Camera", GetOwner()->GetScene()->GetCurrentCamera()->GetViewProjectionConstantBuffer());
+		//maskMaterial->SetConstantBuffer("Camera", GetOwner()->GetScene()->GetCurrentCamera()->GetViewProjectionConstantBuffer());
 		//lightMaterial->SetConstantBuffer("World", worldMatrixConstantBuffer);
 		//if (GetOwner()->GetScene()->GetLightComponent())
 		//{

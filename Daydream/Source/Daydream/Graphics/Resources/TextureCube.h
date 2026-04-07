@@ -8,6 +8,7 @@ namespace Daydream
 	class TextureCube : public Texture
 	{
 	public:
+		ASSET_CLASS_TYPE(TextureCube)
 		TextureCube(const TextureDesc& _dsec);
 		virtual ~TextureCube();
 

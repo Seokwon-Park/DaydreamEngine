@@ -29,6 +29,7 @@ namespace Daydream
 	class Model : public Asset
 	{
 	public:
+		ASSET_CLASS_TYPE(Model)
 		Model() = default;
 		Model(Shared<ModelData> _data);
 		//Model(Shared<Mesh> _mesh);

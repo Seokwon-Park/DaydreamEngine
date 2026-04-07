@@ -98,11 +98,11 @@ namespace Daydream
 
 		material = Material::Create(pso);
 		//material->SetTexture2D("Texture", texture);
-		material->SetConstantBuffer("Camera", viewProjMat);
+		//material->SetConstantBuffer("Camera", viewProjMat);
 
 		material3d = Material::Create(pso3d);
 
-		material3d->SetConstantBuffer("Camera", viewProjMat);
+		//material3d->SetConstantBuffer("Camera", viewProjMat);
 
 		deferredLightingMaterial = Material::Create(deferredLightingPSO);
 

@@ -219,5 +219,11 @@ namespace Daydream
 	void WindowsWindow::ReleaseContext()
 	{
 		glfwMakeContextCurrent(nullptr);
+		if (desc.rendererAPI == RendererAPIType::OpenGL)
+		{
+			glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+			GLFWwindow* uploadContext = glfwCreateWindow(1,1, "Upload", nullptr, glfwWindow);
+			glfwMakeContextCurrent(uploadContext);
+		}
 	}
 }

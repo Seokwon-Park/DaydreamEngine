@@ -208,14 +208,17 @@ namespace Daydream
 	{
 		Enqueue([_material]()
 			{
-				const auto& textureInfo = _material->GetAllTexture2D();
-				for (auto [name, texture] : textureInfo)
+				const auto& textureInfo = _material->GetTextureBindings();
+				for (const auto& [name, texture] : textureInfo)
 				{
-					if (texture == nullptr) continue;
-					renderContext->SetTexture2D(name, texture);
+					if (texture.cache == nullptr)
+					{
+						_material->LoadMaterialAsset(name);
+					}
+					renderContext->SetTexture2D(name, texture.cache);
 				}
 
-				const auto& textureCubeInfo = _material->GetAllTextureCube();
+				/*const auto& textureCubeInfo = _material->GetAllTextureCube();
 				for (auto [name, textureCube] : textureCubeInfo)
 				{
 					if (textureCube == nullptr) continue;
@@ -227,7 +230,7 @@ namespace Daydream
 				{
 					if (cbuffer == nullptr) continue;
 					renderContext->SetConstantBuffer(name, cbuffer);
-				}
+				}*/
 			});
 	}
 

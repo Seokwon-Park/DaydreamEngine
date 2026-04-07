@@ -42,21 +42,14 @@ namespace Daydream
 		static void CreateBuiltinAssets();
 
 		static const AssetMetadata& GetAssetMetadata(AssetHandle _handle);
+		static AssetHandle GetAssetHandleByPath(const Path& _path);
 
-		static AssetType GetAssetType(String _ext)
-		{
-			auto itr = assetExtensionMap.find(_ext);
-			if (itr == assetExtensionMap.end())
-			{
-				return AssetType::None;
-			}
-			return itr->second;
-		}
+		static AssetType GetAssetTypeFromExtension(String _ext);
 
 		inline static AssetType GetAssetTypeFromPath(const Path& _path)
 		{
 			String ext = _path.extension().string();
-			return GetAssetType(ext);
+			return GetAssetTypeFromExtension(ext);
 		}
 
 		template<typename AssetType>
@@ -95,48 +88,6 @@ namespace Daydream
 			AssetHandle uuid = itr->second;
 			return GetAsset<AssetType>(uuid);
 		}
-
-		//template<typename AssetType>
-		//static std::shared_future<Shared<AssetType>> GetAssetAsync(AssetHandle handle)
-		//{
-		//	// 1. Thread Safety: 캐시 접근 보호
-		//	std::lock_guard<std::mutex> lock(instance->assetMutex);
-
-		//	// 2. 이미 로딩 요청된 적이 있는가? (Cache Hit)
-		//	auto it = instance->loadedAssetCache.find(handle);
-		//	if (it != instance->loadedAssetCache.end())
-		//	{
-		//		// 로딩 중이거나 로딩 완료된 Future 반환
-		//		return it->second;
-		//	}
-
-		//	// 3. 처음 요청됨 -> 메타데이터 확인
-		//	auto metaIt = instance->assetRegistry.find(handle);
-		//	if (metaIt == instance->assetRegistry.end())
-		//	{
-		//		DAYDREAM_CORE_WARN("Asset metadata not found for handle: {}", handle);
-		//		// 빈 Future라도 리턴해야 함 (Exception 대신 nullptr 리턴 처리 등 필요)
-		//		std::promise<Shared<Asset>> p;
-		//		p.set_value(nullptr);
-		//		return p.get_future().share();
-		//	}
-
-		//	AssetMetadata metadata = metaIt->second;
-
-		//	// 4. 스레드 풀에 작업 던지기 (Loading Task)
-		//	// [중요] this 캡처 대신 필요한 데이터(metadata)만 복사 캡처하여 안전성 확보
-		//	std::future<Shared<AssetType>> fut = ThreadPool::Instance().Enqueue(
-		//		[metadata]() {
-		//			return instance->LoadAssetFromDisk(metadata);
-		//		}
-		//	);
-
-		//	// 5. Future를 Shared로 변환하여 캐시에 저장
-		//	std::shared_future<Shared<Asset>> sharedFut = fut.share();
-		//	instance->loadedAssetCache[handle] = sharedFut;
-
-		//	return sharedFut;
-		//}
 
 		inline static void Register(const AssetMetadata& _assetMetadata)
 		{
@@ -181,8 +132,6 @@ namespace Daydream
 
 		static const SortedMap<String, AssetType> assetExtensionMap;
 		static const SortedMap<String, AssetType> assetTypeMap;
-
-		std::mutex assetMutex;
 	};
 
 }

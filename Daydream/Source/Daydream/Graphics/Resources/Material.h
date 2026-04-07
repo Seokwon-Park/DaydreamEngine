@@ -8,21 +8,25 @@ namespace Daydream
 	class Sampler;
 	class PipelineState;
 	class Texture2D;
-	class TextureCube;
-	class ConstantBuffer;
+
+	struct TextureBinding
+	{
+		AssetHandle handle = AssetHandle();
+		Shared<Texture2D> cache = nullptr;
+	};
 
 	struct MaterialData
 	{
 		String name;
 
 		// 텍스처 파일 경로들
-		String albedoMapPath;
+		String albedoMapPath = "";
 		//String specularTexturePath;
-		String normalMapPath;
-		String metallicMapPath;
-		String roughnessMapPath;
-		String AOMapPath;
+		String normalMapPath = "";
 		// ... PBR 텍스처 경로들 (metallic, roughness, ao ...)
+		String metallicMapPath = "";
+		String roughnessMapPath = "";
+		String AOMapPath = "";
 
 		// 텍스처가 아닌 상수 값들
 		Vector3 diffuseColor = { 0.8f, 0.8f, 0.8f };
@@ -40,7 +44,7 @@ namespace Daydream
 		Float32 exposure = 1.0f;
 		Float32 gamma = 2.2f;
 		Float32 roughness = 0;
-		Vector3 albedo = Vector3(0.0f,0.0f,0.0f); // baseColor
+		Vector3 albedo = Vector3(0.0f, 0.0f, 0.0f); // baseColor
 		Float32 metallic = 0.0f;
 	};
 
@@ -48,27 +52,29 @@ namespace Daydream
 	class Material : public Asset
 	{
 	public:
+		ASSET_CLASS_TYPE(Material)
 		Material() = default;
 		Material(Shared<ShaderGroup> _shaderGroup);
 		virtual ~Material();
 		virtual void Bind() {};
 		virtual void Unbind() {};
-		
-		void SetTexture2D(const String& _name, Shared<Texture2D> _texture);
-		void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube);
-		void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _constantBuffer);
 
-		inline const HashMap<String, Shared<Texture2D>>& GetAllTexture2D() { return textures; }
-		inline const HashMap<String, Shared<TextureCube>>& GetAllTextureCube() { return textureCubes; }
-		inline const HashMap<String, Shared<ConstantBuffer>>& GetAllConstantBuffer() { return cbuffers; }
+		void SetTextureBinding(const String& _name, AssetHandle _textureHandle);
+		void LoadMaterialAsset(const String& _name);
+		//void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube);
+		//void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _constantBuffer);
+
+		inline const HashMap<String, TextureBinding>& GetTextureBindings() const { return textures; }
+		//inline const HashMap<String, Shared<TextureCube>>& GetAllTextureCube() { return textureCubes; }
+		//inline const HashMap<String, Shared<ConstantBuffer>>& GetAllConstantBuffer() { return cbuffers; }
 
 		static Shared<Material> Create(Shared<PipelineState> _pipeline);
 	protected:
-		HashMap<String, ShaderResourceType> materialMap;
+		HashMap<String, ShaderResourceType> textureBindingMap;
 
-		HashMap<String, Shared<ConstantBuffer>> cbuffers;
-		HashMap<String, Shared<Texture2D>> textures;
-		HashMap<String, Shared<TextureCube>> textureCubes;
+		/*HashMap<String, Shared<ConstantBuffer>> cbuffers;
+		HashMap<String, Shared<TextureCube>> textureCubes;*/
+		HashMap<String, TextureBinding> textures;
 	private:
 	};
 }

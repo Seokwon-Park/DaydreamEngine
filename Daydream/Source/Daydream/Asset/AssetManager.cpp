@@ -166,8 +166,6 @@ namespace Daydream
 			}
 
 			LoadPhase phase = GetAssetLoadPhase(metadata.type);
-
-			//LoadAssetCache(metadata.handle);
 			//if (phase != _phase) continue;
 		}
 
@@ -206,6 +204,25 @@ namespace Daydream
 		return itr->second;
 	}
 
+	AssetHandle AssetManager::GetAssetHandleByPath(const Path& _path)
+	{
+		auto itr = instance->assetPathMap.find(_path.string());
+		if (itr == instance->assetPathMap.end())
+		{
+			return AssetHandle();
+		}
+		return itr->second;
+	}
+
+	AssetType AssetManager::GetAssetTypeFromExtension(String _ext)
+	{
+		auto itr = assetExtensionMap.find(_ext);
+		if (itr == assetExtensionMap.end())
+		{
+			return AssetType::None;
+		}
+		return itr->second;
+	}
 
 	AssetMetadata AssetManager::LoadMetadata(const Path& _metaFilePath)
 	{
@@ -261,7 +278,7 @@ namespace Daydream
 		auto itr = assetRegistry.find(_uuid);
 		if (itr == assetRegistry.end())
 		{
-			//DAYDREAM_CORE_WARN("Cannot find AssetMetaData!");
+			DAYDREAM_CORE_WARN("Cannot find AssetMetaData!");
 			return nullptr;
 		}
 
@@ -371,10 +388,10 @@ namespace Daydream
 			}
 			else
 			{
-				AssetType type = GetAssetType(ext);
+				AssetType type = GetAssetTypeFromExtension(ext);
 				if (type == AssetType::None) continue;
 				ProcessFile(path, type);
-			}
+			} 
 		}
 	}
 

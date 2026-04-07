@@ -32,6 +32,7 @@ namespace Daydream
 	class Shader : public Asset
 	{
 	public:
+		ASSET_CLASS_TYPE(Shader)
 		virtual ~Shader() = default;
 
 		virtual void Bind() const = 0;

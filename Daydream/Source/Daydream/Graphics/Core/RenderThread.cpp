@@ -92,7 +92,7 @@ namespace Daydream
 					{
 						break; // 무한 루프를 부수고 스레드를 완전히 종료
 					}
-					continue; // 만약의 가짜 깨어남(Spurious wakeup)이라면 다시 루프의 처음으로 갑니다.
+					continue; // 만약의 가짜 깨어남이라면 다시 루프의 처음으로
 				}
 
 				queueToExecute = submitQueue.front();

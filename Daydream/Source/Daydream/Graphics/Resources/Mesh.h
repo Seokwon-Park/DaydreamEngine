@@ -60,6 +60,7 @@ namespace Daydream
 	class Mesh : public Asset
 	{
 	public:
+		ASSET_CLASS_TYPE(Mesh)
 		Mesh() {};
 		Mesh(const MeshData& _meshData);
 		Mesh(Shared<VertexBuffer> _vertexBuffer, Shared<IndexBuffer> _indexBuffer);
