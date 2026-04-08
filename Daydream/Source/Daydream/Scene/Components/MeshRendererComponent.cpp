@@ -36,7 +36,7 @@ namespace Daydream
 		data.invTranspose = data.world;
 		data.invTranspose.Invert();
 		data.invTranspose.Transpose();
-		worldMatrixConstantBuffer->Update(&data, sizeof(TransformConstantBufferData));
+		Renderer::UpdateConstantBuffer(worldMatrixConstantBuffer, data);
 	}
 
 	void MeshRendererComponent::Render()

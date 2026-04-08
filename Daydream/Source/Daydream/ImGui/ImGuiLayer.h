@@ -26,13 +26,14 @@ namespace Daydream
 		
 		void BeginImGui();
 		void EndImGui();
+		void UpdateImGuiWindows();
 
 		void BlockEvents(bool _isBlockEvents) { isBlockEvents = _isBlockEvents; }
 	protected:
 
 	private:
 		void SetDarkThemeColors();
-				
+		
 		bool isBlockEvents = true;
 	};
 }

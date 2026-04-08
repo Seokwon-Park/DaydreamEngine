@@ -71,7 +71,7 @@ namespace Daydream
 	void Renderer::Start(DaydreamWindow* _window)
 	{
 		_window->ReleaseContext();
-		Enqueue([_window]() {_window->MakeContext(); });
+		Enqueue([_window]() {_window->MakeContextCurrent(); });
 	}
 
 	bool Renderer::CreateSwapchainForWindow(DaydreamWindow& _window)

@@ -54,7 +54,7 @@ namespace Daydream
 		virtual void SetMouseDown(int _key) = 0;
 		virtual void OnUpdateInputState() = 0;
 
-		virtual void MakeContext() = 0;
+		virtual void MakeContextCurrent() = 0;
 		virtual void ReleaseContext() = 0;
 
 		void SetSwapchain(Shared<Swapchain> _swapchain) { swapChain = _swapchain; }

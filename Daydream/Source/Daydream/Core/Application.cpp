@@ -121,10 +121,8 @@ namespace Daydream
 			}
 			Renderer::BeginSwapchainRenderPass(mainWindow->GetSwapchain());
 			imGuiLayer->BeginImGui();
-			{
-				for (Layer* layer : layerStack)
-					layer->OnImGuiRender();
-			}
+			for (Layer* layer : layerStack)
+				layer->OnImGuiRender();
 			imGuiLayer->EndImGui();
 			Renderer::EndSwapchainRenderPass(mainWindow->GetSwapchain());
 			//auto [x, y] = Input::GetMousePosition();
@@ -157,6 +155,7 @@ namespace Daydream
 			Renderer::EndFrame(mainWindow->GetSwapchain());
 			Renderer::Submit();
 
+			imGuiLayer->UpdateImGuiWindows();
 			mainWindow->OnUpdateInputState();
 			mainWindow->OnUpdate();
 

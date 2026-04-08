@@ -206,7 +206,7 @@ namespace Daydream
 
 	AssetHandle AssetManager::GetAssetHandleByPath(const Path& _path)
 	{
-		auto itr = instance->assetPathMap.find(_path.string());
+		auto itr = instance->assetPathMap.find(_path.generic_string());
 		if (itr == instance->assetPathMap.end())
 		{
 			return AssetHandle();
@@ -295,6 +295,7 @@ namespace Daydream
 			//loadedAsset = AssetImporter::LoadTextureCube(metadata.FilePath);
 			break;
 		case AssetType::Model:
+			DAYDREAM_CORE_INFO(metadata.handle.ToString());
 			loadedAsset = AssetImporter::LoadModel(metadata);
 			break;
 			// ... 기타 애셋 타입

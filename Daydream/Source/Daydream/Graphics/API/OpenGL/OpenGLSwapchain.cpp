@@ -36,7 +36,6 @@ namespace Daydream
 	void OpenGLSwapchain::Present()
 	{
 		glfwSwapBuffers(window);
-		ResizeFramebuffers();
 	}
 	//void OpenGLSwapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
 	//{
@@ -49,8 +48,10 @@ namespace Daydream
 		{
 			glfwMakeContextCurrent(window);
 		}
+		ResizeFramebuffers();
 	}
 	void OpenGLSwapchain::EndFrame()
 	{
+		glfwMakeContextCurrent(nullptr);
 	}
 }

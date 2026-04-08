@@ -114,20 +114,21 @@ namespace Daydream
 
 		ImGui::Render();
 		ImDrawData* clonedDrawData = CloneDrawData(ImGui::GetDrawData());
-		Renderer::Enqueue([clonedDrawData]()
-			{
-				Renderer::GetImGuiRenderer()->RenderDrawData(Renderer::GetActiveCommandList(), clonedDrawData);
-				DestroyClonedDrawData(clonedDrawData);
+		Renderer::Enqueue([clonedDrawData]() {
+			Renderer::GetImGuiRenderer()->RenderDrawData(Renderer::GetActiveCommandList(), clonedDrawData);
+			DestroyClonedDrawData(clonedDrawData);
 			});
 
-		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-		{
-			GLFWwindow* backupCurrentContext = glfwGetCurrentContext();
-			ImGui::UpdatePlatformWindows();
-			ImGui::RenderPlatformWindowsDefault();
-			glfwMakeContextCurrent(backupCurrentContext);
-		}
+
 	}
+	void ImGuiLayer::UpdateImGuiWindows()
+	{
+		GLFWwindow* backupCurrentContext = glfwGetCurrentContext();
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
+		glfwMakeContextCurrent(backupCurrentContext);
+	}
+
 	void ImGuiLayer::SetDarkThemeColors()
 	{
 		auto& colors = ImGui::GetStyle().Colors;

@@ -143,7 +143,7 @@ namespace Daydream
 		ModelRendererComponent* component2 = entity2->AddComponent<ModelRendererComponent>();
 		component2->SetModel(AssetManager::GetAssetByPath<Model>("Asset/Model/cerberusgun/scene.gltf"));
 
-		MeshRendererComponent* component3 = entity->AddComponent<MeshRendererComponent>();
+		//MeshRendererComponent* component3 = entity->AddComponent<MeshRendererComponent>();
 
 		////////////////////////Light////////////////////////////
 		auto lightEntity = activeScene->CreateGameEntity("Directional Light");
@@ -200,7 +200,7 @@ namespace Daydream
 			info.entityID = entity->GetHandle().GetID();
 		}
 
-		entityBuffer->Update(&info, sizeof(EntityInfo));
+		Renderer::UpdateConstantBuffer(entityBuffer, info);
 
 		activeScene->Update(_deltaTime);
 
@@ -327,7 +327,7 @@ namespace Daydream
 
 	void EditorLayer::OnImGuiRender()
 	{
-		CreateDockspace();
+		BeginDockspace();
 
 		ImGui::Begin("Test");
 		ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
@@ -579,7 +579,7 @@ namespace Daydream
 				mainWindowSize.x = ImGui::GetMainViewport()->Size.x;
 				mainWindowSize.y = ImGui::GetMainViewport()->Size.y;
 				editorCamera->UpdateAspectRatio(ImGuiViewportSize.x, ImGuiViewportSize.y);
-				viewProjMat->Update(&editorCamera->GetViewProjectionMatrix(), sizeof(Daydream::Matrix4x4));
+				Renderer::UpdateConstantBuffer(viewProjMat, editorCamera->GetViewProjectionMatrix());
 			}
 		}
 
@@ -704,7 +704,7 @@ namespace Daydream
 	{
 	}
 
-	void EditorLayer::CreateDockspace()
+	void EditorLayer::BeginDockspace()
 	{
 		static bool dockspaceOpen = true;
 		static bool optFullscreen = true;

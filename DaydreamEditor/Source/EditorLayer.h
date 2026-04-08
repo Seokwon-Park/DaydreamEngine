@@ -33,7 +33,7 @@ namespace Daydream
 
 		void CreateProject();
 
-		void CreateDockspace();
+		void BeginDockspace();
 		void UpdateViewportSize();
 
 		Pair<Int32, Int32> GetViewportMousePos();

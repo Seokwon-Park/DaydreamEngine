@@ -62,12 +62,9 @@ namespace Daydream
 		}
 		glfwWindow = glfwCreateWindow((Int32)desc.width, (Int32)desc.height, desc.title.c_str(), nullptr, nullptr);
 		glfwCount++;
-
-		if (desc.rendererAPI == RendererAPIType::OpenGL)
-		{
-			glfwMakeContextCurrent(glfwWindow);
-		}
-
+	
+		MakeContextCurrent();
+		
 		glfwSetWindowUserPointer(glfwWindow, &windowData);
 
 		windowHandle = glfwGetWin32Window(glfwWindow);
@@ -209,7 +206,7 @@ namespace Daydream
 			}
 		}
 	}
-	void WindowsWindow::MakeContext()
+	void WindowsWindow::MakeContextCurrent()
 	{
 		if (desc.rendererAPI == RendererAPIType::OpenGL)
 		{

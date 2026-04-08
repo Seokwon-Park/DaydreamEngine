@@ -105,7 +105,7 @@ namespace Daydream
 	//	device->GetContext()->OMSetRenderTargets(Cast<UINT>(rtv.size()), rtv.data(), nullptr);
 	//}
 
-	Shared<Texture2D> Daydream::D3D11Framebuffer::GetColorAttachmentTexture(UInt32 _index)
+	Shared<Texture2D> D3D11Framebuffer::GetColorAttachmentTexture(UInt32 _index)
 	{
 		DAYDREAM_CORE_ASSERT(_index < colorAttachments.size(), "index out of range");
 		return colorAttachments[_index];
