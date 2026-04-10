@@ -167,10 +167,6 @@ namespace Daydream
 	{
 		editorCamera->Update(_deltaTime);
 		sceneHierarchyPanel->Update();
-		Renderer::Enqueue([this]()
-			{
-				viewProjMat->Update(&editorCamera->GetViewProjectionMatrix(), sizeof(Daydream::Matrix4x4));
-			});
 
 		static bool isViewControlled = false;
 		if (isViewportHovered && Input::GetMouseDown(Mouse::ButtonRight))
@@ -567,9 +563,9 @@ namespace Daydream
 				//// D3D12Framebuffer 리사이즈 (GPU 동기화 로직 포함)
 				//viewportFramebuffer->Resize(static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
 				//Renderer::BeginSwapchainRenderPass(Renderer::GetCurrentWindow());
-				viewportFramebuffer->RequestResize(static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
-				gBufferFramebuffer->RequestResize(static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
-				maskFramebuffer->RequestResize(static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
+				Renderer::ResizeFramebuffer(viewportFramebuffer, static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
+				Renderer::ResizeFramebuffer(gBufferFramebuffer, static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
+				Renderer::ResizeFramebuffer(maskFramebuffer, static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
 				// 카메라의 뷰포트 크기 업데이트
 				// camera->SetViewportSize(currentContentRegionSize.x, currentContentRegionSize.y);
 

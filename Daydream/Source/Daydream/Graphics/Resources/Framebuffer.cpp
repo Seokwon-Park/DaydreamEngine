@@ -10,6 +10,7 @@ namespace Daydream
 	{
 		Renderer::GetRenderDevice()->AddFramebufferResizeRequest(this, Vector2(_width, _height));
 	}
+
 	Shared<Framebuffer> Framebuffer::Create(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc)
 	{
 		return Renderer::GetRenderDevice()->CreateFramebuffer(_renderPass, _desc);

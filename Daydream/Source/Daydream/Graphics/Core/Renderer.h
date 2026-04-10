@@ -19,7 +19,7 @@ namespace Daydream
 		static constexpr UInt32 maxCommandListsInFlight = 2;
 
 		template<typename RenderFunction>
-		static void Enqueue(RenderFunction&& _command)
+		static void EnqueueCommand(RenderFunction&& _command)
 		{
 			if (useRenderThread)
 			{
@@ -45,7 +45,9 @@ namespace Daydream
 		static void Init(RendererAPIType _API);
 		static void Shutdown();
 
-		static void Start(DaydreamWindow* _window);
+		//This Function is only for OpenGL
+		static void TransferContextForRenderThread(DaydreamWindow* _window);
+
 		static bool CreateSwapchainForWindow(DaydreamWindow& _window);
 		static void SetCurrentWindow(DaydreamWindow* _window) { currentWindow = _window; }
 		static DaydreamWindow* GetCurrentWindow() { return currentWindow; }
@@ -57,14 +59,13 @@ namespace Daydream
 		static void BeginFrame(Swapchain* _swapchain);
 		static void EndFrame(Swapchain* _swapchain);
 
-		static void BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer);
-		static void EndRenderPass(Shared<RenderPass> _renderPass);
+		static void BeginRenderPass(const Shared<RenderPass>& _renderPass, const Shared<Framebuffer>& _framebuffer);
+		static void EndRenderPass(const Shared<RenderPass> &_renderPass);
 
 		static void BeginSwapchainRenderPass(Swapchain* _swapchain);
 		static void EndSwapchainRenderPass(Swapchain* _swapchain);
 
 		static void BindPipelineState(Shared<PipelineState> _pipelineState);
-
 
 		static void SetTexture2D(const String& _name, Shared<Texture2D> _texture);
 		static void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube);
@@ -73,7 +74,7 @@ namespace Daydream
 		template <typename DataType>
 		static void UpdateConstantBuffer(Shared<ConstantBuffer> _buffer, const DataType& _data)
 		{
-			Enqueue([_buffer, _data]()
+			EnqueueCommand([_buffer, _data]()
 				{
 					_buffer->Update(&_data, sizeof(DataType));
 				});
@@ -83,6 +84,8 @@ namespace Daydream
 		static void BindMaterial(Shared<Material> _material);
 
 		static void DrawIndexed(UInt32 _indexCount);
+
+		static void ResizeFramebuffer(const Shared<Framebuffer>& _framebuffer, UInt32 _width, UInt32 _height);
 
 		static void CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst);
 		static void CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel = 0);

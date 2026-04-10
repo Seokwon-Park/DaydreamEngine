@@ -43,6 +43,7 @@ namespace Daydream
 
 		inline static Application& GetInstance() { return *instance; }
 		inline DaydreamWindow& GetMainWindow() { return *mainWindow; }
+		inline DaydreamWindow* GetMainWindowPtr() { return mainWindow.get(); }
 
 		void AttachLayer(Layer* _layer);
 		void AttachOverlay(Layer* _overlay);
@@ -57,6 +58,8 @@ namespace Daydream
 
 		bool InitWindow();
 		bool InitRenderer();
+
+		void PrepareRenderer();
 	private:
 		friend int ::main(int argc, char** argv);
 
@@ -79,6 +82,8 @@ namespace Daydream
 		LayerStack layerStack;
 
 		TimeStep timeStep;
+
+		inline static std::thread::id mainThreadID;
 	};
 
 	// To be defined in client

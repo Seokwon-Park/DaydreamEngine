@@ -206,14 +206,14 @@ namespace Daydream
 			}
 		}
 	}
-	void WindowsWindow::MakeContextCurrent()
+	void WindowsWindow::MakeContextCurrent() const
 	{
 		if (desc.rendererAPI == RendererAPIType::OpenGL)
 		{
 			glfwMakeContextCurrent(glfwWindow);
 		}
 	}
-	void WindowsWindow::ReleaseContext()
+	void WindowsWindow::ReleaseContext() const
 	{
 		glfwMakeContextCurrent(nullptr);
 		if (desc.rendererAPI == RendererAPIType::OpenGL)

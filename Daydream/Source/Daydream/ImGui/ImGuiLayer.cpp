@@ -114,7 +114,7 @@ namespace Daydream
 
 		ImGui::Render();
 		ImDrawData* clonedDrawData = CloneDrawData(ImGui::GetDrawData());
-		Renderer::Enqueue([clonedDrawData]() {
+		Renderer::EnqueueCommand([clonedDrawData]() {
 			Renderer::GetImGuiRenderer()->RenderDrawData(Renderer::GetActiveCommandList(), clonedDrawData);
 			DestroyClonedDrawData(clonedDrawData);
 			});

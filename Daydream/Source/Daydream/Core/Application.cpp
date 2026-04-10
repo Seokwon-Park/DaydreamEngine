@@ -26,7 +26,7 @@ namespace Daydream
 		prop.rendererAPI = _specification.rendererAPI;
 
 		imGuiLayer = nullptr;
-
+		mainThreadID = std::this_thread::get_id();
 
 		//prop.width = 960;
 		//prop.height = 540;
@@ -98,16 +98,16 @@ namespace Daydream
 
 		ComponentRegistry::Init();
 
+		Renderer::GetSkybox()->CreateResources();
+
 		return true;
 	}
 
 	bool Application::Run()
 	{
 		//Temp
-		Renderer::GetSkybox()->CreateResources();
-		Renderer::Start(mainWindow.get());
+		Renderer::TransferContextForRenderThread(GetMainWindowPtr());
 		Renderer::EnqueueSingleTimeCommand([]() {Renderer::GetSkybox()->Generate(); });
-
 		while (isRunning)
 		{
 			timeStep.UpdateTime();
@@ -209,6 +209,12 @@ namespace Daydream
 		}
 		Renderer::SetCurrentWindow(mainWindow.get());
 		return true;
+	}
+
+	void Application::PrepareRenderer()
+	{
+		Renderer::TransferContextForRenderThread(GetMainWindowPtr());
+		Renderer::EnqueueSingleTimeCommand([]() {Renderer::GetSkybox()->Generate(); });
 	}
 
 	void Application::OnEvent(Event& _event)

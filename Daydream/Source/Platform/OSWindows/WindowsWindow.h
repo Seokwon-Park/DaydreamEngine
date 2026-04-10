@@ -49,8 +49,8 @@ namespace Daydream
 		virtual void OnUpdateInputState() override;
 
 		//This functions for only OpenGL
-		virtual void MakeContextCurrent() override;
-		virtual void ReleaseContext() override;
+		virtual void MakeContextCurrent() const override;
+		virtual void ReleaseContext() const override;
 	private:
 		void Init();
 		void Shutdown();

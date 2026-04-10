@@ -68,10 +68,13 @@ namespace Daydream
 		//instance = nullptr;
 	}
 
-	void Renderer::Start(DaydreamWindow* _window)
+	void Renderer::TransferContextForRenderThread(DaydreamWindow* _window)
 	{
-		_window->ReleaseContext();
-		Enqueue([_window]() {_window->MakeContextCurrent(); });
+		if (useRenderThread)
+		{
+			_window->ReleaseContext();
+			EnqueueCommand([_window]() {_window->MakeContextCurrent(); });
+		}
 	}
 
 	bool Renderer::CreateSwapchainForWindow(DaydreamWindow& _window)
@@ -116,7 +119,7 @@ namespace Daydream
 
 	void Renderer::BeginFrame(Swapchain* _swapchain)
 	{
-		Enqueue([_swapchain]()
+		EnqueueCommand([_swapchain]()
 			{
 				renderContext->SetActiveCommandList(_swapchain->GetCurrentCommandList());
 				_swapchain->BeginFrame();
@@ -125,23 +128,23 @@ namespace Daydream
 
 	void Renderer::EndFrame(Swapchain* _swapchain)
 	{
-		Enqueue([_swapchain]()
+		EnqueueCommand([_swapchain]()
 			{
 				_swapchain->EndFrame();
 				_swapchain->Present();
 			});
 	}
 
-	void Renderer::BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer)
+	void Daydream::Renderer::BeginRenderPass(const Shared<RenderPass>& _renderPass, const Shared<Framebuffer>& _framebuffer)
 	{
-		Enqueue([_renderPass, _framebuffer]()
+		EnqueueCommand([_renderPass, _framebuffer]()
 			{
 				renderContext->BeginRenderPass(_renderPass, _framebuffer);
 			});
 	}
-	void Renderer::EndRenderPass(Shared<RenderPass> _renderPass)
+	void Renderer::EndRenderPass(const Shared<RenderPass>& _renderPass)
 	{
-		Enqueue([_renderPass]()
+		EnqueueCommand([_renderPass]()
 			{
 				renderContext->EndRenderPass(_renderPass);
 			});
@@ -149,7 +152,7 @@ namespace Daydream
 
 	void Renderer::BeginSwapchainRenderPass(Swapchain* _swapchain)
 	{
-		Enqueue([_swapchain]()
+		EnqueueCommand([_swapchain]()
 			{
 				renderContext->BeginRenderPass(_swapchain->GetRenderPass(), _swapchain->GetCurrentFramebuffer());
 			});
@@ -157,7 +160,7 @@ namespace Daydream
 
 	void Renderer::EndSwapchainRenderPass(Swapchain* _swapchain)
 	{
-		Enqueue([_swapchain]()
+		EnqueueCommand([_swapchain]()
 			{
 				renderContext->EndRenderPass(_swapchain->GetRenderPass());
 			});
@@ -165,7 +168,7 @@ namespace Daydream
 
 	void Renderer::BindPipelineState(Shared<PipelineState> _pipelineState)
 	{
-		Enqueue([_pipelineState]()
+		EnqueueCommand([_pipelineState]()
 			{
 				renderContext->BindPipelineState(_pipelineState);
 			});
@@ -175,21 +178,21 @@ namespace Daydream
 
 	void Renderer::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
 	{
-		Enqueue([_name, _texture]()
+		EnqueueCommand([_name, _texture]()
 			{
 				renderContext->SetTexture2D(_name, _texture);
 			});
 	}
 	void Renderer::SetTextureCube(const String& _name, Shared<TextureCube> _textureCube)
 	{
-		Enqueue([_name, _textureCube]()
+		EnqueueCommand([_name, _textureCube]()
 			{
 				renderContext->SetTextureCube(_name, _textureCube);
 			});
 	}
 	void Renderer::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
 	{
-		Enqueue([_name, _buffer]()
+		EnqueueCommand([_name, _buffer]()
 			{
 				renderContext->SetConstantBuffer(_name, _buffer);
 			});
@@ -197,7 +200,7 @@ namespace Daydream
 
 	void Renderer::BindMesh(Shared<Mesh> _mesh)
 	{
-		Enqueue([_mesh]()
+		EnqueueCommand([_mesh]()
 			{
 				renderContext->BindVertexBuffer(_mesh->GetVertexBuffer());
 				renderContext->BindIndexBuffer(_mesh->GetIndexBuffer());
@@ -206,7 +209,7 @@ namespace Daydream
 
 	void Renderer::BindMaterial(Shared<Material> _material)
 	{
-		Enqueue([_material]()
+		EnqueueCommand([_material]()
 			{
 				const auto& textureInfo = _material->GetTextureBindings();
 				for (const auto& [name, texture] : textureInfo)
@@ -236,15 +239,23 @@ namespace Daydream
 
 	void Renderer::DrawIndexed(UInt32 _indexCount)
 	{
-		Enqueue([_indexCount]()
+		EnqueueCommand([_indexCount]()
 			{
 				renderContext->DrawIndexed(_indexCount);
 			});
 	}
 
+	void Renderer::ResizeFramebuffer(const Shared<Framebuffer>& _framebuffer, UInt32 _width, UInt32 _height)
+	{
+		EnqueueSingleTimeCommand([_framebuffer, _width, _height]()
+			{
+				_framebuffer->Resize(_width, _height);
+			});
+	}
+
 	void Renderer::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
 	{
-		Enqueue([_src, _dst]()
+		EnqueueCommand([_src, _dst]()
 			{
 				renderContext->CopyTexture2D(_src, _dst);
 			});
@@ -252,7 +263,7 @@ namespace Daydream
 
 	void Renderer::CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel)
 	{
-		Enqueue([_dstCubemap, _faceIndex, _srcTexture2D, _mipLevel]()
+		EnqueueCommand([_dstCubemap, _faceIndex, _srcTexture2D, _mipLevel]()
 			{
 				renderContext->CopyTextureToCubemapFace(_dstCubemap, _faceIndex, _srcTexture2D, _mipLevel);
 			});
@@ -261,7 +272,7 @@ namespace Daydream
 
 	void Renderer::GenerateMips(Shared<Texture> _texture)
 	{
-		Enqueue([_texture]()
+		EnqueueCommand([_texture]()
 			{
 				renderContext->GenerateMips(_texture);
 			});
