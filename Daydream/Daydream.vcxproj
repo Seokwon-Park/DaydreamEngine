@@ -121,7 +121,6 @@
     <ClInclude Include="Source\Base\Math\TypeTraits.h" />
     <ClInclude Include="Source\Base\Math\Vector2.h" />
     <ClInclude Include="Source\Base\Math\Vector4.h" />
-    <ClInclude Include="Source\Base\MathTypes.h" />
     <ClInclude Include="Source\Base\Time\TimeStep.h" />
     <ClInclude Include="Source\Base\TypeCast.h" />
     <ClInclude Include="Source\Base\Wrappers.h" />

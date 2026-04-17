@@ -490,7 +490,7 @@ namespace Daydream
 
 					// GLM을 이용해 역행렬 계산 (내부 데이터가 glm이므로 glm::inverse 사용)
 					Matrix4x4 parentInverse;
-					parentInverse = parentWorldMat.GetInversed();
+					parentInverse = parentWorldMat.Inversed();
 
 					// 행렬 곱셈 (Row-Major 기준: World * Inverse)
 					// 앞서 구현한 operator*가 있다면: newLocalMat = currentWorldMat * parentInverse;

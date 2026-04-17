@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Base/MathTypes.h"
-
 namespace Daydream
 {
 	enum class RendererAPIType

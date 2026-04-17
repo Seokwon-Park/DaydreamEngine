@@ -192,9 +192,6 @@
     <ClInclude Include="Source\Base\Math\Vector4.h">
       <Filter>Source\Base\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Base\MathTypes.h">
-      <Filter>Source\Base</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Base\Time\TimeStep.h">
       <Filter>Source\Base\Time</Filter>
     </ClInclude>

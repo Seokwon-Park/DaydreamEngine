@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Base/MathTypes.h"
 #include "Daydream/Enum/RendererEnums.h"
 #include "Daydream/ImGui/ImGuiRenderer.h"
 

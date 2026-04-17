@@ -55,7 +55,7 @@ namespace Daydream
 		Matrix4x4 matT = Matrix4x4::CreateTranslation(_transform.position);
 		Matrix4x4 matR = Matrix4x4::CreateRotation(Quaternion(Math::DegreeToRadian(_transform.rotation)));
 		Matrix4x4 matS = Matrix4x4::CreateScale(_transform.scale);
-
+		 
 		Matrix4x4 out;
 		out = matS * matR * matT;
 

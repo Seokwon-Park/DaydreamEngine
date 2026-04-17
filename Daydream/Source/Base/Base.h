@@ -9,6 +9,7 @@
 //#include "Base/Math/Vector4.h"
 //#include "Base/Math/Quaternion.h"
 //#include "Base/Math/Matrix4x4.h"
+#include "DaydreamMath/DaydreamMath.h"
 #include "Base/Math/Transform.h"
 #include "Base/Math/Color.h"
 #include "Base/IO/Path.h"
