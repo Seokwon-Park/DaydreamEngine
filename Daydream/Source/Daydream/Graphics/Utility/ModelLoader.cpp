@@ -8,10 +8,7 @@ namespace Daydream
 		Matrix4x4 ConvertAssimpMatrix(const aiMatrix4x4& _mat)
 		{
 			// 엔진의 행렬 메모리 레이아웃(Row/Column Major)에 맞춰 변환
-			Matrix4x4 ret;
-
-			ret.glmMat = glm::make_mat4(&_mat.a1);
-			ret.glmMat = glm::transpose(ret.glmMat);
+			Matrix4x4 ret(&_mat.a1);
 
 			return ret;
 		}
@@ -146,7 +143,7 @@ namespace Daydream
 			if (meshIndex < meshSize)
 			{
 				node.meshIndex = meshIndex;
-				Matrix4x4 tmp = nextTransform.GetTranslated(_meshDatas[meshIndex].centerOffset);
+				Matrix4x4 tmp = nextTransform * Matrix4x4::CreateTranslation(_meshDatas[meshIndex].centerOffset);
 				node.transform = Transform::Decompose(tmp);
 			}
 			//translation += rotation * (centerOffset * scale);

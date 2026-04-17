@@ -15,8 +15,8 @@ namespace Daydream
 	class Renderer
 	{
 	public:
-		static constexpr UInt32 maxFramesInFlight = 3;
-		static constexpr UInt32 maxCommandListsInFlight = 2;
+		static constexpr UInt32 MaxFramesInFlight = 3;
+		static constexpr UInt32 MaxCommandListsInFlight = 2;
 
 		template<typename RenderFunction>
 		static void EnqueueCommand(RenderFunction&& _command)
@@ -119,7 +119,7 @@ namespace Daydream
 		inline static Queue<RenderCommand> singleTimeCommandQueue;
 		inline static Array<Unique<RenderCommandQueue>> commandQueues;
 		//이 큐가 현재 렌더 스레드에서 사용중인지
-		inline static std::array<std::atomic<bool>, maxCommandListsInFlight> commandQueueBusyFlags;
+		inline static std::array<std::atomic<bool>, MaxCommandListsInFlight> commandQueueBusyFlags;
 		// 렌더스레드와 충돌 방지
 		inline static std::mutex commandQueueStateMutex;
 		inline static std::condition_variable commandQueueStateCV;

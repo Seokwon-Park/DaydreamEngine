@@ -26,7 +26,7 @@ namespace Daydream
 		imguiRenderer = renderDevice->CreateImGuiRenderer();
 		renderContext = renderDevice->CreateContext();
 		skybox = MakeUnique<Skybox>();
-		commandQueues.resize(maxCommandListsInFlight);
+		commandQueues.resize(MaxCommandListsInFlight);
 		for (auto& commandList : commandQueues)
 		{
 			commandList = MakeUnique<RenderCommandQueue>();
@@ -82,7 +82,7 @@ namespace Daydream
 		SwapchainDesc desc;
 		desc.width = _window.GetWidth();
 		desc.height = _window.GetHeight();
-		desc.bufferCount = Renderer::maxFramesInFlight;
+		desc.bufferCount = Renderer::MaxFramesInFlight;
 		desc.format = RenderFormat::R8G8B8A8_UNORM;
 		desc.isFullscreen = false;
 		desc.isVSync = _window.IsVSync();
@@ -311,7 +311,7 @@ namespace Daydream
 				});
 
 			// 새로 명령을 추가할 큐의 인덱스로 업데이트
-			recordingQueueIndex = (recordingQueueIndex + 1) % maxCommandListsInFlight;
+			recordingQueueIndex = (recordingQueueIndex + 1) % MaxCommandListsInFlight;
 			std::unique_lock<std::mutex> lock(commandQueueStateMutex);
 			commandQueueStateCV.wait(lock, []()
 				{

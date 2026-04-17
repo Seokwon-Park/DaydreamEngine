@@ -32,9 +32,9 @@ namespace Daydream
 	void MeshRendererComponent::Update(Float32 _deltaTime)
 	{
 		TransformConstantBufferData data;
-		data.world = GetOwner()->GetComponent<TransformComponent>()->GetWorldMatrix().GetTranspose();
+		data.world = GetOwner()->GetComponent<TransformComponent>()->GetWorldMatrix().Transposed();
 		data.invTranspose = data.world;
-		data.invTranspose.Invert();
+		data.invTranspose.Inverse();
 		data.invTranspose.Transpose();
 		Renderer::UpdateConstantBuffer(worldMatrixConstantBuffer, data);
 	}

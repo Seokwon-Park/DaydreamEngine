@@ -1,10 +1,7 @@
 #pragma once
 
-
 namespace Daydream
 {
-	class Matrix4x4;
-
 	class Transform
 	{
 	public:
@@ -27,8 +24,8 @@ namespace Daydream
 
 		Matrix4x4 GetLocalMatrix() const;
 		static Matrix4x4 CreateLocalMatrix(Transform _transform);
-		static bool Decompose(const Matrix4x4& _matrix,
-			Vector3& _outTranslation,
+		static bool Decompose(const Matrix4x4& _worldMat,
+			Vector3& _outPosition,
 			Vector3& _outRotation, // 오일러(Vector3)보다 쿼터니언이 안정적입니다.
 			Vector3& _outScale);
 

@@ -3,7 +3,7 @@
 
 namespace Daydream
 {
-	using Vector2 = glm::vec2;
+	//using Vector2 = glm::vec2;
 	/*Vector2 Vector2::operator+(const Vector2& _other) const
 	{
 		return Vector2(x + _other.x, y + _other.y);

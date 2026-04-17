@@ -15,14 +15,14 @@ namespace Daydream
 	{
 		Vector3 direction = _transform.GetForward();
 		Vector3 up = _transform.GetUp();
-		lightViewMatrix = Matrix4x4::CreateLookTo(-direction * 10.0f, direction, up);
+		lightViewMatrix = Matrix4x4::CreateLookToLH(-direction * 10.0f, direction, up);
 
 		UpdateViewProjectionMatrix();
 	}
 
 	void Light::UpdateProjectionMatrix()
 	{
-		lightProjectionMatrix = Matrix4x4::CreateOrthographic(-20.0f, 20.0f, -20.0f, 20.0f, -200.0f, 200.0f);
+		lightProjectionMatrix = Matrix4x4::CreateOrthographicLH(-20.0f, 20.0f, -20.0f, 20.0f, -200.0f, 200.0f);
 
 		UpdateViewProjectionMatrix();
 	}

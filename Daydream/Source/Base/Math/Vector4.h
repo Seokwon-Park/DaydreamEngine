@@ -4,12 +4,9 @@
 #include "TypeTraits.h"
 #include "Vector2.h"
 
-#include "glm/glm.hpp"
-
-
 namespace Daydream
 {
-	using Vector4 = glm::vec4;
+	//using Vector4 = glm::vec4;
 	//class Vector4
 	//{
 

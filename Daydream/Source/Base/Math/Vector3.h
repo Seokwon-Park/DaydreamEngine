@@ -3,12 +3,9 @@
 
 #include "TypeTraits.h"
 
-#include "glm/glm.hpp"
-
-
 namespace Daydream
 {
-	using Vector3 = glm::vec3;
+	//using Vector3 = glm::vec3;
 
 	Vector3 RotateAxisXDegree(const Vector3& _vector, Float32 _degree);
 	Vector3 RotateAxisYDegree(const Vector3& _vector, Float32 _degree);

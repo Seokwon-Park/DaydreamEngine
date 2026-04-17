@@ -370,7 +370,7 @@ namespace Daydream::UI
 			ImGui::SameLine();
 
 			// 1. 임시 변수 선언 및 데이터 변환 (0~255  ->  0~1)
-			ImGui::ColorEdit3("##Color", &_color.r, colorEditFlags);
+			ImGui::ColorEdit3("##Color", &_color.x, colorEditFlags);
 
 			ImGui::PopFont();
 			ImGui::PopStyleVar();

@@ -50,7 +50,7 @@ namespace Daydream
 	}
 	Vector3 Camera::GetRight()
 	{
-		return glm::cross(GetUp(), GetForward());
+		return Vector3::Cross(GetUp(), GetForward());
 	}
 
 	void Camera::SetPosition(Vector3 _position)
@@ -77,7 +77,7 @@ namespace Daydream
 	}
 	void Camera::UpdateViewMatrix()
 	{
-		viewMatrix = Matrix4x4::CreateLookTo(transform.position, transform.GetForward(), transform.GetUp());
+		viewMatrix = Matrix4x4::CreateLookToLH(transform.position, transform.GetForward(), transform.GetUp());
 		UpdateViewProjectionMatrix();
 	}
 	void Camera::UpdateProjectionMatrix()
@@ -85,11 +85,11 @@ namespace Daydream
 		switch (projectionType)
 		{
 		case ProjectionType::Perspective:
-			projectionMatrix = Matrix4x4::CreatePerspective(glm::radians(fovy), aspectRatio, nearPlane, farPlane);
+			projectionMatrix = Matrix4x4::CreatePerspectiveLH(Math::DegreeToRadian(fovy), aspectRatio, nearPlane, farPlane);
 			break;
 		case ProjectionType::Orthographic:
 		{
-			projectionMatrix = Matrix4x4::CreateOrthographic(-orthoSize * aspectRatio, orthoSize * aspectRatio, -orthoSize, orthoSize, nearPlane, farPlane);
+			projectionMatrix = Matrix4x4::CreateOrthographicLH(-orthoSize * aspectRatio, orthoSize * aspectRatio, -orthoSize, orthoSize, nearPlane, farPlane);
 			break;
 		}
 		default:

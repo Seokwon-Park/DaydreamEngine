@@ -3,12 +3,9 @@
 #include <iostream>
 #include "TypeTraits.h"
 
-#include "glm/glm.hpp"
-
-
 namespace Daydream
 {
-	using Vector2 = glm::vec2;
+	//using Vector2 = glm::vec2;
 	//class Vector2
 	//{
 

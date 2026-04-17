@@ -19,3 +19,6 @@
 [submodule "Daydream/Vendor/nfd-extended"]
 	path = Daydream/Vendor/nfd-extended
 	url = https://github.com/Seokwon-Park/nativefiledialog-extended
+[submodule "Daydream/Vendor/DaydreamMath"]
+	path = Daydream/Vendor/DaydreamMath
+	url = https://github.com/Seokwon-Park/DaydreamMath

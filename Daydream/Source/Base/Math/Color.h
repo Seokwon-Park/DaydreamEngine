@@ -4,36 +4,23 @@
 
 namespace Daydream
 {
-	class Color 
+	struct Color
 	{
-	public:
 		union
 		{
-			struct
-			{
-				Float32 x;
-				Float32 y;
-				Float32 z;
-				Float32 w;
-			};
-
-			struct
-			{
-				Float32 r;
-				Float32 g;
-				Float32 b;
-				Float32 a;
-			};
-
+			struct { Float32 r, g, b, a; };
 			Float32 color[4];
+			Vector4 vec;
 		};
-		Color() :x(0.0f), y(0.0f), z(0.0f), w(0.0f) {}
-		Color(Float32 _x, Float32 _y, Float32 _z, Float32 _w) : x(_x), y(_y), z(_z), w(_w) {}
+
+		Color() :r(0.0f), g(0.0f), b(0.0f), a(0.0f) {}
+		Color(Float32 _r, Float32 _g, Float32 _b, Float32 _a) : r(_r), g(_g), b(_b), a(_a) {}
 
 		template<typename U>
 			requires IsCastable<U, Float32>
-		Color(U _x, U _y, U _z, U _w)
-			: r(static_cast<Float32>(_x)), g(static_cast<Float32>(_y)), b(static_cast<Float32>(_z)), a(static_cast<Float32>(_w)) {}
+		Color(U _r, U _g, U _b, U _a)
+			: r(static_cast<Float32>(_r)), g(static_cast<Float32>(_g)), b(static_cast<Float32>(_b)), a(static_cast<Float32>(_a)) {
+		}
 
 		static const Color Red;
 		static const Color Green;

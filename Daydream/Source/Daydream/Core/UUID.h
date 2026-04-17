@@ -34,7 +34,7 @@ namespace std
 	template <>
 	struct hash<Daydream::AssetHandle>
 	{
-		UInt64 operator()(const Daydream::AssetHandle& _id) const
+		Daydream::UInt64 operator()(const Daydream::AssetHandle& _id) const
 		{
 			return std::hash<uuids::uuid>{}(_id.uuid);
 		}

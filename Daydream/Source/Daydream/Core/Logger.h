@@ -1,5 +1,7 @@
 #pragma once
 
+#define _SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING
+#define _SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS
 #define FMT_UNICODE 0
 
 #include <spdlog/spdlog.h>

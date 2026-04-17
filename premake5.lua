@@ -13,6 +13,7 @@ workspace "Daydream"
 	IncludeDir["GLFW"] = "Daydream/Vendor/glfw/include"
 	IncludeDir["glad"] = "Daydream/Vendor/glad/include"
 	IncludeDir["glm"] = "Daydream/Vendor/glm"
+	IncludeDir["DaydreamMath"] = "Daydream/Vendor/DaydreamMath"
 	IncludeDir["ImGui"] = "Daydream/Vendor/imgui"
 	IncludeDir["stb"] = "Daydream/Vendor/stb"
 	IncludeDir["dxcompiler"] = "Daydream/Vendor/dxcompiler/include"
@@ -27,7 +28,7 @@ workspace "Daydream"
 	include "Daydream/Vendor/imgui"
 	include "Daydream/Vendor/yaml-cpp"
 	include "Daydream/Vendor/nfd-extended"
-	
+		
 project "Daydream"
 	location "Daydream"
 	kind "StaticLib"
@@ -49,6 +50,7 @@ project "Daydream"
 		"%{prj.name}/Vendor/stb/**.cpp",
 		"%{prj.name}/Vendor/glm/glm/**.hpp",
  		"%{prj.name}/Vendor/glm/glm/**.inl",
+ 		"%{prj.name}/Vendor/DaydreamMath/DaydreamMath/**.h",
  		"%{prj.name}/Vendor/VulkanMemoryAllocator/**.cpp",
  		"%{prj.name}/Vendor/ImGuizmo/ImGuizmo.h",
  		"%{prj.name}/Vendor/ImGuizmo/ImGuizmo.cpp",
@@ -61,6 +63,7 @@ project "Daydream"
 		"%{IncludeDir.glad}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
+		"%{IncludeDir.DaydreamMath}",
 		"%{IncludeDir.stb}",
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.dxcompiler}",
@@ -164,7 +167,7 @@ project "Sandbox"
 		"Daydream/Vendor/spdlog/include",
 		"Daydream/Source",
 		"Daydream/Vendor",
-		"%{IncludeDir.glm}",
+		"%{IncludeDir.DaydreamMath}",
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.stduuid}",
 	}
@@ -210,7 +213,7 @@ project "DaydreamEditor"
 		"Daydream/Vendor/spdlog/include",
 		"Daydream/Source",
 		"Daydream/Vendor",
-		"%{IncludeDir.glm}",
+		"%{IncludeDir.DaydreamMath}",
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.stduuid}",
 	}

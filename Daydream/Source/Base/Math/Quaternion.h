@@ -2,5 +2,5 @@
 
 namespace Daydream
 {
-	using Quaternion = glm::quat;
+	//using Quaternion = glm::quat;
 }
