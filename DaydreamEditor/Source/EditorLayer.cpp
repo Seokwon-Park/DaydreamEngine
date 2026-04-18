@@ -167,6 +167,8 @@ namespace Daydream
 	{
 		editorCamera->Update(_deltaTime);
 		sceneHierarchyPanel->Update();
+		Matrix4x4 mat = editorCamera->GetViewProjectionMatrix();
+		Renderer::UpdateConstantBuffer(viewProjMat, &mat);
 
 		static bool isViewControlled = false;
 		if (isViewportHovered && Input::GetMouseDown(Mouse::ButtonRight))
@@ -575,7 +577,7 @@ namespace Daydream
 				mainWindowSize.x = ImGui::GetMainViewport()->Size.x;
 				mainWindowSize.y = ImGui::GetMainViewport()->Size.y;
 				editorCamera->UpdateAspectRatio(ImGuiViewportSize.x, ImGuiViewportSize.y);
-				Renderer::UpdateConstantBuffer(viewProjMat, editorCamera->GetViewProjectionMatrix());
+				//Renderer::UpdateConstantBuffer(viewProjMat, editorCamera->GetViewProjectionMatrix());
 			}
 		}
 

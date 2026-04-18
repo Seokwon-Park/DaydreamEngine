@@ -65,7 +65,7 @@ namespace Daydream
 	}
 	void Camera::UpdateViewProjectionMatrix()
 	{
-		viewProjectionMatrix = viewMatrix * projectionMatrix ;
+		viewProjectionMatrix = viewMatrix * projectionMatrix;
 		viewProjectionMatrix.Transpose();
 
 		CameraConstantBufferData data;

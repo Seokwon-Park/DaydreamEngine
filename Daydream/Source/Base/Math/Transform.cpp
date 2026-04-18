@@ -55,7 +55,7 @@ namespace Daydream
 		Matrix4x4 matT = Matrix4x4::CreateTranslation(_transform.position);
 		Matrix4x4 matR = Matrix4x4::CreateRotation(Quaternion(Math::DegreeToRadian(_transform.rotation)));
 		Matrix4x4 matS = Matrix4x4::CreateScale(_transform.scale);
-		 
+
 		Matrix4x4 out;
 		out = matS * matR * matT;
 
@@ -74,15 +74,12 @@ namespace Daydream
 		{
 			return false;
 		}
-		
 
-		// 1. 위치(Position)는 4번째 열에서 바로 쏙 빼옵니다.
-		_outPosition = Vector3(_worldMat[0][3], _worldMat[1][3], _worldMat[2][3]);
+		_outPosition = Vector3(_worldMat[3][0], _worldMat[3][1], _worldMat[3][2]);
 
-		// 2. 스케일(Scale)은 1, 2, 3번째 열 벡터의 길이를 구하면 됩니다.
-		Vector3 xaxis(_worldMat[0][0], _worldMat[1][0], _worldMat[2][0]);
-		Vector3 yaxis(_worldMat[0][1], _worldMat[1][1], _worldMat[2][1]);
-		Vector3 zaxis(_worldMat[0][2], _worldMat[1][2], _worldMat[2][2]);
+		Vector3 xaxis(_worldMat[0][0], _worldMat[0][1], _worldMat[0][2]);
+		Vector3 yaxis(_worldMat[1][0], _worldMat[1][1], _worldMat[1][2]);
+		Vector3 zaxis(_worldMat[2][0], _worldMat[2][1], _worldMat[2][2]);
 
 		_outScale.x = xaxis.Length();
 		_outScale.y = yaxis.Length();
@@ -99,7 +96,6 @@ namespace Daydream
 		yaxis /= _outScale.y;
 		zaxis /= _outScale.z;
 
-		// 4. 순수 회전 행렬을 쿼터니언으로 변환 (여기서는 함수 호출로 대체)
 		Quaternion rotation = Quaternion::CreateFromAxis(xaxis, yaxis, zaxis);
 		_outRotation = rotation.ToEuler();
 

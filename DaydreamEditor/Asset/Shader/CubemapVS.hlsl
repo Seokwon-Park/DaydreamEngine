@@ -17,7 +17,7 @@ struct VSOutput
 VSOutput VSMain(VSInput input)
 {
     VSOutput output = (VSOutput) 0;
-    output.position = mul(float4(input.position, 1.0f),viewProjection);
+    output.position = mul(float4(input.position, 1.0f), viewProjection);
     output.worldPosition = input.position;
 
     return output;

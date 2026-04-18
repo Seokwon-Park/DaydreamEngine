@@ -122,7 +122,7 @@ namespace Daydream
 		fbDesc.width = skyboxTextureCube->GetWidth();
 		fbDesc.height = skyboxTextureCube->GetHeight();
 		captureFramebuffer = Framebuffer::Create(equirectangularRenderPass, fbDesc);
-				
+
 		equirectangularResultTextures.clear();
 		equirectangularResultTextures.resize(6);
 		textureDesc.width = skyboxTextureCube->GetWidth();
@@ -132,7 +132,10 @@ namespace Daydream
 		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
 		textureDesc.type = TextureType::Texture2D;
 
-		equirectangularResultTextures.assign(6, Texture2D::CreateEmpty(textureDesc));
+		for (int i = 0; i < 6; i++)
+		{
+			equirectangularResultTextures[i] = Texture2D::CreateEmpty(textureDesc);
+		}
 
 		fbDesc.width = diffuseResolution;
 		fbDesc.height = diffuseResolution;
@@ -147,7 +150,10 @@ namespace Daydream
 		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
 		textureDesc.type = TextureType::Texture2D;
 
-		irradianceResultTextures.assign(6, Texture2D::CreateEmpty(textureDesc));
+		for (int i = 0; i < 6; i++)
+		{
+			irradianceResultTextures[i] = Texture2D::CreateEmpty(textureDesc);
+		}
 
 		roughnessConstantBuffers.resize(prefilterMipLevels);
 		for (UInt32 mip = 0; mip < prefilterMipLevels; mip++)
