@@ -143,7 +143,7 @@ namespace Daydream
 			if (meshIndex < meshSize)
 			{
 				node.meshIndex = meshIndex;
-				Matrix4x4 tmp = nextTransform * Matrix4x4::CreateTranslation(_meshDatas[meshIndex].centerOffset);
+				Matrix4x4 tmp = Matrix4x4::CreateTranslation(_meshDatas[meshIndex].centerOffset) * nextTransform;
 				node.transform = Transform::Decompose(tmp);
 			}
 			//translation += rotation * (centerOffset * scale);

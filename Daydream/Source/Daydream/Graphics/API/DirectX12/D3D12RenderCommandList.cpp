@@ -23,9 +23,6 @@ namespace Daydream
 	{
 		commandAllocator->Reset();
 		commandList->Reset(commandAllocator.Get(), nullptr);
-
-		ID3D12DescriptorHeap* heaps[] = { device->GetCBVSRVUAVHeap(), device->GetSamplerHeap() };
-		commandList->SetDescriptorHeaps(2, heaps);
 	}
 	void D3D12RenderCommandList::End()
 	{

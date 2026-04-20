@@ -49,7 +49,12 @@ namespace Daydream
 		swapChain1->QueryInterface(swapchain.GetAddressOf());
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create swapChain!");
 
-		commandLists.assign(_desc.bufferCount, MakeShared<D3D12RenderCommandList>(device));
+		commandLists.resize(_desc.bufferCount);
+		for (UInt32 i = 0; i < _desc.bufferCount; i++)
+		{
+			// 매 루프마다 '진짜로' 새로운 커맨드 리스트와 Allocator를 각각 생성합니다!
+			commandLists[i] = MakeShared<D3D12RenderCommandList>(device);
+		}
 
 		RenderPassAttachmentDesc colorDesc;
 		colorDesc.format = _desc.format;
@@ -96,35 +101,8 @@ namespace Daydream
 	{
 		swapchain->Present(desc.isVSync, 0);
 		frameIndex = swapchain->GetCurrentBackBufferIndex();
-		fenceValues[frameIndex] = currentFenceValue;
 	}
-	//void D3D12Swapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
-	//{
-	//	EndFrame();
 
-	//	WaitForGPU();
-
-	//	d3d12Backbuffers.clear();
-	//	framebuffers.clear();
-	//	for (UInt32 i = 0; i < desc.bufferCount; i++)
-	//	{
-	//		fenceValues[i] = fenceValues[frameIndex];
-	//	}
-	//	swapchain->ResizeBuffers(desc.bufferCount, _width, _height, DXGI_FORMAT_UNKNOWN, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH | DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING);
-
-	//	framebuffers.resize(desc.bufferCount);
-	//	for (UInt32 i = 0; i < desc.bufferCount; i++)
-	//	{
-	//		ComPtr<ID3D12Resource> backBuffer;
-	//		swapchain->GetBuffer(i, IID_PPV_ARGS(backBuffer.GetAddressOf()));
-	//		framebuffers[i] = MakeShared<D3D12Framebuffer>(device, mainRenderPass.get(), this, backBuffer.Get());
-	//		d3d12Backbuffers.push_back(backBuffer);
-	//	}
-	//	frameIndex = swapchain->GetCurrentBackBufferIndex();
-	//	fenceValues[frameIndex]++;
-
-	//	BeginFrame();
-	//}
 
 	void D3D12Swapchain::BeginFrame()
 	{
@@ -142,6 +120,9 @@ namespace Daydream
 		currentCommandList = commandLists[frameIndex]->GetID3D12GraphicsCommandList();
 
 		commandLists[frameIndex]->Begin();
+
+		ID3D12DescriptorHeap* heaps[] = { device->GetCBVSRVUAVHeap(), device->GetSamplerHeap() };
+		currentCommandList->SetDescriptorHeaps(2, heaps);
 
 		D3D12_RESOURCE_BARRIER barr{};
 		barr.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -172,8 +153,10 @@ namespace Daydream
 		Array<ID3D12CommandList*> execCommandLists = { currentCommandList };
 		device->GetCommandQueue()->ExecuteCommandLists((UInt32)execCommandLists.size(), execCommandLists.data());
 
-		currentFenceValue = fenceValues[frameIndex] + 1;
+		currentFenceValue++;
 		device->GetCommandQueue()->Signal(fence.Get(), currentFenceValue);
+
+		fenceValues[frameIndex] = currentFenceValue;
 	}
 
 	//모든 GPU작업이 끝날때까지 대기

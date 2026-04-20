@@ -168,28 +168,10 @@
     <ClInclude Include="Source\Base\Math\Color.h">
       <Filter>Source\Base\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Base\Math\Math.h">
-      <Filter>Source\Base\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Base\Math\MathUtil.h">
-      <Filter>Source\Base\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Base\Math\Matrix4x4.h">
-      <Filter>Source\Base\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Base\Math\Quaternion.h">
-      <Filter>Source\Base\Math</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Base\Math\Transform.h">
       <Filter>Source\Base\Math</Filter>
     </ClInclude>
     <ClInclude Include="Source\Base\Math\TypeTraits.h">
-      <Filter>Source\Base\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Base\Math\Vector2.h">
-      <Filter>Source\Base\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Base\Math\Vector4.h">
       <Filter>Source\Base\Math</Filter>
     </ClInclude>
     <ClInclude Include="Source\Base\Time\TimeStep.h">
@@ -2012,19 +1994,7 @@
     <ClCompile Include="Source\Base\Math\Color.cpp">
       <Filter>Source\Base\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Base\Math\Matrix4x4.cpp">
-      <Filter>Source\Base\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Base\Math\Quaternion.cpp">
-      <Filter>Source\Base\Math</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Base\Math\Transform.cpp">
-      <Filter>Source\Base\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Base\Math\Vector2.cpp">
-      <Filter>Source\Base\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Base\Math\Vector4.cpp">
       <Filter>Source\Base\Math</Filter>
     </ClCompile>
     <ClCompile Include="Source\Base\Time\TimeStep.cpp">

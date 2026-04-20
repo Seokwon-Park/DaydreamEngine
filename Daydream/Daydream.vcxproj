@@ -113,14 +113,8 @@
     <ClInclude Include="Source\Base\IO\File.h" />
     <ClInclude Include="Source\Base\IO\Path.h" />
     <ClInclude Include="Source\Base\Math\Color.h" />
-    <ClInclude Include="Source\Base\Math\Math.h" />
-    <ClInclude Include="Source\Base\Math\MathUtil.h" />
-    <ClInclude Include="Source\Base\Math\Matrix4x4.h" />
-    <ClInclude Include="Source\Base\Math\Quaternion.h" />
     <ClInclude Include="Source\Base\Math\Transform.h" />
     <ClInclude Include="Source\Base\Math\TypeTraits.h" />
-    <ClInclude Include="Source\Base\Math\Vector2.h" />
-    <ClInclude Include="Source\Base\Math\Vector4.h" />
     <ClInclude Include="Source\Base\Time\TimeStep.h" />
     <ClInclude Include="Source\Base\TypeCast.h" />
     <ClInclude Include="Source\Base\Wrappers.h" />
@@ -729,11 +723,7 @@
     <ClCompile Include="Source\Base\IO\File.cpp" />
     <ClCompile Include="Source\Base\IO\Path.cpp" />
     <ClCompile Include="Source\Base\Math\Color.cpp" />
-    <ClCompile Include="Source\Base\Math\Matrix4x4.cpp" />
-    <ClCompile Include="Source\Base\Math\Quaternion.cpp" />
     <ClCompile Include="Source\Base\Math\Transform.cpp" />
-    <ClCompile Include="Source\Base\Math\Vector2.cpp" />
-    <ClCompile Include="Source\Base\Math\Vector4.cpp" />
     <ClCompile Include="Source\Base\Time\TimeStep.cpp" />
     <ClCompile Include="Source\Daydream\Asset\Asset.cpp" />
     <ClCompile Include="Source\Daydream\Asset\AssetDefaults.cpp" />

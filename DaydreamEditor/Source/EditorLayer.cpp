@@ -168,7 +168,7 @@ namespace Daydream
 		editorCamera->Update(_deltaTime);
 		sceneHierarchyPanel->Update();
 		Matrix4x4 mat = editorCamera->GetViewProjectionMatrix();
-		Renderer::UpdateConstantBuffer(viewProjMat, &mat);
+		Renderer::UpdateConstantBuffer(viewProjMat, mat);
 
 		static bool isViewControlled = false;
 		if (isViewportHovered && Input::GetMouseDown(Mouse::ButtonRight))

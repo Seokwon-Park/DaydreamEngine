@@ -291,76 +291,78 @@ namespace Daydream
 	{
 		D3D12TextureCube* d3d12Tex = Cast<D3D12TextureCube*>(_texture.get());
 
-		D3D12_RESOURCE_BARRIER barrier = {};
-		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barrier.Transition.pResource = d3d12Tex->GetID3D12Resource();
-		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-		GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
-
 		UInt32 mipLevels = _texture->GetMipLevels();
+		auto resizePSO = ResourceManager::GetResource<PipelineState>("GenerateMipsPSO");
+		auto quadMesh = ResourceManager::GetResource<Mesh>("Quad");
+
+		BindPipelineState(resizePSO);
+		D3D12PipelineState* d3d12PipelineState = Cast<D3D12PipelineState*>(resizePSO.get());
+		BindVertexBuffer(quadMesh->GetVertexBuffer());
+		BindIndexBuffer(quadMesh->GetIndexBuffer());
+		GetD3D12ActiveCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex("TextureSampler"), d3d12Tex->GetSamplerHandle());
+
 		for (UInt32 mip = 1; mip < mipLevels; mip++)
 		{
+			UInt32 mipWidth = std::max(1U, _texture->GetWidth() >> mip);
+			UInt32 mipHeight = std::max(1U, _texture->GetHeight() >> mip);
+
+			D3D12_RECT rect;
+			rect.left = 0;
+			rect.top = 0;
+			rect.right = Cast<Float32>(mipWidth);
+			rect.bottom = Cast<Float32>(mipHeight);
+
+			GetD3D12ActiveCommandList()->RSSetScissorRects(1, &rect);
+
+			D3D12_VIEWPORT viewport = {};
+			viewport.Width = Cast<Float32>(mipWidth);
+			viewport.Height = Cast<Float32>(mipHeight);
+			viewport.MinDepth = 0.0f;
+			viewport.MaxDepth = 1.0f;
+			viewport.TopLeftX = 0;
+			viewport.TopLeftY = 0;
+
+			GetD3D12ActiveCommandList()->RSSetViewports(1, &viewport);
+
 			for (UInt32 face = 0; face < 6; face++)
 			{
-				UInt32 index = mipLevels * face + mip;
+				UInt32 currentIndex = mipLevels * face + mip;
+				UInt32 prevIndex = mipLevels * face + (mip - 1);
 
-				auto resizePSO = ResourceManager::GetResource<PipelineState>("GenerateMipsPSO");
-				auto quadMesh = ResourceManager::GetResource<Mesh>("Quad");
-
-				D3D12_RECT rect;
-				rect.left = 0;
-				rect.top = 0;
-				rect.right = std::max(1U, _texture->GetWidth() >> mip);
-				rect.bottom = std::max(1U, _texture->GetHeight() >> mip);
-
-				GetD3D12ActiveCommandList()->RSSetScissorRects(1, &rect);
-
-				D3D12_VIEWPORT viewport = {};
-				viewport.Width = Cast<Float32>(std::max(1U, _texture->GetWidth() >> mip));
-				viewport.Height = Cast<Float32>(std::max(1U, _texture->GetHeight() >> mip));
-				viewport.MinDepth = 0.0f;
-				viewport.MaxDepth = 1.0f;
-				viewport.TopLeftX = 0;
-				viewport.TopLeftY = 0;
-
-				GetD3D12ActiveCommandList()->RSSetViewports(1, &viewport);
-
-				float color[4] = { 0,0,1,1 };
+				D3D12_RESOURCE_BARRIER barrier = {};
+				barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+				barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+				barrier.Transition.pResource = d3d12Tex->GetID3D12Resource();
+				barrier.Transition.Subresource = currentIndex;
+				barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+				barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+				GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
 
 				//device->TransitionResourceState(GetD3D12ActiveCommandList(), texture.Get(), GetCurrentState(), D3D12_RESOURCE_STATE_RENDER_TARGET);
 				//SetCurrentState(D3D12_RESOURCE_STATE_RENDER_TARGET);
-				Renderer::BindPipelineState(resizePSO);
-				D3D12PipelineState* d3d12PipelineState = Cast<D3D12PipelineState*>(activePipelineState.get());
+
 				GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex("Texture"), d3d12Tex->GetMipSRVGPUHandle(mipLevels * face + mip - 1));
-				GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex("TextureSampler"), d3d12Tex->GetSamplerHandle());
-				Renderer::BindMesh(quadMesh);
 
 
 
-				GetD3D12ActiveCommandList()->ClearRenderTargetView(d3d12Tex->GetRTVCPUHandle(index), color, 0, nullptr);
-				auto handle = d3d12Tex->GetRTVCPUHandle(index);
+				//GetD3D12ActiveCommandList()->ClearRenderTargetView(d3d12Tex->GetRTVCPUHandle(index), color, 0, nullptr);
+				auto handle = d3d12Tex->GetRTVCPUHandle(currentIndex);
 				GetD3D12ActiveCommandList()->OMSetRenderTargets(1, &handle, false, nullptr);
 
-				GetD3D12ActiveCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 				GetD3D12ActiveCommandList()->DrawIndexedInstanced(quadMesh->GetIndexCount(), 1, 0, 0, 0);
+
+				barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+				barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+				GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
 
 				//resizeRenderPass->End();
 				//device->TransitionResourceState(GetD3D12ActiveCommandList(), texture.Get(), GetCurrentState(), D3D12_RESOURCE_STATE_COMMON);
 				//SetCurrentState(D3D12_RESOURCE_STATE_COMMON);
 			}
 		}
-
-		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barrier.Transition.pResource = d3d12Tex->GetID3D12Resource();
-		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-		GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
-
 	}
 	void D3D12RenderContext::SetActiveCommandList(Shared<RenderCommandList> _commandList)
 	{

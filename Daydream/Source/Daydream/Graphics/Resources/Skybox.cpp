@@ -80,6 +80,7 @@ namespace Daydream
 		skyboxMipLevels = (UInt32)std::log2f((Float32)skyboxResolution);
 
 		TextureDesc textureDesc{};
+
 		textureDesc.width = skyboxResolution;
 		textureDesc.height = skyboxResolution;
 		textureDesc.mipLevels = skyboxMipLevels;
@@ -97,6 +98,24 @@ namespace Daydream
 
 		irradianceTextureCube = TextureCube::CreateEmpty(textureDesc);
 
+		textureDesc.width = skyboxTextureCube->GetWidth();
+		textureDesc.height = skyboxTextureCube->GetHeight();
+		textureDesc.mipLevels = 1;
+		textureDesc.bindFlags = RenderBindFlags::ShaderResource;
+		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
+		textureDesc.type = TextureType::Texture2D;
+
+		BRDFTexture = Texture2D::CreateEmpty(textureDesc);
+
+		textureDesc.width = skyboxTextureCube->GetWidth();
+		textureDesc.height = skyboxTextureCube->GetHeight();
+		textureDesc.mipLevels = 1;
+		textureDesc.bindFlags = Daydream::RenderBindFlags::ShaderResource;
+		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
+		textureDesc.type = TextureType::Texture2D;
+
+		resizeResultTexture = Texture2D::CreateEmpty(textureDesc);
+
 		prefilterMipLevels = (UInt32)std::log2f((Float32)specularResolution);
 
 		textureDesc.width = specularResolution;
@@ -107,14 +126,6 @@ namespace Daydream
 		textureDesc.type = TextureType::TextureCube;
 
 		prefilterTextureCube = TextureCube::CreateEmpty(textureDesc);
-
-		textureDesc.width = skyboxTextureCube->GetWidth();
-		textureDesc.height = skyboxTextureCube->GetHeight();
-		textureDesc.bindFlags = RenderBindFlags::ShaderResource;
-		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
-		textureDesc.type = TextureType::Texture2D;
-
-		BRDFTexture = Texture2D::CreateEmpty(textureDesc);
 
 		equirectangularTexture = AssetManager::GetAssetByPath<Texture2D>("Resource/skybox.hdr");
 
@@ -191,16 +202,6 @@ namespace Daydream
 		fbDesc.height = skyboxTextureCube->GetHeight();
 
 		resizeFramebuffer = Framebuffer::Create(resizeRenderPass, fbDesc);
-		//if (texture->GetWidth() != textureCube->GetWidth() ||
-		//	texture->GetHeight() != textureCube->GetHeight())
-		//{
-		textureDesc.width = skyboxTextureCube->GetWidth();
-		textureDesc.height = skyboxTextureCube->GetHeight();
-		textureDesc.bindFlags = Daydream::RenderBindFlags::ShaderResource;
-		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
-		textureDesc.type = TextureType::Texture2D;
-
-		resizeResultTexture = Texture2D::CreateEmpty(textureDesc);
 	}
 
 	void Skybox::Generate()
