@@ -79,7 +79,6 @@ namespace Daydream
 		width = backBufferDesc.Width;
 		height = backBufferDesc.Height;
 
-
 		device->GetDevice()->CreateRenderTargetView(backBuffer.Get(), nullptr, swapchainRTV.GetAddressOf());
 		renderTargetViews.push_back(swapchainRTV.Get());
 		//Shared<D3D11Texture2D> backBufferTexture = MakeShared<D3D11Texture2D>(device, backBuffer);

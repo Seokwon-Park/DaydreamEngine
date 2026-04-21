@@ -38,7 +38,6 @@ namespace Daydream
 		UInt32 GetHeight() { return height; }
 		static Shared<Framebuffer> Create(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc);
 	protected:
-		mutable std::shared_mutex mutex;
 
 		bool isSwapchainBuffer = false;
 		UInt32 width;

@@ -16,7 +16,7 @@ namespace Daydream
 	{
 		ImGuiRenderer::Init(_window);
 		ImGui_ImplOpenGL3_Init(device->GetVersion().c_str());
-		ImGui_ImplOpenGL3_CreateDeviceObjects();
+		//ImGui_ImplOpenGL3_CreateDeviceObjects();
 	}
 
 	void OpenGLImGuiRenderer::Shutdown()

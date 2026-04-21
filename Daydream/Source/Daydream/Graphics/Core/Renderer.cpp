@@ -135,7 +135,7 @@ namespace Daydream
 			});
 	}
 
-	void Daydream::Renderer::BeginRenderPass(const Shared<RenderPass>& _renderPass, const Shared<Framebuffer>& _framebuffer)
+	void Renderer::BeginRenderPass(const Shared<RenderPass>& _renderPass, const Shared<Framebuffer>& _framebuffer)
 	{
 		EnqueueCommand([_renderPass, _framebuffer]()
 			{
@@ -245,11 +245,16 @@ namespace Daydream
 			});
 	}
 
-	void Renderer::ResizeFramebuffer(const Shared<Framebuffer>& _framebuffer, UInt32 _width, UInt32 _height)
+	void Renderer::RequestResizeFramebuffer(const Shared<Framebuffer>& _framebuffer, UInt32 _width, UInt32 _height)
 	{
 		EnqueueSingleTimeCommand([_framebuffer, _width, _height]()
 			{
-				_framebuffer->Resize(_width, _height);
+				EnqueueCommand([_framebuffer, _width, _height]()
+					{
+						_framebuffer->Resize(_width, _height);
+
+					}
+				);
 			});
 	}
 

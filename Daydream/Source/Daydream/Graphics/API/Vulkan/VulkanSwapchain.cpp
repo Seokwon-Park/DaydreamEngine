@@ -53,8 +53,8 @@ namespace Daydream
 		renderPass = MakeShared<VulkanRenderPass>(device, rpDesc);
 		mainRenderPass = renderPass;
 
-		framebuffers.resize(desc.bufferCount);
-		for (UInt32 i = 0; i < desc.bufferCount; i++)
+		framebuffers.resize(imageCount);
+		for (UInt32 i = 0; i < imageCount; i++)
 		{
 			framebuffers[i] = MakeShared<VulkanFramebuffer>(device, this, renderPass.get(), swapchainImages[i]);
 		}
@@ -154,14 +154,16 @@ namespace Daydream
 	{
 		ResizeFramebuffers();
 
-		currentCommandBuffer = commandLists[currentFrame]->GetVkCommandBuffer();
-		commandLists[currentFrame]->Begin();
 		//이미지를 GPU에 요청. 사용가능한 이미지의 인덱스를 imageIndex로 전달하고 imageAvailableSemaphore에 신호를 전달하라는 명령
 		if (isSwapchainResized)
 		{
 			RecreateSwapchain();
 			isSwapchainResized = false;
 		}
+
+		currentCommandBuffer = commandLists[currentFrame]->GetVkCommandBuffer();
+		commandLists[currentFrame]->Begin();
+
 		vk::Result result = device->GetDevice().acquireNextImageKHR(swapchain.get(), UINT64_MAX, imageAvailableSemaphores[currentFrame].get(), VK_NULL_HANDLE, &imageIndex);
 
 		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::Vulkan, "Wrong API");
@@ -200,8 +202,8 @@ namespace Daydream
 		CreateSwapchain();
 		swapchainImages = device->GetDevice().getSwapchainImagesKHR(swapchain.get());
 
-		framebuffers.assign(desc.bufferCount, nullptr);
-		for (UInt32 i = 0; i < desc.bufferCount; i++)
+		framebuffers.assign(imageCount, nullptr);
+		for (UInt32 i = 0; i < imageCount; i++)
 		{
 			framebuffers[i] = MakeShared<VulkanFramebuffer>(device, this, renderPass.get(), swapchainImages[i]);
 		}

@@ -2,6 +2,7 @@
 #include "VulkanFramebuffer.h"
 #include "VulkanSwapchain.h"
 #include "Daydream/Graphics/Core/RenderCommandList.h"
+#include "Daydream/Graphics/Core/Renderer.h"
 
 namespace Daydream
 {
@@ -59,23 +60,22 @@ namespace Daydream
 
 	Shared<Texture2D> VulkanFramebuffer::GetColorAttachmentTexture(UInt32 _index)
 	{
-		std::unique_lock<std::shared_mutex> lock(mutex);
-
 		return colorAttachments[_index];
 	}
 
 	void VulkanFramebuffer::Resize(UInt32 _width, UInt32 _height)
 	{
-		std::unique_lock<std::shared_mutex> lock(mutex);
-
 		width = _width;
 		height = _height;
 		extent.width = _width;
 		extent.height = _height;
 
 		attachmentImageViews.clear();
-		oldAttachments.clear();
-		oldAttachments = std::move(colorAttachments);
+		//oldAttachments.clear();
+		for (auto c : colorAttachments)
+		{
+			oldAttachments.push_back(c);
+		}
 		colorAttachments.clear();
 		oldAttachments.push_back(depthAttachment);
 		depthAttachment = nullptr;
@@ -84,7 +84,7 @@ namespace Daydream
 		//vk::CommandBufferBeginInfo beginInfo{};
 		//device->GetCommandBuffer().reset({});
 		//device->GetCommandBuffer().begin(beginInfo);
-		
+
 		CreateAttachments();
 	}
 
@@ -166,7 +166,7 @@ namespace Daydream
 
 			Shared<VulkanTexture2D> colorTexture = MakeShared<VulkanTexture2D>(device, textureDesc);
 
-			vk::ImageMemoryBarrier barrier{};
+			/*vk::ImageMemoryBarrier barrier{};
 			barrier.oldLayout = vk::ImageLayout::eUndefined;
 			barrier.newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
 			barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
@@ -178,7 +178,7 @@ namespace Daydream
 			barrier.subresourceRange.layerCount = 1;
 			barrier.subresourceRange.levelCount = 1;
 
-			device->TransitionImageLayout(barrier);
+			device->TransitionImageLayoutImmediate(barrier);*/
 
 			if (colorAttachmentDesc.type == AttachmentType::EntityHandle)
 			{

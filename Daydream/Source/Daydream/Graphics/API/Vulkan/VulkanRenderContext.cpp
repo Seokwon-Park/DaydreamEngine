@@ -107,7 +107,7 @@ namespace Daydream
 		renderPassInfo.renderArea.offset = vk::Offset2D(0, 0);
 		renderPassInfo.renderArea.extent = currentFramebuffer->GetExtent();
 
-		Array<vk::ClearValue> colors;
+		Array<vk::ClearValue> colors{};
 		for (UInt32 i = 0; i < _framebuffer->GetColorAttachmentSize(); i++)
 		{
 			vk::ClearValue vulkanClearColor;

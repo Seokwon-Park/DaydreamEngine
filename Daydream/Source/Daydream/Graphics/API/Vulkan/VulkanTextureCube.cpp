@@ -46,7 +46,7 @@ namespace Daydream
 		barrier.subresourceRange.layerCount = 6;
 		barrier.subresourceRange.levelCount = desc.mipLevels;
 
-		device->TransitionImageLayout(barrier);
+		device->TransitionImageLayoutImmediate(barrier);
 
 		vk::ImageViewCreateInfo viewInfo{};
 		viewInfo.image = textureImage.get();

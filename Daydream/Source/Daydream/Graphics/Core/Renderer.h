@@ -85,7 +85,7 @@ namespace Daydream
 
 		static void DrawIndexed(UInt32 _indexCount);
 
-		static void ResizeFramebuffer(const Shared<Framebuffer>& _framebuffer, UInt32 _width, UInt32 _height);
+		static void RequestResizeFramebuffer(const Shared<Framebuffer>& _framebuffer, UInt32 _width, UInt32 _height);
 
 		static void CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst);
 		static void CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel = 0);

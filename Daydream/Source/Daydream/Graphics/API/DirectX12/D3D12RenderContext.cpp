@@ -311,8 +311,8 @@ namespace Daydream
 			D3D12_RECT rect;
 			rect.left = 0;
 			rect.top = 0;
-			rect.right = Cast<Float32>(mipWidth);
-			rect.bottom = Cast<Float32>(mipHeight);
+			rect.right = Cast<UInt32>(mipWidth);
+			rect.bottom = Cast<UInt32>(mipHeight);
 
 			GetD3D12ActiveCommandList()->RSSetScissorRects(1, &rect);
 

@@ -118,9 +118,8 @@ namespace Daydream
 			Renderer::GetImGuiRenderer()->RenderDrawData(Renderer::GetActiveCommandList(), clonedDrawData);
 			DestroyClonedDrawData(clonedDrawData);
 			});
-
-
 	}
+
 	void ImGuiLayer::UpdateImGuiWindows()
 	{
 		GLFWwindow* backupCurrentContext = glfwGetCurrentContext();

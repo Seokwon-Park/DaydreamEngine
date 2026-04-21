@@ -106,8 +106,7 @@ namespace Daydream
 		void CopyBuffer(vk::Buffer _src, vk::Buffer _dst, vk::DeviceSize _size);
 		void CopyBufferToImage(vk::Buffer _src, vk::Image _dst, UInt32 _width, UInt32 _height);
 		void CopyBufferToImage(vk::Buffer _src, vk::Image _dst, Array<vk::BufferImageCopy> _imageCopyRegion);
-		void TransitionImageLayout(vk::Image _image, vk::Format _format, vk::ImageLayout _oldLayout, vk::ImageLayout _newLayout);
-		void TransitionImageLayout(vk::ImageMemoryBarrier _barrier);
+		void TransitionImageLayoutImmediate(vk::ImageMemoryBarrier _barrier);
 
 		//SwapchainSupportDetails QuerySwapchainSupport(VkPhysicalDevice _physicalDevice, VkSurfaceKHR _surface);
 	private:

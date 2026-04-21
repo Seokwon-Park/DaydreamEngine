@@ -335,7 +335,11 @@ namespace Daydream
 
 		for (int i = 0; i < 4; i++)
 		{
-			ImGui::Image((ImTextureID)gBufferFramebuffer->GetColorAttachmentTexture(i)->GetImGuiHandle(), ImVec2{ viewportSize.x / 3,viewportSize.y / 3 });
+			auto t = gBufferFramebuffer->GetColorAttachmentTexture(i);
+			if (t)
+			{
+				ImGui::Image((ImTextureID)t->GetImGuiHandle(), ImVec2{ viewportSize.x / 3,viewportSize.y / 3 });
+			}
 		}
 		ImGui::End();
 
@@ -412,21 +416,34 @@ namespace Daydream
 
 		Application::GetInstance().GetImGuiLayer()->BlockEvents(!isViewportFocused && !isViewportHovered);
 
+		Shared<Texture2D> viewportTexture = nullptr;
 		switch (viewIndex)
 		{
 		case 0:
 		{
-			ImGui::Image((ImTextureID)viewportFramebuffer->GetColorAttachmentTexture(0)->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
+			viewportTexture = viewportFramebuffer->GetColorAttachmentTexture(0);
+			if (viewportTexture)
+			{
+				ImGui::Image((ImTextureID)viewportTexture->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
+			}
 			break;
 		}
 		case 1:
 		{
-			ImGui::Image((ImTextureID)gBufferFramebuffer->GetColorAttachmentTexture(0)->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
+			viewportTexture = gBufferFramebuffer->GetColorAttachmentTexture(0);
+			if (viewportTexture)
+			{
+				ImGui::Image((ImTextureID)viewportTexture->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
+			}
 			break;
 		}
 		case 2:
 		{
-			ImGui::Image((ImTextureID)gBufferFramebuffer->GetColorAttachmentTexture(1)->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
+			viewportTexture = gBufferFramebuffer->GetColorAttachmentTexture(1);
+			if (viewportTexture)
+			{
+				ImGui::Image((ImTextureID)viewportTexture->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
+			}
 			break;
 		}
 		case 3:
@@ -550,11 +567,11 @@ namespace Daydream
 		auto viewportOffset = ImGui::GetWindowPos(); // Includes tab bar(height 21)
 		viewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
 		viewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
-		if (currentActive) return; // 그냥 활성화 상태면 일단 크기조절 X
+		if (currentActive) return; // 활성화 상태면(크기를 아직 드래그하고 있으면) 크기조절 X
 		if (isViewportResized) // 윈도우 크기가 저장된 값과 다르거나 Imgui 윈도우 크기가 framebuffer크기와 다르면 리사이즈 된거임
 		{
 			// 최종 크기로 카메라 및 프레임버퍼 업데이트
-			// 이 시점에는 이미 currentContentRegionSize가 최종 크기를 담고 있습니다.
+			// 이 시점에는 이미 currentContentRegionSize가 최종 크기
 			if (ImGuiViewportSize.x > 1.0f && ImGuiViewportSize.y > 1.0f)
 			{
 
@@ -565,9 +582,11 @@ namespace Daydream
 				//// D3D12Framebuffer 리사이즈 (GPU 동기화 로직 포함)
 				//viewportFramebuffer->Resize(static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
 				//Renderer::BeginSwapchainRenderPass(Renderer::GetCurrentWindow());
-				Renderer::ResizeFramebuffer(viewportFramebuffer, static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
-				Renderer::ResizeFramebuffer(gBufferFramebuffer, static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
-				Renderer::ResizeFramebuffer(maskFramebuffer, static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
+
+				//크기가 달라졌으면 렌더러에 프레임버퍼 크기를 변경해달라고 요청함
+				Renderer::RequestResizeFramebuffer(viewportFramebuffer, static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
+				Renderer::RequestResizeFramebuffer(gBufferFramebuffer, static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
+				Renderer::RequestResizeFramebuffer(maskFramebuffer, static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
 				// 카메라의 뷰포트 크기 업데이트
 				// camera->SetViewportSize(currentContentRegionSize.x, currentContentRegionSize.y);
 

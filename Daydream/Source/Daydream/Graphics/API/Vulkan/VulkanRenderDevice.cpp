@@ -262,7 +262,7 @@ namespace Daydream
 			barrier.subresourceRange.layerCount = 1;
 			barrier.subresourceRange.levelCount = 1;
 
-			TransitionImageLayout(barrier);
+			TransitionImageLayoutImmediate(barrier);
 
 			CopyBufferToImage(uploadBuffer.get(), texture->GetVkImage(), _desc.width, _desc.height);
 
@@ -278,7 +278,7 @@ namespace Daydream
 			barrier.subresourceRange.layerCount = 1;
 			barrier.subresourceRange.levelCount = 1;
 
-			TransitionImageLayout(barrier);
+			TransitionImageLayoutImmediate(barrier);
 		}
 		return texture;
 	}
@@ -299,7 +299,7 @@ namespace Daydream
 		barrier.subresourceRange.layerCount = 1;
 		barrier.subresourceRange.levelCount = 1;
 
-		TransitionImageLayout(barrier);
+		TransitionImageLayoutImmediate(barrier);
 
 		return texture;
 	}
@@ -353,7 +353,7 @@ namespace Daydream
 		barrier.subresourceRange.layerCount = 6;
 		barrier.subresourceRange.levelCount = 1;
 
-		TransitionImageLayout(barrier);
+		TransitionImageLayoutImmediate(barrier);
 
 		return textureCube;
 	}
@@ -374,7 +374,7 @@ namespace Daydream
 		barrier.subresourceRange.layerCount = 6;
 		barrier.subresourceRange.levelCount = 1;
 
-		TransitionImageLayout(barrier);
+		TransitionImageLayoutImmediate(barrier);
 
 		return textureCube;
 	}
@@ -691,103 +691,8 @@ namespace Daydream
 		EndSingleTimeCommands(copyCommandBuffer);
 
 	}
-
-
-
-	void VulkanRenderDevice::TransitionImageLayout(vk::Image _image, vk::Format _format, vk::ImageLayout _oldLayout, vk::ImageLayout _newLayout)
-	{
-		//vk::CommandBuffer transCommandBuffer = BeginSingleTimeCommands();
-
-		vk::ImageMemoryBarrier barrier{};
-		barrier.oldLayout = _oldLayout;
-		barrier.newLayout = _newLayout;
-		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barrier.image = _image;
-		if (_format == vk::Format::eD32SfloatS8Uint || _format == vk::Format::eD24UnormS8Uint)
-		{
-			barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eDepth | vk::ImageAspectFlagBits::eStencil;
-		}
-		else
-		{
-			barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-		}
-		barrier.subresourceRange.baseArrayLayer = 0;
-		barrier.subresourceRange.baseMipLevel = 0;
-		barrier.subresourceRange.layerCount = 1;
-		barrier.subresourceRange.levelCount = 1;
-
-		vk::AccessFlags srcAccess;
-		vk::AccessFlags dstAccess;
-
-		vk::PipelineStageFlags srcStage{};
-		vk::PipelineStageFlags dstStage{};
-
-		using enum vk::PipelineStageFlagBits;
-		// 패턴별로 그룹화
-		switch (_oldLayout)
-		{
-		case vk::ImageLayout::eUndefined:
-			srcAccess = {};
-			srcStage = vk::PipelineStageFlagBits::eTopOfPipe;
-			break;
-		case vk::ImageLayout::eTransferDstOptimal:
-			srcAccess = vk::AccessFlagBits::eTransferWrite;
-			srcStage = vk::PipelineStageFlagBits::eTransfer;
-			break;
-		case vk::ImageLayout::eColorAttachmentOptimal:
-			srcAccess = vk::AccessFlagBits::eColorAttachmentWrite;
-			srcStage = vk::PipelineStageFlagBits::eColorAttachmentOutput;
-			break;
-		case vk::ImageLayout::eShaderReadOnlyOptimal:
-			srcAccess = vk::AccessFlagBits::eShaderRead;
-			srcStage = vk::PipelineStageFlagBits::eFragmentShader;
-			break;
-		default:
-			throw std::invalid_argument("Unsupported old layout!");
-		}
-
-		switch (_newLayout)
-		{
-		case vk::ImageLayout::eTransferDstOptimal:
-			dstAccess = vk::AccessFlagBits::eTransferWrite;
-			dstStage = vk::PipelineStageFlagBits::eTransfer;
-			break;
-		case vk::ImageLayout::eShaderReadOnlyOptimal:
-			dstAccess = vk::AccessFlagBits::eShaderRead;
-			dstStage = vk::PipelineStageFlagBits::eFragmentShader;
-			break;
-		case vk::ImageLayout::eColorAttachmentOptimal:
-			dstAccess = vk::AccessFlagBits::eColorAttachmentWrite;
-			dstStage = vk::PipelineStageFlagBits::eColorAttachmentOutput;
-			break;
-		case vk::ImageLayout::eDepthStencilAttachmentOptimal:
-			dstAccess = vk::AccessFlagBits::eDepthStencilAttachmentRead | vk::AccessFlagBits::eDepthStencilAttachmentWrite;
-			dstStage = vk::PipelineStageFlagBits::eEarlyFragmentTests;
-			break;
-		case vk::ImageLayout::ePresentSrcKHR:
-			dstAccess = {}; // 또는 VK_ACCESS_NONE (Vulkan 1.3 이상)
-			dstStage = vk::PipelineStageFlagBits::eBottomOfPipe; // 또는 VK_PIPELINE_STAGE_ALL_GRAPHICS_BIT
-			break;
-		default:
-			throw std::invalid_argument("Unsupported new layout!");
-		}
-
-		barrier.srcAccessMask = srcAccess;
-		barrier.dstAccessMask = dstAccess;
-
-		currentCommandBuffer.pipelineBarrier(
-			srcStage, dstStage,
-			{},
-			0, nullptr,
-			0, nullptr,
-			1, &barrier
-		);
-
-		//EndSingleTimeCommands(transCommandBuffer);
-	}
-
-	void VulkanRenderDevice::TransitionImageLayout(vk::ImageMemoryBarrier _barrier)
+		
+	void VulkanRenderDevice::TransitionImageLayoutImmediate(vk::ImageMemoryBarrier _barrier)
 	{
 		vk::CommandBuffer transCommandBuffer = BeginSingleTimeCommands();
 
