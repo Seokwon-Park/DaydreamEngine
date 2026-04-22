@@ -18,11 +18,10 @@ namespace Daydream
 
 		virtual ~VulkanFramebuffer() override;
 		
-		virtual UInt32 GetColorAttachmentSize() override { return colorAttachmentCount; }
 		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) override;
 		virtual Shared<Texture2D> GetDepthAttachmentTexture() override { return depthAttachment; };
 		virtual inline bool HasDepthAttachment() override { return depthAttachment != nullptr; }
-		virtual void Resize(UInt32 _width, UInt32 _height) override;
+		virtual void Recreate() override;
 		virtual UInt32 ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY) override;
 
 		vk::Framebuffer GetFramebuffer() { return framebuffer.get(); }

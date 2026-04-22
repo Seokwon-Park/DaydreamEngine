@@ -23,7 +23,7 @@ namespace Daydream
 
 		mainRenderPass = MakeShared<OpenGLRenderPass>(rpDesc);
 
-		framebuffer = MakeShared<OpenGLFramebuffer>(this);
+		framebuffer = MakeShared<OpenGLFramebuffer>(this, mainRenderPass.get());
 	}
 	OpenGLSwapchain::~OpenGLSwapchain()
 	{
@@ -48,7 +48,6 @@ namespace Daydream
 		{
 			glfwMakeContextCurrent(window);
 		}
-		ResizeFramebuffers();
 	}
 	void OpenGLSwapchain::EndFrame()
 	{

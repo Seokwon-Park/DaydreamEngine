@@ -14,13 +14,13 @@ namespace Daydream
 	{
 	public:
 		D3D11Framebuffer(D3D11RenderDevice* _device, RenderPass* _renderPass, const FramebufferDesc& _desc);
-		D3D11Framebuffer(D3D11RenderDevice* _device, RenderPass* _renderPass, D3D11Swapchain* _swapChain);
+		D3D11Framebuffer(D3D11RenderDevice* _device, RenderPass* _renderPass, D3D11Swapchain* _swapchain);
 		virtual ~D3D11Framebuffer() override;
 
 		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) override;
 		virtual Shared<Texture2D> GetDepthAttachmentTexture() override;
 		virtual bool HasDepthAttachment() override { return depthAttachment != nullptr; }
-		virtual void Resize(UInt32 _width, UInt32 _height) override;
+		virtual void Recreate() override;
 		virtual UInt32 ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY) override;
 		//virtual Shared<Texture2D> GetDepthAttachemntTexture(UInt32 _index) override;
 

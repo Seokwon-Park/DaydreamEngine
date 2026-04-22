@@ -6,12 +6,9 @@
 namespace Daydream
 {
 	D3D11Framebuffer::D3D11Framebuffer(D3D11RenderDevice* _device, RenderPass* _renderPass, const FramebufferDesc& _desc)
+		:Framebuffer(_renderPass, _desc)
 	{
 		device = _device;
-
-		width = _desc.width;
-		height = _desc.height;
-		renderPass = _renderPass;
 
 		CreateAttachments();
 
@@ -19,7 +16,7 @@ namespace Daydream
 		desc.Width = 1;
 		desc.Height = 1;
 		desc.MipLevels = 1;
-		desc.ArraySize= 1 ;
+		desc.ArraySize = 1;
 		desc.Format = DXGI_FORMAT_R32_UINT;
 		desc.SampleDesc.Count = 1;
 		desc.SampleDesc.Quality = 0;
@@ -30,47 +27,13 @@ namespace Daydream
 
 		device->GetDevice()->CreateTexture2D(&desc, nullptr, readTexture.GetAddressOf());
 	}
-	void D3D11Framebuffer::CreateAttachments()
-	{
-		const RenderPassDesc& renderPassDesc = renderPass->GetDesc();
-		for (const auto& colorAttachmentDesc : renderPassDesc.colorAttachments)
-		{
-			if (colorAttachmentDesc.isSwapchain) continue;
-			TextureDesc textureDesc;
-			textureDesc.width = width;
-			textureDesc.height = height;
-			textureDesc.format = colorAttachmentDesc.format;
-			textureDesc.bindFlags = RenderBindFlags::RenderTarget | RenderBindFlags::ShaderResource;
-			textureDesc.type = TextureType::Texture2D;
 
-			Shared<D3D11Texture2D> colorTexture = MakeShared<D3D11Texture2D>(device, textureDesc);
-			if (colorAttachmentDesc.type == AttachmentType::EntityHandle)
-			{
-				entityTexture = colorTexture;
-			}
-			colorAttachments.push_back(colorTexture);
-			renderTargetViews.push_back(colorTexture->GetRTV());
-		}
-
-		if (renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
-		{
-			TextureDesc textureDesc;
-			textureDesc.width = width;
-			textureDesc.height = height;
-			textureDesc.format = renderPassDesc.depthAttachment.format;
-			textureDesc.bindFlags = RenderBindFlags::DepthStencil | RenderBindFlags::ShaderResource;
-			textureDesc.type = TextureType::Texture2D;
-
-			Shared<D3D11Texture2D> depthTexture = MakeShared<D3D11Texture2D>(device, textureDesc);
-			depthAttachment = depthTexture;
-		}
-	}
-	D3D11Framebuffer::D3D11Framebuffer(D3D11RenderDevice* _device, RenderPass* _renderPass, D3D11Swapchain* _swapChain)
+	D3D11Framebuffer::D3D11Framebuffer(D3D11RenderDevice* _device, RenderPass* _renderPass, D3D11Swapchain* _swapchain)
+		:Framebuffer(_swapchain, _renderPass)
 	{
 		device = _device;
-		renderPass = _renderPass;
 
-		IDXGISwapChain* dxgiSwapchain = _swapChain->GetDXGISwapchain();
+		IDXGISwapChain* dxgiSwapchain = _swapchain->GetDXGISwapchain();
 		ComPtr<ID3D11Texture2D> backBuffer;
 		dxgiSwapchain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
 		D3D11_TEXTURE2D_DESC backBufferDesc;
@@ -106,18 +69,15 @@ namespace Daydream
 
 	Shared<Texture2D> D3D11Framebuffer::GetColorAttachmentTexture(UInt32 _index)
 	{
- 		DAYDREAM_CORE_ASSERT(_index < colorAttachments.size(), "index out of range");
+		DAYDREAM_CORE_ASSERT(_index < colorAttachments.size(), "index out of range");
 		return colorAttachments[_index];
 	}
 	Shared<Texture2D> D3D11Framebuffer::GetDepthAttachmentTexture()
 	{
 		return depthAttachment;
 	}
-	void D3D11Framebuffer::Resize(UInt32 _width, UInt32 _height)
+	void D3D11Framebuffer::Recreate()
 	{
-		width = _width;
-		height = _height;
-
 		colorAttachments.clear();
 		renderTargetViews.clear();
 		depthAttachment = nullptr;
@@ -148,6 +108,42 @@ namespace Daydream
 		device->GetContext()->Unmap(readTexture.Get(), 0);
 
 		return entityID;
+	}
+
+	void D3D11Framebuffer::CreateAttachments()
+	{
+		const RenderPassDesc& renderPassDesc = renderPass->GetDesc();
+		for (const auto& colorAttachmentDesc : renderPassDesc.colorAttachments)
+		{
+			if (colorAttachmentDesc.isSwapchain) continue;
+			TextureDesc textureDesc;
+			textureDesc.width = width;
+			textureDesc.height = height;
+			textureDesc.format = colorAttachmentDesc.format;
+			textureDesc.bindFlags = RenderBindFlags::RenderTarget | RenderBindFlags::ShaderResource;
+			textureDesc.type = TextureType::Texture2D;
+
+			Shared<D3D11Texture2D> colorTexture = MakeShared<D3D11Texture2D>(device, textureDesc);
+			if (colorAttachmentDesc.type == AttachmentType::EntityHandle)
+			{
+				entityTexture = colorTexture;
+			}
+			colorAttachments.push_back(colorTexture);
+			renderTargetViews.push_back(colorTexture->GetRTV());
+		}
+
+		if (renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
+		{
+			TextureDesc textureDesc;
+			textureDesc.width = width;
+			textureDesc.height = height;
+			textureDesc.format = renderPassDesc.depthAttachment.format;
+			textureDesc.bindFlags = RenderBindFlags::DepthStencil | RenderBindFlags::ShaderResource;
+			textureDesc.type = TextureType::Texture2D;
+
+			Shared<D3D11Texture2D> depthTexture = MakeShared<D3D11Texture2D>(device, textureDesc);
+			depthAttachment = depthTexture;
+		}
 	}
 	//Shared<Texture2D> D3D11Framebuffer::GetDepthAttachemntTexture(UInt32 _index)
 	//{

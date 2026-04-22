@@ -11,13 +11,13 @@ namespace Daydream
 	{
 	public:
 		OpenGLFramebuffer(RenderPass* _renderPass, const FramebufferDesc& _desc);
-		OpenGLFramebuffer(OpenGLSwapchain* _desc);
+		OpenGLFramebuffer(OpenGLSwapchain* _swapchain, RenderPass* _renderPass);
 		virtual ~OpenGLFramebuffer() override;
 
 		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) override;
 		virtual Shared<Texture2D> GetDepthAttachmentTexture() override;
 		virtual inline bool HasDepthAttachment() override { return depthAttachment != nullptr; }
-		virtual void Resize(UInt32 _width, UInt32 _height) override;
+		virtual void Recreate() override;
 		virtual UInt32 ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY) override;
 
 		void AttachTextures();

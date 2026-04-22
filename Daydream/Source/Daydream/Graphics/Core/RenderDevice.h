@@ -62,15 +62,10 @@ namespace Daydream
 		virtual void CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst) = 0;
 		virtual void CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel = 0) = 0;
 
-		void AddFramebufferResizeRequest(Framebuffer* _framebuffer, Vector2 _size) { framebufferResizeInfo.push_back({ _framebuffer, _size }); };
-		Array<Pair<Framebuffer*, Vector2>>& GetFramebufferResizeRequest() { return framebufferResizeInfo; }
-
 		inline RendererAPIType GetAPI() const { return API; }
 
 		static Unique<RenderDevice> Create(RendererAPIType _API);
 	protected:
 		RendererAPIType API = RendererAPIType::None;
-		Array<Pair<Framebuffer*, Vector2>> framebufferResizeInfo;
-
 	};
 }

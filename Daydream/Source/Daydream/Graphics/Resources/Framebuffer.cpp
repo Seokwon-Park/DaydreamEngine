@@ -3,12 +3,30 @@
 
 #include "Daydream/Graphics/Core/RenderDevice.h"
 #include "Daydream/Graphics/Core/Renderer.h"
+#include "Daydream/Graphics/Core/Swapchain.h"
 
 namespace Daydream
 {
-	void Framebuffer::RequestResize(UInt32 _width, UInt32 _height)
+	Framebuffer::Framebuffer(Swapchain* _swapchain, RenderPass* _renderPass)
 	{
-		Renderer::GetRenderDevice()->AddFramebufferResizeRequest(this, Vector2(_width, _height));
+		width = _swapchain->GetDesc().width;
+		height = _swapchain->GetDesc().height;
+
+		renderPass = _renderPass;
+		colorAttachmentCount = _renderPass->GetDesc().colorAttachments.size();
+	}
+	Framebuffer::Framebuffer(RenderPass* _renderPass, const FramebufferDesc& _desc)
+	{
+		width = _desc.width;
+		height = _desc.height;
+
+		renderPass = _renderPass;
+		colorAttachmentCount = _renderPass->GetDesc().colorAttachments.size();
+	}
+	void Framebuffer::Resize(UInt32 _width, UInt32 _height)
+	{
+		width = _width;
+		height = _height;
 	}
 
 	Shared<Framebuffer> Framebuffer::Create(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc)

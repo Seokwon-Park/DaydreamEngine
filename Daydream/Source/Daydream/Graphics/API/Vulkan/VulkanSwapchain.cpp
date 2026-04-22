@@ -152,21 +152,24 @@ namespace Daydream
 
 	void VulkanSwapchain::BeginFrame()
 	{
-		ResizeFramebuffers();
-
-		//이미지를 GPU에 요청. 사용가능한 이미지의 인덱스를 imageIndex로 전달하고 imageAvailableSemaphore에 신호를 전달하라는 명령
 		if (isSwapchainResized)
 		{
 			RecreateSwapchain();
 			isSwapchainResized = false;
 		}
 
-		currentCommandBuffer = commandLists[currentFrame]->GetVkCommandBuffer();
-		commandLists[currentFrame]->Begin();
-
+		//이미지를 GPU에 요청. 사용가능한 이미지의 인덱스를 imageIndex로 전달하고 imageAvailableSemaphore에 신호를 전달하라는 명령
 		vk::Result result = device->GetDevice().acquireNextImageKHR(swapchain.get(), UINT64_MAX, imageAvailableSemaphores[currentFrame].get(), VK_NULL_HANDLE, &imageIndex);
 
-		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::Vulkan, "Wrong API");
+		if (result == vk::Result::eErrorOutOfDateKHR)
+		{
+			RecreateSwapchain();
+			return; 
+		}
+		DAYDREAM_CORE_ASSERT(result == vk::Result::eSuccess || result == vk::Result::eSuboptimalKHR, "Failed to acquire swapchain image!");
+
+		currentCommandBuffer = commandLists[currentFrame]->GetVkCommandBuffer();
+		commandLists[currentFrame]->Begin();
 	}
 
 	void VulkanSwapchain::EndFrame()

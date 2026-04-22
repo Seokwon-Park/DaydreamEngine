@@ -13,16 +13,20 @@ namespace Daydream
 		bool isBackBuffer = false;
 	};
 
+	class Swapchain;
+
 	class Framebuffer
 	{
 	public:
+		Framebuffer(Swapchain* _swapchain, RenderPass* _renderPass);
+		Framebuffer(RenderPass* _renderPass, const FramebufferDesc& _desc);
 		virtual ~Framebuffer() = default;
 
-		virtual UInt32 GetColorAttachmentSize() { return 0; };
+		virtual UInt32 GetColorAttachmentSize() { return colorAttachmentCount; };
 		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) = 0;
 		virtual Shared<Texture2D> GetDepthAttachmentTexture() = 0;
 		virtual bool HasDepthAttachment() = 0;
-		virtual void Resize(UInt32 _width, UInt32 _height) = 0;
+		virtual void Recreate() = 0;
 
 		inline UInt32 ReadEntityHandleFromPixel(Pair<Int32, Int32> _mousePos) 
 		{
@@ -33,7 +37,7 @@ namespace Daydream
 		
 		bool IsSwapchainBuffer() const { return isSwapchainBuffer; }
 
-		void RequestResize(UInt32 _width, UInt32 _height);
+		void Resize(UInt32 _width, UInt32 _height);
 		UInt32 GetWidth() { return width; }
 		UInt32 GetHeight() { return height; }
 		static Shared<Framebuffer> Create(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc);

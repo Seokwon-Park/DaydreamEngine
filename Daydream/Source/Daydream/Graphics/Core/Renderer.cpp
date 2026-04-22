@@ -17,15 +17,15 @@ namespace Daydream
 
 	void Renderer::Init(RendererAPIType _API)
 	{
-		//DAYDREAM_CORE_ASSERT(instance == nullptr, "Renderer Already Initialized!");
-		//instance = new Renderer(_API);
 		currentWindow = nullptr;
 		renderDevice = RenderDevice::Create(_API);
 		DAYDREAM_CORE_ASSERT(renderDevice, "Failed to create graphics device!");
 		renderDevice->Init();
-		imguiRenderer = renderDevice->CreateImGuiRenderer();
 		renderContext = renderDevice->CreateContext();
-		skybox = MakeUnique<Skybox>();
+
+		imguiRenderer = renderDevice->CreateImGuiRenderer();
+
+
 		commandQueues.resize(MaxCommandListsInFlight);
 		for (auto& commandList : commandQueues)
 		{
@@ -49,6 +49,13 @@ namespace Daydream
 
 		ShaderCompileHelper::Init();
 		/*	RenderCommand::Init(renderDevice.get());*/
+	}
+
+	void Renderer::PostInit()
+	{
+		skybox = MakeUnique<Skybox>();
+		skybox->CreateResources();
+		EnqueuePreFrameCommand([]() {skybox->Generate(); });
 	}
 
 	void Renderer::Shutdown()
@@ -220,20 +227,6 @@ namespace Daydream
 					}
 					renderContext->SetTexture2D(name, texture.cache);
 				}
-
-				/*const auto& textureCubeInfo = _material->GetAllTextureCube();
-				for (auto [name, textureCube] : textureCubeInfo)
-				{
-					if (textureCube == nullptr) continue;
-					renderContext->SetTextureCube(name, textureCube);
-				}
-
-				const auto& constantBufferInfo = _material->GetAllConstantBuffer();
-				for (auto [name, cbuffer] : constantBufferInfo)
-				{
-					if (cbuffer == nullptr) continue;
-					renderContext->SetConstantBuffer(name, cbuffer);
-				}*/
 			});
 	}
 
@@ -247,12 +240,12 @@ namespace Daydream
 
 	void Renderer::RequestResizeFramebuffer(const Shared<Framebuffer>& _framebuffer, UInt32 _width, UInt32 _height)
 	{
-		EnqueueSingleTimeCommand([_framebuffer, _width, _height]()
+		EnqueuePreFrameCommand([_framebuffer, _width, _height]()
 			{
+				_framebuffer->Resize(_width, _height);
 				EnqueueCommand([_framebuffer, _width, _height]()
 					{
-						_framebuffer->Resize(_width, _height);
-
+						_framebuffer->Recreate();
 					}
 				);
 			});
@@ -283,7 +276,7 @@ namespace Daydream
 			});
 	}
 
-	void Renderer::FlushSingleTimeCommands()
+	void Renderer::ExecutePreFrameCommands()
 	{
 		//Queue<FunctionPtr<void()>> queuedCommands;
 		//std::swap(queuedCommands, singleTimeCommandQueue);
@@ -332,5 +325,6 @@ namespace Daydream
 			submittedQueue->Execute();
 		}
 	}
+
 
 }

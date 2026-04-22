@@ -30,31 +30,31 @@ namespace Daydream
 	void OpenGLRenderContext::BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer)
 	{
 		OpenGLFramebuffer* currentFramebuffer = Cast<OpenGLFramebuffer*>(_framebuffer.get());
-		if (currentFramebuffer->IsSwapchainBuffer() == true)
+		//if (currentFramebuffer->IsSwapchainBuffer() == true)
+		//{
+		//	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		//	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+		//	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//}
+		//else
+		//{
+		glBindFramebuffer(GL_FRAMEBUFFER, currentFramebuffer->GetFramebufferID());
+		SetViewport(0, 0, currentFramebuffer->GetWidth(), currentFramebuffer->GetHeight());
+		if (currentFramebuffer->HasDepthAttachment())
 		{
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
-			//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glEnable(GL_DEPTH_TEST);
+			glDepthFunc(GL_LESS);
+			glClear(GL_DEPTH_BUFFER_BIT);
 		}
 		else
 		{
-			glBindFramebuffer(GL_FRAMEBUFFER, currentFramebuffer->GetFramebufferID());
-			SetViewport(0, 0, currentFramebuffer->GetWidth(), currentFramebuffer->GetHeight());
-			if (currentFramebuffer->HasDepthAttachment())
-			{
-				glEnable(GL_DEPTH_TEST);
-				glDepthFunc(GL_LESS);
-				glClear(GL_DEPTH_BUFFER_BIT);
-			}
-			else
-			{
-				glDisable(GL_DEPTH_TEST);
-			}
-
-			Color clearColor = _renderPass->GetClearColor();
-			glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-			glClear(GL_COLOR_BUFFER_BIT);
+			glDisable(GL_DEPTH_TEST);
 		}
+
+		Color clearColor = _renderPass->GetClearColor();
+		glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+		glClear(GL_COLOR_BUFFER_BIT);
+		//}
 	}
 	void OpenGLRenderContext::EndRenderPass(Shared<RenderPass> _renderPass)
 	{

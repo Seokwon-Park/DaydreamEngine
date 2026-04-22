@@ -53,17 +53,6 @@ namespace Daydream
 		mainRenderPass = MakeShared<D3D11RenderPass>(device, rpDesc);
 
 		framebuffer = MakeShared<D3D11Framebuffer>(device, mainRenderPass.get(), this);
-
-		D3D11_VIEWPORT viewport;
-		viewport.TopLeftX = 0;
-		viewport.TopLeftY = 0;
-		viewport.Width = Cast<Float32>(_desc.width);
-		viewport.Height = Cast<Float32>(_desc.height);
-		viewport.MinDepth = 0.0f;
-		viewport.MaxDepth = 1.0f;
-
-		device->GetContext()->RSSetViewports(1, &viewport);
-
 	}
 	D3D11Swapchain::~D3D11Swapchain()
 	{
@@ -87,8 +76,6 @@ namespace Daydream
 
 	void D3D11Swapchain::BeginFrame()
 	{
-		ResizeFramebuffers();
-
 		Array<ID3D11RenderTargetView*> rtvs = framebuffer->GetRenderTargetViews();
 		for (auto rtv : rtvs)
 		{

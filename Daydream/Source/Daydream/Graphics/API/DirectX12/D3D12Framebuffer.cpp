@@ -5,12 +5,9 @@
 namespace Daydream
 {
 	D3D12Framebuffer::D3D12Framebuffer(D3D12RenderDevice* _device, RenderPass* _renderPass, const FramebufferDesc& _desc)
+		:Framebuffer(_renderPass, _desc)
 	{
 		device = _device;
-
-		width = _desc.width;
-		height = _desc.height;
-		renderPass = _renderPass;
 
 		swapchainRTVHandle.ptr = 0;
 
@@ -58,7 +55,8 @@ namespace Daydream
 		}
 	}
 
-	D3D12Framebuffer::D3D12Framebuffer(D3D12RenderDevice* _device, RenderPass* _renderPass, D3D12Swapchain* _swapChain, ID3D12Resource* _swapchainImage)
+	D3D12Framebuffer::D3D12Framebuffer(D3D12RenderDevice* _device, RenderPass* _renderPass, D3D12Swapchain* _swapchain, ID3D12Resource* _swapchainImage)
+		:Framebuffer(_swapchain, _renderPass)
 	{
 		device = _device;
 		auto desc = _swapchainImage->GetDesc();
@@ -98,11 +96,8 @@ namespace Daydream
 		return colorAttachments[_index];
 	}
 
-	void D3D12Framebuffer::Resize(UInt32 _width, UInt32 _height)
+	void Daydream::D3D12Framebuffer::Recreate()
 	{
-		width = _width;
-		height = _height;
-
 		oldAttachments.clear();
 		oldAttachments = colorAttachments;
 		colorAttachments.clear();

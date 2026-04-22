@@ -14,6 +14,5 @@ namespace Daydream
 		auto now = std::chrono::high_resolution_clock::now();
 		deltaTime = std::chrono::duration<float>(now - lastTime).count();
 		lastTime = now;
-
 	}
 }

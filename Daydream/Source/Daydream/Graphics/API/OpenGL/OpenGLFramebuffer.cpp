@@ -1,25 +1,25 @@
 #include "DaydreamPCH.h"
 #include "OpenGLFramebuffer.h"
+#include "OpenGLSwapchain.h"
 
 #include <glad/glad.h>
 
 namespace Daydream
 {
 	OpenGLFramebuffer::OpenGLFramebuffer(RenderPass* _renderPass, const FramebufferDesc& _desc)
+		:Framebuffer(_renderPass, _desc)
 	{
 		glCreateFramebuffers(1, &framebufferID);
-
-		width = _desc.width;
-		height = _desc.height;
-		renderPass = _renderPass;
 
 		CreateAttachments();
 
 		AttachTextures();
 	}
 
-	OpenGLFramebuffer::OpenGLFramebuffer(OpenGLSwapchain* _desc)
+	OpenGLFramebuffer::OpenGLFramebuffer(OpenGLSwapchain* _swapchain, RenderPass* _renderPass)
+		:Framebuffer(_swapchain, _renderPass)
 	{
+		framebufferID = 0;
 		isSwapchainBuffer = true;
 	}
 
@@ -75,12 +75,8 @@ namespace Daydream
 		}
 		return nullptr;
 	}
-	void OpenGLFramebuffer::Resize(UInt32 _width, UInt32 _height)
+	void OpenGLFramebuffer::Recreate()
 	{
-		width = _width;
-		height = _height;
-
-		colorAttachments.clear();
 		depthAttachment = nullptr;
 
 		CreateAttachments();

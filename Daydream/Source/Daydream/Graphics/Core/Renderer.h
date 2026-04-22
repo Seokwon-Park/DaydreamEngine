@@ -33,16 +33,10 @@ namespace Daydream
 			}
 		}
 
-		template<typename RenderFunction>
-		static void EnqueueSingleTimeCommand(RenderFunction&& _command)
-		{
-			singleTimeCommandQueue.push(_command);
-		}
-
 		//static RenderCommandList* GetCurrentCommandQueue();
 
-		//Do Not Call twice
 		static void Init(RendererAPIType _API);
+		static void PostInit();
 		static void Shutdown();
 
 		//This Function is only for OpenGL
@@ -60,7 +54,7 @@ namespace Daydream
 		static void EndFrame(Swapchain* _swapchain);
 
 		static void BeginRenderPass(const Shared<RenderPass>& _renderPass, const Shared<Framebuffer>& _framebuffer);
-		static void EndRenderPass(const Shared<RenderPass> &_renderPass);
+		static void EndRenderPass(const Shared<RenderPass>& _renderPass);
 
 		static void BeginSwapchainRenderPass(Swapchain* _swapchain);
 		static void EndSwapchainRenderPass(Swapchain* _swapchain);
@@ -92,20 +86,25 @@ namespace Daydream
 		virtual void CopyTextureToBuffer(Shared<Texture2D> _srcTexture, Shared<GPUBuffer> _dstBuffer, UInt32 _offsetX, UInt32 _offsetY, UInt32 _width, UInt32 _height) = 0;
 		static void GenerateMips(Shared<Texture> _texture);
 
-		static void FlushSingleTimeCommands();
+		static void ExecutePreFrameCommands();
 
 		static void Submit();
 
-		static ImGuiRenderer* GetImGuiRenderer() { return imguiRenderer.get(); }
+		inline static ImGuiRenderer* GetImGuiRenderer() { return imguiRenderer.get(); }
 
 		//static Renderer& Get() { return *instance; }
-		static inline RendererAPIType GetAPI() { return renderDevice->GetAPI(); }
-		static inline RenderDevice* GetRenderDevice() { return renderDevice.get(); }
-		static inline RenderContext* GetRenderContext() { return renderContext.get(); }
-		static inline Skybox* GetSkybox() { return skybox.get(); }
-		static inline RenderCommandList* GetActiveCommandList() { return renderContext->GetActiveCommandList().get(); }
+		inline static RendererAPIType GetAPI() { return renderDevice->GetAPI(); }
+		inline static RenderDevice* GetRenderDevice() { return renderDevice.get(); }
+		inline static RenderContext* GetRenderContext() { return renderContext.get(); }
+		inline static  Skybox* GetSkybox() { return skybox.get(); }
+		inline static  RenderCommandList* GetActiveCommandList() { return renderContext->GetActiveCommandList().get(); }
 	private:
 		Renderer() = default;
+		template<typename RenderFunction>
+		static void EnqueuePreFrameCommand(RenderFunction&& _command)
+		{
+			singleTimeCommandQueue.push(_command);
+		}
 
 		inline static DaydreamWindow* currentWindow = nullptr;
 		inline static Unique<RenderDevice> renderDevice = nullptr;

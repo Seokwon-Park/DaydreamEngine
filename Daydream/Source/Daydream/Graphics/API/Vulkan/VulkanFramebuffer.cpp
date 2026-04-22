@@ -7,15 +7,14 @@
 namespace Daydream
 {
 	VulkanFramebuffer::VulkanFramebuffer(VulkanRenderDevice* _device, VulkanRenderPass* _renderPass, const FramebufferDesc& _desc)
+		:Framebuffer(_renderPass, _desc)
 	{
 		device = _device;
 		extent = vk::Extent2D(_desc.width, _desc.height);
-		width = _desc.width;
-		height = _desc.height;
-		renderPass = _renderPass;
+
 		vkRenderPass = _renderPass;
 
-		colorAttachmentCount = _renderPass->GetDesc().colorAttachments.size();
+		colorAttachments.resize(colorAttachmentCount);
 		CreateAttachments();
 
 		if (entityTexture)
@@ -34,20 +33,19 @@ namespace Daydream
 	}
 
 	VulkanFramebuffer::VulkanFramebuffer(VulkanRenderDevice* _device, VulkanSwapchain* _swapchain, VulkanRenderPass* _renderPass, vk::Image _swapchainImage)
+		:Framebuffer(_swapchain, _renderPass)
 	{
 		device = _device;
 		extent = _swapchain->GetExtent();
-		width = extent.width;
-		height = extent.height;
-		renderPass = _renderPass;
+
 		vkRenderPass = _renderPass;
 		isSwapchainBuffer = true;
+
 
 		swapchainImageView = device->CreateImageView(_swapchainImage,
 			_swapchain->GetFormat(),
 			vk::ImageAspectFlagBits::eColor);
 		attachmentImageViews.push_back(swapchainImageView.get());
-		colorAttachmentCount = 1;
 
 		CreateAttachments();
 	}
@@ -63,27 +61,19 @@ namespace Daydream
 		return colorAttachments[_index];
 	}
 
-	void VulkanFramebuffer::Resize(UInt32 _width, UInt32 _height)
+	void VulkanFramebuffer::Recreate()
 	{
-		width = _width;
-		height = _height;
-		extent.width = _width;
-		extent.height = _height;
+		extent.width = width;
+		extent.height = height;
 
 		attachmentImageViews.clear();
-		//oldAttachments.clear();
 		for (auto c : colorAttachments)
 		{
 			oldAttachments.push_back(c);
 		}
-		colorAttachments.clear();
 		oldAttachments.push_back(depthAttachment);
 		depthAttachment = nullptr;
 		depthStencilView = VK_NULL_HANDLE;
-
-		//vk::CommandBufferBeginInfo beginInfo{};
-		//device->GetCommandBuffer().reset({});
-		//device->GetCommandBuffer().begin(beginInfo);
 
 		CreateAttachments();
 	}
@@ -155,8 +145,10 @@ namespace Daydream
 	void VulkanFramebuffer::CreateAttachments()
 	{
 		const RenderPassDesc& renderPassDesc = renderPass->GetDesc();
-		for (const auto& colorAttachmentDesc : renderPassDesc.colorAttachments)
+		UInt64 colorAttachementsSize = renderPassDesc.colorAttachments.size();
+		for (UInt64 i = 0; i < colorAttachementsSize; i++)
 		{
+			const auto& colorAttachmentDesc = renderPassDesc.colorAttachments[i];
 			if (colorAttachmentDesc.isSwapchain) continue;
 			TextureDesc textureDesc;
 			textureDesc.width = width;
@@ -166,25 +158,11 @@ namespace Daydream
 
 			Shared<VulkanTexture2D> colorTexture = MakeShared<VulkanTexture2D>(device, textureDesc);
 
-			/*vk::ImageMemoryBarrier barrier{};
-			barrier.oldLayout = vk::ImageLayout::eUndefined;
-			barrier.newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
-			barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-			barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-			barrier.image = colorTexture->GetVkImage();
-			barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-			barrier.subresourceRange.baseArrayLayer = 0;
-			barrier.subresourceRange.baseMipLevel = 0;
-			barrier.subresourceRange.layerCount = 1;
-			barrier.subresourceRange.levelCount = 1;
-
-			device->TransitionImageLayoutImmediate(barrier);*/
-
 			if (colorAttachmentDesc.type == AttachmentType::EntityHandle)
 			{
 				entityTexture = colorTexture;
 			}
-			colorAttachments.push_back(colorTexture);
+			colorAttachments[i] = colorTexture;
 			attachmentImageViews.push_back(colorTexture->GetImageView());
 		}
 
@@ -200,7 +178,7 @@ namespace Daydream
 
 			depthAttachment = depthTexture;
 			depthStencilView = depthTexture->GetImageView();
-			attachmentImageViews.push_back(depthAttachment->GetImageView());
+			attachmentImageViews.push_back(depthTexture->GetImageView());
 		}
 
 		vk::FramebufferCreateInfo framebufferInfo{};

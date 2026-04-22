@@ -58,8 +58,6 @@ namespace Daydream
 
 		bool InitWindow();
 		bool InitRenderer();
-
-		void PrepareRenderer();
 	private:
 		friend int ::main(int argc, char** argv);
 

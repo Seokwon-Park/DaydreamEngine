@@ -33,7 +33,7 @@ namespace Daydream
 		virtual Shared<RenderCommandList> GetCurrentCommandList() const = 0;
 		inline virtual Shared<RenderPass> GetRenderPass() const { return mainRenderPass; }
 
-		void ResizeFramebuffers();
+		inline const SwapchainDesc& GetDesc() { return desc; };
 		void ResizeSwapchain(UInt32 _width, UInt32 _height);
 
 		static Shared<Swapchain> Create(const DaydreamWindow& _window, const SwapchainDesc& _desc);

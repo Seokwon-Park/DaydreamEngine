@@ -132,8 +132,6 @@ namespace Daydream
 		barr.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 		currentCommandList->ResourceBarrier(1, &barr);
-
-		ResizeFramebuffers();
 	}
 
 	void D3D12Swapchain::EndFrame()

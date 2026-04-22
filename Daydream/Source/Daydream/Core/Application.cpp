@@ -97,24 +97,22 @@ namespace Daydream
 		AttachOverlay(imGuiLayer);
 
 		ComponentRegistry::Init();
-
-		Renderer::GetSkybox()->CreateResources();
+		Renderer::PostInit();
 
 		return true;
 	}
 
 	bool Application::Run()
 	{
-		//Temp
-		Renderer::TransferContextForRenderThread(GetMainWindowPtr());
-		Renderer::EnqueueSingleTimeCommand([]() {Renderer::GetSkybox()->Generate(); });
+		//OpenGL Context Switching(when RenderThread is enabled)
+		Renderer::TransferContextForRenderThread(GetMainWindowPtr()); 
 		while (isRunning)
 		{
 			timeStep.UpdateTime();
 			float deltaTime = timeStep.GetDeltaTime();
 
 			Renderer::BeginFrame(mainWindow->GetSwapchain());
-			Renderer::FlushSingleTimeCommands(); // 실행할게 있을때만
+			Renderer::ExecutePreFrameCommands(); // if SingleTimeCommandQueue is not empty
 			for (Layer* layer : layerStack)
 			{
 				layer->OnUpdate(deltaTime);
@@ -209,12 +207,6 @@ namespace Daydream
 		}
 		Renderer::SetCurrentWindow(mainWindow.get());
 		return true;
-	}
-
-	void Application::PrepareRenderer()
-	{
-		Renderer::TransferContextForRenderThread(GetMainWindowPtr());
-		Renderer::EnqueueSingleTimeCommand([]() {Renderer::GetSkybox()->Generate(); });
 	}
 
 	void Application::OnEvent(Event& _event)
