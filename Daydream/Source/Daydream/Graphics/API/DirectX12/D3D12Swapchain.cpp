@@ -100,22 +100,48 @@ namespace Daydream
 	void D3D12Swapchain::Present()
 	{
 		swapchain->Present(desc.isVSync, 0);
+		//frameIndex = 0->1
 		frameIndex = swapchain->GetCurrentBackBufferIndex();
 	}
 
 
 	void D3D12Swapchain::BeginFrame()
 	{
+		if (isSwapchainResized)
+		{
+			WaitForGPU();
+			//이제 currentFenceValue까지 작업이 다 끝난 상태
+
+			d3d12Backbuffers.clear();
+			framebuffers.clear();
+
+			swapchain->ResizeBuffers(desc.bufferCount, desc.width, desc.height, format, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH | DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING);
+
+			framebuffers.resize(desc.bufferCount);
+			for (UInt32 i = 0; i < desc.bufferCount; i++)
+			{
+				ComPtr<ID3D12Resource> backBuffer;
+				swapchain->GetBuffer(i, IID_PPV_ARGS(backBuffer.GetAddressOf()));
+				framebuffers[i] = MakeShared<D3D12Framebuffer>(device, mainRenderPass.get(), this, backBuffer.Get());
+				d3d12Backbuffers.push_back(backBuffer);
+			}
+
+			frameIndex = swapchain->GetCurrentBackBufferIndex();
+			for (UInt32 i = 0; i < desc.bufferCount; i++)
+			{
+				fenceValues[i] = currentFenceValue;
+			}
+
+			isSwapchainResized = false;
+		}
+		
+		// frameIndex의 작업이 끝난상태인지 확인
 		if (fence->GetCompletedValue() < fenceValues[frameIndex])
 		{
 			fence->SetEventOnCompletion(fenceValues[frameIndex], fenceEvent.Get());
 			WaitForSingleObjectEx(fenceEvent.Get(), INFINITE, FALSE);
 		}
 
-		if(isSwapchainResized)
-		{
-
-		}
 
 		currentCommandList = commandLists[frameIndex]->GetID3D12GraphicsCommandList();
 
@@ -149,28 +175,28 @@ namespace Daydream
 		commandLists[frameIndex]->End();
 
 		Array<ID3D12CommandList*> execCommandLists = { currentCommandList };
+		//이제 0번 이미지에 그려
 		device->GetCommandQueue()->ExecuteCommandLists((UInt32)execCommandLists.size(), execCommandLists.data());
 
+		//여기서 FenceValue = 0 -> 1
 		currentFenceValue++;
+		//다그리면 Fence에 1 전달해
 		device->GetCommandQueue()->Signal(fence.Get(), currentFenceValue);
 
+		//FenceValue[0] = 1; // 이제 0번 이미지 다시 쓰려면 Fence가 1보다 커야된다
 		fenceValues[frameIndex] = currentFenceValue;
 	}
 
 	//모든 GPU작업이 끝날때까지 대기
 	void D3D12Swapchain::WaitForGPU()
 	{
-		// 1. 현재 큐에 시그널 명령 추가. GPU에게 현재 펜스 값(fenceValues[frameIndex])을 시그널하라고 요청
-		device->GetCommandQueue()->Signal(fence.Get(), fenceValues[frameIndex]);
+		currentFenceValue++;
+		//currentFenceValue 시그널해
+		device->GetCommandQueue()->Signal(fence.Get(), currentFenceValue);
 
-		// 2. CPU가 이벤트 대기: GPU가 위에서 요청한 펜스 값을 시그널할 때까지 기다림
-		//    이벤트가 시그널되면 WaitForSingleObjectEx가 반환됩니다.
-		fence->SetEventOnCompletion(fenceValues[frameIndex], fenceEvent.Get());
+		//currentFenceValue 받을때까지 기다려
+		fence->SetEventOnCompletion(currentFenceValue, fenceEvent.Get());
 		WaitForSingleObjectEx(fenceEvent.Get(), INFINITE, FALSE);
-
-		// 3. 펜스 값 증가: 다음 번 Signal을 위해 현재 펜스 값을 1 증가시킴.
-		//    이 펜스 값은 이후 commandQueue->Signal에서 사용될 예정.
-		fenceValues[frameIndex]++;
 	}
 
 	// GPU가 이전 프레임 작업을 끝낼 때까지 기다림

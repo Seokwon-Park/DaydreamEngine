@@ -24,7 +24,6 @@ namespace Daydream
 		virtual Shared<Framebuffer> GetCurrentFramebuffer()const { return framebuffers[frameIndex]; };
 		virtual Shared<RenderCommandList> GetCurrentCommandList() const { return commandLists[frameIndex]; };
 
-
 		void WaitForGPU();
 		void MoveToNextFrame();
 

@@ -78,7 +78,7 @@ namespace Daydream
 				barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 				barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_DEPTH_READ;
 				barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_DEPTH_WRITE;
-				GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
+ 				GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
 			}
 		}
 

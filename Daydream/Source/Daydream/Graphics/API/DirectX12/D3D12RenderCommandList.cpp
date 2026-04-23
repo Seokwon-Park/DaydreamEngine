@@ -21,8 +21,8 @@ namespace Daydream
 	}
 	void D3D12RenderCommandList::Begin()
 	{
-		commandAllocator->Reset();
-		commandList->Reset(commandAllocator.Get(), nullptr);
+		HRESULT result = commandAllocator->Reset();
+		result = commandList->Reset(commandAllocator.Get(), nullptr);
 	}
 	void D3D12RenderCommandList::End()
 	{

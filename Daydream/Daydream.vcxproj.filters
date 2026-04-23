@@ -58,6 +58,9 @@
     <Filter Include="Source\Daydream\Graphics\API\Vulkan">
       <UniqueIdentifier>{F560E735-611A-52E0-EA79-6CBA56320850}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Daydream\Graphics\Camera">
+      <UniqueIdentifier>{244D0AC7-9030-1907-9933-47430596DF57}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source\Daydream\Graphics\Core">
       <UniqueIdentifier>{04C2915C-70DA-7886-3987-0820A55E0D20}</UniqueIdentifier>
     </Filter>
@@ -469,13 +472,13 @@
       <Filter>Source\Daydream\Graphics\API\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\Camera\Camera.h">
-      <Filter>Source\Daydream\Graphics\Core</Filter>
+      <Filter>Source\Daydream\Graphics\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\Camera\CameraController.h">
-      <Filter>Source\Daydream\Graphics\Core</Filter>
+      <Filter>Source\Daydream\Graphics\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\Camera\EditorCamera.h">
-      <Filter>Source\Daydream\Graphics\Core</Filter>
+      <Filter>Source\Daydream\Graphics\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderCommandList.h">
       <Filter>Source\Daydream\Graphics\Core</Filter>
@@ -2244,10 +2247,10 @@
       <Filter>Source\Daydream\Graphics\API\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\Camera\Camera.cpp">
-      <Filter>Source\Daydream\Graphics\Core</Filter>
+      <Filter>Source\Daydream\Graphics\Camera</Filter>
     </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\Camera\EditorCamera.cpp">
-      <Filter>Source\Daydream\Graphics\Core</Filter>
+      <Filter>Source\Daydream\Graphics\Camera</Filter>
     </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\Core\OrthographicCamera.cpp">
       <Filter>Source\Daydream\Graphics\Core</Filter>

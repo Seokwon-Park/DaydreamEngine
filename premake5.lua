@@ -86,7 +86,7 @@ project "Daydream"
 		"glad",
 		"ImGui",
 		"yaml-cpp",
-		"nfd",
+		"nfd-extended",
 		"vulkan-1.lib",
 		"dxcompiler.lib",
 		"dxil.lib",

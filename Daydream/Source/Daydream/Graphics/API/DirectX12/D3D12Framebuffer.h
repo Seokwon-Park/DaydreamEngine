@@ -44,8 +44,6 @@ namespace Daydream
 		ComPtr<ID3D12Resource> readTexture;
 		D3D12_PLACED_SUBRESOURCE_FOOTPRINT footprint = {};
 		UInt64 bufferSize = 0;
-
-
 	};
 }
 

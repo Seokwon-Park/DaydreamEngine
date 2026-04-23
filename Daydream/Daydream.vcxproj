@@ -884,8 +884,8 @@
     <ProjectReference Include="Vendor\yaml-cpp\yaml-cpp.vcxproj">
       <Project>{88F1A057-74BE-FB62-9DD7-E90A890331F1}</Project>
     </ProjectReference>
-    <ProjectReference Include="Vendor\nfd-extended\nfd.vcxproj">
-      <Project>{5D94880B-C99D-887C-5219-9F7CBE21947C}</Project>
+    <ProjectReference Include="Vendor\nfd-extended\nfd-extended.vcxproj">
+      <Project>{BB3D63F3-A7A0-F297-5026-2B4E3C68BE1A}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

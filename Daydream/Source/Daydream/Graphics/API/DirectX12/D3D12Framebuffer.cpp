@@ -11,6 +11,7 @@ namespace Daydream
 
 		swapchainRTVHandle.ptr = 0;
 
+		colorAttachments.resize(colorAttachmentCount);
 		CreateAttachments();
 
 		if (entityTexture)
@@ -86,7 +87,6 @@ namespace Daydream
 		}
 		renderTargetHandles.clear();
 		depthStencilHandle;
-		colorAttachments.clear();
 		depthAttachment = nullptr;
 		device = nullptr;
 	}
@@ -96,14 +96,14 @@ namespace Daydream
 		return colorAttachments[_index];
 	}
 
-	void Daydream::D3D12Framebuffer::Recreate()
+	void D3D12Framebuffer::Recreate()
 	{
-		oldAttachments.clear();
-		oldAttachments = colorAttachments;
-		colorAttachments.clear();
-		oldAttachments.push_back(depthAttachment);
-		depthAttachment = nullptr;
 		renderTargetHandles.clear();
+		for (auto c : colorAttachments)
+		{
+			oldAttachments.push_back(c);
+		}
+		oldAttachments.push_back(depthAttachment);
 		depthStencilHandle.ptr = 0;
 
 		CreateAttachments();
@@ -128,7 +128,7 @@ namespace Daydream
 				D3D12_RESOURCE_BARRIER barrier = {};
 				barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 				barrier.Transition.pResource = entityTexture->GetID3D12Resource();
-				barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; 
+				barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 				barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE;
 				barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 				_commandList->ResourceBarrier(1, &barrier);
@@ -180,8 +180,9 @@ namespace Daydream
 	void D3D12Framebuffer::CreateAttachments()
 	{
 		const RenderPassDesc& renderPassDesc = renderPass->GetDesc();
-		for (const auto& colorAttachmentDesc : renderPassDesc.colorAttachments)
+		for (UInt64 i = 0; i < colorAttachmentCount; i++)
 		{
+			const auto& colorAttachmentDesc = renderPassDesc.colorAttachments[i];
 			if (colorAttachmentDesc.isSwapchain) continue;
 			TextureDesc textureDesc;
 			textureDesc.width = width;
@@ -203,7 +204,7 @@ namespace Daydream
 			{
 				entityTexture = colorTexture;
 			}
-			colorAttachments.push_back(colorTexture);
+			colorAttachments[i] = colorTexture;
 			renderTargetHandles.push_back(colorTexture->GetRTVCPUHandle());
 		}
 

@@ -37,17 +37,9 @@ namespace Daydream
 		IDXGISwapChain* dxgiSwapchain = _swapchain->GetDXGISwapchain();
 		ComPtr<ID3D11Texture2D> backBuffer;
 		dxgiSwapchain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
-		D3D11_TEXTURE2D_DESC backBufferDesc;
-		backBuffer->GetDesc(&backBufferDesc);
-
-		width = backBufferDesc.Width;
-		height = backBufferDesc.Height;
 
 		device->GetDevice()->CreateRenderTargetView(backBuffer.Get(), nullptr, swapchainRTV.GetAddressOf());
 		renderTargetViews.push_back(swapchainRTV.Get());
-		//Shared<D3D11Texture2D> backBufferTexture = MakeShared<D3D11Texture2D>(device, backBuffer);
-		//colorAttachments.push_back(swapchainRTV.Get());
-		//DAYDREAM_CORE_ASSERT(backBuffer, "Backbuffer is nullptr!");
 
 		CreateAttachments();
 	}
@@ -58,7 +50,6 @@ namespace Daydream
 		oldAttachments.clear();
 		colorAttachments.clear();
 		renderTargetViews.clear();
-		depthAttachment = nullptr;
 	}
 	//void D3D11Framebuffer::Begin() const
 	//{
