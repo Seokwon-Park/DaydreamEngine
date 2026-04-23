@@ -32,8 +32,8 @@
 #include "Daydream/Graphics/Resources/RenderPass.h"
 #include "Daydream/Graphics/Resources/PipelineState.h"
 
-#include "Daydream/Graphics/Core/Camera.h"
-#include "Daydream/Graphics/Core/EditorCamera.h"
+#include "Daydream/Graphics/Camera/Camera.h"
+#include "Daydream/Graphics/Camera/EditorCamera.h"
 
 #include "Daydream/Graphics/States/BlendState.h"
 #include "Daydream/Graphics/States/RasterizerState.h"

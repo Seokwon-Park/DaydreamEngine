@@ -52,8 +52,12 @@ namespace Daydream
 
 	VulkanFramebuffer::~VulkanFramebuffer()
 	{
+		device = nullptr;
+
 		oldAttachments.clear();
 		colorAttachments.clear();
+		attachmentImageViews.clear();
+		depthAttachment = nullptr;
 	}
 
 	Shared<Texture2D> VulkanFramebuffer::GetColorAttachmentTexture(UInt32 _index)
@@ -145,8 +149,7 @@ namespace Daydream
 	void VulkanFramebuffer::CreateAttachments()
 	{
 		const RenderPassDesc& renderPassDesc = renderPass->GetDesc();
-		UInt64 colorAttachementsSize = renderPassDesc.colorAttachments.size();
-		for (UInt64 i = 0; i < colorAttachementsSize; i++)
+		for (UInt64 i = 0; i < colorAttachmentCount; i++)
 		{
 			const auto& colorAttachmentDesc = renderPassDesc.colorAttachments[i];
 			if (colorAttachmentDesc.isSwapchain) continue;

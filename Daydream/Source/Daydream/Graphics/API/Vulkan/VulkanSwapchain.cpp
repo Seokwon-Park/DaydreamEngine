@@ -205,9 +205,9 @@ namespace Daydream
 		CreateSwapchain();
 		swapchainImages = device->GetDevice().getSwapchainImagesKHR(swapchain.get());
 
-		framebuffers.assign(imageCount, nullptr);
 		for (UInt32 i = 0; i < imageCount; i++)
 		{
+			framebuffers[i] = nullptr;
 			framebuffers[i] = MakeShared<VulkanFramebuffer>(device, this, renderPass.get(), swapchainImages[i]);
 		}
 	}

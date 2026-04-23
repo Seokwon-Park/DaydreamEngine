@@ -213,9 +213,9 @@
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanTexture.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanTextureCube.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanUtility.h" />
-    <ClInclude Include="Source\Daydream\Graphics\Core\Camera.h" />
-    <ClInclude Include="Source\Daydream\Graphics\Core\CameraController.h" />
-    <ClInclude Include="Source\Daydream\Graphics\Core\EditorCamera.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Camera\Camera.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Camera\CameraController.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Camera\EditorCamera.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderCommandList.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderCommandQueue.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderContext.h" />
@@ -806,8 +806,8 @@
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanTexture.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanTextureCube.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanUtility.cpp" />
-    <ClCompile Include="Source\Daydream\Graphics\Core\Camera.cpp" />
-    <ClCompile Include="Source\Daydream\Graphics\Core\EditorCamera.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Camera\Camera.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Camera\EditorCamera.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\OrthographicCamera.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderCommandList.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderCommandQueue.cpp" />

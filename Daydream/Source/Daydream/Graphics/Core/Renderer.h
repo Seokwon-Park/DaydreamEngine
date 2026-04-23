@@ -6,7 +6,7 @@
 
 #include "Daydream/Graphics/Core/RenderDevice.h"
 #include "Daydream/Graphics/Core/RenderContext.h"
-#include "Daydream/Graphics/Core/Camera.h"
+#include "Daydream/Graphics/Camera/Camera.h"
 #include "Daydream/Graphics/Resources/Skybox.h"
 
 namespace Daydream

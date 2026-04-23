@@ -35,6 +35,8 @@ namespace Daydream
 		Array<ID3D11RenderTargetView*> renderTargetViews;
 		Shared<D3D11Texture2D> depthAttachment;
 
+		Array<Shared<D3D11Texture2D>> oldAttachments;
+
 		Shared<D3D11Texture2D> entityTexture = 0;
 		ComPtr<ID3D11Texture2D> readTexture;
 	};

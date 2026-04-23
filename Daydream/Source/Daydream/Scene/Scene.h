@@ -2,7 +2,7 @@
 
 #include "GameEntity/GameEntity.h"
 
-#include "Daydream/Graphics/Core/Camera.h"
+#include "Daydream/Graphics/Camera/Camera.h"
 #include "Daydream/Graphics/Resources/Light.h"
 
 namespace Daydream

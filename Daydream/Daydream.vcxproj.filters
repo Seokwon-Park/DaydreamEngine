@@ -468,13 +468,13 @@
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanUtility.h">
       <Filter>Source\Daydream\Graphics\API\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\Core\Camera.h">
+    <ClInclude Include="Source\Daydream\Graphics\Camera\Camera.h">
       <Filter>Source\Daydream\Graphics\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\Core\CameraController.h">
+    <ClInclude Include="Source\Daydream\Graphics\Camera\CameraController.h">
       <Filter>Source\Daydream\Graphics\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\Core\EditorCamera.h">
+    <ClInclude Include="Source\Daydream\Graphics\Camera\EditorCamera.h">
       <Filter>Source\Daydream\Graphics\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderCommandList.h">
@@ -2243,10 +2243,10 @@
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanUtility.cpp">
       <Filter>Source\Daydream\Graphics\API\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Daydream\Graphics\Core\Camera.cpp">
+    <ClCompile Include="Source\Daydream\Graphics\Camera\Camera.cpp">
       <Filter>Source\Daydream\Graphics\Core</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Daydream\Graphics\Core\EditorCamera.cpp">
+    <ClCompile Include="Source\Daydream\Graphics\Camera\EditorCamera.cpp">
       <Filter>Source\Daydream\Graphics\Core</Filter>
     </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\Core\OrthographicCamera.cpp">

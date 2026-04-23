@@ -10,6 +10,7 @@ namespace Daydream
 	{
 		device = _device;
 
+		colorAttachments.resize(colorAttachmentCount);
 		CreateAttachments();
 
 		D3D11_TEXTURE2D_DESC desc;
@@ -53,6 +54,8 @@ namespace Daydream
 	D3D11Framebuffer::~D3D11Framebuffer()
 	{
 		device = nullptr;
+
+		oldAttachments.clear();
 		colorAttachments.clear();
 		renderTargetViews.clear();
 		depthAttachment = nullptr;
@@ -78,10 +81,13 @@ namespace Daydream
 	}
 	void D3D11Framebuffer::Recreate()
 	{
-		colorAttachments.clear();
 		renderTargetViews.clear();
+		for (auto c : colorAttachments)
+		{
+			oldAttachments.push_back(c);
+		}
+		oldAttachments.push_back(depthAttachment);
 		depthAttachment = nullptr;
-
 		CreateAttachments();
 	}
 	UInt32 D3D11Framebuffer::ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY)
@@ -113,8 +119,9 @@ namespace Daydream
 	void D3D11Framebuffer::CreateAttachments()
 	{
 		const RenderPassDesc& renderPassDesc = renderPass->GetDesc();
-		for (const auto& colorAttachmentDesc : renderPassDesc.colorAttachments)
+		for (UInt64 i = 0; i < colorAttachmentCount; i++)
 		{
+			const auto& colorAttachmentDesc = renderPassDesc.colorAttachments[i];
 			if (colorAttachmentDesc.isSwapchain) continue;
 			TextureDesc textureDesc;
 			textureDesc.width = width;
@@ -128,7 +135,7 @@ namespace Daydream
 			{
 				entityTexture = colorTexture;
 			}
-			colorAttachments.push_back(colorTexture);
+			colorAttachments[i] = colorTexture;
 			renderTargetViews.push_back(colorTexture->GetRTV());
 		}
 

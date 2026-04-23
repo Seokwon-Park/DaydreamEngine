@@ -76,6 +76,15 @@ namespace Daydream
 
 	void D3D11Swapchain::BeginFrame()
 	{
+		if (isSwapchainResized)
+		{
+			swapChain->ResizeBuffers(0, desc.width, desc.height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+
+			framebuffer = nullptr;
+			framebuffer = MakeShared<D3D11Framebuffer>(device, mainRenderPass.get(), this);
+			isSwapchainResized = false;
+		}
+
 		Array<ID3D11RenderTargetView*> rtvs = framebuffer->GetRenderTargetViews();
 		for (auto rtv : rtvs)
 		{

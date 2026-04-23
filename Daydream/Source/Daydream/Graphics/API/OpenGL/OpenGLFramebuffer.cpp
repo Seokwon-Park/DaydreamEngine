@@ -11,6 +11,7 @@ namespace Daydream
 	{
 		glCreateFramebuffers(1, &framebufferID);
 
+		colorAttachments.resize(colorAttachmentCount);
 		CreateAttachments();
 
 		AttachTextures();
@@ -100,8 +101,9 @@ namespace Daydream
 	void OpenGLFramebuffer::CreateAttachments()
 	{
 		const RenderPassDesc& renderPassDesc = renderPass->GetDesc();
-		for (const auto& colorAttachmentDesc : renderPassDesc.colorAttachments)
+		for (UInt64 i = 0; i < colorAttachmentCount; i++)
 		{
+			const auto& colorAttachmentDesc = renderPassDesc.colorAttachments[i];
 			TextureDesc textureDesc;
 			textureDesc.width = width;
 			textureDesc.height = height;
@@ -113,7 +115,7 @@ namespace Daydream
 			{
 				entityTexture = colorTexture;
 			}
-			colorAttachments.push_back(colorTexture);
+			colorAttachments[i] = colorTexture;
 		}
 
 		if (renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
