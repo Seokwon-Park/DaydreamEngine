@@ -125,20 +125,15 @@ namespace Daydream
 		//	infoQueue->AddStorageFilterEntries(&filter);
 		//}
 
-		DAYDREAM_CORE_INFO("DirectX11 Info:");
-		DAYDREAM_CORE_INFO("  Vendor: {0}", GraphicsUtility::GetVendor(adapterDescription.VendorId));
-		DAYDREAM_CORE_INFO("  Renderer: {0}", videoCardDescription);
-		DAYDREAM_CORE_INFO("  Version: {0}", version);
+		info.APIName = "DirectX11 Info:";
+		info.vendor = GraphicsUtility::GetVendor(adapterDescription.VendorId);
+		info.physicalDeviceInfo = videoCardDescription;
+		info.version = version;
 	}
 
 	void D3D11RenderDevice::Shutdown()
 	{
 	}
-
-	void D3D11RenderDevice::Render()
-	{
-	}
-
 
 	Unique<RenderContext> D3D11RenderDevice::CreateContext()
 	{

@@ -65,8 +65,9 @@ namespace Daydream
 		return colorAttachments[_index];
 	}
 
-	void VulkanFramebuffer::Recreate()
+	void VulkanFramebuffer::Recreate(UInt32 _newWidth, UInt32 _newHeight)
 	{
+		SetSize(_newWidth, _newHeight);
 		extent.width = width;
 		extent.height = height;
 

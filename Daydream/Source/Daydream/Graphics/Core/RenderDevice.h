@@ -30,6 +30,14 @@ namespace Daydream
 	class BufferLayout;
 	class Material;
 
+	struct RendererAPIInfo
+	{
+		String APIName;
+		String vendor;
+		String physicalDeviceInfo;
+		String version;
+	};
+
 	class RenderDevice
 	{
 	public:
@@ -37,7 +45,6 @@ namespace Daydream
 
 		virtual void Init() = 0;
 		virtual void Shutdown() = 0;
-		virtual void Render() = 0;
 
 		virtual Unique<RenderContext> CreateContext() = 0;
 		virtual Shared<RenderCommandList> CreateRenderCommandList() = 0;
@@ -62,10 +69,13 @@ namespace Daydream
 		virtual void CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst) = 0;
 		virtual void CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel = 0) = 0;
 
+		const RendererAPIInfo& GetAPIInfo() { return info; }
+
 		inline RendererAPIType GetAPI() const { return API; }
 
 		static Unique<RenderDevice> Create(RendererAPIType _API);
 	protected:
 		RendererAPIType API = RendererAPIType::None;
+		RendererAPIInfo info;
 	};
 }

@@ -52,7 +52,6 @@ namespace Daydream
 
 		virtual void Init() override;
 		virtual void Shutdown() override;
-		virtual void Render() override;
 
 		virtual Unique<RenderContext> CreateContext() override;
 		virtual Shared<RenderCommandList> CreateRenderCommandList() override;

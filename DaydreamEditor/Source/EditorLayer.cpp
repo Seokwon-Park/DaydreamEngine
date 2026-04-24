@@ -575,9 +575,6 @@ namespace Daydream
 			if (ImGuiViewportSize.x > 1.0f && ImGuiViewportSize.y > 1.0f)
 			{
 
-				// 리사이즈 완료 메시지 로깅
-				DAYDREAM_CORE_INFO("Viewport final resized to: {0}, {1}", ImGuiViewportSize.x, ImGuiViewportSize.y);
-
 				//Renderer::EndSwapchainRenderPass(Renderer::GetCurrentWindow());
 				//// D3D12Framebuffer 리사이즈 (GPU 동기화 로직 포함)
 				//viewportFramebuffer->Resize(static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));

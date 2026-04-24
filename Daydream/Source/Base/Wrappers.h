@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string>
+#include <string_view>
 #include <functional>
 
 namespace Daydream
@@ -16,6 +17,7 @@ namespace Daydream
 	}
 
 	using String = std::string;
+	using StringView = std::string_view;
 	using WideString = std::wstring;
 
 	template<typename T>

@@ -210,10 +210,10 @@ namespace Daydream
 		std::string version;
 		version = major + "." + minor + "." + release + "." + build;
 
-		DAYDREAM_CORE_INFO("DirectX12 Info:");
-		DAYDREAM_CORE_INFO("  Vendor: {0}", GraphicsUtility::GetVendor(adapterDescription.VendorId));
-		DAYDREAM_CORE_INFO("  Renderer: {0} {1} GB", videoCardDescription, std::round((double)adapterDescription.DedicatedVideoMemory / (1 << 30)));
-		DAYDREAM_CORE_INFO("  Version: {0}", version);
+		info.APIName = "DirectX12 Info:";
+		info.vendor = GraphicsUtility::GetVendor(adapterDescription.VendorId);
+		info.physicalDeviceInfo = videoCardDescription, std::round((double)adapterDescription.DedicatedVideoMemory / (1 << 30));
+		info.version = version;
 
 		//device->CreateDescriptorHeap()
 		//// 스왑 체인 생성
@@ -233,9 +233,6 @@ namespace Daydream
 	{
 	}
 
-	void D3D12RenderDevice::Render()
-	{
-	}
 
 	Unique<RenderContext> D3D12RenderDevice::CreateContext()
 	{

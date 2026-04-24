@@ -44,18 +44,14 @@ namespace Daydream
 		//		printf("%d: %s\n", i, extension);
 		//}
 
-		DAYDREAM_CORE_INFO("OpenGL Info:");
-		DAYDREAM_CORE_INFO("  Vendor: {0}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
-		DAYDREAM_CORE_INFO("  Renderer: {0}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
-		DAYDREAM_CORE_INFO("  Version: {0}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+		info.APIName = "OpenGL Info:";
+		info.vendor = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
+		info.physicalDeviceInfo = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+		info.version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
 	}
 	void OpenGLRenderDevice::Shutdown()
 	{
 	}
-	void OpenGLRenderDevice::Render()
-	{
-	}
-
 
 	Unique<RenderContext> OpenGLRenderDevice::CreateContext()
 	{

@@ -23,7 +23,7 @@ namespace Daydream
 		renderPass = _renderPass;
 		colorAttachmentCount = _renderPass->GetDesc().colorAttachments.size();
 	}
-	void Framebuffer::Resize(UInt32 _width, UInt32 _height)
+	void Framebuffer::SetSize(UInt32 _width, UInt32 _height)
 	{
 		width = _width;
 		height = _height;

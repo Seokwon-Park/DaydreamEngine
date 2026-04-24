@@ -11,9 +11,6 @@ namespace Daydream
 	{
 	}
 
-	void MetalRenderDevice::Render()
-	{
-	}
 
 
 }

@@ -21,7 +21,7 @@ namespace Daydream
 		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) override;
 		virtual Shared<Texture2D> GetDepthAttachmentTexture() override { return depthAttachment; };
 		virtual inline bool HasDepthAttachment() override { return depthAttachment != nullptr; }
-		virtual void Recreate() override;
+		virtual void Recreate(UInt32 _newWidth, UInt32 _newHeight) override;
 		virtual UInt32 ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY) override;
 
 		vk::Framebuffer GetFramebuffer() { return framebuffer.get(); }

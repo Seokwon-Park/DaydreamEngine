@@ -38,4 +38,6 @@ namespace Daydream
 #define DAYDREAM_ERROR(...)			::Daydream::Logger::GetClientLogger()->error(__VA_ARGS__)
 #define DAYDREAM_FATAL(...)			::Daydream::Logger::GetClientLogger()->critical(__VA_ARGS__)
 
-
+#define DAYDREAM_RENDERER_INFO(...) DAYDREAM_CORE_INFO("[Renderer] " ##__VA_ARGS__)
+#define DAYDREAM_ASSET_INFO(...)  DAYDREAM_CORE_INFO("[AssetManager] " ##__VA_ARGS__)
+#define DAYDREAM_PHYSICS_INFO(...) DAYDREAM_CORE_INFO("[Physics] " ##__VA_ARGS__)

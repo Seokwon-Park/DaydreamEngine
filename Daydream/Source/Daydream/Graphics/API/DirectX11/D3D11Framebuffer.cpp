@@ -70,8 +70,9 @@ namespace Daydream
 	{
 		return depthAttachment;
 	}
-	void D3D11Framebuffer::Recreate()
+	void D3D11Framebuffer::Recreate(UInt32 _newWidth, UInt32 _newHeight)
 	{
+		SetSize(_newWidth, _newHeight);
 		renderTargetViews.clear();
 		for (auto c : colorAttachments)
 		{

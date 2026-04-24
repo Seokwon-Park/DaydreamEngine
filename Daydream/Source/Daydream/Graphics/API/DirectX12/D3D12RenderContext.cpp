@@ -91,8 +91,9 @@ namespace Daydream
 
 		if (currentFramebuffer->HasDepthAttachment())
 		{
-			GetD3D12ActiveCommandList()->ClearDepthStencilView(currentFramebuffer->GetDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
-			GetD3D12ActiveCommandList()->OMSetRenderTargets((UInt32)rtHandles.size(), rtHandles.data(), false, &currentFramebuffer->GetDepthStencilView());
+			auto depthHandle = currentFramebuffer->GetDepthStencilView();
+			GetD3D12ActiveCommandList()->ClearDepthStencilView(depthHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
+			GetD3D12ActiveCommandList()->OMSetRenderTargets((UInt32)rtHandles.size(), rtHandles.data(), false, &depthHandle);
 		}
 		else
 		{

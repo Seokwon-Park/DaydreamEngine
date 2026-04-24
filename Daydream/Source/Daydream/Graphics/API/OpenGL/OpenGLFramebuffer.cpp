@@ -76,8 +76,9 @@ namespace Daydream
 		}
 		return nullptr;
 	}
-	void OpenGLFramebuffer::Recreate()
+	void Daydream::OpenGLFramebuffer::Recreate(UInt32 _newWidth, UInt32 _newHeight)
 	{
+		SetSize(_newWidth, _newHeight);
 		depthAttachment = nullptr;
 
 		CreateAttachments();

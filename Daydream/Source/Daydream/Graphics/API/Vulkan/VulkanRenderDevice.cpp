@@ -132,22 +132,16 @@ namespace Daydream
 		allocator = vma::createAllocatorUnique(allocatorInfo);
 
 		vk::PhysicalDeviceProperties properties = physicalDevice.getProperties();
-		DAYDREAM_CORE_INFO("Vulkan Info:");
-		DAYDREAM_CORE_INFO("  Vendor: {0}", GraphicsUtility::GetVendor(properties.vendorID));
-		DAYDREAM_CORE_INFO("  Renderer: {0}", properties.deviceName.data());
-		DAYDREAM_CORE_INFO("  Version: {0}.{1}.{2}",
-			VK_API_VERSION_MAJOR(properties.apiVersion),
-			VK_API_VERSION_MINOR(properties.apiVersion),
-			VK_API_VERSION_PATCH(properties.apiVersion));
+		info.APIName = "Vulkan Info:";
+		info.vendor = GraphicsUtility::GetVendor(properties.vendorID);
+		info.physicalDeviceInfo = properties.deviceName.data();
+		info.version = VK_API_VERSION_MAJOR(properties.apiVersion) + '.' + VK_API_VERSION_MINOR(properties.apiVersion) + '.' + VK_API_VERSION_PATCH(properties.apiVersion);
 	}
 
 	void VulkanRenderDevice::Shutdown()
 	{
 	}
 
-	void VulkanRenderDevice::Render()
-	{
-	}
 
 	Unique<RenderContext> VulkanRenderDevice::CreateContext()
 	{
@@ -691,7 +685,7 @@ namespace Daydream
 		EndSingleTimeCommands(copyCommandBuffer);
 
 	}
-		
+
 	void VulkanRenderDevice::TransitionImageLayoutImmediate(vk::ImageMemoryBarrier _barrier)
 	{
 		vk::CommandBuffer transCommandBuffer = BeginSingleTimeCommands();

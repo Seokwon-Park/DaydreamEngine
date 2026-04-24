@@ -86,7 +86,7 @@ namespace Daydream
 			device->GetRTVHeapAlloc().Free(swapchainRTVHandle);
 		}
 		renderTargetHandles.clear();
-		depthStencilHandle;
+		depthStencilHandle.ptr = 0;
 		depthAttachment = nullptr;
 		device = nullptr;
 	}
@@ -96,17 +96,20 @@ namespace Daydream
 		return colorAttachments[_index];
 	}
 
-	void D3D12Framebuffer::Recreate()
+	void D3D12Framebuffer::Recreate(UInt32 _newWidth, UInt32 _newHeight)
 	{
+		SetSize(_newWidth, _newHeight);
 		renderTargetHandles.clear();
 		for (auto c : colorAttachments)
 		{
 			oldAttachments.push_back(c);
 		}
 		oldAttachments.push_back(depthAttachment);
+		depthAttachment = nullptr;
 		depthStencilHandle.ptr = 0;
 
 		CreateAttachments();
+
 	}
 
 	UInt32 D3D12Framebuffer::ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY)

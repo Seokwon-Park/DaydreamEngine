@@ -21,6 +21,13 @@ namespace Daydream
 		renderDevice = RenderDevice::Create(_API);
 		DAYDREAM_CORE_ASSERT(renderDevice, "Failed to create graphics device!");
 		renderDevice->Init();
+
+		const RendererAPIInfo& info = renderDevice->GetAPIInfo();
+		DAYDREAM_RENDERER_INFO("{}", info.APIName);
+		DAYDREAM_RENDERER_INFO("  Vendor: {0}", info.vendor);
+		DAYDREAM_RENDERER_INFO("  GPU Info: {0}", info.physicalDeviceInfo);
+		DAYDREAM_RENDERER_INFO("  Version: {0}", info.version);
+
 		renderContext = renderDevice->CreateContext();
 
 		imguiRenderer = renderDevice->CreateImGuiRenderer();
@@ -128,8 +135,8 @@ namespace Daydream
 	{
 		EnqueueCommand([_swapchain]()
 			{
-				renderContext->SetActiveCommandList(_swapchain->GetCurrentCommandList());
 				_swapchain->BeginFrame();
+				renderContext->SetActiveCommandList(_swapchain->GetCurrentCommandList());
 			});
 	}
 
@@ -242,10 +249,10 @@ namespace Daydream
 	{
 		EnqueuePreFrameCommand([_framebuffer, _width, _height]()
 			{
-				_framebuffer->Resize(_width, _height);
 				EnqueueCommand([_framebuffer, _width, _height]()
 					{
-						_framebuffer->Recreate();
+						_framebuffer->Recreate(_width, _height);
+						DAYDREAM_RENDERER_INFO("Framebuffer is Recreated Width : {}, Height {}", _width, _height);
 					}
 				);
 			});

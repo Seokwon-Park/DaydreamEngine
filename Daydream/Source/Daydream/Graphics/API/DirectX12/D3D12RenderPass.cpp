@@ -51,15 +51,15 @@ namespace Daydream
 			device->GetCommandList()->ClearRenderTargetView(rtHandle, clearColor.color, 0, nullptr);
 		}
 
-		if (currentFramebuffer->HasDepthAttachment())
-		{
-			device->GetCommandList()->ClearDepthStencilView(currentFramebuffer->GetDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
-			device->GetCommandList()->OMSetRenderTargets((UINT)rtHandles.size(), rtHandles.data(), false, &currentFramebuffer->GetDepthStencilView());
-		}
-		else
-		{
-			device->GetCommandList()->OMSetRenderTargets((UINT)rtHandles.size(), rtHandles.data(), false, nullptr);
-		}
+		//if (currentFramebuffer->HasDepthAttachment())
+		//{
+		//	device->GetCommandList()->ClearDepthStencilView(currentFramebuffer->GetDepthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
+		//	device->GetCommandList()->OMSetRenderTargets((UINT)rtHandles.size(), rtHandles.data(), false, &currentFramebuffer->GetDepthStencilView());
+		//}
+		//else
+		//{
+		//	device->GetCommandList()->OMSetRenderTargets((UINT)rtHandles.size(), rtHandles.data(), false, nullptr);
+		//}
 
 		D3D12_RECT rect;
 		rect.left = 0;

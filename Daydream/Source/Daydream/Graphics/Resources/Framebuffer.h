@@ -26,7 +26,7 @@ namespace Daydream
 		virtual Shared<Texture2D> GetColorAttachmentTexture(UInt32 _index) = 0;
 		virtual Shared<Texture2D> GetDepthAttachmentTexture() = 0;
 		virtual bool HasDepthAttachment() = 0;
-		virtual void Recreate() = 0;
+		virtual void Recreate(UInt32 _newWidth, UInt32 _newHeight) = 0;
 
 		inline UInt32 ReadEntityHandleFromPixel(Pair<Int32, Int32> _mousePos) 
 		{
@@ -37,11 +37,12 @@ namespace Daydream
 		
 		bool IsSwapchainBuffer() const { return isSwapchainBuffer; }
 
-		void Resize(UInt32 _width, UInt32 _height);
 		UInt32 GetWidth() { return width; }
 		UInt32 GetHeight() { return height; }
 		static Shared<Framebuffer> Create(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc);
 	protected:
+		void SetSize(UInt32 _width, UInt32 _height);
+
 		bool isSwapchainBuffer = false;
 		UInt32 width;
 		UInt32 height;
