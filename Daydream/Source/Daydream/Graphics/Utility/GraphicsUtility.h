@@ -7,7 +7,16 @@
 
 namespace Daydream::GraphicsUtility
 {
-	bool HasFlag(RenderBindFlags _target, RenderBindFlags _flags);
+	template <typename EnumType>
+	typename std::enable_if<std::is_enum<EnumType>::value, bool>::type HasFlag(EnumType _target, EnumType _flag)
+	{
+		using underlyingType = typename std::underlying_type<EnumType>::type;
+
+		underlyingType targetValue = static_cast<underlyingType>(_target);
+		underlyingType flagValue = static_cast<underlyingType>(_flag);
+
+		return (targetValue & flagValue) == flagValue;
+	}
 
 	UInt32 GetRenderFormatSize(RenderFormat _format);
 	
@@ -18,6 +27,7 @@ namespace Daydream::GraphicsUtility
 	//ShaderCompile
 	String GetShaderEntryPointName(ShaderType _type);
 	WideString GetShaderEntryPointNameW(ShaderType _type);
+
 	String GetShaderTargetName(ShaderType _type, String _version);
 	WideString GetShaderTargetNameW(ShaderType _type, WideString _version);
 

@@ -246,7 +246,7 @@ namespace Daydream
 		//	}
 		//}
 
-		
+
 
 
 
@@ -388,10 +388,6 @@ namespace Daydream
 			return "";
 		}
 
-		bool HasFlag(RenderBindFlags _target, RenderBindFlags _flags) {
-			return (static_cast<std::underlying_type<RenderBindFlags>::type>(_target) &
-				static_cast<std::underlying_type<RenderBindFlags>::type>(_flags)) ==
-				static_cast<std::underlying_type<RenderBindFlags>::type>(_flags);
-		}
+
 	}
 }

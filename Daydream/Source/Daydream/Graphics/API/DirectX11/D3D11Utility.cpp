@@ -3,36 +3,89 @@
 
 namespace Daydream::GraphicsUtility::DirectX11
 {
-	UInt32 ConvertToD3D11BindFlags(RenderBindFlags _flags)
+	D3D11_BUFFER_DESC ConvertToD3D11BufferDesc(const BufferDesc& _desc)
+	{
+		D3D11_BUFFER_DESC bufferDesc;
+		ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+
+		bufferDesc.ByteWidth = _desc.size;
+
+		bufferDesc.Usage = ConvertToD3D11Usage(_desc.memoryUsage);
+		bufferDesc.CPUAccessFlags = ConvertToD3D11CPUAccessFlags(_desc.memoryUsage);
+		
+		if (_desc.memoryUsage == MemoryUsage::Readback)
+		{
+			bufferDesc.BindFlags = 0;
+		}
+		else
+		{
+			bufferDesc.BindFlags = ConvertToD3D11BindFlags(_desc.bufferUsage);
+		}
+
+		bufferDesc.MiscFlags = 0;
+		if (HasFlag(_desc.bufferUsage, BufferUsage::Indirect))
+		{
+			bufferDesc.MiscFlags |= D3D11_RESOURCE_MISC_DRAWINDIRECT_ARGS;
+		}
+		if (HasFlag(_desc.bufferUsage, BufferUsage::Storage))
+		{
+			bufferDesc.MiscFlags |= D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;
+		}
+
+		bufferDesc.StructureByteStride = 0;
+
+		return bufferDesc;
+	}
+
+	D3D11_USAGE ConvertToD3D11Usage(const MemoryUsage& _usage)
+	{
+		switch (_usage)
+		{
+		case MemoryUsage::Static:
+			return D3D11_USAGE_DEFAULT;
+		case MemoryUsage::Dynamic:
+			return D3D11_USAGE_DYNAMIC;
+		case MemoryUsage::Readback:
+			return D3D11_USAGE_STAGING;
+		default:
+			return D3D11_USAGE_DEFAULT;
+		}
+	}
+
+	UInt32 ConvertToD3D11CPUAccessFlags(const MemoryUsage& _usage)
 	{
 		UInt32 d3d11Flags = 0;
-		if (HasFlag(_flags, RenderBindFlags::ShaderResource)) {
-			d3d11Flags |= D3D11_BIND_SHADER_RESOURCE;
-		}
-		if (HasFlag(_flags, RenderBindFlags::RenderTarget)) {
-			d3d11Flags |= D3D11_BIND_RENDER_TARGET;
-		}
-		if (HasFlag(_flags, RenderBindFlags::DepthStencil)) {
-			d3d11Flags |= D3D11_BIND_DEPTH_STENCIL;
-		}
-		if (HasFlag(_flags, RenderBindFlags::UnorderedAccess)) {
-			d3d11Flags |= D3D11_BIND_UNORDERED_ACCESS;
-		}
-		if (HasFlag(_flags, RenderBindFlags::VertexBuffer)) {
-			d3d11Flags |= D3D11_BIND_VERTEX_BUFFER;
-		}
-		if (HasFlag(_flags, RenderBindFlags::IndexBuffer)) {
-			d3d11Flags |= D3D11_BIND_INDEX_BUFFER;
-		}
-		if (HasFlag(_flags, RenderBindFlags::ConstantBuffer)) {
-			d3d11Flags |= D3D11_BIND_CONSTANT_BUFFER;
-		}
-		if (HasFlag(_flags, RenderBindFlags::StreamOutput)) {
-			d3d11Flags |= D3D11_BIND_STREAM_OUTPUT;
-		}
+
+		if (HasFlag(_usage, MemoryUsage::Dynamic)) d3d11Flags |= D3D11_CPU_ACCESS_WRITE;
+		if (HasFlag(_usage, MemoryUsage::Readback)) d3d11Flags |= D3D11_CPU_ACCESS_READ;
+
+		return d3d11Flags;
+
+	}
+
+	UInt32 ConvertToD3D11BindFlags(const BufferUsage& _usage)
+	{
+		UInt32 d3d11Flags = 0;
+
+		if (HasFlag(_usage, BufferUsage::Vertex)) d3d11Flags |= D3D11_BIND_VERTEX_BUFFER;
+		if (HasFlag(_usage, BufferUsage::Index)) d3d11Flags |= D3D11_BIND_INDEX_BUFFER;
+		if (HasFlag(_usage, BufferUsage::Constant)) d3d11Flags |= D3D11_BIND_CONSTANT_BUFFER;
+		if (HasFlag(_usage, BufferUsage::Storage)) d3d11Flags |= D3D11_BIND_UNORDERED_ACCESS;
+
 		return d3d11Flags;
 	}
 
+	UInt32 ConvertToD3D11BindFlags(const TextureUsage& _flags)
+	{
+		UInt32 d3d11Flags = 0;
+
+		if (HasFlag(_flags, TextureUsage::ShaderResource)) d3d11Flags |= D3D11_BIND_SHADER_RESOURCE;
+		if (HasFlag(_flags, TextureUsage::RenderTarget)) d3d11Flags |= D3D11_BIND_RENDER_TARGET;
+		if (HasFlag(_flags, TextureUsage::DepthStencil)) d3d11Flags |= D3D11_BIND_DEPTH_STENCIL;
+		if (HasFlag(_flags, TextureUsage::Storage)) d3d11Flags |= D3D11_BIND_UNORDERED_ACCESS;
+
+		return d3d11Flags;
+	}
 	D3D11_FILTER ConvertToD3D11Filter(FilterMode _minFilter, FilterMode _magFilter, FilterMode _mipFilter)
 	{
 		if (_minFilter == FilterMode::Nearest && _magFilter == FilterMode::Nearest && _mipFilter == FilterMode::Nearest)
@@ -106,7 +159,7 @@ namespace Daydream::GraphicsUtility::DirectX11
 		return D3D11_COMPARISON_NEVER;
 	}
 
-	D3D11_SAMPLER_DESC TranslateToD3D11SamplerDesc(const SamplerDesc& _desc)
+	D3D11_SAMPLER_DESC ConvertToD3D11SamplerDesc(const SamplerDesc& _desc)
 	{
 		//D3D11_SAMPLER_DESC samplerDesc;
 		//ZeroMemory(&samplerDesc, sizeof(samplerDesc));
@@ -165,7 +218,7 @@ namespace Daydream::GraphicsUtility::DirectX11
 		return D3D11_FILL_SOLID;
 	}
 
-	D3D11_RASTERIZER_DESC TranslateToD3D11RasterizerDesc(const RasterizerStateDesc& _desc)
+	D3D11_RASTERIZER_DESC ConvertToD3D11RasterizerDesc(const RasterizerStateDesc& _desc)
 	{
 		D3D11_RASTERIZER_DESC desc{};
 		desc.CullMode = ConvertToD3D11CullMode(_desc.cullMode);

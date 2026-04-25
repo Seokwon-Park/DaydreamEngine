@@ -327,7 +327,7 @@ namespace Daydream
 	void AssetManager::CreateBuiltinTexture2D()
 	{
 		TextureDesc desc{};
-		desc.bindFlags = RenderBindFlags::ShaderResource;
+		desc.bindFlags = TextureUsage::ShaderResource;
 		desc.width = 1;
 		desc.height = 1;
 		desc.format = RenderFormat::R8G8B8A8_UNORM;

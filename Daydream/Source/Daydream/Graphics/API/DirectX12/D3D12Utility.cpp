@@ -3,7 +3,65 @@
 
 namespace Daydream::GraphicsUtility::DirectX12
 {
-	D3D12_SHADER_VISIBILITY GetDX12ShaderVisibility(ShaderType _type)
+	D3D12_HEAP_PROPERTIES ConvertToD3D12HeapProperties(const BufferDesc& _desc)
+	{
+		D3D12_HEAP_PROPERTIES heapProperties{};
+
+		switch (_desc.memoryUsage)
+		{
+		case MemoryUsage::Static:heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT; break;
+		case MemoryUsage::Dynamic:heapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;  break;
+		case MemoryUsage::Readback:heapProperties.Type = D3D12_HEAP_TYPE_READBACK; break;
+		default:heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT; break;
+		}
+
+		heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+		heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+
+		return heapProperties;
+	}
+	D3D12_RESOURCE_DESC ConvertToD3D12ResourceDesc(const BufferDesc& _desc)
+	{
+		D3D12_RESOURCE_DESC resourceDesc{};
+		resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+		resourceDesc.Alignment = 0;
+		resourceDesc.Width = _desc.size;
+		resourceDesc.Height = 1;
+		resourceDesc.DepthOrArraySize = 1;
+		resourceDesc.MipLevels = 1;
+		resourceDesc.Format = DXGI_FORMAT_UNKNOWN;
+		resourceDesc.SampleDesc.Count = 1;
+		resourceDesc.SampleDesc.Quality = 0;
+		resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+		resourceDesc.Flags = ConvertToD3D12ResourceFlags(_desc.bufferUsage);
+
+		return resourceDesc;
+	}
+
+	D3D12_RESOURCE_FLAGS ConvertToD3D12ResourceFlags(BufferUsage _bufferUsage)
+	{
+		D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_NONE;
+
+		if (HasFlag(_bufferUsage, BufferUsage::Storage))
+		{
+			flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+		}
+
+		return flags;
+	}
+
+	D3D12_RESOURCE_STATES ConvertToD3D12InitialState(MemoryUsage _memoryUsage)
+	{
+		switch (_memoryUsage)
+		{
+		case MemoryUsage::Static: return D3D12_RESOURCE_STATE_COMMON;
+		case MemoryUsage::Dynamic: return D3D12_RESOURCE_STATE_GENERIC_READ;
+		case MemoryUsage::Readback: return D3D12_RESOURCE_STATE_COPY_DEST;
+		default: return D3D12_RESOURCE_STATE_COMMON;
+		}
+	}
+
+	D3D12_SHADER_VISIBILITY GetD3D12ShaderVisibility(ShaderType _type)
 	{
 		switch (_type)
 		{
@@ -27,31 +85,17 @@ namespace Daydream::GraphicsUtility::DirectX12
 	}
 
 
-	D3D12_RESOURCE_FLAGS ConvertToD3D12BindFlags(RenderBindFlags _flags)
+	D3D12_RESOURCE_FLAGS ConvertToD3D12BindFlags(TextureUsage _flags)
 	{
 		D3D12_RESOURCE_FLAGS d3d12Flags = D3D12_RESOURCE_FLAG_NONE;
-		if (HasFlag(_flags, RenderBindFlags::ShaderResource)) {
-			// SRV는 기본 플래그 (NONE)
-		}
-		if (HasFlag(_flags, RenderBindFlags::RenderTarget)) {
-			d3d12Flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
-		}
-		if (HasFlag(_flags, RenderBindFlags::DepthStencil)) {
-			d3d12Flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
-		}
-		if (HasFlag(_flags, RenderBindFlags::UnorderedAccess)) {
-			d3d12Flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
-		}
+
+		if (HasFlag(_flags, TextureUsage::RenderTarget)) d3d12Flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+		if (HasFlag(_flags, TextureUsage::DepthStencil)) d3d12Flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+		if (HasFlag(_flags, TextureUsage::Storage)) d3d12Flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+
 		return d3d12Flags;
 	}
 
-	D3D12_RESOURCE_STATES ConvertToD3D12ResourceStates(RenderBindFlags _flags)
-	{
-		if (HasFlag(_flags, RenderBindFlags::RenderTarget)) return D3D12_RESOURCE_STATE_RENDER_TARGET;
-		if (HasFlag(_flags, RenderBindFlags::DepthStencil)) return D3D12_RESOURCE_STATE_DEPTH_WRITE;
-		if (HasFlag(_flags, RenderBindFlags::UnorderedAccess)) return D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
-		return D3D12_RESOURCE_STATE_COMMON;
-	}
 	D3D12_FILTER ConvertToD3D12Filter(FilterMode _minFilterMode, FilterMode _magFilterMode, FilterMode _mipFilterMode)
 	{
 		if (_minFilterMode == FilterMode::Nearest && _magFilterMode == FilterMode::Nearest && _mipFilterMode == FilterMode::Nearest)
@@ -125,34 +169,7 @@ namespace Daydream::GraphicsUtility::DirectX12
 		return D3D12_COMPARISON_FUNC_NEVER;
 	}
 
-	D3D12_SAMPLER_DESC TranslateToD3D12SamplerDesc(const SamplerDesc& _desc)
-	{
-		//D3D12_SAMPLER_DESC samplerDesc;
-		//ZeroMemory(&samplerDesc, sizeof(samplerDesc));
-		//samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-		//samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_WRAP;
-		//samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_WRAP;
-		//samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_WRAP;
-		//samplerDesc.ComparisonFunc = D3D12_COMPARISON_NEVER;
-		//samplerDesc.MinLOD = 0;
-		//samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;
 
-		D3D12_SAMPLER_DESC desc{};
-		desc.Filter = ConvertToD3D12Filter(_desc.minFilter, _desc.magFilter, _desc.mipFilter);
-		desc.AddressU = ConvertToD3D12WrapMode(_desc.wrapU);
-		desc.AddressV = ConvertToD3D12WrapMode(_desc.wrapV);
-		desc.AddressW = ConvertToD3D12WrapMode(_desc.wrapW);
-		desc.MipLODBias = _desc.lodBias;
-		desc.MaxAnisotropy = _desc.maxAnisotropy;
-		desc.ComparisonFunc = ConvertToD3D12ComparisonFunc(_desc.comparisonFunc);
-		for (int i = 0; i < 4; i++)
-		{
-			desc.BorderColor[i] = _desc.borderColor[i];
-		}
-		desc.MinLOD = _desc.minLod;
-		desc.MaxLOD = _desc.maxLod;
-		return desc;
-	}
 	constexpr D3D12_CULL_MODE ConvertToD3D12CullMode(const CullMode& _cullMode)
 	{
 		switch (_cullMode)
@@ -182,7 +199,36 @@ namespace Daydream::GraphicsUtility::DirectX12
 		return D3D12_FILL_MODE_SOLID;
 	}
 
-	D3D12_RASTERIZER_DESC TranslateToD3D12RasterizerDesc(const RasterizerStateDesc& _desc)
+	D3D12_SAMPLER_DESC ConvertToD3D12SamplerDesc(const SamplerDesc& _desc)
+	{
+		//D3D12_SAMPLER_DESC samplerDesc;
+		//ZeroMemory(&samplerDesc, sizeof(samplerDesc));
+		//samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+		//samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_WRAP;
+		//samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_WRAP;
+		//samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_WRAP;
+		//samplerDesc.ComparisonFunc = D3D12_COMPARISON_NEVER;
+		//samplerDesc.MinLOD = 0;
+		//samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;
+
+		D3D12_SAMPLER_DESC desc{};
+		desc.Filter = ConvertToD3D12Filter(_desc.minFilter, _desc.magFilter, _desc.mipFilter);
+		desc.AddressU = ConvertToD3D12WrapMode(_desc.wrapU);
+		desc.AddressV = ConvertToD3D12WrapMode(_desc.wrapV);
+		desc.AddressW = ConvertToD3D12WrapMode(_desc.wrapW);
+		desc.MipLODBias = _desc.lodBias;
+		desc.MaxAnisotropy = _desc.maxAnisotropy;
+		desc.ComparisonFunc = ConvertToD3D12ComparisonFunc(_desc.comparisonFunc);
+		for (int i = 0; i < 4; i++)
+		{
+			desc.BorderColor[i] = _desc.borderColor[i];
+		}
+		desc.MinLOD = _desc.minLod;
+		desc.MaxLOD = _desc.maxLod;
+		return desc;
+	}
+
+	D3D12_RASTERIZER_DESC ConvertToD3D12RasterizerDesc(const RasterizerStateDesc& _desc)
 	{
 		D3D12_RASTERIZER_DESC desc{};
 		desc.FillMode = ConvertToD3D12FillMode(_desc.fillMode);

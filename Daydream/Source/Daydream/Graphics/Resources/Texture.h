@@ -20,7 +20,7 @@ namespace Daydream
 		UInt32 height;
 		UInt32 mipLevels = 1;
 		RenderFormat format;
-		RenderBindFlags bindFlags;
+		TextureUsage bindFlags;
 		TextureType type = TextureType::Unknown;
 	};
 

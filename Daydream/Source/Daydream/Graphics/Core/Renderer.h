@@ -70,7 +70,7 @@ namespace Daydream
 		{
 			EnqueueCommand([_buffer, _data]()
 				{
-					_buffer->Update(&_data, sizeof(DataType));
+					_buffer->UpdateData(&_data, sizeof(DataType));
 				});
 		}
 

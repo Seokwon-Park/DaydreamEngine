@@ -17,7 +17,7 @@ namespace Daydream
 		for (size_t i = 0; i < _desc.colorAttachments.size(); ++i)
 		{
 			vk::AttachmentDescription colorAttachment{};
-			colorAttachment.format = GraphicsUtility::Vulkan::ConvertRenderFormatToVkFormat(_desc.colorAttachments[i].format);
+			colorAttachment.format = GraphicsUtility::Vulkan::ConvertToVkFormat(_desc.colorAttachments[i].format);
 			colorAttachment.samples = static_cast<vk::SampleCountFlagBits>(_desc.samples);
 			colorAttachment.loadOp = vk::AttachmentLoadOp::eClear;
 			colorAttachment.storeOp = vk::AttachmentStoreOp::eStore;
@@ -40,7 +40,7 @@ namespace Daydream
 		if (hasDepth)
 		{
 			vk::AttachmentDescription depthAttachment{};
-			depthAttachment.format = GraphicsUtility::Vulkan::ConvertRenderFormatToVkFormat(_desc.depthAttachment.format);
+			depthAttachment.format = GraphicsUtility::Vulkan::ConvertToVkFormat(_desc.depthAttachment.format);
 			depthAttachment.samples = static_cast<vk::SampleCountFlagBits>(_desc.samples);
 			depthAttachment.loadOp = vk::AttachmentLoadOp::eClear;
 			depthAttachment.storeOp = vk::AttachmentStoreOp::eDontCare;

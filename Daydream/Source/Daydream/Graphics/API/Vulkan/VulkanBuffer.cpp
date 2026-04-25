@@ -17,140 +17,139 @@ namespace Daydream
 
 		vma::AllocationInfo allocationInfo;
 		device->GetAllocator().getAllocationInfo(bufferAllocation.get(), &allocationInfo);
-
+		mappedData = allocationInfo.pMappedData;
 	}
 
 	VulkanGPUBuffer::~VulkanGPUBuffer()
 	{
 	}
 
-	void* VulkanGPUBuffer::Map()
+	void VulkanGPUBuffer::UpdateData(const void* _data, UInt32 _size)
 	{
-		return nullptr;
-	}
-	void VulkanGPUBuffer::Unmap()
-	{
-	}
-	void VulkanGPUBuffer::Update(const void* _data, UInt32 _size)
-	{
-	}
-
-	VulkanVertexBuffer::VulkanVertexBuffer(VulkanRenderDevice* _device, MemoryUsage _usage, UInt32 _size)
-	{
-		device = _device;
-		size = _size;
-		usage = _usage;
-
-		vk::BufferCreateInfo bufferInfo{};
-		vma::AllocationCreateInfo allocInfo{};
-
-		if (usage == MemoryUsage::Static)
+		if (desc.memoryUsage == MemoryUsage::Static)
 		{
-			bufferInfo.size = _size;
-			bufferInfo.usage = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer;
-			bufferInfo.sharingMode = vk::SharingMode::eExclusive;
-
-			allocInfo.usage = vma::MemoryUsage::eGpuOnly;
-			allocInfo.flags = {};
-
-			std::tie(vertexBuffer, vertexBufferAllocation) = device->CreateBuffer(bufferInfo, allocInfo);
+			DAYDREAM_CORE_DEBUGBREAK("Memory Usage Static cannot update buffer data!");
 		}
-		else if (usage == MemoryUsage::Dynamic)
-		{
-			bufferInfo.size = _size;
-			bufferInfo.usage = vk::BufferUsageFlagBits::eVertexBuffer;
-			bufferInfo.sharingMode = vk::SharingMode::eExclusive;
-
-			allocInfo.usage = vma::MemoryUsage::eCpuToGpu;
-			allocInfo.flags = vma::AllocationCreateFlagBits::eMapped | vma::AllocationCreateFlagBits::eHostAccessSequentialWrite;
-
-			std::tie(vertexBuffer, vertexBufferAllocation) = device->CreateBuffer(bufferInfo, allocInfo);
-
-			vma::AllocationInfo allocationInfo;
-			device->GetAllocator().getAllocationInfo(vertexBufferAllocation.get(), &allocationInfo);
-
-			mappedData = allocationInfo.pMappedData;
-		}
-	}
-
-	VulkanVertexBuffer::~VulkanVertexBuffer()
-	{
-	}
-
-	void VulkanVertexBuffer::Bind() const
-	{
-		vk::DeviceSize offset = 0;
-	}
-
-	void VulkanVertexBuffer::SetData(const void* _data, UInt32 _dataSize)
-	{
-		if (usage == MemoryUsage::Static)
-		{
-			DAYDREAM_CORE_ASSERT(false, "Cannot call SetData on a static buffer after creation!");
-		}
-		//void* mappedMemory = device->GetDevice().mapMemory(vertexBufferMemory.get(), 0, _dataSize);
-		//memcpy(mappedMemory, _data, _dataSize);
-		//device->GetDevice().unmapMemory(vertexBufferMemory.get());
-		memcpy(mappedData, _data, _dataSize);
-	}
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	VulkanIndexBuffer::VulkanIndexBuffer(VulkanRenderDevice* _device, UInt32 _indexCount)
-	{
-		device = _device;
-		indexCount = _indexCount;
-
-		vk::BufferCreateInfo bufferInfo{};
-		vma::AllocationCreateInfo allocInfo{};
-
-		UInt32 bufferSize = sizeof(UInt32) * _indexCount;
-
-		bufferInfo.size = bufferSize;
-		bufferInfo.usage = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer;
-		bufferInfo.sharingMode = vk::SharingMode::eExclusive;
-
-		allocInfo.usage = vma::MemoryUsage::eGpuOnly;
-		allocInfo.flags = {};
-
-		std::tie(indexBuffer, indexBufferAllocation) = device->CreateBuffer(bufferInfo, allocInfo);
-	}
-
-	void VulkanIndexBuffer::Bind() const
-	{
-	}
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	VulkanConstantBuffer::VulkanConstantBuffer(VulkanRenderDevice* _device, UInt32 _size)
-	{
-		device = _device;
-		size = _size;
-
-		vk::BufferCreateInfo bufferInfo{};
-		vma::AllocationCreateInfo allocInfo{};
-
-		bufferInfo.size = _size;
-		bufferInfo.usage =  vk::BufferUsageFlagBits::eUniformBuffer;
-		bufferInfo.sharingMode = vk::SharingMode::eExclusive;
-
-		allocInfo.usage = vma::MemoryUsage::eCpuToGpu;
-		allocInfo.flags = vma::AllocationCreateFlagBits::eMapped | vma::AllocationCreateFlagBits::eHostAccessSequentialWrite;
-
-		//device->CreateBuffer(_size, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
-		std::tie(constantBuffer, constantBufferAllocation) = device->CreateBuffer(bufferInfo, allocInfo);
-
-		vma::AllocationInfo allocationInfo;
-		device->GetAllocator().getAllocationInfo(constantBufferAllocation.get(), &allocationInfo);
-
-		mappedData = allocationInfo.pMappedData;
-	}
-
-	VulkanConstantBuffer::~VulkanConstantBuffer()
-	{
-
-	}
-
-	void VulkanConstantBuffer::Update(const void* _data, UInt32 _size)
-	{
 		memcpy(mappedData, _data, _size);
 	}
+
+	//VulkanVertexBuffer::VulkanVertexBuffer(VulkanRenderDevice* _device, MemoryUsage _usage, UInt32 _size)
+	//{
+	//	device = _device;
+	//	size = _size;
+	//	usage = _usage;
+
+	//	vk::BufferCreateInfo bufferInfo{};
+	//	vma::AllocationCreateInfo allocInfo{};
+
+	//	if (usage == MemoryUsage::Static)
+	//	{
+	//		bufferInfo.size = _size;
+	//		bufferInfo.usage = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer;
+	//		bufferInfo.sharingMode = vk::SharingMode::eExclusive;
+
+	//		allocInfo.usage = vma::MemoryUsage::eGpuOnly;
+	//		allocInfo.flags = {};
+
+	//		std::tie(vertexBuffer, vertexBufferAllocation) = device->CreateBuffer(bufferInfo, allocInfo);
+	//	}
+	//	else if (usage == MemoryUsage::Dynamic)
+	//	{
+	//		bufferInfo.size = _size;
+	//		bufferInfo.usage = vk::BufferUsageFlagBits::eVertexBuffer;
+	//		bufferInfo.sharingMode = vk::SharingMode::eExclusive;
+
+	//		allocInfo.usage = vma::MemoryUsage::eCpuToGpu;
+	//		allocInfo.flags = vma::AllocationCreateFlagBits::eMapped | vma::AllocationCreateFlagBits::eHostAccessSequentialWrite;
+
+	//		std::tie(vertexBuffer, vertexBufferAllocation) = device->CreateBuffer(bufferInfo, allocInfo);
+
+	//		vma::AllocationInfo allocationInfo;
+	//		device->GetAllocator().getAllocationInfo(vertexBufferAllocation.get(), &allocationInfo);
+
+	//		mappedData = allocationInfo.pMappedData;
+	//	}
+	//}
+
+	//VulkanVertexBuffer::~VulkanVertexBuffer()
+	//{
+
+	//}
+
+	//void VulkanVertexBuffer::Bind() const
+	//{
+	//	vk::DeviceSize offset = 0;
+	//}
+
+	//void VulkanVertexBuffer::SetData(const void* _data, UInt32 _dataSize)
+	//{
+	//	if (usage == MemoryUsage::Static)
+	//	{
+	//		DAYDREAM_CORE_ASSERT(false, "Cannot call SetData on a static buffer after creation!");
+	//	}
+	//	//void* mappedMemory = device->GetDevice().mapMemory(vertexBufferMemory.get(), 0, _dataSize);
+	//	//memcpy(mappedMemory, _data, _dataSize);
+	//	//device->GetDevice().unmapMemory(vertexBufferMemory.get());
+	//	memcpy(mappedData, _data, _dataSize);
+	//}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//VulkanIndexBuffer::VulkanIndexBuffer(VulkanRenderDevice* _device, UInt32 _indexCount)
+	//{
+	//	device = _device;
+	//	indexCount = _indexCount;
+
+	//	vk::BufferCreateInfo bufferInfo{};
+	//	vma::AllocationCreateInfo allocInfo{};
+
+	//	UInt32 bufferSize = sizeof(UInt32) * _indexCount;
+
+	//	bufferInfo.size = bufferSize;
+	//	bufferInfo.usage = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer;
+	//	bufferInfo.sharingMode = vk::SharingMode::eExclusive;
+
+	//	allocInfo.usage = vma::MemoryUsage::eGpuOnly;
+	//	allocInfo.flags = {};
+
+	//	std::tie(indexBuffer, indexBufferAllocation) = device->CreateBuffer(bufferInfo, allocInfo);
+	//}
+
+	//void VulkanIndexBuffer::Bind() const
+	//{
+	//}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//VulkanConstantBuffer::VulkanConstantBuffer(VulkanRenderDevice* _device, UInt32 _size)
+	//{
+	//	device = _device;
+	//	size = _size;
+
+	//	vk::BufferCreateInfo bufferInfo{};
+	//	vma::AllocationCreateInfo allocInfo{};
+
+	//	bufferInfo.size = _size;
+	//	bufferInfo.usage =  vk::BufferUsageFlagBits::eUniformBuffer;
+	//	bufferInfo.sharingMode = vk::SharingMode::eExclusive;
+
+	//	allocInfo.usage = vma::MemoryUsage::eCpuToGpu;
+	//	allocInfo.flags = vma::AllocationCreateFlagBits::eMapped | vma::AllocationCreateFlagBits::eHostAccessSequentialWrite;
+
+	//	//device->CreateBuffer(_size, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
+	//	std::tie(constantBuffer, constantBufferAllocation) = device->CreateBuffer(bufferInfo, allocInfo);
+
+	//	vma::AllocationInfo allocationInfo;
+	//	device->GetAllocator().getAllocationInfo(constantBufferAllocation.get(), &allocationInfo);
+
+	//	mappedData = allocationInfo.pMappedData;
+	//}
+
+	//VulkanConstantBuffer::~VulkanConstantBuffer()
+	//{
+
+	//}
+
+	//void VulkanConstantBuffer::UpdateData(const void* _data, UInt32 _size)
+	//{
+	//	memcpy(mappedData, _data, _size);
+	//}
 
 }

@@ -12,17 +12,6 @@
 
 namespace Daydream
 {
-	struct VulkanBufferResource
-	{
-
-	};
-
-	struct VulkanImageResource
-	{
-		vk::Image image;
-		vk::DeviceMemory memory;
-	};
-
 	struct QueueFamilyIndices
 	{
 		std::optional<UInt32> graphicsFamily;
@@ -99,7 +88,6 @@ namespace Daydream
 		Pair<vma::UniqueBuffer, vma::UniqueAllocation> CreateBuffer(vk::BufferCreateInfo _bufferInfo, vma::AllocationCreateInfo _allocInfo);
 		Pair<vma::UniqueImage, vma::UniqueAllocation> CreateImage(vk::ImageCreateInfo _imageInfo, vma::AllocationCreateInfo _allocInfo);
 
-		VulkanImageResource CreateImage(UInt32 _width, UInt32 _height, vk::Format _format, vk::ImageTiling _tiling, vk::ImageUsageFlags _usage, vk::MemoryPropertyFlags _properties);
 		vk::UniqueImageView CreateImageView(vk::Image _image, vk::Format _format, vk::ImageAspectFlags _aspectMask);
 		vk::UniqueImageView CreateImageView(vk::ImageViewCreateInfo _viewCreateInfo);
 		void CopyBuffer(vk::Buffer _src, vk::Buffer _dst, vk::DeviceSize _size);

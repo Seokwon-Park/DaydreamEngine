@@ -9,7 +9,7 @@ namespace Daydream
 	{
 		device = _device;
 
-		D3D12_SAMPLER_DESC samplerDesc = GraphicsUtility::DirectX12::TranslateToD3D12SamplerDesc(_desc);
+		D3D12_SAMPLER_DESC samplerDesc = GraphicsUtility::DirectX12::ConvertToD3D12SamplerDesc(_desc);
 
 		device->GetSamplerHeapAlloc().Alloc(&samplerCpuHandle, &samplerGpuHandle);
 

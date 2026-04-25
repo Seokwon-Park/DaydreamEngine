@@ -37,7 +37,7 @@ namespace Daydream
 		Daydream::TextureDesc textureDesc{};
 		textureDesc.width = 512;
 		textureDesc.height = 512;
-		textureDesc.bindFlags = Daydream::RenderBindFlags::ShaderResource;
+		textureDesc.bindFlags = Daydream::TextureUsage::ShaderResource;
 		textureDesc.format = Daydream::RenderFormat::R8G8B8A8_UNORM;
 		//texture = Daydream::Texture2D::CreateFromFile("Asset/Texture/skybox/back.jpg", textureDesc);
 		//texture->SetSampler(sampler);
@@ -166,7 +166,7 @@ namespace Daydream
 	void EditorLayer::OnUpdate(Float32 _deltaTime)
 	{
 		editorCamera->Update(_deltaTime);
-		sceneHierarchyPanel->Update();
+		sceneHierarchyPanel->UpdateData();
 		Matrix4x4 mat = editorCamera->GetViewProjectionMatrix();
 		Renderer::UpdateConstantBuffer(viewProjMat, mat);
 
@@ -200,7 +200,7 @@ namespace Daydream
 
 		Renderer::UpdateConstantBuffer(entityBuffer, info);
 
-		activeScene->Update(_deltaTime);
+		activeScene->UpdateData(_deltaTime);
 
 		//pso->Bind();
 		//squareVB->Bind();

@@ -19,14 +19,14 @@ namespace Daydream
 
 		virtual void* Map() = 0;
 		virtual void Unmap() = 0;
-		virtual void Update(const void* _data, UInt32 _size) = 0;
+		virtual void UpdateData(const void* _data, UInt32 _size) = 0;
+
+		const BufferDesc& GetDesc() const { return desc; }
 		
-
-		BufferDesc GetDesc() const { return desc; }
-
 		/*static Shared<GPUBuffer> Create(const BufferDesc& _desc);*/
 	protected:
 		BufferDesc desc;
+		void* mappedData;
 	};
 
 	class VertexBuffer

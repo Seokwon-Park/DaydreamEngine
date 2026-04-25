@@ -2,10 +2,14 @@
 
 #include "glad/glad.h"
 
+#include "Daydream/Graphics/Resources/Buffer.h"
 #include "Daydream/Graphics/Resources/Sampler.h"
+
 
 namespace Daydream::GraphicsUtility::OpenGL
 {
+	GLenum ConvertToOpenGLMemoryUsage(MemoryUsage _usage);
+
 	GLenum ConvertToShaderStageBit(ShaderType _type);
 	GLenum ConvertToGLShaderType(ShaderType _type);
 

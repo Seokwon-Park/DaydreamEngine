@@ -6,6 +6,21 @@
 
 namespace Daydream
 {
+	class D3D12GPUBuffer : public GPUBuffer
+	{
+	public:
+		D3D12GPUBuffer(D3D12RenderDevice* _device, const BufferDesc& _desc);
+		virtual ~D3D12GPUBuffer();
+
+		void UpdateData(const void* _data, UInt32 _size) override;
+
+		ID3D12Resource* GetID3D12Resource() const { return buffer.Get(); }
+	protected:
+		D3D12RenderDevice* device;
+		ComPtr<ID3D12Resource> buffer;
+
+	};
+
 	class D3D12VertexBuffer : public VertexBuffer
 	{
 	public:

@@ -15,7 +15,7 @@ namespace Daydream
 	{
 		device = _device;
 
-		format = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(desc.format);
+		format = GraphicsUtility::DirectX::ConvertToDXGIFormat(desc.format);
 
 		textures.resize(6);
 

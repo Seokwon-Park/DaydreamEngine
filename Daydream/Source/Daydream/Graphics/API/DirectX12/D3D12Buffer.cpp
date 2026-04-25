@@ -1,8 +1,35 @@
 #include "DaydreamPCH.h"
 #include "D3D12Buffer.h"
 
+#include "D3D12Utility.h"
+
 namespace Daydream
 {
+	D3D12GPUBuffer::D3D12GPUBuffer(D3D12RenderDevice* _device, const BufferDesc& _desc)
+		:GPUBuffer(_desc)
+	{
+		D3D12_HEAP_PROPERTIES heapProperties = GraphicsUtility::DirectX12::ConvertToD3D12HeapProperties(_desc);
+		D3D12_RESOURCE_DESC resourceDesc= GraphicsUtility::DirectX12::ConvertToD3D12ResourceDesc(_desc);
+
+		HRESULT hr = device->GetDevice()->CreateCommittedResource(
+			&heapProperties,
+			D3D12_HEAP_FLAG_NONE,
+			&resourceDesc,
+			GraphicsUtility::DirectX12::ConvertToD3D12InitialState(_desc.memoryUsage),
+			nullptr, 
+			IID_PPV_ARGS(buffer.GetAddressOf()));
+
+		buffer->Map(0, nullptr, &mappedData);
+	}
+
+	D3D12GPUBuffer::~D3D12GPUBuffer()
+	{
+	}
+
+	void D3D12GPUBuffer::UpdateData(const void* _data, UInt32 _size)
+	{
+	}
+
 	D3D12VertexBuffer::D3D12VertexBuffer(D3D12RenderDevice* _device, MemoryUsage _usage, UInt32 _size, UInt32 _stride)
 	{
 		device = _device;
@@ -95,4 +122,5 @@ namespace Daydream
 	{
 		memcpy(mappedData, _data, _size);
 	}
+
 }

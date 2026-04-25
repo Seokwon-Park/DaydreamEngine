@@ -12,7 +12,7 @@ namespace Daydream
 	{
 		device = _device;
 
-		DXGI_FORMAT textureFormat = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(_desc.format);
+		DXGI_FORMAT textureFormat = GraphicsUtility::DirectX::ConvertToDXGIFormat(_desc.format);
 		DXGI_FORMAT srvFormat = textureFormat;
 		DXGI_FORMAT dsvFormat = textureFormat;
 

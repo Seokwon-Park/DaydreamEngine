@@ -12,30 +12,26 @@ namespace Daydream
 		Metal
 	};
 
-	enum class RenderBindFlags
+	enum class TextureUsage
 	{
-		Unknown = 0,
+		None = 0,
 		ShaderResource = 1 << 0,
 		RenderTarget = 1 << 1,
 		DepthStencil = 1 << 2,
-		UnorderedAccess = 1 << 3,
-		VertexBuffer = 1 << 4,
-		IndexBuffer = 1 << 5,
-		ConstantBuffer = 1 << 6,
-		StreamOutput = 1 << 7,
-		TransferSource = 1 << 8,
-		TransferDestination = 1 << 9,
+		Storage = 1 << 3,
+		TransferSource = 1 << 4,
+		TransferDestination = 1 << 5,
 	};
 
 
-	inline RenderBindFlags operator|(RenderBindFlags a, RenderBindFlags b)
+	inline TextureUsage operator|(TextureUsage a, TextureUsage b)
 	{
-		return static_cast<RenderBindFlags>(static_cast<int>(a) | static_cast<int>(b));
+		return static_cast<TextureUsage>(static_cast<int>(a) | static_cast<int>(b));
 	}
 
-	inline RenderBindFlags operator&(RenderBindFlags a, RenderBindFlags b)
+	inline TextureUsage operator&(TextureUsage a, TextureUsage b)
 	{
-		return static_cast<RenderBindFlags>(static_cast<int>(a) & static_cast<int>(b));
+		return static_cast<TextureUsage>(static_cast<int>(a) & static_cast<int>(b));
 	}
 
 	enum class BufferUsage : UInt32
@@ -43,10 +39,11 @@ namespace Daydream
 		None = 0,
 		Vertex = 1 << 0,
 		Index = 1 << 1,
-		Constant = 1 << 2,
-		Storage = 1 << 3,
-		Staging = 1 << 4,
-		Readback = 1 << 5
+		Constant = 1 << 2,      // D3D11/12 CBV, Vulkan UniformBuffer, OpenGL UBO
+		Storage = 1 << 3,       // D3D11/12 UAV(Structured/Raw), Vulkan StorageBuffer, OpenGL SSBO
+		TransferSource = 1 << 4,// D3D12 COPY_SOURCE, Vulkan TransferSrc, OpenGL CopyRead, D3D11 Copy source intent(no dedicated bind flag)
+		TransferDest = 1 << 5,  // D3D12 COPY_DEST, Vulkan TransferDst, OpenGL CopyWrite, D3D11 Copy destination intent(no dedicated bind flag)
+		Indirect = 1 << 6       // D3D12 INDIRECT_ARGUMENT, Vulka
 	};
 
 	inline BufferUsage operator|(BufferUsage a, BufferUsage b)

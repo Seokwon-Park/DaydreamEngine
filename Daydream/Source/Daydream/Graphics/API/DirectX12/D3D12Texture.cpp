@@ -10,7 +10,7 @@ namespace Daydream
 	{
 		device = _device;
 
-		DXGI_FORMAT textureFormat = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(desc.format);
+		DXGI_FORMAT textureFormat = GraphicsUtility::DirectX::ConvertToDXGIFormat(desc.format);
 		DXGI_FORMAT srvFormat = textureFormat;
 		DXGI_FORMAT dsvFormat = textureFormat;
 
@@ -27,14 +27,14 @@ namespace Daydream
 
 		texture = device->CreateTexture(textureDesc, D3D12_RESOURCE_STATE_COPY_DEST);
 
-		if (GraphicsUtility::HasFlag(desc.bindFlags, RenderBindFlags::ShaderResource) && GraphicsUtility::HasFlag(desc.bindFlags, RenderBindFlags::DepthStencil))
+		if (GraphicsUtility::HasFlag(desc.bindFlags, TextureUsage::ShaderResource) && GraphicsUtility::HasFlag(desc.bindFlags, TextureUsage::DepthStencil))
 		{
 			srvFormat = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
 			dsvFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		}
 
 		if (!(textureDesc.Flags & D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE) &&
-			GraphicsUtility::HasFlag(desc.bindFlags, RenderBindFlags::ShaderResource))
+			GraphicsUtility::HasFlag(desc.bindFlags, TextureUsage::ShaderResource))
 		{ 
 			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 			srvDesc.Format = srvFormat;

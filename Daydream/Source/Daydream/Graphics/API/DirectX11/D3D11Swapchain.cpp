@@ -28,7 +28,7 @@ namespace Daydream
 		//bufferDesc.RefreshRate 
 		//bufferDesc.Scaling = DXGI_MODE_SCALING_STRETCHED;
 		//bufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED; // 프로그레시브로 설정
-		bufferDesc.Format = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(_desc.format);
+		bufferDesc.Format = GraphicsUtility::DirectX::ConvertToDXGIFormat(_desc.format);
 
 		DXGI_SWAP_CHAIN_DESC desc;
 		desc.BufferDesc = bufferDesc;
@@ -79,7 +79,7 @@ namespace Daydream
 		if (isSwapchainResized)
 		{
 			framebuffer = nullptr;
-			swapChain->ResizeBuffers(0, desc.width, desc.height, GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(desc.format), 0);
+			swapChain->ResizeBuffers(0, desc.width, desc.height, GraphicsUtility::DirectX::ConvertToDXGIFormat(desc.format), 0);
 
 			framebuffer = MakeShared<D3D11Framebuffer>(device, mainRenderPass.get(), this);
 			isSwapchainResized = false;

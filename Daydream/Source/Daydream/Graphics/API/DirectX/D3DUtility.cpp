@@ -3,7 +3,7 @@
 
 namespace Daydream::GraphicsUtility::DirectX
 {
-	DXGI_FORMAT ShaderDataTypeToDXGIFormat(ShaderDataType type)
+	DXGI_FORMAT ConvertToDXGIFormat(ShaderDataType type)
 	{
 		switch (type)
 		{
@@ -23,7 +23,7 @@ namespace Daydream::GraphicsUtility::DirectX
 		DAYDREAM_CORE_ASSERT(false, "Unknown ShaderDataType!");
 		return DXGI_FORMAT_UNKNOWN;
 	}
-	DXGI_FORMAT ConvertRenderFormatToDXGIFormat(RenderFormat _format)
+	DXGI_FORMAT ConvertToDXGIFormat(RenderFormat _format)
 	{
 		switch (_format)
 		{

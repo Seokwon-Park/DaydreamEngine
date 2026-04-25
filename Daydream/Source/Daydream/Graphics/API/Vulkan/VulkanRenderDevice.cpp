@@ -586,36 +586,6 @@ namespace Daydream
 		return allocator->createImageUnique(_imageInfo, _allocInfo);
 	}
 
-	VulkanImageResource VulkanRenderDevice::CreateImage(UInt32 _width, UInt32 _height, vk::Format _format, vk::ImageTiling _tiling, vk::ImageUsageFlags _usage, vk::MemoryPropertyFlags _properties)
-	{
-		vk::ImageCreateInfo imageInfo{};
-		imageInfo.imageType = vk::ImageType::e2D;
-		imageInfo.extent.width = static_cast<UInt32>(_width);
-		imageInfo.extent.height = static_cast<UInt32>(_height);
-		imageInfo.extent.depth = 1;
-		imageInfo.mipLevels = 1;
-		imageInfo.arrayLayers = 1;
-		imageInfo.format = _format;
-		imageInfo.tiling = _tiling;
-		imageInfo.initialLayout = vk::ImageLayout::eUndefined;
-		imageInfo.usage = _usage;
-		imageInfo.sharingMode = vk::SharingMode::eExclusive;
-		imageInfo.samples = vk::SampleCountFlagBits::e1;
-
-		vk::Image image = device->createImage(imageInfo);
-
-		vk::MemoryRequirements memRequirements = device->getImageMemoryRequirements(image);
-
-		vk::MemoryAllocateInfo allocInfo{};
-		allocInfo.allocationSize = memRequirements.size;
-		allocInfo.memoryTypeIndex = FindMemoryType(memRequirements.memoryTypeBits, _properties);
-
-		vk::DeviceMemory imageMemory = device->allocateMemory(allocInfo);
-		device->bindImageMemory(image, imageMemory, 0);
-
-		return { image, imageMemory };
-	}
-
 	vk::UniqueImageView VulkanRenderDevice::CreateImageView(vk::Image _image, vk::Format _format, vk::ImageAspectFlags _aspectMask)
 	{
 		vk::ImageViewCreateInfo viewInfo{};

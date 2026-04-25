@@ -30,7 +30,7 @@ namespace Daydream
 
 		ImageData data = ImageLoader::LoadImageFile(pathString);
 		TextureDesc desc{};
-		desc.bindFlags = RenderBindFlags::ShaderResource;
+		desc.bindFlags = TextureUsage::ShaderResource;
 		desc.width = data.width;
 		desc.height = data.height;
 		if (extension == ".hdr")

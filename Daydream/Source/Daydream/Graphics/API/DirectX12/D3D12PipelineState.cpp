@@ -21,7 +21,7 @@ namespace Daydream
 			D3D12_INPUT_ELEMENT_DESC elementDesc;
 			elementDesc.SemanticName = info.name.c_str();
 			elementDesc.SemanticIndex = info.binding;
-			elementDesc.Format = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(info.format);
+			elementDesc.Format = GraphicsUtility::DirectX::ConvertToDXGIFormat(info.format);
 			elementDesc.InputSlot = 0;
 			elementDesc.AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 			elementDesc.InputSlotClass = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
@@ -45,7 +45,7 @@ namespace Daydream
 				rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 				rootParam.Descriptor.ShaderRegister = data.binding;
 				rootParam.Descriptor.RegisterSpace = data.set;
-				rootParam.ShaderVisibility = GraphicsUtility::DirectX12::GetDX12ShaderVisibility(data.shaderType);
+				rootParam.ShaderVisibility = GraphicsUtility::DirectX12::GetD3D12ShaderVisibility(data.shaderType);
 				rootParameters.push_back(rootParam);				
 				break;
 			}
@@ -151,7 +151,7 @@ namespace Daydream
 		rasterizerDesc.ForcedSampleCount = 0;
 		rasterizerDesc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;*/
 
-		D3D12_RASTERIZER_DESC rasterizerDesc = GraphicsUtility::DirectX12::TranslateToD3D12RasterizerDesc(_desc.rasterizerState);
+		D3D12_RASTERIZER_DESC rasterizerDesc = GraphicsUtility::DirectX12::ConvertToD3D12RasterizerDesc(_desc.rasterizerState);
 
 		DXGI_SAMPLE_DESC sampleDesc{};
 		sampleDesc.Count = _desc.sampleCount;
@@ -182,7 +182,7 @@ namespace Daydream
 		desc.InputLayout.pInputElementDescs = inputLayoutDesc.data();
 		for (int i = 0; i < rpDesc.colorAttachments.size(); i++)
 		{
-			desc.RTVFormats[i] = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(rpDesc.colorAttachments[i].format);
+			desc.RTVFormats[i] = GraphicsUtility::DirectX::ConvertToDXGIFormat(rpDesc.colorAttachments[i].format);
 		}
 		desc.SampleMask = UINT_MAX;
 

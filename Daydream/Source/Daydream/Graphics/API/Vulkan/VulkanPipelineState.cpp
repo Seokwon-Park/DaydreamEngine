@@ -46,7 +46,7 @@ namespace Daydream
 			vk::VertexInputAttributeDescription attribDesc{};
 			attribDesc.location = info.set;
 			attribDesc.binding = info.binding;
-			attribDesc.format = GraphicsUtility::Vulkan::ConvertRenderFormatToVkFormat(info.format);
+			attribDesc.format = GraphicsUtility::Vulkan::ConvertToVkFormat(info.format);
 			attribDesc.offset = offset;
 
 			offset += (UInt32)info.size;

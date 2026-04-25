@@ -16,20 +16,19 @@ namespace Daydream::GraphicsUtility::Vulkan
 	vk::BufferCreateInfo ConvertToVulkanCreateInfo(const BufferDesc& _desc);
 	vma::AllocationCreateInfo ConvertToVMAAllocationInfo(const BufferDesc& _desc);
 
-	vk::Format ConvertRenderFormatToVkFormat(RenderFormat _format);
+	vk::Format ConvertToVkFormat(RenderFormat _format);
 	vk::ShaderStageFlagBits ConvertToShaderStageFlagBit(ShaderType _type);
-	vk::ImageUsageFlags ConvertToVkImageUsageFlags(RenderBindFlags usageFlags);
+	vk::ImageUsageFlags ConvertToVkImageUsageFlags(TextureUsage usageFlags);
 
-	constexpr vk::SamplerAddressMode ConvertToVkAddressMode(WrapMode _wrapMode);
-	constexpr vk::Filter ConvertToVkFilter(FilterMode _filter);
-	constexpr vk::SamplerMipmapMode ConvertToVkMipmapMode(FilterMode _mipMapFilter);
-	constexpr vk::CompareOp ConvertToVkCompareOp(ComparisonFunc _func);
+	vk::SamplerAddressMode ConvertToVkAddressMode(WrapMode _wrapMode);
+	vk::Filter ConvertToVkFilter(FilterMode _filter);
+	vk::SamplerMipmapMode ConvertToVkMipmapMode(FilterMode _mipMapFilter);
+	vk::CompareOp ConvertToVkCompareOp(ComparisonFunc _func);
+
+	vk::CullModeFlags ConvertToVulkanCullMode(const CullMode& _cullMode);
+	vk::PolygonMode ConvertToVulkanFillMode(const FillMode& _fillMode);
 
 	vk::SamplerCreateInfo TranslateToVulkanSamplerCreateInfo(const SamplerDesc& _desc);
-
-	constexpr vk::CullModeFlags ConvertToVulkanCullMode(const CullMode& _cullMode);
-	constexpr vk::PolygonMode ConvertToVulkanFillMode(const FillMode& _fillMode);
-
 	vk::PipelineRasterizationStateCreateInfo TranslateToVulkanRasterizerCreateInfo(const RasterizerStateDesc& _desc);
 
 }

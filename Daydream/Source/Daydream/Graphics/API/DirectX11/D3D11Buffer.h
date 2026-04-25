@@ -9,70 +9,68 @@ namespace Daydream
 	class D3D11GPUBuffer : public GPUBuffer
 	{
 	public:
-		D3D11GPUBuffer(D3D11RenderDevice _device, BufferDesc _desc);
+		D3D11GPUBuffer(D3D11RenderDevice* _device, const BufferDesc& _desc);
 		virtual ~D3D11GPUBuffer();
 
-		virtual void* Map() override;
-		virtual void Unmap() override;
-		virtual void Update(const void* _data, UInt32 _size) override;
+		virtual void UpdateData(const void* _data, UInt32 _size) override;
 
-		static Shared<GPUBuffer> Create(UInt32 _size);
+		ID3D11Buffer* GetD3D11Buffer() const { return buffer.Get(); }
 	protected:
 		D3D11RenderDevice* device;
-		ComPtr<ID3D11Buffer> vertexBuffer;
+		ComPtr<ID3D11Buffer> buffer;
 	};
 
-	class D3D11VertexBuffer : public VertexBuffer
-	{
-	public:
-		D3D11VertexBuffer(D3D11RenderDevice* _device, MemoryUsage _usage, UInt32 _size, UInt32 _stride, const void* _initialData);
-		virtual ~D3D11VertexBuffer();
+	//class D3D11VertexBuffer : public VertexBuffer
+	//{
+	//public:
+	//	D3D11VertexBuffer(D3D11RenderDevice* _device, MemoryUsage _usage, UInt32 _size, UInt32 _stride, const void* _initialData);
+	//	virtual ~D3D11VertexBuffer();
 
-		virtual void Bind() const;
-		virtual void Unbind() const;
+	//	virtual void Bind() const;
+	//	virtual void Unbind() const;
 
-		virtual void* GetNativeHandle() const override { return vertexBuffer.Get(); };
-		virtual void SetData(const void* _data, UInt32 _dataSize) override;
+	//	virtual void* GetNativeHandle() const override { return vertexBuffer.Get(); };
+	//	virtual void SetData(const void* _data, UInt32 _dataSize) override;
 
-		ID3D11Buffer* GetID3D11Buffer() const { return vertexBuffer.Get(); }
-	private:
-		D3D11RenderDevice* device;
-		ComPtr<ID3D11Buffer> vertexBuffer;
-	};
+	//	ID3D11Buffer* GetID3D11Buffer() const { return vertexBuffer.Get(); }
+	//private:
+	//	D3D11RenderDevice* device;
+	//	ComPtr<ID3D11Buffer> vertexBuffer;
+	//};
 
-	class D3D11IndexBuffer : public IndexBuffer
-	{
-	public:
-		D3D11IndexBuffer(D3D11RenderDevice* _device, const UInt32* _indices, UInt32 _indexCount);
-		virtual ~D3D11IndexBuffer();
+	//class D3D11IndexBuffer : public IndexBuffer
+	//{
+	//public:
+	//	D3D11IndexBuffer(D3D11RenderDevice* _device, const UInt32* _indices, UInt32 _indexCount);
+	//	virtual ~D3D11IndexBuffer();
 
-		virtual void Bind() const;
-		virtual void Unbind() const;
+	//	virtual void Bind() const;
+	//	virtual void Unbind() const;
 
-		virtual void* GetNativeHandle() const override { return indexBuffer.Get(); };
+	//	virtual void* GetNativeHandle() const override { return indexBuffer.Get(); };
 
-		ID3D11Buffer* GetID3D11Buffer() const { return indexBuffer.Get(); }
-	private:
-		D3D11RenderDevice* device;
-		ComPtr<ID3D11Buffer> indexBuffer;
-	};
+	//	ID3D11Buffer* GetID3D11Buffer() const { return indexBuffer.Get(); }
+	//private:
+	//	D3D11RenderDevice* device;
+	//	ComPtr<ID3D11Buffer> indexBuffer;
+	//};
 
 
-	class D3D11ConstantBuffer : public ConstantBuffer
-	{
-	public:
-		D3D11ConstantBuffer(D3D11RenderDevice* _device, UInt32 _size);
-		virtual ~D3D11ConstantBuffer();
+	//class D3D11ConstantBuffer : public ConstantBuffer
+	//{
+	//public:
+	//	D3D11ConstantBuffer(D3D11RenderDevice* _device, UInt32 _size);
+	//	virtual ~D3D11ConstantBuffer();
 
-		virtual void Update(const void* _data, UInt32 _size) override;
+	//	virtual void UpdateData(const void* _data, UInt32 _size) override;
 
-		virtual void* GetNativeHandle() override { return constantBuffer.Get(); }
-		ComPtr<ID3D11Buffer> GetBuffer() { return constantBuffer; }
+	//	virtual void* GetNativeHandle() override { return constantBuffer.Get(); }
+	//	ComPtr<ID3D11Buffer> GetBuffer() { return constantBuffer; }
 
-	private:
-		D3D11RenderDevice* device;
-		ComPtr<ID3D11Buffer> constantBuffer;
-		D3D11_MAPPED_SUBRESOURCE data;
-	};
+	//private:
+	//	D3D11RenderDevice* device;
+	//	ComPtr<ID3D11Buffer> constantBuffer;
+	//	D3D11_MAPPED_SUBRESOURCE data;
+	//};
 }
 

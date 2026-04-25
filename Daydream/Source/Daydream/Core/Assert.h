@@ -3,7 +3,7 @@
 #if defined(DAYDREAM_DEBUG)
 #define DAYDREAM_ASSERT(x, ...) {if(!(x)) {DAYDREAM_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 #define DAYDREAM_CORE_ASSERT(x, ...) { if(!(x)) {DAYDREAM_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
-//#define DAYDREAM_BREAK(...) { DAYDREAM_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak();  }
+#define DAYDREAM_CORE_DEBUGBREAK(...) { DAYDREAM_CORE_ERROR("Debug Break! : {0}", __VA_ARGS__); __debugbreak();  }
 
 #else
 #define DAYDREAM_ASSERT(x, ...)

@@ -8,24 +8,26 @@ namespace Daydream::GraphicsUtility::Vulkan
 	{
 		vk::BufferCreateInfo bufferInfo{};
 		bufferInfo.size = _desc.size;
+		bufferInfo.sharingMode = vk::SharingMode::eExclusive;
 
 		// 비트 플래그 매핑 (Bitwise Mapping)
 		vk::BufferUsageFlags flags;
 
-		if ((_desc.bufferUsage & BufferUsage::Vertex) != BufferUsage::None)
-			flags |= vk::BufferUsageFlagBits::eVertexBuffer;
+		if (HasFlag(_desc.bufferUsage, BufferUsage::Vertex)) flags |= vk::BufferUsageFlagBits::eVertexBuffer;
+		if (HasFlag(_desc.bufferUsage, BufferUsage::Index)) flags |= vk::BufferUsageFlagBits::eIndexBuffer;
+		if (HasFlag(_desc.bufferUsage, BufferUsage::Constant)) flags |= vk::BufferUsageFlagBits::eUniformBuffer;
+		if (HasFlag(_desc.bufferUsage, BufferUsage::Storage)) flags |= vk::BufferUsageFlagBits::eStorageBuffer;
+		if (HasFlag(_desc.bufferUsage, BufferUsage::Indirect)) flags |= vk::BufferUsageFlagBits::eIndirectBuffer;
 
-		if ((_desc.bufferUsage & BufferUsage::Index) != BufferUsage::None)
-			flags |= vk::BufferUsageFlagBits::eIndexBuffer;
-
-		if ((_desc.bufferUsage & BufferUsage::Constant) != BufferUsage::None)
-			flags |= vk::BufferUsageFlagBits::eUniformBuffer;
-
-		if ((_desc.bufferUsage & BufferUsage::Staging) != BufferUsage::None)
-			flags |= vk::BufferUsageFlagBits::eTransferSrc;
-
-		if ((_desc.bufferUsage & BufferUsage::Readback) != BufferUsage::None)
+		if (_desc.memoryUsage == MemoryUsage::Static)
+		{
 			flags |= vk::BufferUsageFlagBits::eTransferDst;
+			flags |= vk::BufferUsageFlagBits::eTransferSrc;
+		}
+		else if (_desc.memoryUsage == MemoryUsage::Readback)
+		{
+			flags |= vk::BufferUsageFlagBits::eTransferDst;
+		}
 
 		bufferInfo.usage = flags;
 		return bufferInfo;
@@ -45,20 +47,19 @@ namespace Daydream::GraphicsUtility::Vulkan
 		case MemoryUsage::Dynamic:
 			// 매 프레임 CPU가 쓰는 용도
 			allocInfo.usage = vma::MemoryUsage::eCpuToGpu;
+			allocInfo.flags = vma::AllocationCreateFlagBits::eMapped | vma::AllocationCreateFlagBits::eHostAccessSequentialWrite;
 			break;
-
 		case MemoryUsage::Readback:
 			// CPU가 GPU 결과값을 읽어오는 용도 (엔티티 피킹 등)
 			allocInfo.usage = vma::MemoryUsage::eGpuToCpu;
-			// Map()을 편하게 하기 위해 미리 매핑해두는 플래그
-			allocInfo.flags = vma::AllocationCreateFlagBits::eMapped;
+			allocInfo.flags = vma::AllocationCreateFlagBits::eMapped | vma::AllocationCreateFlagBits::eHostAccessSequentialWrite;
 			break;
 		}
 
 		return allocInfo;
 	}
 
-	vk::Format ConvertRenderFormatToVkFormat(RenderFormat _format)
+	vk::Format ConvertToVkFormat(RenderFormat _format)
 	{
 		switch (_format)
 		{
@@ -217,28 +218,21 @@ namespace Daydream::GraphicsUtility::Vulkan
 		return vk::ShaderStageFlagBits::eAll;
 	};
 
-	vk::ImageUsageFlags ConvertToVkImageUsageFlags(RenderBindFlags usageFlags)
+	vk::ImageUsageFlags ConvertToVkImageUsageFlags(TextureUsage _flags)
 	{
 		vk::ImageUsageFlags vkFlags{};
-		if (HasFlag(usageFlags, RenderBindFlags::ShaderResource)) {
-			vkFlags |= vk::ImageUsageFlagBits::eSampled;
-		}
-		if (HasFlag(usageFlags, RenderBindFlags::RenderTarget)) {
-			vkFlags |= vk::ImageUsageFlagBits::eColorAttachment;
-		}
-		if (HasFlag(usageFlags, RenderBindFlags::DepthStencil)) {
-			vkFlags |= vk::ImageUsageFlagBits::eDepthStencilAttachment;
-		}
-		if (HasFlag(usageFlags, RenderBindFlags::UnorderedAccess)) { // Corresponds to Storage Image in Vulkan
-			vkFlags |= vk::ImageUsageFlagBits::eStorage;
-		}
-		// For initial data transfer
-		vkFlags |= vk::ImageUsageFlagBits::eTransferDst; // For copying from buffer to image
-		vkFlags |= vk::ImageUsageFlagBits::eTransferSrc; // If you need to read back or generate mips
+
+		if (HasFlag(_flags, TextureUsage::ShaderResource)) vkFlags |= vk::ImageUsageFlagBits::eSampled;
+		if (HasFlag(_flags, TextureUsage::RenderTarget)) vkFlags |= vk::ImageUsageFlagBits::eColorAttachment;
+		if (HasFlag(_flags, TextureUsage::DepthStencil)) vkFlags |= vk::ImageUsageFlagBits::eDepthStencilAttachment;
+		if (HasFlag(_flags, TextureUsage::Storage)) vkFlags |= vk::ImageUsageFlagBits::eStorage;
+		vkFlags |= vk::ImageUsageFlagBits::eTransferSrc;
+		vkFlags |= vk::ImageUsageFlagBits::eTransferDst;
+
 		return vkFlags;
 	}
 
-	constexpr vk::SamplerAddressMode ConvertToVkAddressMode(WrapMode _wrapMode)
+	vk::SamplerAddressMode ConvertToVkAddressMode(WrapMode _wrapMode)
 	{
 		switch (_wrapMode)
 		{
@@ -256,7 +250,7 @@ namespace Daydream::GraphicsUtility::Vulkan
 		return vk::SamplerAddressMode::eRepeat;
 	}
 
-	constexpr vk::Filter ConvertToVkFilter(FilterMode _filterMode)
+	vk::Filter ConvertToVkFilter(FilterMode _filterMode)
 	{
 		switch (_filterMode)
 		{
@@ -275,7 +269,7 @@ namespace Daydream::GraphicsUtility::Vulkan
 		return vk::Filter::eLinear;
 	}
 
-	constexpr vk::SamplerMipmapMode ConvertToVkMipmapMode(FilterMode _mipMapFilterMode)
+	vk::SamplerMipmapMode ConvertToVkMipmapMode(FilterMode _mipMapFilterMode)
 	{
 		switch (_mipMapFilterMode)
 		{
@@ -294,7 +288,7 @@ namespace Daydream::GraphicsUtility::Vulkan
 		return vk::SamplerMipmapMode::eLinear;
 	}
 
-	constexpr vk::CompareOp ConvertToVkCompareOp(ComparisonFunc _func)
+	vk::CompareOp ConvertToVkCompareOp(ComparisonFunc _func)
 	{
 		switch (_func)
 		{
@@ -304,7 +298,7 @@ namespace Daydream::GraphicsUtility::Vulkan
 		case ComparisonFunc::LessEqual:    return vk::CompareOp::eLessOrEqual;
 		case ComparisonFunc::Greater:      return vk::CompareOp::eGreater;
 		case ComparisonFunc::NotEqual:     return vk::CompareOp::eNotEqual;
-		case ComparisonFunc::GreaterEqual: return vk::CompareOp::eGreaterOrEqual; 
+		case ComparisonFunc::GreaterEqual: return vk::CompareOp::eGreaterOrEqual;
 		case ComparisonFunc::Always:       return vk::CompareOp::eAlways;
 		default:
 			break;
@@ -312,10 +306,40 @@ namespace Daydream::GraphicsUtility::Vulkan
 		return vk::CompareOp::eNever;
 	}
 
+	vk::CullModeFlags ConvertToVulkanCullMode(const CullMode& _cullMode)
+	{
+		switch (_cullMode)
+		{
+		case CullMode::None:
+			return vk::CullModeFlagBits::eNone;
+		case CullMode::Front:
+			return vk::CullModeFlagBits::eFront;
+		case CullMode::Back:
+			return vk::CullModeFlagBits::eBack;
+		default:
+			return vk::CullModeFlagBits::eNone;
+		}
+		return  vk::CullModeFlagBits::eFrontAndBack;
+	}
+
+	vk::PolygonMode ConvertToVulkanFillMode(const FillMode& _fillMode)
+	{
+		switch (_fillMode)
+		{
+		case FillMode::Solid:
+			return vk::PolygonMode::eFill;
+		case FillMode::Wireframe:
+			return vk::PolygonMode::eLine;
+		default:
+			return vk::PolygonMode::eFill;
+		}
+		return vk::PolygonMode::eFill;
+	}
+
 	vk::SamplerCreateInfo TranslateToVulkanSamplerCreateInfo(const SamplerDesc& _desc)
 	{
 		vk::SamplerCreateInfo info{};
-		
+
 		info.magFilter = ConvertToVkFilter(_desc.magFilter);
 		info.minFilter = ConvertToVkFilter(_desc.minFilter);
 		info.mipmapMode = ConvertToVkMipmapMode(_desc.mipFilter);
@@ -335,35 +359,6 @@ namespace Daydream::GraphicsUtility::Vulkan
 		return info;
 	}
 
-	constexpr vk::CullModeFlags ConvertToVulkanCullMode(const CullMode& _cullMode)
-	{
-		switch (_cullMode)
-		{
-		case CullMode::None:
-			return vk::CullModeFlagBits::eNone;
-		case CullMode::Front:
-			return vk::CullModeFlagBits::eFront;
-		case CullMode::Back:
-			return vk::CullModeFlagBits::eBack;
-		default:
-			return vk::CullModeFlagBits::eNone;
-		}
-		return  vk::CullModeFlagBits::eFrontAndBack;
-	}
-
-	constexpr vk::PolygonMode ConvertToVulkanFillMode(const FillMode& _fillMode)
-	{
-		switch (_fillMode)
-		{
-		case FillMode::Solid:
-			return vk::PolygonMode::eFill;
-		case FillMode::Wireframe:
-			return vk::PolygonMode::eLine;
-		default:
-			return vk::PolygonMode::eFill;
-		}
-		return vk::PolygonMode::eFill;
-	}
 
 	vk::PipelineRasterizationStateCreateInfo TranslateToVulkanRasterizerCreateInfo(const RasterizerStateDesc& _desc)
 	{

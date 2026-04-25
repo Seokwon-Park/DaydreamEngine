@@ -109,7 +109,7 @@ namespace Daydream
 			textureDesc.width = width;
 			textureDesc.height = height;
 			textureDesc.format = colorAttachmentDesc.format;
-			textureDesc.bindFlags = RenderBindFlags::RenderTarget | RenderBindFlags::ShaderResource;
+			textureDesc.bindFlags = TextureUsage::RenderTarget | TextureUsage::ShaderResource;
 
 			Shared<OpenGLTexture2D> colorTexture = MakeShared<OpenGLTexture2D>(textureDesc);
 			if (colorAttachmentDesc.type == AttachmentType::EntityHandle)
@@ -125,7 +125,7 @@ namespace Daydream
 			textureDesc.width = width;
 			textureDesc.height = height;
 			textureDesc.format = renderPassDesc.depthAttachment.format;
-			textureDesc.bindFlags = RenderBindFlags::DepthStencil;
+			textureDesc.bindFlags = TextureUsage::DepthStencil;
 
 			Shared<OpenGLTexture2D> depthTexture = MakeShared<OpenGLTexture2D>(textureDesc);
 			depthAttachment = depthTexture;

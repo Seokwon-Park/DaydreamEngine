@@ -22,7 +22,7 @@ namespace Daydream
 			elementDesc.SemanticName = info.name.c_str();
 			elementDesc.SemanticIndex = info.binding;
 			elementDesc.InputSlot = 0;
-			elementDesc.Format = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(info.format);
+			elementDesc.Format = GraphicsUtility::DirectX::ConvertToDXGIFormat(info.format);
 			elementDesc.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 			elementDesc.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 			elementDesc.InstanceDataStepRate = 0;
@@ -71,7 +71,7 @@ namespace Daydream
 		//geometryShader = (ID3D11GeometryShader*)shaderGroup->GetShader(ShaderType::Geometry)->GetNativeHandle();
 
 		//CW
-		D3D11_RASTERIZER_DESC rastDesc = GraphicsUtility::DirectX11::TranslateToD3D11RasterizerDesc(_desc.rasterizerState);
+		D3D11_RASTERIZER_DESC rastDesc = GraphicsUtility::DirectX11::ConvertToD3D11RasterizerDesc(_desc.rasterizerState);
 
 		//D3D11_DEPTH_STENCIL_DESC depthDesc;
 		//D3D11_BLEND_DESC blendDesc;

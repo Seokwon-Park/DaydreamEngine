@@ -214,7 +214,7 @@ namespace Daydream
 
 	vk::SurfaceFormatKHR VulkanSwapchain::ChooseSwapSurfaceFormat(const Array<vk::SurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat)
 	{
-		vk::Format desiredFormat = GraphicsUtility::Vulkan::ConvertRenderFormatToVkFormat(_desiredFormat);
+		vk::Format desiredFormat = GraphicsUtility::Vulkan::ConvertToVkFormat(_desiredFormat);
 		for (const vk::SurfaceFormatKHR& availableFormat : _availableFormats)
 		{
 			if (availableFormat.format == desiredFormat && availableFormat.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear)

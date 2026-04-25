@@ -9,7 +9,7 @@ namespace Daydream
 	{
 		device = _device;
 
-		D3D11_SAMPLER_DESC desc = GraphicsUtility::DirectX11::TranslateToD3D11SamplerDesc(_desc);
+		D3D11_SAMPLER_DESC desc = GraphicsUtility::DirectX11::ConvertToD3D11SamplerDesc(_desc);
 		device->GetDevice()->CreateSamplerState(&desc, sampler.GetAddressOf());
 	}
 }

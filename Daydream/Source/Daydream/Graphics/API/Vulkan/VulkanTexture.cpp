@@ -13,7 +13,7 @@ namespace Daydream
 	{
 		device = _device;
 
-		vk::Format imageFormat = GraphicsUtility::Vulkan::ConvertRenderFormatToVkFormat(_desc.format);
+		vk::Format imageFormat = GraphicsUtility::Vulkan::ConvertToVkFormat(_desc.format);
 
 		vk::ImageCreateInfo imageInfo{};
 		vma::AllocationCreateInfo allocInfo{};

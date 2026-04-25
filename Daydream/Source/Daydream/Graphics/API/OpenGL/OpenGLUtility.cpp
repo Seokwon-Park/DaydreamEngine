@@ -28,6 +28,24 @@ namespace Daydream::GraphicsUtility::OpenGL
 	}
 
 
+	GLenum ConvertToOpenGLMemoryUsage(MemoryUsage _usage)
+	{
+		switch (_usage)
+		{
+		case MemoryUsage::Static:
+			return GL_STATIC_DRAW;
+			break;
+		case MemoryUsage::Dynamic:
+			return GL_DYNAMIC_DRAW;
+			break;
+		case MemoryUsage::Readback:
+			return GL_DYNAMIC_READ;
+			break;
+		default:
+			break;
+		}
+	}
+
 	GLenum ConvertToShaderStageBit(ShaderType _type)
 	{
 		switch (_type)

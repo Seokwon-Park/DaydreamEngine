@@ -16,7 +16,7 @@ namespace Daydream
 		device = _device;
 		desc = _desc;
 		bufferCount = _desc.bufferCount;
-		format = GraphicsUtility::DirectX::ConvertRenderFormatToDXGIFormat(_desc.format);;
+		format = GraphicsUtility::DirectX::ConvertToDXGIFormat(_desc.format);;
 		DXGI_SAMPLE_DESC sampleDesc = {};
 		sampleDesc.Count = 1;    // 샘플 수 (1이면 MSAA 비활성화)
 		sampleDesc.Quality = 0;  // 품질 레벨 (0이면 기본값)
