@@ -44,6 +44,7 @@ namespace Daydream::GraphicsUtility::OpenGL
 		default:
 			break;
 		}
+		return GL_NONE;
 	}
 
 	GLenum ConvertToShaderStageBit(ShaderType _type)

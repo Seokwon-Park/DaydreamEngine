@@ -244,68 +244,92 @@ namespace Daydream
 		return MakeShared<D3D12RenderCommandList>(this);
 	}
 
-	Shared<VertexBuffer> D3D12RenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
+	Shared<GPUBuffer> D3D12RenderDevice::CreateGPUBuffer(const BufferDesc& _desc)
 	{
-		auto vertexBuffer = MakeShared<D3D12VertexBuffer>(this, MemoryUsage::Dynamic, _size, _stride);
-
-		vertexBuffer->SetData(_initialData, _initialDataSize);
-
-		return vertexBuffer;
+		return MakeShared<D3D12GPUBuffer>(this, _desc);
 	}
 
-	Shared<VertexBuffer> D3D12RenderDevice::CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData)
-	{
-		auto vertexBuffer = MakeShared<D3D12VertexBuffer>(this, MemoryUsage::Static, _size, _stride);
+	//Shared<VertexBuffer> D3D12RenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
+	//{
+	//	BufferDesc desc{};
+	//	desc.bufferUsage = BufferUsage::Vertex;
+	//	desc.memoryUsage = MemoryUsage::Dynamic;
+	//	desc.size = _size;
+	//	desc.initialData = _initialData;
 
-		auto uploadBuffer = CreateBuffer(_size, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
+	//	Shared<D3D12GPUBuffer> gpuBuffer = MakeShared<D3D12GPUBuffer>(this, desc);
 
-		void* bufferData;
-		HRESULT hr = uploadBuffer->Map(0, nullptr, &bufferData);
-		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to map uploadBuffer");
-		memcpy(bufferData, _initialData, _size);
-		uploadBuffer->Unmap(0, nullptr);
+	//	Shared<VertexBuffer> vertexBuffer = MakeShared<VertexBuffer>(gpuBuffer, _stride);
+	//	if (_initialData != nullptr)
+	//	{
+	//		vertexBuffer->UpdateData(_initialData, _initialDataSize);
+	//	}
+	//	return vertexBuffer;
+	//}
 
-		CopyBuffer(uploadBuffer.Get(), vertexBuffer->GetID3D12Resource(), _size);
+	//Shared<VertexBuffer> D3D12RenderDevice::CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData)
+	//{
+	//	BufferDesc desc{};
+	//	desc.bufferUsage = BufferUsage::Vertex;
+	//	desc.memoryUsage = MemoryUsage::Static;
+	//	desc.size = _size;
 
-		D3D12_RESOURCE_BARRIER barrier = {};
-		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barrier.Transition.pResource = vertexBuffer->GetID3D12Resource();
-		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
-		TransitionResourceStateImmediate(barrier);
+	//	Shared<D3D12GPUBuffer> vertexBuffer = MakeShared<D3D12GPUBuffer>(this, MemoryUsage::Static, _size, _stride);
 
-		return vertexBuffer;
-	}
+	//	auto uploadBuffer = CreateBuffer(_size, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
+
+	//	void* bufferData;
+	//	HRESULT hr = uploadBuffer->Map(0, nullptr, &bufferData);
+	//	DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to map uploadBuffer");
+	//	memcpy(bufferData, _initialData, _size);
+	//	uploadBuffer->Unmap(0, nullptr);
+
+	//	CopyBuffer(uploadBuffer.Get(), vertexBuffer->GetID3D12Resource(), _size);
+
+	//	D3D12_RESOURCE_BARRIER barrier = {};
+	//	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	//	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	//	barrier.Transition.pResource = vertexBuffer->GetID3D12Resource();
+	//	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	//	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+	//	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
+	//	TransitionResourceStateImmediate(barrier);
+
+	//	return vertexBuffer;
+	//}
 
 
-	Shared<IndexBuffer> Daydream::D3D12RenderDevice::CreateIndexBuffer(const UInt32* _indices, UInt32 _count)
-	{
-		auto indexBuffer = MakeShared<D3D12IndexBuffer>(this, _count);
+	//Shared<IndexBuffer> Daydream::D3D12RenderDevice::CreateIndexBuffer(const UInt32* _indices, UInt32 _count)
+	//{
+	//	auto indexBuffer = MakeShared<D3D12IndexBuffer>(this, _count);
 
-		UInt32 bufferSize = sizeof(UInt32) * _count;
-		auto uploadBuffer = CreateBuffer(bufferSize, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
+	//	UInt32 bufferSize = sizeof(UInt32) * _count;
+	//	auto uploadBuffer = CreateBuffer(bufferSize, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
 
-		void* bufferData;
-		HRESULT hr = uploadBuffer->Map(0, nullptr, &bufferData);
-		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to map uploadBuffer");
-		memcpy(bufferData, _indices, bufferSize);
-		uploadBuffer->Unmap(0, nullptr);
+	//	void* bufferData;
+	//	HRESULT hr = uploadBuffer->Map(0, nullptr, &bufferData);
+	//	DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to map uploadBuffer");
+	//	memcpy(bufferData, _indices, bufferSize);
+	//	uploadBuffer->Unmap(0, nullptr);
 
-		CopyBuffer(uploadBuffer.Get(), indexBuffer->GetID3D12Resource(), bufferSize);
+	//	CopyBuffer(uploadBuffer.Get(), indexBuffer->GetID3D12Resource(), bufferSize);
 
-		D3D12_RESOURCE_BARRIER barrier = {};
-		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barrier.Transition.pResource = indexBuffer->GetID3D12Resource();
-		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_INDEX_BUFFER;
-		TransitionResourceStateImmediate(barrier);
+	//	D3D12_RESOURCE_BARRIER barrier = {};
+	//	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	//	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	//	barrier.Transition.pResource = indexBuffer->GetID3D12Resource();
+	//	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	//	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+	//	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_INDEX_BUFFER;
+	//	TransitionResourceStateImmediate(barrier);
 
-		return indexBuffer;
-	}
+	//	return indexBuffer;
+	//}
+
+	//Shared<ConstantBuffer> D3D12RenderDevice::CreateConstantBuffer(UInt32 _size)
+	//{
+	//	return MakeShared<D3D12ConstantBuffer>(this, _size);
+	//}
 
 	Shared<RenderPass> D3D12RenderDevice::CreateRenderPass(const RenderPassDesc& _desc)
 	{
@@ -475,10 +499,7 @@ namespace Daydream
 		return MakeUnique<D3D12ImGuiRenderer>(this);
 	}
 
-	Shared<ConstantBuffer> D3D12RenderDevice::CreateConstantBuffer(UInt32 _size)
-	{
-		return MakeShared<D3D12ConstantBuffer>(this, _size);
-	}
+
 
 	Shared<Material> D3D12RenderDevice::CreateMaterial(Shared<PipelineState> _pipeline)
 	{

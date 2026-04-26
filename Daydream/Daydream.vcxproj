@@ -741,6 +741,7 @@
     <ClCompile Include="Source\Daydream\Core\UUID.cpp" />
     <ClCompile Include="Source\Daydream\Core\Window.cpp" />
     <ClCompile Include="Source\Daydream\Core\WindowManager.cpp" />
+    <ClCompile Include="Source\Daydream\Enum\RendererEnums.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX\D3DUtility.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Buffer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Common.cpp" />

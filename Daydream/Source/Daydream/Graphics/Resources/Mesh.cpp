@@ -28,8 +28,7 @@ namespace Daydream
 
 	void Mesh::Bind()
 	{
-		vertexBuffer->Bind();
-		indexBuffer->Bind();
+
 	}
 	Shared<Mesh> Mesh::Create()
 	{

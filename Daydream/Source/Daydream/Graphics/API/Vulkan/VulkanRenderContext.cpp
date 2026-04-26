@@ -145,12 +145,12 @@ namespace Daydream
 	void VulkanRenderContext::BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer)
 	{
 		vk::DeviceSize offset = 0;
-		Shared<VulkanVertexBuffer> vertexBuffer = SharedCast<VulkanVertexBuffer>(_vertexBuffer);
+		VulkanGPUBuffer* vertexBuffer = Cast<VulkanGPUBuffer*>(_vertexBuffer->GetBuffer());
 		GetActiveCommandBuffer().bindVertexBuffers(0, { vertexBuffer->GetVkBuffer() }, { offset });
 	}
 	void VulkanRenderContext::BindIndexBuffer(Shared<IndexBuffer> _indexBuffer)
 	{
-		Shared<VulkanIndexBuffer> indexBuffer = SharedCast<VulkanIndexBuffer>(_indexBuffer);
+		VulkanGPUBuffer* indexBuffer = Cast<VulkanGPUBuffer*>(_indexBuffer->GetBuffer());
 		GetActiveCommandBuffer().bindIndexBuffer(indexBuffer->GetVkBuffer(), 0, vk::IndexType::eUint32);
 	}
 
@@ -219,13 +219,13 @@ namespace Daydream
 		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
 		if (resourceInfo == nullptr) return;
 
-		Shared<VulkanConstantBuffer> vulkanBuffer = std::static_pointer_cast<VulkanConstantBuffer>(_buffer);
+		VulkanGPUBuffer* constantBuffer = Cast<VulkanGPUBuffer*>(_buffer->GetBuffer());
 		Shared<VulkanPipelineState> vulkanPSO = std::static_pointer_cast<VulkanPipelineState>(activePipelineState);
 
 		vk::DescriptorBufferInfo bufferInfo{};
-		bufferInfo.buffer = (VkBuffer)vulkanBuffer->GetNativeHandle();
+		bufferInfo.buffer = constantBuffer->GetVkBuffer();
 		bufferInfo.offset = 0;
-		bufferInfo.range = vulkanBuffer->GetSize();
+		bufferInfo.range = constantBuffer->GetSize();
 
 		vk::WriteDescriptorSet writeSet = {};
 		//writeSet.dstSet = sets[resourceInfo.set].get();

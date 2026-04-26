@@ -78,14 +78,17 @@ namespace Daydream
 		UInt32 offset = 0;
 		UInt32 stride = _vertexBuffer->GetStride();
 
-		ID3D11Buffer* vertexBuffer = Cast<D3D11VertexBuffer*>(_vertexBuffer.get())->GetID3D11Buffer();
-		device->GetContext()->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+		D3D11GPUBuffer* vertexBuffer = Cast<D3D11GPUBuffer*>(_vertexBuffer->GetBuffer());
+		DAYDREAM_CORE_ASSERT(vertexBuffer, "vertexBuffer is nullptr!");
+		ID3D11Buffer* d3d11Buffer = vertexBuffer->GetID3D11Buffer();
+		device->GetContext()->IASetVertexBuffers(0, 1, &d3d11Buffer, &stride, &offset);
 	}
 	void D3D11RenderContext::BindIndexBuffer(Shared<IndexBuffer> _indexBuffer)
 	{
 		UInt32 offset = 0;
-		ID3D11Buffer* indexBuffer = Cast<D3D11IndexBuffer*>(_indexBuffer.get())->GetID3D11Buffer();
-		device->GetContext()->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, offset);
+		D3D11GPUBuffer* indexBuffer = Cast<D3D11GPUBuffer*>(_indexBuffer->GetBuffer());
+		DAYDREAM_CORE_ASSERT(indexBuffer, "indexBuffer is nullptr!");
+		device->GetContext()->IASetIndexBuffer(indexBuffer->GetID3D11Buffer(), DXGI_FORMAT_R32_UINT, offset);
 	}
 
 	void D3D11RenderContext::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
@@ -171,13 +174,15 @@ namespace Daydream
 		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
 		if (resourceInfo == nullptr) return;
 		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX11, "Wrong API!");
-		Shared<D3D11ConstantBuffer> d3d11Buffer = static_pointer_cast<D3D11ConstantBuffer>(_buffer);
+		D3D11GPUBuffer* constantBuffer = Cast<D3D11GPUBuffer*>(_buffer->GetBuffer());
+		DAYDREAM_CORE_ASSERT(constantBuffer, "vertexBuffer is nullptr!");
+		ID3D11Buffer* d3d11Buffer = constantBuffer->GetID3D11Buffer();
 		switch (resourceInfo->shaderType)
 		{
 		case ShaderType::None:
 			break;
 		case ShaderType::Vertex:
-			device->GetContext()->VSSetConstantBuffers(resourceInfo->binding, 1, d3d11Buffer->GetBuffer().GetAddressOf());
+			device->GetContext()->VSSetConstantBuffers(resourceInfo->binding, 1, &d3d11Buffer);
 			break;
 		case ShaderType::Hull:
 			break;
@@ -186,7 +191,7 @@ namespace Daydream
 		case ShaderType::Geometry:
 			break;
 		case ShaderType::Pixel:
-			device->GetContext()->PSSetConstantBuffers(resourceInfo->binding, 1, d3d11Buffer->GetBuffer().GetAddressOf());
+			device->GetContext()->PSSetConstantBuffers(resourceInfo->binding, 1, &d3d11Buffer);
 			break;
 		case ShaderType::Compute:
 			break;

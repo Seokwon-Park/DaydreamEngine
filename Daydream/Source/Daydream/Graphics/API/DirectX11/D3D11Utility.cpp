@@ -42,7 +42,7 @@ namespace Daydream::GraphicsUtility::DirectX11
 		switch (_usage)
 		{
 		case MemoryUsage::Static:
-			return D3D11_USAGE_DEFAULT;
+			return D3D11_USAGE_IMMUTABLE;
 		case MemoryUsage::Dynamic:
 			return D3D11_USAGE_DYNAMIC;
 		case MemoryUsage::Readback:

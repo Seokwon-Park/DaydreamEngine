@@ -143,26 +143,65 @@ namespace Daydream
 	{
 		return MakeShared<RenderCommandList>();
 	}
-	Shared<VertexBuffer> D3D11RenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
+	Shared<GPUBuffer> D3D11RenderDevice::CreateGPUBuffer(const BufferDesc& _desc)
 	{
-		Shared<D3D11VertexBuffer> buffer = MakeShared<D3D11VertexBuffer>(this, MemoryUsage::Dynamic, _size, _stride, nullptr);
-		if (_initialData != nullptr)
-		{
-			buffer->SetData(_initialData, _initialDataSize);
-		}
-		return buffer;
+		return MakeShared<D3D11GPUBuffer>(this, _desc);
 	}
+	//Shared<VertexBuffer> D3D11RenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
+	//{
+	//	BufferDesc desc{};
+	//	desc.bufferUsage = BufferUsage::Vertex;
+	//	desc.memoryUsage = MemoryUsage::Dynamic;
+	//	desc.size = _size;
+	//	desc.initialData = _initialData;
 
-	Shared<VertexBuffer> D3D11RenderDevice::CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData)
-	{
-		//return MakeShared<D3D11VertexBuffer>();
-		return MakeShared<D3D11VertexBuffer>(this, MemoryUsage::Static, _size, _stride, _initialData);
-	}
+	//	Shared<D3D11GPUBuffer> gpuBuffer = MakeShared<D3D11GPUBuffer>(this, desc);
 
-	Shared<IndexBuffer> Daydream::D3D11RenderDevice::CreateIndexBuffer(const UInt32* _indices, UInt32 _count)
-	{
-		return MakeShared<D3D11IndexBuffer>(this, _indices, _count);
-	}
+	//	Shared<VertexBuffer> vertexBuffer = MakeShared<VertexBuffer>(gpuBuffer, _stride);
+	//	if (_initialData != nullptr)
+	//	{
+	//		vertexBuffer->UpdateData(_initialData, _initialDataSize);
+	//	}
+	//	return vertexBuffer;
+	//}
+
+	//Shared<VertexBuffer> D3D11RenderDevice::CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData)
+	//{
+	//	BufferDesc desc{};
+	//	desc.bufferUsage = BufferUsage::Vertex;
+	//	desc.memoryUsage = MemoryUsage::Static;
+	//	desc.size = _size;
+	//	desc.initialData = _initialData;
+
+	//	Shared<D3D11GPUBuffer> gpuBuffer = MakeShared<D3D11GPUBuffer>(this, desc);
+
+	//	return MakeShared<VertexBuffer>(gpuBuffer, _stride);
+	//}
+
+	//Shared<IndexBuffer> D3D11RenderDevice::CreateIndexBuffer(const UInt32* _indices, UInt32 _count)
+	//{
+	//	BufferDesc desc{};
+	//	desc.bufferUsage = BufferUsage::Index;
+	//	desc.memoryUsage = MemoryUsage::Static;
+	//	desc.size = sizeof(UInt32) * _count;
+	//	desc.initialData = _indices;
+
+	//	Shared<D3D11GPUBuffer> gpuBuffer = MakeShared<D3D11GPUBuffer>(this, desc);
+
+	//	return  MakeShared<IndexBuffer>(gpuBuffer, _count);
+	//}
+
+	//Shared<ConstantBuffer> D3D11RenderDevice::CreateConstantBuffer(UInt32 _size)
+	//{
+	//	BufferDesc desc{};
+	//	desc.bufferUsage = BufferUsage::Constant;
+	//	desc.memoryUsage = MemoryUsage::Dynamic;
+	//	desc.size = _size;
+
+	//	Shared<D3D11GPUBuffer> gpuBuffer = MakeShared<D3D11GPUBuffer>(this, desc);
+
+	//	return MakeShared<ConstantBuffer>(gpuBuffer);
+	//}
 
 	Shared<RenderPass> D3D11RenderDevice::CreateRenderPass(const RenderPassDesc& _desc)
 	{
@@ -196,7 +235,7 @@ namespace Daydream
 		return Shared<Shader>();
 	}
 
-	Shared<Swapchain> Daydream::D3D11RenderDevice::CreateSwapchain(const DaydreamWindow& _window, const SwapchainDesc& _desc)
+	Shared<Swapchain> D3D11RenderDevice::CreateSwapchain(const DaydreamWindow& _window, const SwapchainDesc& _desc)
 	{
 		return MakeShared<D3D11Swapchain>(this, _window, _desc);
 	}
@@ -249,10 +288,6 @@ namespace Daydream
 		return MakeUnique<D3D11ImGuiRenderer>(this);
 	}
 
-	Shared<ConstantBuffer> D3D11RenderDevice::CreateConstantBuffer(UInt32 _size)
-	{
-		return MakeShared<D3D11ConstantBuffer>(this, _size);
-	}
 
 	Shared<Material> D3D11RenderDevice::CreateMaterial(Shared<PipelineState> _pipeline)
 	{

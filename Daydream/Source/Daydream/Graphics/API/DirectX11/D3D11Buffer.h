@@ -14,7 +14,7 @@ namespace Daydream
 
 		virtual void UpdateData(const void* _data, UInt32 _size) override;
 
-		ID3D11Buffer* GetD3D11Buffer() const { return buffer.Get(); }
+		ID3D11Buffer* GetID3D11Buffer() const { return buffer.Get(); }
 	protected:
 		D3D11RenderDevice* device;
 		ComPtr<ID3D11Buffer> buffer;

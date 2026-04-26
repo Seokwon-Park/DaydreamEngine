@@ -166,7 +166,7 @@ namespace Daydream
 	void EditorLayer::OnUpdate(Float32 _deltaTime)
 	{
 		editorCamera->Update(_deltaTime);
-		sceneHierarchyPanel->UpdateData();
+		sceneHierarchyPanel->Update();
 		Matrix4x4 mat = editorCamera->GetViewProjectionMatrix();
 		Renderer::UpdateConstantBuffer(viewProjMat, mat);
 
@@ -200,7 +200,7 @@ namespace Daydream
 
 		Renderer::UpdateConstantBuffer(entityBuffer, info);
 
-		activeScene->UpdateData(_deltaTime);
+		activeScene->Update(_deltaTime);
 
 		//pso->Bind();
 		//squareVB->Bind();

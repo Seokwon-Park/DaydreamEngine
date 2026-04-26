@@ -8,6 +8,17 @@
 
 namespace Daydream
 {
+	GPUBuffer::GPUBuffer(const BufferDesc& _desc)
+	{
+		desc = _desc;
+	}
+
+	VertexBuffer::VertexBuffer(Shared<GPUBuffer> _buffer, UInt32 _stride)
+		:buffer(_buffer), stride(_stride)
+	{
+
+	}
+
 	Shared<VertexBuffer> VertexBuffer::CreateDynamic(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
 	{
 		return Renderer::GetRenderDevice()->CreateDynamicVertexBuffer(_size, _stride, 0, _initialData);
@@ -18,20 +29,24 @@ namespace Daydream
 		return Renderer::GetRenderDevice()->CreateStaticVertexBuffer(_size, _stride, _initialData);
 	}
 
+	IndexBuffer::IndexBuffer(Shared<GPUBuffer> _buffer, UInt32 _indexCount)
+		:buffer(_buffer), indexCount(_indexCount)
+	{
+	}
+
 	Shared<IndexBuffer> IndexBuffer::Create(const UInt32* _indices, UInt32 _size)
 	{
 		return Renderer::GetRenderDevice()->CreateIndexBuffer(_indices, _size);
 	}
 
+	ConstantBuffer::ConstantBuffer(Shared<GPUBuffer> _buffer)
+		:buffer(_buffer)
+	{
+	}
+
 	Shared<ConstantBuffer> ConstantBuffer::Create(UInt32 _size)
 	{
 		return Renderer::GetRenderDevice()->CreateConstantBuffer(_size);
-	}
-
-
-	GPUBuffer::GPUBuffer(const BufferDesc& _desc)
-	{
-		desc = _desc;
 	}
 }
 

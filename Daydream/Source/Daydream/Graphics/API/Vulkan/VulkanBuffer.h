@@ -19,7 +19,6 @@ namespace Daydream
 		VulkanRenderDevice* device;
 		vma::UniqueBuffer buffer;
 		vma::UniqueAllocation bufferAllocation;
-		vk::DeviceSize size;
 	};
 
 	//class VulkanVertexBuffer : public VertexBuffer

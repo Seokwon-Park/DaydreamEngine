@@ -153,54 +153,73 @@ namespace Daydream
 		return MakeShared<VulkanRenderCommandList>(this);
 	}
 
-	Shared<VertexBuffer> VulkanRenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
+	Shared<GPUBuffer> VulkanRenderDevice::CreateGPUBuffer(const BufferDesc& _desc)
 	{
-		auto vertexBuffer = MakeShared<VulkanVertexBuffer>(this, MemoryUsage::Dynamic, _size);
-		if (_initialData)
-		{
-			vertexBuffer->SetData(_initialData, _initialDataSize);
-		}
-		return vertexBuffer;
+		return MakeShared<VulkanGPUBuffer>(this, _desc);
 	}
 
-	Shared<VertexBuffer> VulkanRenderDevice::CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData)
-	{
-		auto vertexBuffer = MakeShared<VulkanVertexBuffer>(this, MemoryUsage::Static, _size);
+	//Shared<VertexBuffer> VulkanRenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
+	//{
+	//	BufferDesc desc{};
+	//	desc.bufferUsage = BufferUsage::Vertex;
+	//	desc.memoryUsage = MemoryUsage::Dynamic;
+	//	desc.size = _size;
+	//	desc.initialData = _initialData;
 
-		auto [uploadBuffer, uploadBufferAllocation] = CreateBuffer(
-			_size,
-			vk::BufferUsageFlagBits::eTransferSrc,
-			vma::MemoryUsage::eCpuOnly,
-			vma::AllocationCreateFlagBits::eMapped);
+	//	Shared<VulkanGPUBuffer> gpuBuffer = MakeShared<VulkanGPUBuffer>(this, desc);
 
-		vma::AllocationInfo allocationInfo;
-		allocator->getAllocationInfo(uploadBufferAllocation.get(), &allocationInfo);
-		memcpy(allocationInfo.pMappedData, _initialData, _size);
-		CopyBuffer(uploadBuffer.get(), vertexBuffer->GetVkBuffer(), _size);
+	//	Shared<VertexBuffer> vertexBuffer = MakeShared<VertexBuffer>(gpuBuffer, _stride);
+	//	if (_initialData)
+	//	{
+	//		vertexBuffer->SetData(_initialData, _initialDataSize);
+	//	}
+	//	return vertexBuffer;
+	//}
 
-		return vertexBuffer;
-	}
+	//Shared<VertexBuffer> VulkanRenderDevice::CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData)
+	//{
+	//	auto vertexBuffer = MakeShared<VulkanVertexBuffer>(this, MemoryUsage::Static, _size);
 
-	Shared<IndexBuffer> VulkanRenderDevice::CreateIndexBuffer(const UInt32* _indices, UInt32 _count)
-	{
-		auto indexBuffer = MakeShared<VulkanIndexBuffer>(this, _count);
+	//	auto [uploadBuffer, uploadBufferAllocation] = CreateBuffer(
+	//		_size,
+	//		vk::BufferUsageFlagBits::eTransferSrc,
+	//		vma::MemoryUsage::eCpuOnly,
+	//		vma::AllocationCreateFlagBits::eMapped);
 
-		UInt32 bufferSize = sizeof(UInt32) * _count;
-		auto [uploadBuffer, uploadBufferAllocation] = CreateBuffer(
-			bufferSize,
-			vk::BufferUsageFlagBits::eTransferSrc,
-			vma::MemoryUsage::eCpuOnly,
-			vma::AllocationCreateFlagBits::eMapped);
+	//	vma::AllocationInfo allocationInfo;
+	//	allocator->getAllocationInfo(uploadBufferAllocation.get(), &allocationInfo);
+	//	memcpy(allocationInfo.pMappedData, _initialData, _size);
+	//	CopyBuffer(uploadBuffer.get(), vertexBuffer->GetVkBuffer(), _size);
 
-		vma::AllocationInfo allocationInfo;
-		// GetAllocator()는 VmaAllocator 핸들을 반환하는 함수라고 가정합니다.
-		allocator->getAllocationInfo(uploadBufferAllocation.get(), &allocationInfo);
-		memcpy(allocationInfo.pMappedData, _indices, bufferSize);
+	//	return vertexBuffer;
+	//}
 
-		CopyBuffer(uploadBuffer.get(), indexBuffer->GetVkBuffer(), bufferSize); // CopyBuffer는 vkCmdCopyBuffer를 호출하는 헬퍼 함수
+	//Shared<IndexBuffer> VulkanRenderDevice::CreateIndexBuffer(const UInt32* _indices, UInt32 _count)
+	//{
+	//	auto indexBuffer = MakeShared<VulkanIndexBuffer>(this, _count);
 
-		return indexBuffer;
-	}
+	//	UInt32 bufferSize = sizeof(UInt32) * _count;
+	//	auto [uploadBuffer, uploadBufferAllocation] = CreateBuffer(
+	//		bufferSize,
+	//		vk::BufferUsageFlagBits::eTransferSrc,
+	//		vma::MemoryUsage::eCpuOnly,
+	//		vma::AllocationCreateFlagBits::eMapped);
+
+	//	vma::AllocationInfo allocationInfo;
+	//	// GetAllocator()는 VmaAllocator 핸들을 반환하는 함수라고 가정합니다.
+	//	allocator->getAllocationInfo(uploadBufferAllocation.get(), &allocationInfo);
+	//	memcpy(allocationInfo.pMappedData, _indices, bufferSize);
+
+	//	CopyBuffer(uploadBuffer.get(), indexBuffer->GetVkBuffer(), bufferSize); // CopyBuffer는 vkCmdCopyBuffer를 호출하는 헬퍼 함수
+
+	//	return indexBuffer;
+	//}
+
+	//Shared<ConstantBuffer> VulkanRenderDevice::CreateConstantBuffer(UInt32 _size)
+	//{
+	//	return MakeShared<VulkanConstantBuffer>(this, _size);
+	//}
+
 
 	Shared<RenderPass> VulkanRenderDevice::CreateRenderPass(const RenderPassDesc& _desc)
 	{
@@ -383,10 +402,6 @@ namespace Daydream
 		return MakeUnique<VulkanImGuiRenderer>(this);
 	}
 
-	Shared<ConstantBuffer> VulkanRenderDevice::CreateConstantBuffer(UInt32 _size)
-	{
-		return MakeShared<VulkanConstantBuffer>(this, _size);
-	}
 
 	Shared<Material> VulkanRenderDevice::CreateMaterial(Shared<PipelineState> _pipeline)
 	{

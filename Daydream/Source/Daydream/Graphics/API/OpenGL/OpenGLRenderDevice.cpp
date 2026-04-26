@@ -63,25 +63,43 @@ namespace Daydream
 		return MakeUnique<RenderCommandList>();
 	}
 
-	Shared<VertexBuffer> OpenGLRenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
+	Shared<GPUBuffer> OpenGLRenderDevice::CreateGPUBuffer(const BufferDesc& _desc)
 	{
-		auto texture = MakeShared<OpenGLVertexBuffer>(_size, _stride, nullptr);
-		if (_initialData)
-		{
-			texture->SetData(_initialData, _initialDataSize);
-		}
-		return texture;
+		return MakeShared<OpenGLGPUBuffer>(_desc);
 	}
 
-	Shared<VertexBuffer> OpenGLRenderDevice::CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData)
-	{
-		return MakeShared<OpenGLVertexBuffer>(_size, _stride, _initialData);
-	}
+	//Shared<VertexBuffer> OpenGLRenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
+	//{
+	//	BufferDesc desc{};
+	//	desc.bufferUsage = BufferUsage::Vertex;
+	//	desc.memoryUsage = MemoryUsage::Dynamic;
+	//	desc.size = _size;
+	//	desc.initialData = _initialData;
 
-	Shared<IndexBuffer> Daydream::OpenGLRenderDevice::CreateIndexBuffer(const UInt32* _indices, UInt32 _count)
+	//	Shared<D3D11GPUBuffer> gpuBuffer = MakeShared<D3D11GPUBuffer>(this, desc);
+
+	//	Shared<VertexBuffer> vertexBuffer = MakeShared<VertexBuffer>(gpuBuffer, _stride);
+	//	if (_initialData != nullptr)
+	//	{
+	//		vertexBuffer->UpdateData(_initialData, _initialDataSize);
+	//	}
+	//	return vertexBuffer;
+	//}
+
+	//Shared<VertexBuffer> OpenGLRenderDevice::CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData)
+	//{
+	//	return MakeShared<OpenGLVertexBuffer>(_size, _stride, _initialData);
+	//}
+
+	//Shared<IndexBuffer> Daydream::OpenGLRenderDevice::CreateIndexBuffer(const UInt32* _indices, UInt32 _count)
+	//{
+	//	return MakeShared<OpenGLIndexBuffer>(_indices, _count);
+	//}
+
+	/*Shared<ConstantBuffer> OpenGLRenderDevice::CreateConstantBuffer(UInt32 _size)
 	{
-		return MakeShared<OpenGLIndexBuffer>(_indices, _count);
-	}
+		return MakeShared<OpenGLConstantBuffer>(_size);
+	}*/
 
 	Shared<RenderPass> OpenGLRenderDevice::CreateRenderPass(const RenderPassDesc& _desc)
 	{
@@ -155,10 +173,7 @@ namespace Daydream
 		return MakeUnique<OpenGLImGuiRenderer>(this);
 	}
 
-	Shared<ConstantBuffer> OpenGLRenderDevice::CreateConstantBuffer(UInt32 _size)
-	{
-		return MakeShared<OpenGLConstantBuffer>(_size);
-	}
+
 
 	Shared<Material> OpenGLRenderDevice::CreateMaterial(Shared<PipelineState> _pipeline)
 	{

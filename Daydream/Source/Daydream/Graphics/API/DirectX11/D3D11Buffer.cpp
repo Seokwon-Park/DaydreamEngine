@@ -13,9 +13,25 @@ namespace Daydream
 
 		D3D11_BUFFER_DESC bufferDesc = GraphicsUtility::DirectX11::ConvertToD3D11BufferDesc(_desc);
 
-		HRESULT result = device->GetDevice()->CreateBuffer(&bufferDesc, nullptr, buffer.GetAddressOf());
-		DAYDREAM_CORE_ASSERT(SUCCEEDED(result), "Failed to create VertexBuffer");
-	} 
+		HRESULT result = 0;
+		if (_desc.memoryUsage == MemoryUsage::Static)
+		{
+			DAYDREAM_CORE_ASSERT(_desc.initialData != nullptr, "Static buffer must be created with initial data!");
+
+			D3D11_SUBRESOURCE_DATA initialData;
+			ZeroMemory(&initialData, sizeof(initialData));
+			initialData.pSysMem = _desc.initialData;
+			initialData.SysMemPitch = 0;
+			initialData.SysMemSlicePitch = 0;
+
+			result = device->GetDevice()->CreateBuffer(&bufferDesc, &initialData, buffer.GetAddressOf());
+		}
+		else
+		{
+			result = device->GetDevice()->CreateBuffer(&bufferDesc, nullptr, buffer.GetAddressOf());
+		}
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(result), "Failed to create GPUBuffer");
+	}
 
 
 	D3D11GPUBuffer::~D3D11GPUBuffer()
