@@ -233,7 +233,7 @@ namespace Daydream
 			nullptr               // 원본 영역 (nullptr은 전체를 의미)
 		);
 	}
-	void D3D11RenderContext::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst)
+	void Daydream::D3D11RenderContext::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize)
 	{
 		D3D11GPUBuffer* src = Cast<D3D11GPUBuffer*>(_src.get());
 		D3D11GPUBuffer* dst = Cast<D3D11GPUBuffer*>(_dst.get());

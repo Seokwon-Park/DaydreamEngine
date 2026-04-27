@@ -9,10 +9,11 @@ namespace Daydream::GraphicsUtility::DirectX12
 
 		switch (_desc.memoryUsage)
 		{
-		case MemoryUsage::Static:heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT; break;
-		case MemoryUsage::Dynamic:heapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;  break;
-		case MemoryUsage::Readback:heapProperties.Type = D3D12_HEAP_TYPE_READBACK; break;
-		default:heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT; break;
+		case MemoryUsage::Static:	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT; break;
+		case MemoryUsage::Dynamic:	heapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;  break;
+		case MemoryUsage::Readback:	heapProperties.Type = D3D12_HEAP_TYPE_READBACK; break;
+		case MemoryUsage::Upload:	heapProperties.Type = D3D12_HEAP_TYPE_UPLOAD; break;
+		default:					heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT; break;
 		}
 
 		heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
@@ -57,6 +58,7 @@ namespace Daydream::GraphicsUtility::DirectX12
 		case MemoryUsage::Static: return D3D12_RESOURCE_STATE_COMMON;
 		case MemoryUsage::Dynamic: return D3D12_RESOURCE_STATE_GENERIC_READ;
 		case MemoryUsage::Readback: return D3D12_RESOURCE_STATE_COPY_DEST;
+		case MemoryUsage::Upload: return D3D12_RESOURCE_STATE_GENERIC_READ;
 		default: return D3D12_RESOURCE_STATE_COMMON;
 		}
 	}

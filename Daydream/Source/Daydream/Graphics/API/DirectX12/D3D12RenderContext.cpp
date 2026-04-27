@@ -303,8 +303,18 @@ namespace Daydream
 		GetD3D12ActiveCommandList()->ResourceBarrier(2, barriers);
 	}
 
-	void D3D12RenderContext::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst)
+	void D3D12RenderContext::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize)
 	{
+		D3D12GPUBuffer* src = Cast<D3D12GPUBuffer*>(_src.get());
+		D3D12GPUBuffer* dst = Cast<D3D12GPUBuffer*>(_dst.get());
+
+		GetD3D12ActiveCommandList()->CopyBufferRegion(
+			dst->GetID3D12Resource(),
+			0,
+			src->GetID3D12Resource(),
+			0,
+			_copySize
+		);
 	}
 
 	void D3D12RenderContext::GenerateMips(Shared<Texture> _texture)

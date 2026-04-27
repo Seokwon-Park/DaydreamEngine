@@ -589,8 +589,17 @@ namespace Daydream
 			barrier  // ImageMemoryBarrier
 		);
 	}
-	void VulkanRenderContext::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst)
+	void VulkanRenderContext::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize)
 	{
+		VulkanGPUBuffer* src = Cast<VulkanGPUBuffer*>(_src.get());
+		VulkanGPUBuffer* dst = Cast<VulkanGPUBuffer*>(_dst.get());
+
+		vk::BufferCopy copyRegion{};
+		copyRegion.srcOffset = 0; // Optional
+		copyRegion.dstOffset = 0; // Optional
+		copyRegion.size = _copySize;
+
+		GetActiveCommandBuffer().copyBuffer(src->GetVkBuffer(), dst->GetVkBuffer(), 1, &copyRegion);
 	}
 	void VulkanRenderContext::SetActiveCommandList(Shared<RenderCommandList> _commandList)
 	{

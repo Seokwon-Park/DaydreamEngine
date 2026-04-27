@@ -48,7 +48,7 @@ namespace Daydream
 
 		virtual void GenerateMips(Shared<Texture> _texture) {};
 
-		virtual void CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst) {};
+		virtual void CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize) {};
 
 		virtual void SetActiveCommandList(Shared<RenderCommandList> _commandList) {};
 

@@ -28,7 +28,7 @@ namespace Daydream
 
 		Shared<GPUBuffer> gpuBuffer = Renderer::GetRenderDevice()->CreateGPUBuffer(desc);
 		Shared<VertexBuffer> vertexBuffer = MakeShared<VertexBuffer>(gpuBuffer, _stride);
-		
+
 		if (_initialData != nullptr && _initialDataSize > 0)
 			vertexBuffer->UpdateData(_initialData, _initialDataSize);
 
@@ -48,7 +48,10 @@ namespace Daydream
 		Shared<UploadBuffer> uploadBuffer = UploadBuffer::Create(_size);
 		uploadBuffer->UpdateData(_initialData, _size);
 
-		Renderer::CopyBuffer(uploadBuffer->GetBuffer(), vertexBuffer->GetBuffer());
+		Renderer::EnqueuePreFrameCommand([=]()
+			{
+				Renderer::CopyBuffer(uploadBuffer->GetBuffer(), vertexBuffer->GetBuffer(), _size);
+			});
 
 		return vertexBuffer;
 	}
@@ -70,7 +73,11 @@ namespace Daydream
 		Shared<UploadBuffer> uploadBuffer = UploadBuffer::Create(desc.size);
 		uploadBuffer->UpdateData(_indices, desc.size);
 
-		Renderer::CopyBuffer(uploadBuffer->GetBuffer(), indexBuffer->GetBuffer());
+		Renderer::EnqueuePreFrameCommand([=]()
+			{
+				Renderer::CopyBuffer(uploadBuffer->GetBuffer(), indexBuffer->GetBuffer(), desc.size);
+			}
+		);
 
 		return indexBuffer;
 	}

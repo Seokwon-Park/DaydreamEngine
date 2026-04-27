@@ -8,6 +8,8 @@ namespace Daydream
 	D3D12GPUBuffer::D3D12GPUBuffer(D3D12RenderDevice* _device, const BufferDesc& _desc)
 		:GPUBuffer(_desc)
 	{
+		device = _device;
+
 		D3D12_HEAP_PROPERTIES heapProperties = GraphicsUtility::DirectX12::ConvertToD3D12HeapProperties(_desc);
 		D3D12_RESOURCE_DESC resourceDesc= GraphicsUtility::DirectX12::ConvertToD3D12ResourceDesc(_desc);
 
@@ -19,15 +21,20 @@ namespace Daydream
 			nullptr, 
 			IID_PPV_ARGS(buffer.GetAddressOf()));
 
-		buffer->Map(0, nullptr, &mappedData);
+		if (_desc.memoryUsage == MemoryUsage::Dynamic || _desc.memoryUsage == MemoryUsage::Upload)
+		{
+			buffer->Map(0, nullptr, &mappedData);
+		}
 	}
 
 	D3D12GPUBuffer::~D3D12GPUBuffer()
 	{
+		buffer->Unmap(0, nullptr);
 	}
 
 	void D3D12GPUBuffer::UpdateData(const void* _data, UInt32 _size)
 	{
+		memcpy(mappedData, _data, _size);
 	}
 
 	//D3D12VertexBuffer::D3D12VertexBuffer(D3D12RenderDevice* _device, MemoryUsage _usage, UInt32 _size, UInt32 _stride)

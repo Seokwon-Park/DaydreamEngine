@@ -32,15 +32,10 @@ namespace Daydream::GraphicsUtility::OpenGL
 	{
 		switch (_usage)
 		{
-		case MemoryUsage::Static:
-			return GL_STATIC_DRAW;
-			break;
-		case MemoryUsage::Dynamic:
-			return GL_DYNAMIC_DRAW;
-			break;
-		case MemoryUsage::Readback:
-			return GL_DYNAMIC_READ;
-			break;
+		case MemoryUsage::Static:			return GL_STATIC_DRAW;
+		case MemoryUsage::Dynamic:			return GL_DYNAMIC_DRAW;
+		case MemoryUsage::Readback:			return GL_DYNAMIC_READ;
+		case MemoryUsage::Upload:			return GL_STREAM_DRAW;
 		default:
 			break;
 		}

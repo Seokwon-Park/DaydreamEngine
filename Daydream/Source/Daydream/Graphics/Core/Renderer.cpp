@@ -248,11 +248,11 @@ namespace Daydream
 			});
 	}
 
-	void Renderer::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst)
+	void Renderer::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize)
 	{
-		EnqueueCommand([_src, _dst]()
+		EnqueueCommand([_src, _dst, _copySize]()
 			{
-				renderContext->CopyBuffer(_src, _dst);
+				renderContext->CopyBuffer(_src, _dst, _copySize);
 			});
 	}
 

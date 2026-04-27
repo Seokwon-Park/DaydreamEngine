@@ -507,10 +507,6 @@ namespace Daydream
 		);
 	}
 
-	void VulkanRenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel)
-	{
-	}
-
 	vk::CommandBuffer VulkanRenderDevice::BeginSingleTimeCommands()
 	{
 		vk::CommandBufferAllocateInfo allocInfo{};

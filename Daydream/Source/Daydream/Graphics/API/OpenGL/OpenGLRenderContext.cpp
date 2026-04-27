@@ -145,13 +145,13 @@ namespace Daydream
 			src->GetWidth(), src->GetHeight(), 1      // 복사할 크기
 		);
 	} 
-	void OpenGLRenderContext::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst)
+	void Daydream::OpenGLRenderContext::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize)
 	{
 		OpenGLGPUBuffer* src = Cast<OpenGLGPUBuffer*>(_src.get());
 		OpenGLGPUBuffer* dst = Cast<OpenGLGPUBuffer*>(_dst.get());
 
 		// 소스 버퍼ID, 목적지 버퍼ID, 소스 오프셋, 목적지 오프셋, 복사할 크기
-		glCopyNamedBufferSubData(src->GetBufferID(), src->GetBufferID(), 0, 0, dst->GetSize());
+		glCopyNamedBufferSubData(src->GetBufferID(), dst->GetBufferID(), 0, 0, _copySize);
 	}
 	void OpenGLRenderContext::GenerateMips(Shared<Texture> _texture)
 	{
