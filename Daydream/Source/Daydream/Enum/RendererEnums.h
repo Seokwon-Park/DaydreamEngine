@@ -60,6 +60,7 @@ namespace Daydream
 	{
 		Static,
 		Dynamic,
+		Upload,
 		Readback
 	};
 

@@ -66,6 +66,9 @@ namespace Daydream
 		bool OnWindowResized(WindowResizeEvent& _e);
 		bool OnWindowFocused(WindowFocusEvent& _e);
 
+		//This Function is only for OpenGL 
+		void TransferContextForRenderThread(DaydreamWindow* _window);
+
 		Unique<DaydreamWindow> mainWindow;
 		//Unique<DaydreamWindow> testWindow;
 

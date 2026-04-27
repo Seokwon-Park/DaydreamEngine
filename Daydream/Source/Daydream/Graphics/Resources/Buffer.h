@@ -11,6 +11,7 @@ namespace Daydream
 		MemoryUsage memoryUsage = MemoryUsage::Static;
 	};
 
+
 	class GPUBuffer
 	{
 	public:
@@ -27,16 +28,27 @@ namespace Daydream
 		void* mappedData;
 	};
 
-	class VertexBuffer
+	class Buffer
+	{
+	public:
+		Buffer(Shared<GPUBuffer> _buffer) : buffer(_buffer) {}
+		virtual ~Buffer() = default;
+
+		inline void UpdateData(const void* _data, UInt32 _size) { buffer->UpdateData(_data, _size); }
+		inline const Shared<GPUBuffer>& GetBuffer() const { return buffer; }
+		inline GPUBuffer* GetBufferRaw() const { return buffer.get(); }
+		inline UInt32 GetSize() const { return buffer->GetSize(); }
+	protected:
+		Shared<GPUBuffer> buffer;
+	};
+
+
+	class VertexBuffer : public Buffer
 	{
 	public:
 		VertexBuffer(Shared<GPUBuffer> _buffer, UInt32 _stride);
 		~VertexBuffer() {}
 
-		inline void UpdateData(const void* _data, UInt32 _size) { buffer->UpdateData(_data, _size); };
-
-		inline GPUBuffer* GetBuffer() const { return buffer.get(); }
-		inline UInt32 GetSize() const { return buffer->GetSize(); }
 		inline UInt32 GetStride() const { return stride; };
 
 		static Shared<VertexBuffer> CreateDynamic(UInt32 _size, UInt32 _stride, const void* _initialData = nullptr, UInt32 _initialDataSize = 0);
@@ -46,13 +58,11 @@ namespace Daydream
 		UInt32 stride;
 	};
 
-	class IndexBuffer
+	class IndexBuffer : public Buffer
 	{
 	public:
 		IndexBuffer(Shared<GPUBuffer> _buffer, UInt32 _indexCount);
 		~IndexBuffer() {}
-
-		inline GPUBuffer* GetBuffer() const { return buffer.get(); }
 
 		UInt32 GetIndexCount() const { return indexCount; }
 
@@ -63,38 +73,28 @@ namespace Daydream
 
 	};
 
-	class ConstantBuffer
+	class ConstantBuffer : public Buffer
 	{
 	public:
 		ConstantBuffer(Shared<GPUBuffer> _buffer);
 		~ConstantBuffer() {}
 
-		inline void UpdateData(const void* _data, UInt32 _size) { buffer->UpdateData(_data, _size); }
-
-		inline GPUBuffer* GetBuffer() const { return buffer.get(); }
 		UInt32 GetSize() { return buffer->GetSize(); }
 
 		static Shared<ConstantBuffer> Create(UInt32 _size);
 	protected:
 		Shared<GPUBuffer> buffer;
-		void* data = nullptr;
 	};
 
-	class UploadBuffer
+	class UploadBuffer : public Buffer
 	{
 	public:
 		UploadBuffer(Shared<GPUBuffer> _buffer);
 		~UploadBuffer() {}
 
-		inline void UpdateData(const void* _data, UInt32 _size) { buffer->UpdateData(_data, _size); }
-
-		inline GPUBuffer* GetBuffer() const { return buffer.get(); }
-		UInt32 GetSize() { return buffer->GetSize(); }
-
 		static Shared<UploadBuffer> Create(UInt32 _size);
 	protected:
 		Shared<GPUBuffer> buffer;
-		void* data = nullptr;
 	};
 
 

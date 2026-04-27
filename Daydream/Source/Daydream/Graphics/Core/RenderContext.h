@@ -8,6 +8,7 @@
 namespace Daydream
 {
 	class RenderDevice;
+	class GPUBuffer;
 	class VertexBuffer;
 	class IndexBuffer;
 	class Mesh;
@@ -21,7 +22,7 @@ namespace Daydream
 	{
 	public:
 		virtual ~RenderContext() = default;
-				
+					
 		virtual void BeginCommandList() = 0;
 		virtual void EndCommandList() {};
 		virtual void SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height) = 0;
@@ -40,18 +41,14 @@ namespace Daydream
 		virtual void SetTexture2D(const String& _name, Shared<Texture2D> _texture) ;
 		virtual void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube) {};
 		virtual void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer) {};
-
-		virtual void UpdateConstantBuffer(Shared<ConstantBuffer> _buffer, void* _newData, UInt32 _size) {};
 		
-		virtual void Submit() {};
-
 		virtual void CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst) {};
 		virtual void CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel = 0) {};
 		//virtual void CopyTextureToBuffer(Shared<Texture2D> _srcTexture, Shared<Buffer> _dstBuffer, UInt32 _offsetX, UInt32 _offsetY, UInt32 _width, UInt32 _height) = 0;
 
-		virtual void GenerateMips(Shared<Texture> _texture) {}
+		virtual void GenerateMips(Shared<Texture> _texture) {};
 
-		virtual void CopyBuffer();
+		virtual void CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst) {};
 
 		virtual void SetActiveCommandList(Shared<RenderCommandList> _commandList) {};
 

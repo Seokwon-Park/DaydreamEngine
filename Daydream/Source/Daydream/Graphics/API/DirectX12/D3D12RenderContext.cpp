@@ -143,7 +143,7 @@ namespace Daydream
 	}
 	void D3D12RenderContext::BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer)
 	{
-		D3D12GPUBuffer* vertexBuffer = Cast<D3D12GPUBuffer*>(_vertexBuffer->GetBuffer());
+		D3D12GPUBuffer* vertexBuffer = Cast<D3D12GPUBuffer*>(_vertexBuffer->GetBufferRaw());
 		ID3D12Resource* d3d12Resource = vertexBuffer->GetID3D12Resource();
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 		vertexBufferView.BufferLocation = d3d12Resource->GetGPUVirtualAddress();
@@ -154,7 +154,7 @@ namespace Daydream
 	}
 	void D3D12RenderContext::BindIndexBuffer(Shared<IndexBuffer> _indexBuffer)
 	{
-		D3D12GPUBuffer* indexBuffer = Cast<D3D12GPUBuffer*>(_indexBuffer->GetBuffer());
+		D3D12GPUBuffer* indexBuffer = Cast<D3D12GPUBuffer*>(_indexBuffer->GetBufferRaw());
 		ID3D12Resource* d3d12Resource = indexBuffer->GetID3D12Resource();
 
 		D3D12_INDEX_BUFFER_VIEW indexBufferView;
@@ -206,7 +206,7 @@ namespace Daydream
 		if (resourceInfo == nullptr) return;
 		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
 
-		D3D12GPUBuffer* constantBuffer = Cast<D3D12GPUBuffer*>(_buffer->GetBuffer());
+		D3D12GPUBuffer* constantBuffer = Cast<D3D12GPUBuffer*>(_buffer->GetBufferRaw());
 		ID3D12Resource* d3d12Resource = constantBuffer->GetID3D12Resource();
 		D3D12_GPU_VIRTUAL_ADDRESS gpuAddress = d3d12Resource->GetGPUVirtualAddress();
 
@@ -301,6 +301,10 @@ namespace Daydream
 		barriers[1].Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
 		barriers[1].Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 		GetD3D12ActiveCommandList()->ResourceBarrier(2, barriers);
+	}
+
+	void D3D12RenderContext::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst)
+	{
 	}
 
 	void D3D12RenderContext::GenerateMips(Shared<Texture> _texture)

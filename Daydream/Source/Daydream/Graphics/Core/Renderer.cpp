@@ -17,7 +17,6 @@ namespace Daydream
 
 	void Renderer::Init(RendererAPIType _API)
 	{
-		currentWindow = nullptr;
 		renderDevice = RenderDevice::Create(_API);
 		DAYDREAM_CORE_ASSERT(renderDevice, "Failed to create graphics device!");
 		renderDevice->Init();
@@ -82,15 +81,6 @@ namespace Daydream
 		//instance = nullptr;
 	}
 
-	void Renderer::TransferContextForRenderThread(DaydreamWindow* _window)
-	{
-		if (useRenderThread)
-		{
-			_window->ReleaseContext();
-			EnqueueCommand([_window]() {_window->MakeContextCurrent(); });
-		}
-	}
-
 	bool Renderer::CreateSwapchainForWindow(DaydreamWindow& _window)
 	{
 		SwapchainDesc desc;
@@ -107,10 +97,10 @@ namespace Daydream
 		return true;
 	}
 
-	void Renderer::OnWindowResize(DaydreamWindow* _window, UInt32 _width, UInt32 _height)
+	void Renderer::OnSwapchainResize(Swapchain* _swapchain, UInt32 _width, UInt32 _height)
 	{
 		//renderContext->SetViewport(0, 0, _width, _height);
-		_window->GetSwapchain()->ResizeSwapchain(_width, _height);
+		_swapchain->ResizeSwapchain(_width, _height);
 	}
 
 	void Renderer::SetRenderThreadEnabled(bool _enabled)
@@ -255,6 +245,14 @@ namespace Daydream
 						DAYDREAM_RENDERER_INFO("Framebuffer is Recreated Width : {}, Height {}", _width, _height);
 					}
 				);
+			});
+	}
+
+	void Renderer::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst)
+	{
+		EnqueueCommand([_src, _dst]()
+			{
+				renderContext->CopyBuffer(_src, _dst);
 			});
 	}
 

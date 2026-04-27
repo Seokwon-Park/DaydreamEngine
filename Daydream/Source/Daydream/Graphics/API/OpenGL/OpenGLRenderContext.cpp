@@ -68,7 +68,7 @@ namespace Daydream
 	}
 	void OpenGLRenderContext::BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer)
 	{
-		OpenGLGPUBuffer* vertexBuffer = Cast<OpenGLGPUBuffer*>(_vertexBuffer->GetBuffer());
+		OpenGLGPUBuffer* vertexBuffer = Cast<OpenGLGPUBuffer*>(_vertexBuffer->GetBufferRaw());
 
 		GLint currentVAO = 0;
 		glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &currentVAO);
@@ -76,7 +76,7 @@ namespace Daydream
 	}
 	void OpenGLRenderContext::BindIndexBuffer(Shared<IndexBuffer> _indexBuffer)
 	{
-		OpenGLGPUBuffer* indexBuffer = Cast<OpenGLGPUBuffer*>(_indexBuffer->GetBuffer());
+		OpenGLGPUBuffer* indexBuffer = Cast<OpenGLGPUBuffer*>(_indexBuffer->GetBufferRaw());
 
 		GLint currentVAO = 0; // 결과를 저장할 변수
 		glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &currentVAO);
@@ -107,7 +107,7 @@ namespace Daydream
 		const ShaderReflectionData* bindingInfo = activePipelineState->GetBindingInfo(_name);
 		if (bindingInfo == nullptr) return;
 
-		OpenGLGPUBuffer* constantBuffer = Cast<OpenGLGPUBuffer*>(_buffer->GetBuffer());
+		OpenGLGPUBuffer* constantBuffer = Cast<OpenGLGPUBuffer*>(_buffer->GetBufferRaw());
 		glBindBufferBase(GL_UNIFORM_BUFFER, bindingInfo->binding, constantBuffer->GetBufferID());
 	}
 
@@ -144,6 +144,14 @@ namespace Daydream
 			0, 0, _faceIndex,      // 대상 좌표 (x, y, layer) - faceIndex가 레이어를 지정!
 			src->GetWidth(), src->GetHeight(), 1      // 복사할 크기
 		);
+	} 
+	void OpenGLRenderContext::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst)
+	{
+		OpenGLGPUBuffer* src = Cast<OpenGLGPUBuffer*>(_src.get());
+		OpenGLGPUBuffer* dst = Cast<OpenGLGPUBuffer*>(_dst.get());
+
+		// 소스 버퍼ID, 목적지 버퍼ID, 소스 오프셋, 목적지 오프셋, 복사할 크기
+		glCopyNamedBufferSubData(src->GetBufferID(), src->GetBufferID(), 0, 0, dst->GetSize());
 	}
 	void OpenGLRenderContext::GenerateMips(Shared<Texture> _texture)
 	{

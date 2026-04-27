@@ -31,7 +31,6 @@ namespace Daydream
 	}
 	void D3D11RenderContext::SetClearColor(const Color& _color)
 	{
-		clearColor = _color;
 	}
 
 	void D3D11RenderContext::Clear()
@@ -78,7 +77,7 @@ namespace Daydream
 		UInt32 offset = 0;
 		UInt32 stride = _vertexBuffer->GetStride();
 
-		D3D11GPUBuffer* vertexBuffer = Cast<D3D11GPUBuffer*>(_vertexBuffer->GetBuffer());
+		D3D11GPUBuffer* vertexBuffer = Cast<D3D11GPUBuffer*>(_vertexBuffer->GetBufferRaw());
 		DAYDREAM_CORE_ASSERT(vertexBuffer, "vertexBuffer is nullptr!");
 		ID3D11Buffer* d3d11Buffer = vertexBuffer->GetID3D11Buffer();
 		device->GetContext()->IASetVertexBuffers(0, 1, &d3d11Buffer, &stride, &offset);
@@ -86,7 +85,7 @@ namespace Daydream
 	void D3D11RenderContext::BindIndexBuffer(Shared<IndexBuffer> _indexBuffer)
 	{
 		UInt32 offset = 0;
-		D3D11GPUBuffer* indexBuffer = Cast<D3D11GPUBuffer*>(_indexBuffer->GetBuffer());
+		D3D11GPUBuffer* indexBuffer = Cast<D3D11GPUBuffer*>(_indexBuffer->GetBufferRaw());
 		DAYDREAM_CORE_ASSERT(indexBuffer, "indexBuffer is nullptr!");
 		device->GetContext()->IASetIndexBuffer(indexBuffer->GetID3D11Buffer(), DXGI_FORMAT_R32_UINT, offset);
 	}
@@ -174,7 +173,7 @@ namespace Daydream
 		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
 		if (resourceInfo == nullptr) return;
 		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX11, "Wrong API!");
-		D3D11GPUBuffer* constantBuffer = Cast<D3D11GPUBuffer*>(_buffer->GetBuffer());
+		D3D11GPUBuffer* constantBuffer = Cast<D3D11GPUBuffer*>(_buffer->GetBufferRaw());
 		DAYDREAM_CORE_ASSERT(constantBuffer, "vertexBuffer is nullptr!");
 		ID3D11Buffer* d3d11Buffer = constantBuffer->GetID3D11Buffer();
 		switch (resourceInfo->shaderType)
@@ -200,9 +199,6 @@ namespace Daydream
 		}
 	}
 	
-	void D3D11RenderContext::Submit()
-	{
-	}
 	void D3D11RenderContext::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
 	{
 		device->GetContext()->CopyResource((ID3D11Resource*)_dst->GetNativeHandle(), (ID3D11Resource*)_src->GetNativeHandle());
@@ -237,6 +233,14 @@ namespace Daydream
 			nullptr               // 원본 영역 (nullptr은 전체를 의미)
 		);
 	}
+	void D3D11RenderContext::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst)
+	{
+		D3D11GPUBuffer* src = Cast<D3D11GPUBuffer*>(_src.get());
+		D3D11GPUBuffer* dst = Cast<D3D11GPUBuffer*>(_dst.get());
+
+		device->GetContext()->CopyResource(dst->GetID3D11Buffer(), src->GetID3D11Buffer());
+	}
+
 	void D3D11RenderContext::GenerateMips(Shared<Texture> _texture)
 	{
 		ID3D11ShaderResourceView* srv = nullptr;

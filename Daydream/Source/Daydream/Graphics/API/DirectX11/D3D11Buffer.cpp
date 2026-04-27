@@ -14,22 +14,7 @@ namespace Daydream
 		D3D11_BUFFER_DESC bufferDesc = GraphicsUtility::DirectX11::ConvertToD3D11BufferDesc(_desc);
 
 		HRESULT result = 0;
-		if (_desc.memoryUsage == MemoryUsage::Static)
-		{
-			DAYDREAM_CORE_ASSERT(_desc.initialData != nullptr, "Static buffer must be created with initial data!");
-
-			D3D11_SUBRESOURCE_DATA initialData;
-			ZeroMemory(&initialData, sizeof(initialData));
-			initialData.pSysMem = _desc.initialData;
-			initialData.SysMemPitch = 0;
-			initialData.SysMemSlicePitch = 0;
-
-			result = device->GetDevice()->CreateBuffer(&bufferDesc, &initialData, buffer.GetAddressOf());
-		}
-		else
-		{
-			result = device->GetDevice()->CreateBuffer(&bufferDesc, nullptr, buffer.GetAddressOf());
-		}
+		result = device->GetDevice()->CreateBuffer(&bufferDesc, nullptr, buffer.GetAddressOf());
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(result), "Failed to create GPUBuffer");
 	}
 
@@ -42,8 +27,24 @@ namespace Daydream
 	void D3D11GPUBuffer::UpdateData(const void* _data, UInt32 _size)
 	{
 		DAYDREAM_CORE_ASSERT(_size <= desc.size, "New data size is bigger than buffer size!");
+		D3D11_MAP map;
+		switch (desc.memoryUsage)
+		{
+		case MemoryUsage::Dynamic:
+			map = D3D11_MAP_WRITE_DISCARD;
+			break;
+		case MemoryUsage::Upload:
+			map = D3D11_MAP_WRITE;
+			break;
+		case MemoryUsage::Readback:
+			map = D3D11_MAP_READ;
+			break;
+		case MemoryUsage::Static:
+		default:
+			break;
+		}
 		D3D11_MAPPED_SUBRESOURCE data;
-		device->GetContext()->Map(buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
+		device->GetContext()->Map(buffer.Get(), 0, map, 0, &data);
 		memcpy(data.pData, _data, _size);
 		device->GetContext()->Unmap(buffer.Get(), 0);
 	}

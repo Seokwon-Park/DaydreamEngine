@@ -145,12 +145,12 @@ namespace Daydream
 	void VulkanRenderContext::BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer)
 	{
 		vk::DeviceSize offset = 0;
-		VulkanGPUBuffer* vertexBuffer = Cast<VulkanGPUBuffer*>(_vertexBuffer->GetBuffer());
+		VulkanGPUBuffer* vertexBuffer = Cast<VulkanGPUBuffer*>(_vertexBuffer->GetBufferRaw());
 		GetActiveCommandBuffer().bindVertexBuffers(0, { vertexBuffer->GetVkBuffer() }, { offset });
 	}
 	void VulkanRenderContext::BindIndexBuffer(Shared<IndexBuffer> _indexBuffer)
 	{
-		VulkanGPUBuffer* indexBuffer = Cast<VulkanGPUBuffer*>(_indexBuffer->GetBuffer());
+		VulkanGPUBuffer* indexBuffer = Cast<VulkanGPUBuffer*>(_indexBuffer->GetBufferRaw());
 		GetActiveCommandBuffer().bindIndexBuffer(indexBuffer->GetVkBuffer(), 0, vk::IndexType::eUint32);
 	}
 
@@ -219,7 +219,7 @@ namespace Daydream
 		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
 		if (resourceInfo == nullptr) return;
 
-		VulkanGPUBuffer* constantBuffer = Cast<VulkanGPUBuffer*>(_buffer->GetBuffer());
+		VulkanGPUBuffer* constantBuffer = Cast<VulkanGPUBuffer*>(_buffer->GetBufferRaw());
 		Shared<VulkanPipelineState> vulkanPSO = std::static_pointer_cast<VulkanPipelineState>(activePipelineState);
 
 		vk::DescriptorBufferInfo bufferInfo{};
@@ -588,6 +588,9 @@ namespace Daydream
 			nullptr, // BufferMemoryBarriers
 			barrier  // ImageMemoryBarrier
 		);
+	}
+	void VulkanRenderContext::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst)
+	{
 	}
 	void VulkanRenderContext::SetActiveCommandList(Shared<RenderCommandList> _commandList)
 	{

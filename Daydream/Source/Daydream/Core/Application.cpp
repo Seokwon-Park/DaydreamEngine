@@ -105,7 +105,7 @@ namespace Daydream
 	bool Application::Run()
 	{
 		//OpenGL Context Switching(when RenderThread is enabled)
-		Renderer::TransferContextForRenderThread(GetMainWindowPtr()); 
+		TransferContextForRenderThread(GetMainWindowPtr()); 
 		while (isRunning)
 		{
 			timeStep.UpdateTime();
@@ -205,7 +205,6 @@ namespace Daydream
 		{
 			return false;
 		}
-		Renderer::SetCurrentWindow(mainWindow.get());
 		return true;
 	}
 
@@ -249,7 +248,7 @@ namespace Daydream
 			DAYDREAM_CORE_ASSERT(false, "Window Resize Error!");
 			return true;
 		}
-		Renderer::OnWindowResize(window, _event.GetWidth(), _event.GetHeight());
+		Renderer::OnSwapchainResize(window->GetSwapchain(), _event.GetWidth(), _event.GetHeight());
 
 		return false;
 	}
@@ -261,5 +260,14 @@ namespace Daydream
 			//	Renderer::SetWindow(_e.GetWindowName());
 		}
 		return false;
+	}
+
+	void Application::TransferContextForRenderThread(DaydreamWindow* _window)
+	{
+		if (Renderer::IsRenderThreadEnabled())
+		{
+			_window->ReleaseContext();
+			Renderer::EnqueueCommand([_window]() {_window->MakeContextCurrent(); });
+		}
 	}
 }

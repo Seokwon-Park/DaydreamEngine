@@ -14,7 +14,7 @@ namespace Daydream
 	}
 
 	VertexBuffer::VertexBuffer(Shared<GPUBuffer> _buffer, UInt32 _stride)
-		:buffer(_buffer), stride(_stride)
+		:Buffer(_buffer), stride(_stride)
 	{
 
 	}
@@ -48,33 +48,52 @@ namespace Daydream
 		Shared<UploadBuffer> uploadBuffer = UploadBuffer::Create(_size);
 		uploadBuffer->UpdateData(_initialData, _size);
 
-		Renderer::CopyBuffer
+		Renderer::CopyBuffer(uploadBuffer->GetBuffer(), vertexBuffer->GetBuffer());
 
-		return Renderer::GetRenderDevice()->CreateStaticVertexBuffer(_size, _stride, _initialData);
+		return vertexBuffer;
 	}
 
 	IndexBuffer::IndexBuffer(Shared<GPUBuffer> _buffer, UInt32 _indexCount)
-		:buffer(_buffer), indexCount(_indexCount)
+		:Buffer(_buffer), indexCount(_indexCount)
 	{
 	}
 
-	Shared<IndexBuffer> IndexBuffer::Create(const UInt32* _indices, UInt32 _size)
+	Shared<IndexBuffer> IndexBuffer::Create(const UInt32* _indices, UInt32 _count)
 	{
-		return Renderer::GetRenderDevice()->CreateIndexBuffer(_indices, _size);
+		BufferDesc desc{};
+		desc.bufferUsage = BufferUsage::Index;
+		desc.memoryUsage = MemoryUsage::Static;
+		desc.size = sizeof(UInt32) * _count;
+
+		Shared<GPUBuffer> gpuBuffer = Renderer::GetRenderDevice()->CreateGPUBuffer(desc);
+		Shared<IndexBuffer> indexBuffer = MakeShared<IndexBuffer>(gpuBuffer, _count);
+		Shared<UploadBuffer> uploadBuffer = UploadBuffer::Create(desc.size);
+		uploadBuffer->UpdateData(_indices, desc.size);
+
+		Renderer::CopyBuffer(uploadBuffer->GetBuffer(), indexBuffer->GetBuffer());
+
+		return indexBuffer;
 	}
 
 	ConstantBuffer::ConstantBuffer(Shared<GPUBuffer> _buffer)
-		:buffer(_buffer)
+		:Buffer(_buffer)
 	{
 	}
 
 	Shared<ConstantBuffer> ConstantBuffer::Create(UInt32 _size)
 	{
-		return Renderer::GetRenderDevice()->CreateConstantBuffer(_size);
+		BufferDesc desc{};
+		desc.bufferUsage = BufferUsage::Constant;
+		desc.memoryUsage = MemoryUsage::Dynamic;
+		desc.size = _size;
+
+		Shared<GPUBuffer> gpuBuffer = Renderer::GetRenderDevice()->CreateGPUBuffer(desc);
+		Shared<ConstantBuffer> constantBuffer = MakeShared<ConstantBuffer>(gpuBuffer);
+		return constantBuffer;
 	}
 
 	UploadBuffer::UploadBuffer(Shared<GPUBuffer> _buffer)
-		:buffer(_buffer)
+		:Buffer(_buffer)
 	{
 
 	}
@@ -82,12 +101,13 @@ namespace Daydream
 	Shared<UploadBuffer> UploadBuffer::Create(UInt32 _size)
 	{
 		BufferDesc desc{};
-		desc.bufferUsage = BufferUsage::TransferDest;
-		desc.memoryUsage = MemoryUsage::Dynamic;
+		desc.bufferUsage = BufferUsage::None;
+		desc.memoryUsage = MemoryUsage::Upload;
 		desc.size = _size;
 
 		Shared<GPUBuffer> gpuBuffer = Renderer::GetRenderDevice()->CreateGPUBuffer(desc);
-		return MakeShared<UploadBuffer>(gpuBuffer);
+		Shared<UploadBuffer> uploadBuffer = MakeShared<UploadBuffer>(gpuBuffer);
+		return uploadBuffer;
 	}
 }
 

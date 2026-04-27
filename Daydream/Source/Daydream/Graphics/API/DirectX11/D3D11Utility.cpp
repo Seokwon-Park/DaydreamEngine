@@ -13,7 +13,7 @@ namespace Daydream::GraphicsUtility::DirectX11
 		bufferDesc.Usage = ConvertToD3D11Usage(_desc.memoryUsage);
 		bufferDesc.CPUAccessFlags = ConvertToD3D11CPUAccessFlags(_desc.memoryUsage);
 		
-		if (_desc.memoryUsage == MemoryUsage::Readback)
+		if (_desc.memoryUsage == MemoryUsage::Readback || _desc.memoryUsage == MemoryUsage::Upload)
 		{
 			bufferDesc.BindFlags = 0;
 		}
@@ -46,6 +46,7 @@ namespace Daydream::GraphicsUtility::DirectX11
 		case MemoryUsage::Dynamic:
 			return D3D11_USAGE_DYNAMIC;
 		case MemoryUsage::Readback:
+		case MemoryUsage::Upload:
 			return D3D11_USAGE_STAGING;
 		default:
 			return D3D11_USAGE_DEFAULT;
@@ -58,6 +59,7 @@ namespace Daydream::GraphicsUtility::DirectX11
 
 		if (HasFlag(_usage, MemoryUsage::Dynamic)) d3d11Flags |= D3D11_CPU_ACCESS_WRITE;
 		if (HasFlag(_usage, MemoryUsage::Readback)) d3d11Flags |= D3D11_CPU_ACCESS_READ;
+		if (HasFlag(_usage, MemoryUsage::Upload)) d3d11Flags |= D3D11_CPU_ACCESS_WRITE;
 
 		return d3d11Flags;
 
@@ -71,7 +73,7 @@ namespace Daydream::GraphicsUtility::DirectX11
 		if (HasFlag(_usage, BufferUsage::Index)) d3d11Flags |= D3D11_BIND_INDEX_BUFFER;
 		if (HasFlag(_usage, BufferUsage::Constant)) d3d11Flags |= D3D11_BIND_CONSTANT_BUFFER;
 		if (HasFlag(_usage, BufferUsage::Storage)) d3d11Flags |= D3D11_BIND_UNORDERED_ACCESS;
-
+		
 		return d3d11Flags;
 	}
 
