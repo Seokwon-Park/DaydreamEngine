@@ -51,6 +51,8 @@ namespace Daydream
 
 		virtual void GenerateMips(Shared<Texture> _texture) {}
 
+		virtual void CopyBuffer();
+
 		virtual void SetActiveCommandList(Shared<RenderCommandList> _commandList) {};
 
 		

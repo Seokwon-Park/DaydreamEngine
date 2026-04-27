@@ -41,6 +41,11 @@ namespace Daydream
 
 	void D3D11GPUBuffer::UpdateData(const void* _data, UInt32 _size)
 	{
+		DAYDREAM_CORE_ASSERT(_size <= desc.size, "New data size is bigger than buffer size!");
+		D3D11_MAPPED_SUBRESOURCE data;
+		device->GetContext()->Map(buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
+		memcpy(data.pData, _data, _size);
+		device->GetContext()->Unmap(buffer.Get(), 0);
 	}
 
 	//D3D11VertexBuffer::D3D11VertexBuffer(D3D11RenderDevice* _device, MemoryUsage _usage, UInt32 _size, UInt32 _stride, const void* _initialData)

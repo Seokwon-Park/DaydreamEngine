@@ -27,58 +27,56 @@ namespace Daydream
 		}
 	}
 
-	Shared<VertexBuffer> RenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
-	{
-		BufferDesc desc{};
-		desc.bufferUsage = BufferUsage::Vertex;
-		desc.memoryUsage = MemoryUsage::Dynamic;
-		desc.size = _size;
-		desc.initialData = _initialData;
+	//Shared<VertexBuffer> RenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
+	//{
+	//	BufferDesc desc{};
+	//	desc.bufferUsage = BufferUsage::Vertex;
+	//	desc.memoryUsage = MemoryUsage::Dynamic;
+	//	desc.size = _size;
 
-		Shared<GPUBuffer> gpuBuffer = CreateGPUBuffer(desc);
+	//	Shared<GPUBuffer> gpuBuffer = CreateGPUBuffer(desc);
 
-		Shared<VertexBuffer> vertexBuffer = MakeShared<VertexBuffer>(gpuBuffer, _stride);
-		if (_initialData != nullptr)
-		{
-			vertexBuffer->UpdateData(_initialData, _initialDataSize);
-		}
-		return vertexBuffer;
-	}
+	//	Shared<VertexBuffer> vertexBuffer = MakeShared<VertexBuffer>(gpuBuffer, _stride);
+	//	if (_initialData != nullptr)
+	//	{
+	//		vertexBuffer->UpdateData(_initialData, _initialDataSize);
+	//	}
+	//	return vertexBuffer;
+	//}
 
-	Shared<VertexBuffer> RenderDevice::CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData)
-	{
-		BufferDesc desc{};
-		desc.bufferUsage = BufferUsage::Vertex;
-		desc.memoryUsage = MemoryUsage::Static;
-		desc.size = _size;
+	//Shared<VertexBuffer> RenderDevice::CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData)
+	//{
+	//	BufferDesc desc{};
+	//	desc.bufferUsage = BufferUsage::Vertex;
+	//	desc.memoryUsage = MemoryUsage::Static;
+	//	desc.size = _size;
 
-		Shared<GPUBuffer> gpuBuffer = CreateGPUBuffer(desc);
+	//	Shared<GPUBuffer> gpuBuffer = CreateGPUBuffer(desc);
 
-		return MakeShared<VertexBuffer>(gpuBuffer, _stride);
-	}
+	//	return MakeShared<VertexBuffer>(gpuBuffer, _stride);
+	//}
 
-	Shared<IndexBuffer> RenderDevice::CreateIndexBuffer(const UInt32* _indices, UInt32 _count)
-	{
-		BufferDesc desc{};
-		desc.bufferUsage = BufferUsage::Index;
-		desc.memoryUsage = MemoryUsage::Static;
-		desc.size = sizeof(UInt32) * _count;
-		desc.initialData = _indices;
+	//Shared<IndexBuffer> RenderDevice::CreateIndexBuffer(const UInt32* _indices, UInt32 _count)
+	//{
+	//	BufferDesc desc{};
+	//	desc.bufferUsage = BufferUsage::Index;
+	//	desc.memoryUsage = MemoryUsage::Static;
+	//	desc.size = sizeof(UInt32) * _count;
 
-		Shared<GPUBuffer> gpuBuffer = CreateGPUBuffer(desc);
+	//	Shared<GPUBuffer> gpuBuffer = CreateGPUBuffer(desc);
 
-		return  MakeShared<IndexBuffer>(gpuBuffer, _count);
-	}
+	//	return  MakeShared<IndexBuffer>(gpuBuffer, _count);
+	//}
 
-	Shared<ConstantBuffer> RenderDevice::CreateConstantBuffer(UInt32 _size)
-	{
-		BufferDesc desc{};
-		desc.bufferUsage = BufferUsage::Constant;
-		desc.memoryUsage = MemoryUsage::Dynamic;
-		desc.size = _size;
+	//Shared<ConstantBuffer> RenderDevice::CreateConstantBuffer(UInt32 _size)
+	//{
+	//	BufferDesc desc{};
+	//	desc.bufferUsage = BufferUsage::Constant;
+	//	desc.memoryUsage = MemoryUsage::Dynamic;
+	//	desc.size = _size;
 
-		Shared<GPUBuffer> gpuBuffer = CreateGPUBuffer(desc);
+	//	Shared<GPUBuffer> gpuBuffer = CreateGPUBuffer(desc);
 
-		return MakeShared<ConstantBuffer>(gpuBuffer);
-	}
+	//	return MakeShared<ConstantBuffer>(gpuBuffer);
+	//}
 }

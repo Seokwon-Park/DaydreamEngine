@@ -55,10 +55,10 @@ namespace Daydream
 		virtual Unique<RenderContext> CreateContext() = 0;
 		virtual Shared<RenderCommandList> CreateRenderCommandList() = 0;
 		virtual Shared<GPUBuffer> CreateGPUBuffer(const BufferDesc& _desc) = 0;
-		virtual Shared<VertexBuffer> CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize = 0, const void* _initialData = nullptr);
-		virtual Shared<VertexBuffer> CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData);
-		virtual Shared<IndexBuffer> CreateIndexBuffer(const UInt32* _indices, UInt32 _count);
-		virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size);
+		//virtual Shared<VertexBuffer> CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize = 0, const void* _initialData = nullptr);
+		//virtual Shared<VertexBuffer> CreateStaticVertexBuffer(UInt32 _size, UInt32 _stride, const void* _initialData);
+		//virtual Shared<IndexBuffer> CreateIndexBuffer(const UInt32* _indices, UInt32 _count);
+		//virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size);
 		virtual Shared<RenderPass> CreateRenderPass(const RenderPassDesc& _desc) = 0;
 		virtual Shared<Framebuffer> CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc) = 0;
 		virtual Shared<PipelineState> CreatePipelineState(const PipelineStateDesc& _desc) = 0;
