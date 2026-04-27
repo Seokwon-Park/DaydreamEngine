@@ -64,6 +64,21 @@ namespace Daydream
 		Readback
 	};
 
+	enum class ResourceState : UInt32
+	{
+		Common = 0,                 // 초기 상태 또는 큐 전환 시
+		VertexAndConstantBuffer,    // 정점 버퍼 또는 상수 버퍼로 읽을 때 (DX12)
+		IndexBuffer,                // 인덱스 버퍼로 읽을 때
+		RenderTarget,               // 렌더 타겟으로 쓸 때 (주로 텍스처)
+		UnorderedAccess,            // Compute Shader 등에서 마구잡이로 읽고 쓸 때 (UAV / Storage Buffer)
+		DepthWrite,                 // 깊이 버퍼에 쓸 때
+		DepthRead,                  // 깊이 버퍼를 읽기만 할 때
+		ShaderResource,             // 셰이더에서 읽기 전용으로 쓸 때 (SRV / Sampled Image)
+		CopySource,                 // 복사 명령의 원본이 될 때 (Transfer Read)
+		CopyDest,                   // 복사 명령의 목적지가 될 때 (Transfer Write)
+		Present                     // 화면에 출력하기 직전 상태 (Swapchain)
+	};
+
 	enum class ShaderType
 	{
 		None,

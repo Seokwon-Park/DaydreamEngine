@@ -52,11 +52,16 @@ namespace Daydream
 
 		virtual void SetActiveCommandList(Shared<RenderCommandList> _commandList) {};
 
+		void CaptureBuffer(Shared<GPUBuffer> _buffer);
+		void ReleaseCapturedBuffer();
+
 		
 		Shared<RenderCommandList> GetActiveCommandList() const { return activeCommandList; }
 	protected:
 		Shared<PipelineState> activePipelineState;
 		Shared<RenderCommandList> activeCommandList;
+
+		Array<Shared<GPUBuffer>> bufferStorage;
 	private:
 	};
 }

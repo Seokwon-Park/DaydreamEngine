@@ -18,4 +18,12 @@ namespace Daydream
             _texture->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
         }
     }
+    void RenderContext::CaptureBuffer(Shared<GPUBuffer> _buffer)
+    {
+        bufferStorage.push_back(_buffer);
+    }
+    void RenderContext::ReleaseCapturedBuffer()
+    {
+        bufferStorage.clear();
+    }
 }

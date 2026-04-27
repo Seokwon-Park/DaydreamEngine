@@ -136,6 +136,7 @@ namespace Daydream
 			{
 				_swapchain->EndFrame();
 				_swapchain->Present();
+				renderContext->ReleaseCapturedBuffer();
 			});
 	}
 
@@ -252,6 +253,8 @@ namespace Daydream
 	{
 		EnqueueCommand([_src, _dst, _copySize]()
 			{
+				renderContext->CaptureBuffer(_src);
+				renderContext->CaptureBuffer(_dst);
 				renderContext->CopyBuffer(_src, _dst, _copySize);
 			});
 	}

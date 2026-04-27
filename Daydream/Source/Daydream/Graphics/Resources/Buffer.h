@@ -54,7 +54,6 @@ namespace Daydream
 		static Shared<VertexBuffer> CreateDynamic(UInt32 _size, UInt32 _stride, const void* _initialData = nullptr, UInt32 _initialDataSize = 0);
 		static Shared<VertexBuffer> CreateStatic(UInt32 _size, UInt32 _stride, const void* _initialData);
 	private:
-		Shared<GPUBuffer> buffer;
 		UInt32 stride;
 	};
 
@@ -68,7 +67,6 @@ namespace Daydream
 
 		static Shared<IndexBuffer> Create(const UInt32* _indices, UInt32 _count);
 	private:
-		Shared<GPUBuffer> buffer;
 		UInt32 indexCount;
 
 	};
@@ -79,11 +77,8 @@ namespace Daydream
 		ConstantBuffer(Shared<GPUBuffer> _buffer);
 		~ConstantBuffer() {}
 
-		UInt32 GetSize() { return buffer->GetSize(); }
-
 		static Shared<ConstantBuffer> Create(UInt32 _size);
 	protected:
-		Shared<GPUBuffer> buffer;
 	};
 
 	class UploadBuffer : public Buffer
@@ -94,7 +89,6 @@ namespace Daydream
 
 		static Shared<UploadBuffer> Create(UInt32 _size);
 	protected:
-		Shared<GPUBuffer> buffer;
 	};
 
 

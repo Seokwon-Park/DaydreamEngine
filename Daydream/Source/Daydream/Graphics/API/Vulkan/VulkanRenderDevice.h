@@ -123,7 +123,7 @@ namespace Daydream
 			VK_GOOGLE_HLSL_FUNCTIONALITY_1_EXTENSION_NAME,
 			VK_GOOGLE_USER_TYPE_EXTENSION_NAME,
 			VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
-			VK_KHR_PUSH_DESCRIPTOR_EXTENSION_NAME
+			VK_KHR_PUSH_DESCRIPTOR_EXTENSION_NAME,			
 		};
 		vk::UniqueInstance instance; // Vulkan library handle
 		vk::UniqueDebugUtilsMessengerEXT debugMessenger;

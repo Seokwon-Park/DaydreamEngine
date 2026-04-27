@@ -19,16 +19,24 @@ namespace Daydream::GraphicsUtility::Vulkan
 		if (HasFlag(_desc.bufferUsage, BufferUsage::Storage)) flags |= vk::BufferUsageFlagBits::eStorageBuffer;
 		if (HasFlag(_desc.bufferUsage, BufferUsage::Indirect)) flags |= vk::BufferUsageFlagBits::eIndirectBuffer;
 
-		if (_desc.memoryUsage == MemoryUsage::Static)
+		switch (_desc.memoryUsage)
 		{
+		case MemoryUsage::Static:
 			flags |= vk::BufferUsageFlagBits::eTransferDst;
 			flags |= vk::BufferUsageFlagBits::eTransferSrc;
-		}
-		else if (_desc.memoryUsage == MemoryUsage::Readback)
-		{
+			break;
+		case MemoryUsage::Dynamic:
+			break;
+		case MemoryUsage::Upload:
+			flags = vk::BufferUsageFlagBits::eTransferSrc;
+			break;
+		case MemoryUsage::Readback:
 			flags |= vk::BufferUsageFlagBits::eTransferDst;
+			break;
+		default:
+			break;
 		}
-
+		
 		bufferInfo.usage = flags;
 		return bufferInfo;
 	}
@@ -52,6 +60,10 @@ namespace Daydream::GraphicsUtility::Vulkan
 		case MemoryUsage::Readback:
 			// CPU가 GPU 결과값을 읽어오는 용도 (엔티티 피킹 등)
 			allocInfo.usage = vma::MemoryUsage::eGpuToCpu;
+			allocInfo.flags = vma::AllocationCreateFlagBits::eMapped | vma::AllocationCreateFlagBits::eHostAccessSequentialWrite;
+			break;
+		case MemoryUsage::Upload:
+			allocInfo.usage = vma::MemoryUsage::eCpuOnly;
 			allocInfo.flags = vma::AllocationCreateFlagBits::eMapped | vma::AllocationCreateFlagBits::eHostAccessSequentialWrite;
 			break;
 		}

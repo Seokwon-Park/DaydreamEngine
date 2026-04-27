@@ -13,7 +13,7 @@ namespace Daydream
 		height = _swapchain->GetDesc().height;
 
 		renderPass = _renderPass;
-		colorAttachmentCount = _renderPass->GetDesc().colorAttachments.size();
+		colorAttachmentCount = (UInt32)_renderPass->GetDesc().colorAttachments.size();
 	}
 	Framebuffer::Framebuffer(RenderPass* _renderPass, const FramebufferDesc& _desc)
 	{
@@ -21,7 +21,7 @@ namespace Daydream
 		height = _desc.height;
 
 		renderPass = _renderPass;
-		colorAttachmentCount = _renderPass->GetDesc().colorAttachments.size();
+		colorAttachmentCount = (UInt32)_renderPass->GetDesc().colorAttachments.size();
 	}
 	void Framebuffer::SetSize(UInt32 _width, UInt32 _height)
 	{

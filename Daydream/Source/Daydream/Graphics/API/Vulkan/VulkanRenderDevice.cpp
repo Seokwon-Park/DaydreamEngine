@@ -766,14 +766,26 @@ namespace Daydream
 
 		Array<const char*> extensions = GetRequiredExtensions();
 
-		vk::InstanceCreateInfo createInfo(
-			{},
-			&appInfo,
-			0,
-			{},
-			(UInt32)extensions.size(),
-			extensions.data()
-		);
+		vk::ValidationFeatureEnableEXT enables[] = {
+			vk::ValidationFeatureEnableEXT::eGpuAssisted,
+			vk::ValidationFeatureEnableEXT::eSynchronizationValidation,
+			vk::ValidationFeatureEnableEXT::eBestPractices
+		};
+
+		// 2. Features 구조체를 만듭니다.
+		vk::ValidationFeaturesEXT features = {};
+		features.enabledValidationFeatureCount = 3;
+		features.pEnabledValidationFeatures = enables;
+
+
+		vk::InstanceCreateInfo createInfo{};
+		createInfo.flags = {};
+		createInfo.pApplicationInfo = &appInfo;
+		createInfo.enabledLayerCount = 0;
+		createInfo.ppEnabledLayerNames = {};
+		createInfo.enabledExtensionCount = (UInt32)extensions.size();
+		createInfo.ppEnabledExtensionNames = extensions.data();
+		createInfo.pNext = features;
 
 		vk::DebugUtilsMessengerCreateInfoEXT debugCreateInfo;
 		if (enableValidationLayers)

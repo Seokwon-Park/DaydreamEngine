@@ -71,10 +71,10 @@ namespace Daydream
 		//viewport.y = (float)extent.height;
 		//viewport.width = (float)extent.width;
 		//viewport.height = -(float)extent.height;
-		viewport.x = _x;
-		viewport.y = _y;
-		viewport.width = (float)_width;
-		viewport.height = (float)_height;
+		viewport.x = (Float32)_x;
+		viewport.y = (Float32)_y;
+		viewport.width = (Float32)_width;
+		viewport.height = (Float32)_height;
 		viewport.minDepth = 0.0f;
 		viewport.maxDepth = 1.0f;
 		GetActiveCommandBuffer().setViewport(0, 1, &viewport);
@@ -123,7 +123,7 @@ namespace Daydream
 			colors.push_back(vulkanClearDepthStencil);
 		}
 
-		renderPassInfo.clearValueCount = colors.size();
+		renderPassInfo.clearValueCount = (UInt32)colors.size();
 		renderPassInfo.pClearValues = colors.data();
 
 		SetViewport(0, 0, currentFramebuffer->GetWidth(), currentFramebuffer->GetHeight());
