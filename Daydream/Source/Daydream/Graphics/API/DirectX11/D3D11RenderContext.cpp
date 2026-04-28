@@ -201,7 +201,10 @@ namespace Daydream
 	
 	void D3D11RenderContext::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
 	{
-		device->GetContext()->CopyResource((ID3D11Resource*)_dst->GetNativeHandle(), (ID3D11Resource*)_src->GetNativeHandle());
+		D3D11Texture2D* dst = Cast<D3D11Texture2D*>(_dst.get());
+		D3D11Texture2D* src = Cast<D3D11Texture2D*>(_src.get());
+
+		device->GetContext()->CopyResource(dst->GetID3D11Texture2D(), src->GetID3D11Texture2D());
 	}
 	void D3D11RenderContext::CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel)
 	{

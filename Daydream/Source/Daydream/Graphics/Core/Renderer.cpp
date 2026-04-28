@@ -128,7 +128,7 @@ namespace Daydream
 				_swapchain->BeginFrame();
 				renderContext->SetActiveCommandList(_swapchain->GetCurrentCommandList());
 				//clear CapturedBuffer Safe
-				renderContext->ReleaseCapturedBuffer();
+				//renderContext->ReleaseCapturedBuffer();
 
 			});
 	}

@@ -286,15 +286,4 @@ namespace Daydream
 	{
 		return MakeUnique<D3D11ImGuiRenderer>(this);
 	}
-
-
-	void D3D11RenderDevice::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
-	{
-		deviceContext->CopyResource((ID3D11Resource*)_dst->GetNativeHandle(), (ID3D11Resource*)_src->GetNativeHandle());
-	}
-
-	void D3D11RenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel)
-	{
-
-	}
 }

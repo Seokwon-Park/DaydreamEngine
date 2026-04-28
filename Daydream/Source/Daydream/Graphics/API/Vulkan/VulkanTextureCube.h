@@ -18,8 +18,6 @@ namespace Daydream
 
 		virtual void GenerateMips() override {};
 		
-		virtual inline void* GetNativeHandle() override { return textureImage.get(); }
-
 		vk::Image GetVkImage() { return textureImage.get(); }
 		vk::ImageView GetImageView() { return textureImageView.get(); }
 		vk::Sampler GetSampler() { return textureSampler->GetSampler(); }

@@ -17,7 +17,6 @@ namespace Daydream
 		void Update(UInt32 _faceIndex, Shared<Texture2D> _texture);
 		virtual void GenerateMips() {};
 
-		virtual void* GetNativeHandle() override = 0;
 		void* GetImGuiHandle(UInt32 _faceIndex);
 
 		static Shared<TextureCube> Create(const Array<Path>& _paths, const TextureDesc& _desc);

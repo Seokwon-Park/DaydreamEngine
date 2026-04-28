@@ -29,7 +29,10 @@ namespace Daydream
 
 	D3D12GPUBuffer::~D3D12GPUBuffer()
 	{
-		buffer->Unmap(0, nullptr);
+		if (desc.memoryUsage == MemoryUsage::Dynamic || desc.memoryUsage == MemoryUsage::Upload)
+		{
+			buffer->Map(0, nullptr, &mappedData);
+		}
 	}
 
 	void D3D12GPUBuffer::UpdateData(const void* _data, UInt32 _size)

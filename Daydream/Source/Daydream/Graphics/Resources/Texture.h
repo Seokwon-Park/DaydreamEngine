@@ -24,6 +24,18 @@ namespace Daydream
 		TextureType type = TextureType::Unknown;
 	};
 
+	class GPUTexture
+	{
+	public:
+		GPUTexture(const TextureDesc& _desc) : desc(_desc) {}
+		virtual ~GPUTexture() = default;
+
+		const TextureDesc& GetDesc() const { return desc; }
+
+	protected:
+		TextureDesc desc;
+	};
+
 	class Texture : public Asset
 	{
 	public:
@@ -37,9 +49,6 @@ namespace Daydream
 
 		virtual void SetSampler(Shared<Sampler> _sampler) = 0;
 		virtual bool HasSampler() = 0;
-
-		virtual void* GetNativeHandle() = 0;
-		//virtual void* GetImGuiHandle() = 0;
 
 		TextureDesc GetDesc() const { return desc; }
 		TextureType GetType() const { return desc.type; }
@@ -56,7 +65,6 @@ namespace Daydream
 		
 		virtual UInt32 GetLayerCount() const { return 1; }
 
-		virtual void* GetNativeHandle() = 0;
 		virtual void* GetImGuiHandle() = 0;
 
 		static Shared<Texture2D> Create(const void* _data, const TextureDesc& _desc);

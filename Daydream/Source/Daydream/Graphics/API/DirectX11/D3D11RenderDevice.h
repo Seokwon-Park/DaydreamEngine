@@ -34,9 +34,6 @@ namespace Daydream
 		virtual Shared<Sampler> CreateSampler(const SamplerDesc& _desc) override;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() override;
 
-		virtual void CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst) override;
-		virtual void CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel = 0) override;
-
 		ID3D11Device* GetDevice() { return device.Get(); }
 		ID3D11DeviceContext* GetContext() { return deviceContext.Get(); }
 		IDXGIFactory7* GetFactory() { return dxgiFactory.Get(); }

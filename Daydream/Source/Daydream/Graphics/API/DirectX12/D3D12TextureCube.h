@@ -18,8 +18,6 @@ namespace Daydream
 		virtual bool HasSampler() override { return textureSampler != nullptr; }
 		virtual void GenerateMips() override;
 
-		virtual inline void* GetNativeHandle() override { return texture.Get(); }
-
 		ID3D12Resource* GetID3D12Resource() { return texture.Get(); }
 		inline D3D12_CPU_DESCRIPTOR_HANDLE GetSRVCPUHandle() { return srvCpuHandle; }
 		inline D3D12_GPU_DESCRIPTOR_HANDLE GetSRVGPUHandle() { return srvGpuHandle; }

@@ -18,7 +18,6 @@ namespace Daydream
 		virtual void SetSampler(Shared<Sampler> _sampler) override;
 		virtual bool HasSampler() override { return textureSampler != nullptr; }
 
-		virtual inline void* GetNativeHandle() override { return texture.Get(); }
 		virtual inline void* GetImGuiHandle() { return reinterpret_cast<void*>(GetSRVGPUHandle().ptr); }
 
 		// ºä »ý¼º ¹× Ä³½Ì

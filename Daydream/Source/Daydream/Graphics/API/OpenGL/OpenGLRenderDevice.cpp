@@ -177,11 +177,11 @@ namespace Daydream
 		OpenGLTexture2D* src = static_cast<OpenGLTexture2D*>(_src.get());
 		OpenGLTexture2D* dst = static_cast<OpenGLTexture2D*>(_dst.get());
 		glCopyImageSubData(
-			static_cast<UInt32>(reinterpret_cast<UInt64>(_src->GetNativeHandle())),          // 원본 텍스처 이름
+			src->GetTextureID(),          // 원본 텍스처 이름
 			GL_TEXTURE_2D,       // 원본 텍스처 타입
 			0,                   // 원본 밉맵 레벨
 			0, 0, 0,             // 원본 오프셋 (x, y, z)
-			static_cast<UInt32>(reinterpret_cast<UInt64>(_dst->GetNativeHandle())),          // 대상 텍스처 이름
+			dst->GetTextureID(),          // 대상 텍스처 이름
 			GL_TEXTURE_2D,       // 대상 텍스처 타입
 			0,                   // 대상 밉맵 레벨
 			0, 0, 0,             // 대상 오프셋 (x, y, z)

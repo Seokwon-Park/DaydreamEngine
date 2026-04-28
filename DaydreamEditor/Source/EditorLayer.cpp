@@ -205,8 +205,7 @@ namespace Daydream
 		RenderGraph renderGraph;
 		RenderGraphResourceHandle depthResource = renderGraph.AddResource("Depth");
 		RenderGraphResourceHandle gBufferResource = renderGraph.AddResource("GBuffer");
-		RenderGraphResourceHandle maskResource =
-			renderGraph.AddResource("Mask");
+		RenderGraphResourceHandle maskResource = renderGraph.AddResource("Mask");
 		RenderGraphResourceHandle finalResource = renderGraph.AddResource("Final");
 
 

@@ -17,7 +17,6 @@ namespace Daydream
 		virtual void SetSampler(Shared<Sampler> _sampler) override;
 		virtual bool HasSampler() override { return textureSampler != nullptr; }
 
-		virtual void* GetNativeHandle() override { return textureImage.get(); }
 		virtual void* GetImGuiHandle() override;
 
 		vk::Image GetVkImage() { return textureImage.get(); }

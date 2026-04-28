@@ -16,8 +16,6 @@ namespace Daydream
 		virtual bool HasSampler() override { return textureSampler != nullptr; }
 		virtual void GenerateMips() override;
 
-		virtual inline void* GetNativeHandle() override { return reinterpret_cast<void*>(static_cast<UInt64>(textureID)); }
-
 		UInt32 GetTextureID() const { return textureID; }
 		UInt32 GetSamplerID() const { return textureSampler->GetSamplerID(); }
 	private:
