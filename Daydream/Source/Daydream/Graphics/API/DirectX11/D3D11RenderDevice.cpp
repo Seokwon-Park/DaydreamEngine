@@ -11,7 +11,6 @@
 #include "D3D11Texture.h"
 #include "D3D11TextureCube.h"
 #include "D3D11Sampler.h"
-#include "D3D11Material.h"
 #include "D3D11RenderPass.h"
 
 #include "Daydream/Graphics/Utility/GraphicsUtility.h"

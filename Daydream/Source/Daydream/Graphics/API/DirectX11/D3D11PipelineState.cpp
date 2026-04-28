@@ -1,6 +1,5 @@
 #include "DaydreamPCH.h"
 #include "D3D11PipelineState.h"
-#include "D3D11Material.h"
 
 #include "D3D11Utility.h"
 

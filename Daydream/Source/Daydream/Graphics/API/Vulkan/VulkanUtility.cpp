@@ -4,6 +4,43 @@
 
 namespace Daydream::GraphicsUtility::Vulkan
 {
+	Pair<vk::PipelineStageFlags, vk::AccessFlags> ConvertToVulkanStageAndAccess(ResourceState _state)
+	{
+		vk::PipelineStageFlags stage;
+		vk::AccessFlags access;
+		switch (_state)
+		{
+		case ResourceState::Undefined:
+			stage = vk::PipelineStageFlagBits::eTopOfPipe;
+			access = vk::AccessFlags(0);
+			break;
+		case ResourceState::CopyDest:
+			stage = vk::PipelineStageFlagBits::eTransfer;
+			access = vk::AccessFlagBits::eTransferWrite;
+			break;
+		case ResourceState::CopySource:
+			stage = vk::PipelineStageFlagBits::eTransfer;
+			access = vk::AccessFlagBits::eTransferRead;
+			break;
+		case ResourceState::VertexBuffer:
+			stage = vk::PipelineStageFlagBits::eVertexInput;
+			access = vk::AccessFlagBits::eVertexAttributeRead;
+			break;
+		case ResourceState::IndexBuffer:
+			stage = vk::PipelineStageFlagBits::eVertexInput;
+			access = vk::AccessFlagBits::eIndexRead;
+			break;
+		case ResourceState::ConstantBuffer: // Uniform Buffer
+			stage = vk::PipelineStageFlagBits::eVertexShader | vk::PipelineStageFlagBits::eFragmentShader;
+			access = vk::AccessFlagBits::eUniformRead;
+			break;
+		default:
+			DAYDREAM_CORE_ASSERT(false, "Unknown Resource State!");
+			break;
+		}
+		return { stage, access };
+	}
+
 	vk::BufferCreateInfo ConvertToVulkanCreateInfo(const BufferDesc& _desc)
 	{
 		vk::BufferCreateInfo bufferInfo{};

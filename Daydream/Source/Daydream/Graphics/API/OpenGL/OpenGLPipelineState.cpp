@@ -1,11 +1,8 @@
 #include "DaydreamPCH.h"
 #include "OpenGLPipelineState.h"
 #include "Daydream/Graphics/Utility/GraphicsUtility.h"
-#include "OpenGLMaterial.h"
 
 #include "OpenGLUtility.h"
-
-#include "glm/gtc/type_ptr.hpp"
 
 namespace Daydream
 {

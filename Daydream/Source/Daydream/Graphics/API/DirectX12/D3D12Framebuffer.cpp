@@ -118,12 +118,6 @@ namespace Daydream
 		Shared<D3D12Texture2D> targetTexture = entityTexture;
 		if (!targetTexture) return 0;
 
-		// 4. Command List 및 Command Allocator 확보 
-		// (SingleTimeCommandList 처럼 즉시 실행 가능한 커맨드 리스트가 필요합니다)
-		// 여기서는 D3D12RenderDevice에 관련 기능이 있다고 가정하고 작성합니다.
-		// 없다면 직접 Allocator/List를 만들거나 기존 프레임 컨텍스트를 써야 합니다.
-		//ID3D12GraphicsCommandList* cmdList = device->BeginSingleTimeCommands();
-
 		device->ExecuteSingleTimeCommands([&](ID3D12GraphicsCommandList* _commandList)
 			{
 				// 5. Resource Barrier (RenderTarget -> CopySource)

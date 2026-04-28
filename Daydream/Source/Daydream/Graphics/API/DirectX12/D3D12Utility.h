@@ -10,6 +10,8 @@
 
 namespace Daydream::GraphicsUtility::DirectX12
 {
+	D3D12_RESOURCE_STATES ConvertToD3D12ResourceStates(const ResourceState& _state);
+
 	D3D12_HEAP_PROPERTIES ConvertToD3D12HeapProperties(const BufferDesc& _desc);
 	D3D12_RESOURCE_DESC ConvertToD3D12ResourceDesc(const BufferDesc& _desc);
 	D3D12_RESOURCE_FLAGS ConvertToD3D12ResourceFlags(BufferUsage _bufferUsage);

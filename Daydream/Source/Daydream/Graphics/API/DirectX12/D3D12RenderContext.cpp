@@ -6,6 +6,7 @@
 #include "D3D12TextureCube.h"
 #include "D3D12Buffer.h"
 #include "D3D12Framebuffer.h"
+#include "D3D12Utility.h"
 #include "Daydream/Graphics/Resources/Mesh.h"
 #include "Daydream/Graphics/Manager/ResourceManager.h"
 #include "Daydream/Graphics/Core/Renderer.h"
@@ -212,6 +213,21 @@ namespace Daydream
 
 		GetD3D12ActiveCommandList()->SetGraphicsRootConstantBufferView(d3d12PipelineState->GetDescriptorTableIndex(_name), gpuAddress);
 	}
+
+	void D3D12RenderContext::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize)
+	{
+		D3D12GPUBuffer* src = Cast<D3D12GPUBuffer*>(_src.get());
+		D3D12GPUBuffer* dst = Cast<D3D12GPUBuffer*>(_dst.get());
+
+		GetD3D12ActiveCommandList()->CopyBufferRegion(
+			dst->GetID3D12Resource(),
+			0,
+			src->GetID3D12Resource(),
+			0,
+			_copySize
+		);
+	}
+
 	void D3D12RenderContext::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
 	{
 		D3D12Texture2D* src = (D3D12Texture2D*)_src.get();
@@ -303,19 +319,7 @@ namespace Daydream
 		GetD3D12ActiveCommandList()->ResourceBarrier(2, barriers);
 	}
 
-	void D3D12RenderContext::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize)
-	{
-		D3D12GPUBuffer* src = Cast<D3D12GPUBuffer*>(_src.get());
-		D3D12GPUBuffer* dst = Cast<D3D12GPUBuffer*>(_dst.get());
 
-		GetD3D12ActiveCommandList()->CopyBufferRegion(
-			dst->GetID3D12Resource(),
-			0,
-			src->GetID3D12Resource(),
-			0,
-			_copySize
-		);
-	}
 
 	void D3D12RenderContext::GenerateMips(Shared<Texture> _texture)
 	{
@@ -394,6 +398,30 @@ namespace Daydream
 			}
 		}
 	}
+	void D3D12RenderContext::TransitionTextureState(Shared<Texture> _texture, ResourceState _beforeState, ResourceState _afterState, UInt32 _mipLevel, UInt32 _mipCount)
+	{
+	}
+	void D3D12RenderContext::TransitionBufferState(Shared<GPUBuffer> _buffer, ResourceState _beforeState, ResourceState _afterState)
+	{
+		if (_beforeState == _afterState)
+		{
+			DAYDREAM_RENDERER_WARN("Before State == After State");
+			return;
+		}
+
+		D3D12GPUBuffer* d3d12Buffer = Cast<D3D12GPUBuffer*>(_buffer.get());
+
+		D3D12_RESOURCE_BARRIER barrier = {};
+		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barrier.Transition.pResource = d3d12Buffer->GetID3D12Resource();
+		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		barrier.Transition.StateBefore = GraphicsUtility::DirectX12::ConvertToD3D12ResourceStates(_beforeState);
+		barrier.Transition.StateAfter = GraphicsUtility::DirectX12::ConvertToD3D12ResourceStates(_afterState);
+		
+		GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
+	}
+
 	void D3D12RenderContext::SetActiveCommandList(Shared<RenderCommandList> _commandList)
 	{
 		activeCommandList = _commandList;

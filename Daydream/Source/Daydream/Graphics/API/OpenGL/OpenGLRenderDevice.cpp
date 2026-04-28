@@ -10,7 +10,6 @@
 #include "OpenGLRenderDevice.h"
 #include "OpenGLRenderContext.h"
 #include "OpenGLPipelineState.h"
-#include "OpenGLMaterial.h"
 #include "OpenGLImGuiRenderer.h"
 
 #include "glad/glad.h"

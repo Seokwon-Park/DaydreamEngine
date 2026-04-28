@@ -278,6 +278,22 @@ namespace Daydream
 
 	}
 
+	void Renderer::TransitionTextureState(Shared<Texture> _texture, ResourceState _beforeState, ResourceState _afterState, UInt32 _mipLevel, UInt32 _mipCount)
+	{
+		EnqueueCommand([_texture, _beforeState, _afterState, _mipLevel, _mipCount]()
+			{
+				renderContext->TransitionTextureState(_texture, _beforeState, _afterState, _mipLevel, _mipCount);
+			});
+	}
+
+	void Renderer::TransitionBufferState(Shared<GPUBuffer> _buffer, ResourceState _beforeState, ResourceState _afterState)
+	{
+		EnqueueCommand([_buffer, _beforeState, _afterState]()
+			{
+				renderContext->TransitionBufferState(_buffer, _beforeState, _afterState);
+			});
+	}
+
 	void Renderer::GenerateMips(Shared<Texture> _texture)
 	{
 		EnqueueCommand([_texture]()

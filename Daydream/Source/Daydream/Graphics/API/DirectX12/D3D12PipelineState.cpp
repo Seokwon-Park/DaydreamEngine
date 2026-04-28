@@ -3,7 +3,6 @@
 
 #include "D3D12Utility.h"
 #include "D3D12Shader.h"
-#include "D3D12Material.h"
 #include "D3D12RenderPass.h"
 
 namespace Daydream

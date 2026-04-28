@@ -10,7 +10,6 @@
 #include "D3D12ImGuiRenderer.h"
 #include "D3D12Texture.h"
 #include "D3D12TextureCube.h"
-#include "D3D12Material.h"
 #include "D3D12Sampler.h"
 #include "Daydream/Graphics/Utility/GraphicsUtility.h"
 

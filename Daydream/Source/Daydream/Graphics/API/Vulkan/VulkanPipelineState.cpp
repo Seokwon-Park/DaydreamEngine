@@ -6,7 +6,6 @@
 #include "Daydream/Graphics/Utility/GraphicsUtility.h"
 
 #include "VulkanTexture.h"
-#include "VulkanMaterial.h"
 #include "VulkanShader.h"
 #include "VulkanRenderPass.h"
 

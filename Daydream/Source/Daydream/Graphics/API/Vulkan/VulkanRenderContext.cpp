@@ -6,6 +6,7 @@
 #include "VulkanTextureCube.h"
 #include "VulkanBuffer.h"
 #include "VulkanFramebuffer.h"
+#include "VulkanUtility.h"
 #include "Daydream/Graphics/Resources/Mesh.h"
 
 
@@ -241,6 +242,19 @@ namespace Daydream
 			1,
 			&writeSet
 		);
+	}
+
+	void VulkanRenderContext::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize)
+	{
+		VulkanGPUBuffer* src = Cast<VulkanGPUBuffer*>(_src.get());
+		VulkanGPUBuffer* dst = Cast<VulkanGPUBuffer*>(_dst.get());
+
+		vk::BufferCopy copyRegion{};
+		copyRegion.srcOffset = 0; // Optional
+		copyRegion.dstOffset = 0; // Optional
+		copyRegion.size = _copySize;
+
+		GetActiveCommandBuffer().copyBuffer(src->GetVkBuffer(), dst->GetVkBuffer(), 1, &copyRegion);
 	}
 
 	void VulkanRenderContext::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
@@ -589,17 +603,48 @@ namespace Daydream
 			barrier  // ImageMemoryBarrier
 		);
 	}
-	void VulkanRenderContext::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize)
+	void VulkanRenderContext::TransitionTextureState(Shared<Texture> _texture, ResourceState _beforeState, ResourceState _afterState, UInt32 _mipLevel, UInt32 _mipCount)
 	{
-		VulkanGPUBuffer* src = Cast<VulkanGPUBuffer*>(_src.get());
-		VulkanGPUBuffer* dst = Cast<VulkanGPUBuffer*>(_dst.get());
+	}
 
-		vk::BufferCopy copyRegion{};
-		copyRegion.srcOffset = 0; // Optional
-		copyRegion.dstOffset = 0; // Optional
-		copyRegion.size = _copySize;
+	void VulkanRenderContext::TransitionBufferState(Shared<GPUBuffer> _buffer, ResourceState _beforeState, ResourceState _afterState)
+	{
+		if (_beforeState == _afterState)
+		{
+			DAYDREAM_RENDERER_WARN("Before State == After State");
+			return;
+		}
 
-		GetActiveCommandBuffer().copyBuffer(src->GetVkBuffer(), dst->GetVkBuffer(), 1, &copyRegion);
+		VulkanGPUBuffer* vkBuffer = Cast<VulkanGPUBuffer*>(_buffer.get());
+
+		vk::PipelineStageFlags srcStage;
+		vk::AccessFlags srcAccess;
+		std::tie(srcStage, srcAccess) = GraphicsUtility::Vulkan::ConvertToVulkanStageAndAccess(_beforeState);
+
+		vk::PipelineStageFlags dstStage;
+		vk::AccessFlags dstAccess;
+		std::tie(dstStage, dstAccess) = GraphicsUtility::Vulkan::ConvertToVulkanStageAndAccess(_afterState);
+
+		vk::BufferMemoryBarrier barrier;
+		barrier.srcAccessMask = srcAccess;
+		barrier.dstAccessMask = dstAccess;
+		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier.buffer = vkBuffer->GetVkBuffer();
+		barrier.offset = 0;
+		barrier.size = VK_WHOLE_SIZE;
+		barrier.pNext = nullptr;
+		
+		GetActiveCommandBuffer().pipelineBarrier
+		(
+			srcStage,               // srcStageMask
+			dstStage,               // dstStageMask
+			{}, // dependencyFlags
+			0, nullptr,             // memoryBarriers (Àü¿ª)
+			1, &barrier,            // bufferMemoryBarriers
+			0, nullptr              // imageMemoryBarriers
+		);
+
 	}
 	void VulkanRenderContext::SetActiveCommandList(Shared<RenderCommandList> _commandList)
 	{

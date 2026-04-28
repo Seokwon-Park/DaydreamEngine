@@ -12,7 +12,6 @@
 #include "VulkanTexture.h"
 #include "VulkanTextureCube.h"
 #include "VulkanSampler.h"
-#include "VulkanMaterial.h"
 #include "Daydream/Graphics/Utility/GraphicsUtility.h"
 #include "Daydream/Graphics/Utility/ImageLoader.h"
 

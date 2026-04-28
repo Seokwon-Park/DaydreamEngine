@@ -154,7 +154,6 @@
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Common.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Framebuffer.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11ImGuiRenderer.h" />
-    <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Material.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11PipelineState.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11RenderContext.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11RenderDevice.h" />
@@ -170,7 +169,6 @@
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12Framebuffer.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12HeapAllocator.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12ImGuiRenderer.h" />
-    <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12Material.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12PipelineState.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12RenderCommandList.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12RenderContext.h" />
@@ -187,7 +185,6 @@
     <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLFramebuffer.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLImGuiRenderer.h" />
-    <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLMaterial.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLPipelineState.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLRenderContext.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLRenderDevice.h" />
@@ -201,7 +198,6 @@
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanBuffer.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanFramebuffer.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanImGuiRenderer.h" />
-    <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanMaterial.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanPipelineState.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanRenderCommandList.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanRenderContext.h" />
@@ -751,7 +747,6 @@
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Common.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Framebuffer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11ImGuiRenderer.cpp" />
-    <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Material.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11PipelineState.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11PixelShader.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11RenderContext.cpp" />
@@ -768,7 +763,6 @@
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Framebuffer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12HeapAllocator.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12ImGuiRenderer.cpp" />
-    <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12Material.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12PipelineState.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12RenderCommandList.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12RenderContext.cpp" />
@@ -785,7 +779,6 @@
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLFramebuffer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLImGuiRenderer.cpp" />
-    <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLMaterial.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLPipelineState.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLRenderContext.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLRenderDevice.cpp" />
@@ -799,7 +792,6 @@
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanBuffer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanFramebuffer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanImGuiRenderer.cpp" />
-    <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanMaterial.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanPipelineState.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanRenderCommandList.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanRenderContext.cpp" />
