@@ -220,6 +220,10 @@
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderCommandQueue.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderContext.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderDevice.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Core\RenderGraph.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderThread.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\Renderer.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\Renderer2D.h" />
@@ -814,6 +818,10 @@
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderCommandQueue.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderContext.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderDevice.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Core\RenderGraph.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderThread.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\Renderer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\Renderer2D.cpp" />

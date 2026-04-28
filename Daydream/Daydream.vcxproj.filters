@@ -1983,6 +1983,7 @@
     <ClInclude Include="Vendor\stb\stb_image.h">
       <Filter>Vendor\stb</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Daydream\Graphics\Core\RenderGraph.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\Directory.cpp">
@@ -2427,5 +2428,6 @@
       <Filter>Vendor\stb</Filter>
     </ClCompile>
     <ClCompile Include="Source\Daydream\Enum\RendererEnums.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Core\RenderGraph.cpp" />
   </ItemGroup>
 </Project>

@@ -785,7 +785,7 @@ namespace Daydream
 		createInfo.ppEnabledLayerNames = {};
 		createInfo.enabledExtensionCount = (UInt32)extensions.size();
 		createInfo.ppEnabledExtensionNames = extensions.data();
-		createInfo.pNext = features;
+
 
 		vk::DebugUtilsMessengerCreateInfoEXT debugCreateInfo;
 		if (enableValidationLayers)
@@ -793,6 +793,7 @@ namespace Daydream
 			createInfo.enabledLayerCount = static_cast<UInt32>(validationLayers.size());
 			createInfo.ppEnabledLayerNames = validationLayers.data();
 			PopulateDebugMessengerCreateInfo(debugCreateInfo);
+			debugCreateInfo.pNext = features;
 			createInfo.pNext = &debugCreateInfo;
 		}
 

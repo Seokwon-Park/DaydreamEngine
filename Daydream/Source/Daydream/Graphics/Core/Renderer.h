@@ -97,8 +97,8 @@ namespace Daydream
 		inline static RendererAPIType GetAPI() { return renderDevice->GetAPI(); }
 		inline static RenderDevice* GetRenderDevice() { return renderDevice.get(); }
 		inline static RenderContext* GetRenderContext() { return renderContext.get(); }
-		inline static  Skybox* GetSkybox() { return skybox.get(); }
-		inline static  RenderCommandList* GetActiveCommandList() { return renderContext->GetActiveCommandList().get(); }
+		inline static Skybox* GetSkybox() { return skybox.get(); }
+		inline static RenderCommandList* GetActiveCommandList() { return renderContext->GetActiveCommandList().get(); }
 	private:
 		Renderer() = default;
 

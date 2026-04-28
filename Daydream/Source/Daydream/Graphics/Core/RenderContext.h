@@ -54,7 +54,6 @@ namespace Daydream
 
 		void CaptureBuffer(Shared<GPUBuffer> _buffer);
 		void ReleaseCapturedBuffer();
-
 		
 		Shared<RenderCommandList> GetActiveCommandList() const { return activeCommandList; }
 	protected:
