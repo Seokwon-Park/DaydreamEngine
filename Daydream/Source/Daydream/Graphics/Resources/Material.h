@@ -55,9 +55,9 @@ namespace Daydream
 		ASSET_CLASS_TYPE(Material)
 		Material() = default;
 		Material(Shared<ShaderGroup> _shaderGroup);
-		virtual ~Material();
-		virtual void Bind() {};
-		virtual void Unbind() {};
+		~Material();
+		void Bind() {};
+		void Unbind() {};
 
 		void SetTextureBinding(const String& _name, AssetHandle _textureHandle);
 		void LoadMaterialAsset(const String& _name);

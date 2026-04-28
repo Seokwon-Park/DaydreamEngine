@@ -23,14 +23,8 @@ namespace Daydream::GraphicsUtility::DirectX11
 		}
 
 		bufferDesc.MiscFlags = 0;
-		if (HasFlag(_desc.bufferUsage, BufferUsage::Indirect))
-		{
-			bufferDesc.MiscFlags |= D3D11_RESOURCE_MISC_DRAWINDIRECT_ARGS;
-		}
-		if (HasFlag(_desc.bufferUsage, BufferUsage::Storage))
-		{
-			bufferDesc.MiscFlags |= D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;
-		}
+		if (HasFlag(_desc.bufferUsage, BufferUsage::Indirect))	bufferDesc.MiscFlags |= D3D11_RESOURCE_MISC_DRAWINDIRECT_ARGS;
+		if (HasFlag(_desc.bufferUsage, BufferUsage::Storage))	bufferDesc.MiscFlags |= D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;
 
 		bufferDesc.StructureByteStride = 0;
 
@@ -57,12 +51,18 @@ namespace Daydream::GraphicsUtility::DirectX11
 	{
 		UInt32 d3d11Flags = 0;
 
-		if (HasFlag(_usage, MemoryUsage::Dynamic)) d3d11Flags |= D3D11_CPU_ACCESS_WRITE;
-		if (HasFlag(_usage, MemoryUsage::Readback)) d3d11Flags |= D3D11_CPU_ACCESS_READ;
-		if (HasFlag(_usage, MemoryUsage::Upload)) d3d11Flags |= D3D11_CPU_ACCESS_WRITE;
 
+		switch (_usage)
+		{
+		case MemoryUsage::Static:	break;
+		case MemoryUsage::Dynamic:	d3d11Flags |= D3D11_CPU_ACCESS_WRITE; break;
+		case MemoryUsage::Readback:	d3d11Flags |= D3D11_CPU_ACCESS_READ; break;
+		case MemoryUsage::Upload:	d3d11Flags |= D3D11_CPU_ACCESS_WRITE; break;
+			return D3D11_USAGE_STAGING;
+		default:
+			break;
+		}
 		return d3d11Flags;
-
 	}
 
 	UInt32 ConvertToD3D11BindFlags(const BufferUsage& _usage)

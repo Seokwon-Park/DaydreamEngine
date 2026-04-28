@@ -289,10 +289,6 @@ namespace Daydream
 	}
 
 
-	Shared<Material> D3D11RenderDevice::CreateMaterial(Shared<PipelineState> _pipeline)
-	{
-		return MakeShared<D3D11Material>(this, _pipeline);
-	}
 	void D3D11RenderDevice::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
 	{
 		deviceContext->CopyResource((ID3D11Resource*)_dst->GetNativeHandle(), (ID3D11Resource*)_src->GetNativeHandle());

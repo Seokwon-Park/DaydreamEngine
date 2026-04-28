@@ -202,125 +202,160 @@ namespace Daydream
 
 		activeScene->Update(_deltaTime);
 
+		RenderGraph renderGraph;
+		RenderGraphResourceHandle depthResource = renderGraph.AddResource("Depth");
+		RenderGraphResourceHandle gBufferResource = renderGraph.AddResource("GBuffer");
+		RenderGraphResourceHandle maskResource =
+			renderGraph.AddResource("Mask");
+		RenderGraphResourceHandle finalResource = renderGraph.AddResource("Final");
+
+
 		//pso->Bind();
 		//squareVB->Bind();
 		//squareIB->Bind();
 		//material->Bind();
-		Renderer::BeginRenderPass(depthRenderPass, depthFramebuffer);
-		Renderer::BindPipelineState(depthPSO);
-		if (activeScene->GetLightComponent())
-		{
-			Renderer::SetConstantBuffer("LightSpace", activeScene->GetLightComponent()->GetLight().lightViewProjectionBuffer);
-		}
 
-		for (const auto entityHandle : activeScene->GetAllEntities())
-		{
-			GameEntity* entity = activeScene->GetEntity(entityHandle);
-
-			MeshRendererComponent* meshRenderer = entity->GetComponent<MeshRendererComponent>();
-			if (meshRenderer)
+		RenderGraphPassHandle depthPass = renderGraph.AddPass("DepthPass", [this]()
 			{
-				Renderer::SetConstantBuffer("World", meshRenderer->GetWorldMatrixConstantBuffer());
-				auto mesh = AssetManager::GetAsset<Mesh>(meshRenderer->GetMesh());
-				if (mesh)
+				Renderer::BeginRenderPass(depthRenderPass, depthFramebuffer);
+				Renderer::BindPipelineState(depthPSO);
+				if (activeScene->GetLightComponent())
 				{
-					Renderer::BindMesh(mesh);
-					Renderer::DrawIndexed(mesh->GetIndexCount());
+					Renderer::SetConstantBuffer("LightSpace", activeScene->GetLightComponent()->GetLight().lightViewProjectionBuffer);
 				}
-			}
-		}
-		Renderer::EndRenderPass(depthRenderPass);
+				for (const auto entityHandle : activeScene->GetAllEntities())
+				{
+					GameEntity* entity = activeScene->GetEntity(entityHandle);
 
+					MeshRendererComponent* meshRenderer = entity->GetComponent<MeshRendererComponent>();
+					if (meshRenderer)
+					{
+						Renderer::SetConstantBuffer("World", meshRenderer->GetWorldMatrixConstantBuffer());
+						auto mesh = AssetManager::GetAsset<Mesh>(meshRenderer->GetMesh());
+						if (mesh)
+						{
+							Renderer::BindMesh(mesh);
+							Renderer::DrawIndexed(mesh->GetIndexCount());
+						}
+					}
+				}
+				Renderer::EndRenderPass(depthRenderPass);
+			});
+		renderGraph.Write(depthPass, depthResource);
 
-		//Renderer::Submit(squareIB->GetCount());
-		Renderer::BeginRenderPass(gBufferRenderPass, gBufferFramebuffer);
-		Renderer::BindPipelineState(gBufferPSO);
-		Renderer::SetConstantBuffer("Camera", editorCamera->GetViewProjectionConstantBuffer());
-		for (const auto entityHandle : activeScene->GetAllEntities())
-		{
-			GameEntity* entity = activeScene->GetEntity(entityHandle);
-			MeshRendererComponent* meshRenderer = entity->GetComponent<MeshRendererComponent>();
-			if (meshRenderer == nullptr) continue;
-			Renderer::SetConstantBuffer("World", meshRenderer->GetWorldMatrixConstantBuffer());
-			Renderer::SetConstantBuffer("Entity", meshRenderer->GetEntityHandleConstantBuffer());
-			auto mesh = AssetManager::GetAsset<Mesh>(meshRenderer->GetMesh());
-			auto material = AssetManager::GetAsset<Material>(meshRenderer->GetMaterial());
-			if (mesh && material)
+		RenderGraphPassHandle gBufferPass = renderGraph.AddPass("GBufferPass", [this]()
 			{
-				Renderer::BindMesh(mesh);
-				Renderer::BindMaterial(material);
-				Renderer::DrawIndexed(mesh->GetIndexCount());
-			}
-		}
-		//pso3d->Bind();
-		Renderer::EndRenderPass(gBufferRenderPass);
-
-		GameEntity* selectedEntity = sceneHierarchyPanel->GetSelectedEntity(); // 선택된 객체 가져오기
-
-		Renderer::BeginRenderPass(maskRenderPass, maskFramebuffer);
-		if (selectedEntity != nullptr && selectedEntity->GetComponent<MeshRendererComponent>())
-		{
-			MeshRendererComponent* meshRenderer = entity->GetComponent<MeshRendererComponent>();
-			if (meshRenderer != nullptr)
-			{
-				auto mesh = AssetManager::GetAsset<Mesh>(meshRenderer->GetMesh());
-
-				Renderer::BindPipelineState(maskPSO);
-				Renderer::SetConstantBuffer("World", meshRenderer->GetWorldMatrixConstantBuffer());
+				//Renderer::Submit(squareIB->GetCount());
+				Renderer::BeginRenderPass(gBufferRenderPass, gBufferFramebuffer);
+				Renderer::BindPipelineState(gBufferPSO);
 				Renderer::SetConstantBuffer("Camera", editorCamera->GetViewProjectionConstantBuffer());
-				if (mesh)
+				for (const auto entityHandle : activeScene->GetAllEntities())
 				{
-					Renderer::BindMesh(mesh);
-					Renderer::DrawIndexed(mesh->GetIndexCount());
+					GameEntity* entity = activeScene->GetEntity(entityHandle);
+					MeshRendererComponent* meshRenderer = entity->GetComponent<MeshRendererComponent>();
+					if (meshRenderer == nullptr) continue;
+					Renderer::SetConstantBuffer("World", meshRenderer->GetWorldMatrixConstantBuffer());
+					Renderer::SetConstantBuffer("Entity", meshRenderer->GetEntityHandleConstantBuffer());
+					auto mesh = AssetManager::GetAsset<Mesh>(meshRenderer->GetMesh());
+					auto material = AssetManager::GetAsset<Material>(meshRenderer->GetMaterial());
+					if (mesh && material)
+					{
+						Renderer::BindMesh(mesh);
+						Renderer::BindMaterial(material);
+						Renderer::DrawIndexed(mesh->GetIndexCount());
+					}
 				}
-			}
-		}
-		Renderer::EndRenderPass(maskRenderPass);
+				//pso3d->Bind();
+				Renderer::EndRenderPass(gBufferRenderPass);
+			});
 
-		Renderer::BeginRenderPass(renderPass, viewportFramebuffer);
+		renderGraph.Read(gBufferPass, depthResource);
+		renderGraph.Write(gBufferPass, gBufferResource);
 
-		for (int i = 0; i < 5; i++)
-		{
-			if (i == 4)
+		RenderGraphPassHandle maskPass = renderGraph.AddPass("MaskPass", [this]()
 			{
-				gBufferFramebuffer->GetColorAttachmentTexture(i)->SetSampler(ResourceManager::GetResource<Sampler>("NearestRepeat"));
-			}
-			else
+				GameEntity* selectedEntity = sceneHierarchyPanel->GetSelectedEntity(); // 선택된 객체 가져오기
+
+				Renderer::BeginRenderPass(maskRenderPass, maskFramebuffer);
+				if (selectedEntity != nullptr)
+				{
+					MeshRendererComponent* meshRenderer = selectedEntity->GetComponent<MeshRendererComponent>();
+					if (meshRenderer != nullptr)
+					{
+						auto mesh = AssetManager::GetAsset<Mesh>(meshRenderer->GetMesh());
+
+						Renderer::BindPipelineState(maskPSO);
+						Renderer::SetConstantBuffer("World", meshRenderer->GetWorldMatrixConstantBuffer());
+						Renderer::SetConstantBuffer("Camera", editorCamera->GetViewProjectionConstantBuffer());
+						if (mesh)
+						{
+							Renderer::BindMesh(mesh);
+							Renderer::DrawIndexed(mesh->GetIndexCount());
+						}
+					}
+				}
+				Renderer::EndRenderPass(maskRenderPass);
+			});
+
+		renderGraph.Read(maskPass, depthResource);
+		renderGraph.Write(maskPass, maskResource);
+		RenderGraphPassHandle lightingPass = renderGraph.AddPass("DeferredLightingPass", [this]()
 			{
-				gBufferFramebuffer->GetColorAttachmentTexture(i)->SetSampler(sampler);
-			}
-		}
-		maskFramebuffer->GetColorAttachmentTexture(0)->SetSampler(ResourceManager::GetResource<Sampler>("NearestRepeat"));
+				Renderer::BeginRenderPass(renderPass, viewportFramebuffer);
 
-		Renderer::BindPipelineState(deferredLightingPSO);
-		Renderer::SetTexture2D("PositionTexture", gBufferFramebuffer->GetColorAttachmentTexture(0));
-		Renderer::SetTexture2D("NormalTexture", gBufferFramebuffer->GetColorAttachmentTexture(1));
-		Renderer::SetTexture2D("AlbedoTexture", gBufferFramebuffer->GetColorAttachmentTexture(2));
-		Renderer::SetTexture2D("RMAOTexture", gBufferFramebuffer->GetColorAttachmentTexture(3));
-		Renderer::SetTexture2D("BRDFLUT", Renderer::GetSkybox()->GetBRDF());
-		Renderer::SetTexture2D("EntityIDTexture", gBufferFramebuffer->GetColorAttachmentTexture(4));
-		Renderer::SetTexture2D("OutlineTexture", maskFramebuffer->GetColorAttachmentTexture(0));
-		Renderer::SetTexture2D("DepthTexture", depthFramebuffer->GetDepthAttachmentTexture());
-		Renderer::SetConstantBuffer("Lights", activeScene->GetLightConstantBuffer());
-		Renderer::SetConstantBuffer("EditorData", entityBuffer);
-		Renderer::SetTextureCube("IrradianceTexture", Renderer::GetSkybox()->GetIrradianceTexture());
-		Renderer::SetTextureCube("Prefilter", Renderer::GetSkybox()->GetPrefilterTexture());
-		//deferredLightingMaterial->Bind();
-		Renderer::BindMesh(ResourceManager::GetResource<Mesh>("Quad"));
-		Renderer::DrawIndexed(ResourceManager::GetResource<Mesh>("Quad")->GetIndexCount());
+				for (int i = 0; i < 5; i++)
+				{
+					if (i == 4)
+					{
+						gBufferFramebuffer->GetColorAttachmentTexture(i)->SetSampler(ResourceManager::GetResource<Sampler>("NearestRepeat"));
+					}
+					else
+					{
+						gBufferFramebuffer->GetColorAttachmentTexture(i)->SetSampler(sampler);
+					}
+				}
+				maskFramebuffer->GetColorAttachmentTexture(0)->SetSampler(ResourceManager::GetResource<Sampler>("NearestRepeat"));
 
-		////pso3d->Bind();
-		////activeScene->Update(_deltaTime);
+				Renderer::BindPipelineState(deferredLightingPSO);
+				Renderer::SetTexture2D("PositionTexture", gBufferFramebuffer->GetColorAttachmentTexture(0));
+				Renderer::SetTexture2D("NormalTexture", gBufferFramebuffer->GetColorAttachmentTexture(1));
+				Renderer::SetTexture2D("AlbedoTexture", gBufferFramebuffer->GetColorAttachmentTexture(2));
+				Renderer::SetTexture2D("RMAOTexture", gBufferFramebuffer->GetColorAttachmentTexture(3));
+				Renderer::SetTexture2D("BRDFLUT", Renderer::GetSkybox()->GetBRDF());
+				Renderer::SetTexture2D("EntityIDTexture", gBufferFramebuffer->GetColorAttachmentTexture(4));
+				Renderer::SetTexture2D("OutlineTexture", maskFramebuffer->GetColorAttachmentTexture(0));
+				Renderer::SetTexture2D("DepthTexture", depthFramebuffer->GetDepthAttachmentTexture());
+				Renderer::SetConstantBuffer("Lights", activeScene->GetLightConstantBuffer());
+				Renderer::SetConstantBuffer("EditorData", entityBuffer);
+				Renderer::SetTextureCube("IrradianceTexture", Renderer::GetSkybox()->GetIrradianceTexture());
+				Renderer::SetTextureCube("Prefilter", Renderer::GetSkybox()->GetPrefilterTexture());
+				//deferredLightingMaterial->Bind();
+				Renderer::BindMesh(ResourceManager::GetResource<Mesh>("Quad"));
+				Renderer::DrawIndexed(ResourceManager::GetResource<Mesh>("Quad")->GetIndexCount());
 
-		if (skyboxPanel->IsUsingSkybox())
+				////pso3d->Bind();
+				////activeScene->Update(_deltaTime);
+
+				if (skyboxPanel->IsUsingSkybox())
+				{
+					Renderer::BindPipelineState(skyboxPipeline);
+					Renderer::BindMesh(cubeMesh);
+					Renderer::SetConstantBuffer("Camera", viewProjMat);
+					Renderer::SetTextureCube("TextureCubemap", activeScene->GetSkybox()->GetSkyboxTexture());
+					Renderer::DrawIndexed(cubeMesh->GetIndexCount());
+				}
+				Renderer::EndRenderPass(renderPass);
+			});
+
+		renderGraph.Read(lightingPass, depthResource);
+		renderGraph.Read(lightingPass, gBufferResource);
+		renderGraph.Read(lightingPass, maskResource);
+		renderGraph.Write(lightingPass, finalResource);
+
+		if (renderGraph.Compile())
 		{
-			Renderer::BindPipelineState(skyboxPipeline);
-			Renderer::BindMesh(cubeMesh);
-			Renderer::SetConstantBuffer("Camera", viewProjMat);
-			Renderer::SetTextureCube("TextureCubemap", activeScene->GetSkybox()->GetSkyboxTexture());
-			Renderer::DrawIndexed(cubeMesh->GetIndexCount());
+			renderGraph.Execute();
 		}
-		Renderer::EndRenderPass(renderPass);
 	}
 
 	void EditorLayer::OnImGuiRender()

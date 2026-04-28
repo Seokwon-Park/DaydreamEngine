@@ -32,7 +32,6 @@ namespace Daydream
 		virtual Shared<TextureCube> CreateEmptyTextureCube(const TextureDesc& _desc) override;
 		virtual Shared<Sampler> CreateSampler(const SamplerDesc& _desc) override;
 		virtual Unique<ImGuiRenderer> CreateImGuiRenderer() override;
-		virtual Shared<Material> CreateMaterial(Shared<PipelineState> _pipeline) override;
 
 		virtual void CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst) override;
 		virtual void CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel = 0) override;

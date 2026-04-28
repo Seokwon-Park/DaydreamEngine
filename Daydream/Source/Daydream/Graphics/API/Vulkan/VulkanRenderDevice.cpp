@@ -402,12 +402,6 @@ namespace Daydream
 		return MakeUnique<VulkanImGuiRenderer>(this);
 	}
 
-
-	Shared<Material> VulkanRenderDevice::CreateMaterial(Shared<PipelineState> _pipeline)
-	{
-		return MakeShared<VulkanMaterial>(this, _pipeline);
-	}
-
 	void VulkanRenderDevice::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
 	{
 		vk::ImageMemoryBarrier barriers[2] = {};

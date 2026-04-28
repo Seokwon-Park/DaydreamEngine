@@ -500,12 +500,6 @@ namespace Daydream
 	}
 
 
-
-	Shared<Material> D3D12RenderDevice::CreateMaterial(Shared<PipelineState> _pipeline)
-	{
-		return MakeShared<D3D12Material>(this, _pipeline.get());
-	}
-
 	void D3D12RenderDevice::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
 	{
 		//D3D12Texture2D* src = (D3D12Texture2D*)_src.get();

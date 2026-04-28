@@ -38,7 +38,6 @@ namespace Daydream
 		{
 			singleTimeCommandQueue.push(_command);
 		}
-		//static RenderCommandList* GetCurrentCommandQueue();
 
 		static void Init(RendererAPIType _API);
 		static void PostInit();

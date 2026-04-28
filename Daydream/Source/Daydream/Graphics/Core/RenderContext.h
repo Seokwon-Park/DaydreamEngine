@@ -50,6 +50,8 @@ namespace Daydream
 
 		virtual void CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize) {};
 
+		virtual void TransitionResource() {};
+
 		virtual void SetActiveCommandList(Shared<RenderCommandList> _commandList) {};
 
 		void CaptureBuffer(Shared<GPUBuffer> _buffer);

@@ -173,13 +173,6 @@ namespace Daydream
 		return MakeUnique<OpenGLImGuiRenderer>(this);
 	}
 
-
-
-	Shared<Material> OpenGLRenderDevice::CreateMaterial(Shared<PipelineState> _pipeline)
-	{
-		return MakeShared<OpenGLMaterial>(_pipeline.get());
-	}
-
 	void OpenGLRenderDevice::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
 	{
 		OpenGLTexture2D* src = static_cast<OpenGLTexture2D*>(_src.get());
