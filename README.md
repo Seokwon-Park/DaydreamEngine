@@ -48,5 +48,5 @@ Execute Win-GenProjects.bat (Windows Only).
 
 Open the generated solution file (e.g., DaydreamEngine.sln) in Visual Studio 2022.
 
-Set DaydreamEngine as the startup project and build.
+Set DaydreamEditor as the startup project and build.
 
