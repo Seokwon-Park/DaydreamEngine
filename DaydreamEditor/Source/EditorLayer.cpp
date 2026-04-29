@@ -37,7 +37,7 @@ namespace Daydream
 		Daydream::TextureDesc textureDesc{};
 		textureDesc.width = 512;
 		textureDesc.height = 512;
-		textureDesc.bindFlags = Daydream::TextureUsage::ShaderResource;
+		textureDesc.textureUsage = Daydream::TextureUsage::ShaderResource;
 		textureDesc.format = Daydream::RenderFormat::R8G8B8A8_UNORM;
 		//texture = Daydream::Texture2D::CreateFromFile("Asset/Texture/skybox/back.jpg", textureDesc);
 		//texture->SetSampler(sampler);
@@ -208,12 +208,6 @@ namespace Daydream
 		RenderGraphResourceHandle maskResource = renderGraph.AddResource("Mask");
 		RenderGraphResourceHandle finalResource = renderGraph.AddResource("Final");
 
-
-		//pso->Bind();
-		//squareVB->Bind();
-		//squareIB->Bind();
-		//material->Bind();
-
 		RenderGraphPassHandle depthPass = renderGraph.AddPass("DepthPass", [this]()
 			{
 				Renderer::BeginRenderPass(depthRenderPass, depthFramebuffer);
@@ -264,7 +258,6 @@ namespace Daydream
 						Renderer::DrawIndexed(mesh->GetIndexCount());
 					}
 				}
-				//pso3d->Bind();
 				Renderer::EndRenderPass(gBufferRenderPass);
 			});
 

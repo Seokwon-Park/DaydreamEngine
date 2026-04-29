@@ -185,7 +185,7 @@ namespace Daydream
 			textureDesc.width = width;
 			textureDesc.height = height;
 			textureDesc.format = colorAttachmentDesc.format;
-			textureDesc.bindFlags = TextureUsage::RenderTarget | TextureUsage::ShaderResource;
+			textureDesc.textureUsage = TextureUsage::RenderTarget | TextureUsage::ShaderResource;
 
 			Shared<D3D12Texture2D> colorTexture = MakeShared<D3D12Texture2D>(device, textureDesc);
 			D3D12_RESOURCE_BARRIER barrier = {};
@@ -211,7 +211,7 @@ namespace Daydream
 			textureDesc.width = width;
 			textureDesc.height = height;
 			textureDesc.format = renderPassDesc.depthAttachment.format;
-			textureDesc.bindFlags = TextureUsage::DepthStencil | TextureUsage::ShaderResource;
+			textureDesc.textureUsage = TextureUsage::DepthStencil | TextureUsage::ShaderResource;
 
 			Shared<D3D12Texture2D> depthTexture = MakeShared<D3D12Texture2D>(device, textureDesc);
 			D3D12_RESOURCE_BARRIER barrier = {};

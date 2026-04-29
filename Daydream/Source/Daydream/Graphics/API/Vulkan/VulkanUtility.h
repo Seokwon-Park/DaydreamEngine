@@ -7,6 +7,7 @@
 #include "Daydream/Graphics/Utility/GraphicsUtility.h"
 
 #include "Daydream/Graphics/Resources/Buffer.h"
+#include "Daydream/Graphics/Resources/Texture.h"
 #include "Daydream/Graphics/Resources/Sampler.h"
 #include "Daydream/Graphics/States/RasterizerState.h"
 
@@ -17,6 +18,9 @@ namespace Daydream::GraphicsUtility::Vulkan
 
 	vk::BufferCreateInfo ConvertToVulkanCreateInfo(const BufferDesc& _desc);
 	vma::AllocationCreateInfo ConvertToVMAAllocationInfo(const BufferDesc& _desc);
+
+	vk::ImageCreateInfo ConvertToVulkanCreateInfo(const TextureDesc& _desc);
+	vma::AllocationCreateInfo ConvertToVMAAllocationInfo(const TextureDesc& _desc);
 
 	vk::Format ConvertToVkFormat(RenderFormat _format);
 	vk::ShaderStageFlagBits ConvertToShaderStageFlagBit(ShaderType _type);

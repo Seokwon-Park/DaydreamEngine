@@ -12,8 +12,6 @@ namespace Daydream
 		TextureCube(const TextureDesc& _dsec);
 		virtual ~TextureCube();
 
-		virtual UInt32 GetLayerCount() const { return 6; }
-
 		void Update(UInt32 _faceIndex, Shared<Texture2D> _texture);
 		virtual void GenerateMips() {};
 

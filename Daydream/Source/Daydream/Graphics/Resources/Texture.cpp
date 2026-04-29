@@ -10,23 +10,22 @@
 
 namespace Daydream
 {
-	Texture::Texture(const TextureDesc& _desc)
+	GPUTexture::GPUTexture(const TextureDesc& _desc)
+		:desc(_desc)
 	{
-		desc = _desc;
-
-		UInt32 maxMips = (UInt32)std::floor(std::log2(std::max(_desc.width, _desc.height))) + 1;
+		UInt32 maxMips = (UInt32)std::floor(std::log2(std::max(desc.width, desc.height))) + 1;
 
 		if (desc.mipLevels == 0 || desc.mipLevels > maxMips)
 		{
-			DAYDREAM_CORE_WARN("mipLevel is to Large {} -> {}", std::max(_desc.width, _desc.height), maxMips);
+			DAYDREAM_CORE_WARN("mipLevel is to Large {} -> {}", std::max(desc.width, desc.height), maxMips);
 			desc.mipLevels = maxMips;
 		}
 	}
 
-	Texture2D::Texture2D(const TextureDesc& _desc)
-		:Texture(_desc)
+	Texture2D::Texture2D(Shared<GPUTexture> _texture)
+		:Texture(_texture)
 	{
-
+		
 	}
 
 	Shared<Texture2D> Texture2D::Create(const void* _data, const TextureDesc& _desc)
@@ -75,5 +74,7 @@ namespace Daydream
 	{
 		return Renderer::GetRenderDevice()->CreateEmptyTexture2D(_desc);
 	}
+
+
 
 }

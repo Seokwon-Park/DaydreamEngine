@@ -146,6 +146,10 @@ namespace Daydream
 	{
 		return MakeShared<D3D11GPUBuffer>(this, _desc);
 	}
+	Shared<GPUTexture> D3D11RenderDevice::CreateGPUTexture(const Texture& _desc)
+	{
+		return MakeShared<D3D11GPUTexture>(this, _desc);
+	}
 	//Shared<VertexBuffer> D3D11RenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
 	//{
 	//	BufferDesc desc{};

@@ -12,6 +12,7 @@ namespace Daydream
 		Metal
 	};
 
+	////////////////////////////////////////// Texture  ////////////////////////////////////////// 
 	enum class TextureUsage
 	{
 		None = 0,
@@ -34,6 +35,16 @@ namespace Daydream
 		return static_cast<TextureUsage>(static_cast<int>(a) & static_cast<int>(b));
 	}
 
+	enum class TextureViewType
+	{
+		ShaderResource,
+		RenderTarget,
+		DepthStencil,
+		UnorderedAccess
+	};
+
+	///////////////////////////////////////////////////////////////////////////////////////////
+
 	enum class BufferUsage : UInt32
 	{
 		None = 0,
@@ -43,7 +54,7 @@ namespace Daydream
 		Storage = 1 << 3,       // D3D11/12 UAV(Structured/Raw), Vulkan StorageBuffer, OpenGL SSBO
 		TransferSource = 1 << 4,// D3D12 COPY_SOURCE, Vulkan TransferSrc, OpenGL CopyRead, D3D11 Copy source intent(no dedicated bind flag)
 		TransferDest = 1 << 5,  // D3D12 COPY_DEST, Vulkan TransferDst, OpenGL CopyWrite, D3D11 Copy destination intent(no dedicated bind flag)
-		Indirect = 1 << 6       // D3D12 INDIRECT_ARGUMENT, Vulka
+		Indirect = 1 << 6       
 	};
 
 	inline BufferUsage operator|(BufferUsage a, BufferUsage b)

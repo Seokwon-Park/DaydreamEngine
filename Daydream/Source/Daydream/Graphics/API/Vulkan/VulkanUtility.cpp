@@ -108,6 +108,92 @@ namespace Daydream::GraphicsUtility::Vulkan
 		return allocInfo;
 	}
 
+	vk::ImageCreateInfo ConvertToVulkanCreateInfo(const TextureDesc& _desc)
+	{
+		vk::ImageCreateInfo imageInfo{};
+
+		switch (_desc.type)
+		{
+		case TextureType::Texture1D:
+		case TextureType::Texture1DArray:
+		{
+			imageInfo.imageType = vk::ImageType::e1D;
+			imageInfo.extent.width = _desc.width;
+			imageInfo.extent.height = 1;
+			imageInfo.extent.depth = 1;
+			imageInfo.arrayLayers = (_desc.type == TextureType::Texture1DArray) ? _desc.layerCount : 1;
+			break;
+		}
+		case TextureType::Texture2D:
+		case TextureType::Texture2DArray:
+		case TextureType::Texture2DMultisample:
+		{
+			imageInfo.imageType = vk::ImageType::e2D;
+			imageInfo.extent.width = _desc.width;
+			imageInfo.extent.height = _desc.height;
+			imageInfo.extent.depth = 1;
+			imageInfo.arrayLayers = (_desc.type == TextureType::Texture2DArray) ? _desc.layerCount : 1;
+			if (_desc.type == TextureType::Texture2DMultisample)
+			{
+				imageInfo.mipLevels = 1;
+			}
+			break;
+		}
+
+		case TextureType::TextureCube:
+		case TextureType::TextureCubeArray:
+		{
+			// Vulkan에서 큐브맵은 2D 이미지의 특수한 배열 형태로 취급됩니다.
+			imageInfo.imageType = vk::ImageType::e2D;
+			imageInfo.extent.width = _desc.width;
+			imageInfo.extent.height = _desc.height;
+			imageInfo.extent.depth = 1;
+			imageInfo.arrayLayers = (_desc.type == TextureType::TextureCubeArray) ? (6 * _desc.layerCount) : 6;
+			imageInfo.flags |= vk::ImageCreateFlagBits::eCubeCompatible;
+			break;
+		}
+
+		case TextureType::Texture3D:
+		{
+			imageInfo.imageType = vk::ImageType::e3D;
+			imageInfo.extent.width = _desc.width;
+			imageInfo.extent.height = _desc.height;
+			imageInfo.extent.depth = _desc.layerCount;
+			imageInfo.arrayLayers = 1;
+			break;
+		}
+
+		case TextureType::Unknown:
+		default:
+			// DAYDREAM_CORE_ASSERT(false, "Unknown Texture Type in Vulkan conversion!");
+			break;
+		}
+
+		imageInfo.mipLevels = _desc.mipLevels;
+		imageInfo.arrayLayers = _desc.layerCount;
+		imageInfo.format = ConvertToVkFormat(_desc.format);
+		imageInfo.tiling = vk::ImageTiling::eOptimal;
+		imageInfo.initialLayout = vk::ImageLayout::eUndefined;
+		imageInfo.usage = ConvertToVkImageUsageFlags(_desc.textureUsage);
+		imageInfo.sharingMode = vk::SharingMode::eExclusive;
+		imageInfo.samples = Cast<vk::SampleCountFlagBits>(_desc.sampleCount);
+
+		return imageInfo;
+	}
+
+	vma::AllocationCreateInfo ConvertToVMAAllocationInfo(const TextureDesc& _desc)
+	{
+		vma::AllocationCreateInfo allocInfo{};
+
+		allocInfo.usage = vma::MemoryUsage::eAuto;
+		if ((UInt32)_desc.textureUsage & (UInt32)TextureUsage::RenderTarget)
+		{
+			allocInfo.flags |= vma::AllocationCreateFlagBits::eDedicatedMemory;
+		}
+
+		return allocInfo;
+	}
+
 	vk::Format ConvertToVkFormat(RenderFormat _format)
 	{
 		switch (_format)

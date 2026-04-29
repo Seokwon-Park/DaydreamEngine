@@ -7,6 +7,41 @@
 
 namespace Daydream
 {
+	OpenGLGPUTexture::OpenGLGPUTexture(const TextureDesc& _desc)
+		:GPUTexture(_desc)
+	{
+		GLenum type;
+
+		switch (_desc.type)
+		{
+		case TextureType::Unknown:
+		case TextureType::Texture1D: type = GL_TEXTURE_1D; break;
+		case TextureType::Texture1DArray: type = GL_TEXTURE_1D_ARRAY; break;
+		case TextureType::Texture2D:type = GL_TEXTURE_2D; break;
+		case TextureType::Texture2DArray:type = GL_TEXTURE_2D_ARRAY; break;
+		case TextureType::Texture2DMultisample:type = GL_TEXTURE_2D_MULTISAMPLE; break;
+		case TextureType::TextureCube:type = GL_TEXTURE_CUBE_MAP; break;
+		case TextureType::TextureCubeArray:type = GL_TEXTURE_CUBE_MAP_ARRAY; break;
+		case TextureType::Texture3D:type = GL_TEXTURE_3D; break;
+		default:
+			break;
+		}
+		glCreateTextures(type, 1, &textureID);
+
+		GLenum internalFormat = 0, dataFormat = 0;
+		internalFormat = GraphicsUtility::OpenGL::ConvertRenderFormatToGLFormat(desc.format);
+		dataFormat = GraphicsUtility::OpenGL::ConvertRenderFormatToGLDataFormat(desc.format);
+		
+		DAYDREAM_CORE_ASSERT(internalFormat & dataFormat, "Format not supported!");
+		glTextureStorage2D(textureID, desc.mipLevels, internalFormat, desc.width, desc.height);
+
+	}
+
+	OpenGLGPUTexture::~OpenGLGPUTexture()
+	{
+		glDeleteTextures(1, &textureID);
+	}
+
 	OpenGLTexture2D::OpenGLTexture2D(const TextureDesc& _desc, const void* _initialData)
 		:Texture2D(_desc)
 	{
@@ -55,4 +90,5 @@ namespace Daydream
 	{
 		textureSampler = static_cast<OpenGLSampler*>(_sampler.get());
 	}
+
 }

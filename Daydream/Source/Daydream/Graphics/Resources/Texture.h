@@ -7,27 +7,41 @@
 namespace Daydream
 {
 	// Texture
-	enum class TextureType {
+	enum class TextureType 
+	{
 		Unknown,
+
+		// 1D (선형 데이터)
+		Texture1D,
+		Texture1DArray,
+
+		// 2D (일반적인 이미지)
 		Texture2D,
+		Texture2DArray,
+		Texture2DMultisample,
+
+		// 3D & Cube (볼륨 및 환경)
 		TextureCube,
+		TextureCubeArray,
 		Texture3D
 	};
 
 	struct TextureDesc
 	{
-		UInt32 width;
-		UInt32 height;
+		UInt32 width = 1;
+		UInt32 height = 1;
+		UInt32 layerCount = 1;
 		UInt32 mipLevels = 1;
+		UInt32 sampleCount = 1;
 		RenderFormat format;
-		TextureUsage bindFlags;
+		TextureUsage textureUsage;
 		TextureType type = TextureType::Unknown;
 	};
 
 	class GPUTexture
 	{
 	public:
-		GPUTexture(const TextureDesc& _desc) : desc(_desc) {}
+		GPUTexture(const TextureDesc& _desc);
 		virtual ~GPUTexture() = default;
 
 		const TextureDesc& GetDesc() const { return desc; }
@@ -39,31 +53,29 @@ namespace Daydream
 	class Texture : public Asset
 	{
 	public:
-		Texture(const TextureDesc& _desc);
+		Texture(Shared<GPUTexture> _texture) : texture(_texture) {}
 		virtual ~Texture() = default;
 
-		UInt32 GetWidth() const { return desc.width; }
-		UInt32 GetHeight() const { return desc.height; }
-		UInt32 GetMipLevels() const { return desc.mipLevels; }
-		virtual UInt32 GetLayerCount() const = 0;
+		UInt32 GetWidth() const { return texture->GetDesc().width; }
+		UInt32 GetHeight() const { return texture->GetDesc().height; }
+		UInt32 GetMipLevels() const { return texture->GetDesc().mipLevels; }
+		UInt32 GetLayerCount() const { return texture->GetDesc().layerCount; }
 
 		virtual void SetSampler(Shared<Sampler> _sampler) = 0;
 		virtual bool HasSampler() = 0;
 
-		TextureDesc GetDesc() const { return desc; }
-		TextureType GetType() const { return desc.type; }
+		TextureDesc GetDesc() const { return texture->GetDesc(); }
+		TextureType GetType() const { return texture->GetDesc().type; }
 	protected:
-		TextureDesc desc = TextureDesc();
+		Shared<GPUTexture> texture;
 	};
 
 	class Texture2D : public Texture
 	{
 	public:
 		ASSET_CLASS_TYPE(Texture2D)
-		Texture2D(const TextureDesc& _desc);
+		Texture2D(Shared<GPUTexture> _texture);
 		virtual ~Texture2D() = default;
-		
-		virtual UInt32 GetLayerCount() const { return 1; }
 
 		virtual void* GetImGuiHandle() = 0;
 

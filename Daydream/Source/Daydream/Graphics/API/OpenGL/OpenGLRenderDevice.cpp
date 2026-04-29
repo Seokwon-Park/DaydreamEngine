@@ -67,6 +67,11 @@ namespace Daydream
 		return MakeShared<OpenGLGPUBuffer>(_desc);
 	}
 
+	Shared<GPUTexture> OpenGLRenderDevice::CreateGPUTexture(const Texture& _desc)
+	{
+		return MakeShared<OpenGLGPUTexture>(_desc);
+	}
+
 	//Shared<VertexBuffer> OpenGLRenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
 	//{
 	//	BufferDesc desc{};

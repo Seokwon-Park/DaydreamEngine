@@ -249,6 +249,10 @@
     <ClInclude Include="Source\Daydream\Graphics\Resources\Sprite.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Texture.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\TextureCube.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Resources\TextureView.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\States\BlendState.h" />
     <ClInclude Include="Source\Daydream\Graphics\States\DepthStencilState.h" />
     <ClInclude Include="Source\Daydream\Graphics\States\RasterizerState.h" />
@@ -841,6 +845,10 @@
     <ClCompile Include="Source\Daydream\Graphics\Resources\Skybox.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\Texture.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\TextureCube.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Resources\TextureView.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\Utility\DDSLoader.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Utility\GraphicsUtility.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Utility\ImageLoader.cpp" />

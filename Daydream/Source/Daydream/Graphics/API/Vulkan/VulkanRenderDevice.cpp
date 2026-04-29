@@ -157,6 +157,11 @@ namespace Daydream
 		return MakeShared<VulkanGPUBuffer>(this, _desc);
 	}
 
+	Shared<GPUTexture> VulkanRenderDevice::CreateGPUTexture(const Texture& _desc)
+	{
+		return MakeShared<VulkanGPUTexture>(this, _desc);
+	}
+
 	//Shared<VertexBuffer> VulkanRenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
 	//{
 	//	BufferDesc desc{};
