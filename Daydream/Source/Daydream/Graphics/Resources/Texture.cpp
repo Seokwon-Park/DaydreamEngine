@@ -6,6 +6,7 @@
 #include "Daydream/Graphics/Core/Renderer.h"
 
 #include "Daydream/Graphics/Utility/ImageLoader.h"
+#include "Daydream/Graphics/Utility/GraphicsUtility.h"
 
 
 namespace Daydream
@@ -25,12 +26,27 @@ namespace Daydream
 	Texture2D::Texture2D(Shared<GPUTexture> _texture)
 		:Texture(_texture)
 	{
-		
+
 	}
 
 	Shared<Texture2D> Texture2D::Create(const void* _data, const TextureDesc& _desc)
 	{
-		return Renderer::GetRenderDevice()->CreateTexture2D(_data, _desc);
+		TextureDesc desc = _desc;
+		desc.type = TextureType::Texture2D;
+		Shared<GPUTexture> gpuTexture = Renderer::GetRenderDevice()->CreateGPUTexture(desc);
+		Shared<Texture2D> texture2D = MakeShared<Texture2D>(gpuTexture);
+
+		UInt32 imageSize = _desc.width * _desc.height * GraphicsUtility::GetRenderFormatSize(_desc.format);
+		Shared<UploadBuffer> uploadBuffer = UploadBuffer::Create(imageSize);
+		uploadBuffer->UpdateData(_data, imageSize);
+
+		Renderer::EnqueuePreFrameCommand([=]()
+			{
+				Renderer::CopyBufferToTexture(uploadBuffer->GetBuffer(), texture2D->GetTexture(), desc.width, desc.height);
+				Renderer::TransitionTextureState(gpuTexture, ResourceState::CopyDest, ResourceState::VertexBuffer, 0, 1);
+			});
+
+		return vertexBuffer;
 	}
 
 	Shared<Texture2D> Texture2D::CreateFromFile(const Path& _path, const TextureDesc& _desc)
@@ -72,9 +88,64 @@ namespace Daydream
 
 	Shared<Texture2D> Texture2D::CreateEmpty(const TextureDesc& _desc)
 	{
+		TextureDesc desc = _desc;
+		desc.type = TextureType::Texture2D;
+
+
 		return Renderer::GetRenderDevice()->CreateEmptyTexture2D(_desc);
 	}
 
+	TextureCube::TextureCube(Shared<GPUTexture> _texture)
+		:Texture(_texture)
+	{
+	}
 
+	Shared<TextureCube> TextureCube::Create(const Array<Path>& _paths, const TextureDesc& _desc)
+	{
+		Array<const void*> imageDatas;
+		Array<ImageData> temp;
+		TextureDesc finalDesc = _desc;
+		for (auto path : _paths)
+		{
+			ImageData imageData = ImageLoader::LoadImageFile(path);
+
+			if (std::get<Array<UInt8>>(imageData.data).data() != nullptr)
+			{
+				finalDesc.width = imageData.width;
+				finalDesc.height = imageData.height;
+
+				temp.push_back(imageData);
+			}
+		}
+		for (int i = 0; i < temp.size(); i++)
+		{
+			imageDatas.push_back(std::get<Array<UInt8>>(temp[i].data).data());
+		}
+		Shared<TextureCube> textureCube = Renderer::GetRenderDevice()->CreateTextureCube(imageDatas, finalDesc);
+		for (int i = 0; i < 6; i++)
+		{
+			Path path = _paths[i];
+			textureCube->textures[i] = ResourceManager::GetResource<Texture2D>(path.make_preferred().string());
+		}
+		return textureCube;
+	}
+
+	Shared<TextureCube> TextureCube::Create(const Array<Shared<Texture2D>>& _textures, const TextureDesc& _desc)
+	{
+		TextureDesc desc = _desc;
+		desc.type = TextureType::Texture2D;
+		Shared<GPUTexture> gpuTexture = Renderer::GetRenderDevice()->CreateGPUTexture(desc);
+		textureCube->textures = _textures;
+		return textureCube;
+	}
+
+	Shared<TextureCube> TextureCube::CreateEmpty(const TextureDesc& _desc)
+	{
+		TextureDesc desc = _desc;
+		desc.type = TextureType::Texture2D;
+		Shared<GPUTexture> gpuTexture = Renderer::GetRenderDevice()->CreateGPUTexture(desc);
+		Shared<TextureCube> textureCube = MakeShared<TextureCube>(gpuTexture);
+		return textureCube;
+	}
 
 }

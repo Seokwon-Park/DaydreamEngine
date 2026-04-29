@@ -197,11 +197,27 @@ namespace Daydream
 				renderContext->SetTextureCube(_name, _textureCube);
 			});
 	}
+	void Renderer::SetTextureView(const String& _name, Shared<TextureView> _textureView)
+	{
+		EnqueueCommand([_name, _textureView]()
+			{
+				renderContext->SetTextureView(_name, _textureView);
+			});
+	}
+
 	void Renderer::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
 	{
 		EnqueueCommand([_name, _buffer]()
 			{
 				renderContext->SetConstantBuffer(_name, _buffer);
+			});
+	}
+
+	void Renderer::SetSampler(const String& _name, Shared<Sampler> _sampler)
+	{
+		EnqueueCommand([_name, _sampler]()
+			{
+				renderContext->SetSampler(_name, _sampler);
 			});
 	}
 
@@ -255,9 +271,19 @@ namespace Daydream
 	{
 		EnqueueCommand([_src, _dst, _copySize]()
 			{
-				renderContext->CaptureBuffer(_src);
-				renderContext->CaptureBuffer(_dst);
+				renderContext->CaptureResource(_src);
+				renderContext->CaptureResource(_dst);
 				renderContext->CopyBuffer(_src, _dst, _copySize);
+			});
+	}
+
+	void Renderer::CopyBufferToTexture(Shared<GPUBuffer> _src, Shared<GPUTexture> _dst, UInt32 _width, UInt32 _height)
+	{
+		EnqueueCommand([_src, _dst, _width, _height]()
+			{
+				renderContext->CaptureResource(_src);
+				renderContext->CaptureResource(_dst);
+				renderContext->CopyBufferToTexture(_src, _dst, _width, _height);
 			});
 	}
 
@@ -278,7 +304,7 @@ namespace Daydream
 
 	}
 
-	void Renderer::TransitionTextureState(Shared<Texture> _texture, ResourceState _beforeState, ResourceState _afterState, UInt32 _mipLevel, UInt32 _mipCount)
+	void Daydream::Renderer::TransitionTextureState(Shared<GPUTexture> _texture, ResourceState _beforeState, ResourceState _afterState, UInt32 _mipLevel, UInt32 _mipCount)
 	{
 		EnqueueCommand([_texture, _beforeState, _afterState, _mipLevel, _mipCount]()
 			{

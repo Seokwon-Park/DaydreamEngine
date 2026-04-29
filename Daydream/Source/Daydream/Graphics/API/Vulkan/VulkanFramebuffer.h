@@ -34,7 +34,7 @@ namespace Daydream
 		vk::UniqueFramebuffer framebuffer;
 		vk::Extent2D extent;
 		vk::UniqueImageView swapchainImageView;
-		Array<vk::ImageView> attachmentImageViews; // ??왜필요했지이게
+		Array<vk::ImageView> attachmentImageViews; 
 		vk::ImageView depthStencilView;
 
 		Array<Shared<VulkanTexture2D>> colorAttachments;

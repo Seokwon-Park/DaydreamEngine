@@ -26,42 +26,12 @@ namespace Daydream
 
 		editorCamera->SetPosition({ 0.0f,0.0f,-2.0f });
 		viewProjMat = ConstantBuffer::Create(sizeof(Daydream::Matrix4x4));
-		//viewProjMat->Update(&editorCamera->GetViewProjectionMatrix(), sizeof(Daydream::Matrix4x4));
 
 		entityBuffer = ConstantBuffer::Create(sizeof(EntityInfo));
 		info.entityID = 0;
 		info.thickness = 3;
 
 		sampler = ResourceManager::GetResource<Sampler>("LinearRepeat");
-
-		Daydream::TextureDesc textureDesc{};
-		textureDesc.width = 512;
-		textureDesc.height = 512;
-		textureDesc.textureUsage = Daydream::TextureUsage::ShaderResource;
-		textureDesc.format = Daydream::RenderFormat::R8G8B8A8_UNORM;
-		//texture = Daydream::Texture2D::CreateFromFile("Asset/Texture/skybox/back.jpg", textureDesc);
-		//texture->SetSampler(sampler);
-
-		//textureCube = TextureCube::Create({ "Asset/Texture/skybox/right.jpg",
-		//	"Asset/Texture/skybox/left.jpg",
-		//	"Asset/Texture/skybox/top.jpg",
-		//	"Asset/Texture/skybox/bottom.jpg",
-		//	"Asset/Texture/skybox/front.jpg",
-		//	"Asset/Texture/skybox/back.jpg" },
-		//	textureDesc
-		//);
-		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
-		textureCube = TextureCube::CreateEmpty(textureDesc);
-
-		//	textureCube = TextureCube::Create({ "Resource/NoTexture.png",
-	//"Resource/NoTexture.png",
-	//"Resource/NoTexture.png",
-	//"Resource/NoTexture.png",
-	//"Resource/NoTexture.png",
-	//"Resource/NoTexture.png" },
-	//		textureDesc
-	//	);
-		textureCube->SetSampler(sampler);
 
 		renderPass = ResourceManager::GetResource<RenderPass>("StandardRenderPass");
 		depthRenderPass = ResourceManager::GetResource<RenderPass>("DepthRenderPass");

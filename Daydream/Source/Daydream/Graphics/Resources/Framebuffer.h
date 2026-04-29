@@ -46,6 +46,11 @@ namespace Daydream
 		bool isSwapchainBuffer = false;
 		UInt32 width;
 		UInt32 height;
+
+		Array<Shared<Texture2D>> colorAttachments;
+		Shared<Texture2D> depthAttachment;
+
+
 		UInt32 colorAttachmentCount = 0;
 		RenderPass* renderPass;
 	private:

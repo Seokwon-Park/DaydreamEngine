@@ -9,12 +9,15 @@ namespace Daydream
 {
 	class RenderDevice;
 	class GPUBuffer;
+	class GPUTexture;
+	class GPUResource;
 	class VertexBuffer;
 	class IndexBuffer;
 	class Mesh;
 	class Material;
 	class Texture2D;
 	class TextureCube;
+	class TextureView;
 	class ConstantBuffer;
 	class PipelineState;
 
@@ -40,23 +43,23 @@ namespace Daydream
 
 		virtual void SetTexture2D(const String& _name, Shared<Texture2D> _texture) ;
 		virtual void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube) {};
+		virtual void SetTextureView(const String& _name, Shared<TextureView> _textureView) {};
 		virtual void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer) {};
+		virtual void SetSampler(const String& _name, Shared<Sampler> _sampler) {};
 		
+		virtual void CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize) {};
+		virtual void CopyBufferToTexture(Shared<GPUBuffer> _src, Shared<GPUTexture> _dst, UInt32 _width, UInt32 _height) {};
 		virtual void CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst) {};
 		virtual void CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel = 0) {};
 		//virtual void CopyTextureToBuffer(Shared<Texture2D> _srcTexture, Shared<Buffer> _dstBuffer, UInt32 _offsetX, UInt32 _offsetY, UInt32 _width, UInt32 _height) = 0;
 
 		virtual void GenerateMips(Shared<Texture> _texture) {};
 
-		virtual void CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize) {};
-
-		virtual void TransitionTextureState(
-			Shared<Texture> _texture,
+		virtual void TransitionTextureState(Shared<GPUTexture> _texture,
 			ResourceState _beforeState,
 			ResourceState _afterState,
 			UInt32 _mipLevel = 0,       
-			UInt32 _mipCount = 1        
-		) {};
+			UInt32 _mipCount = 1) {};
 
 		virtual void TransitionBufferState(
 			Shared<GPUBuffer> _buffer,
@@ -66,7 +69,7 @@ namespace Daydream
 
 		virtual void SetActiveCommandList(Shared<RenderCommandList> _commandList) {};
 
-		void CaptureBuffer(Shared<GPUBuffer> _buffer);
+		void CaptureResource(Shared<GPUResource> _resource);
 		void ReleaseCapturedBuffer();
 		
 		Shared<RenderCommandList> GetActiveCommandList() const { return activeCommandList; }
@@ -74,7 +77,7 @@ namespace Daydream
 		Shared<PipelineState> activePipelineState;
 		Shared<RenderCommandList> activeCommandList;
 
-		Array<Shared<GPUBuffer>> bufferStorage;
+		Array<Shared<GPUResource>> captureStorage;
 	private:
 	};
 }

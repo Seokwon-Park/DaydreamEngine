@@ -67,7 +67,7 @@ namespace Daydream
 		return MakeShared<OpenGLGPUBuffer>(_desc);
 	}
 
-	Shared<GPUTexture> OpenGLRenderDevice::CreateGPUTexture(const Texture& _desc)
+	Shared<GPUTexture> Daydream::OpenGLRenderDevice::CreateGPUTexture(const TextureDesc & _desc)
 	{
 		return MakeShared<OpenGLGPUTexture>(_desc);
 	}
@@ -131,7 +131,7 @@ namespace Daydream
 		return MakeShared<OpenGLSwapchain>(_window, _desc);
 	}
 
-	Shared<Texture2D> OpenGLRenderDevice::CreateEmptyTexture2D(const TextureDesc& _desc)
+	/*Shared<Texture2D> OpenGLRenderDevice::CreateEmptyTexture2D(const TextureDesc& _desc)
 	{
 		return MakeShared<OpenGLTexture2D>(_desc);
 	}
@@ -165,7 +165,7 @@ namespace Daydream
 		auto textureCube = MakeShared<OpenGLTextureCube>(_desc, dummy);
 
 		return textureCube;
-	}
+	}*/
 
 	Shared<Sampler> OpenGLRenderDevice::CreateSampler(const SamplerDesc& _desc)
 	{
@@ -177,39 +177,39 @@ namespace Daydream
 		return MakeUnique<OpenGLImGuiRenderer>(this);
 	}
 
-	void OpenGLRenderDevice::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
-	{
-		OpenGLTexture2D* src = static_cast<OpenGLTexture2D*>(_src.get());
-		OpenGLTexture2D* dst = static_cast<OpenGLTexture2D*>(_dst.get());
-		glCopyImageSubData(
-			src->GetTextureID(),          // 원본 텍스처 이름
-			GL_TEXTURE_2D,       // 원본 텍스처 타입
-			0,                   // 원본 밉맵 레벨
-			0, 0, 0,             // 원본 오프셋 (x, y, z)
-			dst->GetTextureID(),          // 대상 텍스처 이름
-			GL_TEXTURE_2D,       // 대상 텍스처 타입
-			0,                   // 대상 밉맵 레벨
-			0, 0, 0,             // 대상 오프셋 (x, y, z)
-			_src->GetWidth(),               // 복사할 너비
-			_src->GetHeight(),              // 복사할 높이
-			1                    // 복사할 깊이 (2D 텍스처는 1)
-		);
-	}
+	//void OpenGLRenderDevice::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
+	//{
+	//	OpenGLTexture2D* src = static_cast<OpenGLTexture2D*>(_src.get());
+	//	OpenGLTexture2D* dst = static_cast<OpenGLTexture2D*>(_dst.get());
+	//	glCopyImageSubData(
+	//		src->GetTextureID(),          // 원본 텍스처 이름
+	//		GL_TEXTURE_2D,       // 원본 텍스처 타입
+	//		0,                   // 원본 밉맵 레벨
+	//		0, 0, 0,             // 원본 오프셋 (x, y, z)
+	//		dst->GetTextureID(),          // 대상 텍스처 이름
+	//		GL_TEXTURE_2D,       // 대상 텍스처 타입
+	//		0,                   // 대상 밉맵 레벨
+	//		0, 0, 0,             // 대상 오프셋 (x, y, z)
+	//		_src->GetWidth(),               // 복사할 너비
+	//		_src->GetHeight(),              // 복사할 높이
+	//		1                    // 복사할 깊이 (2D 텍스처는 1)
+	//	);
+	//}
 
-	void OpenGLRenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel)
-	{
-		OpenGLTexture2D* src = static_cast<OpenGLTexture2D*>(_srcTexture2D);
-		OpenGLTextureCube* dst = static_cast<OpenGLTextureCube*>(_dstCubemap);
-		glCopyImageSubData(
-			src->GetTextureID(),      // 원본 텍스처 핸들
-			GL_TEXTURE_2D,        // 원본 타겟 타입
-			0,                    // 원본 밉 레벨
-			0, 0, 0,              // 원본 좌표 (x, y, z)
-			dst->GetTextureID(),         // 대상 텍스처 핸들
-			GL_TEXTURE_CUBE_MAP,  // 대상 타겟 타입
-			_mipLevel,             // 대상 밉 레벨
-			0, 0, _faceIndex,      // 대상 좌표 (x, y, layer) - faceIndex가 레이어를 지정!
-			src->GetWidth(), src->GetHeight(), 1      // 복사할 크기
-		);
-	}
+	//void OpenGLRenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel)
+	//{
+	//	OpenGLTexture2D* src = static_cast<OpenGLTexture2D*>(_srcTexture2D);
+	//	OpenGLTextureCube* dst = static_cast<OpenGLTextureCube*>(_dstCubemap);
+	//	glCopyImageSubData(
+	//		src->GetTextureID(),      // 원본 텍스처 핸들
+	//		GL_TEXTURE_2D,        // 원본 타겟 타입
+	//		0,                    // 원본 밉 레벨
+	//		0, 0, 0,              // 원본 좌표 (x, y, z)
+	//		dst->GetTextureID(),         // 대상 텍스처 핸들
+	//		GL_TEXTURE_CUBE_MAP,  // 대상 타겟 타입
+	//		_mipLevel,             // 대상 밉 레벨
+	//		0, 0, _faceIndex,      // 대상 좌표 (x, y, layer) - faceIndex가 레이어를 지정!
+	//		src->GetWidth(), src->GetHeight(), 1      // 복사할 크기
+	//	);
+	//}
 }

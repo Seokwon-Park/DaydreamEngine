@@ -146,7 +146,7 @@ namespace Daydream
 	{
 		return MakeShared<D3D11GPUBuffer>(this, _desc);
 	}
-	Shared<GPUTexture> D3D11RenderDevice::CreateGPUTexture(const Texture& _desc)
+	Shared<GPUTexture> Daydream::D3D11RenderDevice::CreateGPUTexture(const TextureDesc& _desc)
 	{
 		return MakeShared<D3D11GPUTexture>(this, _desc);
 	}
@@ -243,43 +243,43 @@ namespace Daydream
 		return MakeShared<D3D11Swapchain>(this, _window, _desc);
 	}
 
-	Shared<Texture2D> D3D11RenderDevice::CreateTexture2D(const void* _imageData, const TextureDesc& _desc)
-	{
-		//return MakeShared<D3D11Texture2D>(this, _path, _desc);
-		return MakeShared<D3D11Texture2D>(this, _desc, _imageData);
-	}
+	//Shared<Texture2D> D3D11RenderDevice::CreateTexture2D(const void* _imageData, const TextureDesc& _desc)
+	//{
+	//	//return MakeShared<D3D11Texture2D>(this, _path, _desc);
+	//	return MakeShared<D3D11Texture2D>(this, _desc, _imageData);
+	//}
 
-	Shared<Texture2D> D3D11RenderDevice::CreateEmptyTexture2D(const TextureDesc& _desc)
-	{
-		return MakeShared<D3D11Texture2D>(this, _desc);
-	}
+	//Shared<Texture2D> D3D11RenderDevice::CreateEmptyTexture2D(const TextureDesc& _desc)
+	//{
+	//	return MakeShared<D3D11Texture2D>(this, _desc);
+	//}
 
-	Shared<TextureCube> D3D11RenderDevice::CreateTextureCube(Array<const void*>& _imageDatas, const TextureDesc& _desc)
-	{
-		return MakeShared<D3D11TextureCube>(this, _desc, _imageDatas);
-	}
+	//Shared<TextureCube> D3D11RenderDevice::CreateTextureCube(Array<const void*>& _imageDatas, const TextureDesc& _desc)
+	//{
+	//	return MakeShared<D3D11TextureCube>(this, _desc, _imageDatas);
+	//}
 
-	Shared<TextureCube> D3D11RenderDevice::CreateTextureCube(const Array<Shared<Texture2D>>& _textures, const TextureDesc& _desc)
-	{
-		Array<const void*> dummy;
-		Shared<D3D11TextureCube> textureCube = MakeShared<D3D11TextureCube>(this, _desc, dummy);
-		for (int i = 0; i < _textures.size(); ++i)
-		{
-			CopyTextureToCubemapFace(
-				textureCube.get(),   // 대상: 큐브맵 리소스
-				i,                             // 대상 면 인덱스
-				_textures[i].get()// 원본: Texture2D 리소스
-			);
-		}
-		return textureCube;
-	}
+	//Shared<TextureCube> D3D11RenderDevice::CreateTextureCube(const Array<Shared<Texture2D>>& _textures, const TextureDesc& _desc)
+	//{
+	//	Array<const void*> dummy;
+	//	Shared<D3D11TextureCube> textureCube = MakeShared<D3D11TextureCube>(this, _desc, dummy);
+	//	for (int i = 0; i < _textures.size(); ++i)
+	//	{
+	//		CopyTextureToCubemapFace(
+	//			textureCube.get(),   // 대상: 큐브맵 리소스
+	//			i,                             // 대상 면 인덱스
+	//			_textures[i].get()// 원본: Texture2D 리소스
+	//		);
+	//	}
+	//	return textureCube;
+	//}
 
-	Shared<TextureCube> D3D11RenderDevice::CreateEmptyTextureCube(const TextureDesc& _desc)
-	{
-		Array<const void*> dummy;
-		auto textureCube = MakeShared<D3D11TextureCube>(this, _desc, dummy);
-		return textureCube;
-	}
+	//Shared<TextureCube> D3D11RenderDevice::CreateEmptyTextureCube(const TextureDesc& _desc)
+	//{
+	//	Array<const void*> dummy;
+	//	auto textureCube = MakeShared<D3D11TextureCube>(this, _desc, dummy);
+	//	return textureCube;
+	//}
 
 	Shared<Sampler> D3D11RenderDevice::CreateSampler(const SamplerDesc& _desc)
 	{

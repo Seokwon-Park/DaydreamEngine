@@ -1973,6 +1973,8 @@
     </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderGraph.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\TextureView.h" />
+    <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11TextureView.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Resources\GPUResource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\Directory.cpp">
@@ -2407,5 +2409,7 @@
     <ClCompile Include="Source\Daydream\Enum\RendererEnums.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderGraph.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\TextureView.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11TextureView.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Resources\GPUResource.cpp" />
   </ItemGroup>
 </Project>

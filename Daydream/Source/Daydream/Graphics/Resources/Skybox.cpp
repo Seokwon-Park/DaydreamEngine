@@ -58,7 +58,6 @@ namespace Daydream
 		irradianceRenderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
 		irradiancePSO = ResourceManager::GetResource<PipelineState>("IrradiancePSO");
 
-
 		prefilterPSO = ResourceManager::GetResource<PipelineState>("PrefilterPSO");
 		equirectangularDropTarget = AssetManager::GetAssetByPath<Texture2D>("Resource/NoTexture.png");
 

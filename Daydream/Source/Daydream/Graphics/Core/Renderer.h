@@ -8,6 +8,7 @@
 #include "Daydream/Graphics/Core/RenderContext.h"
 #include "Daydream/Graphics/Camera/Camera.h"
 #include "Daydream/Graphics/Resources/Skybox.h"
+#include "Daydream/Graphics/Resources/TextureView.h"
 
 namespace Daydream
 {
@@ -62,7 +63,9 @@ namespace Daydream
 
 		static void SetTexture2D(const String& _name, Shared<Texture2D> _texture);
 		static void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube);
+		static void SetTextureView(const String& _name, Shared<TextureView> _textureView);
 		static void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer);
+		static void SetSampler(const String& _name, Shared<Sampler> _sampler);
 
 		template <typename DataType>
 		static void UpdateConstantBuffer(Shared<ConstantBuffer> _buffer, const DataType& _data)
@@ -81,16 +84,16 @@ namespace Daydream
 		static void RequestResizeFramebuffer(const Shared<Framebuffer>& _framebuffer, UInt32 _width, UInt32 _height);
 
 		static void CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize);
+		static void CopyBufferToTexture(Shared<GPUBuffer> _src, Shared<GPUTexture> _dst, UInt32 _width, UInt32 _height);
+
 		static void CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst);
 		static void CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel = 0);
 
-		static void TransitionTextureState(
-			Shared<Texture> _texture,
+		static void TransitionTextureState(Shared<GPUTexture> _texture,
 			ResourceState _beforeState,
 			ResourceState _afterState,
 			UInt32 _mipLevel = 0,       // Texture 전용
-			UInt32 _mipCount = 1        // Texture 전용
-		);
+			UInt32 _mipCount = 1);
 
 		static void TransitionBufferState(
 			Shared<GPUBuffer> _buffer,

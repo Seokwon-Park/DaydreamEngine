@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GPUResource.h"
 #include "Daydream/Enum/RendererEnums.h"
 #include "Daydream/Graphics/Resources/Sampler.h"
 #include "Daydream/Asset/Asset.h"
@@ -7,7 +8,7 @@
 namespace Daydream
 {
 	// Texture
-	enum class TextureType 
+	enum class TextureType
 	{
 		Unknown,
 
@@ -38,7 +39,7 @@ namespace Daydream
 		TextureType type = TextureType::Unknown;
 	};
 
-	class GPUTexture
+	class GPUTexture : public GPUResource
 	{
 	public:
 		GPUTexture(const TextureDesc& _desc);
@@ -56,16 +57,16 @@ namespace Daydream
 		Texture(Shared<GPUTexture> _texture) : texture(_texture) {}
 		virtual ~Texture() = default;
 
-		UInt32 GetWidth() const { return texture->GetDesc().width; }
-		UInt32 GetHeight() const { return texture->GetDesc().height; }
-		UInt32 GetMipLevels() const { return texture->GetDesc().mipLevels; }
-		UInt32 GetLayerCount() const { return texture->GetDesc().layerCount; }
+		inline UInt32 GetWidth() const { return texture->GetDesc().width; }
+		inline UInt32 GetHeight() const { return texture->GetDesc().height; }
+		inline UInt32 GetMipLevels() const { return texture->GetDesc().mipLevels; }
+		inline UInt32 GetLayerCount() const { return texture->GetDesc().layerCount; }
 
-		virtual void SetSampler(Shared<Sampler> _sampler) = 0;
-		virtual bool HasSampler() = 0;
+		inline Shared<GPUTexture> GetTexture() const { return texture; }
+		inline GPUTexture* GetTextureRaw() const { return texture.get(); }
 
-		TextureDesc GetDesc() const { return texture->GetDesc(); }
-		TextureType GetType() const { return texture->GetDesc().type; }
+		inline TextureDesc GetDesc() const { return texture->GetDesc(); }
+		inline TextureType GetType() const { return texture->GetDesc().type; }
 	protected:
 		Shared<GPUTexture> texture;
 	};
@@ -88,5 +89,22 @@ namespace Daydream
 		UInt32 channels = 0;
 	};
 
+	class TextureCube : public Texture
+	{
+	public: 
+		ASSET_CLASS_TYPE(TextureCube)
+		TextureCube(Shared<GPUTexture> _texture);
+		virtual ~TextureCube();
 
+		void Update(UInt32 _faceIndex, Shared<Texture2D> _texture);
+		virtual void GenerateMips() {};
+
+		void* GetImGuiHandle(UInt32 _faceIndex);
+
+		static Shared<TextureCube> Create(const Array<Path>& _paths, const TextureDesc& _desc);
+		static Shared<TextureCube> Create(const Array<Shared<Texture2D>>& _textures, const TextureDesc& _desc);
+		static Shared<TextureCube> CreateEmpty(const TextureDesc& _desc);
+	protected:
+		Array<Shared<Texture2D>> textures;
+	};
 }

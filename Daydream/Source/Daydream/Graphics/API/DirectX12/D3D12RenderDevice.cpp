@@ -248,7 +248,7 @@ namespace Daydream
 		return MakeShared<D3D12GPUBuffer>(this, _desc);
 	}
 
-	Shared<GPUTexture> D3D12RenderDevice::CreateGPUTexture(const Texture& _desc)
+	Shared<GPUTexture> Daydream::D3D12RenderDevice::CreateGPUTexture(const TextureDesc& _desc)
 	{
 		return MakeShared<D3D12GPUTexture>(this, _desc);
 	}
@@ -360,138 +360,138 @@ namespace Daydream
 		return MakeShared<D3D12Swapchain>(this, _window, _desc);
 	}
 
-	Shared<Texture2D> D3D12RenderDevice::CreateTexture2D(const void* _imageData, const TextureDesc& _desc)
-	{
-		Shared<D3D12Texture2D> texture = MakeShared<D3D12Texture2D>(this, _desc);
+	//Shared<Texture2D> D3D12RenderDevice::CreateTexture2D(const void* _imageData, const TextureDesc& _desc)
+	//{
+	//	Shared<D3D12Texture2D> texture = MakeShared<D3D12Texture2D>(this, _desc);
 
-		if (_imageData != nullptr)
-		{
-			D3D12_RESOURCE_DESC dstDesc = texture->GetID3D12Resource()->GetDesc();
+	//	if (_imageData != nullptr)
+	//	{
+	//		D3D12_RESOURCE_DESC dstDesc = texture->GetID3D12Resource()->GetDesc();
 
-			D3D12_PLACED_SUBRESOURCE_FOOTPRINT placedFootprint;
-			UINT64 totalBytes;
-			device->GetCopyableFootprints(&dstDesc, 0, 1, 0, &placedFootprint, nullptr, nullptr, &totalBytes);
+	//		D3D12_PLACED_SUBRESOURCE_FOOTPRINT placedFootprint;
+	//		UINT64 totalBytes;
+	//		device->GetCopyableFootprints(&dstDesc, 0, 1, 0, &placedFootprint, nullptr, nullptr, &totalBytes);
 
-			auto uploadBuffer = CreateBuffer(totalBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
+	//		auto uploadBuffer = CreateBuffer(totalBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
 
-			UInt32 imageSize = _desc.width * _desc.height * GraphicsUtility::GetRenderFormatSize(_desc.format);
+	//		UInt32 imageSize = _desc.width * _desc.height * GraphicsUtility::GetRenderFormatSize(_desc.format);
 
-			void* pixelData;
-			D3D12_RANGE range = { 0, totalBytes };
-			uploadBuffer->Map(0, &range, &pixelData);
-			// 3. 한 줄씩 루프를 돌며 복사합니다.
-			BYTE* pDest = static_cast<BYTE*>(pixelData);
-			BYTE* pSrc = const_cast<BYTE*>(static_cast<const BYTE*>(_imageData)); // 원본 이미지 데이터
-			UInt32 rowCount = dstDesc.Height;
-			UInt32 rowSizeInBytes = (UInt32)dstDesc.Width * GraphicsUtility::GetRenderFormatSize(_desc.format); // 픽셀당 4바이트 가정
+	//		void* pixelData;
+	//		D3D12_RANGE range = { 0, totalBytes };
+	//		uploadBuffer->Map(0, &range, &pixelData);
+	//		// 3. 한 줄씩 루프를 돌며 복사합니다.
+	//		BYTE* pDest = static_cast<BYTE*>(pixelData);
+	//		BYTE* pSrc = const_cast<BYTE*>(static_cast<const BYTE*>(_imageData)); // 원본 이미지 데이터
+	//		UInt32 rowCount = dstDesc.Height;
+	//		UInt32 rowSizeInBytes = (UInt32)dstDesc.Width * GraphicsUtility::GetRenderFormatSize(_desc.format); // 픽셀당 4바이트 가정
 
-			for (UINT y = 0; y < rowCount; ++y)
-			{
-				// 한 줄(RowSizeInBytes) 만큼만 복사
-				memcpy(pDest, pSrc, rowSizeInBytes);
+	//		for (UINT y = 0; y < rowCount; ++y)
+	//		{
+	//			// 한 줄(RowSizeInBytes) 만큼만 복사
+	//			memcpy(pDest, pSrc, rowSizeInBytes);
 
-				// 다음 줄로 포인터 이동
-				pDest += placedFootprint.Footprint.RowPitch; // 목적지는 RowPitch만큼 이동
-				pSrc += rowSizeInBytes;            // 소스는 실제 데이터 크기만큼 이동
-			}
+	//			// 다음 줄로 포인터 이동
+	//			pDest += placedFootprint.Footprint.RowPitch; // 목적지는 RowPitch만큼 이동
+	//			pSrc += rowSizeInBytes;            // 소스는 실제 데이터 크기만큼 이동
+	//		}
 
-			uploadBuffer->Unmap(0, &range);
-			uploadBuffer->SetName(L"Check");
+	//		uploadBuffer->Unmap(0, &range);
+	//		uploadBuffer->SetName(L"Check");
 
-			CopyBufferToImage(uploadBuffer.Get(), texture->GetID3D12Resource(), { placedFootprint });
+	//		CopyBufferToImage(uploadBuffer.Get(), texture->GetID3D12Resource(), { placedFootprint });
 
-			D3D12_RESOURCE_BARRIER barrier = {};
-			barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-			barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-			barrier.Transition.pResource = texture->GetID3D12Resource();
-			barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-			barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-			barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-			TransitionResourceStateImmediate(barrier);
+	//		D3D12_RESOURCE_BARRIER barrier = {};
+	//		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	//		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	//		barrier.Transition.pResource = texture->GetID3D12Resource();
+	//		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	//		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+	//		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	//		TransitionResourceStateImmediate(barrier);
 
-		}
+	//	}
 
 
-		return texture;
-	}
+	//	return texture;
+	//}
 
-	Shared<Texture2D> D3D12RenderDevice::CreateEmptyTexture2D(const TextureDesc& _desc)
-	{
-		Shared<D3D12Texture2D> texture = MakeShared<D3D12Texture2D>(this, _desc);
+	//Shared<Texture2D> D3D12RenderDevice::CreateEmptyTexture2D(const TextureDesc& _desc)
+	//{
+	//	Shared<D3D12Texture2D> texture = MakeShared<D3D12Texture2D>(this, _desc);
 
-		D3D12_RESOURCE_BARRIER barrier = {};
-		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barrier.Transition.pResource = texture->GetID3D12Resource();
-		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-		TransitionResourceStateImmediate(barrier);
-		return texture;
-	}
+	//	D3D12_RESOURCE_BARRIER barrier = {};
+	//	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	//	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	//	barrier.Transition.pResource = texture->GetID3D12Resource();
+	//	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	//	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+	//	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	//	TransitionResourceStateImmediate(barrier);
+	//	return texture;
+	//}
 
-	Shared<TextureCube> D3D12RenderDevice::CreateTextureCube(Array<const void*>& _imagePixels, const TextureDesc& _desc)
-	{
-		auto texture = MakeShared<D3D12TextureCube>(this, _desc);
+	//Shared<TextureCube> D3D12RenderDevice::CreateTextureCube(Array<const void*>& _imagePixels, const TextureDesc& _desc)
+	//{
+	//	auto texture = MakeShared<D3D12TextureCube>(this, _desc);
 
-		UInt32 imageSize = _desc.width * _desc.height * 4 * 6;
-		auto uploadBuffer = CreateBuffer(imageSize, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
+	//	UInt32 imageSize = _desc.width * _desc.height * 4 * 6;
+	//	auto uploadBuffer = CreateBuffer(imageSize, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
 
-		D3D12_RESOURCE_DESC textureDesc = texture->GetID3D12Resource()->GetDesc();
-		std::vector<D3D12_PLACED_SUBRESOURCE_FOOTPRINT> layouts(6);
-		UINT64 totalBytes;
-		device->GetCopyableFootprints(&textureDesc, 0, 6, 0, layouts.data(), nullptr, nullptr, &totalBytes);
+	//	D3D12_RESOURCE_DESC textureDesc = texture->GetID3D12Resource()->GetDesc();
+	//	std::vector<D3D12_PLACED_SUBRESOURCE_FOOTPRINT> layouts(6);
+	//	UINT64 totalBytes;
+	//	device->GetCopyableFootprints(&textureDesc, 0, 6, 0, layouts.data(), nullptr, nullptr, &totalBytes);
 
-		UInt8* pixelData;
-		uploadBuffer->Map(0, nullptr, reinterpret_cast<void**>(&pixelData));
-		for (int i = 0; i < 6; ++i)
-		{
-			const void* srcPixels = _imagePixels[i]; // i번째 이미지 데이터 포인터
-			const auto& destLayout = layouts[i];
-			UINT rowPitch = _desc.width * 4; // 픽셀당 4바이트(R8G8B8A8)라고 가정
+	//	UInt8* pixelData;
+	//	uploadBuffer->Map(0, nullptr, reinterpret_cast<void**>(&pixelData));
+	//	for (int i = 0; i < 6; ++i)
+	//	{
+	//		const void* srcPixels = _imagePixels[i]; // i번째 이미지 데이터 포인터
+	//		const auto& destLayout = layouts[i];
+	//		UINT rowPitch = _desc.width * 4; // 픽셀당 4바이트(R8G8B8A8)라고 가정
 
-			// 메모리 레이아웃(row pitch)을 고려하여 한 줄씩 복사
-			for (UINT y = 0; y < _desc.height; ++y)
-			{
-				// 목적지 주소 = 버퍼 시작 주소 + 현재 면의 오프셋 + 현재 y 위치 오프셋
-				UInt8* dest = pixelData + destLayout.Offset + y * destLayout.Footprint.RowPitch;
-				// 소스 주소 = i번째 이미지 데이터 시작 주소 + 현재 y 위치 오프셋
-				const UINT8* src = static_cast<const UINT8*>(srcPixels) + y * rowPitch;
+	//		// 메모리 레이아웃(row pitch)을 고려하여 한 줄씩 복사
+	//		for (UINT y = 0; y < _desc.height; ++y)
+	//		{
+	//			// 목적지 주소 = 버퍼 시작 주소 + 현재 면의 오프셋 + 현재 y 위치 오프셋
+	//			UInt8* dest = pixelData + destLayout.Offset + y * destLayout.Footprint.RowPitch;
+	//			// 소스 주소 = i번째 이미지 데이터 시작 주소 + 현재 y 위치 오프셋
+	//			const UINT8* src = static_cast<const UINT8*>(srcPixels) + y * rowPitch;
 
-				memcpy(dest, src, rowPitch);
-			}
-		}
-		uploadBuffer->Unmap(0, nullptr);
+	//			memcpy(dest, src, rowPitch);
+	//		}
+	//	}
+	//	uploadBuffer->Unmap(0, nullptr);
 
-		CopyBufferToImage(uploadBuffer.Get(), texture->GetID3D12Resource(), layouts);
+	//	CopyBufferToImage(uploadBuffer.Get(), texture->GetID3D12Resource(), layouts);
 
-		D3D12_RESOURCE_BARRIER barrier = {};
-		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barrier.Transition.pResource = texture->GetID3D12Resource();
-		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-		TransitionResourceStateImmediate(barrier);
+	//	D3D12_RESOURCE_BARRIER barrier = {};
+	//	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	//	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	//	barrier.Transition.pResource = texture->GetID3D12Resource();
+	//	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	//	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+	//	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	//	TransitionResourceStateImmediate(barrier);
 
-		return texture;
-	}
+	//	return texture;
+	//}
 
-	Shared<TextureCube> D3D12RenderDevice::CreateEmptyTextureCube(const TextureDesc& _desc)
-	{
-		auto textureCube = MakeShared<D3D12TextureCube>(this, _desc);
+	//Shared<TextureCube> D3D12RenderDevice::CreateEmptyTextureCube(const TextureDesc& _desc)
+	//{
+	//	auto textureCube = MakeShared<D3D12TextureCube>(this, _desc);
 
-		D3D12_RESOURCE_BARRIER barrier = {};
-		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barrier.Transition.pResource = textureCube->GetID3D12Resource();
-		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-		TransitionResourceStateImmediate(barrier);
+	//	D3D12_RESOURCE_BARRIER barrier = {};
+	//	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	//	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	//	barrier.Transition.pResource = textureCube->GetID3D12Resource();
+	//	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	//	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+	//	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	//	TransitionResourceStateImmediate(barrier);
 
-		return textureCube;
-	}
+	//	return textureCube;
+	//}
 
 	Shared<Sampler> D3D12RenderDevice::CreateSampler(const SamplerDesc& _desc)
 	{
@@ -504,57 +504,57 @@ namespace Daydream
 	}
 
 
-	void D3D12RenderDevice::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
-	{
-		//D3D12Texture2D* src = (D3D12Texture2D*)_src.get();
-		//D3D12Texture2D* dst = (D3D12Texture2D*)_dst.get();
-		//TransitionResourceState(commandList.Get(), src->GetID3D12Resource(), src->GetCurrentState(),
-		//	D3D12_RESOURCE_STATE_COPY_SOURCE);
-		//src->SetCurrentState(D3D12_RESOURCE_STATE_COPY_SOURCE);
-		//commandList->CopyResource(dst->GetID3D12Resource(), src->GetID3D12Resource());
-		//dst->SetCurrentState(D3D12_RESOURCE_STATE_COPY_DEST);
-	}
+	//void D3D12RenderDevice::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
+	//{
+	//	//D3D12Texture2D* src = (D3D12Texture2D*)_src.get();
+	//	//D3D12Texture2D* dst = (D3D12Texture2D*)_dst.get();
+	//	//TransitionResourceState(commandList.Get(), src->GetID3D12Resource(), src->GetCurrentState(),
+	//	//	D3D12_RESOURCE_STATE_COPY_SOURCE);
+	//	//src->SetCurrentState(D3D12_RESOURCE_STATE_COPY_SOURCE);
+	//	//commandList->CopyResource(dst->GetID3D12Resource(), src->GetID3D12Resource());
+	//	//dst->SetCurrentState(D3D12_RESOURCE_STATE_COPY_DEST);
+	//}
 
-	void Daydream::D3D12RenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel)
-	{
-		//TransitionResourceState(commandList.Get(), _srcTexture2D, D3D12_RESOURCE_STATE_COPY_DEST,
-		//	D3D12_RESOURCE_STATE_COPY_SOURCE);
-		//TransitionResourceState(commandList.Get(), _dstCubemap, D3D12_RESOURCE_STATE_COPY_SOURCE,
-		//	D3D12_RESOURCE_STATE_COPY_DEST);
+	//void Daydream::D3D12RenderDevice::CopyTextureToCubemapFace(TextureCube* _dstCubemap, UInt32 _faceIndex, Texture2D* _srcTexture2D, UInt32 _mipLevel)
+	//{
+	//	//TransitionResourceState(commandList.Get(), _srcTexture2D, D3D12_RESOURCE_STATE_COPY_DEST,
+	//	//	D3D12_RESOURCE_STATE_COPY_SOURCE);
+	//	//TransitionResourceState(commandList.Get(), _dstCubemap, D3D12_RESOURCE_STATE_COPY_SOURCE,
+	//	//	D3D12_RESOURCE_STATE_COPY_DEST);
 
-		//D3D12Texture2D* src = (D3D12Texture2D*)_srcTexture2D;
+	//	//D3D12Texture2D* src = (D3D12Texture2D*)_srcTexture2D;
 
-		//D3D12TextureCube* dst = (D3D12TextureCube*)_dstCubemap;
+	//	//D3D12TextureCube* dst = (D3D12TextureCube*)_dstCubemap;
 
 
-		//TransitionResourceState(commandList.Get(), src->GetID3D12Resource(), src->GetCurrentState(),
-		//	D3D12_RESOURCE_STATE_COPY_SOURCE);
-		//src->SetCurrentState(D3D12_RESOURCE_STATE_COPY_SOURCE);
-		//TransitionResourceState(commandList.Get(), dst->GetID3D12Resource(), dst->GetCurrentState(),
-		//	D3D12_RESOURCE_STATE_COPY_DEST);
-		//dst->SetCurrentState(D3D12_RESOURCE_STATE_COPY_DEST);
+	//	//TransitionResourceState(commandList.Get(), src->GetID3D12Resource(), src->GetCurrentState(),
+	//	//	D3D12_RESOURCE_STATE_COPY_SOURCE);
+	//	//src->SetCurrentState(D3D12_RESOURCE_STATE_COPY_SOURCE);
+	//	//TransitionResourceState(commandList.Get(), dst->GetID3D12Resource(), dst->GetCurrentState(),
+	//	//	D3D12_RESOURCE_STATE_COPY_DEST);
+	//	//dst->SetCurrentState(D3D12_RESOURCE_STATE_COPY_DEST);
 
-		//D3D12_TEXTURE_COPY_LOCATION srcLocation = {};
-		//srcLocation.pResource = src->GetID3D12Resource();
-		//srcLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
-		//srcLocation.SubresourceIndex = 0;
+	//	//D3D12_TEXTURE_COPY_LOCATION srcLocation = {};
+	//	//srcLocation.pResource = src->GetID3D12Resource();
+	//	//srcLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+	//	//srcLocation.SubresourceIndex = 0;
 
-		//D3D12_TEXTURE_COPY_LOCATION dstLocation = {};
-		//dstLocation.pResource = dst->GetID3D12Resource();
-		//dstLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
-		//// 핵심: faceIndex를 사용하여 큐브맵의 특정 면을 Subresource로 지정합니다.
-		//dstLocation.SubresourceIndex = _mipLevel + _faceIndex * dst->GetMipLevels();
+	//	//D3D12_TEXTURE_COPY_LOCATION dstLocation = {};
+	//	//dstLocation.pResource = dst->GetID3D12Resource();
+	//	//dstLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+	//	//// 핵심: faceIndex를 사용하여 큐브맵의 특정 면을 Subresource로 지정합니다.
+	//	//dstLocation.SubresourceIndex = _mipLevel + _faceIndex * dst->GetMipLevels();
 
-		//// 3. 복사 명령을 기록합니다.
-		//commandList->CopyTextureRegion(&dstLocation, 0, 0, 0, &srcLocation, nullptr);
+	//	//// 3. 복사 명령을 기록합니다.
+	//	//commandList->CopyTextureRegion(&dstLocation, 0, 0, 0, &srcLocation, nullptr);
 
-		//TransitionResourceState(commandList.Get(), src->GetID3D12Resource(), src->GetCurrentState(),
-		//	D3D12_RESOURCE_STATE_COMMON);
-		//src->SetCurrentState(D3D12_RESOURCE_STATE_COMMON);
-		//TransitionResourceState(commandList.Get(), dst->GetID3D12Resource(), dst->GetCurrentState(),
-		//	D3D12_RESOURCE_STATE_COMMON);
-		//dst->SetCurrentState(D3D12_RESOURCE_STATE_COMMON);
-	}
+	//	//TransitionResourceState(commandList.Get(), src->GetID3D12Resource(), src->GetCurrentState(),
+	//	//	D3D12_RESOURCE_STATE_COMMON);
+	//	//src->SetCurrentState(D3D12_RESOURCE_STATE_COMMON);
+	//	//TransitionResourceState(commandList.Get(), dst->GetID3D12Resource(), dst->GetCurrentState(),
+	//	//	D3D12_RESOURCE_STATE_COMMON);
+	//	//dst->SetCurrentState(D3D12_RESOURCE_STATE_COMMON);
+	//}
 
 
 	void D3D12RenderDevice::ExecuteSingleTimeCommands(std::function<void(ID3D12GraphicsCommandList*)> commands)

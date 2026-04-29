@@ -603,7 +603,7 @@ namespace Daydream
 			barrier  // ImageMemoryBarrier
 		);
 	}
-	void VulkanRenderContext::TransitionTextureState(Shared<Texture> _texture, ResourceState _beforeState, ResourceState _afterState, UInt32 _mipLevel, UInt32 _mipCount)
+	void Daydream::VulkanRenderContext::TransitionTextureState(Shared<GPUTexture> _texture, ResourceState _beforeState, ResourceState _afterState, UInt32 _mipLevel, UInt32 _mipCount)
 	{
 	}
 

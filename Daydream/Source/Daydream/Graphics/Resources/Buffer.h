@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Daydream/Enum/RendererEnums.h"
+#include "GPUResource.h"
 
 namespace Daydream
 {
@@ -12,7 +13,7 @@ namespace Daydream
 	};
 
 
-	class GPUBuffer
+	class GPUBuffer : public GPUResource
 	{
 	public:
 		GPUBuffer(const BufferDesc& _desc);

@@ -55,8 +55,6 @@ namespace Daydream
 		Shared<Sampler> sampler;
 		Shared<Texture2D> texture;
 
-		Shared<TextureCube> textureCube;
-
 		Shared<ConstantBuffer> viewProjMat;
 		EntityInfo info;
 		Shared<ConstantBuffer> entityBuffer;

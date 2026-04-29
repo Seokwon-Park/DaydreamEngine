@@ -157,7 +157,7 @@ namespace Daydream
 		return MakeShared<VulkanGPUBuffer>(this, _desc);
 	}
 
-	Shared<GPUTexture> VulkanRenderDevice::CreateGPUTexture(const Texture& _desc)
+	Shared<GPUTexture> VulkanRenderDevice::CreateGPUTexture(const TextureDesc & _desc)
 	{
 		return MakeShared<VulkanGPUTexture>(this, _desc);
 	}
@@ -250,151 +250,151 @@ namespace Daydream
 		return MakeShared<VulkanSwapchain>(this, _window, _desc);
 	}
 
-	Shared<Texture2D> VulkanRenderDevice::CreateTexture2D(const void* _imageData, const TextureDesc& _desc)
-	{
-		auto texture = MakeShared<VulkanTexture2D>(this, _desc);
+	//Shared<Texture2D> VulkanRenderDevice::CreateTexture2D(const void* _imageData, const TextureDesc& _desc)
+	//{
+	//	auto texture = MakeShared<VulkanTexture2D>(this, _desc);
 
-		if (_imageData != nullptr)
-		{
-			UInt32 imageSize = _desc.width * _desc.height * GraphicsUtility::GetRenderFormatSize(_desc.format);
-			auto [uploadBuffer, uploadBufferAllocation] = CreateBuffer(
-				imageSize,
-				vk::BufferUsageFlagBits::eTransferSrc,
-				vma::MemoryUsage::eCpuOnly,
-				vma::AllocationCreateFlagBits::eMapped);
+	//	if (_imageData != nullptr)
+	//	{
+	//		UInt32 imageSize = _desc.width * _desc.height * GraphicsUtility::GetRenderFormatSize(_desc.format);
+	//		auto [uploadBuffer, uploadBufferAllocation] = CreateBuffer(
+	//			imageSize,
+	//			vk::BufferUsageFlagBits::eTransferSrc,
+	//			vma::MemoryUsage::eCpuOnly,
+	//			vma::AllocationCreateFlagBits::eMapped);
 
-			vma::AllocationInfo allocationInfo;
-			allocator->getAllocationInfo(uploadBufferAllocation.get(), &allocationInfo);
-			memcpy(allocationInfo.pMappedData, _imageData, imageSize);
+	//		vma::AllocationInfo allocationInfo;
+	//		allocator->getAllocationInfo(uploadBufferAllocation.get(), &allocationInfo);
+	//		memcpy(allocationInfo.pMappedData, _imageData, imageSize);
 
-			vk::ImageMemoryBarrier barrier{};
-			barrier.oldLayout = vk::ImageLayout::eUndefined;
-			barrier.newLayout = vk::ImageLayout::eTransferDstOptimal;
-			barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-			barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-			barrier.image = texture->GetVkImage();
-			barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-			barrier.subresourceRange.baseArrayLayer = 0;
-			barrier.subresourceRange.baseMipLevel = 0;
-			barrier.subresourceRange.layerCount = 1;
-			barrier.subresourceRange.levelCount = 1;
+	//		vk::ImageMemoryBarrier barrier{};
+	//		barrier.oldLayout = vk::ImageLayout::eUndefined;
+	//		barrier.newLayout = vk::ImageLayout::eTransferDstOptimal;
+	//		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	//		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	//		barrier.image = texture->GetVkImage();
+	//		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+	//		barrier.subresourceRange.baseArrayLayer = 0;
+	//		barrier.subresourceRange.baseMipLevel = 0;
+	//		barrier.subresourceRange.layerCount = 1;
+	//		barrier.subresourceRange.levelCount = 1;
 
-			TransitionImageLayoutImmediate(barrier);
+	//		TransitionImageLayoutImmediate(barrier);
 
-			CopyBufferToImage(uploadBuffer.get(), texture->GetVkImage(), _desc.width, _desc.height);
+	//		CopyBufferToImage(uploadBuffer.get(), texture->GetVkImage(), _desc.width, _desc.height);
 
-			//vk::ImageMemoryBarrier barrier{};
-			barrier.oldLayout = vk::ImageLayout::eTransferDstOptimal;
-			barrier.newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
-			barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-			barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-			barrier.image = texture->GetVkImage();
-			barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-			barrier.subresourceRange.baseArrayLayer = 0;
-			barrier.subresourceRange.baseMipLevel = 0;
-			barrier.subresourceRange.layerCount = 1;
-			barrier.subresourceRange.levelCount = 1;
+	//		//vk::ImageMemoryBarrier barrier{};
+	//		barrier.oldLayout = vk::ImageLayout::eTransferDstOptimal;
+	//		barrier.newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+	//		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	//		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	//		barrier.image = texture->GetVkImage();
+	//		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+	//		barrier.subresourceRange.baseArrayLayer = 0;
+	//		barrier.subresourceRange.baseMipLevel = 0;
+	//		barrier.subresourceRange.layerCount = 1;
+	//		barrier.subresourceRange.levelCount = 1;
 
-			TransitionImageLayoutImmediate(barrier);
-		}
-		return texture;
-	}
+	//		TransitionImageLayoutImmediate(barrier);
+	//	}
+	//	return texture;
+	//}
 
-	Shared<Texture2D> VulkanRenderDevice::CreateEmptyTexture2D(const TextureDesc& _desc)
-	{
-		auto texture = MakeShared<VulkanTexture2D>(this, _desc);
+	//Shared<Texture2D> VulkanRenderDevice::CreateEmptyTexture2D(const TextureDesc& _desc)
+	//{
+	//	auto texture = MakeShared<VulkanTexture2D>(this, _desc);
 
-		vk::ImageMemoryBarrier barrier{};
-		barrier.oldLayout = vk::ImageLayout::eUndefined;
-		barrier.newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
-		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barrier.image = texture->GetVkImage();
-		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-		barrier.subresourceRange.baseArrayLayer = 0;
-		barrier.subresourceRange.baseMipLevel = 0;
-		barrier.subresourceRange.layerCount = 1;
-		barrier.subresourceRange.levelCount = 1;
+	//	vk::ImageMemoryBarrier barrier{};
+	//	barrier.oldLayout = vk::ImageLayout::eUndefined;
+	//	barrier.newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+	//	barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	//	barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	//	barrier.image = texture->GetVkImage();
+	//	barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+	//	barrier.subresourceRange.baseArrayLayer = 0;
+	//	barrier.subresourceRange.baseMipLevel = 0;
+	//	barrier.subresourceRange.layerCount = 1;
+	//	barrier.subresourceRange.levelCount = 1;
 
-		TransitionImageLayoutImmediate(barrier);
+	//	TransitionImageLayoutImmediate(barrier);
 
-		return texture;
-	}
+	//	return texture;
+	//}
 
-	Shared<TextureCube> VulkanRenderDevice::CreateTextureCube(Array<const void*>& _imagePixels, const TextureDesc& _desc)
-	{
-		Shared<VulkanTextureCube> textureCube = MakeShared<VulkanTextureCube>(this, _desc);
+	//Shared<TextureCube> VulkanRenderDevice::CreateTextureCube(Array<const void*>& _imagePixels, const TextureDesc& _desc)
+	//{
+	//	Shared<VulkanTextureCube> textureCube = MakeShared<VulkanTextureCube>(this, _desc);
 
-		UInt32 imageSize = _desc.width * _desc.height * GraphicsUtility::GetRenderFormatSize(_desc.format);
-		UInt32 bufferSize = imageSize * 6;
-		vk::BufferCreateInfo bufferInfo;
-		bufferInfo.size = bufferSize;
-		bufferInfo.usage = vk::BufferUsageFlagBits::eTransferSrc; // 복사 소스
+	//	UInt32 imageSize = _desc.width * _desc.height * GraphicsUtility::GetRenderFormatSize(_desc.format);
+	//	UInt32 bufferSize = imageSize * 6;
+	//	vk::BufferCreateInfo bufferInfo;
+	//	bufferInfo.size = bufferSize;
+	//	bufferInfo.usage = vk::BufferUsageFlagBits::eTransferSrc; // 복사 소스
 
-		vma::AllocationCreateInfo allocInfo = {};
-		allocInfo.usage = vma::MemoryUsage::eAuto;
-		allocInfo.flags = vma::AllocationCreateFlagBits::eHostAccessSequentialWrite |
-			vma::AllocationCreateFlagBits::eMapped;
-		auto [uploadBuffer, uploadBufferAllocation] = CreateBuffer(
-			bufferInfo, allocInfo);
+	//	vma::AllocationCreateInfo allocInfo = {};
+	//	allocInfo.usage = vma::MemoryUsage::eAuto;
+	//	allocInfo.flags = vma::AllocationCreateFlagBits::eHostAccessSequentialWrite |
+	//		vma::AllocationCreateFlagBits::eMapped;
+	//	auto [uploadBuffer, uploadBufferAllocation] = CreateBuffer(
+	//		bufferInfo, allocInfo);
 
-		char* mappedData = static_cast<char*>(allocator->getAllocationInfo(uploadBufferAllocation.get()).pMappedData);
-		for (int i = 0; i < 6; ++i) {
-			memcpy(mappedData + (imageSize * i), _imagePixels[i], imageSize);
-		}
+	//	char* mappedData = static_cast<char*>(allocator->getAllocationInfo(uploadBufferAllocation.get()).pMappedData);
+	//	for (int i = 0; i < 6; ++i) {
+	//		memcpy(mappedData + (imageSize * i), _imagePixels[i], imageSize);
+	//	}
 
-		Array<vk::BufferImageCopy> bufferCopyRegions;
-		for (UInt32 i = 0; i < 6; i++)
-		{
-			VkBufferImageCopy region = {};
-			region.bufferOffset = imageSize * i;
-			region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-			region.imageSubresource.mipLevel = 0;
-			region.imageSubresource.baseArrayLayer = i;
-			region.imageSubresource.layerCount = 1;
-			region.imageExtent = { _desc.width, _desc.height, 1 };
-			bufferCopyRegions.push_back(region);
-		}
+	//	Array<vk::BufferImageCopy> bufferCopyRegions;
+	//	for (UInt32 i = 0; i < 6; i++)
+	//	{
+	//		VkBufferImageCopy region = {};
+	//		region.bufferOffset = imageSize * i;
+	//		region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	//		region.imageSubresource.mipLevel = 0;
+	//		region.imageSubresource.baseArrayLayer = i;
+	//		region.imageSubresource.layerCount = 1;
+	//		region.imageExtent = { _desc.width, _desc.height, 1 };
+	//		bufferCopyRegions.push_back(region);
+	//	}
 
-		CopyBufferToImage(uploadBuffer.get(), textureCube->GetVkImage(), bufferCopyRegions);
+	//	CopyBufferToImage(uploadBuffer.get(), textureCube->GetVkImage(), bufferCopyRegions);
 
-		vk::ImageMemoryBarrier barrier{};
-		barrier.oldLayout = vk::ImageLayout::eTransferDstOptimal;
-		barrier.newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
-		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barrier.image = textureCube->GetVkImage();
-		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-		barrier.subresourceRange.baseArrayLayer = 0;
-		barrier.subresourceRange.baseMipLevel = 0;
-		barrier.subresourceRange.layerCount = 6;
-		barrier.subresourceRange.levelCount = 1;
+	//	vk::ImageMemoryBarrier barrier{};
+	//	barrier.oldLayout = vk::ImageLayout::eTransferDstOptimal;
+	//	barrier.newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+	//	barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	//	barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	//	barrier.image = textureCube->GetVkImage();
+	//	barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+	//	barrier.subresourceRange.baseArrayLayer = 0;
+	//	barrier.subresourceRange.baseMipLevel = 0;
+	//	barrier.subresourceRange.layerCount = 6;
+	//	barrier.subresourceRange.levelCount = 1;
 
-		TransitionImageLayoutImmediate(barrier);
+	//	TransitionImageLayoutImmediate(barrier);
 
-		return textureCube;
-	}
+	//	return textureCube;
+	//}
 
-	Shared<TextureCube> VulkanRenderDevice::CreateEmptyTextureCube(const TextureDesc& _desc)
-	{
-		auto textureCube = MakeShared<VulkanTextureCube>(this, _desc);
+	//Shared<TextureCube> VulkanRenderDevice::CreateEmptyTextureCube(const TextureDesc& _desc)
+	//{
+	//	auto textureCube = MakeShared<VulkanTextureCube>(this, _desc);
 
-		vk::ImageMemoryBarrier barrier{};
-		barrier.oldLayout = vk::ImageLayout::eTransferDstOptimal;
-		barrier.newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
-		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barrier.image = textureCube->GetVkImage();
-		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-		barrier.subresourceRange.baseArrayLayer = 0;
-		barrier.subresourceRange.baseMipLevel = 0;
-		barrier.subresourceRange.layerCount = 6;
-		barrier.subresourceRange.levelCount = 1;
+	//	vk::ImageMemoryBarrier barrier{};
+	//	barrier.oldLayout = vk::ImageLayout::eTransferDstOptimal;
+	//	barrier.newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+	//	barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	//	barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	//	barrier.image = textureCube->GetVkImage();
+	//	barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+	//	barrier.subresourceRange.baseArrayLayer = 0;
+	//	barrier.subresourceRange.baseMipLevel = 0;
+	//	barrier.subresourceRange.layerCount = 6;
+	//	barrier.subresourceRange.levelCount = 1;
 
-		TransitionImageLayoutImmediate(barrier);
+	//	TransitionImageLayoutImmediate(barrier);
 
-		return textureCube;
-	}
+	//	return textureCube;
+	//}
 
 	Shared<Sampler> VulkanRenderDevice::CreateSampler(const SamplerDesc& _desc)
 	{
@@ -406,104 +406,104 @@ namespace Daydream
 		return MakeUnique<VulkanImGuiRenderer>(this);
 	}
 
-	void VulkanRenderDevice::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
-	{
-		vk::ImageMemoryBarrier barriers[2] = {};
+	//void VulkanRenderDevice::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
+	//{
+	//	vk::ImageMemoryBarrier barriers[2] = {};
 
-		VulkanTexture2D* src = (VulkanTexture2D*)_src.get();
-		VulkanTexture2D* dst = (VulkanTexture2D*)_dst.get();
+	//	VulkanTexture2D* src = (VulkanTexture2D*)_src.get();
+	//	VulkanTexture2D* dst = (VulkanTexture2D*)_dst.get();
 
-		// 원본 이미지를 TRANSFER_SRC로 변경
-		barriers[0].oldLayout = vk::ImageLayout::eShaderReadOnlyOptimal; // 또는 현재 레이아웃
-		barriers[0].newLayout = vk::ImageLayout::eTransferSrcOptimal;
-		barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barriers[0].image = src->GetVkImage();
-		barriers[0].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-		barriers[0].subresourceRange.baseMipLevel = 0;
-		barriers[0].subresourceRange.levelCount = 1;
-		barriers[0].subresourceRange.baseArrayLayer = 0;
-		barriers[0].subresourceRange.layerCount = 1;
-		barriers[0].srcAccessMask = {}; // 이전 작업이 없다고 가정
-		barriers[0].dstAccessMask = vk::AccessFlagBits::eTransferRead;
+	//	// 원본 이미지를 TRANSFER_SRC로 변경
+	//	barriers[0].oldLayout = vk::ImageLayout::eShaderReadOnlyOptimal; // 또는 현재 레이아웃
+	//	barriers[0].newLayout = vk::ImageLayout::eTransferSrcOptimal;
+	//	barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	//	barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	//	barriers[0].image = src->GetVkImage();
+	//	barriers[0].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+	//	barriers[0].subresourceRange.baseMipLevel = 0;
+	//	barriers[0].subresourceRange.levelCount = 1;
+	//	barriers[0].subresourceRange.baseArrayLayer = 0;
+	//	barriers[0].subresourceRange.layerCount = 1;
+	//	barriers[0].srcAccessMask = {}; // 이전 작업이 없다고 가정
+	//	barriers[0].dstAccessMask = vk::AccessFlagBits::eTransferRead;
 
-		// 대상 이미지를 TRANSFER_DST로 변경
-		barriers[1].oldLayout = vk::ImageLayout::eUndefined; // 또는 현재 레이아웃
-		barriers[1].newLayout = vk::ImageLayout::eTransferDstOptimal;
-		barriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barriers[1].image = dst->GetVkImage();
-		barriers[1].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-		barriers[1].subresourceRange.baseMipLevel = 0;
-		barriers[1].subresourceRange.levelCount = 1;
-		barriers[1].subresourceRange.baseArrayLayer = 0;
-		barriers[1].subresourceRange.layerCount = 1;
-		barriers[1].srcAccessMask = {};
-		barriers[1].dstAccessMask = vk::AccessFlagBits::eTransferWrite;
+	//	// 대상 이미지를 TRANSFER_DST로 변경
+	//	barriers[1].oldLayout = vk::ImageLayout::eUndefined; // 또는 현재 레이아웃
+	//	barriers[1].newLayout = vk::ImageLayout::eTransferDstOptimal;
+	//	barriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	//	barriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	//	barriers[1].image = dst->GetVkImage();
+	//	barriers[1].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+	//	barriers[1].subresourceRange.baseMipLevel = 0;
+	//	barriers[1].subresourceRange.levelCount = 1;
+	//	barriers[1].subresourceRange.baseArrayLayer = 0;
+	//	barriers[1].subresourceRange.layerCount = 1;
+	//	barriers[1].srcAccessMask = {};
+	//	barriers[1].dstAccessMask = vk::AccessFlagBits::eTransferWrite;
 
-		currentCommandBuffer.pipelineBarrier(
-			vk::PipelineStageFlagBits::eTopOfPipe,  // 이전 작업 단계
-			vk::PipelineStageFlagBits::eTransfer,     // 다음 작업 단계 (전송)
-			{},
-			0, nullptr,
-			0, nullptr,
-			2, barriers
-		);
+	//	currentCommandBuffer.pipelineBarrier(
+	//		vk::PipelineStageFlagBits::eTopOfPipe,  // 이전 작업 단계
+	//		vk::PipelineStageFlagBits::eTransfer,     // 다음 작업 단계 (전송)
+	//		{},
+	//		0, nullptr,
+	//		0, nullptr,
+	//		2, barriers
+	//	);
 
-		// 2. 복사 명령 기록
-		vk::ImageCopy copyRegion = {};
-		copyRegion.srcSubresource.aspectMask = vk::ImageAspectFlagBits::eColor;
-		copyRegion.srcSubresource.layerCount = 1;
-		copyRegion.dstSubresource.aspectMask = vk::ImageAspectFlagBits::eColor;
-		copyRegion.dstSubresource.layerCount = 1;
-		copyRegion.extent.width = src->GetWidth();
-		copyRegion.extent.height = src->GetHeight();
-		copyRegion.extent.depth = 1;
+	//	// 2. 복사 명령 기록
+	//	vk::ImageCopy copyRegion = {};
+	//	copyRegion.srcSubresource.aspectMask = vk::ImageAspectFlagBits::eColor;
+	//	copyRegion.srcSubresource.layerCount = 1;
+	//	copyRegion.dstSubresource.aspectMask = vk::ImageAspectFlagBits::eColor;
+	//	copyRegion.dstSubresource.layerCount = 1;
+	//	copyRegion.extent.width = src->GetWidth();
+	//	copyRegion.extent.height = src->GetHeight();
+	//	copyRegion.extent.depth = 1;
 
-		currentCommandBuffer.copyImage(
-			src->GetVkImage(), vk::ImageLayout::eTransferSrcOptimal,
-			dst->GetVkImage(), vk::ImageLayout::eTransferDstOptimal,
-			1, &copyRegion
-		);
+	//	currentCommandBuffer.copyImage(
+	//		src->GetVkImage(), vk::ImageLayout::eTransferSrcOptimal,
+	//		dst->GetVkImage(), vk::ImageLayout::eTransferDstOptimal,
+	//		1, &copyRegion
+	//	);
 
 
-		// 원본 이미지를 TRANSFER_SRC로 변경
-		barriers[0].oldLayout = vk::ImageLayout::eTransferSrcOptimal; // 또는 현재 레이아웃
-		barriers[0].newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
-		barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barriers[0].image = src->GetVkImage();
-		barriers[0].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-		barriers[0].subresourceRange.baseMipLevel = 0;
-		barriers[0].subresourceRange.levelCount = 1;
-		barriers[0].subresourceRange.baseArrayLayer = 0;
-		barriers[0].subresourceRange.layerCount = 1;
-		barriers[0].srcAccessMask = vk::AccessFlagBits::eTransferRead; // 이전 작업이 없다고 가정
-		barriers[0].dstAccessMask = {};
+	//	// 원본 이미지를 TRANSFER_SRC로 변경
+	//	barriers[0].oldLayout = vk::ImageLayout::eTransferSrcOptimal; // 또는 현재 레이아웃
+	//	barriers[0].newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+	//	barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	//	barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	//	barriers[0].image = src->GetVkImage();
+	//	barriers[0].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+	//	barriers[0].subresourceRange.baseMipLevel = 0;
+	//	barriers[0].subresourceRange.levelCount = 1;
+	//	barriers[0].subresourceRange.baseArrayLayer = 0;
+	//	barriers[0].subresourceRange.layerCount = 1;
+	//	barriers[0].srcAccessMask = vk::AccessFlagBits::eTransferRead; // 이전 작업이 없다고 가정
+	//	barriers[0].dstAccessMask = {};
 
-		// 대상 이미지를 TRANSFER_DST로 변경
-		barriers[1].oldLayout = vk::ImageLayout::eTransferDstOptimal; // 또는 현재 레이아웃
-		barriers[1].newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
-		barriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barriers[1].image = dst->GetVkImage();
-		barriers[1].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-		barriers[1].subresourceRange.baseMipLevel = 0;
-		barriers[1].subresourceRange.levelCount = 1;
-		barriers[1].subresourceRange.baseArrayLayer = 0;
-		barriers[1].subresourceRange.layerCount = 1;
-		barriers[1].srcAccessMask = vk::AccessFlagBits::eTransferWrite;
-		barriers[1].dstAccessMask = {};
+	//	// 대상 이미지를 TRANSFER_DST로 변경
+	//	barriers[1].oldLayout = vk::ImageLayout::eTransferDstOptimal; // 또는 현재 레이아웃
+	//	barriers[1].newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+	//	barriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	//	barriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+	//	barriers[1].image = dst->GetVkImage();
+	//	barriers[1].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+	//	barriers[1].subresourceRange.baseMipLevel = 0;
+	//	barriers[1].subresourceRange.levelCount = 1;
+	//	barriers[1].subresourceRange.baseArrayLayer = 0;
+	//	barriers[1].subresourceRange.layerCount = 1;
+	//	barriers[1].srcAccessMask = vk::AccessFlagBits::eTransferWrite;
+	//	barriers[1].dstAccessMask = {};
 
-		currentCommandBuffer.pipelineBarrier(
-			vk::PipelineStageFlagBits::eTransfer,  // 이전 작업 단계
-			vk::PipelineStageFlagBits::eFragmentShader,     // 다음 작업 단계 (전송)
-			{},
-			0, nullptr,
-			0, nullptr,
-			2, barriers
-		);
-	}
+	//	currentCommandBuffer.pipelineBarrier(
+	//		vk::PipelineStageFlagBits::eTransfer,  // 이전 작업 단계
+	//		vk::PipelineStageFlagBits::eFragmentShader,     // 다음 작업 단계 (전송)
+	//		{},
+	//		0, nullptr,
+	//		0, nullptr,
+	//		2, barriers
+	//	);
+	//}
 
 	vk::CommandBuffer VulkanRenderDevice::BeginSingleTimeCommands()
 	{

@@ -41,13 +41,11 @@ namespace Daydream
 		//TODO : need to fix
 		virtual void GenerateMips(Shared<Texture> _texture) override;
 
-		virtual void TransitionTextureState(
-			Shared<Texture> _texture,
+		virtual void TransitionTextureState(Shared<GPUTexture> _texture,
 			ResourceState _beforeState,
 			ResourceState _afterState,
 			UInt32 _mipLevel = 0,
-			UInt32 _mipCount = 1
-		) override;
+			UInt32 _mipCount = 1) override;
 
 		virtual void TransitionBufferState(
 			Shared<GPUBuffer> _buffer,

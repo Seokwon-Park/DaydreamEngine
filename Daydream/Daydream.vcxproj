@@ -149,6 +149,10 @@
     <ClInclude Include="Source\Daydream\Event\Event.h" />
     <ClInclude Include="Source\Daydream\Event\KeyEvent.h" />
     <ClInclude Include="Source\Daydream\Event\MouseEvent.h" />
+    <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11TextureView.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX\D3DUtility.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Buffer.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Common.h" />
@@ -235,6 +239,10 @@
     <ClInclude Include="Source\Daydream\Graphics\Manager\ShaderRegistry.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Buffer.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Framebuffer.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Resources\GPUResource.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\Resources\Light.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Material.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Mesh.h" />
@@ -746,6 +754,10 @@
     <ClCompile Include="Source\Daydream\Core\Window.cpp" />
     <ClCompile Include="Source\Daydream\Core\WindowManager.cpp" />
     <ClCompile Include="Source\Daydream\Enum\RendererEnums.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11TextureView.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX\D3DUtility.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Buffer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Common.cpp" />
@@ -833,6 +845,10 @@
     <ClCompile Include="Source\Daydream\Graphics\Manager\ShaderRegistry.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\Buffer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\Framebuffer.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Resources\GPUResource.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\Resources\Light.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\Material.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\Mesh.cpp" />
