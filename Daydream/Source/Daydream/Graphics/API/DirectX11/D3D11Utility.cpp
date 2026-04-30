@@ -57,8 +57,12 @@ namespace Daydream::GraphicsUtility::DirectX11
 		case MemoryUsage::Static:	break;
 		case MemoryUsage::Dynamic:	d3d11Flags |= D3D11_CPU_ACCESS_WRITE; break;
 		case MemoryUsage::Readback:	d3d11Flags |= D3D11_CPU_ACCESS_READ; break;
-		case MemoryUsage::Upload:	d3d11Flags |= D3D11_CPU_ACCESS_WRITE; break;
-			return D3D11_USAGE_STAGING;
+		case MemoryUsage::Upload:
+		{
+			d3d11Flags |= D3D11_CPU_ACCESS_WRITE;
+			d3d11Flags |= D3D11_CPU_ACCESS_READ;
+			break;
+		}
 		default:
 			break;
 		}

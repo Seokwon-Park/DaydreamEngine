@@ -1975,6 +1975,9 @@
     <ClInclude Include="Source\Daydream\Graphics\Resources\TextureView.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11TextureView.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\GPUResource.h" />
+    <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12TextureView.h" />
+    <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLTextureView.h" />
+    <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanTextureView.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\Directory.cpp">
@@ -2411,5 +2414,8 @@
     <ClCompile Include="Source\Daydream\Graphics\Resources\TextureView.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11TextureView.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\GPUResource.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12TextureView.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLTextureView.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanTextureView.cpp" />
   </ItemGroup>
 </Project>

@@ -84,11 +84,29 @@ namespace Daydream
 				reflectionDatas.push_back(sr);
 			}
 
-			for (const spirv_cross::Resource& resource : res.sampled_images)
+			for (const spirv_cross::Resource& resource : res.separate_images)
 			{
 				ShaderReflectionData sr{};
 				sr.name = compiler.get_name(resource.id);
 				sr.shaderResourceType = ShaderResourceType::Texture;
+				sr.set = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
+				sr.binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
+
+				const auto& type = compiler.get_type(resource.type_id);
+				UInt32 count = 1;
+				if (!type.array.empty())
+				{
+					count = type.array[0];
+				}
+
+				reflectionDatas.push_back(sr);
+			}
+
+			for (const spirv_cross::Resource& resource : res.separate_samplers)
+			{
+				ShaderReflectionData sr{};
+				sr.name = compiler.get_name(resource.id);
+				sr.shaderResourceType = ShaderResourceType::Sampler;
 				sr.set = compiler.get_decoration(resource.id, spv::DecorationDescriptorSet);
 				sr.binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
 

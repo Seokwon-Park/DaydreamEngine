@@ -7,6 +7,7 @@
 #include "D3D11TextureCube.h"
 #include "D3D11Buffer.h"
 #include "D3D11Framebuffer.h"
+#include "D3D11Utility.h"
 
 #include "Daydream/Graphics/Resources/Mesh.h"
 
@@ -236,12 +237,33 @@ namespace Daydream
 			nullptr               // 원본 영역 (nullptr은 전체를 의미)
 		);
 	}
-	void Daydream::D3D11RenderContext::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize)
+	void D3D11RenderContext::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize)
 	{
 		D3D11GPUBuffer* src = Cast<D3D11GPUBuffer*>(_src.get());
 		D3D11GPUBuffer* dst = Cast<D3D11GPUBuffer*>(_dst.get());
 
 		device->GetContext()->CopyResource(dst->GetID3D11Buffer(), src->GetID3D11Buffer());
+	}
+
+	void D3D11RenderContext::CopyBufferToTexture(Shared<GPUBuffer> _src, Shared<GPUTexture> _dst, UInt32 _width, UInt32 _height)
+	{
+		D3D11_MAPPED_SUBRESOURCE mappedData;
+
+		D3D11GPUBuffer* src = Cast<D3D11GPUBuffer*>(_src.get());
+		D3D11GPUTexture* dst = Cast<D3D11GPUTexture*>(_dst.get());
+
+		HRESULT hr = device->GetContext()->Map(src->GetID3D11Buffer(), 0, D3D11_MAP_READ, 0, &mappedData);
+		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to map source buffer for reading in DX11!");
+
+		UInt32 bytesPerPixel = (_dst->GetDesc().format);
+		UInt32 rowPitch = _width * bytesPerPixel;
+		UInt32 depthPitch = rowPitch * _height;
+
+		// 3. 텍스처로 데이터 업데이트 (CPU -> GPU 텍스처 전송)
+		device->GetContext()->UpdateSubresource(dst->GetID3D11Resource(), 0, nullptr, mappedData.pData, rowPitch, depthPitch);
+
+		// 4. 매핑 해제
+		device->GetContext()->Unmap(src->GetID3D11Buffer(), 0);
 	}
 
 	void D3D11RenderContext::GenerateMips(Shared<Texture> _texture)

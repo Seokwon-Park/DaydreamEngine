@@ -45,7 +45,6 @@ namespace Daydream
 		virtual void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube) {};
 		virtual void SetTextureView(const String& _name, Shared<TextureView> _textureView) {};
 		virtual void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer) {};
-		virtual void SetSampler(const String& _name, Shared<Sampler> _sampler) {};
 		
 		virtual void CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize) {};
 		virtual void CopyBufferToTexture(Shared<GPUBuffer> _src, Shared<GPUTexture> _dst, UInt32 _width, UInt32 _height) {};

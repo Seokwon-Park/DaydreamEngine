@@ -153,6 +153,10 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12TextureView.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX\D3DUtility.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Buffer.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11Common.h" />
@@ -198,6 +202,10 @@
     <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLSwapchain.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLTexture.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLTextureCube.h" />
+    <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLTextureView.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLUtility.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanBuffer.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanFramebuffer.h" />
@@ -212,6 +220,10 @@
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanSwapchain.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanTexture.h" />
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanTextureCube.h" />
+    <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanTextureView.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanUtility.h" />
     <ClInclude Include="Source\Daydream\Graphics\Camera\Camera.h" />
     <ClInclude Include="Source\Daydream\Graphics\Camera\CameraController.h" />
@@ -758,6 +770,10 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12TextureView.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX\D3DUtility.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Buffer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11Common.cpp" />
@@ -804,6 +820,10 @@
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLSwapchain.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLTexture.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLTextureCube.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLTextureView.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLUtility.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanBuffer.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanFramebuffer.cpp" />
@@ -818,6 +838,10 @@
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanSwapchain.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanTexture.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanTextureCube.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanTextureView.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanUtility.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Camera\Camera.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Camera\EditorCamera.cpp" />

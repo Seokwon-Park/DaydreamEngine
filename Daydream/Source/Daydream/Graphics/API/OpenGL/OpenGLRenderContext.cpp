@@ -111,6 +111,19 @@ namespace Daydream
 		glBindBufferBase(GL_UNIFORM_BUFFER, bindingInfo->binding, constantBuffer->GetBufferID());
 	}
 
+	void OpenGLRenderContext::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize)
+	{
+		OpenGLGPUBuffer* src = Cast<OpenGLGPUBuffer*>(_src.get());
+		OpenGLGPUBuffer* dst = Cast<OpenGLGPUBuffer*>(_dst.get());
+
+		// 소스 버퍼ID, 목적지 버퍼ID, 소스 오프셋, 목적지 오프셋, 복사할 크기
+		glCopyNamedBufferSubData(src->GetBufferID(), dst->GetBufferID(), 0, 0, _copySize);
+	}
+
+	void OpenGLRenderContext::CopyBufferToTexture(Shared<GPUBuffer> _src, Shared<GPUTexture> _dst, UInt32 _width, UInt32 _height)
+	{
+	}
+
 	void OpenGLRenderContext::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
 	{
 		OpenGLTexture2D* src = static_cast<OpenGLTexture2D*>(_src.get());
@@ -145,14 +158,7 @@ namespace Daydream
 			src->GetWidth(), src->GetHeight(), 1      // 복사할 크기
 		);
 	} 
-	void OpenGLRenderContext::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize)
-	{
-		OpenGLGPUBuffer* src = Cast<OpenGLGPUBuffer*>(_src.get());
-		OpenGLGPUBuffer* dst = Cast<OpenGLGPUBuffer*>(_dst.get());
 
-		// 소스 버퍼ID, 목적지 버퍼ID, 소스 오프셋, 목적지 오프셋, 복사할 크기
-		glCopyNamedBufferSubData(src->GetBufferID(), dst->GetBufferID(), 0, 0, _copySize);
-	}
 	void OpenGLRenderContext::GenerateMips(Shared<Texture> _texture)
 	{
 		UInt32 textureID = 0;
