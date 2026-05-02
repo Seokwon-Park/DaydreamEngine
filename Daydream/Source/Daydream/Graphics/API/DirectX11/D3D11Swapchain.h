@@ -3,6 +3,7 @@
 #include "Daydream/Graphics/Core/Swapchain.h"
 #include "D3D11RenderDevice.h"
 #include "D3D11Framebuffer.h"
+#include "D3D11TextureView.h"
 
 namespace Daydream
 {
@@ -19,15 +20,17 @@ namespace Daydream
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
 
-		virtual Shared<Framebuffer> GetCurrentFramebuffer() const { return framebuffer; };
+		virtual Shared<TextureView> GetCurrentRenderTargetView() const { return backBufferRTV; };
+		virtual Shared<Framebuffer> GetCurrentFramebuffer() const { return swapchainFramebuffers[0]; };
 		virtual Shared<RenderCommandList> GetCurrentCommandList() const { return nullptr; };
 
-		inline IDXGISwapChain* GetDXGISwapchain() { return swapChain.Get(); }
+		inline IDXGISwapChain* GetDXGISwapchain() { return swapchain.Get(); }
 
 	private:
 		D3D11RenderDevice* device;
-		ComPtr<IDXGISwapChain> swapChain;
+		ComPtr<IDXGISwapChain> swapchain;
 
-		Shared<D3D11Framebuffer> framebuffer;
+		Shared<D3D11GPUTexture> backBufferTexture;
+		Shared<D3D11TextureView> backBufferRTV;
 	};
 }

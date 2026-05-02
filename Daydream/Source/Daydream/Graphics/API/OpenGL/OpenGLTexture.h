@@ -1,7 +1,7 @@
 #pragma once
 
 #include "OpenGLSampler.h"
-#include "Daydream/Graphics/Resources/Texture.h"
+#include "Daydream/Graphics/Resources/Texture/Texture.h"
 
 namespace Daydream
 {
@@ -11,7 +11,7 @@ namespace Daydream
 		OpenGLGPUTexture(const TextureDesc& _desc);
 		virtual ~OpenGLGPUTexture();
 
-		inline UInt32 GetIOpenGLResource() { return textureID; }
+		inline UInt32 GetTextureID() { return textureID; }
 	private:
 		UInt32 textureID;
 	};
@@ -34,4 +34,4 @@ namespace Daydream
 //		UInt32 textureID;
 //		OpenGLSampler* textureSampler = nullptr;
 //	};
-//}
+}

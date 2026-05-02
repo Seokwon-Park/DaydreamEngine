@@ -104,6 +104,13 @@ namespace Daydream
 		}
 	}
 
+	D3D11GPUTexture::D3D11GPUTexture(D3D11RenderDevice* _device, const TextureDesc& _desc, ID3D11Texture2D* _d3d11Backbuffer)
+		:GPUTexture(_desc)
+	{
+		texture = _d3d11Backbuffer;
+	}
+
+
 	//D3D11Texture2D::D3D11Texture2D(D3D11RenderDevice* _device, const TextureDesc& _desc, const void* _initialData)
 	//	:Texture2D(_desc)
 	//{

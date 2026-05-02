@@ -21,6 +21,7 @@ namespace Daydream
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
 
+		virtual Shared<TextureView> GetCurrentRenderTargetView() const {return nullptr;};
 		virtual Shared<Framebuffer> GetCurrentFramebuffer()const { return framebuffers[frameIndex]; };
 		virtual Shared<RenderCommandList> GetCurrentCommandList() const { return commandLists[frameIndex]; };
 
@@ -33,8 +34,6 @@ namespace Daydream
 	private:
 		D3D12RenderDevice* device;
 		ComPtr<IDXGISwapChain3> swapchain;
-		Array<Shared<D3D12Framebuffer>> framebuffers;
-		Array<Shared<D3D12Framebuffer>> oldFramebuffers;
 		Array<Shared<D3D12RenderCommandList>> commandLists;
 		ID3D12GraphicsCommandList* currentCommandList;
 		//Array<ComPtr<ID3D12GraphicsCommandList>> commandLists;

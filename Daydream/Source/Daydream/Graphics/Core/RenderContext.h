@@ -1,6 +1,7 @@
 #pragma once
 
 #include "RenderCommandList.h"
+#include "RenderingInfo.h"
 #include "Daydream/Enum/RendererEnums.h"
 #include "Daydream/Graphics/Resources/Framebuffer.h"
 
@@ -15,11 +16,14 @@ namespace Daydream
 	class IndexBuffer;
 	class Mesh;
 	class Material;
+	class Texture;
 	class Texture2D;
 	class TextureCube;
 	class TextureView;
 	class ConstantBuffer;
 	class PipelineState;
+
+	struct RenderingInfo;
 
 	class RenderContext
 	{
@@ -35,6 +39,8 @@ namespace Daydream
 
 		virtual void BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer) {};
 		virtual void EndRenderPass(Shared<RenderPass> _renderPass) {};
+
+		virtual void BeginRendering(const RenderingInfo& _renderingInfo) {};
 
 		virtual void BindPipelineState(Shared<PipelineState> _pipelineState);
 

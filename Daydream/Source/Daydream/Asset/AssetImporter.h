@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AssetManager.h"
-#include "Daydream/Graphics/Resources/Texture.h"
+#include "Daydream/Graphics/Resources/Texture/Texture.h"
 #include "Daydream/Graphics/Resources/Model.h"
 #include "Daydream/Graphics/Resources/Shader.h"
 

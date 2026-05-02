@@ -17,4 +17,8 @@ namespace Daydream
 		desc.width = _width;
 		desc.height = _height;
 	}
+	Swapchain::Swapchain(const SwapchainDesc& _desc)
+	{
+		desc = _desc;
+	}
 }

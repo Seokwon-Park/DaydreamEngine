@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Daydream/Graphics/Resources/TextureView.h"
+#include "D3D12RenderDevice.h"
+#include "D3D12Texture.h"
+#include "Daydream/Graphics/Resources/Texture/TextureView.h"
 
 namespace Daydream
 {
@@ -8,10 +10,9 @@ namespace Daydream
 	class D3D12TextureView : public TextureView
 	{
 	public:
-		explicit D3D12TextureView(const TextureViewDesc& _desc);
+		explicit D3D12TextureView(D3D12RenderDevice* _device, Shared<D3D12GPUTexture> _texture,const TextureViewDesc& _desc);
 		~D3D12TextureView() = default;
 
-		const TextureViewDesc& GetDesc() const override { return desc; }
 
 		void SetCPUHandle(D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle) { cpuHandle = _cpuHandle; }
 		void SetGPUHandle(D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle) { gpuHandle = _gpuHandle; }

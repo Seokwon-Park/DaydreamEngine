@@ -335,15 +335,15 @@ namespace Daydream
 	//	return MakeShared<D3D12ConstantBuffer>(this, _size);
 	//}
 
-	Shared<RenderPass> D3D12RenderDevice::CreateRenderPass(const RenderPassDesc& _desc)
-	{
-		return MakeShared<D3D12RenderPass>(this, _desc);
-	}
+	//Shared<RenderPass> D3D12RenderDevice::CreateRenderPass(const RenderPassDesc& _desc)
+	//{
+	//	return MakeShared<D3D12RenderPass>(this, _desc);
+	//}
 
-	Shared<Framebuffer> D3D12RenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc)
-	{
-		return _renderPass->CreateFramebuffer(_desc);
-	}
+	//Shared<Framebuffer> D3D12RenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc)
+	//{
+	//	return _renderPass->CreateFramebuffer(_desc);
+	//}
 
 	Shared<PipelineState> D3D12RenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)
 	{
@@ -379,7 +379,6 @@ namespace Daydream
 	//		void* pixelData;
 	//		D3D12_RANGE range = { 0, totalBytes };
 	//		uploadBuffer->Map(0, &range, &pixelData);
-	//		// 3. 한 줄씩 루프를 돌며 복사합니다.
 	//		BYTE* pDest = static_cast<BYTE*>(pixelData);
 	//		BYTE* pSrc = const_cast<BYTE*>(static_cast<const BYTE*>(_imageData)); // 원본 이미지 데이터
 	//		UInt32 rowCount = dstDesc.Height;
@@ -542,7 +541,6 @@ namespace Daydream
 	//	//D3D12_TEXTURE_COPY_LOCATION dstLocation = {};
 	//	//dstLocation.pResource = dst->GetID3D12Resource();
 	//	//dstLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
-	//	//// 핵심: faceIndex를 사용하여 큐브맵의 특정 면을 Subresource로 지정합니다.
 	//	//dstLocation.SubresourceIndex = _mipLevel + _faceIndex * dst->GetMipLevels();
 
 	//	//// 3. 복사 명령을 기록합니다.
@@ -587,13 +585,11 @@ namespace Daydream
 	{
 		ComPtr<ID3D12Resource> buffer;
 
-		// 1. 힙(Heap)의 속성을 정의합니다. VMA의 MemoryUsage에 해당합니다.
 		D3D12_HEAP_PROPERTIES heapProperties{};
 		heapProperties.Type = _heapType;
 		heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
 		heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
 
-		// 2. 리소스(버퍼)의 속성을 정의합니다.
 		D3D12_RESOURCE_DESC resourceDesc{};
 		resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 		resourceDesc.Alignment = 0;
@@ -655,11 +651,9 @@ namespace Daydream
 			}
 		}
 
-		// 2. 텍스처는 대부분 GPU 전용 메모리(DEFAULT 힙)에 생성됩니다.
 		D3D12_HEAP_PROPERTIES heapProperties = {};
 		heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
 
-		// 3. 리소스 생성과 메모리 할당을 한 번에 처리합니다.
 		device->CreateCommittedResource(
 			&heapProperties,
 			D3D12_HEAP_FLAG_NONE,

@@ -26,7 +26,7 @@ namespace Daydream
 		static Matrix4x4 CreateLocalMatrix(Transform _transform);
 		static bool Decompose(const Matrix4x4& _worldMat,
 			Vector3& _outPosition,
-			Vector3& _outRotation, // 오일러(Vector3)보다 쿼터니언이 안정적입니다.
+			Vector3& _outRotation,
 			Vector3& _outScale);
 
 		static Transform Decompose(const Matrix4x4& _matrix);

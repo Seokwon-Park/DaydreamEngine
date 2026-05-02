@@ -17,7 +17,7 @@ namespace Daydream
 	//	textureDesc.Width = desc.width;
 	//	textureDesc.Height = desc.height;
 	//	textureDesc.MipLevels = _desc.mipLevels;
-	//	textureDesc.ArraySize = 6; // 큐브맵은 6개의 텍스처 배열입니다.
+	//	textureDesc.ArraySize = 6; // 큐브맵은 6개의 텍스처 배열
 	//	textureDesc.Format = GraphicsUtility::DirectX::ConvertToDXGIFormat(_desc.format); // DXGI_FORMAT 열거형 값
 	//	textureDesc.SampleDesc.Count = 1;
 	//	textureDesc.SampleDesc.Quality = 0;

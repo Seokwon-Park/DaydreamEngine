@@ -3,12 +3,13 @@
 
 namespace Daydream
 {
-	VulkanTextureView::VulkanTextureView()
+	VulkanTextureView::VulkanTextureView(VulkanRenderDevice* _device, Shared<VulkanGPUTexture> _texture, const TextureViewDesc& _desc)
+		:TextureView(_texture, _desc)
 	{
-	}
+		device = _device;
 
-	VulkanTextureView::~VulkanTextureView()
-	{
+		vk::ImageViewCreateInfo viewInfo{};
+		device->GetDevice().createImageViewUnique(viewInfo);
 	}
 }
 

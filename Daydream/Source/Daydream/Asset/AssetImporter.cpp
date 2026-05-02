@@ -5,6 +5,7 @@
 #include "Daydream/Graphics/Utility/ModelLoader.h"
 #include "Daydream/Graphics/Manager/ResourceManager.h"
 #include "Daydream/Graphics/Resources/PipelineState.h"
+#include "Daydream/Graphics/Resources/Texture/Texture2D.h"
 #include "yaml-cpp/yaml.h"
 
 namespace Daydream
@@ -29,7 +30,7 @@ namespace Daydream
 		}
 
 		ImageData data = ImageLoader::LoadImageFile(pathString);
-		TextureDesc desc{};
+		Texture2DDesc desc{};
 		desc.textureUsage = TextureUsage::ShaderResource;
 		desc.width = data.width;
 		desc.height = data.height;
@@ -42,8 +43,7 @@ namespace Daydream
 			// 8비트 텍스처 (sRGB 또는 Linear)
 			desc.format = isSRGB ? RenderFormat::R8G8B8A8_UNORM_SRGB : RenderFormat::R8G8B8A8_UNORM;
 		}
-		desc.type = TextureType::Texture2D;
-		Shared<Texture2D> newTexture = Texture2D::Create(data.GetRawDataPtr(), desc);
+		Shared<Texture2D> newTexture = Texture2D::Create(desc, data.GetRawDataPtr());
 
 		return newTexture;
 	}
@@ -95,7 +95,7 @@ namespace Daydream
 
 
 			AssetHandle meshHandle;
-			//mesh이름과 관련된 데이터가 있으면 메쉬핸들만 가져온다.
+			//mesh이름과 관련된 데이터가 있으면 메쉬핸들만 가져옴
 			if (metaNode["SubAssets"][meshName])
 			{
 				String handleStr = metaNode["SubAssets"][meshName]["Handle"].as<String>();

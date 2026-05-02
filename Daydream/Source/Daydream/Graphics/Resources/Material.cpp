@@ -4,6 +4,7 @@
 #include "Daydream/Graphics/Core/Renderer.h"
 #include "Daydream/Graphics/Resources/PipelineState.h"
 #include "Daydream/Graphics/Manager/ResourceManager.h"
+#include "Daydream/Asset/AssetManager.h"
 
 namespace Daydream
 {

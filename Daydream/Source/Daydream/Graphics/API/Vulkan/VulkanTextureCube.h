@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Daydream/Graphics/Resources/TextureCube.h"
 #include "VulkanRenderDevice.h"
 #include "VulkanSampler.h"
 

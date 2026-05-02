@@ -13,9 +13,9 @@ namespace Daydream
 {
 
 	D3D11Swapchain::D3D11Swapchain(D3D11RenderDevice* _device, const DaydreamWindow& _window, const SwapchainDesc& _desc)
+		:Swapchain(_desc)
 	{
 		device = _device;
-		desc = _desc;
 		DAYDREAM_CORE_ASSERT(device, "Device is nullptr");
 
 		DXGI_SAMPLE_DESC sampleDesc = {};
@@ -30,29 +30,37 @@ namespace Daydream
 		//bufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED; // 프로그레시브로 설정
 		bufferDesc.Format = GraphicsUtility::DirectX::ConvertToDXGIFormat(_desc.format);
 
-		DXGI_SWAP_CHAIN_DESC desc;
-		desc.BufferDesc = bufferDesc;
-		desc.SampleDesc = sampleDesc;
-		desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		desc.BufferCount = _desc.bufferCount;
-		desc.OutputWindow = glfwGetWin32Window((GLFWwindow*)_window.GetNativeWindow());
-		desc.Windowed = true;
-		desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-		desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+		DXGI_SWAP_CHAIN_DESC swapchainDesc;
+		swapchainDesc.BufferDesc = bufferDesc;
+		swapchainDesc.SampleDesc = sampleDesc;
+		swapchainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+		swapchainDesc.BufferCount = _desc.imageCount;
+		swapchainDesc.OutputWindow = glfwGetWin32Window((GLFWwindow*)_window.GetNativeWindow());
+		swapchainDesc.Windowed = true;
+		swapchainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+		swapchainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-		HRESULT hr = device->GetFactory()->CreateSwapChain(device->GetDevice(), &desc, swapChain.GetAddressOf());
+		HRESULT hr = device->GetFactory()->CreateSwapChain(device->GetDevice(), &swapchainDesc, swapchain.GetAddressOf());
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed To Create Swapchain!");
 
-		RenderPassAttachmentDesc colorDesc;
-		colorDesc.format = _desc.format;
-		colorDesc.isSwapchain = true;
+		ComPtr<ID3D11Texture2D> backBuffer;
+		swapchain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
 
-		RenderPassDesc rpDesc{};
-		rpDesc.colorAttachments.push_back(colorDesc);
+		Texture2DDesc textureDesc{};
+		textureDesc.width = desc.width;
+		textureDesc.height = desc.height;
+		textureDesc.mipLevels = 1;
+		textureDesc.sampleCount = 1;
+		textureDesc.format = desc.format;
+		textureDesc.textureUsage = TextureUsage::RenderTarget;
 
-		mainRenderPass = MakeShared<D3D11RenderPass>(device, rpDesc);
+		backBufferTexture = MakeShared<D3D11GPUTexture>(device, backBuffer.Get(), textureDesc);
 
-		framebuffer = MakeShared<D3D11Framebuffer>(device, mainRenderPass.get(), this);
+		TextureViewDesc viewDesc;
+		viewDesc.format = desc.format;
+		viewDesc.type = TextureViewType::RenderTarget;
+
+		backBufferRTV = MakeShared<D3D11TextureView>(this, backBufferTexture, viewDesc);
 	}
 	D3D11Swapchain::~D3D11Swapchain()
 	{
@@ -63,7 +71,7 @@ namespace Daydream
 	}
 	void D3D11Swapchain::Present()
 	{
-		swapChain->Present(desc.isVSync, 0);
+		swapchain->Present(desc.isVSync, 0);
 	}
 
 	//void D3D11Swapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
@@ -78,10 +86,26 @@ namespace Daydream
 	{
 		if (isSwapchainResized)
 		{
-			framebuffer = nullptr;
-			swapChain->ResizeBuffers(0, desc.width, desc.height, GraphicsUtility::DirectX::ConvertToDXGIFormat(desc.format), 0);
+			swapchain->ResizeBuffers(0, desc.width, desc.height, GraphicsUtility::DirectX::ConvertToDXGIFormat(desc.format), 0);
 
-			framebuffer = MakeShared<D3D11Framebuffer>(device, mainRenderPass.get(), this);
+			ComPtr<ID3D11Texture2D> backBuffer;
+			swapchain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
+
+			Texture2DDesc textureDesc{};
+			textureDesc.width = desc.width;
+			textureDesc.height = desc.height;
+			textureDesc.mipLevels = 1;
+			textureDesc.sampleCount = 1;
+			textureDesc.format = desc.format;
+			textureDesc.textureUsage = TextureUsage::RenderTarget;
+
+			backBufferTexture = MakeShared<D3D11GPUTexture>(device, backBuffer.Get(), textureDesc);
+
+			TextureViewDesc viewDesc;
+			viewDesc.format = desc.format;
+			viewDesc.type = TextureViewType::RenderTarget;
+
+			backBufferRTV = MakeShared<D3D11TextureView>(this, backBufferTexture, viewDesc);
 			isSwapchainResized = false;
 		}
 

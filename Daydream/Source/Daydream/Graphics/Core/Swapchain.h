@@ -10,7 +10,7 @@ namespace Daydream
 	{
 		UInt32 width = 0;
 		UInt32 height = 0;
-		UInt32 bufferCount = 2;
+		UInt32 imageCount = 2;
 		RenderFormat format = RenderFormat::R8G8B8A8_UNORM;
 		bool isFullscreen = false;
 		bool isVSync = false;
@@ -19,6 +19,7 @@ namespace Daydream
 	class Swapchain
 	{
 	public:
+		Swapchain(const SwapchainDesc& _desc);
 		virtual ~Swapchain() = default;
 
 		bool GetVSync() const { return desc.isVSync; }
@@ -29,6 +30,7 @@ namespace Daydream
 		virtual void BeginFrame() = 0;
 		virtual void EndFrame() = 0;
 
+		virtual Shared<TextureView> GetCurrentRenderTargetView() const = 0;
 		virtual Shared<Framebuffer> GetCurrentFramebuffer() const = 0;
 		virtual Shared<RenderCommandList> GetCurrentCommandList() const = 0;
 		inline virtual Shared<RenderPass> GetRenderPass() const { return mainRenderPass; }
@@ -39,8 +41,9 @@ namespace Daydream
 		static Shared<Swapchain> Create(const DaydreamWindow& _window, const SwapchainDesc& _desc);
 	protected:
 		bool isSwapchainResized = false;
+
 		SwapchainDesc desc;
 		Shared<RenderPass> mainRenderPass;
-
+		Array<Texture2D> swapchainBackBuffers;
 	};
 }

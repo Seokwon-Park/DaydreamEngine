@@ -68,7 +68,7 @@ namespace Daydream
 	}
 	void OpenGLRenderContext::BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer)
 	{
-		OpenGLGPUBuffer* vertexBuffer = Cast<OpenGLGPUBuffer*>(_vertexBuffer->GetBufferRaw());
+		OpenGLGPUBuffer* vertexBuffer = Cast<OpenGLGPUBuffer*>(_vertexBuffer->GetGPUBufferPtr());
 
 		GLint currentVAO = 0;
 		glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &currentVAO);
@@ -76,7 +76,7 @@ namespace Daydream
 	}
 	void OpenGLRenderContext::BindIndexBuffer(Shared<IndexBuffer> _indexBuffer)
 	{
-		OpenGLGPUBuffer* indexBuffer = Cast<OpenGLGPUBuffer*>(_indexBuffer->GetBufferRaw());
+		OpenGLGPUBuffer* indexBuffer = Cast<OpenGLGPUBuffer*>(_indexBuffer->GetGPUBufferPtr());
 
 		GLint currentVAO = 0; // 결과를 저장할 변수
 		glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &currentVAO);
@@ -107,7 +107,7 @@ namespace Daydream
 		const ShaderReflectionData* bindingInfo = activePipelineState->GetBindingInfo(_name);
 		if (bindingInfo == nullptr) return;
 
-		OpenGLGPUBuffer* constantBuffer = Cast<OpenGLGPUBuffer*>(_buffer->GetBufferRaw());
+		OpenGLGPUBuffer* constantBuffer = Cast<OpenGLGPUBuffer*>(_buffer->GetGPUBufferPtr());
 		glBindBufferBase(GL_UNIFORM_BUFFER, bindingInfo->binding, constantBuffer->GetBufferID());
 	}
 

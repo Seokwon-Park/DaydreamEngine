@@ -11,7 +11,7 @@ namespace Daydream
 	RenderGraph::~RenderGraph()
 	{
 	}
-	RenderGraphResourceHandle RenderGraph::AddResource(const String& _name)
+	RenderGraphResourceHandle Daydream::RenderGraph::AddResource(const String& _name, const RenderGraphResourceDesc& _desc)
 	{
 		ResourceNode node{};
 		node.name = _name;

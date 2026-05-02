@@ -76,29 +76,6 @@ namespace Daydream
 		//	reflectionDatas.push_back(sr);
 		//}
 
-		for (const spirv_cross::Resource& resource : res->separate_images)
-		{
-			ShaderReflectionData sr{};
-			sr.name = compiler->get_name(resource.id);
-			sr.shaderResourceType = ShaderResourceType::Texture;
-			sr.set = compiler->get_decoration(resource.id, spv::DecorationDescriptorSet);
-			sr.binding = compiler->get_decoration(resource.id, spv::DecorationBinding);
-			sr.shaderType = _type;
-
-			const auto& type = compiler->get_type(resource.type_id);
-			UInt32 count = 1;
-			if (!type.array.empty())
-			{
-				count = type.array[0];
-			}
-
-			reflectionDatas.push_back(sr);
-		}
-		String src = ShaderCompileHelper::ConvertSPIRVtoDXBC(spirvData, _type);
-
-		hr = D3DCompile(src.c_str(), src.size(), nullptr, nullptr, nullptr, entryPoint.c_str(), target.c_str(), 0, 0, shaderBlob.GetAddressOf(), errorBlob.GetAddressOf());
-		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to compile shader!");
-
 		for (const spirv_cross::Resource& resource : res->sampled_images)
 		{
 			ShaderReflectionData sr{};

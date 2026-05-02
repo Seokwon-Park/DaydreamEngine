@@ -50,7 +50,7 @@ namespace Daydream
 
 		Renderer::EnqueuePreFrameCommand([=]()
 			{
-				Renderer::CopyBuffer(uploadBuffer->GetBuffer(), vertexBuffer->GetBuffer(), _size);
+				Renderer::CopyBuffer(uploadBuffer->GetGPUBuffer(), vertexBuffer->GetGPUBuffer(), _size);
 				Renderer::TransitionBufferState(gpuBuffer, ResourceState::CopyDest, ResourceState::VertexBuffer);
 			});
 
@@ -76,7 +76,7 @@ namespace Daydream
 
 		Renderer::EnqueuePreFrameCommand([=]()
 			{
-				Renderer::CopyBuffer(uploadBuffer->GetBuffer(), indexBuffer->GetBuffer(), desc.size);
+				Renderer::CopyBuffer(uploadBuffer->GetGPUBuffer(), indexBuffer->GetGPUBuffer(), desc.size);
 				Renderer::TransitionBufferState(gpuBuffer, ResourceState::CopyDest, ResourceState::IndexBuffer);
 			}
 		);

@@ -1,17 +1,17 @@
 #pragma once
 
-#include "Daydream/Graphics/Resources/TextureView.h"
 #include "D3D11Common.h"
+#include "D3D11RenderDevice.h"
+#include "D3D11Texture.h"
+#include "Daydream/Graphics/Resources/Texture/TextureView.h"
 
 namespace Daydream
 {
 	class D3D11TextureView : public TextureView
 	{
 	public:
-		explicit D3D11TextureView(const TextureViewDesc& _desc);
+		D3D11TextureView(D3D11RenderDevice* _device, Shared<D3D11GPUTexture> _texture, const TextureViewDesc& _desc);
 		~D3D11TextureView() override = default;
-
-		const TextureViewDesc& GetDesc() const override { return desc; }
 
 		ID3D11ShaderResourceView* GetSRV() const { return views.srv.Get(); }
 		ID3D11DepthStencilView* GetDSV() const { return views.dsv.Get(); }
@@ -24,7 +24,7 @@ namespace Daydream
 	private:
 
 	private:
-		TextureViewDesc desc;
+		ComPtr<ID3D11View> view;
 		D3D11ResourceViews views;
 	};
 }

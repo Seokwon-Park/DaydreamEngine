@@ -144,7 +144,7 @@ namespace Daydream
 	}
 	void D3D12RenderContext::BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer)
 	{
-		D3D12GPUBuffer* vertexBuffer = Cast<D3D12GPUBuffer*>(_vertexBuffer->GetBufferRaw());
+		D3D12GPUBuffer* vertexBuffer = Cast<D3D12GPUBuffer*>(_vertexBuffer->GetGPUBufferPtr());
 		ID3D12Resource* d3d12Resource = vertexBuffer->GetID3D12Resource();
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 		vertexBufferView.BufferLocation = d3d12Resource->GetGPUVirtualAddress();
@@ -155,7 +155,7 @@ namespace Daydream
 	}
 	void D3D12RenderContext::BindIndexBuffer(Shared<IndexBuffer> _indexBuffer)
 	{
-		D3D12GPUBuffer* indexBuffer = Cast<D3D12GPUBuffer*>(_indexBuffer->GetBufferRaw());
+		D3D12GPUBuffer* indexBuffer = Cast<D3D12GPUBuffer*>(_indexBuffer->GetGPUBufferPtr());
 		ID3D12Resource* d3d12Resource = indexBuffer->GetID3D12Resource();
 
 		D3D12_INDEX_BUFFER_VIEW indexBufferView;
@@ -207,7 +207,7 @@ namespace Daydream
 		if (resourceInfo == nullptr) return;
 		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
 
-		D3D12GPUBuffer* constantBuffer = Cast<D3D12GPUBuffer*>(_buffer->GetBufferRaw());
+		D3D12GPUBuffer* constantBuffer = Cast<D3D12GPUBuffer*>(_buffer->GetGPUBufferPtr());
 		ID3D12Resource* d3d12Resource = constantBuffer->GetID3D12Resource();
 		D3D12_GPU_VIRTUAL_ADDRESS gpuAddress = d3d12Resource->GetGPUVirtualAddress();
 
@@ -297,10 +297,8 @@ namespace Daydream
 		D3D12_TEXTURE_COPY_LOCATION dstLocation = {};
 		dstLocation.pResource = dst->GetID3D12Resource();
 		dstLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
-		// 핵심: faceIndex를 사용하여 큐브맵의 특정 면을 Subresource로 지정합니다.
 		dstLocation.SubresourceIndex = _mipLevel + _faceIndex * dst->GetMipLevels();
 
-		// 3. 복사 명령을 기록합니다.
 		GetD3D12ActiveCommandList()->CopyTextureRegion(&dstLocation, 0, 0, 0, &srcLocation, nullptr);
 
 		barriers[0].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;

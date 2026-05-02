@@ -3,7 +3,7 @@
 
 #include "Daydream/Graphics/Utility/ImageLoader.h"
 
-#include "Daydream/Graphics/Resources/Texture.h"
+#include "Daydream/Graphics/Resources/Texture/Texture.h"
 
 namespace Daydream
 {

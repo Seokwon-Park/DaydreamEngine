@@ -146,12 +146,12 @@ namespace Daydream
 	void VulkanRenderContext::BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer)
 	{
 		vk::DeviceSize offset = 0;
-		VulkanGPUBuffer* vertexBuffer = Cast<VulkanGPUBuffer*>(_vertexBuffer->GetBufferRaw());
+		VulkanGPUBuffer* vertexBuffer = Cast<VulkanGPUBuffer*>(_vertexBuffer->GetGPUBufferPtr());
 		GetActiveCommandBuffer().bindVertexBuffers(0, { vertexBuffer->GetVkBuffer() }, { offset });
 	}
 	void VulkanRenderContext::BindIndexBuffer(Shared<IndexBuffer> _indexBuffer)
 	{
-		VulkanGPUBuffer* indexBuffer = Cast<VulkanGPUBuffer*>(_indexBuffer->GetBufferRaw());
+		VulkanGPUBuffer* indexBuffer = Cast<VulkanGPUBuffer*>(_indexBuffer->GetGPUBufferPtr());
 		GetActiveCommandBuffer().bindIndexBuffer(indexBuffer->GetVkBuffer(), 0, vk::IndexType::eUint32);
 	}
 
@@ -220,7 +220,7 @@ namespace Daydream
 		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
 		if (resourceInfo == nullptr) return;
 
-		VulkanGPUBuffer* constantBuffer = Cast<VulkanGPUBuffer*>(_buffer->GetBufferRaw());
+		VulkanGPUBuffer* constantBuffer = Cast<VulkanGPUBuffer*>(_buffer->GetGPUBufferPtr());
 		Shared<VulkanPipelineState> vulkanPSO = std::static_pointer_cast<VulkanPipelineState>(activePipelineState);
 
 		vk::DescriptorBufferInfo bufferInfo{};
@@ -496,10 +496,9 @@ namespace Daydream
 			break;
 		}
 
-		// vk::ImageMemoryBarrier 구조체 사용, sType은 자동 설정됩니다.
 		vk::ImageMemoryBarrier barrier{};
 		barrier.image = image;
-		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED; // 일부 매크로는 그대로 사용
+		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
 		barrier.subresourceRange.baseArrayLayer = 0;
@@ -555,7 +554,6 @@ namespace Daydream
 			blit.dstSubresource.layerCount = layerCount;
 
 			// commandBuffer의 멤버 함수 blitImage 호출
-			// 배열이 아닌 단일 blit 객체를 직접 전달합니다.
 			GetActiveCommandBuffer().blitImage(
 				image, vk::ImageLayout::eTransferSrcOptimal,
 				image, vk::ImageLayout::eTransferDstOptimal,

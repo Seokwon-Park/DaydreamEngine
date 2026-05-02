@@ -8,10 +8,11 @@
 #include "Daydream/Graphics/Core/RenderContext.h"
 #include "Daydream/Graphics/Camera/Camera.h"
 #include "Daydream/Graphics/Resources/Skybox.h"
-#include "Daydream/Graphics/Resources/TextureView.h"
+#include "Daydream/Graphics/Resources/Texture/TextureView.h"
 
 namespace Daydream
 {
+
 	class Scene;
 	class Renderer
 	{
@@ -63,9 +64,9 @@ namespace Daydream
 
 		static void SetTexture2D(const String& _name, Shared<Texture2D> _texture);
 		static void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube);
-		static void SetTextureView(const String& _name, Shared<TextureView> _textureView);
+		static void SetTextureView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _saemplerState);
 		static void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer);
-		static void SetSampler(const String& _name, Shared<Sampler> _sampler);
+		
 
 		template <typename DataType>
 		static void UpdateConstantBuffer(Shared<ConstantBuffer> _buffer, const DataType& _data)

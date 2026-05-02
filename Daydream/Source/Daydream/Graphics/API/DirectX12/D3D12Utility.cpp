@@ -18,15 +18,11 @@ namespace Daydream::GraphicsUtility::DirectX12
 
 		case ResourceState::VertexBuffer:
 		case ResourceState::ConstantBuffer:
-			// DX12에서는 Vertex Buffer와 Constant Buffer의 읽기 상태 플래그가 동일합니다.
 			return D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER;
 
 		case ResourceState::IndexBuffer:
 			return D3D12_RESOURCE_STATE_INDEX_BUFFER;
 
-			// -------------------------------------------------------------------
-			// 아래는 엔진 확장을 위해 일반적으로 추가하게 될 Texture 및 기타 렌더 타겟 상태들입니다.
-			// -------------------------------------------------------------------
 		case ResourceState::RenderTarget:
 			return D3D12_RESOURCE_STATE_RENDER_TARGET;
 
@@ -37,13 +33,12 @@ namespace Daydream::GraphicsUtility::DirectX12
 			return D3D12_RESOURCE_STATE_DEPTH_READ;
 
 		case ResourceState::ShaderResource:
-			// 픽셀 셰이더와 그 외 셰이더(컴퓨트, 버텍스 등)에서 모두 읽을 수 있도록 설정합니다.
 			return D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
 
-		case ResourceState::UnorderedAccess: // Compute Shader의 RWTexture, RWBuffer 등
+		case ResourceState::UnorderedAccess: 
 			return D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
 
-		case ResourceState::Present: // Swapchain 화면 출력용
+		case ResourceState::Present: 
 			return D3D12_RESOURCE_STATE_PRESENT;
 
 		default:

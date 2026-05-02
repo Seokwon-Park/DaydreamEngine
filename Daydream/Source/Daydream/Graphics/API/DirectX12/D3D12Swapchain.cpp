@@ -12,10 +12,11 @@
 namespace Daydream
 {
 	D3D12Swapchain::D3D12Swapchain(D3D12RenderDevice* _device, const DaydreamWindow& _window, const SwapchainDesc& _desc)
+		:Swapchain(_desc)
 	{
 		device = _device;
 		desc = _desc;
-		bufferCount = _desc.bufferCount;
+		bufferCount = _desc.imageCount;
 		format = GraphicsUtility::DirectX::ConvertToDXGIFormat(_desc.format);;
 		DXGI_SAMPLE_DESC sampleDesc = {};
 		sampleDesc.Count = 1;    // 샘플 수 (1이면 MSAA 비활성화)
@@ -29,7 +30,7 @@ namespace Daydream
 		swapchainDesc.Stereo = 0;
 		swapchainDesc.SampleDesc = sampleDesc;
 		swapchainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		swapchainDesc.BufferCount = _desc.bufferCount;
+		swapchainDesc.BufferCount = _desc.imageCount;
 		//swapchainDesc.Scaling = DXGI_SCALING_STRETCH;
 		swapchainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 		swapchainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
@@ -49,8 +50,8 @@ namespace Daydream
 		swapChain1->QueryInterface(swapchain.GetAddressOf());
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create swapChain!");
 
-		commandLists.resize(_desc.bufferCount);
-		for (UInt32 i = 0; i < _desc.bufferCount; i++)
+		commandLists.resize(_desc.imageCount);
+		for (UInt32 i = 0; i < _desc.imageCount; i++)
 		{
 			// 매 루프마다 '진짜로' 새로운 커맨드 리스트와 Allocator를 각각 생성합니다!
 			commandLists[i] = MakeShared<D3D12RenderCommandList>(device);
@@ -65,8 +66,8 @@ namespace Daydream
 
 		mainRenderPass = MakeShared<D3D12RenderPass>(device, rpDesc);
 
-		framebuffers.resize(desc.bufferCount);
-		for (UInt32 i = 0; i < desc.bufferCount; i++)
+		framebuffers.resize(desc.imageCount);
+		for (UInt32 i = 0; i < desc.imageCount; i++)
 		{
 			ComPtr<ID3D12Resource> backBuffer;
 			swapchain->GetBuffer(i, IID_PPV_ARGS(backBuffer.GetAddressOf()));
@@ -75,7 +76,7 @@ namespace Daydream
 		}
 		frameIndex = swapchain->GetCurrentBackBufferIndex();
 
-		fenceValues.resize(_desc.bufferCount);
+		fenceValues.resize(_desc.imageCount);
 		//fence가 0까지는 완료된 상태로 생성
 		hr = device->GetDevice()->CreateFence(fenceValues[frameIndex], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fence.GetAddressOf()));
 		//fenceValues[frameIndex]++;
@@ -115,10 +116,10 @@ namespace Daydream
 			d3d12Backbuffers.clear();
 			framebuffers.clear();
 
-			swapchain->ResizeBuffers(desc.bufferCount, desc.width, desc.height, format, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH | DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING);
+			swapchain->ResizeBuffers(desc.imageCount, desc.width, desc.height, format, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH | DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING);
 
-			framebuffers.resize(desc.bufferCount);
-			for (UInt32 i = 0; i < desc.bufferCount; i++)
+			framebuffers.resize(desc.imageCount);
+			for (UInt32 i = 0; i < desc.imageCount; i++)
 			{
 				ComPtr<ID3D12Resource> backBuffer;
 				swapchain->GetBuffer(i, IID_PPV_ARGS(backBuffer.GetAddressOf()));
@@ -127,7 +128,7 @@ namespace Daydream
 			}
 
 			frameIndex = swapchain->GetCurrentBackBufferIndex();
-			for (UInt32 i = 0; i < desc.bufferCount; i++)
+			for (UInt32 i = 0; i < desc.imageCount; i++)
 			{
 				fenceValues[i] = currentFenceValue;
 			}

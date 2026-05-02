@@ -74,7 +74,7 @@ namespace Daydream
 		format = surfaceFormat.format;
 		extent = ChooseSwapExtent(SwapchainSupport.capabilities);
 
-		imageCount = desc.bufferCount;
+		imageCount = desc.imageCount;
 
 		// 서피스 제한 확인
 		if (imageCount < SwapchainSupport.capabilities.minImageCount)

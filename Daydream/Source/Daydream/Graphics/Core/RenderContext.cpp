@@ -13,17 +13,17 @@ namespace Daydream
 
     void RenderContext::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
     {
-        if (!_texture->HasSampler())
-        {
-            _texture->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
-        }
+        //if (!_texture->HasSampler())
+        //{
+        //    _texture->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
+        //}
     }
-    void Daydream::RenderContext::CaptureResource(Shared<GPUResource> _resource)
+    void RenderContext::CaptureResource(Shared<GPUResource> _resource)
     {
-        bufferStorage.push_back(_resource);
+        captureStorage.push_back(_resource);
     }
     void RenderContext::ReleaseCapturedBuffer()
     {
-        bufferStorage.clear();
+        captureStorage.clear();
     }
 }

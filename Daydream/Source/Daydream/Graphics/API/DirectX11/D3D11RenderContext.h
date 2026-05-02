@@ -17,8 +17,10 @@ namespace Daydream
 		virtual void Clear()  override;
 		virtual void DrawIndexed(UInt32 _indexCount, UInt32 _startIndex = 0, UInt32 _baseVertex = 0)  override;
 
-		virtual void BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer) override;
-		virtual void EndRenderPass(Shared<RenderPass> _renderPass) override;
+		virtual void BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer) override {};
+		virtual void EndRenderPass(Shared<RenderPass> _renderPass) override {};
+
+		virtual void BeginRendering(const RenderingInfo& _renderingInfo) override;
 
 		virtual void BindPipelineState(Shared<PipelineState> _pipelineState)override;
 

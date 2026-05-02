@@ -4,7 +4,7 @@
 //#include "RenderCommand.h"
 //
 //#include "Daydream/Graphics/Resources/Buffer.h"
-//#include "Daydream/Graphics/Resources/Texture.h"
+//#include "Daydream/Graphics/Resources/Texture/Texture.h"
 //
 //
 //namespace Daydream

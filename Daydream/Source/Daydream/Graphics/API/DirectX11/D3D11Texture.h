@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Daydream/Graphics/Resources/Texture.h"
+#include "Daydream/Graphics/Resources/Texture/Texture.h"
 #include "D3D11RenderDevice.h"
 #include "D3D11Sampler.h"
 #include "D3D11Common.h"
@@ -11,6 +11,7 @@ namespace Daydream
 	{
 	public:
 		D3D11GPUTexture(D3D11RenderDevice* _device, const TextureDesc& _desc);
+		D3D11GPUTexture(D3D11RenderDevice* _device, const TextureDesc& _desc, ID3D11Texture2D* _d3d11Backbuffer);
 		virtual ~D3D11GPUTexture() = default;
 
 		inline ID3D11Resource* GetID3D11Resource() { return texture.Get(); }

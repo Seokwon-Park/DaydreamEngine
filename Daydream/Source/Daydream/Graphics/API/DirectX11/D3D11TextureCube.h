@@ -5,7 +5,6 @@
 #include "D3D11Texture.h"
 #include "D3D11RenderDevice.h"
 #include "D3D11Common.h"
-#include "Daydream/Graphics/Resources/TextureCube.h"
 
 
 namespace Daydream

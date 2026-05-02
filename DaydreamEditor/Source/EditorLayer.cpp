@@ -33,29 +33,16 @@ namespace Daydream
 
 		sampler = ResourceManager::GetResource<Sampler>("LinearRepeat");
 
-		renderPass = ResourceManager::GetResource<RenderPass>("StandardRenderPass");
-		depthRenderPass = ResourceManager::GetResource<RenderPass>("DepthRenderPass");
-		gBufferRenderPass = ResourceManager::GetResource<RenderPass>("GBufferRenderPass");
-		maskRenderPass = ResourceManager::GetResource<RenderPass>("MaskRenderPass");
-		renderPass->SetClearColor(Daydream::Color::Blue);
+		//auto colorTex = Texture2D::Create(1920, 1080, RenderFormat::RGBA8);
+		//auto depthTex = Texture2D::Create(1920, 1080, RenderFormat::Depth24Stencil8);
 
-		Daydream::FramebufferDesc fbDesc;
-		fbDesc.width = 320;
-		fbDesc.height = 180;
-		//fbDesc.width = 1600;
-		//fbDesc.height = 900;
+		//auto colorView = TextureView::Create(colorTex, { TextureViewType::RenderTarget, RenderFormat::RGBA8 });
+		//auto depthView = TextureView::Create(depthTex, { TextureViewType::DepthStencil, RenderFormat::Depth24Stencil8 });
 
-		viewportFramebuffer = Framebuffer::Create(renderPass, fbDesc);
-
-		fbDesc.width = 1600;
-		fbDesc.height = 900;
-		gBufferFramebuffer = Framebuffer::Create(gBufferRenderPass, fbDesc);
-
-		maskFramebuffer = Framebuffer::Create(maskRenderPass, fbDesc);
-
-		fbDesc.width = 1024;
-		fbDesc.height = 1024;
-		depthFramebuffer = Framebuffer::Create(depthRenderPass, fbDesc);
+		//renderPass = ResourceManager::GetResource<RenderPass>("StandardRenderPass");
+		//depthRenderPass = ResourceManager::GetResource<RenderPass>("DepthRenderPass");
+		//gBufferRenderPass = ResourceManager::GetResource<RenderPass>("GBufferRenderPass");
+		//maskRenderPass = ResourceManager::GetResource<RenderPass>("MaskRenderPass");
 
 		pso = ResourceManager::GetResource<PipelineState>("SpritePSO");
 		pso3d = ResourceManager::GetResource<PipelineState>("ForwardPSO");
@@ -173,10 +160,16 @@ namespace Daydream
 		activeScene->Update(_deltaTime);
 
 		RenderGraph renderGraph;
-		RenderGraphResourceHandle depthResource = renderGraph.AddResource("Depth");
-		RenderGraphResourceHandle gBufferResource = renderGraph.AddResource("GBuffer");
-		RenderGraphResourceHandle maskResource = renderGraph.AddResource("Mask");
-		RenderGraphResourceHandle finalResource = renderGraph.AddResource("Final");
+		RenderGraphResourceDesc desc{};
+
+		RenderFormat format;
+		UInt32 width;
+		UInt32 height;
+		RenderGraphResourceHandle depthResource = renderGraph.AddResource("Depth", desc);
+
+		RenderGraphResourceHandle gBufferResource = renderGraph.AddResource("Position", desc);
+		RenderGraphResourceHandle maskResource = renderGraph.AddResource("Mask", desc);
+		RenderGraphResourceHandle finalResource = renderGraph.AddResource("Final", desc);
 
 		RenderGraphPassHandle depthPass = renderGraph.AddPass("DepthPass", [this]()
 			{
@@ -265,28 +258,15 @@ namespace Daydream
 			{
 				Renderer::BeginRenderPass(renderPass, viewportFramebuffer);
 
-				for (int i = 0; i < 5; i++)
-				{
-					if (i == 4)
-					{
-						gBufferFramebuffer->GetColorAttachmentTexture(i)->SetSampler(ResourceManager::GetResource<Sampler>("NearestRepeat"));
-					}
-					else
-					{
-						gBufferFramebuffer->GetColorAttachmentTexture(i)->SetSampler(sampler);
-					}
-				}
-				maskFramebuffer->GetColorAttachmentTexture(0)->SetSampler(ResourceManager::GetResource<Sampler>("NearestRepeat"));
-
 				Renderer::BindPipelineState(deferredLightingPSO);
-				Renderer::SetTexture2D("PositionTexture", gBufferFramebuffer->GetColorAttachmentTexture(0));
-				Renderer::SetTexture2D("NormalTexture", gBufferFramebuffer->GetColorAttachmentTexture(1));
-				Renderer::SetTexture2D("AlbedoTexture", gBufferFramebuffer->GetColorAttachmentTexture(2));
-				Renderer::SetTexture2D("RMAOTexture", gBufferFramebuffer->GetColorAttachmentTexture(3));
-				Renderer::SetTexture2D("BRDFLUT", Renderer::GetSkybox()->GetBRDF());
-				Renderer::SetTexture2D("EntityIDTexture", gBufferFramebuffer->GetColorAttachmentTexture(4));
-				Renderer::SetTexture2D("OutlineTexture", maskFramebuffer->GetColorAttachmentTexture(0));
-				Renderer::SetTexture2D("DepthTexture", depthFramebuffer->GetDepthAttachmentTexture());
+				//Renderer::SetTextureView("PositionTexture", gBufferFramebuffer->GetColorAttachmentTexture(0));
+				//Renderer::SetTextureView("NormalTexture", gBufferFramebuffer->GetColorAttachmentTexture(1));
+				//Renderer::SetTextureView("AlbedoTexture", gBufferFramebuffer->GetColorAttachmentTexture(2));
+				//Renderer::SetTextureView("RMAOTexture", gBufferFramebuffer->GetColorAttachmentTexture(3));
+				//Renderer::SetTextureView("BRDFLUT", Renderer::GetSkybox()->GetBRDF());
+				//Renderer::SetTextureView("EntityIDTexture", gBufferFramebuffer->GetColorAttachmentTexture(4));
+				//Renderer::SetTextureView("OutlineTexture", maskFramebuffer->GetColorAttachmentTexture(0));
+				//Renderer::SetTextureView("DepthTexture", depthFramebuffer->GetDepthAttachmentTexture());
 				Renderer::SetConstantBuffer("Lights", activeScene->GetLightConstantBuffer());
 				Renderer::SetConstantBuffer("EditorData", entityBuffer);
 				Renderer::SetTextureCube("IrradianceTexture", Renderer::GetSkybox()->GetIrradianceTexture());
@@ -327,17 +307,17 @@ namespace Daydream
 		ImGui::Begin("Test");
 		ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
 
-		ImGui::Image((ImTextureID)depthFramebuffer->GetDepthAttachmentTexture()->GetImGuiHandle(), ImVec2{ viewportSize.x / 3,viewportSize.y / 3 });
+		//ImGui::Image((ImTextureID)depthFramebuffer->GetDepthAttachmentTexture()->GetImGuiHandle(), ImVec2{ viewportSize.x / 3,viewportSize.y / 3 });
 		//ImGui::Image((ImTextureID)AssetManager::GetAssetByPath<Texture2D>("Resource/skybox.hdr")->GetImGuiHandle(), ImVec2{ viewportSize.x / 3,viewportSize.y / 3 });
 
-		for (int i = 0; i < 4; i++)
-		{
-			auto t = gBufferFramebuffer->GetColorAttachmentTexture(i);
-			if (t)
-			{
-				ImGui::Image((ImTextureID)t->GetImGuiHandle(), ImVec2{ viewportSize.x / 3,viewportSize.y / 3 });
-			}
-		}
+		//for (int i = 0; i < 4; i++)
+		//{
+		//	auto t = gBufferFramebuffer->GetColorAttachmentTexture(i);
+		//	if (t)
+		//	{
+		//		ImGui::Image((ImTextureID)t->GetImGuiHandle(), ImVec2{ viewportSize.x / 3,viewportSize.y / 3 });
+		//	}
+		//}
 		ImGui::End();
 
 		//UI::DrawMaterialController("SkyboxTextures", materialcube.get());
@@ -413,47 +393,47 @@ namespace Daydream
 
 		Application::GetInstance().GetImGuiLayer()->BlockEvents(!isViewportFocused && !isViewportHovered);
 
-		Shared<Texture2D> viewportTexture = nullptr;
-		switch (viewIndex)
-		{
-		case 0:
-		{
-			viewportTexture = viewportFramebuffer->GetColorAttachmentTexture(0);
-			if (viewportTexture)
-			{
-				ImGui::Image((ImTextureID)viewportTexture->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
-			}
-			break;
-		}
-		case 1:
-		{
-			viewportTexture = gBufferFramebuffer->GetColorAttachmentTexture(0);
-			if (viewportTexture)
-			{
-				ImGui::Image((ImTextureID)viewportTexture->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
-			}
-			break;
-		}
-		case 2:
-		{
-			viewportTexture = gBufferFramebuffer->GetColorAttachmentTexture(1);
-			if (viewportTexture)
-			{
-				ImGui::Image((ImTextureID)viewportTexture->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
-			}
-			break;
-		}
-		case 3:
-		{
-			ImGui::Image((ImTextureID)gBufferFramebuffer->GetColorAttachmentTexture(2)->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
-			break;
-		}
-		case 4:
-		{
-			ImGui::Image((ImTextureID)gBufferFramebuffer->GetColorAttachmentTexture(3)->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
-			break;
-		}
-		}
+		//Shared<Texture2D> viewportTexture = nullptr;
+		//switch (viewIndex)
+		//{
+		//case 0:
+		//{
+		//	viewportTexture = viewportFramebuffer->GetColorAttachmentTexture(0);
+		//	if (viewportTexture)
+		//	{
+		//		ImGui::Image((ImTextureID)viewportTexture->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
+		//	}
+		//	break;
+		//}
+		//case 1:
+		//{
+		//	viewportTexture = gBufferFramebuffer->GetColorAttachmentTexture(0);
+		//	if (viewportTexture)
+		//	{
+		//		ImGui::Image((ImTextureID)viewportTexture->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
+		//	}
+		//	break;
+		//}
+		//case 2:
+		//{
+		//	viewportTexture = gBufferFramebuffer->GetColorAttachmentTexture(1);
+		//	if (viewportTexture)
+		//	{
+		//		ImGui::Image((ImTextureID)viewportTexture->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
+		//	}
+		//	break;
+		//}
+		//case 3:
+		//{
+		//	ImGui::Image((ImTextureID)gBufferFramebuffer->GetColorAttachmentTexture(2)->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
+		//	break;
+		//}
+		//case 4:
+		//{
+		//	ImGui::Image((ImTextureID)gBufferFramebuffer->GetColorAttachmentTexture(3)->GetImGuiHandle(), ImVec2{ viewportSize.x,viewportSize.y });
+		//	break;
+		//}
+		//}
 		if (ImGui::BeginDragDropTarget())
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(AssetManager::AssetTypeToString(AssetType::Model).c_str()))

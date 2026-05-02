@@ -24,6 +24,8 @@ namespace Daydream
 		virtual void BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer) override;
 		virtual void EndRenderPass(Shared<RenderPass> _renderPass) override;
 
+		virtual void BeginRendering(const RenderingInfo& _renderingInfo) override;
+
 		virtual void BindPipelineState(Shared<PipelineState> _pipelineState)override;
 
 		virtual void BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer) override;

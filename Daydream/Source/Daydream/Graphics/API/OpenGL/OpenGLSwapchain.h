@@ -25,7 +25,7 @@ namespace Daydream
 
 	private:
 		GLFWwindow* window;
-		Shared<OpenGLFramebuffer> framebuffer;
+
 
 	};
 }

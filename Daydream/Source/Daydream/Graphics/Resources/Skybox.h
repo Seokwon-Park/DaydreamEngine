@@ -1,6 +1,9 @@
 #pragma once
 
-#include "Daydream.h"
+#include "Daydream/Graphics/Resources/Mesh.h"
+#include "Daydream/Graphics/Resources/Texture/Texture2D.h"
+#include "Daydream/Graphics/Resources/Texture/TextureCube.h"
+#include "Daydream/Graphics/Resources/PipelineState.h"
 
 namespace Daydream
 {
@@ -59,16 +62,16 @@ namespace Daydream
         Array<Shared<ConstantBuffer>> cubeFaceConstantBuffers;
         Array<Shared<ConstantBuffer>> roughnessConstantBuffers;
 
-        Shared<Material> equirectangularMaterial;
-        Array<Shared<Material>> equirectangularMaterials;
-        Array<Shared<Material>> irradianceMaterials;
-        Array<Shared<Material>> prefilterMaterials;
-        Shared<Material> resizeMaterial;
+        //Shared<Material> equirectangularMaterial;
+        //Array<Shared<Material>> equirectangularMaterials;
+        //Array<Shared<Material>> irradianceMaterials;
+        //Array<Shared<Material>> prefilterMaterials;
+        //Shared<Material> resizeMaterial;
 
-        Shared<Framebuffer> captureFramebuffer;
-        Shared<Framebuffer> resizeFramebuffer;
-        Shared<Framebuffer> irradianceFramebuffer;
-        Array<Shared<Framebuffer>> prefilterFramebuffers;
+        //Shared<Framebuffer> captureFramebuffer;
+        //Shared<Framebuffer> resizeFramebuffer;
+        //Shared<Framebuffer> irradianceFramebuffer;
+        //Array<Shared<Framebuffer>> prefilterFramebuffers;
 
         Shared<RenderPass> equirectangularRenderPass;
         Shared<RenderPass> resizeRenderPass;
@@ -88,7 +91,6 @@ namespace Daydream
         Shared<Texture2D> equirectangularDropTarget; // dummy(No Texture)
 
         Shared<Texture2D> resizeResultTexture;
-        Array<Shared<Texture>> oldTextures;
         Array<Shared<Texture2D>> equirectangularResultTextures;
         Array<Shared<Texture2D>> irradianceResultTextures;
         Array<Shared<Texture2D>> prefilterResultTextures;

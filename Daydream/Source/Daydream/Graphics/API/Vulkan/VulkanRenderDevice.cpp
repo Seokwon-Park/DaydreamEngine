@@ -3,13 +3,13 @@
 #include "VulkanRenderContext.h"
 #include "VulkanRenderCommandList.h"
 #include "VulkanBuffer.h"
-#include "VulkanRenderPass.h"
 #include "VulkanFramebuffer.h"
 #include "VulkanPipelineState.h"
 #include "VulkanShader.h"
 #include "VulkanSwapchain.h"
 #include "VulkanImGuiRenderer.h"
 #include "VulkanTexture.h"
+#include "VulkanTextureView.h"
 #include "VulkanTextureCube.h"
 #include "VulkanSampler.h"
 #include "Daydream/Graphics/Utility/GraphicsUtility.h"
@@ -162,6 +162,11 @@ namespace Daydream
 		return MakeShared<VulkanGPUTexture>(this, _desc);
 	}
 
+	Shared<TextureView> VulkanRenderDevice::CreateTextureView(Shared<Texture> _texture, const TextureViewDesc& _desc)
+	{
+		return MakeShared<VulkanTextureView>(this, _texture, _desc);
+	}
+
 	//Shared<VertexBuffer> VulkanRenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
 	//{
 	//	BufferDesc desc{};
@@ -210,7 +215,6 @@ namespace Daydream
 	//		vma::AllocationCreateFlagBits::eMapped);
 
 	//	vma::AllocationInfo allocationInfo;
-	//	// GetAllocator()는 VmaAllocator 핸들을 반환하는 함수라고 가정합니다.
 	//	allocator->getAllocationInfo(uploadBufferAllocation.get(), &allocationInfo);
 	//	memcpy(allocationInfo.pMappedData, _indices, bufferSize);
 
@@ -225,15 +229,15 @@ namespace Daydream
 	//}
 
 
-	Shared<RenderPass> VulkanRenderDevice::CreateRenderPass(const RenderPassDesc& _desc)
-	{
-		return MakeShared<VulkanRenderPass>(this, _desc);
-	}
+	//Shared<RenderPass> VulkanRenderDevice::CreateRenderPass(const RenderPassDesc& _desc)
+	//{
+	//	return MakeShared<VulkanRenderPass>(this, _desc);
+	//}
 
-	Shared<Framebuffer> VulkanRenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc)
-	{
-		return _renderPass->CreateFramebuffer(_desc);
-	}
+	//Shared<Framebuffer> VulkanRenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc)
+	//{
+	//	return _renderPass->CreateFramebuffer(_desc);
+	//}
 
 	Shared<PipelineState> VulkanRenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)
 	{
@@ -770,7 +774,6 @@ namespace Daydream
 			vk::ValidationFeatureEnableEXT::eBestPractices
 		};
 
-		// 2. Features 구조체를 만듭니다.
 		vk::ValidationFeaturesEXT features = {};
 		features.enabledValidationFeatureCount = 3;
 		features.pEnabledValidationFeatures = enables;

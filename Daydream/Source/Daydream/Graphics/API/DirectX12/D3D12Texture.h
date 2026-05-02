@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Daydream/Graphics/Resources/Texture.h"
+#include "Daydream/Graphics/Resources/Texture/Texture.h"
 #include "D3D12RenderDevice.h"
 #include "D3D12Sampler.h"
 #include "D3D12ResourceState.h"

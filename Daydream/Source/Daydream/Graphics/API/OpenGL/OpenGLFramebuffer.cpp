@@ -6,129 +6,129 @@
 
 namespace Daydream
 {
-	OpenGLFramebuffer::OpenGLFramebuffer(RenderPass* _renderPass, const FramebufferDesc& _desc)
-		:Framebuffer(_renderPass, _desc)
-	{
-		glCreateFramebuffers(1, &framebufferID);
+	//OpenGLFramebuffer::OpenGLFramebuffer(RenderPass* _renderPass, const FramebufferDesc& _desc)
+	//	:Framebuffer(_renderPass, _desc)
+	//{
+	//	glCreateFramebuffers(1, &framebufferID);
 
-		colorAttachments.resize(colorAttachmentCount);
-		CreateAttachments();
+	//	colorAttachments.resize(colorAttachmentCount);
+	//	CreateAttachments();
 
-		AttachTextures();
-	}
+	//	AttachTextures();
+	//}
 
-	OpenGLFramebuffer::OpenGLFramebuffer(OpenGLSwapchain* _swapchain, RenderPass* _renderPass)
-		:Framebuffer(_swapchain, _renderPass)
-	{
-		framebufferID = 0;
-		isSwapchainBuffer = true;
-	}
+	//OpenGLFramebuffer::OpenGLFramebuffer(OpenGLSwapchain* _swapchain, RenderPass* _renderPass)
+	//	:Framebuffer(_swapchain, _renderPass)
+	//{
+	//	framebufferID = 0;
+	//	isSwapchainBuffer = true;
+	//}
 
-	void OpenGLFramebuffer::AttachTextures()
-	{
-		// Color attachments 연결
-		for (UInt32 i = 0; i < colorAttachments.size(); ++i) {
-			glNamedFramebufferTexture(framebufferID,
-				GL_COLOR_ATTACHMENT0 + i,
-				colorAttachments[i]->GetTextureID(),
-				0); // mip level 0
-		}
+	//void OpenGLFramebuffer::AttachTextures()
+	//{
+	//	// Color attachments 연결
+	//	for (UInt32 i = 0; i < colorAttachments.size(); ++i) {
+	//		glNamedFramebufferTexture(framebufferID,
+	//			GL_COLOR_ATTACHMENT0 + i,
+	//			colorAttachments[i]->GetTextureID(),
+	//			0); // mip level 0
+	//	}
 
-		// Depth attachment 연결
-		if (depthAttachment) {
-			GLenum attachment = GL_DEPTH_STENCIL_ATTACHMENT;
+	//	// Depth attachment 연결
+	//	if (depthAttachment) {
+	//		GLenum attachment = GL_DEPTH_STENCIL_ATTACHMENT;
 
-			glNamedFramebufferTexture(framebufferID,
-				attachment,
-				depthAttachment->GetTextureID(),
-				0);
-		}
+	//		glNamedFramebufferTexture(framebufferID,
+	//			attachment,
+	//			depthAttachment->GetTextureID(),
+	//			0);
+	//	}
 
-		// Draw buffers 설정 (multiple render targets용)
-		std::vector<GLenum> drawBuffers;
-		for (UInt32 i = 0; i < colorAttachments.size(); ++i) {
-			drawBuffers.push_back(GL_COLOR_ATTACHMENT0 + i);
-		}
-		glNamedFramebufferDrawBuffers(framebufferID,
-			(UInt32)drawBuffers.size(),
-			drawBuffers.data());
+	//	// Draw buffers 설정 (multiple render targets용)
+	//	std::vector<GLenum> drawBuffers;
+	//	for (UInt32 i = 0; i < colorAttachments.size(); ++i) {
+	//		drawBuffers.push_back(GL_COLOR_ATTACHMENT0 + i);
+	//	}
+	//	glNamedFramebufferDrawBuffers(framebufferID,
+	//		(UInt32)drawBuffers.size(),
+	//		drawBuffers.data());
 
-		//glNamedFramebufferDrawBuffer(framebufferID, GL_COLOR_ATTACHMENT0);
+	//	//glNamedFramebufferDrawBuffer(framebufferID, GL_COLOR_ATTACHMENT0);
 
-		DAYDREAM_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
-	}
+	//	DAYDREAM_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
+	//}
 
-	OpenGLFramebuffer::~OpenGLFramebuffer()
-	{
-		colorAttachments.clear();
-		depthAttachment = nullptr;
-		glDeleteFramebuffers(1, &framebufferID);
-	}
-	Shared<Texture2D> OpenGLFramebuffer::GetColorAttachmentTexture(UInt32 _index)
-	{
-		return colorAttachments[_index];
-	}
-	Shared<Texture2D> OpenGLFramebuffer::GetDepthAttachmentTexture()
-	{
-		if (HasDepthAttachment())
-		{
-			return depthAttachment;
-		}
-		return nullptr;
-	}
-	void Daydream::OpenGLFramebuffer::Recreate(UInt32 _newWidth, UInt32 _newHeight)
-	{
-		SetSize(_newWidth, _newHeight);
-		depthAttachment = nullptr;
+	//OpenGLFramebuffer::~OpenGLFramebuffer()
+	//{
+	//	colorAttachments.clear();
+	//	depthAttachment = nullptr;
+	//	glDeleteFramebuffers(1, &framebufferID);
+	//}
+	//Shared<Texture2D> OpenGLFramebuffer::GetColorAttachmentTexture(UInt32 _index)
+	//{
+	//	return colorAttachments[_index];
+	//}
+	//Shared<Texture2D> OpenGLFramebuffer::GetDepthAttachmentTexture()
+	//{
+	//	if (HasDepthAttachment())
+	//	{
+	//		return depthAttachment;
+	//	}
+	//	return nullptr;
+	//}
+	//void Daydream::OpenGLFramebuffer::Recreate(UInt32 _newWidth, UInt32 _newHeight)
+	//{
+	//	SetSize(_newWidth, _newHeight);
+	//	depthAttachment = nullptr;
 
-		CreateAttachments();
-		AttachTextures();
-	}
-	UInt32 OpenGLFramebuffer::ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY)
-	{
-		UInt32 pixel;
-		glGetTextureSubImage(
-			entityTexture->GetTextureID(),       // 텍스처 ID
-			0,                  // Mipmap Level
-			_mouseX, _mouseY, 0,            // Offset (x, y, z)
-			1, 1, 1,            // Size (width, height, depth)
-			GL_RED_INTEGER,		        // Format (텍스처 포맷에 맞춰야 함)
-			GL_UNSIGNED_INT,           // Type
-			sizeof(pixel),      // Buffer Size
-			&pixel               // Data Pointer
-		);
-		return pixel;
-	}
-	void OpenGLFramebuffer::CreateAttachments()
-	{
-		const RenderPassDesc& renderPassDesc = renderPass->GetDesc();
-		for (UInt64 i = 0; i < colorAttachmentCount; i++)
-		{
-			const auto& colorAttachmentDesc = renderPassDesc.colorAttachments[i];
-			TextureDesc textureDesc;
-			textureDesc.width = width;
-			textureDesc.height = height;
-			textureDesc.format = colorAttachmentDesc.format;
-			textureDesc.textureUsage = TextureUsage::RenderTarget | TextureUsage::ShaderResource;
+	//	CreateAttachments();
+	//	AttachTextures();
+	//}
+	//UInt32 OpenGLFramebuffer::ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY)
+	//{
+	//	UInt32 pixel;
+	//	glGetTextureSubImage(
+	//		entityTexture->GetTextureID(),       // 텍스처 ID
+	//		0,                  // Mipmap Level
+	//		_mouseX, _mouseY, 0,            // Offset (x, y, z)
+	//		1, 1, 1,            // Size (width, height, depth)
+	//		GL_RED_INTEGER,		        // Format (텍스처 포맷에 맞춰야 함)
+	//		GL_UNSIGNED_INT,           // Type
+	//		sizeof(pixel),      // Buffer Size
+	//		&pixel               // Data Pointer
+	//	);
+	//	return pixel;
+	//}
+	//void OpenGLFramebuffer::CreateAttachments()
+	//{
+	//	const RenderPassDesc& renderPassDesc = renderPass->GetDesc();
+	//	for (UInt64 i = 0; i < colorAttachmentCount; i++)
+	//	{
+	//		const auto& colorAttachmentDesc = renderPassDesc.colorAttachments[i];
+	//		TextureDesc textureDesc;
+	//		textureDesc.width = width;
+	//		textureDesc.height = height;
+	//		textureDesc.format = colorAttachmentDesc.format;
+	//		textureDesc.textureUsage = TextureUsage::RenderTarget | TextureUsage::ShaderResource;
 
-			Shared<OpenGLTexture2D> colorTexture = MakeShared<OpenGLTexture2D>(textureDesc);
-			if (colorAttachmentDesc.type == AttachmentType::EntityHandle)
-			{
-				entityTexture = colorTexture;
-			}
-			colorAttachments[i] = colorTexture;
-		}
+	//		Shared<OpenGLTexture2D> colorTexture = MakeShared<OpenGLTexture2D>(textureDesc);
+	//		if (colorAttachmentDesc.type == AttachmentType::EntityHandle)
+	//		{
+	//			entityTexture = colorTexture;
+	//		}
+	//		colorAttachments[i] = colorTexture;
+	//	}
 
-		if (renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
-		{
-			TextureDesc textureDesc;
-			textureDesc.width = width;
-			textureDesc.height = height;
-			textureDesc.format = renderPassDesc.depthAttachment.format;
-			textureDesc.textureUsage = TextureUsage::DepthStencil;
+	//	if (renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
+	//	{
+	//		TextureDesc textureDesc;
+	//		textureDesc.width = width;
+	//		textureDesc.height = height;
+	//		textureDesc.format = renderPassDesc.depthAttachment.format;
+	//		textureDesc.textureUsage = TextureUsage::DepthStencil;
 
-			Shared<OpenGLTexture2D> depthTexture = MakeShared<OpenGLTexture2D>(textureDesc);
-			depthAttachment = depthTexture;
-		}
-	}
+	//		Shared<OpenGLTexture2D> depthTexture = MakeShared<OpenGLTexture2D>(textureDesc);
+	//		depthAttachment = depthTexture;
+	//	}
+	//}
 }

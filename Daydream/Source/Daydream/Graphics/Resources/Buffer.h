@@ -36,8 +36,8 @@ namespace Daydream
 		virtual ~Buffer() = default;
 
 		inline void UpdateData(const void* _data, UInt32 _size) { buffer->UpdateData(_data, _size); }
-		inline const Shared<GPUBuffer>& GetBuffer() const { return buffer; }
-		inline GPUBuffer* GetBufferRaw() const { return buffer.get(); }
+		inline const Shared<GPUBuffer>& GetGPUBuffer() const { return buffer; }
+		inline GPUBuffer* GetGPUBufferPtr() const { return buffer.get(); }
 		inline UInt32 GetSize() const { return buffer->GetSize(); }
 	protected:
 		Shared<GPUBuffer> buffer;

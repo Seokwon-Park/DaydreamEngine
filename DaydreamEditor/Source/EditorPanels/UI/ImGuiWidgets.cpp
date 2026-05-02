@@ -4,8 +4,8 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_internal.h"
 
-#include "Daydream/Graphics/Resources/Texture.h"
-#include "Daydream/Graphics/Resources/TextureCube.h"
+#include "Daydream/Graphics/Resources/Texture/Texture.h"
+#include "Daydream/Graphics/Resources/Texture/TextureCube.h"
 #include "Daydream/Graphics/Resources/Framebuffer.h"
 #include "Daydream/Graphics/Resources/PipelineState.h"
 #include "Daydream/Graphics/Core/Renderer.h"

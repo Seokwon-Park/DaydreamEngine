@@ -116,6 +116,18 @@ namespace Daydream
 		ShaderAllBit = DaydreamVertexBit | DaydreamHullBit | DaydreamDomainBit | DaydreamGeometryBit | DaydreamPixelBit | DaydreamComputeBit
 	};
 
+	enum class AttachmentLoadOp {
+		Load,      // 이전 내용을 그대로 로드
+		Clear,     // 특정 값으로 초기화
+		DontCare   // 이전 내용 무시 (성능 최적화에 유리)
+	};
+
+	enum class AttachmentStoreOp {
+		Store,     // 렌더링 결과를 저장
+		DontCare   // 렌더링 결과를 버림 (임시 데이터에 유용)
+	};
+
+
 	//Ref - https://learn.microsoft.com/ko-kr/windows/win32/api/dxgiformat/ne-dxgiformat-dxgi_format
 	enum class RenderFormat
 	{

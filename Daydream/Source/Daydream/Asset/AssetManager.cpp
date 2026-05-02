@@ -4,6 +4,8 @@
 #include "AssetImporter.h"
 #include "AssetDefaults.h"
 
+#include "Daydream/Graphics/Resources/Texture/Texture2D.h"
+
 #include "Daydream/Core/UUID.h"
 #include "yaml-cpp/yaml.h"
 
@@ -326,12 +328,11 @@ namespace Daydream
 
 	void AssetManager::CreateBuiltinTexture2D()
 	{
-		TextureDesc desc{};
-		desc.textureUsage = TextureUsage::ShaderResource;
+		Texture2DDesc desc{};
 		desc.width = 1;
 		desc.height = 1;
 		desc.format = RenderFormat::R8G8B8A8_UNORM;
-		desc.type = TextureType::Texture2D;
+		desc.textureUsage = TextureUsage::ShaderResource;
 		UInt32 imageSize = desc.width * desc.height;
 
 		Array<UInt8> pixelData;
@@ -341,31 +342,31 @@ namespace Daydream
 		pixelData[2] = 255;
 		pixelData[3] = 255;
 		assetPathMap["DefaultTexture"] = AssetDefaults::DefaultAlbedoHandle;
-		loadedAssetCache[AssetDefaults::DefaultAlbedoHandle] = Texture2D::Create(pixelData.data(), desc);
+		loadedAssetCache[AssetDefaults::DefaultAlbedoHandle] = Texture2D::Create(desc, pixelData.data());
 
 		pixelData[0] = 128;
 		pixelData[1] = 128;
 		pixelData[2] = 255;
 		assetPathMap["DefaultNormal"] = AssetDefaults::DefaultNormalHandle;
-		loadedAssetCache[AssetDefaults::DefaultNormalHandle] = Texture2D::Create(pixelData.data(), desc);
+		loadedAssetCache[AssetDefaults::DefaultNormalHandle] = Texture2D::Create(desc, pixelData.data());
 
 		pixelData[0] = 128;
 		pixelData[1] = 128;
 		pixelData[2] = 128;
 		assetPathMap["DefaultRoughness"] = AssetDefaults::DefaultRoughnessHandle;
-		loadedAssetCache[AssetDefaults::DefaultRoughnessHandle] = Texture2D::Create(pixelData.data(), desc);
+		loadedAssetCache[AssetDefaults::DefaultRoughnessHandle] = Texture2D::Create(desc, pixelData.data());
 
 		pixelData[0] = 0;
 		pixelData[1] = 0;
 		pixelData[2] = 0;
 		assetPathMap["DefaultMetallic"] = AssetDefaults::DefaultMetallicHandle;
-		loadedAssetCache[AssetDefaults::DefaultMetallicHandle] = Texture2D::Create(pixelData.data(), desc);
+		loadedAssetCache[AssetDefaults::DefaultMetallicHandle] = Texture2D::Create(desc, pixelData.data());
 
 		pixelData[0] = 255;
 		pixelData[1] = 255;
 		pixelData[2] = 255;
 		assetPathMap["DefaultAO"] = AssetDefaults::DefaultAOHandle;
-		loadedAssetCache[AssetDefaults::DefaultAOHandle] = Texture2D::Create(pixelData.data(), desc);
+		loadedAssetCache[AssetDefaults::DefaultAOHandle] = Texture2D::Create(desc, pixelData.data());
 	}
 
 	void AssetManager::ProcessDirectory(const Path& _directoryPath, bool _isRecursive)

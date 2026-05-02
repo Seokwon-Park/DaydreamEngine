@@ -7,7 +7,7 @@
 #include "Daydream/Graphics/Utility/GraphicsUtility.h"
 
 #include "Daydream/Graphics/Resources/Buffer.h"
-#include "Daydream/Graphics/Resources/Texture.h"
+#include "Daydream/Graphics/Resources/Texture/Texture.h"
 #include "Daydream/Graphics/Resources/Sampler.h"
 #include "Daydream/Graphics/States/RasterizerState.h"
 

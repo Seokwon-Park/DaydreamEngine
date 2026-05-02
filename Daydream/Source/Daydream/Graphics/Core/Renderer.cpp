@@ -38,7 +38,6 @@ namespace Daydream
 			commandList = MakeUnique<RenderCommandQueue>();
 		}
 
-		// 모든 큐의 상태를 '사용 중이 아님(false)'으로 초기화합니다.
 		// memory_order_relaxed는 동기화 순서가 중요하지 않은 단순 초기화에 사용
 		for (auto& queueBusy : commandQueueBusyFlags)
 		{
@@ -86,7 +85,7 @@ namespace Daydream
 		SwapchainDesc desc;
 		desc.width = _window.GetWidth();
 		desc.height = _window.GetHeight();
-		desc.bufferCount = Renderer::MaxFramesInFlight;
+		desc.imageCount = Renderer::MaxFramesInFlight;
 		desc.format = RenderFormat::R8G8B8A8_UNORM;
 		desc.isFullscreen = false;
 		desc.isVSync = _window.IsVSync();
@@ -197,7 +196,7 @@ namespace Daydream
 				renderContext->SetTextureCube(_name, _textureCube);
 			});
 	}
-	void Renderer::SetTextureView(const String& _name, Shared<TextureView> _textureView)
+	void Daydream::Renderer::SetTextureView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _saemplerState)
 	{
 		EnqueueCommand([_name, _textureView]()
 			{
@@ -210,14 +209,6 @@ namespace Daydream
 		EnqueueCommand([_name, _buffer]()
 			{
 				renderContext->SetConstantBuffer(_name, _buffer);
-			});
-	}
-
-	void Renderer::SetSampler(const String& _name, Shared<Sampler> _sampler)
-	{
-		EnqueueCommand([_name, _sampler]()
-			{
-				renderContext->SetSampler(_name, _sampler);
 			});
 	}
 

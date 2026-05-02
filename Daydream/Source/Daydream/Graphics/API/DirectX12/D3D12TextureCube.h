@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Daydream/Graphics/Resources/TextureCube.h"
 #include "D3D12RenderDevice.h"
 #include "D3D12Sampler.h"
 #include "D3D12ResourceState.h"

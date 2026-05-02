@@ -11,7 +11,6 @@ namespace Daydream
 	{
 		desc = _desc;
 		shaderGroup = _desc.shaderGroup;
-		renderPass = _desc.renderPass;
 	}
 
 	Shared<PipelineState> PipelineState::Create(const PipelineStateDesc& _desc)

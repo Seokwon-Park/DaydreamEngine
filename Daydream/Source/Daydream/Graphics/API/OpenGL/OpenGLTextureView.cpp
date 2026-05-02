@@ -3,8 +3,11 @@
 
 namespace Daydream
 {
-	OpenGLTextureView::~OpenGLTextureView()
+	
+	OpenGLTextureView::OpenGLTextureView(Shared<OpenGLGPUTexture> _texture, const TextureViewDesc& _desc)
+		:TextureView(_texture, _desc)
 	{
 	}
+
 }
 

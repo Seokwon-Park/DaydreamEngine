@@ -1,9 +1,11 @@
 #include "DaydreamPCH.h"
 #include "Scene.h"
 
+#include "Daydream/Asset/AssetManager.h"
 #include "Components/LightComponent.h"
 #include "Components/ModelRendererComponent.h"
 #include "Components/MeshRendererComponent.h"
+#include "Components/TransformComponent.h"
 #include "Daydream/Graphics/Core/Renderer.h"
 #include "Daydream/Graphics/Resources/Skybox.h"
 

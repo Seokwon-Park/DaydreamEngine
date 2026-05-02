@@ -7,7 +7,6 @@
 #include "Daydream/Graphics/Core/RenderDevice.h"
 #include "Daydream/Core/Window.h"
 
-#include "VulkanRenderPass.h"
 #include "VulkanFrameBuffer.h"
 #include "VulkanRenderDevice.h"
 #include "VulkanRenderCommandList.h"

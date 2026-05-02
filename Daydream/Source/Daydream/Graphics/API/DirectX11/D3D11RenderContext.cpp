@@ -4,6 +4,7 @@
 
 #include "D3D11PipelineState.h"
 #include "D3D11Texture.h"
+#include "D3D11TextureView.h"
 #include "D3D11TextureCube.h"
 #include "D3D11Buffer.h"
 #include "D3D11Framebuffer.h"
@@ -42,31 +43,28 @@ namespace Daydream
 	{
 		device->GetContext()->DrawIndexed(_indexCount, _startIndex, _baseVertex);
 	}
-	void D3D11RenderContext::BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer)
+
+	void D3D11RenderContext::BeginRendering(const RenderingInfo& _renderingInfo)
 	{
-		D3D11Framebuffer* currentFramebuffer = Cast<D3D11Framebuffer*>(_framebuffer.get());
-		Array<ID3D11RenderTargetView*> rtvs = currentFramebuffer->GetRenderTargetViews();
-		for (auto rtv : rtvs)
+		Array<ID3D11RenderTargetView*> rtvs;
+		for (const RenderingDesc& renderingDesc : _renderingInfo.colorAttachments)
 		{
-			device->GetContext()->ClearRenderTargetView(rtv, _renderPass->GetClearColor().color);
-		}
-		if (currentFramebuffer->HasDepthAttachment())
-		{
-			device->GetContext()->ClearDepthStencilView(currentFramebuffer->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-			device->GetContext()->OMSetRenderTargets((UInt32)rtvs.size(), rtvs.data(), currentFramebuffer->GetDepthStencilView());
-		}
-		else
-		{
-			device->GetContext()->OMSetRenderTargets((UInt32)rtvs.size(), rtvs.data(), nullptr);
+			ClearValue rtvClearValue = renderingDesc.clearValue;
+			D3D11TextureView* d3d11TextureView = Cast<D3D11TextureView*>(renderingDesc.view);
+			device->GetContext()->ClearRenderTargetView(d3d11TextureView->GetRTV(), &rtvClearValue.colorClearValue.color[0]);
+			rtvs.push_back(d3d11TextureView->GetRTV());
 		}
 
-		SetViewport(0, 0, _framebuffer->GetWidth(), _framebuffer->GetHeight());
+		ID3D11DepthStencilView* dsv = nullptr;
+		if (_renderingInfo.depthAttachment.view != nullptr)
+		{
+			ClearValue dsvClearValue = _renderingInfo.depthAttachment.clearValue;
+			D3D11TextureView* d3d11TextureView = Cast<D3D11TextureView*>(_renderingInfo.depthAttachment);
+			device->GetContext()->ClearDepthStencilView(d3d11TextureView->GetDSV(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, dsvClearValue.depthClearValue, dsvClearValue.stencilClearValue);
+		}
+		device->GetContext()->OMSetRenderTargets((UInt32)rtvs.size(), rtvs.data(), dsv);
 	}
-	void D3D11RenderContext::EndRenderPass(Shared<RenderPass> _renderPass)
-	{
-		device->GetContext()->OMSetRenderTargets(0, nullptr, nullptr);
-		device->GetContext()->PSSetShaderResources(0, 20, nullSRVs.data());
-	}
+
 	void D3D11RenderContext::BindPipelineState(Shared<PipelineState> _pipelineState)
 	{
 		RenderContext::BindPipelineState(_pipelineState);
@@ -78,7 +76,7 @@ namespace Daydream
 		UInt32 offset = 0;
 		UInt32 stride = _vertexBuffer->GetStride();
 
-		D3D11GPUBuffer* vertexBuffer = Cast<D3D11GPUBuffer*>(_vertexBuffer->GetBufferRaw());
+		D3D11GPUBuffer* vertexBuffer = Cast<D3D11GPUBuffer*>(_vertexBuffer->GetGPUBufferPtr());
 		DAYDREAM_CORE_ASSERT(vertexBuffer, "vertexBuffer is nullptr!");
 		ID3D11Buffer* d3d11Buffer = vertexBuffer->GetID3D11Buffer();
 		device->GetContext()->IASetVertexBuffers(0, 1, &d3d11Buffer, &stride, &offset);
@@ -86,7 +84,7 @@ namespace Daydream
 	void D3D11RenderContext::BindIndexBuffer(Shared<IndexBuffer> _indexBuffer)
 	{
 		UInt32 offset = 0;
-		D3D11GPUBuffer* indexBuffer = Cast<D3D11GPUBuffer*>(_indexBuffer->GetBufferRaw());
+		D3D11GPUBuffer* indexBuffer = Cast<D3D11GPUBuffer*>(_indexBuffer->GetGPUBufferPtr());
 		DAYDREAM_CORE_ASSERT(indexBuffer, "indexBuffer is nullptr!");
 		device->GetContext()->IASetIndexBuffer(indexBuffer->GetID3D11Buffer(), DXGI_FORMAT_R32_UINT, offset);
 	}
@@ -174,7 +172,7 @@ namespace Daydream
 		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
 		if (resourceInfo == nullptr) return;
 		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX11, "Wrong API!");
-		D3D11GPUBuffer* constantBuffer = Cast<D3D11GPUBuffer*>(_buffer->GetBufferRaw());
+		D3D11GPUBuffer* constantBuffer = Cast<D3D11GPUBuffer*>(_buffer->GetGPUBufferPtr());
 		DAYDREAM_CORE_ASSERT(constantBuffer, "vertexBuffer is nullptr!");
 		ID3D11Buffer* d3d11Buffer = constantBuffer->GetID3D11Buffer();
 		switch (resourceInfo->shaderType)
@@ -199,7 +197,7 @@ namespace Daydream
 			break;
 		}
 	}
-	
+
 	void D3D11RenderContext::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
 	{
 		D3D11Texture2D* dst = Cast<D3D11Texture2D*>(_dst.get());
@@ -211,23 +209,17 @@ namespace Daydream
 	{
 		D3D11TextureCube* dst = Cast<D3D11TextureCube*>(_dstCubemap.get());
 		D3D11Texture2D* src = Cast<D3D11Texture2D*>(_srcTexture2D.get());
-		// 큐브맵의 MipLevels 정보를 가져와야 Subresource 인덱스를 계산할 수 있습니다.
 		D3D11_TEXTURE2D_DESC cubeDesc;
 		dst->GetID3D11Texture2D()->GetDesc(&cubeDesc);
 
-		// 1. 핵심: 대상 Subresource 인덱스를 계산합니다.
-		// 밉맵 레벨 0, 배열 슬라이스 faceIndex에 해당하는 Subresource를 찾습니다.
 		UINT dstSubresourceIndex = D3D11CalcSubresource(
 			_mipLevel,
 			_faceIndex,
 			cubeDesc.MipLevels
 		);
 
-		// 2. 원본 Subresource 인덱스는 항상 0입니다 (2D 텍스처는 Subresource가 하나).
 		UINT srcSubresourceIndex = 0;
 
-		// 3. 복사 명령을 즉시 실행합니다.
-		// DX11에서는 별도의 리소스 배리어가 필요 없습니다.
 		device->GetContext()->CopySubresourceRegion(
 			dst->GetID3D11Texture2D(),           // 대상 리소스
 			dstSubresourceIndex,  // 대상 Subresource
@@ -255,7 +247,7 @@ namespace Daydream
 		HRESULT hr = device->GetContext()->Map(src->GetID3D11Buffer(), 0, D3D11_MAP_READ, 0, &mappedData);
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to map source buffer for reading in DX11!");
 
-		UInt32 bytesPerPixel = (_dst->GetDesc().format);
+		UInt32 bytesPerPixel = GraphicsUtility::GetRenderFormatSize(_dst->GetDesc().format);
 		UInt32 rowPitch = _width * bytesPerPixel;
 		UInt32 depthPitch = rowPitch * _height;
 

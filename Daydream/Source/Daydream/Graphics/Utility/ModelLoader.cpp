@@ -273,9 +273,6 @@ namespace Daydream
 			if (!materialData.roughnessMapPath.empty() &&
 				materialData.roughnessMapPath == materialData.metallicMapPath)
 			{
-				// "이 텍스처는 ORM 압축 텍스처다!"라고 추론합니다.
-				// AO 맵 경로를 Roughness/Metallic 맵 경로와 동일하게 "강제"로 설정합니다.
-				// DAYDREAM_CORE_INFO("AO 맵 경로를 Packed Texture({0})로 추론합니다.", materialData.roughnessMapPath);
 				materialData.AOMapPath = materialData.roughnessMapPath;
 			}
 			else

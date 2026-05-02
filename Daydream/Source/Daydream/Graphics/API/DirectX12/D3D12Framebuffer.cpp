@@ -4,227 +4,222 @@
 
 namespace Daydream
 {
-	D3D12Framebuffer::D3D12Framebuffer(D3D12RenderDevice* _device, RenderPass* _renderPass, const FramebufferDesc& _desc)
-		:Framebuffer(_renderPass, _desc)
-	{
-		device = _device;
+	//D3D12Framebuffer::D3D12Framebuffer(D3D12RenderDevice* _device, RenderPass* _renderPass, const FramebufferDesc& _desc)
+	//	:Framebuffer(_renderPass, _desc)
+	//{
+	//	device = _device;
 
-		swapchainRTVHandle.ptr = 0;
+	//	swapchainRTVHandle.ptr = 0;
 
-		colorAttachments.resize(colorAttachmentCount);
-		CreateAttachments();
+	//	colorAttachments.resize(colorAttachmentCount);
+	//	CreateAttachments();
 
-		if (entityTexture)
-		{
-			ID3D12Resource* srcResource = entityTexture->GetID3D12Resource(); // 리소스 가져오기
+	//	if (entityTexture)
+	//	{
+	//		ID3D12Resource* srcResource = entityTexture->GetID3D12Resource(); // 리소스 가져오기
 
-			// 3. Readback Buffer 생성 (1픽셀 데이터만 담을 작은 버퍼)
-			// 텍스처 복사 시 가로 정렬(Row Pitch) 제약이 있습니다 (D3D12_TEXTURE_DATA_PITCH_ALIGNMENT = 256 byte)
+	//		// 3. Readback Buffer 생성 (1픽셀 데이터만 담을 작은 버퍼)
+	//		// 텍스처 복사 시 가로 정렬(Row Pitch) 제약이 있습니다 (D3D12_TEXTURE_DATA_PITCH_ALIGNMENT = 256 byte)
 
-			D3D12_RESOURCE_DESC srcDesc = srcResource->GetDesc();
-			// 1x1 영역에 대한 레이아웃 계산
-			device->GetDevice()->GetCopyableFootprints(&srcDesc, 0, 1, 0, &footprint, nullptr, nullptr, &bufferSize);
+	//		D3D12_RESOURCE_DESC srcDesc = srcResource->GetDesc();
+	//		// 1x1 영역에 대한 레이아웃 계산
+	//		device->GetDevice()->GetCopyableFootprints(&srcDesc, 0, 1, 0, &footprint, nullptr, nullptr, &bufferSize);
 
-			D3D12_HEAP_PROPERTIES heapProps = {};
-			heapProps.Type = D3D12_HEAP_TYPE_READBACK;
-			heapProps.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-			heapProps.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
-			heapProps.CreationNodeMask = 1;
-			heapProps.VisibleNodeMask = 1;
+	//		D3D12_HEAP_PROPERTIES heapProps = {};
+	//		heapProps.Type = D3D12_HEAP_TYPE_READBACK;
+	//		heapProps.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+	//		heapProps.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+	//		heapProps.CreationNodeMask = 1;
+	//		heapProps.VisibleNodeMask = 1;
 
-			D3D12_RESOURCE_DESC bufDesc = {};
-			bufDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-			bufDesc.Width = bufferSize; // 정렬된 크기
-			bufDesc.Height = 1;
-			bufDesc.DepthOrArraySize = 1;
-			bufDesc.MipLevels = 1;
-			bufDesc.Format = DXGI_FORMAT_UNKNOWN;
-			bufDesc.SampleDesc.Count = 1;
-			bufDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-			bufDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+	//		D3D12_RESOURCE_DESC bufDesc = {};
+	//		bufDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	//		bufDesc.Width = bufferSize; // 정렬된 크기
+	//		bufDesc.Height = 1;
+	//		bufDesc.DepthOrArraySize = 1;
+	//		bufDesc.MipLevels = 1;
+	//		bufDesc.Format = DXGI_FORMAT_UNKNOWN;
+	//		bufDesc.SampleDesc.Count = 1;
+	//		bufDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	//		bufDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
-			HRESULT hr = device->GetDevice()->CreateCommittedResource(
-				&heapProps,
-				D3D12_HEAP_FLAG_NONE,
-				&bufDesc,
-				D3D12_RESOURCE_STATE_COPY_DEST,
-				nullptr,
-				IID_PPV_ARGS(readTexture.GetAddressOf())
-			);
+	//		HRESULT hr = device->GetDevice()->CreateCommittedResource(
+	//			&heapProps,
+	//			D3D12_HEAP_FLAG_NONE,
+	//			&bufDesc,
+	//			D3D12_RESOURCE_STATE_COPY_DEST,
+	//			nullptr,
+	//			IID_PPV_ARGS(readTexture.GetAddressOf())
+	//		);
 
-			if (FAILED(hr)) DAYDREAM_CORE_WARN("Failed to create texture!");
-		}
-	}
+	//		if (FAILED(hr)) DAYDREAM_CORE_WARN("Failed to create texture!");
+	//	}
+	//}
 
-	D3D12Framebuffer::D3D12Framebuffer(D3D12RenderDevice* _device, RenderPass* _renderPass, D3D12Swapchain* _swapchain, ID3D12Resource* _swapchainImage)
-		:Framebuffer(_swapchain, _renderPass)
-	{
-		device = _device;
-		auto desc = _swapchainImage->GetDesc();
-		width = (UInt32)desc.Width;
-		height = (UInt32)desc.Height;
-		renderPass = _renderPass;
+	//D3D12Framebuffer::D3D12Framebuffer(D3D12RenderDevice* _device, RenderPass* _renderPass, D3D12Swapchain* _swapchain, ID3D12Resource* _swapchainImage)
+	//	:Framebuffer(_swapchain, _renderPass)
+	//{
+	//	device = _device;
+	//	auto desc = _swapchainImage->GetDesc();
+	//	width = (UInt32)desc.Width;
+	//	height = (UInt32)desc.Height;
+	//	renderPass = _renderPass;
 
-		D3D12_RESOURCE_DESC textureDesc = _swapchainImage->GetDesc();
+	//	D3D12_RESOURCE_DESC textureDesc = _swapchainImage->GetDesc();
 
-		device->GetRTVHeapAlloc().Alloc(&swapchainRTVHandle);
-		D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
-		rtvDesc.Format = textureDesc.Format;
-		rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+	//	device->GetRTVHeapAlloc().Alloc(&swapchainRTVHandle);
+	//	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
+	//	rtvDesc.Format = textureDesc.Format;
+	//	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 
-		device->GetDevice()->CreateRenderTargetView(_swapchainImage, &rtvDesc, swapchainRTVHandle);
+	//	device->GetDevice()->CreateRenderTargetView(_swapchainImage, &rtvDesc, swapchainRTVHandle);
 
-		renderTargetHandles.push_back(swapchainRTVHandle);
+	//	renderTargetHandles.push_back(swapchainRTVHandle);
 
-		CreateAttachments();
-	}
+	//	CreateAttachments();
+	//}
 
-	D3D12Framebuffer::~D3D12Framebuffer()
-	{
-		if (swapchainRTVHandle.ptr != 0)
-		{
-			device->GetRTVHeapAlloc().Free(swapchainRTVHandle);
-		}
-		renderTargetHandles.clear();
-		depthStencilHandle.ptr = 0;
-		depthAttachment = nullptr;
-		device = nullptr;
-	}
+	//D3D12Framebuffer::~D3D12Framebuffer()
+	//{
+	//	if (swapchainRTVHandle.ptr != 0)
+	//	{
+	//		device->GetRTVHeapAlloc().Free(swapchainRTVHandle);
+	//	}
+	//	renderTargetHandles.clear();
+	//	depthStencilHandle.ptr = 0;
+	//	depthAttachment = nullptr;
+	//	device = nullptr;
+	//}
 
-	Shared<Texture2D> D3D12Framebuffer::GetColorAttachmentTexture(UInt32 _index)
-	{
-		return colorAttachments[_index];
-	}
+	//Shared<Texture2D> D3D12Framebuffer::GetColorAttachmentTexture(UInt32 _index)
+	//{
+	//	return colorAttachments[_index];
+	//}
 
-	void D3D12Framebuffer::Recreate(UInt32 _newWidth, UInt32 _newHeight)
-	{
-		SetSize(_newWidth, _newHeight);
-		renderTargetHandles.clear();
-		for (auto c : colorAttachments)
-		{
-			oldAttachments.push_back(c);
-		}
-		oldAttachments.push_back(depthAttachment);
-		depthAttachment = nullptr;
-		depthStencilHandle.ptr = 0;
+	//void D3D12Framebuffer::Recreate(UInt32 _newWidth, UInt32 _newHeight)
+	//{
+	//	SetSize(_newWidth, _newHeight);
+	//	renderTargetHandles.clear();
+	//	for (auto c : colorAttachments)
+	//	{
+	//		oldAttachments.push_back(c);
+	//	}
+	//	oldAttachments.push_back(depthAttachment);
+	//	depthAttachment = nullptr;
+	//	depthStencilHandle.ptr = 0;
 
-		CreateAttachments();
+	//	CreateAttachments();
 
-	}
+	//}
 
-	UInt32 D3D12Framebuffer::ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY)
-	{
-		// 2. Entity ID가 저장된 텍스처 찾기
-		Shared<D3D12Texture2D> targetTexture = entityTexture;
-		if (!targetTexture) return 0;
+	//UInt32 D3D12Framebuffer::ReadEntityHandleFromPixel(Int32 _mouseX, Int32 _mouseY)
+	//{
+	//	// 2. Entity ID가 저장된 텍스처 찾기
+	//	Shared<D3D12Texture2D> targetTexture = entityTexture;
+	//	if (!targetTexture) return 0;
 
-		device->ExecuteSingleTimeCommands([&](ID3D12GraphicsCommandList* _commandList)
-			{
-				// 5. Resource Barrier (RenderTarget -> CopySource)
-				// 현재 상태가 무엇인지 추적해야 하지만, 보통 RT 상태일 것입니다.
-				D3D12_RESOURCE_BARRIER barrier = {};
-				barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-				barrier.Transition.pResource = entityTexture->GetID3D12Resource();
-				barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-				barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE;
-				barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-				_commandList->ResourceBarrier(1, &barrier);
+	//	device->ExecuteSingleTimeCommands([&](ID3D12GraphicsCommandList* _commandList)
+	//		{
+	//			D3D12_RESOURCE_BARRIER barrier = {};
+	//			barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	//			barrier.Transition.pResource = entityTexture->GetID3D12Resource();
+	//			barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	//			barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_SOURCE;
+	//			barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	//			_commandList->ResourceBarrier(1, &barrier);
 
-				// 6. 텍스처의 특정 픽셀(1x1)을 버퍼로 복사
-				D3D12_TEXTURE_COPY_LOCATION dst = {};
-				dst.pResource = readTexture.Get();
-				dst.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
-				dst.PlacedFootprint = footprint;
+	//			// 6. 텍스처의 특정 픽셀(1x1)을 버퍼로 복사
+	//			D3D12_TEXTURE_COPY_LOCATION dst = {};
+	//			dst.pResource = readTexture.Get();
+	//			dst.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+	//			dst.PlacedFootprint = footprint;
 
-				D3D12_TEXTURE_COPY_LOCATION src = {};
-				src.pResource = entityTexture->GetID3D12Resource();
-				src.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
-				src.SubresourceIndex = 0;
+	//			D3D12_TEXTURE_COPY_LOCATION src = {};
+	//			src.pResource = entityTexture->GetID3D12Resource();
+	//			src.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+	//			src.SubresourceIndex = 0;
 
-				D3D12_BOX srcBox = {};
-				srcBox.left = _mouseX;
-				srcBox.top = _mouseY;
-				srcBox.front = 0;
-				srcBox.right = _mouseX + 1;
-				srcBox.bottom = _mouseY + 1;
-				srcBox.back = 1;
+	//			D3D12_BOX srcBox = {};
+	//			srcBox.left = _mouseX;
+	//			srcBox.top = _mouseY;
+	//			srcBox.front = 0;
+	//			srcBox.right = _mouseX + 1;
+	//			srcBox.bottom = _mouseY + 1;
+	//			srcBox.back = 1;
 
-				_commandList->CopyTextureRegion(&dst, 0, 0, 0, &src, &srcBox);
+	//			_commandList->CopyTextureRegion(&dst, 0, 0, 0, &src, &srcBox);
 
-				// 7. Resource Barrier 복구 (CopySource -> RenderTarget)
-				barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE;
-				barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 원래 상태로 복구
-				_commandList->ResourceBarrier(1, &barrier);
-			});
+	//			// 7. Resource Barrier 복구 (CopySource -> RenderTarget)
+	//			barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE;
+	//			barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // 원래 상태로 복구
+	//			_commandList->ResourceBarrier(1, &barrier);
+	//		});
 
-		// 9. 데이터 읽기 (Map)
-		UInt32 pixelValue = 0;
-		void* mappedData = nullptr;
-		D3D12_RANGE readRange = { 0, bufferSize }; // 읽을 범위
+	//	// 9. 데이터 읽기 (Map)
+	//	UInt32 pixelValue = 0;
+	//	void* mappedData = nullptr;
+	//	D3D12_RANGE readRange = { 0, bufferSize }; // 읽을 범위
 
-		readTexture->Map(0, &readRange, &mappedData);
-		// 텍스처 데이터는 RowPitch에 맞춰 정렬되어 있으므로, 
-		// 첫 번째 픽셀 데이터(우리는 1x1만 복사했으므로 시작점)를 읽으면 됩니다.
-		// R32_UINT 포맷이므로 4바이트(UInt32)로 읽습니다.
-		pixelValue = *((UInt32*)mappedData);
+	//	readTexture->Map(0, &readRange, &mappedData);
+	//	pixelValue = *((UInt32*)mappedData);
 
-		D3D12_RANGE writeRange = { 0, 0 }; // 쓸 데이터 없음
-		readTexture->Unmap(0, &writeRange);
+	//	D3D12_RANGE writeRange = { 0, 0 }; // 쓸 데이터 없음
+	//	readTexture->Unmap(0, &writeRange);
 
-		return pixelValue;
-	}
+	//	return pixelValue;
+	//}
 
-	void D3D12Framebuffer::CreateAttachments()
-	{
-		const RenderPassDesc& renderPassDesc = renderPass->GetDesc();
-		for (UInt64 i = 0; i < colorAttachmentCount; i++)
-		{
-			const auto& colorAttachmentDesc = renderPassDesc.colorAttachments[i];
-			if (colorAttachmentDesc.isSwapchain) continue;
-			TextureDesc textureDesc;
-			textureDesc.width = width;
-			textureDesc.height = height;
-			textureDesc.format = colorAttachmentDesc.format;
-			textureDesc.textureUsage = TextureUsage::RenderTarget | TextureUsage::ShaderResource;
+	//void D3D12Framebuffer::CreateAttachments()
+	//{
+	//	const RenderPassDesc& renderPassDesc = renderPass->GetDesc();
+	//	for (UInt64 i = 0; i < colorAttachmentCount; i++)
+	//	{
+	//		const auto& colorAttachmentDesc = renderPassDesc.colorAttachments[i];
+	//		if (colorAttachmentDesc.isSwapchain) continue;
+	//		TextureDesc textureDesc;
+	//		textureDesc.width = width;
+	//		textureDesc.height = height;
+	//		textureDesc.format = colorAttachmentDesc.format;
+	//		textureDesc.textureUsage = TextureUsage::RenderTarget | TextureUsage::ShaderResource;
 
-			Shared<D3D12Texture2D> colorTexture = MakeShared<D3D12Texture2D>(device, textureDesc);
-			D3D12_RESOURCE_BARRIER barrier = {};
-			barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-			barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-			barrier.Transition.pResource = colorTexture->GetID3D12Resource();
-			barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-			barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-			barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-			device->TransitionResourceStateImmediate(barrier);
+	//		Shared<D3D12Texture2D> colorTexture = MakeShared<D3D12Texture2D>(device, textureDesc);
+	//		D3D12_RESOURCE_BARRIER barrier = {};
+	//		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	//		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	//		barrier.Transition.pResource = colorTexture->GetID3D12Resource();
+	//		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	//		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+	//		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	//		device->TransitionResourceStateImmediate(barrier);
 
-			if (colorAttachmentDesc.type == AttachmentType::EntityHandle)
-			{
-				entityTexture = colorTexture;
-			}
-			colorAttachments[i] = colorTexture;
-			renderTargetHandles.push_back(colorTexture->GetRTVCPUHandle());
-		}
+	//		if (colorAttachmentDesc.type == AttachmentType::EntityHandle)
+	//		{
+	//			entityTexture = colorTexture;
+	//		}
+	//		colorAttachments[i] = colorTexture;
+	//		renderTargetHandles.push_back(colorTexture->GetRTVCPUHandle());
+	//	}
 
-		if (renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
-		{
-			TextureDesc textureDesc;
-			textureDesc.width = width;
-			textureDesc.height = height;
-			textureDesc.format = renderPassDesc.depthAttachment.format;
-			textureDesc.textureUsage = TextureUsage::DepthStencil | TextureUsage::ShaderResource;
+	//	if (renderPassDesc.depthAttachment.format != RenderFormat::UNKNOWN)
+	//	{
+	//		TextureDesc textureDesc;
+	//		textureDesc.width = width;
+	//		textureDesc.height = height;
+	//		textureDesc.format = renderPassDesc.depthAttachment.format;
+	//		textureDesc.textureUsage = TextureUsage::DepthStencil | TextureUsage::ShaderResource;
 
-			Shared<D3D12Texture2D> depthTexture = MakeShared<D3D12Texture2D>(device, textureDesc);
-			D3D12_RESOURCE_BARRIER barrier = {};
-			barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-			barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-			barrier.Transition.pResource = depthTexture->GetID3D12Resource();
-			barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-			barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-			barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_DEPTH_READ;
-			device->TransitionResourceStateImmediate(barrier);
+	//		Shared<D3D12Texture2D> depthTexture = MakeShared<D3D12Texture2D>(device, textureDesc);
+	//		D3D12_RESOURCE_BARRIER barrier = {};
+	//		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	//		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	//		barrier.Transition.pResource = depthTexture->GetID3D12Resource();
+	//		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	//		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+	//		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_DEPTH_READ;
+	//		device->TransitionResourceStateImmediate(barrier);
 
-			depthAttachment = depthTexture;
-			depthStencilHandle = depthTexture->GetDSVCPUHandle();
-		}
-	}
+	//		depthAttachment = depthTexture;
+	//		depthStencilHandle = depthTexture->GetDSVCPUHandle();
+	//	}
+	//}
 }

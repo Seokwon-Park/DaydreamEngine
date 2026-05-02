@@ -7,7 +7,7 @@
 
 namespace Daydream
 {
-	Framebuffer::Framebuffer(Swapchain* _swapchain, RenderPass* _renderPass)
+	/*Framebuffer::Framebuffer(Swapchain* _swapchain, RenderPass* _renderPass)
 	{
 		width = _swapchain->GetDesc().width;
 		height = _swapchain->GetDesc().height;
@@ -22,6 +22,11 @@ namespace Daydream
 
 		renderPass = _renderPass;
 		colorAttachmentCount = (UInt32)_renderPass->GetDesc().colorAttachments.size();
+	}*/
+	Framebuffer::Framebuffer(const FramebufferDesc& _desc)
+	{
+		colorAttachments = std::move(_desc.colorAttachments);
+		depthAttachment = std::move(_desc.depthAttachment);
 	}
 	void Framebuffer::SetSize(UInt32 _width, UInt32 _height)
 	{

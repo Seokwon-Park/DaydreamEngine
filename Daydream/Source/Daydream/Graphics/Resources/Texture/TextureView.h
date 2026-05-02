@@ -1,7 +1,11 @@
 #pragma once
 
+#include "Daydream/Graphics/Resources/Texture/Texture.h"
+
 namespace Daydream
 {
+	class Texture2D;
+
 	struct TextureViewDesc
 	{
 		TextureViewType type = TextureViewType::ShaderResource;
@@ -20,11 +24,14 @@ namespace Daydream
 	class TextureView
 	{
 	public:
-		virtual ~TextureView() = default;
-		virtual const TextureViewDesc& GetDesc() const = 0;
+		TextureView(Shared<GPUTexture> _texture, const TextureViewDesc& _desc);
+		virtual ~TextureView();
+		inline const TextureViewDesc& GetDesc() { return desc; }
+
+		static Shared<TextureView> Create(Shared<Texture2D> _texture, const TextureViewDesc& _desc);
 	protected:
-
-
+		TextureViewDesc desc;
+		Shared<GPUTexture> originTexture;
 	private:
 
 	};

@@ -3,6 +3,7 @@
 
 #include "TransformComponent.h"
 
+#include "Daydream/Scene/GameEntity/GameEntity.h"
 #include "Daydream/Graphics/Core/Renderer.h"
 #include "Daydream/Graphics/Manager/ResourceManager.h"
 #include "Daydream/Graphics/Resources/Skybox.h"

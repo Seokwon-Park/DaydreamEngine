@@ -10,6 +10,7 @@
 #include "D3D11ImGuiRenderer.h"
 #include "D3D11Texture.h"
 #include "D3D11TextureCube.h"
+#include "D3D11TextureView.h"
 #include "D3D11Sampler.h"
 #include "D3D11RenderPass.h"
 
@@ -146,9 +147,14 @@ namespace Daydream
 	{
 		return MakeShared<D3D11GPUBuffer>(this, _desc);
 	}
-	Shared<GPUTexture> Daydream::D3D11RenderDevice::CreateGPUTexture(const TextureDesc& _desc)
+	Shared<GPUTexture> D3D11RenderDevice::CreateGPUTexture(const TextureDesc& _desc)
 	{
 		return MakeShared<D3D11GPUTexture>(this, _desc);
+	}
+	Shared<TextureView> D3D11RenderDevice::CreateTextureView(Shared<Texture> _texture, const TextureViewDesc& _desc)
+	{
+		Shared<D3D11GPUTexture> texture = SharedCast<D3D11GPUTexture>(_texture->GetGPUTexture());
+		return MakeShared<D3D11TextureView>(this, texture, _desc);
 	}
 	//Shared<VertexBuffer> D3D11RenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
 	//{
@@ -206,15 +212,15 @@ namespace Daydream
 	//	return MakeShared<ConstantBuffer>(gpuBuffer);
 	//}
 
-	Shared<RenderPass> D3D11RenderDevice::CreateRenderPass(const RenderPassDesc& _desc)
-	{
-		return MakeShared<D3D11RenderPass>(this, _desc);
-	}
+	//Shared<RenderPass> D3D11RenderDevice::CreateRenderPass(const RenderPassDesc& _desc)
+	//{
+	//	return MakeShared<D3D11RenderPass>(this, _desc);
+	//}
 
-	Shared<Framebuffer> D3D11RenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc)
-	{
-		return _renderPass->CreateFramebuffer(_desc);
-	}
+	//Shared<Framebuffer> D3D11RenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc)
+	//{
+	//	return _renderPass->CreateFramebuffer(_desc);
+	//}
 
 	Shared<PipelineState> D3D11RenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)
 	{

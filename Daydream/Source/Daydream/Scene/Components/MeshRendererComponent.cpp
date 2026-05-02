@@ -4,6 +4,7 @@
 #include "TransformComponent.h"
 #include "LightComponent.h"
 
+#include "Daydream/Scene/GameEntity/GameEntity.h"
 #include "Daydream/Graphics/Core/Renderer.h"
 #include "Daydream/Asset/AssetManager.h"
 #include "Daydream/Graphics/Manager/ResourceManager.h"

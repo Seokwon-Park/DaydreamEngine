@@ -143,7 +143,6 @@ namespace Daydream::GraphicsUtility::Vulkan
 		case TextureType::TextureCube:
 		case TextureType::TextureCubeArray:
 		{
-			// Vulkan에서 큐브맵은 2D 이미지의 특수한 배열 형태로 취급됩니다.
 			imageInfo.imageType = vk::ImageType::e2D;
 			imageInfo.extent.width = _desc.width;
 			imageInfo.extent.height = _desc.height;

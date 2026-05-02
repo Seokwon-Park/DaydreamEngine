@@ -3,12 +3,12 @@
 #include "Daydream/Graphics/Resources/Shader.h"
 #include "Daydream/Graphics/Resources/ShaderGroup.h"
 #include "Daydream/Graphics/Resources/Buffer.h"
-#include "Daydream/Graphics/Resources/Texture.h"
+#include "Daydream/Graphics/Resources/Texture/Texture.h"
+#include "Daydream/Graphics/Resources/Texture/TextureView.h"
 #include "Daydream/Graphics/Resources/Material.h"
 #include "Daydream/Graphics/States/BlendState.h"
 #include "Daydream/Graphics/States/RasterizerState.h"
 #include "Daydream/Graphics/States/DepthStencilState.h"
-#include "RenderPass.h"
 
 
 namespace Daydream
@@ -18,6 +18,14 @@ namespace Daydream
 		TriangleList,
 	};
 
+	enum class AttachmentType
+	{
+		None,
+		EntityHandle,
+	};
+
+
+
 	struct PipelineStateDesc
 	{
 		Shared<ShaderGroup> shaderGroup;
@@ -26,11 +34,10 @@ namespace Daydream
 		//BufferLayout inputLayout;
 		//InputLayoutDesc inputLayout;
 		//Shared<ResourceBindingLayout> resourceBindingLayout; // RootSignature/PipelineLayout
-		Shared<RenderPass> renderPass;
 		RasterizerStateDesc rasterizerState;
 		//BlendDesc blendState;
 		//DepthStencilDesc depthStencilState;
-		//Array<GraphicsFormat> renderTargetFormats; // RTV 포맷들
+		Array<RenderFormat> renderTargetFormats; // RTV 포맷들
 		//GraphicsFormat depthStencilFormat = GraphicsFormat::Unknown; // DSV 포맷
 		UInt32 sampleCount = 1;
 		PrimitiveTopologyType topologyType = PrimitiveTopologyType::TriangleList;
@@ -48,14 +55,14 @@ namespace Daydream
 		//ShaderGroup Functions
 		inline const Shared<ShaderGroup>& GetShaderGroup() const { return shaderGroup; }
 		inline const Array<Shared<Shader>>& GetShaders() const { return shaderGroup->GetShaders(); };
-		inline const ShaderReflectionData* GetBindingInfo(const String& _name) const {return shaderGroup->GetShaderBindingInfo(_name);
+		inline const ShaderReflectionData* GetBindingInfo(const String& _name) const {
+			return shaderGroup->GetShaderBindingInfo(_name);
 		}
-				
+
 		static Shared<PipelineState> Create(const PipelineStateDesc& _desc);
 	protected:
 
 		Shared<ShaderGroup> shaderGroup;
-		Shared<RenderPass> renderPass;
 
 		PipelineStateDesc desc;
 		//rtv, dsv;

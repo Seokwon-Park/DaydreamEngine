@@ -95,7 +95,6 @@ namespace Daydream
 			heap = _heap;
 			D3D12_DESCRIPTOR_HEAP_DESC desc = heap->GetDesc();
 
-			// 이 힙은 Shader Visible이어야 합니다.
 			DAYDREAM_CORE_ASSERT(desc.Flags & D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE, "Dynamic heap must be shader visible!");
 
 			heapHandleIncrement = _device->GetDescriptorHandleIncrementSize(desc.Type);
@@ -111,15 +110,11 @@ namespace Daydream
 			heap = nullptr;
 		}
 
-		// --- 새로 추가된 메서드 ---
-		// 매 프레임 시작 시 호출하여 리셋
 		void BeginFrame()
 		{
 			currentOffset = 0;
 		}
 
-		// --- 완전히 변경된 Alloc 메서드 ---
-		// _count만큼의 연속된 디스크립터 블록을 할당합니다.
 		Allocation Alloc(UINT _count = 1)
 		{
 			// 남은 공간이 충분한지 확인

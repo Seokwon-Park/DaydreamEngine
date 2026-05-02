@@ -191,7 +191,6 @@ namespace Daydream
 		depthStencil.front.writeMask = 0xFF;                      // 쓰기 마스크
 		depthStencil.front.reference = 0;                         // 참조 값
 
-		// 일반적으로 front와 back은 동일하게 설정하거나, 양면 렌더링에 따라 다르게 설정합니다.
 		depthStencil.back = depthStencil.front;
 
 		rawDescriptorSetLayouts.clear();

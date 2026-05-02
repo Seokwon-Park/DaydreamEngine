@@ -1,16 +1,15 @@
 #pragma once
 
-#include "Daydream/Graphics/Resources/TextureView.h"
+#include "Daydream/Graphics/API/OpenGL/OpenGLTexture.h"
+#include "Daydream/Graphics/Resources/Texture/TextureView.h"
 
 namespace Daydream
 {
 	class OpenGLTextureView : public TextureView
 	{
 	public:
-		explicit OpenGLTextureView(const TextureViewDesc& _desc);
+		OpenGLTextureView(Shared<OpenGLGPUTexture> _texture, const TextureViewDesc& _desc);
 		~OpenGLTextureView() override = default;
-
-		const TextureViewDesc& GetDesc() const override { return desc; }
 
 		void SetTextureID(UInt32 _textureID) { textureID = _textureID; }
 		UInt32 GetTextureID() const { return textureID; }

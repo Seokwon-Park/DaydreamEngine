@@ -2,6 +2,15 @@
 
 namespace Daydream
 {
+	struct RenderGraphResourceDesc
+	{
+		// Texture2DDesc 또는 사용자 정의 간소화 구조체
+		RenderFormat format;
+		UInt32 width;
+		UInt32 height;
+		// ...
+	};
+
 	struct RenderGraphResourceHandle
 	{
 		UInt32 id = UINT32_MAX;
@@ -21,7 +30,7 @@ namespace Daydream
 		RenderGraph();
 		~RenderGraph();
 
-		RenderGraphResourceHandle AddResource(const String& _name);
+		RenderGraphResourceHandle AddResource(const String& _name, const RenderGraphResourceDesc& _desc);
 		RenderGraphPassHandle AddPass(const String& _name, FunctionPtr<void()> _execute);
 
 		void Read(RenderGraphPassHandle _pass, RenderGraphResourceHandle _resource);

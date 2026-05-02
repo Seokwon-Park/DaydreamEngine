@@ -1,7 +1,8 @@
 #include "DaydreamPCH.h"
-#include "GPUResource.h"
+#include "RenderingInfo.h"
 
 namespace Daydream
 {
+
 }
 
