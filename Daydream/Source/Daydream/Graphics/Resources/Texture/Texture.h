@@ -50,10 +50,10 @@ namespace Daydream
 		TextureDesc desc;
 	};
 
-	class Texture : public Asset
+	class Texture : public Asset, public std::enable_shared_from_this<Texture>
 	{
 	public:
-		Texture(Shared<GPUTexture> _texture) : gpuTexture(_texture) {}
+		Texture(Shared<GPUTexture> _texture);
 		virtual ~Texture() = default;
 
 		inline RenderFormat GetFormat() const { return gpuTexture->GetDesc().format; }
@@ -64,7 +64,7 @@ namespace Daydream
 
 		inline Shared<GPUTexture> GetGPUTexture() const { return gpuTexture; }
 		inline GPUTexture* GetGPUTexturePtr() const { return gpuTexture.get(); }
-		Shared<TextureView> GetDefaultSRV() const;
+		Shared<TextureView> GetDefaultSRV();
 
 		inline TextureDesc GetDesc() const { return gpuTexture->GetDesc(); }
 		inline TextureType GetType() const { return gpuTexture->GetDesc().type; }

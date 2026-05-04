@@ -128,7 +128,7 @@ namespace Daydream
 		inline static Unique<Skybox> skybox = nullptr;
 
 		/////////////////////////////////  RenderThread  ///////////////////////////////// 
-		inline static bool useRenderThread = 1;
+		inline static bool useRenderThread = 0;
 
 		inline static Queue<RenderCommand> singleTimeCommandQueue;
 		inline static Array<Unique<RenderCommandQueue>> commandQueues;

@@ -41,7 +41,7 @@ namespace Daydream
             ID3D11ShaderResourceView* srv = nullptr;
             HRESULT hr = d3dDevice->CreateShaderResourceView(d3dResource, &srvDesc, views.srv.GetAddressOf());
             DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create D3D11 Shader Resource View!");
-            view = srv;
+            view = views.srv;
             break;
         }
 
@@ -66,7 +66,7 @@ namespace Daydream
             ID3D11RenderTargetView* rtv = nullptr;
             HRESULT hr = d3dDevice->CreateRenderTargetView(d3dResource, &rtvDesc, views.rtv.GetAddressOf());
             DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create D3D11 Render Target View!");
-            view = rtv;
+            view = views.rtv;
             break;
         }
 
@@ -94,7 +94,7 @@ namespace Daydream
             ID3D11DepthStencilView* dsv = nullptr;
             HRESULT hr = d3dDevice->CreateDepthStencilView(d3dResource, &dsvDesc, views.dsv.GetAddressOf());
             DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create D3D11 Depth Stencil View!");
-            view = dsv;
+            view = views.dsv;
             break;
         }
 
@@ -119,7 +119,7 @@ namespace Daydream
             ID3D11UnorderedAccessView* uav = nullptr;
             HRESULT hr = d3dDevice->CreateUnorderedAccessView(d3dResource, &uavDesc, views.uav.GetAddressOf());
             DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create D3D11 Unordered Access View!");
-            view = uav;
+            view = views.uav;
             break;
         }
 

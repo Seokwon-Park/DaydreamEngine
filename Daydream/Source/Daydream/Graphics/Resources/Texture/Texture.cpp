@@ -16,8 +16,25 @@ namespace Daydream
 			desc.mipLevels = maxMips;
 		}
 	}
-	Shared<TextureView> Texture::GetDefaultSRV() const
+	Texture::Texture(Shared<GPUTexture> _texture)
+		: gpuTexture(_texture)
 	{
+
+	}
+	Shared<TextureView> Texture::GetDefaultSRV()
+	{
+		if (defaultSRV == nullptr)
+		{
+			TextureViewDesc srvDesc{};
+			srvDesc.type = TextureViewType::ShaderResource;
+			srvDesc.baseMip = 0;
+			srvDesc.mipCount = GetMipLevels();
+			srvDesc.baseLayer = 0;
+			srvDesc.layerCount = GetLayerCount();
+
+			defaultSRV = TextureView::Create(shared_from_this(), srvDesc);
+		}
+
 		return defaultSRV;
 	}
 }

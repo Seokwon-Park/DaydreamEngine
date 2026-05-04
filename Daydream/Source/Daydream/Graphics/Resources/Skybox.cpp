@@ -106,7 +106,7 @@ namespace Daydream
 			srvDesc.mipCount = 1;
 			srvDesc.baseLayer = i;
 			srvDesc.layerCount = 1;
-			skyboxFaceSRVs[i] = TextureView::Create(skyboxTextureCube, rtvDesc);
+			skyboxFaceSRVs[i] = TextureView::Create(skyboxTextureCube, srvDesc);
 		}
 
 		//////////////////////////////////////Create Irradiance TextureCube
@@ -224,6 +224,7 @@ namespace Daydream
 			Renderer::UpdateConstantBuffer(cubeFaceConstantBuffers[i], captureViewProjections[i]);
 
 			RenderingInfo renderingInfo{};
+
 			renderingInfo.renderArea.x = 0;
 			renderingInfo.renderArea.y = 0;
 			renderingInfo.renderArea.width = skyboxResolution;

@@ -4,6 +4,7 @@
 #include "Daydream/Graphics/Resources/Texture/Texture2D.h"
 #include "Daydream/Graphics/Resources/Texture/TextureCube.h"
 #include "Daydream/Graphics/Resources/PipelineState.h"
+#include "Daydream/Graphics/Core/RenderingInfo.h"
 
 namespace Daydream
 {
@@ -50,6 +51,7 @@ namespace Daydream
             return prefilterTextureCube; 
         }
     private:
+
         UInt32 skyboxMipLevels = 0;
         UInt32 prefilterMipLevels = 0;
 

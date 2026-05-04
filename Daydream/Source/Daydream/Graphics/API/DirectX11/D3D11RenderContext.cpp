@@ -176,8 +176,43 @@ namespace Daydream
 	//	}
 	//}
 
-	void Daydream::D3D11RenderContext::BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _sampler)
+	void D3D11RenderContext::BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _sampler)
 	{
+		const ShaderReflectionData* bindingInfo = activePipelineState->GetBindingInfo(_name);
+		if (bindingInfo == nullptr) return;
+		//DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX11, "Wrong API!");
+		D3D11TextureView* view = Cast<D3D11TextureView*>(_textureView.get());
+		ID3D11ShaderResourceView* srv = view->GetSRV();
+		D3D11Sampler* d3d11Sampler = Cast<D3D11Sampler*>(_sampler.get());
+		ID3D11SamplerState* samplerState = d3d11Sampler->GetID3D11SamplerState();
+		switch (bindingInfo->shaderType)
+		{
+		case ShaderType::None:
+			DAYDREAM_CORE_ASSERT(false, "ERROR");
+			break;
+		case ShaderType::Vertex:
+		{
+			device->GetContext()->VSSetShaderResources(bindingInfo->binding, 1, &srv);
+			device->GetContext()->VSSetSamplers(bindingInfo->binding, 1, &samplerState);
+			break;
+		}
+		case ShaderType::Hull:
+			break;
+		case ShaderType::Domain:
+			break;
+		case ShaderType::Geometry:
+			break;
+		case ShaderType::Pixel:
+		{
+			device->GetContext()->PSSetShaderResources(bindingInfo->binding, 1, &srv);
+			device->GetContext()->PSSetSamplers(bindingInfo->binding, 1, &samplerState);
+			break;
+		}
+		case ShaderType::Compute:
+			break;
+		default:
+			break;
+		}
 	}
 
 	void D3D11RenderContext::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)

@@ -102,6 +102,9 @@ namespace Daydream
 		default:
 			break;
 		}
+
+
+		
 	}
 
 	D3D11GPUTexture::D3D11GPUTexture(D3D11RenderDevice* _device, const TextureDesc& _desc, ID3D11Texture2D* _d3d11Backbuffer)

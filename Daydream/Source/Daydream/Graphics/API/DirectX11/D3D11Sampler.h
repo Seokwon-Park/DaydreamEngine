@@ -12,7 +12,7 @@ namespace Daydream
 		D3D11Sampler(D3D11RenderDevice* _device, const SamplerDesc& _desc);
 		virtual ~D3D11Sampler() override {};
 
-		ID3D11SamplerState* GetSampler() const { return sampler.Get(); }
+		ID3D11SamplerState* GetID3D11SamplerState() const { return sampler.Get(); }
 	private:
 		D3D11RenderDevice* device;
 
