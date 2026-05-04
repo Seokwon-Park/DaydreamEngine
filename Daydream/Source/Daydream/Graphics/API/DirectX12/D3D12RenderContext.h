@@ -21,9 +21,6 @@ namespace Daydream
 		virtual void Clear()  override;
 		virtual void DrawIndexed(UInt32 _indexCount, UInt32 _startIndex = 0, UInt32 _baseVertex = 0)  override;
 
-		virtual void BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer) override;
-		virtual void EndRenderPass(Shared<RenderPass> _renderPass) override;
-
 		virtual void BeginRendering(const RenderingInfo& _renderingInfo) override;
 
 		virtual void BindPipelineState(Shared<PipelineState> _pipelineState)override;
@@ -31,8 +28,9 @@ namespace Daydream
 		virtual void BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer) override;
 		virtual void BindIndexBuffer(Shared<IndexBuffer> _indexBuffer) override;
 
-		virtual void SetTexture2D(const String& _name, Shared<Texture2D> _texture) override;
-		virtual void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube) override;
+		//virtual void SetTexture2D(const String& _name, Shared<Texture2D> _texture) override;
+		//virtual void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube) override;
+		virtual void BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _sampler) override;
 		virtual void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer) override;
 
 		virtual void CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize) override;
@@ -60,7 +58,6 @@ namespace Daydream
 		inline ID3D12GraphicsCommandList* GetD3D12ActiveCommandList() const { return activeD3D12CommandList.Get(); }
 
 		D3D12RenderDevice* device;
-		D3D12Framebuffer* currentFramebuffer = nullptr;
 
 		ComPtr<ID3D12GraphicsCommandList> activeD3D12CommandList;
 	};

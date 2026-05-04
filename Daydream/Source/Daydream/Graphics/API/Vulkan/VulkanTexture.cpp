@@ -13,7 +13,6 @@ namespace Daydream
 	{
 		device = _device;
 
-
 		vk::ImageCreateInfo imageInfo = GraphicsUtility::Vulkan::ConvertToVulkanCreateInfo(_desc);
 		vma::AllocationCreateInfo allocInfo = GraphicsUtility::Vulkan::ConvertToVMAAllocationInfo(_desc);
 		

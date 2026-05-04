@@ -7,7 +7,6 @@
 
 #include "VulkanTexture.h"
 #include "VulkanShader.h"
-#include "VulkanRenderPass.h"
 
 namespace Daydream
 {
@@ -160,7 +159,7 @@ namespace Daydream
 		//colorBlendAttachment.dstAlphaBlendFactor = vk::BlendFactor::eZero; // Optional
 		//colorBlendAttachment.alphaBlendOp = vk::BlendOp::eAdd; // Optional
 
-		UInt32 attachmentCount = (UInt32)_desc.renderPass->GetDesc().colorAttachments.size();
+		UInt32 attachmentCount = (UInt32)_desc.renderTargetFormats.size();
 
 		std::vector<vk::PipelineColorBlendAttachmentState> blendAttachmentStates;
 		blendAttachmentStates.resize(attachmentCount, colorBlendAttachment);
@@ -207,7 +206,11 @@ namespace Daydream
 
 		pipelineLayout = device->GetDevice().createPipelineLayoutUnique(pipelineLayoutInfo);
 
-		Shared<VulkanRenderPass> rp = static_pointer_cast<VulkanRenderPass>(_desc.renderPass);
+		vk::PipelineRenderingCreateInfo renderingInfo{};
+		vk::Format colorFormat = vk::Format::eB8G8R8A8Unorm; // 사용 중인 스왑체인 포맷
+		renderingInfo.colorAttachmentCount = 1;
+		renderingInfo.pColorAttachmentFormats = &colorFormat;
+		renderingInfo.depthAttachmentFormat = vk::Format::eD32Sfloat; // 깊이 버퍼 사용 시
 
 		vk::GraphicsPipelineCreateInfo pipelineInfo{};
 		pipelineInfo.stageCount = (UInt32)shaderStages.size();
@@ -221,10 +224,11 @@ namespace Daydream
 		pipelineInfo.pColorBlendState = &colorBlending;
 		pipelineInfo.pDynamicState = &dynamicState;
 		pipelineInfo.layout = pipelineLayout.get();
-		pipelineInfo.renderPass = rp->GetVkRenderPass();
+		pipelineInfo.renderPass = VK_NULL_HANDLE;
 		pipelineInfo.subpass = 0;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
 		pipelineInfo.basePipelineIndex = -1; // Optional
+		pipelineInfo.pNext = renderingInfo;
 
 		vk::ResultValue<vk::UniquePipeline> resultValue = device->GetDevice().createGraphicsPipelineUnique({}, pipelineInfo);
 		pipeline = std::move(resultValue.value);

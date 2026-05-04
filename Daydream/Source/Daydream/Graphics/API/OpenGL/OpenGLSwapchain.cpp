@@ -1,6 +1,5 @@
 #include "DaydreamPCH.h"
 #include "OpenGLSwapchain.h"
-#include "OpenGLRenderPass.h"
 
 #include "Daydream/Core/Window.h"
 #include "GLFW/glfw3.h"
@@ -11,19 +10,12 @@
 namespace Daydream
 {
 	OpenGLSwapchain::OpenGLSwapchain(const DaydreamWindow& _window, const SwapchainDesc& _desc)
+		:Swapchain(_desc)
 	{
 		desc = _desc;
 		window = (GLFWwindow*)_window.GetNativeWindow();
 		
-		RenderPassAttachmentDesc colorDesc;
-		colorDesc.format = _desc.format;
-		colorDesc.isSwapchain = true;
-		RenderPassDesc rpDesc{};
-		rpDesc.colorAttachments.push_back(colorDesc);
 
-		mainRenderPass = MakeShared<OpenGLRenderPass>(rpDesc);
-
-		framebuffer = MakeShared<OpenGLFramebuffer>(this, mainRenderPass.get());
 	}
 	OpenGLSwapchain::~OpenGLSwapchain()
 	{

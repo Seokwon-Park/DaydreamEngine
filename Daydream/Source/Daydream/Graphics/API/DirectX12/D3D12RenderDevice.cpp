@@ -2,13 +2,12 @@
 #include "D3D12RenderDevice.h"
 #include "D3D12Buffer.h"
 #include "D3D12RenderContext.h"
-#include "D3D12RenderPass.h"
-#include "D3D12Framebuffer.h"
 #include "D3D12Shader.h"
 #include "D3D12Swapchain.h"
 #include "D3D12PipelineState.h"
 #include "D3D12ImGuiRenderer.h"
 #include "D3D12Texture.h"
+#include "D3D12TextureView.h"
 #include "D3D12TextureCube.h"
 #include "D3D12Sampler.h"
 #include "Daydream/Graphics/Utility/GraphicsUtility.h"
@@ -248,9 +247,15 @@ namespace Daydream
 		return MakeShared<D3D12GPUBuffer>(this, _desc);
 	}
 
-	Shared<GPUTexture> Daydream::D3D12RenderDevice::CreateGPUTexture(const TextureDesc& _desc)
+	Shared<GPUTexture> D3D12RenderDevice::CreateGPUTexture(const TextureDesc& _desc)
 	{
 		return MakeShared<D3D12GPUTexture>(this, _desc);
+	}
+
+	Shared<TextureView> D3D12RenderDevice::CreateTextureView(Shared<Texture> _texture, const TextureViewDesc& _desc)
+	{
+		Shared<D3D12GPUTexture> texture = SharedCast<D3D12GPUTexture>(_texture->GetGPUTexture());
+		return MakeShared<D3D12TextureView>(this, texture, _desc);
 	}
 
 	//Shared<VertexBuffer> D3D12RenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)

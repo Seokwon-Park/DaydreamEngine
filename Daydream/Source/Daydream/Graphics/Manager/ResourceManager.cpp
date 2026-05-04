@@ -3,7 +3,6 @@
 
 #include "Daydream/Graphics/Resources/ShaderGroup.h"
 #include "Daydream/Graphics/Resources/PipelineState.h"
-#include "Daydream/Graphics/Resources/RenderPass.h"
 #include "Daydream/Graphics/Resources/Shader.h"
 #include "Daydream/Graphics/Resources/Mesh.h"
 #include "Daydream/Graphics/Resources/Sampler.h"
@@ -30,7 +29,7 @@ namespace Daydream
 		instance = new ResourceManager();
 
 		instance->registryList[typeid(ShaderGroup)] = MakeUnique<ShaderGroupRegistry>();
-		instance->registryList[typeid(RenderPass)] = MakeUnique<RenderPassRegistry>();
+		//instance->registryList[typeid(RenderPass)] = MakeUnique<RenderPassRegistry>();
 		instance->registryList[typeid(Sampler)] = MakeUnique<SamplerRegistry>();
 		instance->registryList[typeid(Mesh)] = MakeUnique<MeshRegistry>();
 		instance->registryList[typeid(PipelineState)] = MakeUnique<PipelineStateRegistry>();

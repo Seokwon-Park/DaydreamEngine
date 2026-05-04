@@ -25,7 +25,12 @@ namespace Daydream
 		info.MinImageCount = 3;
 		info.ImageCount = 3;
 
-		info.PipelineInfoMain.RenderPass = Cast<VulkanSwapchain*>(_window->GetSwapchain())->GetVkRenderPass();
+		static VkFormat colorFormat = (VkFormat)_window->GetSwapchain()->GetDesc().format; // 구조체가 포인터를 요구하므로 메모리 유지 필요
+		info.UseDynamicRendering = true;
+		info.PipelineInfoMain.PipelineRenderingCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR;
+		info.PipelineInfoMain.PipelineRenderingCreateInfo.pNext = nullptr;
+		info.PipelineInfoMain.PipelineRenderingCreateInfo.colorAttachmentCount = 1;
+		info.PipelineInfoMain.PipelineRenderingCreateInfo.pColorAttachmentFormats = &colorFormat;
 		info.PipelineInfoMain.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
 
 		ImGui_ImplVulkan_Init(&info);

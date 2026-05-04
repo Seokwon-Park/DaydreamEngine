@@ -49,14 +49,14 @@ namespace Daydream
 
 	void Skybox::CreateResources()
 	{
-		equirectangularRenderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
+		//equirectangularRenderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
 		equirectangularPSO = ResourceManager::GetResource<PipelineState>("EquirectangularPSO");
 
 		// Resize Capture setup
-		resizeRenderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
+		//resizeRenderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
 		resizePSO = ResourceManager::GetResource<PipelineState>("ResizePSO");
 
-		irradianceRenderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
+		//irradianceRenderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
 		irradiancePSO = ResourceManager::GetResource<PipelineState>("IrradiancePSO");
 
 		prefilterPSO = ResourceManager::GetResource<PipelineState>("PrefilterPSO");
@@ -124,10 +124,10 @@ namespace Daydream
 
 		equirectangularTexture = AssetManager::GetAssetByPath<Texture2D>("Resource/skybox.hdr");
 
-		FramebufferDesc fbDesc;
-		fbDesc.width = skyboxTextureCube->GetWidth();
-		fbDesc.height = skyboxTextureCube->GetHeight();
-		captureFramebuffer = Framebuffer::Create(equirectangularRenderPass, fbDesc);
+		//FramebufferDesc fbDesc;
+		//fbDesc.width = skyboxTextureCube->GetWidth();
+		//fbDesc.height = skyboxTextureCube->GetHeight();
+		//captureFramebuffer = Framebuffer::Create(equirectangularRenderPass, fbDesc);
 
 		equirectangularResultTextures.clear();
 		equirectangularResultTextures.resize(6);
@@ -142,9 +142,9 @@ namespace Daydream
 			equirectangularResultTextures[i] = Texture2D::Create(textureDesc);
 		}
 
-		fbDesc.width = diffuseResolution;
-		fbDesc.height = diffuseResolution;
-		irradianceFramebuffer = Framebuffer::Create(irradianceRenderPass, fbDesc);
+		//fbDesc.width = diffuseResolution;
+		//fbDesc.height = diffuseResolution;
+		//irradianceFramebuffer = Framebuffer::Create(irradianceRenderPass, fbDesc);
 
 		irradianceResultTextures.clear();
 		irradianceResultTextures.resize(6);
@@ -165,9 +165,9 @@ namespace Daydream
 			roughnessConstantBuffers[mip] = ConstantBuffer::Create(sizeof(Vector4));
 		}
 
-		prefilterResultTextures.clear();
-		prefilterResultTextures.resize(6 * prefilterMipLevels);
-		prefilterFramebuffers.resize(prefilterMipLevels);
+		//prefilterResultTextures.clear();
+		//prefilterResultTextures.resize(6 * prefilterMipLevels);
+		//prefilterFramebuffers.resize(prefilterMipLevels);
 
 		for (UInt32 mip = 0; mip < prefilterMipLevels; mip++)
 		{
@@ -177,10 +177,10 @@ namespace Daydream
 			textureDesc.textureUsage = TextureUsage::ShaderResource;
 			textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
 
-			fbDesc.width = std::max(1U, specularResolution >> mip);
+			/*fbDesc.width = std::max(1U, specularResolution >> mip);
 			fbDesc.height = std::max(1U, specularResolution >> mip);
 
-			prefilterFramebuffers[mip] = Framebuffer::Create(irradianceRenderPass, fbDesc);
+			prefilterFramebuffers[mip] = Framebuffer::Create(irradianceRenderPass, fbDesc);*/
 
 			for (int face = 0; face < 6; face++)
 			{
@@ -190,10 +190,10 @@ namespace Daydream
 		}
 
 		//Resize
-		fbDesc.width = skyboxTextureCube->GetWidth();
+		/*fbDesc.width = skyboxTextureCube->GetWidth();
 		fbDesc.height = skyboxTextureCube->GetHeight();
 
-		resizeFramebuffer = Framebuffer::Create(resizeRenderPass, fbDesc);
+		resizeFramebuffer = Framebuffer::Create(resizeRenderPass, fbDesc);*/
 	}
 
 	void Skybox::Generate()
@@ -218,43 +218,43 @@ namespace Daydream
 		equirectangularTexture = _texture;
 		//skyboxTextureCube->SetSampler(ResourceManager::GetResource<Sampler>("LinearClampToEdge"));
 
-		for (int i = 0; i < 6; i++)
-		{
-			Renderer::UpdateConstantBuffer(cubeFaceConstantBuffers[i], captureViewProjections[i]);
+		//for (int i = 0; i < 6; i++)
+		//{
+		//	Renderer::UpdateConstantBuffer(cubeFaceConstantBuffers[i], captureViewProjections[i]);
 
-			Renderer::BeginRenderPass(equirectangularRenderPass, captureFramebuffer);
-			Renderer::BindPipelineState(equirectangularPSO);
-			Renderer::SetConstantBuffer("Camera", cubeFaceConstantBuffers[i]);
-			Renderer::SetTexture2D("Texture", equirectangularTexture);
-			Renderer::BindMesh(boxMesh);
-			Renderer::DrawIndexed(boxMesh->GetIndexCount());
-			Renderer::EndRenderPass(equirectangularRenderPass);
+		//	Renderer::BeginRenderPass(equirectangularRenderPass, captureFramebuffer);
+		//	Renderer::BindPipelineState(equirectangularPSO);
+		//	Renderer::SetConstantBuffer("Camera", cubeFaceConstantBuffers[i]);
+		//	Renderer::SetTexture2D("Texture", equirectangularTexture);
+		//	Renderer::BindMesh(boxMesh);
+		//	Renderer::DrawIndexed(boxMesh->GetIndexCount());
+		//	Renderer::EndRenderPass(equirectangularRenderPass);
 
-			//Renderer::CopyTexture2D(captureFramebuffer->GetColorAttachmentTexture(0), equirectangularResultTextures[i]);
-			Renderer::CopyTextureToCubemapFace(skyboxTextureCube, i, equirectangularResultTextures[i], 0);
-			skyboxTextureCube->Update(i, equirectangularResultTextures[i]);
-		}
-		Renderer::GenerateMips(skyboxTextureCube);
+		//	//Renderer::CopyTexture2D(captureFramebuffer->GetColorAttachmentTexture(0), equirectangularResultTextures[i]);
+		//	Renderer::CopyTextureToCubemapFace(skyboxTextureCube, i, equirectangularResultTextures[i], 0);
+		//	skyboxTextureCube->Update(i, equirectangularResultTextures[i]);
+		//}
+		//Renderer::GenerateMips(skyboxTextureCube);
 	}
 
 	void Skybox::GenerateIrradianceCubemap()
 	{
 		//irradianceTextureCube->SetSampler(ResourceManager::GetResource<Sampler>("LinearClampToEdge"));
 
-		for (int i = 0; i < 6; i++)
-		{
-			Renderer::BeginRenderPass(irradianceRenderPass, irradianceFramebuffer);
-			Renderer::BindPipelineState(irradiancePSO);
-			Renderer::SetConstantBuffer("Camera", cubeFaceConstantBuffers[i]);
-			Renderer::SetTextureCube("TextureCubemap", skyboxTextureCube);
-			Renderer::BindMesh(boxMesh);
-			Renderer::DrawIndexed(boxMesh->GetIndexCount());
-			Renderer::EndRenderPass(irradianceRenderPass);
+		//for (int i = 0; i < 6; i++)
+		//{
+		//	Renderer::BeginRenderPass(irradianceRenderPass, irradianceFramebuffer);
+		//	Renderer::BindPipelineState(irradiancePSO);
+		//	Renderer::SetConstantBuffer("Camera", cubeFaceConstantBuffers[i]);
+		//	Renderer::SetTextureCube("TextureCubemap", skyboxTextureCube);
+		//	Renderer::BindMesh(boxMesh);
+		//	Renderer::DrawIndexed(boxMesh->GetIndexCount());
+		//	Renderer::EndRenderPass(irradianceRenderPass);
 
-			//Renderer::CopyTexture2D(irradianceFramebuffer->GetColorAttachmentTexture(0), irradianceResultTextures[i]);
-			Renderer::CopyTextureToCubemapFace(irradianceTextureCube, i, irradianceResultTextures[i], 0);
-			irradianceTextureCube->Update(i, irradianceResultTextures[i]);
-		}
+		//	//Renderer::CopyTexture2D(irradianceFramebuffer->GetColorAttachmentTexture(0), irradianceResultTextures[i]);
+		//	Renderer::CopyTextureToCubemapFace(irradianceTextureCube, i, irradianceResultTextures[i], 0);
+		//	irradianceTextureCube->Update(i, irradianceResultTextures[i]);
+		//}
 	}
 
 	void Skybox::GeneratePrefilterCubemap()
@@ -272,49 +272,49 @@ namespace Daydream
 				}
 			}*/
 
-		TextureDesc textureDesc{};
-		for (UInt32 mip = 0; mip < prefilterMipLevels; mip++)
-		{
-			roughness = Vector4(0.0f, 0.0f, 0.0f, (float)mip / (prefilterMipLevels - 1));
-			Renderer::UpdateConstantBuffer(roughnessConstantBuffers[mip], roughness);
-			for (int face = 0; face < 6; face++)
-			{
-				UInt32 index = prefilterMipLevels * face + mip;
+		//TextureDesc textureDesc{};
+		//for (UInt32 mip = 0; mip < prefilterMipLevels; mip++)
+		//{
+		//	roughness = Vector4(0.0f, 0.0f, 0.0f, (float)mip / (prefilterMipLevels - 1));
+		//	Renderer::UpdateConstantBuffer(roughnessConstantBuffers[mip], roughness);
+		//	for (int face = 0; face < 6; face++)
+		//	{
+		//		UInt32 index = prefilterMipLevels * face + mip;
 
-				Renderer::BeginRenderPass(irradianceRenderPass, prefilterFramebuffers[mip]);
-				Renderer::BindPipelineState(prefilterPSO);
-				Renderer::SetConstantBuffer("Camera", cubeFaceConstantBuffers[face]);
-				Renderer::SetConstantBuffer("Roughness", roughnessConstantBuffers[mip]);
-				Renderer::SetTextureCube("TextureCubemap", skyboxTextureCube);
-				Renderer::BindMesh(boxMesh);
-				Renderer::DrawIndexed(boxMesh->GetIndexCount());
+		//		Renderer::BeginRenderPass(irradianceRenderPass, prefilterFramebuffers[mip]);
+		//		Renderer::BindPipelineState(prefilterPSO);
+		//		Renderer::SetConstantBuffer("Camera", cubeFaceConstantBuffers[face]);
+		//		Renderer::SetConstantBuffer("Roughness", roughnessConstantBuffers[mip]);
+		//		Renderer::SetTextureCube("TextureCubemap", skyboxTextureCube);
+		//		Renderer::BindMesh(boxMesh);
+		//		Renderer::DrawIndexed(boxMesh->GetIndexCount());
 
-				Renderer::EndRenderPass(irradianceRenderPass);
+		//		Renderer::EndRenderPass(irradianceRenderPass);
 
-				//Renderer::CopyTexture2D(prefilterFramebuffers[mip]->GetColorAttachmentTexture(0), prefilterResultTextures[index]);
-				Renderer::CopyTextureToCubemapFace(prefilterTextureCube, face, prefilterResultTextures[index], mip);
-				if (mip == 0)
-				{
-					prefilterTextureCube->Update(face, prefilterResultTextures[index]);
-				}
-				//oldTextures.push_back(prefilterResultTextures[face]);
-			}
-		}
+		//		//Renderer::CopyTexture2D(prefilterFramebuffers[mip]->GetColorAttachmentTexture(0), prefilterResultTextures[index]);
+		//		Renderer::CopyTextureToCubemapFace(prefilterTextureCube, face, prefilterResultTextures[index], mip);
+		//		if (mip == 0)
+		//		{
+		//			prefilterTextureCube->Update(face, prefilterResultTextures[index]);
+		//		}
+		//		//oldTextures.push_back(prefilterResultTextures[face]);
+		//	}
+		//}
 
 		//prefilterTextureCube->GenerateMips();
 	}
 
 	void Skybox::GenerateBRDF()
 	{
-		FramebufferDesc fbDesc;
-		fbDesc.width = skyboxTextureCube->GetWidth();
-		fbDesc.height = skyboxTextureCube->GetHeight();
+		//FramebufferDesc fbDesc;
+		//fbDesc.width = skyboxTextureCube->GetWidth();
+		//fbDesc.height = skyboxTextureCube->GetHeight();
 
-		Renderer::BeginRenderPass(equirectangularRenderPass, captureFramebuffer);
-		Renderer::BindPipelineState(brdfPSO);
-		Renderer::BindMesh(quadMesh);
-		Renderer::DrawIndexed(quadMesh->GetIndexCount());
-		Renderer::EndRenderPass(equirectangularRenderPass);
+		//Renderer::BeginRenderPass(equirectangularRenderPass, captureFramebuffer);
+		//Renderer::BindPipelineState(brdfPSO);
+		//Renderer::BindMesh(quadMesh);
+		//Renderer::DrawIndexed(quadMesh->GetIndexCount());
+		//Renderer::EndRenderPass(equirectangularRenderPass);
 
 		//BRDFTexture->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
 		//Renderer::CopyTexture2D(captureFramebuffer->GetColorAttachmentTexture(0), BRDFTexture);
@@ -322,18 +322,18 @@ namespace Daydream
 
 	void Skybox::UpdateSkyboxFace(UInt32 _faceIndex, Shared<Texture2D> _texture)
 	{
-		Renderer::BeginRenderPass(resizeRenderPass, resizeFramebuffer);
-		Renderer::BindPipelineState(resizePSO);
-		Renderer::SetTexture2D("Texture", _texture);
-		Renderer::BindMesh(quadMesh);
-		Renderer::DrawIndexed(quadMesh->GetIndexCount());
-		Renderer::EndRenderPass(resizeRenderPass);
+		//Renderer::BeginRenderPass(resizeRenderPass, resizeFramebuffer);
+		//Renderer::BindPipelineState(resizePSO);
+		//Renderer::SetTexture2D("Texture", _texture);
+		//Renderer::BindMesh(quadMesh);
+		//Renderer::DrawIndexed(quadMesh->GetIndexCount());
+		//Renderer::EndRenderPass(resizeRenderPass);
 
-		//Renderer::CopyTexture2D(resizeFramebuffer->GetColorAttachmentTexture(0), resizeResultTexture);
-		Renderer::CopyTextureToCubemapFace(skyboxTextureCube, _faceIndex, resizeResultTexture, 0);
-		skyboxTextureCube->Update(_faceIndex, resizeResultTexture);
-		//oldTextures.push_back(resizeResultTexture);
+		////Renderer::CopyTexture2D(resizeFramebuffer->GetColorAttachmentTexture(0), resizeResultTexture);
+		//Renderer::CopyTextureToCubemapFace(skyboxTextureCube, _faceIndex, resizeResultTexture, 0);
+		//skyboxTextureCube->Update(_faceIndex, resizeResultTexture);
+		////oldTextures.push_back(resizeResultTexture);
 
-		Renderer::GenerateMips(skyboxTextureCube);
+		//Renderer::GenerateMips(skyboxTextureCube);
 	}
 }

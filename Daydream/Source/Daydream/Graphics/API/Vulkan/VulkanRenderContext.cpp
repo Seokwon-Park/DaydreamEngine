@@ -97,44 +97,60 @@ namespace Daydream
 	{
 		GetActiveCommandBuffer().drawIndexed(_indexCount, 1, _startIndex, _baseVertex, 0);
 	}
-	void VulkanRenderContext::BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer)
+
+	void VulkanRenderContext::BeginRendering(const RenderingInfo& _renderingInfo)
 	{
-		Shared<VulkanFramebuffer> currentFramebuffer = static_pointer_cast<VulkanFramebuffer>(_framebuffer);
-		Shared<VulkanRenderPass> renderPass = static_pointer_cast<VulkanRenderPass>(_renderPass);
+		vk::RenderingInfo info{};
+		info.pNext;
+		info.flags;
+		info.renderArea;
+		info.layerCount;
+		info.viewMask;
+		info.colorAttachmentCount;
+		info.pColorAttachments;
+		info.pDepthAttachment;
+		info.pStencilAttachment;
 
-		vk::RenderPassBeginInfo renderPassInfo{};
-		renderPassInfo.renderPass = renderPass->GetVkRenderPass();
-		renderPassInfo.framebuffer = currentFramebuffer->GetFramebuffer();
-		renderPassInfo.renderArea.offset = vk::Offset2D(0, 0);
-		renderPassInfo.renderArea.extent = currentFramebuffer->GetExtent();
-
-		Array<vk::ClearValue> colors{};
-		for (UInt32 i = 0; i < _framebuffer->GetColorAttachmentSize(); i++)
-		{
-			vk::ClearValue vulkanClearColor;
-			memcpy(vulkanClearColor.color.float32, _renderPass->GetClearColor().color, sizeof(Color));
-			colors.push_back(vulkanClearColor);
-		}
-
-		if (currentFramebuffer->HasDepthAttachment())
-		{
-			vk::ClearValue vulkanClearDepthStencil;
-			vulkanClearDepthStencil.depthStencil.depth = 1.0f; // 또는 0.0f
-			vulkanClearDepthStencil.depthStencil.stencil = 0;   // 스텐실 값도 함께 초기화
-			colors.push_back(vulkanClearDepthStencil);
-		}
-
-		renderPassInfo.clearValueCount = (UInt32)colors.size();
-		renderPassInfo.pClearValues = colors.data();
-
-		SetViewport(0, 0, currentFramebuffer->GetWidth(), currentFramebuffer->GetHeight());
-
-		GetActiveCommandBuffer().beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
+		GetActiveCommandBuffer().beginRendering(info);
 	}
-	void VulkanRenderContext::EndRenderPass(Shared<RenderPass> _renderPass)
-	{
-		GetActiveCommandBuffer().endRenderPass();
-	}
+	//void VulkanRenderContext::BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer)
+	//{
+	//	Shared<VulkanFramebuffer> currentFramebuffer = static_pointer_cast<VulkanFramebuffer>(_framebuffer);
+	//	Shared<VulkanRenderPass> renderPass = static_pointer_cast<VulkanRenderPass>(_renderPass);
+
+	//	vk::RenderPassBeginInfo renderPassInfo{};
+	//	renderPassInfo.renderPass = renderPass->GetVkRenderPass();
+	//	renderPassInfo.framebuffer = currentFramebuffer->GetFramebuffer();
+	//	renderPassInfo.renderArea.offset = vk::Offset2D(0, 0);
+	//	renderPassInfo.renderArea.extent = currentFramebuffer->GetExtent();
+
+	//	Array<vk::ClearValue> colors{};
+	//	for (UInt32 i = 0; i < _framebuffer->GetColorAttachmentSize(); i++)
+	//	{
+	//		vk::ClearValue vulkanClearColor;
+	//		memcpy(vulkanClearColor.color.float32, _renderPass->GetClearColor().color, sizeof(Color));
+	//		colors.push_back(vulkanClearColor);
+	//	}
+
+	//	if (currentFramebuffer->HasDepthAttachment())
+	//	{
+	//		vk::ClearValue vulkanClearDepthStencil;
+	//		vulkanClearDepthStencil.depthStencil.depth = 1.0f; // 또는 0.0f
+	//		vulkanClearDepthStencil.depthStencil.stencil = 0;   // 스텐실 값도 함께 초기화
+	//		colors.push_back(vulkanClearDepthStencil);
+	//	}
+
+	//	renderPassInfo.clearValueCount = (UInt32)colors.size();
+	//	renderPassInfo.pClearValues = colors.data();
+
+	//	SetViewport(0, 0, currentFramebuffer->GetWidth(), currentFramebuffer->GetHeight());
+
+	//	GetActiveCommandBuffer().beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
+	//}
+	//void VulkanRenderContext::EndRenderPass(Shared<RenderPass> _renderPass)
+	//{
+	//	GetActiveCommandBuffer().endRenderPass();
+	//}
 	void VulkanRenderContext::BindPipelineState(Shared<PipelineState> _pipelineState)
 	{
 		RenderContext::BindPipelineState(_pipelineState);
@@ -155,65 +171,69 @@ namespace Daydream
 		GetActiveCommandBuffer().bindIndexBuffer(indexBuffer->GetVkBuffer(), 0, vk::IndexType::eUint32);
 	}
 
-	void VulkanRenderContext::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
+	//void VulkanRenderContext::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
+	//{
+	//	if (_texture == nullptr) return;
+	//	RenderContext::SetTexture2D(_name, _texture);
+	//	const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
+	//	if (resourceInfo == nullptr) return;
+
+	//	Shared<VulkanTexture2D> vulkanTexture = SharedCast<VulkanTexture2D>(_texture);
+	//	Shared<VulkanPipelineState> vulkanPSO = SharedCast<VulkanPipelineState>(activePipelineState);
+
+	//	vk::DescriptorImageInfo imageInfo{};
+	//	imageInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+	//	imageInfo.imageView = vulkanTexture->GetImageView();
+	//	imageInfo.sampler = vulkanTexture->GetSampler();
+
+	//	vk::WriteDescriptorSet writeSet = {};
+	//	//writeSet.dstSet = sets[resourceInfo.set].get();
+	//	writeSet.dstBinding = resourceInfo->binding;  // 특정 binding만 업데이트
+	//	writeSet.descriptorCount = 1;
+	//	writeSet.descriptorType = vk::DescriptorType::eCombinedImageSampler;
+	//	writeSet.pImageInfo = &imageInfo;
+
+	//	GetActiveCommandBuffer().pushDescriptorSet(
+	//		vk::PipelineBindPoint::eGraphics,
+	//		vulkanPSO->GetPipelineLayout(),
+	//		resourceInfo->set,
+	//		1,
+	//		&writeSet
+	//	);
+	//}
+	//void VulkanRenderContext::SetTextureCube(const String& _name, Shared<TextureCube> _textureCube)
+	//{
+	//	if (_textureCube == nullptr) return;
+	//	const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
+	//	if (resourceInfo == nullptr) return;
+
+	//	Shared<VulkanTextureCube> vulkanTexture = std::static_pointer_cast<VulkanTextureCube>(_textureCube);
+	//	Shared<VulkanPipelineState> vulkanPSO = std::static_pointer_cast<VulkanPipelineState>(activePipelineState);
+
+	//	vk::DescriptorImageInfo imageInfo{};
+	//	imageInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+	//	imageInfo.imageView = vulkanTexture->GetImageView();
+	//	imageInfo.sampler = vulkanTexture->GetSampler();
+
+	//	vk::WriteDescriptorSet writeSet = {};
+	//	//writeSet.dstSet = sets[resourceInfo.set].get();
+	//	writeSet.dstBinding = resourceInfo->binding;  // 특정 binding만 업데이트
+	//	writeSet.descriptorCount = 1;
+	//	writeSet.descriptorType = vk::DescriptorType::eCombinedImageSampler;
+	//	writeSet.pImageInfo = &imageInfo;
+
+	void Daydream::VulkanRenderContext::BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _sampler)
 	{
-		if (_texture == nullptr) return;
-		RenderContext::SetTexture2D(_name, _texture);
-		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
-		if (resourceInfo == nullptr) return;
-
-		Shared<VulkanTexture2D> vulkanTexture = SharedCast<VulkanTexture2D>(_texture);
-		Shared<VulkanPipelineState> vulkanPSO = SharedCast<VulkanPipelineState>(activePipelineState);
-
-		vk::DescriptorImageInfo imageInfo{};
-		imageInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
-		imageInfo.imageView = vulkanTexture->GetImageView();
-		imageInfo.sampler = vulkanTexture->GetSampler();
-
-		vk::WriteDescriptorSet writeSet = {};
-		//writeSet.dstSet = sets[resourceInfo.set].get();
-		writeSet.dstBinding = resourceInfo->binding;  // 특정 binding만 업데이트
-		writeSet.descriptorCount = 1;
-		writeSet.descriptorType = vk::DescriptorType::eCombinedImageSampler;
-		writeSet.pImageInfo = &imageInfo;
-
-		GetActiveCommandBuffer().pushDescriptorSet(
-			vk::PipelineBindPoint::eGraphics,
-			vulkanPSO->GetPipelineLayout(),
-			resourceInfo->set,
-			1,
-			&writeSet
-		);
 	}
-	void VulkanRenderContext::SetTextureCube(const String& _name, Shared<TextureCube> _textureCube)
-	{
-		if (_textureCube == nullptr) return;
-		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
-		if (resourceInfo == nullptr) return;
 
-		Shared<VulkanTextureCube> vulkanTexture = std::static_pointer_cast<VulkanTextureCube>(_textureCube);
-		Shared<VulkanPipelineState> vulkanPSO = std::static_pointer_cast<VulkanPipelineState>(activePipelineState);
-
-		vk::DescriptorImageInfo imageInfo{};
-		imageInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
-		imageInfo.imageView = vulkanTexture->GetImageView();
-		imageInfo.sampler = vulkanTexture->GetSampler();
-
-		vk::WriteDescriptorSet writeSet = {};
-		//writeSet.dstSet = sets[resourceInfo.set].get();
-		writeSet.dstBinding = resourceInfo->binding;  // 특정 binding만 업데이트
-		writeSet.descriptorCount = 1;
-		writeSet.descriptorType = vk::DescriptorType::eCombinedImageSampler;
-		writeSet.pImageInfo = &imageInfo;
-
-		GetActiveCommandBuffer().pushDescriptorSet(
-			vk::PipelineBindPoint::eGraphics,
-			vulkanPSO->GetPipelineLayout(),
-			resourceInfo->set,
-			1,
-			&writeSet
-		);
-	}
+	//	GetActiveCommandBuffer().pushDescriptorSet(
+	//		vk::PipelineBindPoint::eGraphics,
+	//		vulkanPSO->GetPipelineLayout(),
+	//		resourceInfo->set,
+	//		1,
+	//		&writeSet
+	//	);
+	//}
 	void VulkanRenderContext::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
 	{
 		if (_buffer == nullptr) return;
@@ -261,8 +281,8 @@ namespace Daydream
 	{
 		vk::ImageMemoryBarrier barriers[2] = {};
 
-		Shared<VulkanTexture2D> dst = SharedCast<VulkanTexture2D>(_dst);
-		Shared<VulkanTexture2D> src = SharedCast<VulkanTexture2D>(_src);
+		Shared<VulkanGPUTexture> dst = SharedCast<VulkanGPUTexture>(_dst->GetGPUTexture());
+		Shared<VulkanGPUTexture> src = SharedCast<VulkanGPUTexture>(_src->GetGPUTexture());
 
 		// 원본 이미지를 TRANSFER_SRC로 변경
 		barriers[0].oldLayout = vk::ImageLayout::eShaderReadOnlyOptimal; // 또는 현재 레이아웃
@@ -357,8 +377,8 @@ namespace Daydream
 	}
 	void VulkanRenderContext::CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel)
 	{
-		Shared<VulkanTextureCube> dst = SharedCast<VulkanTextureCube>(_dstCubemap);
-		Shared<VulkanTexture2D> src = SharedCast<VulkanTexture2D>(_srcTexture2D);
+		VulkanGPUTexture* dst = Cast<VulkanGPUTexture*>(_dstCubemap->GetGPUTexturePtr());
+		VulkanGPUTexture* src = Cast<VulkanGPUTexture*>(_srcTexture2D->GetGPUTexturePtr());
 
 		vk::ImageMemoryBarrier barriers[2] = {};
 
@@ -486,15 +506,7 @@ namespace Daydream
 		UInt32 mipLevels = _texture->GetMipLevels();
 		vk::Image image;
 
-		switch (_texture->GetType())
-		{
-		case TextureType::Texture2D:
-			image = SharedCast<VulkanTexture2D>(_texture)->GetVkImage();
-			break;
-		case TextureType::TextureCube:
-			image = SharedCast<VulkanTextureCube>(_texture)->GetVkImage();
-			break;
-		}
+		image = SharedCast<VulkanGPUTexture>(_texture->GetGPUTexture())->GetVkImage();
 
 		vk::ImageMemoryBarrier barrier{};
 		barrier.image = image;
@@ -632,7 +644,7 @@ namespace Daydream
 		barrier.offset = 0;
 		barrier.size = VK_WHOLE_SIZE;
 		barrier.pNext = nullptr;
-		
+
 		GetActiveCommandBuffer().pipelineBarrier
 		(
 			srcStage,               // srcStageMask

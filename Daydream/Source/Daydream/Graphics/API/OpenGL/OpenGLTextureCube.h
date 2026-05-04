@@ -1,7 +1,6 @@
 #pragma once
 
 #include "OpenGLSampler.h"
-#include "Daydream/Graphics/Resources/TextureCube.h"
 
 namespace Daydream
 {

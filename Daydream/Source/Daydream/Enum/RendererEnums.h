@@ -75,6 +75,27 @@ namespace Daydream
 		Readback
 	};
 
+	// Texture
+	enum class TextureType
+	{
+		Unknown,
+
+		// 1D 
+		Texture1D,
+		Texture1DArray,
+
+		// 2D 
+		Texture2D,
+		Texture2DArray,
+		Texture2DMultisample,
+
+		// 3D & Cube 
+		TextureCube,
+		TextureCubeArray,
+		Texture3D
+	};
+
+
 	enum class ResourceState : UInt32
 	{
 		Undefined = 0,

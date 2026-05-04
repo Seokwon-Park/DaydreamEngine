@@ -112,17 +112,18 @@ namespace Daydream
 			float deltaTime = timeStep.GetDeltaTime();
 
 			Renderer::BeginFrame(mainWindow->GetSwapchain());
-			Renderer::ExecutePreFrameCommands(); // if SingleTimeCommandQueue is not empty
+			Renderer::ExecutePreFrameCommands(); // if ExecutePreFrameCommandQueue is not empty
+
 			for (Layer* layer : layerStack)
 			{
 				layer->OnUpdate(deltaTime);
 			}
-			Renderer::BeginSwapchainRenderPass(mainWindow->GetSwapchain());
+			Renderer::BeginRendering(mainWindow->GetSwapchain());
 			imGuiLayer->BeginImGui();
 			for (Layer* layer : layerStack)
 				layer->OnImGuiRender();
 			imGuiLayer->EndImGui();
-			Renderer::EndSwapchainRenderPass(mainWindow->GetSwapchain());
+			//Renderer::EndSwapchainRenderPass(mainWindow->GetSwapchain());
 			//auto [x, y] = Input::GetMousePosition();
 			////DAYDREAM_CORE_TRACE("{0}, {1}", x, y);
 

@@ -23,7 +23,6 @@ namespace Daydream
 		bool IsValid() const { return id != UINT32_MAX; }
 	};
 
-
 	class RenderGraph
 	{
 	public:

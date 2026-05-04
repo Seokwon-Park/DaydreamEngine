@@ -2,7 +2,6 @@
 
 #include "Daydream/Graphics/Resources/Framebuffer.h"
 #include "D3D12RenderDevice.h"
-#include "D3D12RenderPass.h"
 #include "D3D12Texture.h"
 
 namespace Daydream

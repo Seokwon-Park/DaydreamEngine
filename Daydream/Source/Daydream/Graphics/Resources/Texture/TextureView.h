@@ -26,6 +26,8 @@ namespace Daydream
 	public:
 		TextureView(Shared<GPUTexture> _texture, const TextureViewDesc& _desc);
 		virtual ~TextureView();
+
+		inline Shared<GPUTexture> GetOriginTexture() const { return originTexture; }
 		inline const TextureViewDesc& GetDesc() { return desc; }
 
 		static Shared<TextureView> Create(Shared<Texture2D> _texture, const TextureViewDesc& _desc);

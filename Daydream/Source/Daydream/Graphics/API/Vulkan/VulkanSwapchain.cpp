@@ -6,6 +6,7 @@
 namespace Daydream
 {
 	VulkanSwapchain::VulkanSwapchain(VulkanRenderDevice* _device, const DaydreamWindow& _window, const SwapchainDesc& _desc)
+		:Swapchain(_desc)
 	{
 		device = _device;
 		desc = _desc;
@@ -43,21 +44,21 @@ namespace Daydream
 			inFlightFences[i] = device->GetDevice().createFenceUnique(fenceInfo);
 		}
 
-		RenderPassAttachmentDesc colorDesc;
-		colorDesc.format = _desc.format;
-		colorDesc.isSwapchain = true;
+		//RenderPassAttachmentDesc colorDesc;
+		//colorDesc.format = _desc.format;
+		//colorDesc.isSwapchain = true;
 
-		RenderPassDesc rpDesc{};
-		rpDesc.colorAttachments.push_back(colorDesc);
+		//RenderPassDesc rpDesc{};
+		//rpDesc.colorAttachments.push_back(colorDesc);
 
-		renderPass = MakeShared<VulkanRenderPass>(device, rpDesc);
-		mainRenderPass = renderPass;
+		//renderPass = MakeShared<VulkanRenderPass>(device, rpDesc);
+		//mainRenderPass = renderPass;
 
-		framebuffers.resize(imageCount);
-		for (UInt32 i = 0; i < imageCount; i++)
-		{
-			framebuffers[i] = MakeShared<VulkanFramebuffer>(device, this, renderPass.get(), swapchainImages[i]);
-		}
+		//framebuffers.resize(imageCount);
+		//for (UInt32 i = 0; i < imageCount; i++)
+		//{
+		//	framebuffers[i] = MakeShared<VulkanFramebuffer>(device, this, renderPass.get(), swapchainImages[i]);
+		//}
 		//BeginFrame();
 		//framebuffers[imageIndex]->Begin();
 	}
@@ -200,16 +201,16 @@ namespace Daydream
 	{
 		device->GetDevice().waitIdle();
 
-		swapchainImages.clear();
-		swapchain.reset();
-		CreateSwapchain();
-		swapchainImages = device->GetDevice().getSwapchainImagesKHR(swapchain.get());
+		//swapchainImages.clear();
+		//swapchain.reset();
+		//CreateSwapchain();
+		//swapchainImages = device->GetDevice().getSwapchainImagesKHR(swapchain.get());
 
-		for (UInt32 i = 0; i < imageCount; i++)
-		{
-			framebuffers[i] = nullptr;
-			framebuffers[i] = MakeShared<VulkanFramebuffer>(device, this, renderPass.get(), swapchainImages[i]);
-		}
+		//for (UInt32 i = 0; i < imageCount; i++)
+		//{
+		//	framebuffers[i] = nullptr;
+		//	framebuffers[i] = MakeShared<VulkanFramebuffer>(device, this, renderPass.get(), swapchainImages[i]);
+		//}
 	}
 
 	vk::SurfaceFormatKHR VulkanSwapchain::ChooseSwapSurfaceFormat(const Array<vk::SurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat)

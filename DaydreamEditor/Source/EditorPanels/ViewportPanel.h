@@ -11,12 +11,10 @@ namespace Daydream
 		ViewportPanel();
 		~ViewportPanel() {};
 
-		inline void SetFramebuffer(Shared<Framebuffer> _framebuffer) { viewportFramebuffer = _framebuffer; };
-
 		virtual void OnImGuiRender() override;
 	protected:
 
 	private:
-		Shared<Framebuffer> viewportFramebuffer;
+		
 	};
 }

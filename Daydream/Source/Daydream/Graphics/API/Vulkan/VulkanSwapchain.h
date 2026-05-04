@@ -33,10 +33,7 @@ namespace Daydream
 		//virtual void BeginRenderPass() override;
 		//virtual void EndRenderPass() override;
 
-		inline virtual Shared<Framebuffer> GetCurrentFramebuffer() const 
-		{ 
-			return framebuffers[imageIndex]; 
-		};
+		inline virtual Shared<TextureView> GetCurrentRenderTargetView() const { return nullptr; };
 		inline virtual Shared<RenderCommandList> GetCurrentCommandList() const override { return commandLists[currentFrame]; }
 
 		void RecreateSwapchain();
@@ -44,7 +41,6 @@ namespace Daydream
 		inline vk::Format GetFormat() const { return format; }
 		inline vk::SwapchainKHR GetVkSwapchain() const { return swapchain.get(); }
 		inline vk::Extent2D GetExtent() const { return extent; }
-		inline vk::RenderPass GetVkRenderPass() const { return renderPass->GetVkRenderPass(); }
 		inline Array<vk::Image> GetSwapchainImages() const { return swapchainImages; };
 	private:
 		void CreateSwapchain();
@@ -58,9 +54,6 @@ namespace Daydream
 		Array<Shared<VulkanRenderCommandList>> commandLists;
 		vk::CommandBuffer currentCommandBuffer;
 		vk::Fence currentFence;
-
-		Shared<VulkanRenderPass> renderPass;
-		Array<Shared<VulkanFramebuffer>> framebuffers;
 
 		vk::UniqueSurfaceKHR surface; // Vulkan window surface
 		vk::UniqueSwapchainKHR swapchain;

@@ -7,25 +7,6 @@
 
 namespace Daydream
 {
-	// Texture
-	enum class TextureType
-	{
-		Unknown,
-
-		// 1D (선형 데이터)
-		Texture1D,
-		Texture1DArray,
-
-		// 2D (일반적인 이미지)
-		Texture2D,
-		Texture2DArray,
-		Texture2DMultisample,
-
-		// 3D & Cube (볼륨 및 환경)
-		TextureCube,
-		TextureCubeArray,
-		Texture3D
-	};
 
 	struct Texture2DDesc
 	{
@@ -56,8 +37,14 @@ namespace Daydream
 		GPUTexture(const TextureDesc& _desc);
 		virtual ~GPUTexture() = default;
 
-		const TextureDesc& GetDesc() const { return desc; }
+		inline RenderFormat GetFormat() const { return desc.format; }
+		inline UInt32 GetWidth() const { return desc.width; }
+		inline UInt32 GetHeight() const { return desc.height; }
+		inline UInt32 GetMipLevels() const { return desc.mipLevels; }
+		inline UInt32 GetLayerCount() const { return desc.layerCount; }
 
+		const TextureDesc& GetDesc() const { return desc; }
+		inline TextureType GetType() const { return desc.type; }
 	protected:
 		TextureDesc desc;
 	};
@@ -68,6 +55,7 @@ namespace Daydream
 		Texture(Shared<GPUTexture> _texture) : gpuTexture(_texture) {}
 		virtual ~Texture() = default;
 
+		inline RenderFormat GetFormat() const { return gpuTexture->GetDesc().format; }
 		inline UInt32 GetWidth() const { return gpuTexture->GetDesc().width; }
 		inline UInt32 GetHeight() const { return gpuTexture->GetDesc().height; }
 		inline UInt32 GetMipLevels() const { return gpuTexture->GetDesc().mipLevels; }

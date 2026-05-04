@@ -13,7 +13,7 @@ namespace Daydream
 	public:
 		RenderPassRegistry() {};
 
-		virtual void CreateBuiltinResources() override;
+		//virtual void CreateBuiltinResources() override;
 	private:
 	};
 }

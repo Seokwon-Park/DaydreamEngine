@@ -23,19 +23,19 @@ namespace Daydream
 		renderPass = _renderPass;
 		colorAttachmentCount = (UInt32)_renderPass->GetDesc().colorAttachments.size();
 	}*/
-	Framebuffer::Framebuffer(const FramebufferDesc& _desc)
-	{
-		colorAttachments = std::move(_desc.colorAttachments);
-		depthAttachment = std::move(_desc.depthAttachment);
-	}
-	void Framebuffer::SetSize(UInt32 _width, UInt32 _height)
-	{
-		width = _width;
-		height = _height;
-	}
+	//Framebuffer::Framebuffer(const FramebufferDesc& _desc)
+	//{
+	//	colorAttachments = std::move(_desc.colorAttachments);
+	//	depthAttachment = std::move(_desc.depthAttachment);
+	//}
+	//void Framebuffer::SetSize(UInt32 _width, UInt32 _height)
+	//{
+	//	width = _width;
+	//	height = _height;
+	//}
 
-	Shared<Framebuffer> Framebuffer::Create(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc)
-	{
-		return Renderer::GetRenderDevice()->CreateFramebuffer(_renderPass, _desc);
-	}
+	//Shared<Framebuffer> Framebuffer::Create(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc)
+	//{
+	//	return Renderer::GetRenderDevice()->CreateFramebuffer(_renderPass, _desc);
+	//}
 }

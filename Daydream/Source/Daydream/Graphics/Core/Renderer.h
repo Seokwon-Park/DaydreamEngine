@@ -54,17 +54,20 @@ namespace Daydream
 		static void BeginFrame(Swapchain* _swapchain);
 		static void EndFrame(Swapchain* _swapchain);
 
-		static void BeginRenderPass(const Shared<RenderPass>& _renderPass, const Shared<Framebuffer>& _framebuffer);
-		static void EndRenderPass(const Shared<RenderPass>& _renderPass);
+		static void BeginRendering(const RenderingInfo& _renderingInfo);
+		static void EndRendering(const RenderingInfo& _renderingInfo);
+		static void BeginRendering(Swapchain* _swapchain);
+		//static void BeginRenderPass(const Shared<RenderPass>& _renderPass, const Shared<Framebuffer>& _framebuffer);
+		//static void EndRenderPass(const Shared<RenderPass>& _renderPass);
 
-		static void BeginSwapchainRenderPass(Swapchain* _swapchain);
-		static void EndSwapchainRenderPass(Swapchain* _swapchain);
+		//static void BeginSwapchainRenderPass(Swapchain* _swapchain);
+		//static void EndSwapchainRenderPass(Swapchain* _swapchain);
 
 		static void BindPipelineState(Shared<PipelineState> _pipelineState);
 
-		static void SetTexture2D(const String& _name, Shared<Texture2D> _texture);
-		static void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube);
-		static void SetTextureView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _saemplerState);
+		//static void SetTexture2D(const String& _name, Shared<Texture2D> _texture);
+		//static void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube);
+		static void SetTextureView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _samplerState);
 		static void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer);
 		
 

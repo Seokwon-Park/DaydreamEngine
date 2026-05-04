@@ -41,13 +41,6 @@ namespace Daydream
 					Renderer::TransitionTextureState(gpuTexture, ResourceState::CopyDest, ResourceState::ShaderResource, 0, 1);
 				});
 		}
-		else
-		{
-			Renderer::EnqueuePreFrameCommand([=]()
-				{
-					Renderer::TransitionTextureState(gpuTexture, ResourceState::CopyDest, ResourceState::RenderTarget, 0, 1);
-				});
-		}
 
 		return texture2D;
 	}

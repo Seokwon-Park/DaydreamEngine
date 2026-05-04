@@ -164,7 +164,8 @@ namespace Daydream
 
 	Shared<TextureView> VulkanRenderDevice::CreateTextureView(Shared<Texture> _texture, const TextureViewDesc& _desc)
 	{
-		return MakeShared<VulkanTextureView>(this, _texture, _desc);
+		Shared<VulkanGPUTexture> texture = SharedCast<VulkanGPUTexture>(_texture->GetGPUTexture());
+		return MakeShared<VulkanTextureView>(this, texture, _desc);
 	}
 
 	//Shared<VertexBuffer> VulkanRenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
@@ -842,11 +843,15 @@ namespace Daydream
 			&queuePriority
 		);
 
+		vk::PhysicalDeviceDynamicRenderingFeatures dynamicRenderingFeatures{};
+		dynamicRenderingFeatures.dynamicRendering = VK_TRUE;
+
 		vk::PhysicalDeviceDescriptorIndexingFeatures descriptorIndexingFeatures;
 		descriptorIndexingFeatures.runtimeDescriptorArray = VK_TRUE;
 		descriptorIndexingFeatures.descriptorBindingPartiallyBound = VK_TRUE;
 		descriptorIndexingFeatures.descriptorBindingUniformBufferUpdateAfterBind = VK_TRUE;
 		descriptorIndexingFeatures.descriptorBindingSampledImageUpdateAfterBind = VK_TRUE;
+		descriptorIndexingFeatures.pNext = &dynamicRenderingFeatures;
 
 		vk::PhysicalDeviceFeatures2 deviceFeatures{};
 		deviceFeatures.features.samplerAnisotropy = VK_TRUE;

@@ -46,21 +46,22 @@ namespace Daydream
 		ComPtr<ID3D11Texture2D> backBuffer;
 		swapchain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
 
-		Texture2DDesc textureDesc{};
+		TextureDesc textureDesc{};
 		textureDesc.width = desc.width;
 		textureDesc.height = desc.height;
 		textureDesc.mipLevels = 1;
 		textureDesc.sampleCount = 1;
 		textureDesc.format = desc.format;
 		textureDesc.textureUsage = TextureUsage::RenderTarget;
+		textureDesc.type = TextureType::Texture2D;
 
-		backBufferTexture = MakeShared<D3D11GPUTexture>(device, backBuffer.Get(), textureDesc);
+		backBufferTexture = MakeShared<D3D11GPUTexture>(device, textureDesc, backBuffer.Get());
 
 		TextureViewDesc viewDesc;
 		viewDesc.format = desc.format;
 		viewDesc.type = TextureViewType::RenderTarget;
 
-		backBufferRTV = MakeShared<D3D11TextureView>(this, backBufferTexture, viewDesc);
+		backBufferRTV = MakeShared<D3D11TextureView>(device, backBufferTexture, viewDesc);
 	}
 	D3D11Swapchain::~D3D11Swapchain()
 	{
@@ -91,21 +92,22 @@ namespace Daydream
 			ComPtr<ID3D11Texture2D> backBuffer;
 			swapchain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
 
-			Texture2DDesc textureDesc{};
+			TextureDesc textureDesc{};
 			textureDesc.width = desc.width;
 			textureDesc.height = desc.height;
 			textureDesc.mipLevels = 1;
 			textureDesc.sampleCount = 1;
 			textureDesc.format = desc.format;
 			textureDesc.textureUsage = TextureUsage::RenderTarget;
+			textureDesc.type = TextureType::Texture2D;
 
-			backBufferTexture = MakeShared<D3D11GPUTexture>(device, backBuffer.Get(), textureDesc);
+			backBufferTexture = MakeShared<D3D11GPUTexture>(device, textureDesc, backBuffer.Get());
 
 			TextureViewDesc viewDesc;
 			viewDesc.format = desc.format;
 			viewDesc.type = TextureViewType::RenderTarget;
 
-			backBufferRTV = MakeShared<D3D11TextureView>(this, backBufferTexture, viewDesc);
+			backBufferRTV = MakeShared<D3D11TextureView>(device, backBufferTexture, viewDesc);
 			isSwapchainResized = false;
 		}
 

@@ -57,23 +57,24 @@ namespace Daydream
 			commandLists[i] = MakeShared<D3D12RenderCommandList>(device);
 		}
 
-		RenderPassAttachmentDesc colorDesc;
-		colorDesc.format = _desc.format;
-		colorDesc.isSwapchain = true;
+		//RenderPassAttachmentDesc colorDesc;
+		//colorDesc.format = _desc.format;
+		//colorDesc.isSwapchain = true;
 
-		RenderPassDesc rpDesc{};
-		rpDesc.colorAttachments.push_back(colorDesc);
+		//RenderPassDesc rpDesc{};
+		//rpDesc.colorAttachments.push_back(colorDesc);
 
-		mainRenderPass = MakeShared<D3D12RenderPass>(device, rpDesc);
+		//mainRenderPass = MakeShared<D3D12RenderPass>(device, rpDesc);
 
-		framebuffers.resize(desc.imageCount);
-		for (UInt32 i = 0; i < desc.imageCount; i++)
-		{
-			ComPtr<ID3D12Resource> backBuffer;
-			swapchain->GetBuffer(i, IID_PPV_ARGS(backBuffer.GetAddressOf()));
-			framebuffers[i] = MakeShared<D3D12Framebuffer>(device, mainRenderPass.get(), this, backBuffer.Get());
-			d3d12Backbuffers.push_back(backBuffer);
-		}
+		//framebuffers.resize(desc.imageCount);
+		//for (UInt32 i = 0; i < desc.imageCount; i++)
+		//{
+		//	ComPtr<ID3D12Resource> backBuffer;
+		//	swapchain->GetBuffer(i, IID_PPV_ARGS(backBuffer.GetAddressOf()));
+		//	framebuffers[i] = MakeShared<D3D12Framebuffer>(device, mainRenderPass.get(), this, backBuffer.Get());
+		//	d3d12Backbuffers.push_back(backBuffer);
+		//}
+
 		frameIndex = swapchain->GetCurrentBackBufferIndex();
 
 		fenceValues.resize(_desc.imageCount);
@@ -113,19 +114,19 @@ namespace Daydream
 			WaitForGPU();
 			//이제 currentFenceValue까지 작업이 다 끝난 상태
 
-			d3d12Backbuffers.clear();
-			framebuffers.clear();
+			//d3d12Backbuffers.clear();
+			//framebuffers.clear();
 
-			swapchain->ResizeBuffers(desc.imageCount, desc.width, desc.height, format, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH | DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING);
+			//swapchain->ResizeBuffers(desc.imageCount, desc.width, desc.height, format, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH | DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING);
 
-			framebuffers.resize(desc.imageCount);
-			for (UInt32 i = 0; i < desc.imageCount; i++)
-			{
-				ComPtr<ID3D12Resource> backBuffer;
-				swapchain->GetBuffer(i, IID_PPV_ARGS(backBuffer.GetAddressOf()));
-				framebuffers[i] = MakeShared<D3D12Framebuffer>(device, mainRenderPass.get(), this, backBuffer.Get());
-				d3d12Backbuffers.push_back(backBuffer);
-			}
+			//framebuffers.resize(desc.imageCount);
+			//for (UInt32 i = 0; i < desc.imageCount; i++)
+			//{
+			//	ComPtr<ID3D12Resource> backBuffer;
+			//	swapchain->GetBuffer(i, IID_PPV_ARGS(backBuffer.GetAddressOf()));
+			//	framebuffers[i] = MakeShared<D3D12Framebuffer>(device, mainRenderPass.get(), this, backBuffer.Get());
+			//	d3d12Backbuffers.push_back(backBuffer);
+			//}
 
 			frameIndex = swapchain->GetCurrentBackBufferIndex();
 			for (UInt32 i = 0; i < desc.imageCount; i++)

@@ -7,7 +7,6 @@
 #include "D3D11TextureView.h"
 #include "D3D11TextureCube.h"
 #include "D3D11Buffer.h"
-#include "D3D11Framebuffer.h"
 #include "D3D11Utility.h"
 
 #include "Daydream/Graphics/Resources/Mesh.h"
@@ -50,8 +49,11 @@ namespace Daydream
 		for (const RenderingDesc& renderingDesc : _renderingInfo.colorAttachments)
 		{
 			ClearValue rtvClearValue = renderingDesc.clearValue;
-			D3D11TextureView* d3d11TextureView = Cast<D3D11TextureView*>(renderingDesc.view);
-			device->GetContext()->ClearRenderTargetView(d3d11TextureView->GetRTV(), &rtvClearValue.colorClearValue.color[0]);
+			Shared<D3D11TextureView> d3d11TextureView = SharedCast<D3D11TextureView>(renderingDesc.view);
+			if (renderingDesc.loadOp == AttachmentLoadOp::Clear)
+			{
+				device->GetContext()->ClearRenderTargetView(d3d11TextureView->GetRTV(), &rtvClearValue.colorClearValue.color[0]);
+			}
 			rtvs.push_back(d3d11TextureView->GetRTV());
 		}
 
@@ -59,8 +61,11 @@ namespace Daydream
 		if (_renderingInfo.depthAttachment.view != nullptr)
 		{
 			ClearValue dsvClearValue = _renderingInfo.depthAttachment.clearValue;
-			D3D11TextureView* d3d11TextureView = Cast<D3D11TextureView*>(_renderingInfo.depthAttachment);
-			device->GetContext()->ClearDepthStencilView(d3d11TextureView->GetDSV(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, dsvClearValue.depthClearValue, dsvClearValue.stencilClearValue);
+			D3D11TextureView* d3d11TextureView = Cast<D3D11TextureView*>(_renderingInfo.depthAttachment.view.get());
+			if (_renderingInfo.depthAttachment.loadOp == AttachmentLoadOp::Clear)
+			{
+				device->GetContext()->ClearDepthStencilView(d3d11TextureView->GetDSV(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, dsvClearValue.depthClearValue, dsvClearValue.stencilClearValue);
+			}
 		}
 		device->GetContext()->OMSetRenderTargets((UInt32)rtvs.size(), rtvs.data(), dsv);
 	}
@@ -89,84 +94,89 @@ namespace Daydream
 		device->GetContext()->IASetIndexBuffer(indexBuffer->GetID3D11Buffer(), DXGI_FORMAT_R32_UINT, offset);
 	}
 
-	void D3D11RenderContext::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
+	//void D3D11RenderContext::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
+	//{
+	//	RenderContext::SetTexture2D(_name, _texture);
+	//	const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
+	//	if (resourceInfo == nullptr) return;
+
+	//	//	DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX11, "Wrong API!");
+
+	//	Shared<D3D11Texture2D> d3d11Texture = static_pointer_cast<D3D11Texture2D>(_texture);
+	//	ID3D11ShaderResourceView* srv = d3d11Texture->GetSRV();
+	//	ID3D11SamplerState* sampler = d3d11Texture->GetSampler();
+	//	switch (resourceInfo->shaderType)
+	//	{
+	//	case Daydream::ShaderType::None:
+	//		DAYDREAM_CORE_ASSERT(false, "ERROR");
+	//		break;
+	//	case Daydream::ShaderType::Vertex:
+	//	{
+	//		device->GetContext()->VSSetShaderResources(resourceInfo->binding, 1, &srv);
+	//		device->GetContext()->VSSetSamplers(resourceInfo->binding, 1, &sampler);
+	//		break;
+	//	}
+	//	case Daydream::ShaderType::Hull:
+	//		break;
+	//	case Daydream::ShaderType::Domain:
+	//		break;
+	//	case Daydream::ShaderType::Geometry:
+	//		break;
+	//	case Daydream::ShaderType::Pixel:
+	//	{
+	//		device->GetContext()->PSSetShaderResources(resourceInfo->binding, 1, &srv);
+	//		device->GetContext()->PSSetSamplers(resourceInfo->binding, 1, &sampler);
+	//		break;
+	//	}
+	//	case Daydream::ShaderType::Compute:
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
+
+	//void D3D11RenderContext::SetTextureCube(const String& _name, Shared<TextureCube> _textureCube)
+	//{
+	//	const ShaderReflectionData* bindingInfo = activePipelineState->GetBindingInfo(_name);
+	//	if (bindingInfo == nullptr) return;
+	//	//DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX11, "Wrong API!");
+	//	Shared<D3D11TextureCube> d3d11Texture = static_pointer_cast<D3D11TextureCube>(_textureCube);
+	//	ID3D11ShaderResourceView* srv = d3d11Texture->GetSRV();
+	//	ID3D11SamplerState* sampler = d3d11Texture->GetSampler();
+	//	switch (bindingInfo->shaderType)
+	//	{
+	//	case Daydream::ShaderType::None:
+	//		DAYDREAM_CORE_ASSERT(false, "ERROR");
+	//		break;
+	//	case Daydream::ShaderType::Vertex:
+	//	{
+	//		device->GetContext()->VSSetShaderResources(bindingInfo->binding, 1, &srv);
+	//		device->GetContext()->VSSetSamplers(bindingInfo->binding, 1, &sampler);
+	//		break;
+	//	}
+	//	case Daydream::ShaderType::Hull:
+	//		break;
+	//	case Daydream::ShaderType::Domain:
+	//		break;
+	//	case Daydream::ShaderType::Geometry:
+	//		break;
+	//	case Daydream::ShaderType::Pixel:
+	//	{
+	//		device->GetContext()->PSSetShaderResources(bindingInfo->binding, 1, &srv);
+	//		device->GetContext()->PSSetSamplers(bindingInfo->binding, 1, &sampler);
+	//		break;
+	//	}
+	//	case Daydream::ShaderType::Compute:
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
+
+	void Daydream::D3D11RenderContext::BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _sampler)
 	{
-		RenderContext::SetTexture2D(_name, _texture);
-		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
-		if (resourceInfo == nullptr) return;
-
-		//	DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX11, "Wrong API!");
-
-		Shared<D3D11Texture2D> d3d11Texture = static_pointer_cast<D3D11Texture2D>(_texture);
-		ID3D11ShaderResourceView* srv = d3d11Texture->GetSRV();
-		ID3D11SamplerState* sampler = d3d11Texture->GetSampler();
-		switch (resourceInfo->shaderType)
-		{
-		case Daydream::ShaderType::None:
-			DAYDREAM_CORE_ASSERT(false, "ERROR");
-			break;
-		case Daydream::ShaderType::Vertex:
-		{
-			device->GetContext()->VSSetShaderResources(resourceInfo->binding, 1, &srv);
-			device->GetContext()->VSSetSamplers(resourceInfo->binding, 1, &sampler);
-			break;
-		}
-		case Daydream::ShaderType::Hull:
-			break;
-		case Daydream::ShaderType::Domain:
-			break;
-		case Daydream::ShaderType::Geometry:
-			break;
-		case Daydream::ShaderType::Pixel:
-		{
-			device->GetContext()->PSSetShaderResources(resourceInfo->binding, 1, &srv);
-			device->GetContext()->PSSetSamplers(resourceInfo->binding, 1, &sampler);
-			break;
-		}
-		case Daydream::ShaderType::Compute:
-			break;
-		default:
-			break;
-		}
 	}
 
-	void D3D11RenderContext::SetTextureCube(const String& _name, Shared<TextureCube> _textureCube)
-	{
-		const ShaderReflectionData* bindingInfo = activePipelineState->GetBindingInfo(_name);
-		if (bindingInfo == nullptr) return;
-		//DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX11, "Wrong API!");
-		Shared<D3D11TextureCube> d3d11Texture = static_pointer_cast<D3D11TextureCube>(_textureCube);
-		ID3D11ShaderResourceView* srv = d3d11Texture->GetSRV();
-		ID3D11SamplerState* sampler = d3d11Texture->GetSampler();
-		switch (bindingInfo->shaderType)
-		{
-		case Daydream::ShaderType::None:
-			DAYDREAM_CORE_ASSERT(false, "ERROR");
-			break;
-		case Daydream::ShaderType::Vertex:
-		{
-			device->GetContext()->VSSetShaderResources(bindingInfo->binding, 1, &srv);
-			device->GetContext()->VSSetSamplers(bindingInfo->binding, 1, &sampler);
-			break;
-		}
-		case Daydream::ShaderType::Hull:
-			break;
-		case Daydream::ShaderType::Domain:
-			break;
-		case Daydream::ShaderType::Geometry:
-			break;
-		case Daydream::ShaderType::Pixel:
-		{
-			device->GetContext()->PSSetShaderResources(bindingInfo->binding, 1, &srv);
-			device->GetContext()->PSSetSamplers(bindingInfo->binding, 1, &sampler);
-			break;
-		}
-		case Daydream::ShaderType::Compute:
-			break;
-		default:
-			break;
-		}
-	}
 	void D3D11RenderContext::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
 	{
 		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
@@ -200,31 +210,31 @@ namespace Daydream
 
 	void D3D11RenderContext::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
 	{
-		D3D11Texture2D* dst = Cast<D3D11Texture2D*>(_dst.get());
-		D3D11Texture2D* src = Cast<D3D11Texture2D*>(_src.get());
+		D3D11GPUTexture* dst = Cast<D3D11GPUTexture*>(_dst->GetGPUTexturePtr());
+		D3D11GPUTexture* src = Cast<D3D11GPUTexture*>(_src->GetGPUTexturePtr());
 
-		device->GetContext()->CopyResource(dst->GetID3D11Texture2D(), src->GetID3D11Texture2D());
+		device->GetContext()->CopyResource(dst->GetID3D11Resource(), src->GetID3D11Resource());
 	}
 	void D3D11RenderContext::CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel)
 	{
-		D3D11TextureCube* dst = Cast<D3D11TextureCube*>(_dstCubemap.get());
-		D3D11Texture2D* src = Cast<D3D11Texture2D*>(_srcTexture2D.get());
-		D3D11_TEXTURE2D_DESC cubeDesc;
-		dst->GetID3D11Texture2D()->GetDesc(&cubeDesc);
+		D3D11GPUTexture* dst = Cast<D3D11GPUTexture*>(_dstCubemap->GetGPUTexturePtr());
+		D3D11GPUTexture* src = Cast<D3D11GPUTexture*>(_srcTexture2D->GetGPUTexturePtr());
+
+
 
 		UINT dstSubresourceIndex = D3D11CalcSubresource(
 			_mipLevel,
 			_faceIndex,
-			cubeDesc.MipLevels
+			dst->GetDesc().mipLevels
 		);
 
 		UINT srcSubresourceIndex = 0;
 
 		device->GetContext()->CopySubresourceRegion(
-			dst->GetID3D11Texture2D(),           // 대상 리소스
+			dst->GetID3D11Resource(),           // 대상 리소스
 			dstSubresourceIndex,  // 대상 Subresource
 			0, 0, 0,              // 대상 좌표 (x, y, z)
-			src->GetID3D11Texture2D(),         // 원본 리소스
+			src->GetID3D11Resource(),         // 원본 리소스
 			srcSubresourceIndex,  // 원본 Subresource
 			nullptr               // 원본 영역 (nullptr은 전체를 의미)
 		);
@@ -260,16 +270,16 @@ namespace Daydream
 
 	void D3D11RenderContext::GenerateMips(Shared<Texture> _texture)
 	{
+		D3D11GPUTexture* texture = Cast<D3D11GPUTexture*>(_texture->GetGPUTexturePtr());
 		ID3D11ShaderResourceView* srv = nullptr;
-		switch (_texture->GetType())
-		{
-		case TextureType::Texture2D:
-			srv = Cast<D3D11Texture2D*>(_texture.get())->GetSRV();
-			break;
-		case TextureType::TextureCube:
-			srv = Cast<D3D11TextureCube*>(_texture.get())->GetSRV();
-			break;
-		}
+
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+		srvDesc.Format = GraphicsUtility::DirectX::ConvertToDXGIFormat(texture->GetFormat());
+		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Texture2D.MostDetailedMip = 0;
+		srvDesc.Texture2D.MipLevels = -1; // 전체 밉 체인
+
+		device->GetDevice()->CreateShaderResourceView(texture->GetID3D11Resource(), &srvDesc, &srv);
 
 		if (srv)
 		{

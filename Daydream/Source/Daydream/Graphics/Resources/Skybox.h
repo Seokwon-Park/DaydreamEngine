@@ -73,9 +73,9 @@ namespace Daydream
         //Shared<Framebuffer> irradianceFramebuffer;
         //Array<Shared<Framebuffer>> prefilterFramebuffers;
 
-        Shared<RenderPass> equirectangularRenderPass;
-        Shared<RenderPass> resizeRenderPass;
-        Shared<RenderPass> irradianceRenderPass;
+        //Shared<RenderPass> equirectangularRenderPass;
+        //Shared<RenderPass> resizeRenderPass;
+        //Shared<RenderPass> irradianceRenderPass;
 
         Shared<PipelineState> equirectangularPSO;
         Shared<PipelineState> irradiancePSO;
@@ -88,6 +88,7 @@ namespace Daydream
         Shared<Mesh> quadMesh;
 
         Shared<Texture2D> equirectangularTexture; // 2D->Cube 원본 텍스쳐
+        Shared<TextureView> equirectangularSRV ; // 2D->Cube 원본 텍스쳐뷰
         Shared<Texture2D> equirectangularDropTarget; // dummy(No Texture)
 
         Shared<Texture2D> resizeResultTexture;

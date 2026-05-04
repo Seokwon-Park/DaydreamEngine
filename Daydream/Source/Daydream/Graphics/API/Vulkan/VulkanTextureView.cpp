@@ -9,7 +9,7 @@ namespace Daydream
 		device = _device;
 
 		vk::ImageViewCreateInfo viewInfo{};
-		device->GetDevice().createImageViewUnique(viewInfo);
+		imageView = device->GetDevice().createImageViewUnique(viewInfo);
 	}
 }
 

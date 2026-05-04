@@ -51,55 +51,8 @@ namespace Daydream
 		GetD3D12ActiveCommandList()->DrawIndexedInstanced(_indexCount, 1, _startIndex, _baseVertex, 0);
 		//GetD3D12ActiveCommandList()->DrawInstanced(3, 1, 0, 0);
 	}
-	void D3D12RenderContext::BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer)
+	/*void D3D12RenderContext::BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer)
 	{
-		currentFramebuffer = Cast<D3D12Framebuffer*>(_framebuffer.get());
-		Shared<D3D12RenderPass> renderPass = SharedCast<D3D12RenderPass>(_renderPass);
-		if (!currentFramebuffer->IsSwapchainBuffer())
-		{
-			for (Shared<D3D12Texture2D> texture : currentFramebuffer->GetColorAttachments())
-			{
-				D3D12_RESOURCE_BARRIER barrier = {};
-				barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-				barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-				barrier.Transition.pResource = texture->GetID3D12Resource();
-				barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-				barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-				barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-				GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
-			}
-
-			if (currentFramebuffer->HasDepthAttachment())
-			{
-				auto depthStencilView = currentFramebuffer->GetDepthAttachment();
-				D3D12_RESOURCE_BARRIER barrier = {};
-				barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-				barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-				barrier.Transition.pResource = depthStencilView->GetID3D12Resource();
-				barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-				barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_DEPTH_READ;
-				barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_DEPTH_WRITE;
-				GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
-			}
-		}
-
-
-		const Array<D3D12_CPU_DESCRIPTOR_HANDLE>& rtHandles = currentFramebuffer->GetRenderTargetHandles();
-		for (auto rtHandle : rtHandles)
-		{
-			GetD3D12ActiveCommandList()->ClearRenderTargetView(rtHandle, _renderPass->GetClearColor().color, 0, nullptr);
-		}
-
-		if (currentFramebuffer->HasDepthAttachment())
-		{
-			auto depthHandle = currentFramebuffer->GetDepthStencilView();
-			GetD3D12ActiveCommandList()->ClearDepthStencilView(depthHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
-			GetD3D12ActiveCommandList()->OMSetRenderTargets((UInt32)rtHandles.size(), rtHandles.data(), false, &depthHandle);
-		}
-		else
-		{
-			GetD3D12ActiveCommandList()->OMSetRenderTargets((UInt32)rtHandles.size(), rtHandles.data(), false, nullptr);
-		}
 
 		SetViewport(0, 0, currentFramebuffer->GetWidth(), currentFramebuffer->GetHeight());
 	}
@@ -133,6 +86,58 @@ namespace Daydream
 				GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
 			}
 		}
+	}*/
+	void D3D12RenderContext::BeginRendering(const RenderingInfo& _renderingInfo)
+	{
+		//currentFramebuffer = Cast<D3D12Framebuffer*>(_framebuffer.get());
+		//Shared<D3D12RenderPass> renderPass = SharedCast<D3D12RenderPass>(_renderPass);
+		//if (!currentFramebuffer->IsSwapchainBuffer())
+		//{
+		//	for (Shared<D3D12Texture2D> texture : currentFramebuffer->GetColorAttachments())
+		//	{
+		//		D3D12_RESOURCE_BARRIER barrier = {};
+		//		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		//		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		//		barrier.Transition.pResource = texture->GetID3D12Resource();
+		//		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		//		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+		//		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+		//		GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
+		//	}
+
+		//	if (currentFramebuffer->HasDepthAttachment())
+		//	{
+		//		auto depthStencilView = currentFramebuffer->GetDepthAttachment();
+		//		D3D12_RESOURCE_BARRIER barrier = {};
+		//		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		//		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		//		barrier.Transition.pResource = depthStencilView->GetID3D12Resource();
+		//		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		//		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_DEPTH_READ;
+		//		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+		//		GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
+		//	}
+		//}
+
+
+		//const Array<D3D12_CPU_DESCRIPTOR_HANDLE> rtHandles;
+		//for (auto rtHandle : rtHandles)
+		//{
+		//	GetD3D12ActiveCommandList()->ClearRenderTargetView(rtHandle, _renderPass->GetClearColor().color, 0, nullptr);
+		//}
+
+		//if (currentFramebuffer->HasDepthAttachment())
+		//{
+		//	auto depthHandle = currentFramebuffer->GetDepthStencilView();
+		//	GetD3D12ActiveCommandList()->ClearDepthStencilView(depthHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
+		//	GetD3D12ActiveCommandList()->OMSetRenderTargets((UInt32)rtHandles.size(), rtHandles.data(), false, &depthHandle);
+		//}
+		//else
+		//{
+		//	GetD3D12ActiveCommandList()->OMSetRenderTargets((UInt32)rtHandles.size(), rtHandles.data(), false, nullptr);
+		//}
+
+
 	}
 	void D3D12RenderContext::BindPipelineState(Shared<PipelineState> _pipelineState)
 	{
@@ -165,40 +170,44 @@ namespace Daydream
 
 		GetD3D12ActiveCommandList()->IASetIndexBuffer(&indexBufferView);
 	}
-	void D3D12RenderContext::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
-	{
-		if (_texture == nullptr) return;
-		RenderContext::SetTexture2D(_name, _texture);
-		D3D12PipelineState* d3d12PipelineState = Cast<D3D12PipelineState*>(activePipelineState.get());
-		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
-		if (resourceInfo == nullptr) return;
-		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
-		Shared<D3D12Texture2D> d3d12Tex = SharedCast<D3D12Texture2D>(_texture);
-		GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex(_name), d3d12Tex->GetSRVGPUHandle());
-		String samplerName = _name + "Sampler";
-		const ShaderReflectionData* samplerInfo = activePipelineState->GetBindingInfo(samplerName);
-		if (samplerInfo)
-		{
-			GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex(samplerName), d3d12Tex->GetSamplerHandle());
-		}
-	}
-	void D3D12RenderContext::SetTextureCube(const String& _name, Shared<TextureCube> _textureCube)
-	{
-		if (_textureCube == nullptr) return;
-		D3D12PipelineState* d3d12PipelineState = Cast<D3D12PipelineState*>(activePipelineState.get());
-		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
-		if (resourceInfo == nullptr) return;
+	//void D3D12RenderContext::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
+	//{
+	//	if (_texture == nullptr) return;
+	//	RenderContext::SetTexture2D(_name, _texture);
+	//	D3D12PipelineState* d3d12PipelineState = Cast<D3D12PipelineState*>(activePipelineState.get());
+	//	const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
+	//	if (resourceInfo == nullptr) return;
+	//	DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
+	//	Shared<D3D12Texture2D> d3d12Tex = SharedCast<D3D12Texture2D>(_texture);
+	//	GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex(_name), d3d12Tex->GetSRVGPUHandle());
+	//	String samplerName = _name + "Sampler";
+	//	const ShaderReflectionData* samplerInfo = activePipelineState->GetBindingInfo(samplerName);
+	//	if (samplerInfo)
+	//	{
+	//		GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex(samplerName), d3d12Tex->GetSamplerHandle());
+	//	}
+	//}
+	//void D3D12RenderContext::SetTextureCube(const String& _name, Shared<TextureCube> _textureCube)
+	//{
+	//	if (_textureCube == nullptr) return;
+	//	D3D12PipelineState* d3d12PipelineState = Cast<D3D12PipelineState*>(activePipelineState.get());
+	//	const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
+	//	if (resourceInfo == nullptr) return;
 
-		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
-		Shared<D3D12TextureCube> d3d12Tex = SharedCast<D3D12TextureCube>(_textureCube);
-		GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex(_name), d3d12Tex->GetSRVGPUHandle());
-		String samplerName = _name + "Sampler";
-		const ShaderReflectionData* samplerInfo = activePipelineState->GetBindingInfo(_name);
-		if (samplerInfo)
-		{
-			GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex(samplerName), d3d12Tex->GetSamplerHandle());
-		}
+	void Daydream::D3D12RenderContext::BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _sampler)
+	{
 	}
+
+	//	DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
+	//	Shared<D3D12TextureCube> d3d12Tex = SharedCast<D3D12TextureCube>(_textureCube);
+	//	GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex(_name), d3d12Tex->GetSRVGPUHandle());
+	//	String samplerName = _name + "Sampler";
+	//	const ShaderReflectionData* samplerInfo = activePipelineState->GetBindingInfo(_name);
+	//	if (samplerInfo)
+	//	{
+	//		GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex(samplerName), d3d12Tex->GetSamplerHandle());
+	//	}
+	//}
 	void D3D12RenderContext::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
 	{
 		if (_buffer == nullptr) return;
@@ -230,8 +239,8 @@ namespace Daydream
 
 	void D3D12RenderContext::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
 	{
-		D3D12Texture2D* src = (D3D12Texture2D*)_src.get();
-		D3D12Texture2D* dst = (D3D12Texture2D*)_dst.get();
+		D3D12GPUTexture* src = Cast<D3D12GPUTexture*>(_src->GetGPUTexturePtr());
+		D3D12GPUTexture* dst = Cast<D3D12GPUTexture*>(_dst->GetGPUTexturePtr());
 
 		D3D12_RESOURCE_BARRIER barriers[2] = {};
 
@@ -269,8 +278,8 @@ namespace Daydream
 	}
 	void D3D12RenderContext::CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel)
 	{
-		D3D12TextureCube* dst = Cast<D3D12TextureCube*>(_dstCubemap.get());
-		D3D12Texture2D* src = Cast<D3D12Texture2D*>(_srcTexture2D.get());
+		D3D12GPUTexture* dst = Cast<D3D12GPUTexture*>(_dstCubemap->GetGPUTexturePtr());
+		D3D12GPUTexture* src = Cast<D3D12GPUTexture*>(_srcTexture2D->GetGPUTexturePtr());
 
 		D3D12_RESOURCE_BARRIER barriers[2] = {};
 
@@ -321,7 +330,7 @@ namespace Daydream
 
 	void D3D12RenderContext::GenerateMips(Shared<Texture> _texture)
 	{
-		D3D12TextureCube* d3d12Tex = Cast<D3D12TextureCube*>(_texture.get());
+		D3D12GPUTexture* d3d12Tex = Cast<D3D12GPUTexture*>(_texture->GetGPUTexturePtr());
 
 		UInt32 mipLevels = _texture->GetMipLevels();
 		auto resizePSO = ResourceManager::GetResource<PipelineState>("GenerateMipsPSO");
@@ -333,7 +342,7 @@ namespace Daydream
 		BindIndexBuffer(quadMesh->GetIndexBuffer());
 		GetD3D12ActiveCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex("TextureSampler"), d3d12Tex->GetSamplerHandle());
+		//GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex("TextureSampler"), d3d12Tex->GetSamplerHandle());
 
 		for (UInt32 mip = 1; mip < mipLevels; mip++)
 		{
@@ -372,16 +381,14 @@ namespace Daydream
 				barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 				GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
 
-				//device->TransitionResourceState(GetD3D12ActiveCommandList(), texture.Get(), GetCurrentState(), D3D12_RESOURCE_STATE_RENDER_TARGET);
-				//SetCurrentState(D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-				GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex("Texture"), d3d12Tex->GetMipSRVGPUHandle(mipLevels * face + mip - 1));
+				//GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex("Texture"), d3d12Tex->GetMipSRVGPUHandle(mipLevels * face + mip - 1));
 
 
 
 				//GetD3D12ActiveCommandList()->ClearRenderTargetView(d3d12Tex->GetRTVCPUHandle(index), color, 0, nullptr);
-				auto handle = d3d12Tex->GetRTVCPUHandle(currentIndex);
-				GetD3D12ActiveCommandList()->OMSetRenderTargets(1, &handle, false, nullptr);
+				/*auto handle = d3d12Tex->GetRTVCPUHandle(currentIndex);
+				GetD3D12ActiveCommandList()->OMSetRenderTargets(1, &handle, false, nullptr);*/
 
 
 				GetD3D12ActiveCommandList()->DrawIndexedInstanced(quadMesh->GetIndexCount(), 1, 0, 0, 0);
@@ -389,10 +396,6 @@ namespace Daydream
 				barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 				barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 				GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
-
-				//resizeRenderPass->End();
-				//device->TransitionResourceState(GetD3D12ActiveCommandList(), texture.Get(), GetCurrentState(), D3D12_RESOURCE_STATE_COMMON);
-				//SetCurrentState(D3D12_RESOURCE_STATE_COMMON);
 			}
 		}
 	}
@@ -416,7 +419,7 @@ namespace Daydream
 		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 		barrier.Transition.StateBefore = GraphicsUtility::DirectX12::ConvertToD3D12ResourceStates(_beforeState);
 		barrier.Transition.StateAfter = GraphicsUtility::DirectX12::ConvertToD3D12ResourceStates(_afterState);
-		
+
 		GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
 	}
 

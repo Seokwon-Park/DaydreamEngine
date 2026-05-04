@@ -33,6 +33,8 @@ namespace Daydream
 
 		sampler = ResourceManager::GetResource<Sampler>("LinearRepeat");
 
+		RenderingInfo renderingInfo{};
+
 		//auto colorTex = Texture2D::Create(1920, 1080, RenderFormat::RGBA8);
 		//auto depthTex = Texture2D::Create(1920, 1080, RenderFormat::Depth24Stencil8);
 
@@ -166,14 +168,15 @@ namespace Daydream
 		UInt32 width;
 		UInt32 height;
 		RenderGraphResourceHandle depthResource = renderGraph.AddResource("Depth", desc);
-
 		RenderGraphResourceHandle gBufferResource = renderGraph.AddResource("Position", desc);
 		RenderGraphResourceHandle maskResource = renderGraph.AddResource("Mask", desc);
 		RenderGraphResourceHandle finalResource = renderGraph.AddResource("Final", desc);
 
 		RenderGraphPassHandle depthPass = renderGraph.AddPass("DepthPass", [this]()
 			{
-				Renderer::BeginRenderPass(depthRenderPass, depthFramebuffer);
+
+
+				//Renderer::BeginRenderPass(depthRenderPass, depthFramebuffer);
 				Renderer::BindPipelineState(depthPSO);
 				if (activeScene->GetLightComponent())
 				{
@@ -195,14 +198,14 @@ namespace Daydream
 						}
 					}
 				}
-				Renderer::EndRenderPass(depthRenderPass);
+				//Renderer::EndRenderPass(depthRenderPass);
 			});
 		renderGraph.Write(depthPass, depthResource);
 
 		RenderGraphPassHandle gBufferPass = renderGraph.AddPass("GBufferPass", [this]()
 			{
 				//Renderer::Submit(squareIB->GetCount());
-				Renderer::BeginRenderPass(gBufferRenderPass, gBufferFramebuffer);
+				//Renderer::BeginRenderPass(gBufferRenderPass, gBufferFramebuffer);
 				Renderer::BindPipelineState(gBufferPSO);
 				Renderer::SetConstantBuffer("Camera", editorCamera->GetViewProjectionConstantBuffer());
 				for (const auto entityHandle : activeScene->GetAllEntities())
@@ -221,7 +224,7 @@ namespace Daydream
 						Renderer::DrawIndexed(mesh->GetIndexCount());
 					}
 				}
-				Renderer::EndRenderPass(gBufferRenderPass);
+				//Renderer::EndRenderPass(gBufferRenderPass);
 			});
 
 		renderGraph.Read(gBufferPass, depthResource);
@@ -231,7 +234,7 @@ namespace Daydream
 			{
 				GameEntity* selectedEntity = sceneHierarchyPanel->GetSelectedEntity(); // 선택된 객체 가져오기
 
-				Renderer::BeginRenderPass(maskRenderPass, maskFramebuffer);
+				//Renderer::BeginRenderPass(maskRenderPass, maskFramebuffer);
 				if (selectedEntity != nullptr)
 				{
 					MeshRendererComponent* meshRenderer = selectedEntity->GetComponent<MeshRendererComponent>();
@@ -249,14 +252,14 @@ namespace Daydream
 						}
 					}
 				}
-				Renderer::EndRenderPass(maskRenderPass);
+				//Renderer::EndRenderPass(maskRenderPass);
 			});
 
 		renderGraph.Read(maskPass, depthResource);
 		renderGraph.Write(maskPass, maskResource);
 		RenderGraphPassHandle lightingPass = renderGraph.AddPass("DeferredLightingPass", [this]()
 			{
-				Renderer::BeginRenderPass(renderPass, viewportFramebuffer);
+				//Renderer::BeginRenderPass(renderPass, viewportFramebuffer);
 
 				Renderer::BindPipelineState(deferredLightingPSO);
 				//Renderer::SetTextureView("PositionTexture", gBufferFramebuffer->GetColorAttachmentTexture(0));
@@ -269,8 +272,8 @@ namespace Daydream
 				//Renderer::SetTextureView("DepthTexture", depthFramebuffer->GetDepthAttachmentTexture());
 				Renderer::SetConstantBuffer("Lights", activeScene->GetLightConstantBuffer());
 				Renderer::SetConstantBuffer("EditorData", entityBuffer);
-				Renderer::SetTextureCube("IrradianceTexture", Renderer::GetSkybox()->GetIrradianceTexture());
-				Renderer::SetTextureCube("Prefilter", Renderer::GetSkybox()->GetPrefilterTexture());
+				//Renderer::SetTextureCube("IrradianceTexture", Renderer::GetSkybox()->GetIrradianceTexture());
+				//Renderer::SetTextureCube("Prefilter", Renderer::GetSkybox()->GetPrefilterTexture());
 				//deferredLightingMaterial->Bind();
 				Renderer::BindMesh(ResourceManager::GetResource<Mesh>("Quad"));
 				Renderer::DrawIndexed(ResourceManager::GetResource<Mesh>("Quad")->GetIndexCount());
@@ -283,10 +286,10 @@ namespace Daydream
 					Renderer::BindPipelineState(skyboxPipeline);
 					Renderer::BindMesh(cubeMesh);
 					Renderer::SetConstantBuffer("Camera", viewProjMat);
-					Renderer::SetTextureCube("TextureCubemap", activeScene->GetSkybox()->GetSkyboxTexture());
+					//Renderer::SetTextureCube("TextureCubemap", activeScene->GetSkybox()->GetSkyboxTexture());
 					Renderer::DrawIndexed(cubeMesh->GetIndexCount());
 				}
-				Renderer::EndRenderPass(renderPass);
+				//Renderer::EndRenderPass(renderPass);
 			});
 
 		renderGraph.Read(lightingPass, depthResource);
@@ -538,14 +541,14 @@ namespace Daydream
 		//static bool isResizing = true;
 		ImVec2 CurWindowSize = ImGui::GetMainViewport()->Size;
 		bool isWindowResized = mainWindowSize.x != ImGui::GetMainViewport()->Size.x || mainWindowSize.y != ImGui::GetMainViewport()->Size.y;
-		bool isViewportResized = viewportFramebuffer->GetWidth() != ImGuiViewportSize.x || viewportFramebuffer->GetHeight() != ImGuiViewportSize.y;
+		//bool isViewportResized = viewportFramebuffer->GetWidth() != ImGuiViewportSize.x || viewportFramebuffer->GetHeight() != ImGuiViewportSize.y;
 		auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
 		auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
 		auto viewportOffset = ImGui::GetWindowPos(); // Includes tab bar(height 21)
 		viewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
 		viewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
 		if (currentActive) return; // 활성화 상태면(크기를 아직 드래그하고 있으면) 크기조절 X
-		if (isViewportResized) // 윈도우 크기가 저장된 값과 다르거나 Imgui 윈도우 크기가 framebuffer크기와 다르면 리사이즈 된거임
+		//if (isViewportResized) // 윈도우 크기가 저장된 값과 다르거나 Imgui 윈도우 크기가 framebuffer크기와 다르면 리사이즈 된거임
 		{
 			// 최종 크기로 카메라 및 프레임버퍼 업데이트
 			// 이 시점에는 이미 currentContentRegionSize가 최종 크기
@@ -558,9 +561,9 @@ namespace Daydream
 				//Renderer::BeginSwapchainRenderPass(Renderer::GetCurrentWindow());
 
 				//크기가 달라졌으면 렌더러에 프레임버퍼 크기를 변경해달라고 요청함
-				Renderer::RequestResizeFramebuffer(viewportFramebuffer, static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
-				Renderer::RequestResizeFramebuffer(gBufferFramebuffer, static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
-				Renderer::RequestResizeFramebuffer(maskFramebuffer, static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
+				//Renderer::RequestResizeFramebuffer(viewportFramebuffer, static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
+				//Renderer::RequestResizeFramebuffer(gBufferFramebuffer, static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
+				//Renderer::RequestResizeFramebuffer(maskFramebuffer, static_cast<UInt32>(ImGuiViewportSize.x), static_cast<UInt32>(ImGuiViewportSize.y));
 				// 카메라의 뷰포트 크기 업데이트
 				// camera->SetViewportSize(currentContentRegionSize.x, currentContentRegionSize.y);
 
@@ -598,12 +601,12 @@ namespace Daydream
 
 	void EditorLayer::OnDetach()
 	{
-		viewportPanel = nullptr;
-		propertyPanel = nullptr;
-		sceneHierarchyPanel = nullptr;
-		assetBrowserPanel = nullptr;
-		skyboxPanel = nullptr;
-		viewportFramebuffer = nullptr;
+		//viewportPanel = nullptr;
+		//propertyPanel = nullptr;
+		//sceneHierarchyPanel = nullptr;
+		//assetBrowserPanel = nullptr;
+		//skyboxPanel = nullptr;
+		//viewportFramebuffer = nullptr;
 	}
 
 	void EditorLayer::OnEvent(Event& _event)

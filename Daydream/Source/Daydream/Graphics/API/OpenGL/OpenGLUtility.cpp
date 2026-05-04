@@ -42,6 +42,24 @@ namespace Daydream::GraphicsUtility::OpenGL
 		return GL_NONE;
 	}
 
+	GLenum ConvertToOpenGLTextureTarget(TextureType _type)
+	{
+		switch (_type)
+		{
+		case TextureType::Unknown:
+		case TextureType::Texture1D: return GL_TEXTURE_1D;
+		case TextureType::Texture1DArray: return  GL_TEXTURE_1D_ARRAY;
+		case TextureType::Texture2D:return  GL_TEXTURE_2D;
+		case TextureType::Texture2DArray:return  GL_TEXTURE_2D_ARRAY;
+		case TextureType::Texture2DMultisample:return  GL_TEXTURE_2D_MULTISAMPLE;
+		case TextureType::TextureCube:return  GL_TEXTURE_CUBE_MAP;
+		case TextureType::TextureCubeArray:return  GL_TEXTURE_CUBE_MAP_ARRAY;
+		case TextureType::Texture3D:return  GL_TEXTURE_3D;
+		default:
+			break;
+		}
+	}
+
 	GLenum ConvertToShaderStageBit(ShaderType _type)
 	{
 		switch (_type)

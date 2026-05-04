@@ -1,6 +1,7 @@
 #pragma once
 #include "Daydream/Enum/RendererEnums.h"
-#include "Daydream/Graphics/Resources/Framebuffer.h"
+#include "Daydream/Graphics/Resources/Texture/Texture2D.h"
+#include "Daydream/Graphics/Resources/Texture/TextureView.h"
 #include "Daydream/Graphics/Core/RenderCommandList.h"
 
 namespace Daydream
@@ -31,9 +32,7 @@ namespace Daydream
 		virtual void EndFrame() = 0;
 
 		virtual Shared<TextureView> GetCurrentRenderTargetView() const = 0;
-		virtual Shared<Framebuffer> GetCurrentFramebuffer() const = 0;
 		virtual Shared<RenderCommandList> GetCurrentCommandList() const = 0;
-		inline virtual Shared<RenderPass> GetRenderPass() const { return mainRenderPass; }
 
 		inline const SwapchainDesc& GetDesc() { return desc; };
 		void ResizeSwapchain(UInt32 _width, UInt32 _height);
@@ -43,7 +42,6 @@ namespace Daydream
 		bool isSwapchainResized = false;
 
 		SwapchainDesc desc;
-		Shared<RenderPass> mainRenderPass;
 		Array<Texture2D> swapchainBackBuffers;
 	};
 }

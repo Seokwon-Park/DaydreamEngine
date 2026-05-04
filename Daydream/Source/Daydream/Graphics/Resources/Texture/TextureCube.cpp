@@ -71,7 +71,7 @@ namespace Daydream
 
 	TextureCube::~TextureCube()
 	{
-		textures.clear();
+		//textures.clear();
 	}
 
 	//void TextureCube::Update(UInt32 _faceIndex, Shared<Texture2D> _texture)

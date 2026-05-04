@@ -141,36 +141,63 @@ namespace Daydream
 			});
 	}
 
-	void Renderer::BeginRenderPass(const Shared<RenderPass>& _renderPass, const Shared<Framebuffer>& _framebuffer)
+	void Renderer::BeginRendering(const RenderingInfo& _renderingInfo)
 	{
-		EnqueueCommand([_renderPass, _framebuffer]()
+		EnqueueCommand([_renderingInfo]()
 			{
-				renderContext->BeginRenderPass(_renderPass, _framebuffer);
-			});
-	}
-	void Renderer::EndRenderPass(const Shared<RenderPass>& _renderPass)
-	{
-		EnqueueCommand([_renderPass]()
-			{
-				renderContext->EndRenderPass(_renderPass);
+				renderContext->BeginRendering(_renderingInfo);
 			});
 	}
 
-	void Renderer::BeginSwapchainRenderPass(Swapchain* _swapchain)
+	void Renderer::EndRendering(const RenderingInfo& _renderingInfo)
+	{
+	}
+
+	void Renderer::BeginRendering(Swapchain* _swapchain)
 	{
 		EnqueueCommand([_swapchain]()
 			{
-				renderContext->BeginRenderPass(_swapchain->GetRenderPass(), _swapchain->GetCurrentFramebuffer());
+				RenderingDesc desc;
+				desc.view = _swapchain->GetCurrentRenderTargetView();
+				desc.clearValue.colorClearValue = Color::Blue;
+
+				RenderingInfo renderingInfo;
+				renderingInfo.colorAttachments.push_back(desc);
+
+				renderContext->BeginRendering(renderingInfo);
 			});
 	}
 
-	void Renderer::EndSwapchainRenderPass(Swapchain* _swapchain)
-	{
-		EnqueueCommand([_swapchain]()
-			{
-				renderContext->EndRenderPass(_swapchain->GetRenderPass());
-			});
-	}
+	//void Renderer::BeginRenderPass(const Shared<RenderPass>& _renderPass, const Shared<Framebuffer>& _framebuffer)
+	//{
+	//	EnqueueCommand([_renderPass, _framebuffer]()
+	//		{
+	//			renderContext->BeginRenderPass(_renderPass, _framebuffer);
+	//		});
+	//}
+	//void Renderer::EndRenderPass(const Shared<RenderPass>& _renderPass)
+	//{
+	//	EnqueueCommand([_renderPass]()
+	//		{
+	//			renderContext->EndRenderPass(_renderPass);
+	//		});
+	//}
+
+	//void Renderer::BeginSwapchainRenderPass(Swapchain* _swapchain)
+	//{
+	//	EnqueueCommand([_swapchain]()
+	//		{
+	//			renderContext->BeginRenderPass(_swapchain->GetRenderPass(), _swapchain->GetCurrentFramebuffer());
+	//		});
+	//}
+
+	//void Renderer::EndSwapchainRenderPass(Swapchain* _swapchain)
+	//{
+	//	EnqueueCommand([_swapchain]()
+	//		{
+	//			renderContext->EndRenderPass(_swapchain->GetRenderPass());
+	//		});
+	//}
 
 	void Renderer::BindPipelineState(Shared<PipelineState> _pipelineState)
 	{
@@ -182,25 +209,25 @@ namespace Daydream
 
 
 
-	void Renderer::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
+	//void Renderer::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
+	//{
+	//	EnqueueCommand([_name, _texture]()
+	//		{
+	//			renderContext->SetTexture2D(_name, _texture);
+	//		});
+	//}
+	//void Renderer::SetTextureCube(const String& _name, Shared<TextureCube> _textureCube)
+	//{
+	//	EnqueueCommand([_name, _textureCube]()
+	//		{
+	//			renderContext->SetTextureCube(_name, _textureCube);
+	//		});
+	//}
+	void Renderer::SetTextureView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _samplerState)
 	{
-		EnqueueCommand([_name, _texture]()
+		EnqueueCommand([_name, _textureView, _samplerState]()
 			{
-				renderContext->SetTexture2D(_name, _texture);
-			});
-	}
-	void Renderer::SetTextureCube(const String& _name, Shared<TextureCube> _textureCube)
-	{
-		EnqueueCommand([_name, _textureCube]()
-			{
-				renderContext->SetTextureCube(_name, _textureCube);
-			});
-	}
-	void Daydream::Renderer::SetTextureView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _saemplerState)
-	{
-		EnqueueCommand([_name, _textureView]()
-			{
-				renderContext->SetTextureView(_name, _textureView);
+				renderContext->BindShaderResourceView(_name, _textureView, _samplerState);
 			});
 	}
 
@@ -232,7 +259,7 @@ namespace Daydream
 					{
 						_material->LoadMaterialAsset(name);
 					}
-					renderContext->SetTexture2D(name, texture.cache);
+					//renderContext->SetTexture2D(name, texture.cache);
 				}
 			});
 	}
@@ -251,7 +278,7 @@ namespace Daydream
 			{
 				EnqueueCommand([_framebuffer, _width, _height]()
 					{
-						_framebuffer->Recreate(_width, _height);
+						//_framebuffer->Recreate(_width, _height);
 						DAYDREAM_RENDERER_INFO("Framebuffer is Recreated Width : {}, Height {}", _width, _height);
 					}
 				);

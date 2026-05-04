@@ -5,7 +5,6 @@
 #include "OpenGLTextureCube.h"
 #include "OpenGLSampler.h"
 #include "OpenGLSwapchain.h"
-#include "OpenGLRenderPass.h"
 #include "OpenGLFramebuffer.h"
 #include "OpenGLRenderDevice.h"
 #include "OpenGLRenderContext.h"
@@ -72,6 +71,11 @@ namespace Daydream
 		return MakeShared<OpenGLGPUTexture>(_desc);
 	}
 
+	Shared<TextureView> OpenGLRenderDevice::CreateTextureView(Shared<Texture> _texture, const TextureViewDesc& _desc)
+	{
+		return Shared<TextureView>();
+	}
+
 	//Shared<VertexBuffer> OpenGLRenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)
 	//{
 	//	BufferDesc desc{};
@@ -105,15 +109,15 @@ namespace Daydream
 		return MakeShared<OpenGLConstantBuffer>(_size);
 	}*/
 
-	Shared<RenderPass> OpenGLRenderDevice::CreateRenderPass(const RenderPassDesc& _desc)
-	{
-		return MakeShared<OpenGLRenderPass>(_desc);
-	}
+	//Shared<RenderPass> OpenGLRenderDevice::CreateRenderPass(const RenderPassDesc& _desc)
+	//{
+	//	return MakeShared<OpenGLRenderPass>(_desc);
+	//}
 
-	Shared<Framebuffer> OpenGLRenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc)
-	{
-		return _renderPass->CreateFramebuffer(_desc);
-	}
+	//Shared<Framebuffer> OpenGLRenderDevice::CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc)
+	//{
+	//	return _renderPass->CreateFramebuffer(_desc);
+	//}
 
 	Shared<PipelineState> OpenGLRenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)
 	{

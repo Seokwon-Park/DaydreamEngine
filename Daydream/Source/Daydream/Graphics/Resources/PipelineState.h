@@ -38,8 +38,10 @@ namespace Daydream
 		//BlendDesc blendState;
 		//DepthStencilDesc depthStencilState;
 		Array<RenderFormat> renderTargetFormats; // RTV 포맷들
-		//GraphicsFormat depthStencilFormat = GraphicsFormat::Unknown; // DSV 포맷
+		RenderFormat depthStencilFormat = RenderFormat::UNKNOWN; // DSV 포맷
+
 		UInt32 sampleCount = 1;
+		//GraphicsFormat depthStencilFormat = GraphicsFormat::Unknown; // DSV 포맷
 		PrimitiveTopologyType topologyType = PrimitiveTopologyType::TriangleList;
 	};
 

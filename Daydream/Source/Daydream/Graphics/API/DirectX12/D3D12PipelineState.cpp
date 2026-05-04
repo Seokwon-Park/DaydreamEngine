@@ -3,7 +3,6 @@
 
 #include "D3D12Utility.h"
 #include "D3D12Shader.h"
-#include "D3D12RenderPass.h"
 
 namespace Daydream
 {
@@ -156,37 +155,37 @@ namespace Daydream
 		sampleDesc.Count = _desc.sampleCount;
 		sampleDesc.Quality = 0;
 
-		auto rpDesc = _desc.renderPass->GetDesc();
+		/*auto rpDesc = _desc.renderPass->GetDesc();*/
 		
-		D3D12_GRAPHICS_PIPELINE_STATE_DESC desc{};
-		desc.pRootSignature = rootSignature.Get();
-		desc.VS = static_cast<D3D12Shader*>(shaderGroup->GetShader(ShaderType::Vertex).get())->GetShaderBytecode();
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineStateDesc{};
+		pipelineStateDesc.pRootSignature = rootSignature.Get();
+		pipelineStateDesc.VS = static_cast<D3D12Shader*>(shaderGroup->GetShader(ShaderType::Vertex).get())->GetShaderBytecode();
 		auto pixelShader = shaderGroup->GetShader(ShaderType::Pixel);
 		if (pixelShader)
 		{
 			// PS가 있으면 바이트코드 설정
-			desc.PS = static_cast<D3D12Shader*>(pixelShader.get())->GetShaderBytecode();
+			pipelineStateDesc.PS = static_cast<D3D12Shader*>(pixelShader.get())->GetShaderBytecode();
 		}
 		else
 		{
 			// PS가 없으면 (Depth Only 등) { nullptr, 0 } 으로 설정
-			desc.PS = { nullptr, 0 };
+			pipelineStateDesc.PS = { nullptr, 0 };
 		}
 		//desc.PS = static_cast<D3D12Shader*>(shaderGroup->GetShader(ShaderType::Pixel).get())->GetShaderBytecode();
-		desc.RasterizerState = rasterizerDesc;
-		desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-		desc.NumRenderTargets = (UInt32)rpDesc.colorAttachments.size();
-		desc.SampleDesc = sampleDesc;
-		desc.InputLayout.NumElements = static_cast<UInt32>(inputLayoutDesc.size());
-		desc.InputLayout.pInputElementDescs = inputLayoutDesc.data();
-		for (int i = 0; i < rpDesc.colorAttachments.size(); i++)
+		pipelineStateDesc.RasterizerState = rasterizerDesc;
+		pipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+		pipelineStateDesc.NumRenderTargets = (UInt32)desc.renderTargetFormats.size();
+		pipelineStateDesc.SampleDesc = sampleDesc;
+		pipelineStateDesc.InputLayout.NumElements = static_cast<UInt32>(inputLayoutDesc.size());
+		pipelineStateDesc.InputLayout.pInputElementDescs = inputLayoutDesc.data();
+		for (UInt64 i = 0; i < desc.renderTargetFormats.size(); i++)
 		{
-			desc.RTVFormats[i] = GraphicsUtility::DirectX::ConvertToDXGIFormat(rpDesc.colorAttachments[i].format);
+			pipelineStateDesc.RTVFormats[i] = GraphicsUtility::DirectX::ConvertToDXGIFormat(desc.renderTargetFormats[i]);
 		}
-		desc.SampleMask = UINT_MAX;
+		pipelineStateDesc.SampleMask = UINT_MAX;
 
-		desc.BlendState.AlphaToCoverageEnable = FALSE;
-		desc.BlendState.IndependentBlendEnable = FALSE;
+		pipelineStateDesc.BlendState.AlphaToCoverageEnable = FALSE;
+		pipelineStateDesc.BlendState.IndependentBlendEnable = FALSE;
 		const D3D12_RENDER_TARGET_BLEND_DESC defaultRenderTargetBlendDesc = {
 			FALSE,FALSE,
 			D3D12_BLEND_ONE, D3D12_BLEND_ZERO, D3D12_BLEND_OP_ADD,
@@ -195,15 +194,15 @@ namespace Daydream
 			D3D12_COLOR_WRITE_ENABLE_ALL,
 		};
 		for (UINT i = 0; i < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; ++i)
-			desc.BlendState.RenderTarget[i] = defaultRenderTargetBlendDesc;
+			pipelineStateDesc.BlendState.RenderTarget[i] = defaultRenderTargetBlendDesc;
 
-		desc.DSVFormat = _desc.renderPass->HasDepthStencil()?DXGI_FORMAT_D24_UNORM_S8_UINT: DXGI_FORMAT_UNKNOWN; // 실제 포맷과 맞춰야 함
+		pipelineStateDesc.DSVFormat = GraphicsUtility::DirectX::ConvertToDXGIFormat(desc.depthStencilFormat); 
 		D3D12_DEPTH_STENCIL_DESC dsDesc{};
 		// 깊이/스텐실 상태 설정 (d3dx12 없이 직접 - 깊이 테스트 비활성화)
-		dsDesc.DepthEnable = _desc.renderPass->HasDepthStencil();
+		dsDesc.DepthEnable = pipelineStateDesc.DSVFormat != DXGI_FORMAT_UNKNOWN;
 		dsDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 		dsDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS; // 또는 적절한 함수
-		dsDesc.StencilEnable = _desc.renderPass->HasDepthStencil(); // 스텐실 테스트 끔
+		dsDesc.StencilEnable = pipelineStateDesc.DSVFormat != DXGI_FORMAT_UNKNOWN; // 스텐실 테스트 끔
 		dsDesc.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;   // 0xFF (모든 비트 읽기)
 		dsDesc.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK; // 0xFF (모든 비트 쓰기)
 
@@ -219,12 +218,12 @@ namespace Daydream
 		dsDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
 		dsDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 
-		desc.DepthStencilState = dsDesc;
+		pipelineStateDesc.DepthStencilState = dsDesc;
 		//// 아래 값들은 DepthEnable=FALSE 이므로 무시됨
 		//desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 		//desc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_NEVER;
 
-		hr = device->GetDevice()->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(pipeline.GetAddressOf()));
+		hr = device->GetDevice()->CreateGraphicsPipelineState(&pipelineStateDesc, IID_PPV_ARGS(pipeline.GetAddressOf()));
 		if (FAILED(hr))
 		{
 			// 에러 코드 출력

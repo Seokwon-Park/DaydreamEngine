@@ -60,37 +60,37 @@ namespace Daydream
 			}
 		}
 
-		for (int i = 0; i < 6; i++)
-		{
-			ImGui::Text(faceLabels[i]);
-			if (skybox->GetSkyboxTexture() != nullptr)
-			{
-				ImGui::Image(skybox->GetSkyboxTexture()->GetImGuiHandle(i), ImVec2{ 100,100 });
-				if (ImGui::BeginDragDropTarget())
-				{
-					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(AssetManager::AssetTypeToString(AssetType::Texture2D).c_str()))
-					{
-						AssetHandle* pHandle = (AssetHandle*)payload->Data;
-						AssetHandle handle = *pHandle;
-						auto texture = AssetManager::GetAsset<Texture2D>(handle);
+		//for (int i = 0; i < 6; i++)
+		//{
+		//	ImGui::Text(faceLabels[i]);
+		//	if (skybox->GetSkyboxTexture() != nullptr)
+		//	{
+		//		ImGui::Image(skybox->GetSkyboxTexture()->GetImGuiHandle(i), ImVec2{ 100,100 });
+		//		if (ImGui::BeginDragDropTarget())
+		//		{
+		//			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(AssetManager::AssetTypeToString(AssetType::Texture2D).c_str()))
+		//			{
+		//				AssetHandle* pHandle = (AssetHandle*)payload->Data;
+		//				AssetHandle handle = *pHandle;
+		//				auto texture = AssetManager::GetAsset<Texture2D>(handle);
 
-						skybox->UpdateSkyboxFace(i, texture);
-					}
-					ImGui::EndDragDropTarget();
-				}
-				ImGui::SameLine();
-				if (skybox->GetIrradianceTexture() != nullptr)
-				{
-					ImGui::Image(skybox->GetIrradianceTexture()->GetImGuiHandle(i), ImVec2{ 100,100 });
-				}
-				ImGui::SameLine();
-				if (skybox->GetPrefilterTexture() != nullptr)
-				{
-					ImGui::Image(skybox->GetPrefilterTexture()->GetImGuiHandle(i), ImVec2{ 100,100 });
-				}
+		//				skybox->UpdateSkyboxFace(i, texture);
+		//			}
+		//			ImGui::EndDragDropTarget();
+		//		}
+		//		ImGui::SameLine();
+		//		if (skybox->GetIrradianceTexture() != nullptr)
+		//		{
+		//			ImGui::Image(skybox->GetIrradianceTexture()->GetImGuiHandle(i), ImVec2{ 100,100 });
+		//		}
+		//		ImGui::SameLine();
+		//		if (skybox->GetPrefilterTexture() != nullptr)
+		//		{
+		//			ImGui::Image(skybox->GetPrefilterTexture()->GetImGuiHandle(i), ImVec2{ 100,100 });
+		//		}
 
-			}
-		}
+		//	}
+		//}
 		//UI::DrawMaterialController("SkyboxTextures", skyboxMaterial.get());
 
 		ImGui::Text("BRDF");
