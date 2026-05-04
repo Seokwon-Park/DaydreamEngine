@@ -4,14 +4,22 @@
 
 namespace Daydream
 {
+	struct RenderArea
+	{
+		Int32 x = 0;
+		Int32 y = 0;
+		UInt32 width = 0;
+		UInt32 height = 0;
+	};
+
 	struct ClearValue
 	{
 		Color colorClearValue{};
 		Float32 depthClearValue{};
 		UInt8 stencilClearValue{};
-	}; 
+	};
 
-	struct RenderingDesc
+	struct AttachmentDesc
 	{
 		Shared<TextureView> view; // 여기에 포맷이 이미 내장되어 있음
 		AttachmentLoadOp  loadOp = AttachmentLoadOp::Clear;
@@ -21,8 +29,10 @@ namespace Daydream
 
 	struct RenderingInfo
 	{
-		Array<RenderingDesc> colorAttachments;
-		RenderingDesc depthAttachment;
+		RenderArea renderArea;
+
+		Array<AttachmentDesc> colorAttachments;
+		AttachmentDesc depthAttachment;
 	};
 
 

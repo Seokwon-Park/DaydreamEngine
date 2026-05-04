@@ -60,7 +60,7 @@ namespace Daydream
 	{
 		skybox = MakeUnique<Skybox>();
 		skybox->CreateResources();
-		EnqueuePreFrameCommand([]() {skybox->Generate(); });
+		EnqueuePreFrameCommand([]() {skybox->GenerateDefault(); });
 	}
 
 	void Renderer::Shutdown()
@@ -151,13 +151,17 @@ namespace Daydream
 
 	void Renderer::EndRendering(const RenderingInfo& _renderingInfo)
 	{
+		EnqueueCommand([_renderingInfo]()
+			{
+				renderContext->EndRendering(_renderingInfo);
+			});
 	}
 
 	void Renderer::BeginRendering(Swapchain* _swapchain)
 	{
 		EnqueueCommand([_swapchain]()
 			{
-				RenderingDesc desc;
+				AttachmentDesc desc;
 				desc.view = _swapchain->GetCurrentRenderTargetView();
 				desc.clearValue.colorClearValue = Color::Blue;
 
@@ -223,10 +227,10 @@ namespace Daydream
 	//			renderContext->SetTextureCube(_name, _textureCube);
 	//		});
 	//}
-	void Renderer::SetTextureView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _samplerState)
+	void Renderer::BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _samplerState)
 	{
 		EnqueueCommand([_name, _textureView, _samplerState]()
-			{
+			{ 
 				renderContext->BindShaderResourceView(_name, _textureView, _samplerState);
 			});
 	}

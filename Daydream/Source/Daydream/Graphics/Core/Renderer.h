@@ -67,7 +67,7 @@ namespace Daydream
 
 		//static void SetTexture2D(const String& _name, Shared<Texture2D> _texture);
 		//static void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube);
-		static void SetTextureView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _samplerState);
+		static void BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _samplerState);
 		static void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer);
 		
 

@@ -15,17 +15,15 @@ namespace Daydream
 	{
 		glViewport(_x, _y, _width, _height);
 	}
-	void OpenGLRenderContext::SetClearColor(const Color& _color)
-	{
-		//glClearColor(_color.r, _color.g, _color.b, _color.a);
-	}
-	void OpenGLRenderContext::Clear()
-	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	}
 	void OpenGLRenderContext::DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex)
 	{
 		glDrawElementsBaseVertex(GL_TRIANGLES, _indexCount, GL_UNSIGNED_INT, (void*)(_startIndex * sizeof(uint32_t)), _baseVertex);
+	}
+	void OpenGLRenderContext::BeginRendering(const RenderingInfo& _renderingInfo)
+	{
+	}
+	void OpenGLRenderContext::EndRendering(const RenderingInfo& _renderingInfo)
+	{
 	}
 	//void OpenGLRenderContext::BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer)
 	//{

@@ -14,7 +14,7 @@ namespace Daydream
         ~Skybox();
 
         void CreateResources();
-        void Generate();
+        void GenerateDefault();
         void Update();
 
         void GenerateHDRCubemap(Shared<Texture2D> _texture);
@@ -26,6 +26,12 @@ namespace Daydream
         inline void SetSkyboxResolution(UInt32 _value) { skyboxResolution = _value; }
         inline void SetDiffuseResolution(UInt32 _value) { diffuseResolution = _value; }
         inline void SetSpecularResolution(UInt32 _value) { specularResolution = _value; }
+
+        inline Shared<TextureView> GetSkyboxFaceSRV(UInt32 _faceIndex)
+        {
+            DAYDREAM_ASSERT(_faceIndex < 6, "{} < 6", _faceIndex);
+            return skyboxFaceSRVs[_faceIndex];
+        }
 
         inline Shared<Texture2D> GetBRDF() 
         {
@@ -91,14 +97,25 @@ namespace Daydream
         Shared<TextureView> equirectangularSRV ; // 2D->Cube 원본 텍스쳐뷰
         Shared<Texture2D> equirectangularDropTarget; // dummy(No Texture)
 
-        Shared<Texture2D> resizeResultTexture;
         Array<Shared<Texture2D>> equirectangularResultTextures;
         Array<Shared<Texture2D>> irradianceResultTextures;
         Array<Shared<Texture2D>> prefilterResultTextures;
 
-        Shared<Texture2D> BRDFTexture;
         Shared<TextureCube> skyboxTextureCube;
+        Array<Shared<TextureView>> skyboxFaceRTVs;
+        Array<Shared<TextureView>> skyboxFaceSRVs;
+        
+
         Shared<TextureCube> irradianceTextureCube;
+        Array<Shared<TextureView>> irradianceRTV;
+
         Shared<TextureCube> prefilterTextureCube;
+        Array<Shared<TextureView>> prefilterRTV;
+        
+        Shared<Texture2D> BRDFTexture;
+        Shared<TextureView> BRDFRTV;
+
+        Shared<Texture2D> resizeTexture;
+        Shared<TextureView> resizeRTV;
     };
 }

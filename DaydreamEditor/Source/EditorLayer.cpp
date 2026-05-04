@@ -161,146 +161,146 @@ namespace Daydream
 
 		activeScene->Update(_deltaTime);
 
-		RenderGraph renderGraph;
-		RenderGraphResourceDesc desc{};
+		//RenderGraph renderGraph;
+		//RenderGraphResourceDesc desc{};
 
-		RenderFormat format;
-		UInt32 width;
-		UInt32 height;
-		RenderGraphResourceHandle depthResource = renderGraph.AddResource("Depth", desc);
-		RenderGraphResourceHandle gBufferResource = renderGraph.AddResource("Position", desc);
-		RenderGraphResourceHandle maskResource = renderGraph.AddResource("Mask", desc);
-		RenderGraphResourceHandle finalResource = renderGraph.AddResource("Final", desc);
+		//RenderFormat format;
+		//UInt32 width;
+		//UInt32 height;
+		//RenderGraphResourceHandle depthResource = renderGraph.AddResource("Depth", desc);
+		//RenderGraphResourceHandle gBufferResource = renderGraph.AddResource("Position", desc);
+		//RenderGraphResourceHandle maskResource = renderGraph.AddResource("Mask", desc);
+		//RenderGraphResourceHandle finalResource = renderGraph.AddResource("Final", desc);
 
-		RenderGraphPassHandle depthPass = renderGraph.AddPass("DepthPass", [this]()
-			{
+		//RenderGraphPassHandle depthPass = renderGraph.AddPass("DepthPass", [this]()
+		//	{
 
 
-				//Renderer::BeginRenderPass(depthRenderPass, depthFramebuffer);
-				Renderer::BindPipelineState(depthPSO);
-				if (activeScene->GetLightComponent())
-				{
-					Renderer::SetConstantBuffer("LightSpace", activeScene->GetLightComponent()->GetLight().lightViewProjectionBuffer);
-				}
-				for (const auto entityHandle : activeScene->GetAllEntities())
-				{
-					GameEntity* entity = activeScene->GetEntity(entityHandle);
+		//		//Renderer::BeginRenderPass(depthRenderPass, depthFramebuffer);
+		//		Renderer::BindPipelineState(depthPSO);
+		//		if (activeScene->GetLightComponent())
+		//		{
+		//			Renderer::SetConstantBuffer("LightSpace", activeScene->GetLightComponent()->GetLight().lightViewProjectionBuffer);
+		//		}
+		//		for (const auto entityHandle : activeScene->GetAllEntities())
+		//		{
+		//			GameEntity* entity = activeScene->GetEntity(entityHandle);
 
-					MeshRendererComponent* meshRenderer = entity->GetComponent<MeshRendererComponent>();
-					if (meshRenderer)
-					{
-						Renderer::SetConstantBuffer("World", meshRenderer->GetWorldMatrixConstantBuffer());
-						auto mesh = AssetManager::GetAsset<Mesh>(meshRenderer->GetMesh());
-						if (mesh)
-						{
-							Renderer::BindMesh(mesh);
-							Renderer::DrawIndexed(mesh->GetIndexCount());
-						}
-					}
-				}
-				//Renderer::EndRenderPass(depthRenderPass);
-			});
-		renderGraph.Write(depthPass, depthResource);
+		//			MeshRendererComponent* meshRenderer = entity->GetComponent<MeshRendererComponent>();
+		//			if (meshRenderer)
+		//			{
+		//				Renderer::SetConstantBuffer("World", meshRenderer->GetWorldMatrixConstantBuffer());
+		//				auto mesh = AssetManager::GetAsset<Mesh>(meshRenderer->GetMesh());
+		//				if (mesh)
+		//				{
+		//					Renderer::BindMesh(mesh);
+		//					Renderer::DrawIndexed(mesh->GetIndexCount());
+		//				}
+		//			}
+		//		}
+		//		//Renderer::EndRenderPass(depthRenderPass);
+		//	});
+		//renderGraph.Write(depthPass, depthResource);
 
-		RenderGraphPassHandle gBufferPass = renderGraph.AddPass("GBufferPass", [this]()
-			{
-				//Renderer::Submit(squareIB->GetCount());
-				//Renderer::BeginRenderPass(gBufferRenderPass, gBufferFramebuffer);
-				Renderer::BindPipelineState(gBufferPSO);
-				Renderer::SetConstantBuffer("Camera", editorCamera->GetViewProjectionConstantBuffer());
-				for (const auto entityHandle : activeScene->GetAllEntities())
-				{
-					GameEntity* entity = activeScene->GetEntity(entityHandle);
-					MeshRendererComponent* meshRenderer = entity->GetComponent<MeshRendererComponent>();
-					if (meshRenderer == nullptr) continue;
-					Renderer::SetConstantBuffer("World", meshRenderer->GetWorldMatrixConstantBuffer());
-					Renderer::SetConstantBuffer("Entity", meshRenderer->GetEntityHandleConstantBuffer());
-					auto mesh = AssetManager::GetAsset<Mesh>(meshRenderer->GetMesh());
-					auto material = AssetManager::GetAsset<Material>(meshRenderer->GetMaterial());
-					if (mesh && material)
-					{
-						Renderer::BindMesh(mesh);
-						Renderer::BindMaterial(material);
-						Renderer::DrawIndexed(mesh->GetIndexCount());
-					}
-				}
-				//Renderer::EndRenderPass(gBufferRenderPass);
-			});
+		//RenderGraphPassHandle gBufferPass = renderGraph.AddPass("GBufferPass", [this]()
+		//	{
+		//		//Renderer::Submit(squareIB->GetCount());
+		//		//Renderer::BeginRenderPass(gBufferRenderPass, gBufferFramebuffer);
+		//		Renderer::BindPipelineState(gBufferPSO);
+		//		Renderer::SetConstantBuffer("Camera", editorCamera->GetViewProjectionConstantBuffer());
+		//		for (const auto entityHandle : activeScene->GetAllEntities())
+		//		{
+		//			GameEntity* entity = activeScene->GetEntity(entityHandle);
+		//			MeshRendererComponent* meshRenderer = entity->GetComponent<MeshRendererComponent>();
+		//			if (meshRenderer == nullptr) continue;
+		//			Renderer::SetConstantBuffer("World", meshRenderer->GetWorldMatrixConstantBuffer());
+		//			Renderer::SetConstantBuffer("Entity", meshRenderer->GetEntityHandleConstantBuffer());
+		//			auto mesh = AssetManager::GetAsset<Mesh>(meshRenderer->GetMesh());
+		//			auto material = AssetManager::GetAsset<Material>(meshRenderer->GetMaterial());
+		//			if (mesh && material)
+		//			{
+		//				Renderer::BindMesh(mesh);
+		//				Renderer::BindMaterial(material);
+		//				Renderer::DrawIndexed(mesh->GetIndexCount());
+		//			}
+		//		}
+		//		//Renderer::EndRenderPass(gBufferRenderPass);
+		//	});
 
-		renderGraph.Read(gBufferPass, depthResource);
-		renderGraph.Write(gBufferPass, gBufferResource);
+		//renderGraph.Read(gBufferPass, depthResource);
+		//renderGraph.Write(gBufferPass, gBufferResource);
 
-		RenderGraphPassHandle maskPass = renderGraph.AddPass("MaskPass", [this]()
-			{
-				GameEntity* selectedEntity = sceneHierarchyPanel->GetSelectedEntity(); // 선택된 객체 가져오기
+		//RenderGraphPassHandle maskPass = renderGraph.AddPass("MaskPass", [this]()
+		//	{
+		//		GameEntity* selectedEntity = sceneHierarchyPanel->GetSelectedEntity(); // 선택된 객체 가져오기
 
-				//Renderer::BeginRenderPass(maskRenderPass, maskFramebuffer);
-				if (selectedEntity != nullptr)
-				{
-					MeshRendererComponent* meshRenderer = selectedEntity->GetComponent<MeshRendererComponent>();
-					if (meshRenderer != nullptr)
-					{
-						auto mesh = AssetManager::GetAsset<Mesh>(meshRenderer->GetMesh());
+		//		//Renderer::BeginRenderPass(maskRenderPass, maskFramebuffer);
+		//		if (selectedEntity != nullptr)
+		//		{
+		//			MeshRendererComponent* meshRenderer = selectedEntity->GetComponent<MeshRendererComponent>();
+		//			if (meshRenderer != nullptr)
+		//			{
+		//				auto mesh = AssetManager::GetAsset<Mesh>(meshRenderer->GetMesh());
 
-						Renderer::BindPipelineState(maskPSO);
-						Renderer::SetConstantBuffer("World", meshRenderer->GetWorldMatrixConstantBuffer());
-						Renderer::SetConstantBuffer("Camera", editorCamera->GetViewProjectionConstantBuffer());
-						if (mesh)
-						{
-							Renderer::BindMesh(mesh);
-							Renderer::DrawIndexed(mesh->GetIndexCount());
-						}
-					}
-				}
-				//Renderer::EndRenderPass(maskRenderPass);
-			});
+		//				Renderer::BindPipelineState(maskPSO);
+		//				Renderer::SetConstantBuffer("World", meshRenderer->GetWorldMatrixConstantBuffer());
+		//				Renderer::SetConstantBuffer("Camera", editorCamera->GetViewProjectionConstantBuffer());
+		//				if (mesh)
+		//				{
+		//					Renderer::BindMesh(mesh);
+		//					Renderer::DrawIndexed(mesh->GetIndexCount());
+		//				}
+		//			}
+		//		}
+		//		//Renderer::EndRenderPass(maskRenderPass);
+		//	});
 
-		renderGraph.Read(maskPass, depthResource);
-		renderGraph.Write(maskPass, maskResource);
-		RenderGraphPassHandle lightingPass = renderGraph.AddPass("DeferredLightingPass", [this]()
-			{
-				//Renderer::BeginRenderPass(renderPass, viewportFramebuffer);
+		//renderGraph.Read(maskPass, depthResource);
+		//renderGraph.Write(maskPass, maskResource);
+		//RenderGraphPassHandle lightingPass = renderGraph.AddPass("DeferredLightingPass", [this]()
+		//	{
+		//		//Renderer::BeginRenderPass(renderPass, viewportFramebuffer);
 
-				Renderer::BindPipelineState(deferredLightingPSO);
-				//Renderer::SetTextureView("PositionTexture", gBufferFramebuffer->GetColorAttachmentTexture(0));
-				//Renderer::SetTextureView("NormalTexture", gBufferFramebuffer->GetColorAttachmentTexture(1));
-				//Renderer::SetTextureView("AlbedoTexture", gBufferFramebuffer->GetColorAttachmentTexture(2));
-				//Renderer::SetTextureView("RMAOTexture", gBufferFramebuffer->GetColorAttachmentTexture(3));
-				//Renderer::SetTextureView("BRDFLUT", Renderer::GetSkybox()->GetBRDF());
-				//Renderer::SetTextureView("EntityIDTexture", gBufferFramebuffer->GetColorAttachmentTexture(4));
-				//Renderer::SetTextureView("OutlineTexture", maskFramebuffer->GetColorAttachmentTexture(0));
-				//Renderer::SetTextureView("DepthTexture", depthFramebuffer->GetDepthAttachmentTexture());
-				Renderer::SetConstantBuffer("Lights", activeScene->GetLightConstantBuffer());
-				Renderer::SetConstantBuffer("EditorData", entityBuffer);
-				//Renderer::SetTextureCube("IrradianceTexture", Renderer::GetSkybox()->GetIrradianceTexture());
-				//Renderer::SetTextureCube("Prefilter", Renderer::GetSkybox()->GetPrefilterTexture());
-				//deferredLightingMaterial->Bind();
-				Renderer::BindMesh(ResourceManager::GetResource<Mesh>("Quad"));
-				Renderer::DrawIndexed(ResourceManager::GetResource<Mesh>("Quad")->GetIndexCount());
+		//		Renderer::BindPipelineState(deferredLightingPSO);
+		//		//Renderer::SetTextureView("PositionTexture", gBufferFramebuffer->GetColorAttachmentTexture(0));
+		//		//Renderer::SetTextureView("NormalTexture", gBufferFramebuffer->GetColorAttachmentTexture(1));
+		//		//Renderer::SetTextureView("AlbedoTexture", gBufferFramebuffer->GetColorAttachmentTexture(2));
+		//		//Renderer::SetTextureView("RMAOTexture", gBufferFramebuffer->GetColorAttachmentTexture(3));
+		//		//Renderer::SetTextureView("BRDFLUT", Renderer::GetSkybox()->GetBRDF());
+		//		//Renderer::SetTextureView("EntityIDTexture", gBufferFramebuffer->GetColorAttachmentTexture(4));
+		//		//Renderer::SetTextureView("OutlineTexture", maskFramebuffer->GetColorAttachmentTexture(0));
+		//		//Renderer::SetTextureView("DepthTexture", depthFramebuffer->GetDepthAttachmentTexture());
+		//		Renderer::SetConstantBuffer("Lights", activeScene->GetLightConstantBuffer());
+		//		Renderer::SetConstantBuffer("EditorData", entityBuffer);
+		//		//Renderer::SetTextureCube("IrradianceTexture", Renderer::GetSkybox()->GetIrradianceTexture());
+		//		//Renderer::SetTextureCube("Prefilter", Renderer::GetSkybox()->GetPrefilterTexture());
+		//		//deferredLightingMaterial->Bind();
+		//		Renderer::BindMesh(ResourceManager::GetResource<Mesh>("Quad"));
+		//		Renderer::DrawIndexed(ResourceManager::GetResource<Mesh>("Quad")->GetIndexCount());
 
-				////pso3d->Bind();
-				////activeScene->Update(_deltaTime);
+		//		////pso3d->Bind();
+		//		////activeScene->Update(_deltaTime);
 
-				if (skyboxPanel->IsUsingSkybox())
-				{
-					Renderer::BindPipelineState(skyboxPipeline);
-					Renderer::BindMesh(cubeMesh);
-					Renderer::SetConstantBuffer("Camera", viewProjMat);
-					//Renderer::SetTextureCube("TextureCubemap", activeScene->GetSkybox()->GetSkyboxTexture());
-					Renderer::DrawIndexed(cubeMesh->GetIndexCount());
-				}
-				//Renderer::EndRenderPass(renderPass);
-			});
+		//		if (skyboxPanel->IsUsingSkybox())
+		//		{
+		//			Renderer::BindPipelineState(skyboxPipeline);
+		//			Renderer::BindMesh(cubeMesh);
+		//			Renderer::SetConstantBuffer("Camera", viewProjMat);
+		//			//Renderer::SetTextureCube("TextureCubemap", activeScene->GetSkybox()->GetSkyboxTexture());
+		//			Renderer::DrawIndexed(cubeMesh->GetIndexCount());
+		//		}
+		//		//Renderer::EndRenderPass(renderPass);
+		//	});
 
-		renderGraph.Read(lightingPass, depthResource);
-		renderGraph.Read(lightingPass, gBufferResource);
-		renderGraph.Read(lightingPass, maskResource);
-		renderGraph.Write(lightingPass, finalResource);
+		//renderGraph.Read(lightingPass, depthResource);
+		//renderGraph.Read(lightingPass, gBufferResource);
+		//renderGraph.Read(lightingPass, maskResource);
+		//renderGraph.Write(lightingPass, finalResource);
 
-		if (renderGraph.Compile())
-		{
-			renderGraph.Execute();
-		}
+		//if (renderGraph.Compile())
+		//{
+		//	renderGraph.Execute();
+		//}
 	}
 
 	void EditorLayer::OnImGuiRender()

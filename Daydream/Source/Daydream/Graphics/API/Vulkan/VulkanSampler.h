@@ -11,7 +11,7 @@ namespace Daydream
 		VulkanSampler(VulkanRenderDevice* _device, const SamplerDesc& _desc);
 		virtual ~VulkanSampler();
 
-		inline vk::Sampler GetSampler() const { return sampler.get(); }
+		inline vk::Sampler GetVkSampler() const { return sampler.get(); }
 	private:
 		VulkanRenderDevice* device;
 		vk::UniqueSampler sampler;

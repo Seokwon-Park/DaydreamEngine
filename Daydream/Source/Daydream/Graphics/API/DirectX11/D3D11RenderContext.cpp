@@ -30,13 +30,6 @@ namespace Daydream
 
 		device->GetContext()->RSSetViewports(1, &viewport);
 	}
-	void D3D11RenderContext::SetClearColor(const Color& _color)
-	{
-	}
-
-	void D3D11RenderContext::Clear()
-	{
-	}
 
 	void D3D11RenderContext::DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex)
 	{
@@ -46,11 +39,11 @@ namespace Daydream
 	void D3D11RenderContext::BeginRendering(const RenderingInfo& _renderingInfo)
 	{
 		Array<ID3D11RenderTargetView*> rtvs;
-		for (const RenderingDesc& renderingDesc : _renderingInfo.colorAttachments)
+		for (const AttachmentDesc& attachementDesc : _renderingInfo.colorAttachments)
 		{
-			ClearValue rtvClearValue = renderingDesc.clearValue;
-			Shared<D3D11TextureView> d3d11TextureView = SharedCast<D3D11TextureView>(renderingDesc.view);
-			if (renderingDesc.loadOp == AttachmentLoadOp::Clear)
+			ClearValue rtvClearValue = attachementDesc.clearValue;
+			Shared<D3D11TextureView> d3d11TextureView = SharedCast<D3D11TextureView>(attachementDesc.view);
+			if (attachementDesc.loadOp == AttachmentLoadOp::Clear)
 			{
 				device->GetContext()->ClearRenderTargetView(d3d11TextureView->GetRTV(), &rtvClearValue.colorClearValue.color[0]);
 			}
@@ -68,6 +61,16 @@ namespace Daydream
 			}
 		}
 		device->GetContext()->OMSetRenderTargets((UInt32)rtvs.size(), rtvs.data(), dsv);
+		SetViewport(
+			_renderingInfo.renderArea.x,
+			_renderingInfo.renderArea.y,
+			_renderingInfo.renderArea.width,
+			_renderingInfo.renderArea.height
+		);
+	}
+
+	void D3D11RenderContext::EndRendering(const RenderingInfo& _renderingInfo)
+	{
 	}
 
 	void D3D11RenderContext::BindPipelineState(Shared<PipelineState> _pipelineState)

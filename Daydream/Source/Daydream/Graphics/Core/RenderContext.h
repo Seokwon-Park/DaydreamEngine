@@ -34,11 +34,10 @@ namespace Daydream
 		virtual void BeginCommandList() = 0;
 		virtual void EndCommandList() {};
 		virtual void SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height) = 0;
-		virtual void SetClearColor(const Color& _color) = 0;
-		virtual void Clear() = 0;
 		virtual void DrawIndexed(UInt32 _indexCount, UInt32 _startIndex = 0, UInt32 _baseVertex = 0) = 0;
 
 		virtual void BeginRendering(const RenderingInfo& _renderingInfo) {};
+		virtual void EndRendering(const RenderingInfo& _renderingInfo) {};
 
 		virtual void BindPipelineState(Shared<PipelineState> _pipelineState);
 

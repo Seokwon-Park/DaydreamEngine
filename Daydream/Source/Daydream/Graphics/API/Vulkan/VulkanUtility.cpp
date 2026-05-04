@@ -73,7 +73,7 @@ namespace Daydream::GraphicsUtility::Vulkan
 		default:
 			break;
 		}
-		
+
 		bufferInfo.usage = flags;
 		return bufferInfo;
 	}
@@ -192,6 +192,28 @@ namespace Daydream::GraphicsUtility::Vulkan
 
 		return allocInfo;
 	}
+
+	vk::AttachmentLoadOp ConvertToLoadOp(AttachmentLoadOp op)
+	{
+		switch (op)
+		{
+		case AttachmentLoadOp::Load:     return vk::AttachmentLoadOp::eLoad;
+		case AttachmentLoadOp::Clear:    return vk::AttachmentLoadOp::eClear;
+		case AttachmentLoadOp::DontCare: return vk::AttachmentLoadOp::eDontCare;
+		default:                         return vk::AttachmentLoadOp::eDontCare;
+		}
+	}
+
+	vk::AttachmentStoreOp ConvertToStoreOp(AttachmentStoreOp op)
+	{
+		switch (op)
+		{
+		case AttachmentStoreOp::Store:    return vk::AttachmentStoreOp::eStore;
+		case AttachmentStoreOp::DontCare: return vk::AttachmentStoreOp::eDontCare;
+		default:                          return vk::AttachmentStoreOp::eDontCare;
+		}
+	}
+
 
 	vk::Format ConvertToVkFormat(RenderFormat _format)
 	{

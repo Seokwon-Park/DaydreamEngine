@@ -22,6 +22,9 @@ namespace Daydream::GraphicsUtility::Vulkan
 	vk::ImageCreateInfo ConvertToVulkanCreateInfo(const TextureDesc& _desc);
 	vma::AllocationCreateInfo ConvertToVMAAllocationInfo(const TextureDesc& _desc);
 
+	vk::AttachmentLoadOp ConvertToLoadOp(AttachmentLoadOp op);
+	vk::AttachmentStoreOp ConvertToStoreOp(AttachmentStoreOp op);
+
 	vk::Format ConvertToVkFormat(RenderFormat _format);
 	vk::ShaderStageFlagBits ConvertToShaderStageFlagBit(ShaderType _type);
 	vk::ImageUsageFlags ConvertToVkImageUsageFlags(TextureUsage usageFlags);

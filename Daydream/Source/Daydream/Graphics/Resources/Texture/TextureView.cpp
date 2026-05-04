@@ -17,7 +17,7 @@ namespace Daydream
 		originTexture = nullptr;
 	}
 
-	Shared<TextureView> TextureView::Create(Shared<Texture2D> _texture, const TextureViewDesc& _desc)
+	Shared<TextureView> TextureView::Create(Shared<Texture> _texture, const TextureViewDesc& _desc)
 	{
 		return Renderer::GetRenderDevice()->CreateTextureView(_texture, _desc);
 	}

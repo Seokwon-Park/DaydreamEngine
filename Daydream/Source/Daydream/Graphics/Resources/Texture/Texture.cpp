@@ -1,10 +1,7 @@
 #include "DaydreamPCH.h"
 #include "Daydream/Graphics/Resources/Texture/Texture.h"
 
-#include "Daydream/Core/Application.h"
-#include "Daydream/Graphics/Core/Renderer.h"
-#include "Daydream/Graphics/Utility/ImageLoader.h"
-
+#include "TextureView.h"
 
 namespace Daydream
 {
@@ -18,5 +15,9 @@ namespace Daydream
 			DAYDREAM_CORE_WARN("mipLevel is to Large {} -> {}", std::max(desc.width, desc.height), maxMips);
 			desc.mipLevels = maxMips;
 		}
+	}
+	Shared<TextureView> Texture::GetDefaultSRV() const
+	{
+		return defaultSRV;
 	}
 }

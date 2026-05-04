@@ -37,13 +37,6 @@ namespace Daydream
 
 		GetD3D12ActiveCommandList()->RSSetViewports(1, &viewport);
 	}
-	void D3D12RenderContext::SetClearColor(const Color& _color)
-	{
-	}
-
-	void D3D12RenderContext::Clear()
-	{
-	}
 
 	void D3D12RenderContext::DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex)
 	{
@@ -138,6 +131,9 @@ namespace Daydream
 		//}
 
 
+	}
+	void D3D12RenderContext::EndRendering(const RenderingInfo& _renderingInfo)
+	{
 	}
 	void D3D12RenderContext::BindPipelineState(Shared<PipelineState> _pipelineState)
 	{

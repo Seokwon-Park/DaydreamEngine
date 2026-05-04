@@ -13,6 +13,8 @@ namespace Daydream
 		D3D11TextureView(D3D11RenderDevice* _device, Shared<D3D11GPUTexture> _texture, const TextureViewDesc& _desc);
 		~D3D11TextureView() override = default;
 
+		virtual void* GetUIHandle() const { return views.srv.Get(); }
+
 		ID3D11ShaderResourceView* GetSRV() const { return views.srv.Get(); }
 		ID3D11DepthStencilView* GetDSV() const { return views.dsv.Get(); }
 		ID3D11RenderTargetView* GetRTV() const { return views.rtv.Get(); }

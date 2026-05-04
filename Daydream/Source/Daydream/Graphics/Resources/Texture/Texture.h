@@ -7,6 +7,7 @@
 
 namespace Daydream
 {
+	class TextureView;
 
 	struct Texture2DDesc
 	{
@@ -63,11 +64,13 @@ namespace Daydream
 
 		inline Shared<GPUTexture> GetGPUTexture() const { return gpuTexture; }
 		inline GPUTexture* GetGPUTexturePtr() const { return gpuTexture.get(); }
+		Shared<TextureView> GetDefaultSRV() const;
 
 		inline TextureDesc GetDesc() const { return gpuTexture->GetDesc(); }
 		inline TextureType GetType() const { return gpuTexture->GetDesc().type; }
 	protected:
 		Shared<GPUTexture> gpuTexture = nullptr;
+		Shared<TextureView> defaultSRV;
 	};
 
 

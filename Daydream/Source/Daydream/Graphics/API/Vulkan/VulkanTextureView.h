@@ -13,6 +13,8 @@ namespace Daydream
 		VulkanTextureView(VulkanRenderDevice* _device, Shared<VulkanGPUTexture> _texture, const TextureViewDesc& _desc);
 		~VulkanTextureView() override = default;
 
+		virtual void* GetUIHandle() const { return UISet[0].get(); }
+
 		void SetImageView(vk::UniqueImageView _imageView) { imageView = std::move(_imageView); }
 		vk::ImageView GetVkImageView() const { return imageView.get(); }
 
@@ -20,5 +22,7 @@ namespace Daydream
 		VulkanRenderDevice* device;
 		TextureViewDesc desc;
 		vk::UniqueImageView imageView;
+
+		Array<vk::UniqueDescriptorSet> UISet;
 	};
 }

@@ -3,7 +3,7 @@
 
 #include "VulkanPipelineState.h"
 #include "VulkanTexture.h"
-#include "VulkanTextureCube.h"
+#include "VulkanTextureView.h"
 #include "VulkanBuffer.h"
 #include "VulkanFramebuffer.h"
 #include "VulkanUtility.h"
@@ -85,13 +85,6 @@ namespace Daydream
 		scissor.extent = vk::Extent2D(_width, _height);
 		GetActiveCommandBuffer().setScissor(0, 1, &scissor);
 	}
-	void VulkanRenderContext::SetClearColor(const Color& _color)
-	{
-	}
-
-	void VulkanRenderContext::Clear()
-	{
-	}
 
 	void VulkanRenderContext::DrawIndexed(UInt32 _indexCount, UInt32 _startIndex, UInt32 _baseVertex)
 	{
@@ -100,18 +93,77 @@ namespace Daydream
 
 	void VulkanRenderContext::BeginRendering(const RenderingInfo& _renderingInfo)
 	{
-		vk::RenderingInfo info{};
-		info.pNext;
-		info.flags;
-		info.renderArea;
-		info.layerCount;
-		info.viewMask;
-		info.colorAttachmentCount;
-		info.pColorAttachments;
-		info.pDepthAttachment;
-		info.pStencilAttachment;
+		Array<vk::RenderingAttachmentInfo> colorAttachmentInfos;
+		for (auto renderingDesc : _renderingInfo.colorAttachments)
+		{
+			vk::RenderingAttachmentInfo attachmentInfo{};
+			VulkanTextureView* textureView = Cast<VulkanTextureView*>(renderingDesc.view.get());
+			attachmentInfo.imageView = textureView->GetVkImageView();
+			attachmentInfo.imageLayout = vk::ImageLayout::eColorAttachmentOptimal;
+			attachmentInfo.resolveMode = vk::ResolveModeFlagBits::eNone;
+			attachmentInfo.resolveImageView = VK_NULL_HANDLE;
+			attachmentInfo.resolveImageLayout = vk::ImageLayout::eUndefined;
+			attachmentInfo.loadOp = GraphicsUtility::Vulkan::ConvertToLoadOp(renderingDesc.loadOp);
+			attachmentInfo.storeOp = GraphicsUtility::Vulkan::ConvertToStoreOp(renderingDesc.storeOp);
+			// Clear Value 매핑 (std::array로 변환)
+			vk::ClearColorValue clearColor;
+			clearColor.setFloat32({
+				renderingDesc.clearValue.colorClearValue.r,
+				renderingDesc.clearValue.colorClearValue.g,
+				renderingDesc.clearValue.colorClearValue.b,
+				renderingDesc.clearValue.colorClearValue.a
+				});
+			attachmentInfo.clearValue.color = clearColor;
+			attachmentInfo.pNext = nullptr;
+			colorAttachmentInfos.push_back(attachmentInfo);
+		}
 
-		GetActiveCommandBuffer().beginRendering(info);
+		// 2. Depth/Stencil Attachment 설정 (사용하는 경우)
+		vk::RenderingAttachmentInfo depthAttachmentInfo{};
+		bool useDepth = _renderingInfo.depthAttachment.view != nullptr;
+
+		if (useDepth)
+		{
+			VulkanTextureView* depthView = Cast<VulkanTextureView*>(_renderingInfo.depthAttachment.view.get());
+			depthAttachmentInfo.imageView = depthView->GetVkImageView();
+
+			// 깊이 버퍼 렌더링용 레이아웃
+			depthAttachmentInfo.imageLayout = vk::ImageLayout::eDepthStencilAttachmentOptimal;
+
+			depthAttachmentInfo.resolveMode = vk::ResolveModeFlagBits::eNone;
+			depthAttachmentInfo.resolveImageView = VK_NULL_HANDLE;
+			depthAttachmentInfo.resolveImageLayout = vk::ImageLayout::eUndefined;
+
+			depthAttachmentInfo.loadOp = GraphicsUtility::Vulkan::ConvertToLoadOp(_renderingInfo.depthAttachment.loadOp);
+			depthAttachmentInfo.storeOp = GraphicsUtility::Vulkan::ConvertToStoreOp(_renderingInfo.depthAttachment.storeOp);
+
+			vk::ClearDepthStencilValue clearDepthStencil(
+				_renderingInfo.depthAttachment.clearValue.depthClearValue,
+				_renderingInfo.depthAttachment.clearValue.stencilClearValue
+			);
+			depthAttachmentInfo.clearValue.depthStencil = clearDepthStencil;
+		}
+
+		vk::RenderingInfo renderingInfo{};
+		renderingInfo.flags = {};
+		renderingInfo.renderArea.extent.width = _renderingInfo.colorAttachments[0].view->GetWidth();
+		renderingInfo.renderArea.extent.height = _renderingInfo.colorAttachments[0].view->GetHeight();
+		renderingInfo.layerCount = 1;
+		renderingInfo.viewMask;
+		renderingInfo.colorAttachmentCount = colorAttachmentInfos.size();
+		renderingInfo.pColorAttachments = colorAttachmentInfos.data();
+		if (useDepth)
+		{
+			renderingInfo.pDepthAttachment = &depthAttachmentInfo;
+			renderingInfo.pStencilAttachment = &depthAttachmentInfo; 
+		}
+		renderingInfo.pNext = nullptr;
+
+		GetActiveCommandBuffer().beginRendering(renderingInfo);
+	}
+	void VulkanRenderContext::EndRendering(const RenderingInfo& _renderingInfo)
+	{
+		GetActiveCommandBuffer().endRendering();
 	}
 	//void VulkanRenderContext::BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer)
 	//{
