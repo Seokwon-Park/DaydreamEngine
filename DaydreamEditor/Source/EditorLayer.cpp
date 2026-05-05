@@ -19,8 +19,6 @@ namespace Daydream
 		//AssetManager::LoadAssetMetadataFromDirectory("Resource");
 		AssetManager::LoadAssets(LoadPhase::Early);
 
-		AssetManager::GetAssetByPath<Texture2D>("Resource/skybox.hdr");
-
 		editorCamera = MakeShared<EditorCamera>();
 		activeScene = MakeShared<Scene>("MainScene");
 
@@ -311,7 +309,10 @@ namespace Daydream
 		ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
 
 		//ImGui::Image((ImTextureID)depthFramebuffer->GetDepthAttachmentTexture()->GetImGuiHandle(), ImVec2{ viewportSize.x / 3,viewportSize.y / 3 });
-		//ImGui::Image((ImTextureID)AssetManager::GetAssetByPath<Texture2D>("Resource/skybox.hdr")->GetImGuiHandle(), ImVec2{ viewportSize.x / 3,viewportSize.y / 3 });
+
+		
+
+		ImGui::Image((ImTextureID)AssetManager::GetAssetByPath<Texture2D>("Resource/skybox.hdr")->GetDefaultSRV()->GetUIHandle(), ImVec2{ viewportSize.x / 3,viewportSize.y / 3 });
 
 		//for (int i = 0; i < 4; i++)
 		//{
@@ -341,7 +342,7 @@ namespace Daydream
 			//		for (int i = 0; i < 6; i++)
 			//		{
 			//			ImGui::TableNextColumn();
-			//			ImGui::Image(cubeTextures[i]->GetImGuiHandle(), ImVec2{ 200, 200 });
+						//ImGui::Image(cubeTextures[i]->GetImGuiHandle(), ImVec2{ 200, 200 });
 			//		}
 			//	}
 			//	ImGui::EndTable();

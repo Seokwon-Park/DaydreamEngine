@@ -110,13 +110,28 @@ namespace Daydream
 		psoDesc.rasterizerState = rastDesc;
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Equirectangular");
 		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
-
+		psoDesc.renderTargetFormats =
+		{
+			RenderFormat::R16G16B16A16_FLOAT
+		};
+		psoDesc.depthStencilFormat =
+		{
+			RenderFormat::R24G8_TYPELESS
+		};
 		registry["EquirectangularPSO"] = PipelineState::Create(psoDesc);
 
 		// CubemapVS->Irradiance Faces
 		psoDesc.rasterizerState = rastDesc;
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Irradiance");
 		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
+		psoDesc.renderTargetFormats =
+		{
+			RenderFormat::R16G16B16A16_FLOAT
+		};
+		psoDesc.depthStencilFormat =
+		{
+			RenderFormat::R24G8_TYPELESS
+		};
 
 		registry["IrradiancePSO"] = PipelineState::Create(psoDesc);
 

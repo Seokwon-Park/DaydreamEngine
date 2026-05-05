@@ -27,6 +27,7 @@ namespace Daydream
         inline void SetSkyboxResolution(UInt32 _value) { skyboxResolution = _value; }
         inline void SetDiffuseResolution(UInt32 _value) { diffuseResolution = _value; }
         inline void SetSpecularResolution(UInt32 _value) { specularResolution = _value; }
+        inline UInt32 GetPrefilterMipLevel() const { return (UInt32)std::log2(specularResolution); }
 
         inline Shared<TextureView> GetSkyboxFaceSRV(UInt32 _faceIndex)
         {
@@ -34,7 +35,26 @@ namespace Daydream
             return skyboxFaceSRVs[_faceIndex];
         }
 
-        inline Shared<Texture2D> GetBRDF() 
+        inline Shared<TextureView> GetIrradianceFaceSRV(UInt32 _faceIndex)
+        {
+            DAYDREAM_ASSERT(_faceIndex < 6, "{} < 6", _faceIndex);
+            return irradianceSRVs[_faceIndex];
+        }
+
+        inline Shared<TextureView> GetPrefilterFaceSRV(UInt32 _faceIndex, UInt32 _mipLevel)
+        {
+            UInt32 index = prefilterMipLevels * _faceIndex + _mipLevel;
+            DAYDREAM_ASSERT(index < prefilterMipLevels * 6, "{} < {}", index, prefilterMipLevels * 6);
+
+            return prefilterSRVs[index];
+        }
+
+        inline Shared<TextureView> GetBRDFSRV()
+        {
+            return BRDFSRV;
+        }
+
+        inline Shared<Texture2D> GetBRDFTexture() 
         {
             return BRDFTexture; 
         }
@@ -106,16 +126,19 @@ namespace Daydream
         Shared<TextureCube> skyboxTextureCube;
         Array<Shared<TextureView>> skyboxFaceRTVs;
         Array<Shared<TextureView>> skyboxFaceSRVs;
-        
 
         Shared<TextureCube> irradianceTextureCube;
-        Array<Shared<TextureView>> irradianceRTV;
+        Shared<TextureView> irradianceDSV;
+        Array<Shared<TextureView>> irradianceRTVs;
+        Array<Shared<TextureView>> irradianceSRVs;
 
         Shared<TextureCube> prefilterTextureCube;
-        Array<Shared<TextureView>> prefilterRTV;
+        Array<Shared<TextureView>> prefilterRTVs;
+        Array<Shared<TextureView>> prefilterSRVs;
         
         Shared<Texture2D> BRDFTexture;
         Shared<TextureView> BRDFRTV;
+        Shared<TextureView> BRDFSRV;
 
         Shared<Texture2D> resizeTexture;
         Shared<TextureView> resizeRTV;

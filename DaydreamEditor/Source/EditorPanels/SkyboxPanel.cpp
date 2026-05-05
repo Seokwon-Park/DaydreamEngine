@@ -60,12 +60,13 @@ namespace Daydream
 			}
 		}
 
+		ImGui::SliderInt("Mip", &mipLevel, 0, skybox->GetPrefilterMipLevel() - 1);
 		for (int i = 0; i < 6; i++)
 		{
 			ImGui::Text(faceLabels[i]);
 			if (skybox->GetSkyboxTexture() != nullptr)
 			{
-				ImGui::Image(skybox->GetSkyboxFaceSRV(i)->GetUIHandle(), ImVec2{100,100});
+				ImGui::Image(skybox->GetSkyboxFaceSRV(i)->GetUIHandle(), ImVec2{ 100,100 });
 				if (ImGui::BeginDragDropTarget())
 				{
 					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(AssetManager::AssetTypeToString(AssetType::Texture2D).c_str()))
@@ -79,27 +80,15 @@ namespace Daydream
 					ImGui::EndDragDropTarget();
 				}
 				ImGui::SameLine();
-				if (skybox->GetIrradianceTexture() != nullptr)
-				{
-					//ImGui::Image(skybox->GetIrradianceTexture()->GetImGuiHandle(i), ImVec2{ 100,100 });
-				}
+				ImGui::Image(skybox->GetIrradianceFaceSRV(i)->GetUIHandle(), ImVec2{ 100,100 });
 				ImGui::SameLine();
-				if (skybox->GetPrefilterTexture() != nullptr)
-				{
-					//ImGui::Image(skybox->GetPrefilterTexture()->GetImGuiHandle(i), ImVec2{ 100,100 });
-				}
-
+				ImGui::Image(skybox->GetPrefilterFaceSRV(i, mipLevel)->GetUIHandle(), ImVec2{ 100,100 });
 			}
 		}
 		//UI::DrawMaterialController("SkyboxTextures", skyboxMaterial.get());
 
 		ImGui::Text("BRDF");
-		if (skybox->GetBRDF() != nullptr)
-		{
-			ImGui::Image(skybox->GetBRDF()->GetImGuiHandle(), ImVec2{ 100,100 });
-		}
-
-
+		ImGui::Image(skybox->GetBRDFSRV()->GetUIHandle(), ImVec2{ 100,100 });
 		ImGui::End();
 	}
 }

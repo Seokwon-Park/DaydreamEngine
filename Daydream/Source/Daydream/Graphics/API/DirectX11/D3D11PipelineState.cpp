@@ -90,6 +90,8 @@ namespace Daydream
 		device->GetContext()->DSSetShader(domainShader, nullptr, 0);
 		device->GetContext()->GSSetShader(geometryShader, nullptr, 0);
 
+		device->GetContext()->OMSetDepthStencilState(nullptr, 0);
+
 		device->GetContext()->IASetInputLayout(inputLayout.Get());
 		device->GetContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		device->GetContext()->RSSetState(rasterizer.Get());

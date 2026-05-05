@@ -13,7 +13,7 @@ namespace Daydream
         RenderFormat targetFormat = (_desc.format == RenderFormat::UNKNOWN) ? _texture->GetDesc().format : _desc.format;
         DXGI_FORMAT dxgiFormat = GraphicsUtility::DirectX::ConvertToDXGIFormat(targetFormat); 
 
-        bool isArray = _desc.layerCount > 1;
+        bool isArray = (_texture->GetDesc().type == TextureType::TextureCube || _texture->GetDesc().layerCount > 1);
         UINT mipLevels = _desc.mipCount;
 
         switch (_desc.type)
@@ -23,7 +23,13 @@ namespace Daydream
             D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
             srvDesc.Format = dxgiFormat;
 
-            if (isArray)
+            if (_texture->GetDesc().type == TextureType::TextureCube && _desc.layerCount == 6)
+            {
+                srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+                srvDesc.TextureCube.MostDetailedMip = _desc.baseMip;
+                srvDesc.TextureCube.MipLevels = mipLevels;
+            }
+            else if (isArray)
             {
                 srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
                 srvDesc.Texture2DArray.MostDetailedMip = _desc.baseMip;
@@ -38,10 +44,10 @@ namespace Daydream
                 srvDesc.Texture2D.MipLevels = mipLevels;
             }
 
-            ID3D11ShaderResourceView* srv = nullptr;
-            HRESULT hr = d3dDevice->CreateShaderResourceView(d3dResource, &srvDesc, views.srv.GetAddressOf());
+            ComPtr<ID3D11ShaderResourceView> srv = nullptr;
+            HRESULT hr = d3dDevice->CreateShaderResourceView(d3dResource, &srvDesc, srv.GetAddressOf());
             DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create D3D11 Shader Resource View!");
-            view = views.srv;
+            view = std::move(srv);
             break;
         }
 
@@ -63,10 +69,10 @@ namespace Daydream
                 rtvDesc.Texture2D.MipSlice = _desc.baseMip;
             }
 
-            ID3D11RenderTargetView* rtv = nullptr;
-            HRESULT hr = d3dDevice->CreateRenderTargetView(d3dResource, &rtvDesc, views.rtv.GetAddressOf());
+            ComPtr<ID3D11RenderTargetView> rtv = nullptr;
+            HRESULT hr = d3dDevice->CreateRenderTargetView(d3dResource, &rtvDesc, rtv.GetAddressOf());
             DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create D3D11 Render Target View!");
-            view = views.rtv;
+            view = std::move(rtv);
             break;
         }
 
@@ -74,9 +80,6 @@ namespace Daydream
         {
             D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
             dsvDesc.Format = dxgiFormat;
-
-            // DXGI 포맷 중 Typeless 포맷을 Depth 포맷으로 변환하는 처리가 필요할 수 있습니다.
-            // 예: DXGI_FORMAT_R24G8_TYPELESS -> DXGI_FORMAT_D24_UNORM_S8_UINT
 
             if (isArray)
             {
@@ -91,10 +94,10 @@ namespace Daydream
                 dsvDesc.Texture2D.MipSlice = _desc.baseMip;
             }
 
-            ID3D11DepthStencilView* dsv = nullptr;
-            HRESULT hr = d3dDevice->CreateDepthStencilView(d3dResource, &dsvDesc, views.dsv.GetAddressOf());
+            ComPtr<ID3D11DepthStencilView> dsv = nullptr;
+            HRESULT hr = d3dDevice->CreateDepthStencilView(d3dResource, &dsvDesc, dsv.GetAddressOf());
             DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create D3D11 Depth Stencil View!");
-            view = views.dsv;
+            view = std::move(dsv);
             break;
         }
 
@@ -116,10 +119,10 @@ namespace Daydream
                 uavDesc.Texture2D.MipSlice = _desc.baseMip;
             }
 
-            ID3D11UnorderedAccessView* uav = nullptr;
-            HRESULT hr = d3dDevice->CreateUnorderedAccessView(d3dResource, &uavDesc, views.uav.GetAddressOf());
+            ComPtr<ID3D11UnorderedAccessView> uav = nullptr;
+            HRESULT hr = d3dDevice->CreateUnorderedAccessView(d3dResource, &uavDesc, uav.GetAddressOf());
             DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create D3D11 Unordered Access View!");
-            view = views.uav;
+            view = std::move(uav);
             break;
         }
 
@@ -129,5 +132,9 @@ namespace Daydream
         }
 
 	}
+    D3D11TextureView::~D3D11TextureView()
+    {
+        view = nullptr;
+    }
 }
 

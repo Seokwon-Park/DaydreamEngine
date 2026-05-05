@@ -21,6 +21,10 @@ namespace Daydream
 	{
 
 	}
+	Texture::~Texture()
+	{
+		defaultSRV = nullptr;
+	}
 	Shared<TextureView> Texture::GetDefaultSRV()
 	{
 		if (defaultSRV == nullptr)

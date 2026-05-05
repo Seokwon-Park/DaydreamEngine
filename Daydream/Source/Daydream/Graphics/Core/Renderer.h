@@ -68,7 +68,7 @@ namespace Daydream
 		//static void SetTexture2D(const String& _name, Shared<Texture2D> _texture);
 		//static void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube);
 		static void BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _samplerState);
-		static void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer);
+		static void BindConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer);
 		
 
 		template <typename DataType>
@@ -91,7 +91,8 @@ namespace Daydream
 		static void CopyBufferToTexture(Shared<GPUBuffer> _src, Shared<GPUTexture> _dst, UInt32 _width, UInt32 _height);
 
 		static void CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst);
-		static void CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel = 0);
+		static void CopyTexture2DToTextureCube(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel = 0);
+		static void CopyTextureCubeToTexture2D(Shared<TextureCube> _srcCubemap, UInt32 _faceIndex, Shared<Texture2D> _dstTexture2D, UInt32 _mipLevel = 0);
 
 		static void TransitionTextureState(Shared<GPUTexture> _texture,
 			ResourceState _beforeState,

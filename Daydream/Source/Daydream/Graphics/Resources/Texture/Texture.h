@@ -54,7 +54,7 @@ namespace Daydream
 	{
 	public:
 		Texture(Shared<GPUTexture> _texture);
-		virtual ~Texture() = default;
+		virtual ~Texture();
 
 		inline RenderFormat GetFormat() const { return gpuTexture->GetDesc().format; }
 		inline UInt32 GetWidth() const { return gpuTexture->GetDesc().width; }

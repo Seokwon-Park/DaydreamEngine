@@ -87,6 +87,9 @@ namespace Daydream
 	{
 		if (isSwapchainResized)
 		{
+			backBufferRTV = nullptr;
+			backBufferTexture = nullptr;
+
 			swapchain->ResizeBuffers(0, desc.width, desc.height, GraphicsUtility::DirectX::ConvertToDXGIFormat(desc.format), 0);
 
 			ComPtr<ID3D11Texture2D> backBuffer;

@@ -10,7 +10,7 @@ struct PSOutput
 };
 
 [[vk::combinedImageSampler]][[vk::binding(1)]]
-Texture2D Texture: register(t0);
+Texture2D Texture : register(t0);
 [[vk::combinedImageSampler]][[vk::binding(1)]]
 SamplerState TextureSampler : register(s0);
 
@@ -29,7 +29,7 @@ float2 SampleSphericalMap(float3 v)
 }
 
 
-PSOutput PSMain(PSInput input) 
+PSOutput PSMain(PSInput input)
 {
     PSOutput output = (PSOutput) 0;
     

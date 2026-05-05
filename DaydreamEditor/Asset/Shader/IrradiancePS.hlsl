@@ -133,6 +133,7 @@ PSOutput PSMain(PSInput input)
     //    }
     //}
     //irradiance = PI * irradiance * (1.0 / float(nrSamples));
+    //irradiance = irradiance / (irradiance + float3(1.0f, 1.0f, 1.0f));
     
     output.color = float4(irradiance, 1.0);
     return output;

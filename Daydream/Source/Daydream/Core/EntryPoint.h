@@ -11,7 +11,6 @@ int main(int argc, char** argv)
 {
 	//_CrtSetBreakAlloc(113744);
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-
 	Daydream::Logger::Init();
 
 	Daydream::Application* application = Daydream::CreateApplication();

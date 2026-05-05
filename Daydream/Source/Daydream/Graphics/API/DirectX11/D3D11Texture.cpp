@@ -74,12 +74,20 @@ namespace Daydream
 			if (_desc.type == TextureType::TextureCube || _desc.type == TextureType::TextureCubeArray)
 				desc.MiscFlags |= D3D11_RESOURCE_MISC_TEXTURECUBE;
 
+			if (_desc.mipLevels != 1)
+			{
+				// GenerateMips를 쓰기 위해 필요한 플래그
+				desc.BindFlags |= D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+				desc.MiscFlags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
+			}
+
 			ComPtr<ID3D11Texture2D> texture2D;
 			HRESULT hr = device->GetDevice()->CreateTexture2D(&desc, nullptr, texture2D.GetAddressOf());
 			DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create Texture2D!");
 
 			texture = texture2D;
 			break;
+
 		}
 		case TextureType::Texture3D:
 		{
@@ -104,7 +112,7 @@ namespace Daydream
 		}
 
 
-		
+
 	}
 
 	D3D11GPUTexture::D3D11GPUTexture(D3D11RenderDevice* _device, const TextureDesc& _desc, ID3D11Texture2D* _d3d11Backbuffer)

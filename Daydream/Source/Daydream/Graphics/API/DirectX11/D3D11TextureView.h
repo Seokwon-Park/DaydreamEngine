@@ -11,22 +11,38 @@ namespace Daydream
 	{
 	public:
 		D3D11TextureView(D3D11RenderDevice* _device, Shared<D3D11GPUTexture> _texture, const TextureViewDesc& _desc);
-		~D3D11TextureView() override = default;
+		virtual ~D3D11TextureView();
 
-		virtual void* GetUIHandle() const { return views.srv.Get(); }
+		virtual void* GetUIHandle() const { return view.Get(); }
 
-		ID3D11ShaderResourceView* GetSRV() const { return views.srv.Get(); }
-		ID3D11DepthStencilView* GetDSV() const { return views.dsv.Get(); }
-		ID3D11RenderTargetView* GetRTV() const { return views.rtv.Get(); }
-		ID3D11UnorderedAccessView* GetUAV() const { return views.uav.Get(); }
+		inline ID3D11ShaderResourceView* GetSRV()
+		{
+			DAYDREAM_CORE_ASSERT(desc.type == TextureViewType::ShaderResource, "View is not SRV!");
+			return static_cast<ID3D11ShaderResourceView*>(view.Get());
+		}
 
-		D3D11ResourceViews& GetViews() { return views; }
+		inline ID3D11DepthStencilView* GetDSV()
+		{
+			DAYDREAM_CORE_ASSERT(desc.type == TextureViewType::DepthStencil, "View is not DSV!");
+			return static_cast<ID3D11DepthStencilView*>(view.Get());
+		}
+		inline ID3D11RenderTargetView* GetRTV()
+		{
+			DAYDREAM_CORE_ASSERT(desc.type == TextureViewType::RenderTarget, "View is not RTV!");
+			return static_cast<ID3D11RenderTargetView*>(view.Get());
+		}
+
+		inline ID3D11UnorderedAccessView* GetUAV()
+		{
+			DAYDREAM_CORE_ASSERT(desc.type == TextureViewType::UnorderedAccess, "View is not UAV!");
+			return static_cast<ID3D11UnorderedAccessView*>(view.Get());
+		}
+
 	protected:
 
 	private:
 
 	private:
 		ComPtr<ID3D11View> view;
-		D3D11ResourceViews views;
 	};
 }

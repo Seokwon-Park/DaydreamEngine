@@ -235,7 +235,7 @@ namespace Daydream
 			});
 	}
 
-	void Renderer::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
+	void Renderer::BindConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
 	{
 		EnqueueCommand([_name, _buffer]()
 			{
@@ -317,13 +317,21 @@ namespace Daydream
 			});
 	}
 
-	void Renderer::CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel)
+	void Renderer::CopyTexture2DToTextureCube(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel)
 	{
 		EnqueueCommand([_dstCubemap, _faceIndex, _srcTexture2D, _mipLevel]()
 			{
 				renderContext->CopyTextureToCubemapFace(_dstCubemap, _faceIndex, _srcTexture2D, _mipLevel);
 			});
 
+	}
+
+	void Renderer::CopyTextureCubeToTexture2D(Shared<TextureCube> _srcCubemap, UInt32 _faceIndex, Shared<Texture2D> _dstTexture2D, UInt32 _mipLevel)
+	{
+		EnqueueCommand([_srcCubemap, _faceIndex, _dstTexture2D, _mipLevel]()
+			{
+				renderContext->CopyTextureCubeToTexture2D(_srcCubemap, _faceIndex, _dstTexture2D, _mipLevel);
+			});
 	}
 
 	void Daydream::Renderer::TransitionTextureState(Shared<GPUTexture> _texture, ResourceState _beforeState, ResourceState _afterState, UInt32 _mipLevel, UInt32 _mipCount)

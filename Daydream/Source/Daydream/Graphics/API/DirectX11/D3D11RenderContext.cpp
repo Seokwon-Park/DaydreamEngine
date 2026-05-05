@@ -71,6 +71,7 @@ namespace Daydream
 
 	void D3D11RenderContext::EndRendering(const RenderingInfo& _renderingInfo)
 	{
+		device->GetContext()->OMSetRenderTargets(0, nullptr, nullptr);
 	}
 
 	void D3D11RenderContext::BindPipelineState(Shared<PipelineState> _pipelineState)
@@ -255,18 +256,18 @@ namespace Daydream
 	}
 	void D3D11RenderContext::CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel)
 	{
-		D3D11GPUTexture* dst = Cast<D3D11GPUTexture*>(_dstCubemap->GetGPUTexturePtr());
 		D3D11GPUTexture* src = Cast<D3D11GPUTexture*>(_srcTexture2D->GetGPUTexturePtr());
+		D3D11GPUTexture* dst = Cast<D3D11GPUTexture*>(_dstCubemap->GetGPUTexturePtr());
 
 
 
-		UINT dstSubresourceIndex = D3D11CalcSubresource(
+		UInt32 dstSubresourceIndex = D3D11CalcSubresource(
 			_mipLevel,
 			_faceIndex,
 			dst->GetDesc().mipLevels
 		);
 
-		UINT srcSubresourceIndex = 0;
+		UInt32 srcSubresourceIndex = 0;
 
 		device->GetContext()->CopySubresourceRegion(
 			dst->GetID3D11Resource(),           // 대상 리소스
@@ -276,6 +277,29 @@ namespace Daydream
 			srcSubresourceIndex,  // 원본 Subresource
 			nullptr               // 원본 영역 (nullptr은 전체를 의미)
 		);
+	}
+	void D3D11RenderContext::CopyTextureCubeToTexture2D(Shared<TextureCube> _srcCubemap, UInt32 _faceIndex, Shared<Texture2D> _dstTexture2D, UInt32 _mipLevel)
+	{
+		D3D11GPUTexture* src = Cast<D3D11GPUTexture*>(_srcCubemap->GetGPUTexturePtr());
+		D3D11GPUTexture* dst = Cast<D3D11GPUTexture*>(_dstTexture2D->GetGPUTexturePtr());
+
+		UInt32 srcSubresourceIndex = D3D11CalcSubresource(
+			_mipLevel,
+			_faceIndex,
+			src->GetDesc().mipLevels
+		);
+
+		UInt32 dstSubresourceIndex = 0;
+
+		device->GetContext()->CopySubresourceRegion(
+			dst->GetID3D11Resource(),           // 대상 리소스
+			dstSubresourceIndex,  // 대상 Subresource
+			0, 0, 0,              // 대상 좌표 (x, y, z)
+			src->GetID3D11Resource(),         // 원본 리소스
+			srcSubresourceIndex,  // 원본 Subresource
+			nullptr               // 원본 영역 (nullptr은 전체를 의미)
+		);
+
 	}
 	void D3D11RenderContext::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize)
 	{
@@ -309,19 +333,39 @@ namespace Daydream
 	void D3D11RenderContext::GenerateMips(Shared<Texture> _texture)
 	{
 		D3D11GPUTexture* texture = Cast<D3D11GPUTexture*>(_texture->GetGPUTexturePtr());
-		ID3D11ShaderResourceView* srv = nullptr;
+		ComPtr<ID3D11ShaderResourceView> srv = nullptr;
 
 		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 		srvDesc.Format = GraphicsUtility::DirectX::ConvertToDXGIFormat(texture->GetFormat());
-		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-		srvDesc.Texture2D.MostDetailedMip = 0;
-		srvDesc.Texture2D.MipLevels = -1; // 전체 밉 체인
 
-		device->GetDevice()->CreateShaderResourceView(texture->GetID3D11Resource(), &srvDesc, &srv);
+		bool isArray = (_texture->GetDesc().type == TextureType::TextureCube || _texture->GetDesc().layerCount > 1);
+
+		if (_texture->GetDesc().type == TextureType::TextureCube && _texture->GetLayerCount() == 6)
+		{
+			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+			srvDesc.TextureCube.MostDetailedMip = 0;
+			srvDesc.TextureCube.MipLevels = -1;
+		}
+		else if (isArray)
+		{
+			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+			srvDesc.Texture2DArray.MostDetailedMip = 0;
+			srvDesc.Texture2DArray.MipLevels = -1;
+			srvDesc.Texture2DArray.FirstArraySlice = 0;
+			srvDesc.Texture2DArray.ArraySize = _texture->GetLayerCount();
+		}
+		else
+		{
+			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+			srvDesc.Texture2D.MostDetailedMip = 0;
+			srvDesc.Texture2D.MipLevels = -1;
+		}
+
+		device->GetDevice()->CreateShaderResourceView(texture->GetID3D11Resource(), &srvDesc, srv.GetAddressOf());
 
 		if (srv)
 		{
-			device->GetContext()->GenerateMips(srv);
+			device->GetContext()->GenerateMips(srv.Get());
 		}
 	}
 }

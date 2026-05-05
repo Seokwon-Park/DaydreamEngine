@@ -29,7 +29,9 @@ namespace Daydream
 		int diffuseIndex = 0;
 		int specularIndex = 3;
 
-		Skybox* skybox;
+		Int32 mipLevel = 0;
+
+		Skybox* skybox = nullptr;
 		Shared<Texture2D> equirectangularDropTarget;
 	};
 }
