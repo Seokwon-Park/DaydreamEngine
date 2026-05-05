@@ -39,11 +39,11 @@ namespace Daydream
 	void D3D11RenderContext::BeginRendering(const RenderingInfo& _renderingInfo)
 	{
 		Array<ID3D11RenderTargetView*> rtvs;
-		for (const AttachmentDesc& attachementDesc : _renderingInfo.colorAttachments)
+		for (const AttachmentDesc& attachmentDesc : _renderingInfo.colorAttachments)
 		{
-			ClearValue rtvClearValue = attachementDesc.clearValue;
-			Shared<D3D11TextureView> d3d11TextureView = SharedCast<D3D11TextureView>(attachementDesc.view);
-			if (attachementDesc.loadOp == AttachmentLoadOp::Clear)
+			ClearValue rtvClearValue = attachmentDesc.clearValue;
+			Shared<D3D11TextureView> d3d11TextureView = SharedCast<D3D11TextureView>(attachmentDesc.view);
+			if (attachmentDesc.loadOp == AttachmentLoadOp::Clear)
 			{
 				device->GetContext()->ClearRenderTargetView(d3d11TextureView->GetRTV(), &rtvClearValue.colorClearValue.color[0]);
 			}

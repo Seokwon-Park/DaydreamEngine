@@ -14,8 +14,27 @@ namespace Daydream
 	{
 		desc = _desc;
 		window = (GLFWwindow*)_window.GetNativeWindow();
-		
 
+		glCreateFramebuffers(1, &blitFBO);
+
+		TextureDesc textureDesc{};
+		textureDesc.width = desc.width;
+		textureDesc.height = desc.height;
+		textureDesc.mipLevels = 1;
+		textureDesc.sampleCount = 1;
+		textureDesc.format = desc.format;
+		textureDesc.textureUsage = TextureUsage::RenderTarget;
+		textureDesc.type = TextureType::Texture2D;
+
+		backBufferTexture = MakeShared<OpenGLGPUTexture>(textureDesc);
+
+		TextureViewDesc viewDesc;
+		viewDesc.format = desc.format;
+		viewDesc.type = TextureViewType::RenderTarget;
+
+		backBufferRTV = MakeShared<OpenGLTextureView>(backBufferTexture, viewDesc);
+
+		glNamedFramebufferTexture(blitFBO, GL_COLOR_ATTACHMENT0, backBufferRTV->GetTextureID(), 0);
 	}
 	OpenGLSwapchain::~OpenGLSwapchain()
 	{
@@ -27,6 +46,16 @@ namespace Daydream
 
 	void OpenGLSwapchain::Present()
 	{
+		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		glBlitNamedFramebuffer(
+			blitFBO, 0, 
+			0, 0, desc.width, desc.height, 
+			0, 0, desc.width, desc.height, 
+			GL_COLOR_BUFFER_BIT,
+			GL_NEAREST 
+		);
+		
 		glfwSwapBuffers(window);
 	}
 	//void OpenGLSwapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)

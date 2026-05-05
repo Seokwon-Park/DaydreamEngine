@@ -3,6 +3,7 @@
 
 #include "OpenGLGraphicsPipelineState.h"
 #include "OpenGLTexture.h"
+#include "OpenGLTextureView.h"
 #include "OpenGLTextureCube.h"
 #include "OpenGLBuffer.h"
 #include "OpenGLFramebuffer.h"
@@ -11,6 +12,10 @@
 
 namespace Daydream
 {
+	OpenGLRenderContext::OpenGLRenderContext()
+	{
+		glCreateFramebuffers(1, &framebufferID);
+	}
 	void OpenGLRenderContext::SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height)
 	{
 		glViewport(_x, _y, _width, _height);
@@ -21,9 +26,85 @@ namespace Daydream
 	}
 	void OpenGLRenderContext::BeginRendering(const RenderingInfo& _renderingInfo)
 	{
+		std::vector<GLenum> drawBuffers;
+		for (UInt64 i = 0; i < _renderingInfo.colorAttachments.size(); i++)
+		{
+			const AttachmentDesc& attachmentDesc = _renderingInfo.colorAttachments[i];
+			Shared<OpenGLTextureView> openGLTextureView = SharedCast<OpenGLTextureView>(attachmentDesc.view);
+
+			glNamedFramebufferTexture(framebufferID,
+				GL_COLOR_ATTACHMENT0 + i,
+				openGLTextureView->GetTextureID(),
+				0);
+
+			drawBuffers.push_back(GL_COLOR_ATTACHMENT0 + i);
+		}
+
+		// Depth attachment 연결
+		if (_renderingInfo.depthAttachment.view != nullptr)
+		{
+			Shared<OpenGLTextureView> openGLTextureView = SharedCast<OpenGLTextureView>(_renderingInfo.depthAttachment.view);
+
+			glNamedFramebufferTexture(framebufferID,
+				GL_DEPTH_STENCIL_ATTACHMENT,
+				openGLTextureView->GetTextureID(),
+				0);
+		}
+
+
+		// Draw buffers 설정 (multiple render targets용)
+		glNamedFramebufferDrawBuffers(framebufferID,
+			(UInt32)drawBuffers.size(),
+			drawBuffers.data());
+
+		glBindFramebuffer(GL_FRAMEBUFFER, framebufferID);
+
+		for (UInt64 i = 0; i < _renderingInfo.colorAttachments.size(); i++)
+		{
+			const AttachmentDesc& attachmentDesc = _renderingInfo.colorAttachments[i];
+			ClearValue rtvClearValue = attachmentDesc.clearValue;
+
+			if (attachmentDesc.loadOp == AttachmentLoadOp::Clear)
+			{
+				glClearNamedFramebufferfv(framebufferID, GL_COLOR, i, rtvClearValue.colorClearValue.color);
+			}
+		}
+
+		if (_renderingInfo.depthAttachment.view != nullptr)
+		{
+			ClearValue dsvClearValue = _renderingInfo.depthAttachment.clearValue;
+			Shared<OpenGLTextureView> openGLTextureView = SharedCast<OpenGLTextureView>(_renderingInfo.depthAttachment.view);
+
+			float depthValue = _renderingInfo.depthAttachment.clearValue.depthClearValue;
+			int stencilValue = _renderingInfo.depthAttachment.clearValue.stencilClearValue;
+			if (_renderingInfo.depthAttachment.loadOp == AttachmentLoadOp::Clear)
+			{
+				glClearNamedFramebufferfi(framebufferID, GL_DEPTH_STENCIL, 0, depthValue, stencilValue);
+			}
+		}
+
+		SetViewport(
+			_renderingInfo.renderArea.x,
+			_renderingInfo.renderArea.y,
+			_renderingInfo.renderArea.width,
+			_renderingInfo.renderArea.height
+		);
+		////glNamedFramebufferDrawBuffer(framebufferID, GL_COLOR_ATTACHMENT0);
+
+		//DAYDREAM_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
 	}
 	void OpenGLRenderContext::EndRendering(const RenderingInfo& _renderingInfo)
 	{
+		for (UInt64 i = 0; i < _renderingInfo.colorAttachments.size(); i++)
+		{
+			glNamedFramebufferTexture(framebufferID,
+				GL_COLOR_ATTACHMENT0 + i,
+				0,
+				0);
+		}
+		glNamedFramebufferTexture(framebufferID, GL_DEPTH_STENCIL_ATTACHMENT, 0, 0);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 	//void OpenGLRenderContext::BeginRenderPass(Shared<RenderPass> _renderPass, Shared<Framebuffer> _framebuffer)
 	//{
@@ -158,7 +239,7 @@ namespace Daydream
 			0, 0, _faceIndex,      // 대상 좌표 (x, y, layer) - faceIndex가 레이어를 지정!
 			src->GetWidth(), src->GetHeight(), 1      // 복사할 크기
 		);
-	} 
+	}
 
 	void OpenGLRenderContext::GenerateMips(Shared<Texture> _texture)
 	{

@@ -34,7 +34,10 @@ namespace Daydream
 		virtual Shared<TextureView> GetCurrentRenderTargetView() const = 0;
 		virtual Shared<RenderCommandList> GetCurrentCommandList() const = 0;
 
-		inline const SwapchainDesc& GetDesc() { return desc; };
+		inline const UInt32 GetWidth() const { return desc.width; }
+		inline const UInt32 GetHeight() const { return desc.height; }
+
+		inline const SwapchainDesc& GetDesc() const { return desc; };
 		void ResizeSwapchain(UInt32 _width, UInt32 _height);
 
 		static Shared<Swapchain> Create(const DaydreamWindow& _window, const SwapchainDesc& _desc);

@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Daydream/Graphics/Core/Swapchain.h"
-#include "OpenGLFramebuffer.h"
+#include "OpenGLTextureView.h"
+
 
 #include "GLFW/glfw3.h"
 
@@ -20,12 +21,15 @@ namespace Daydream
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
 
-		virtual Shared<TextureView> GetCurrentRenderTargetView() const { return nullptr; };
+		virtual Shared<TextureView> GetCurrentRenderTargetView() const { return backBufferRTV; };
 		virtual Shared<RenderCommandList> GetCurrentCommandList() const { return nullptr; };
 
 	private:
 		GLFWwindow* window;
 
+		UInt32 blitFBO;
+		Shared<OpenGLGPUTexture> backBufferTexture;
+		Shared<OpenGLTextureView> backBufferRTV;
 
 	};
 }

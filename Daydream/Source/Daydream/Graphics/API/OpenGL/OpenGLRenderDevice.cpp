@@ -2,6 +2,7 @@
 #include "OpenGLShader.h"
 #include "OpenGLBuffer.h"
 #include "OpenGLTexture.h"
+#include "OpenGLTextureView.h"
 #include "OpenGLTextureCube.h"
 #include "OpenGLSampler.h"
 #include "OpenGLSwapchain.h"
@@ -73,7 +74,8 @@ namespace Daydream
 
 	Shared<TextureView> OpenGLRenderDevice::CreateTextureView(Shared<Texture> _texture, const TextureViewDesc& _desc)
 	{
-		return Shared<TextureView>();
+		Shared<OpenGLGPUTexture> texture = SharedCast<OpenGLGPUTexture>(_texture->GetGPUTexture());
+		return MakeShared<OpenGLTextureView>(texture, _desc);
 	}
 
 	//Shared<VertexBuffer> OpenGLRenderDevice::CreateDynamicVertexBuffer(UInt32 _size, UInt32 _stride, UInt32 _initialDataSize, const void* _initialData)

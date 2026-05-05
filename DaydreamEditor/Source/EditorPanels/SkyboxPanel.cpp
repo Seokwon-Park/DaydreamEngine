@@ -15,6 +15,8 @@ namespace Daydream
 
 	void SkyboxPanel::OnImGuiRender()
 	{
+		if (skybox == nullptr) return;
+
 		ImGui::Begin("SkyboxSettings");
 		ImGui::Checkbox("Render Skybox", &isUsingSkybox);
 

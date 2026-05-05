@@ -118,11 +118,12 @@ namespace Daydream
 			{
 				layer->OnUpdate(deltaTime);
 			}
-			Renderer::BeginRendering(mainWindow->GetSwapchain());
+			Renderer::BeginRendering(mainWindow->GetSwapchain(), Color::Blue);
 			imGuiLayer->BeginImGui();
 			for (Layer* layer : layerStack)
 				layer->OnImGuiRender();
 			imGuiLayer->EndImGui();
+			Renderer::EndRendering(RenderingInfo());
 			//Renderer::EndSwapchainRenderPass(mainWindow->GetSwapchain());
 			//auto [x, y] = Input::GetMousePosition();
 			////DAYDREAM_CORE_TRACE("{0}, {1}", x, y);

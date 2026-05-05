@@ -11,10 +11,11 @@ namespace Daydream
 		OpenGLTextureView(Shared<OpenGLGPUTexture> _texture, const TextureViewDesc& _desc);
 		~OpenGLTextureView() override = default;
 
+		virtual void* GetUIHandle() const override { return reinterpret_cast<void*>(static_cast<UInt64>(textureViewID)); }
+
 		UInt32 GetTextureID() const { return textureViewID; }
 
 	private:
-		TextureViewDesc desc;
 		UInt32 textureViewID = 0;
 	};
 }

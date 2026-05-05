@@ -25,20 +25,29 @@ namespace Daydream
 
 	void ResourceManager::Init()
 	{
-		DAYDREAM_CORE_ASSERT(!instance, "ResourceManager must be initialized only 1 time");
+		if (instance)
+		{
+			return;
+		}
 		instance = new ResourceManager();
 
-		instance->registryList[typeid(ShaderGroup)] = MakeUnique<ShaderGroupRegistry>();
-		//instance->registryList[typeid(RenderPass)] = MakeUnique<RenderPassRegistry>();
-		instance->registryList[typeid(Sampler)] = MakeUnique<SamplerRegistry>();
-		instance->registryList[typeid(Mesh)] = MakeUnique<MeshRegistry>();
-		instance->registryList[typeid(GraphicsPipelineState)] = MakeUnique<PipelineStateRegistry>();
+		std::type_index typeIndex = typeid(ShaderGroup);
+		instance->registryList[typeIndex] = MakeUnique<ShaderGroupRegistry>();
+		typeIndex = typeid(Sampler);
+		instance->registryList[typeIndex] = MakeUnique<SamplerRegistry>();
+		typeIndex = typeid(Mesh);
+		instance->registryList[typeIndex] = MakeUnique<MeshRegistry>();
+		typeIndex = typeid(GraphicsPipelineState);
+		instance->registryList[typeIndex] = MakeUnique<PipelineStateRegistry>();
 
-		for (auto& [id, registry] : instance->registryList)
-		{
-			registry->CreateBuiltinResources();
-		}
-
+		typeIndex = typeid(ShaderGroup);
+		instance->registryList[typeIndex]->CreateBuiltinResources();
+		typeIndex = typeid(Sampler);
+		instance->registryList[typeIndex]->CreateBuiltinResources();
+		typeIndex = typeid(Mesh);
+		instance->registryList[typeIndex]->CreateBuiltinResources();
+		typeIndex = typeid(GraphicsPipelineState);
+		instance->registryList[typeIndex]->CreateBuiltinResources();
 		////instance->meshManager->CreateEssentialMeshes();
 		//instance->samplerManager->CreateEssentialSamplers();
 		//instance->textureManager->CreateEssentialTextures();

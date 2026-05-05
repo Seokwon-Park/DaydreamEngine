@@ -157,15 +157,17 @@ namespace Daydream
 			});
 	}
 
-	void Renderer::BeginRendering(Swapchain* _swapchain)
+	void Renderer::BeginRendering(Swapchain* _swapchain, Color _clearColor)
 	{
-		EnqueueCommand([_swapchain]()
+		EnqueueCommand([_swapchain, _clearColor]()
 			{
+				RenderingInfo renderingInfo{};
+				renderingInfo.renderArea.width = _swapchain->GetWidth();
+				renderingInfo.renderArea.height = _swapchain->GetHeight();
+
 				AttachmentDesc desc;
 				desc.view = _swapchain->GetCurrentRenderTargetView();
-				desc.clearValue.colorClearValue = Color::Blue;
-
-				RenderingInfo renderingInfo;
+				desc.clearValue.colorClearValue = _clearColor;
 				renderingInfo.colorAttachments.push_back(desc);
 
 				renderContext->BeginRendering(renderingInfo);
@@ -230,7 +232,7 @@ namespace Daydream
 	void Renderer::BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _samplerState)
 	{
 		EnqueueCommand([_name, _textureView, _samplerState]()
-			{ 
+			{
 				renderContext->BindShaderResourceView(_name, _textureView, _samplerState);
 			});
 	}

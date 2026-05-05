@@ -56,7 +56,8 @@ namespace Daydream
 
 		static void BeginRendering(const RenderingInfo& _renderingInfo);
 		static void EndRendering(const RenderingInfo& _renderingInfo);
-		static void BeginRendering(Swapchain* _swapchain);
+		static void BeginRendering(Swapchain* _swapchain, Color _clearColor);
+		//static void EndRendering(Swapchain* _swapchain);
 		//static void BeginRenderPass(const Shared<RenderPass>& _renderPass, const Shared<Framebuffer>& _framebuffer);
 		//static void EndRenderPass(const Shared<RenderPass>& _renderPass);
 
@@ -69,7 +70,7 @@ namespace Daydream
 		//static void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube);
 		static void BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _samplerState);
 		static void BindConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer);
-		
+
 
 		template <typename DataType>
 		static void UpdateConstantBuffer(Shared<ConstantBuffer> _buffer, const DataType& _data)
