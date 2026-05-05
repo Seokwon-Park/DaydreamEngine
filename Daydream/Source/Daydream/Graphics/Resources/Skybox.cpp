@@ -52,19 +52,19 @@ namespace Daydream
 	void Skybox::CreateResources()
 	{
 		//equirectangularRenderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
-		equirectangularPSO = ResourceManager::GetResource<PipelineState>("EquirectangularPSO");
+		equirectangularPSO = ResourceManager::GetResource<GraphicsPipelineState>("EquirectangularPSO");
 
 		// Resize Capture setup
 		//resizeRenderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
-		resizePSO = ResourceManager::GetResource<PipelineState>("ResizePSO");
+		resizePSO = ResourceManager::GetResource<GraphicsPipelineState>("ResizePSO");
 
 		//irradianceRenderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
-		irradiancePSO = ResourceManager::GetResource<PipelineState>("IrradiancePSO");
+		irradiancePSO = ResourceManager::GetResource<GraphicsPipelineState>("IrradiancePSO");
 
-		prefilterPSO = ResourceManager::GetResource<PipelineState>("PrefilterPSO");
+		prefilterPSO = ResourceManager::GetResource<GraphicsPipelineState>("PrefilterPSO");
 		equirectangularDropTarget = AssetManager::GetAssetByPath<Texture2D>("Resource/NoTexture.png");
 
-		brdfPSO = ResourceManager::GetResource<PipelineState>("BRDFPSO");
+		brdfPSO = ResourceManager::GetResource<GraphicsPipelineState>("BRDFPSO");
 
 		quadMesh = ResourceManager::GetResource<Mesh>("Quad");
 

@@ -6,7 +6,7 @@
 
 #include "Daydream/Graphics/Manager/ResourceManager.h"
 #include "Daydream/Graphics/Resources/Mesh.h"
-#include "D3D12PipelineState.h"
+#include "D3D12GraphicsPipelineState.h"
 
 namespace Daydream
 {

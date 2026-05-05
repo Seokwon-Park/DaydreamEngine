@@ -8,7 +8,7 @@
 #include "Daydream/Graphics/Core/Renderer.h"
 #include "Daydream/Asset/AssetManager.h"
 #include "Daydream/Graphics/Manager/ResourceManager.h"
-#include "Daydream/Graphics/Resources/PipelineState.h"
+#include "Daydream/Graphics/Resources/PipelineState/GraphicsPipelineState.h"
 #include "Daydream/Graphics/Resources/Skybox.h"
 
 namespace Daydream
@@ -18,8 +18,8 @@ namespace Daydream
 		worldMatrixConstantBuffer = ConstantBuffer::Create(sizeof(TransformConstantBufferData));
 		entityHandleConstantBuffer = ConstantBuffer::Create(16);
 		
-		maskMaterial = Material::Create(ResourceManager::GetResource<PipelineState>("MaskPSO"));
-		lightMaterial = Material::Create(ResourceManager::GetResource<PipelineState>("DepthPSO"));
+		maskMaterial = Material::Create(ResourceManager::GetResource<GraphicsPipelineState>("MaskPSO"));
+		lightMaterial = Material::Create(ResourceManager::GetResource<GraphicsPipelineState>("DepthPSO"));
 	}
 
 	MeshRendererComponent::~MeshRendererComponent()

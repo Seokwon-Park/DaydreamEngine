@@ -44,14 +44,14 @@ namespace Daydream
 		//gBufferRenderPass = ResourceManager::GetResource<RenderPass>("GBufferRenderPass");
 		//maskRenderPass = ResourceManager::GetResource<RenderPass>("MaskRenderPass");
 
-		pso = ResourceManager::GetResource<PipelineState>("SpritePSO");
-		pso3d = ResourceManager::GetResource<PipelineState>("ForwardPSO");
-		gBufferPSO = ResourceManager::GetResource<PipelineState>("GBufferPSO");
-		skyboxPipeline = ResourceManager::GetResource<PipelineState>("CubemapPSO");
-		equirectangleToCubePipeline = ResourceManager::GetResource<PipelineState>("EquirectangularPSO");
-		deferredLightingPSO = ResourceManager::GetResource<PipelineState>("DeferredPSO");
-		depthPSO = ResourceManager::GetResource<PipelineState>("DepthPSO");
-		maskPSO = ResourceManager::GetResource<PipelineState>("MaskPSO");
+		pso = ResourceManager::GetResource<GraphicsPipelineState>("SpritePSO");
+		pso3d = ResourceManager::GetResource<GraphicsPipelineState>("ForwardPSO");
+		gBufferPSO = ResourceManager::GetResource<GraphicsPipelineState>("GBufferPSO");
+		skyboxPipeline = ResourceManager::GetResource<GraphicsPipelineState>("CubemapPSO");
+		equirectangleToCubePipeline = ResourceManager::GetResource<GraphicsPipelineState>("EquirectangularPSO");
+		deferredLightingPSO = ResourceManager::GetResource<GraphicsPipelineState>("DeferredPSO");
+		depthPSO = ResourceManager::GetResource<GraphicsPipelineState>("DepthPSO");
+		maskPSO = ResourceManager::GetResource<GraphicsPipelineState>("MaskPSO");
 
 		material = Material::Create(pso);
 		//material->SetTexture2D("Texture", texture);

@@ -63,7 +63,7 @@ namespace Daydream
 		//static void BeginSwapchainRenderPass(Swapchain* _swapchain);
 		//static void EndSwapchainRenderPass(Swapchain* _swapchain);
 
-		static void BindPipelineState(Shared<PipelineState> _pipelineState);
+		static void BindPipelineState(Shared<GraphicsPipelineState> _pipelineState);
 
 		//static void SetTexture2D(const String& _name, Shared<Texture2D> _texture);
 		//static void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube);

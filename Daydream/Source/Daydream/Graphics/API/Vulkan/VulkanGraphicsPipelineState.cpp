@@ -1,5 +1,5 @@
 #include "DaydreamPCH.h"
-#include "VulkanPipelineState.h"
+#include "VulkanGraphicsPipelineState.h"
 
 #include "VulkanSwapchain.h"
 #include "VulkanUtility.h"
@@ -27,8 +27,8 @@ namespace Daydream
 			return {};
 	}
 
-	VulkanPipelineState::VulkanPipelineState(VulkanRenderDevice* _device, const PipelineStateDesc& _desc)
-		:PipelineState(_desc)
+	VulkanGraphicsPipelineState::VulkanGraphicsPipelineState(VulkanRenderDevice* _device, const GraphicsPipelineStateDesc& _desc)
+		:GraphicsPipelineState(_desc)
 	{
 		device = _device;
 		
@@ -234,15 +234,15 @@ namespace Daydream
 		pipeline = std::move(resultValue.value);
 	}
 
-	VulkanPipelineState::~VulkanPipelineState()
+	VulkanGraphicsPipelineState::~VulkanGraphicsPipelineState()
 	{
 	}
-	void VulkanPipelineState::Bind() const
+	void VulkanGraphicsPipelineState::Bind() const
 	{
 		//vkCmdBindDescriptorSets(device->GetCommandBuffer(), VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, descriptorSets.data(), 0, nullptr);
 	}
 
-	void VulkanPipelineState::CreateShaderStageInfo(const Shared<Shader>& _shader)
+	void VulkanGraphicsPipelineState::CreateShaderStageInfo(const Shared<Shader>& _shader)
 	{
 
 	}

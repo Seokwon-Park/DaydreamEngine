@@ -6,7 +6,7 @@ namespace Daydream
 {
 	class ShaderGroup;
 	class Sampler;
-	class PipelineState;
+	class GraphicsPipelineState;
 	class Texture2D;
 
 	struct TextureBinding
@@ -68,7 +68,7 @@ namespace Daydream
 		//inline const HashMap<String, Shared<TextureCube>>& GetAllTextureCube() { return textureCubes; }
 		//inline const HashMap<String, Shared<ConstantBuffer>>& GetAllConstantBuffer() { return cbuffers; }
 
-		static Shared<Material> Create(Shared<PipelineState> _pipeline);
+		static Shared<Material> Create(Shared<GraphicsPipelineState> _pipeline);
 	protected:
 		HashMap<String, ShaderResourceType> textureBindingMap;
 

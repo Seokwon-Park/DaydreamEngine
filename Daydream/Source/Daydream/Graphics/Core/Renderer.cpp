@@ -203,7 +203,7 @@ namespace Daydream
 	//		});
 	//}
 
-	void Renderer::BindPipelineState(Shared<PipelineState> _pipelineState)
+	void Renderer::BindPipelineState(Shared<GraphicsPipelineState> _pipelineState)
 	{
 		EnqueueCommand([_pipelineState]()
 			{

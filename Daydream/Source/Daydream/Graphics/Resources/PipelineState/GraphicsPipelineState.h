@@ -26,7 +26,7 @@ namespace Daydream
 
 
 
-	struct PipelineStateDesc
+	struct GraphicsPipelineStateDesc
 	{
 		Shared<ShaderGroup> shaderGroup;
 		//Shared<Shader> computeShader; //??
@@ -45,11 +45,11 @@ namespace Daydream
 		PrimitiveTopologyType topologyType = PrimitiveTopologyType::TriangleList;
 	};
 
-	class PipelineState
+	class GraphicsPipelineState
 	{
 	public:
-		PipelineState(const PipelineStateDesc& _desc);
-		virtual ~PipelineState() = default;
+		GraphicsPipelineState(const GraphicsPipelineStateDesc& _desc);
+		virtual ~GraphicsPipelineState() = default;
 
 		virtual void Bind() const = 0;
 		//virtual Shared<Material> CreateMaterial() = 0;
@@ -61,12 +61,12 @@ namespace Daydream
 			return shaderGroup->GetShaderBindingInfo(_name);
 		}
 
-		static Shared<PipelineState> Create(const PipelineStateDesc& _desc);
+		static Shared<GraphicsPipelineState> Create(const GraphicsPipelineStateDesc& _desc);
 	protected:
 
 		Shared<ShaderGroup> shaderGroup;
 
-		PipelineStateDesc desc;
+		GraphicsPipelineStateDesc desc;
 		//rtv, dsv;
 		//blend, rast, ds;
 	};

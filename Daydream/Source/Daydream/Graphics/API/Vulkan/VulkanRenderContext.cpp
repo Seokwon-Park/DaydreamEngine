@@ -1,7 +1,7 @@
 #include "DaydreamPCH.h"
 #include "VulkanRenderContext.h"
 
-#include "VulkanPipelineState.h"
+#include "VulkanGraphicsPipelineState.h"
 #include "VulkanTexture.h"
 #include "VulkanTextureView.h"
 #include "VulkanBuffer.h"
@@ -146,8 +146,8 @@ namespace Daydream
 
 		vk::RenderingInfo renderingInfo{};
 		renderingInfo.flags = {};
-		renderingInfo.renderArea.extent.width = _renderingInfo.colorAttachments[0].view->GetWidth();
-		renderingInfo.renderArea.extent.height = _renderingInfo.colorAttachments[0].view->GetHeight();
+		renderingInfo.renderArea.extent.width = _renderingInfo.renderArea.width;
+		renderingInfo.renderArea.extent.height = _renderingInfo.renderArea.height;
 		renderingInfo.layerCount = 1;
 		renderingInfo.viewMask;
 		renderingInfo.colorAttachmentCount = colorAttachmentInfos.size();
@@ -203,11 +203,11 @@ namespace Daydream
 	//{
 	//	GetActiveCommandBuffer().endRenderPass();
 	//}
-	void VulkanRenderContext::BindPipelineState(Shared<PipelineState> _pipelineState)
+	void VulkanRenderContext::BindPipelineState(Shared<GraphicsPipelineState> _pipelineState)
 	{
 		RenderContext::BindPipelineState(_pipelineState);
 		activePipelineState = _pipelineState;
-		Shared<VulkanPipelineState> pipelineState = static_pointer_cast<VulkanPipelineState>(_pipelineState);
+		Shared<VulkanGraphicsPipelineState> pipelineState = static_pointer_cast<VulkanGraphicsPipelineState>(_pipelineState);
 
 		GetActiveCommandBuffer().bindPipeline(vk::PipelineBindPoint::eGraphics, pipelineState->GetPipeline());
 	}
@@ -293,7 +293,7 @@ namespace Daydream
 		if (resourceInfo == nullptr) return;
 
 		VulkanGPUBuffer* constantBuffer = Cast<VulkanGPUBuffer*>(_buffer->GetGPUBufferPtr());
-		Shared<VulkanPipelineState> vulkanPSO = std::static_pointer_cast<VulkanPipelineState>(activePipelineState);
+		Shared<VulkanGraphicsPipelineState> vulkanPSO = std::static_pointer_cast<VulkanGraphicsPipelineState>(activePipelineState);
 
 		vk::DescriptorBufferInfo bufferInfo{};
 		bufferInfo.buffer = constantBuffer->GetVkBuffer();

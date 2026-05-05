@@ -8,7 +8,7 @@
 #include "OpenGLFramebuffer.h"
 #include "OpenGLRenderDevice.h"
 #include "OpenGLRenderContext.h"
-#include "OpenGLPipelineState.h"
+#include "OpenGLGraphicsPipelineState.h"
 #include "OpenGLImGuiRenderer.h"
 
 #include "glad/glad.h"
@@ -119,9 +119,9 @@ namespace Daydream
 	//	return _renderPass->CreateFramebuffer(_desc);
 	//}
 
-	Shared<PipelineState> OpenGLRenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)
+	Shared<GraphicsPipelineState> OpenGLRenderDevice::CreatePipelineState(const GraphicsPipelineStateDesc& _desc)
 	{
-		return MakeShared<OpenGLPipelineState>(_desc);
+		return MakeShared<OpenGLGraphicsPipelineState>(_desc);
 	}
 
 	Shared<Shader> OpenGLRenderDevice::CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode)

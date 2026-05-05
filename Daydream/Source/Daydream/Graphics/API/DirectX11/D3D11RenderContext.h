@@ -21,7 +21,7 @@ namespace Daydream
 		virtual void BeginRendering(const RenderingInfo& _renderingInfo) override;
 		virtual void EndRendering(const RenderingInfo& _renderingInfo) override;
 
-		virtual void BindPipelineState(Shared<PipelineState> _pipelineState)override;
+		virtual void BindPipelineState(Shared<GraphicsPipelineState> _pipelineState)override;
 
 		virtual void BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer) override;
 		virtual void BindIndexBuffer(Shared<IndexBuffer> _indexBuffer) override;

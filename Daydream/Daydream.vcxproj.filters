@@ -291,7 +291,7 @@
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11ImGuiRenderer.h">
       <Filter>Source\Daydream\Graphics\API\DirectX11</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11PipelineState.h">
+    <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11GraphicsPipelineState.h">
       <Filter>Source\Daydream\Graphics\API\DirectX11</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX11\D3D11RenderContext.h">
@@ -333,7 +333,7 @@
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12ImGuiRenderer.h">
       <Filter>Source\Daydream\Graphics\API\DirectX12</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12PipelineState.h">
+    <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12GraphicsPipelineState.h">
       <Filter>Source\Daydream\Graphics\API\DirectX12</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\API\DirectX12\D3D12RenderCommandList.h">
@@ -378,7 +378,7 @@
     <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLImGuiRenderer.h">
       <Filter>Source\Daydream\Graphics\API\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLPipelineState.h">
+    <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLGraphicsPipelineState.h">
       <Filter>Source\Daydream\Graphics\API\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\API\OpenGL\OpenGLRenderContext.h">
@@ -414,7 +414,7 @@
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanImGuiRenderer.h">
       <Filter>Source\Daydream\Graphics\API\Vulkan</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanPipelineState.h">
+    <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanGraphicsPipelineState.h">
       <Filter>Source\Daydream\Graphics\API\Vulkan</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanRenderCommandList.h">
@@ -522,7 +522,7 @@
     <ClInclude Include="Source\Daydream\Graphics\Resources\Model.h">
       <Filter>Source\Daydream\Graphics\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Daydream\Graphics\Resources\PipelineState.h">
+    <ClInclude Include="Source\Daydream\Graphics\Resources\PipelineState\GraphicsPipelineState.h">
       <Filter>Source\Daydream\Graphics\Resources</Filter>
     </ClInclude>
     <ClInclude Include="Source\Daydream\Graphics\Resources\Sampler.h">
@@ -1962,6 +1962,8 @@
     <ClInclude Include="Source\Daydream\Graphics\API\Vulkan\VulkanTextureView.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\Texture\Texture2D.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderingInfo.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Resources\PipelineState\ComputePipelineState.h" />
+    <ClInclude Include="Source\Daydream\Graphics\Core\DeferredSceneRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Base\IO\Directory.cpp">
@@ -2042,7 +2044,7 @@
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11ImGuiRenderer.cpp">
       <Filter>Source\Daydream\Graphics\API\DirectX11</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11PipelineState.cpp">
+    <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11GraphicsPipelineState.cpp">
       <Filter>Source\Daydream\Graphics\API\DirectX11</Filter>
     </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX11\D3D11PixelShader.cpp">
@@ -2087,7 +2089,7 @@
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12ImGuiRenderer.cpp">
       <Filter>Source\Daydream\Graphics\API\DirectX12</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12PipelineState.cpp">
+    <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12GraphicsPipelineState.cpp">
       <Filter>Source\Daydream\Graphics\API\DirectX12</Filter>
     </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\API\DirectX12\D3D12RenderCommandList.cpp">
@@ -2132,7 +2134,7 @@
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLImGuiRenderer.cpp">
       <Filter>Source\Daydream\Graphics\API\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLPipelineState.cpp">
+    <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLGraphicsPipelineState.cpp">
       <Filter>Source\Daydream\Graphics\API\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\API\OpenGL\OpenGLRenderContext.cpp">
@@ -2168,7 +2170,7 @@
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanImGuiRenderer.cpp">
       <Filter>Source\Daydream\Graphics\API\Vulkan</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanPipelineState.cpp">
+    <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanGraphicsPipelineState.cpp">
       <Filter>Source\Daydream\Graphics\API\Vulkan</Filter>
     </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanRenderCommandList.cpp">
@@ -2276,7 +2278,7 @@
     <ClCompile Include="Source\Daydream\Graphics\Resources\Model.cpp">
       <Filter>Source\Daydream\Graphics\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Daydream\Graphics\Resources\PipelineState.cpp">
+    <ClCompile Include="Source\Daydream\Graphics\Resources\PipelineState\GraphicsPipelineState.cpp">
       <Filter>Source\Daydream\Graphics\Resources</Filter>
     </ClCompile>
     <ClCompile Include="Source\Daydream\Graphics\Resources\Sampler.cpp">
@@ -2385,5 +2387,7 @@
     <ClCompile Include="Source\Daydream\Graphics\API\Vulkan\VulkanTextureView.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\Texture\Texture2D.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderingInfo.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Resources\PipelineState\ComputePipelineState.cpp" />
+    <ClCompile Include="Source\Daydream\Graphics\Core\DeferredSceneRenderer.cpp" />
   </ItemGroup>
 </Project>

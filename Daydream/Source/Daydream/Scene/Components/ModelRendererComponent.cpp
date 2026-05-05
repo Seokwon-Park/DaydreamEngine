@@ -16,7 +16,7 @@ namespace Daydream
 		materialCB = ConstantBuffer::Create(sizeof(MaterialConstantBufferData));
 		entityHandle = ConstantBuffer::Create(16);
 
-		maskMaterial = Material::Create(ResourceManager::GetResource<PipelineState>("MaskPSO"));
+		maskMaterial = Material::Create(ResourceManager::GetResource<GraphicsPipelineState>("MaskPSO"));
 	}
 
 	ModelRendererComponent::~ModelRendererComponent()

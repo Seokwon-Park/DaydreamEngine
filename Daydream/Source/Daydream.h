@@ -31,7 +31,7 @@
 #include "Daydream/Graphics/Core/RenderGraph.h"
 #include "Daydream/Graphics/Core/RenderingInfo.h"
 #include "Daydream/Graphics/Core/SceneRenderer.h"
-#include "Daydream/Graphics/Resources/PipelineState.h"
+#include "Daydream/Graphics/Resources/PipelineState/GraphicsPipelineState.h"
 
 #include "Daydream/Graphics/Camera/Camera.h"
 #include "Daydream/Graphics/Camera/EditorCamera.h"

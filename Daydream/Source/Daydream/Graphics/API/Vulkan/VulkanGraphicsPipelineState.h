@@ -1,15 +1,15 @@
 #pragma once
 
-#include "Daydream/Graphics/Resources/PipelineState.h"
+#include "Daydream/Graphics/Resources/PipelineState/GraphicsPipelineState.h"
 #include "VulkanRenderDevice.h"
 
 namespace Daydream
 {
-	class VulkanPipelineState : public PipelineState
+	class VulkanGraphicsPipelineState : public GraphicsPipelineState
 	{
 	public:
-		VulkanPipelineState(VulkanRenderDevice* _device, const PipelineStateDesc& _desc);
-		virtual ~VulkanPipelineState() override;
+		VulkanGraphicsPipelineState(VulkanRenderDevice* _device, const GraphicsPipelineStateDesc& _desc);
+		virtual ~VulkanGraphicsPipelineState() override;
 
 		virtual void Bind() const override;
 		//virtual Shared<Material> CreateMaterial() override;

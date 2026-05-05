@@ -1,7 +1,7 @@
 #include "DaydreamPCH.h"
 #include "PipelineStateRegistry.h"
 
-#include "Daydream/Graphics/Resources/PipelineState.h"
+#include "Daydream/Graphics/Resources/PipelineState/GraphicsPipelineState.h"
 #include "ResourceManager.h"
 
 namespace Daydream
@@ -18,7 +18,7 @@ namespace Daydream
 		rastDesc.fillMode = FillMode::Solid;
 
 		//Forward Rendering 
-		PipelineStateDesc psoDesc;
+		GraphicsPipelineStateDesc psoDesc;
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Model");
 		psoDesc.renderTargetFormats =
 		{
@@ -29,7 +29,7 @@ namespace Daydream
 			RenderFormat::R24G8_TYPELESS
 		};
 		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("StandardRenderPass");
-		registry["ForwardPSO"] = PipelineState::Create(psoDesc);
+		registry["ForwardPSO"] = GraphicsPipelineState::Create(psoDesc);
 
 		//TODO: Sprite Rendering 
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Sprite");
@@ -38,7 +38,7 @@ namespace Daydream
 			RenderFormat::R8G8B8A8_UNORM
 		};
 		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("StandardRenderPass");
-		registry["SpritePSO"] = PipelineState::Create(psoDesc);
+		registry["SpritePSO"] = GraphicsPipelineState::Create(psoDesc);
 
 		//Resize Texture
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Resize");
@@ -47,16 +47,16 @@ namespace Daydream
 		{
 			RenderFormat::R16G16B16A16_FLOAT
 		};
-		registry["ResizePSO"] = PipelineState::Create(psoDesc);
+		registry["ResizePSO"] = GraphicsPipelineState::Create(psoDesc);
 
 		//BRDF
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("BRDF");
 		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
-		registry["BRDFPSO"] = PipelineState::Create(psoDesc);
+		registry["BRDFPSO"] = GraphicsPipelineState::Create(psoDesc);
 
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Mip"); 
 		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("MipmapRenderPass");
-		registry["GenerateMipsPSO"] = PipelineState::Create(psoDesc);
+		registry["GenerateMipsPSO"] = GraphicsPipelineState::Create(psoDesc);
 
 		// G-Buffer 
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("GBuffer");
@@ -73,15 +73,15 @@ namespace Daydream
 			RenderFormat::R24G8_TYPELESS
 		};
 		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("GBufferRenderPass");
-		registry["GBufferPSO"] = PipelineState::Create(psoDesc);
+		registry["GBufferPSO"] = GraphicsPipelineState::Create(psoDesc);
 
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("DeferredLighting");
 		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("StandardRenderPass");
-		registry["DeferredPSO"] = PipelineState::Create(psoDesc);
+		registry["DeferredPSO"] = GraphicsPipelineState::Create(psoDesc);
 
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Mask");
 		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("MaskRenderPass");
-		registry["MaskPSO"] = PipelineState::Create(psoDesc);
+		registry["MaskPSO"] = GraphicsPipelineState::Create(psoDesc);
 
 		// Shadow
 		RasterizerStateDesc shadowRSDesc = {};
@@ -96,7 +96,7 @@ namespace Daydream
 		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("DepthRenderPass");
 
 
-		registry["DepthPSO"] = PipelineState::Create(psoDesc);
+		registry["DepthPSO"] = GraphicsPipelineState::Create(psoDesc);
 
 
 		//Cubemap 렌더링 파이프라인
@@ -104,7 +104,7 @@ namespace Daydream
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Cubemap");
 		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("StandardRenderPass");
 		
-		registry["CubemapPSO"] = PipelineState::Create(psoDesc);
+		registry["CubemapPSO"] = GraphicsPipelineState::Create(psoDesc);
 
 		//equirectangular -> Cubemap Faces
 		psoDesc.rasterizerState = rastDesc;
@@ -118,7 +118,7 @@ namespace Daydream
 		{
 			RenderFormat::R24G8_TYPELESS
 		};
-		registry["EquirectangularPSO"] = PipelineState::Create(psoDesc);
+		registry["EquirectangularPSO"] = GraphicsPipelineState::Create(psoDesc);
 
 		// CubemapVS->Irradiance Faces
 		psoDesc.rasterizerState = rastDesc;
@@ -133,14 +133,14 @@ namespace Daydream
 			RenderFormat::R24G8_TYPELESS
 		};
 
-		registry["IrradiancePSO"] = PipelineState::Create(psoDesc);
+		registry["IrradiancePSO"] = GraphicsPipelineState::Create(psoDesc);
 
 		// CubemapVS-> Prefilter Faces
 		psoDesc.rasterizerState = rastDesc;
 		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Prefilter");
 		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
 
-		registry["PrefilterPSO"] = PipelineState::Create(psoDesc);
+		registry["PrefilterPSO"] = GraphicsPipelineState::Create(psoDesc);
 
 	}
 }

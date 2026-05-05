@@ -5,9 +5,9 @@
 
 namespace Daydream
 {
-	class PipelineState;
+	class GraphicsPipelineState;
 
-	class PipelineStateRegistry : public ResourceRegistry<PipelineState>
+	class PipelineStateRegistry : public ResourceRegistry<GraphicsPipelineState>
 	{
 	public:
 		PipelineStateRegistry();

@@ -3,7 +3,7 @@
 #include "Daydream/Graphics/Resources/Mesh.h"
 #include "Daydream/Graphics/Resources/Texture/Texture2D.h"
 #include "Daydream/Graphics/Resources/Texture/TextureCube.h"
-#include "Daydream/Graphics/Resources/PipelineState.h"
+#include "Daydream/Graphics/Resources/PipelineState/GraphicsPipelineState.h"
 #include "Daydream/Graphics/Core/RenderingInfo.h"
 
 namespace Daydream
@@ -105,11 +105,11 @@ namespace Daydream
         //Shared<RenderPass> resizeRenderPass;
         //Shared<RenderPass> irradianceRenderPass;
 
-        Shared<PipelineState> equirectangularPSO;
-        Shared<PipelineState> irradiancePSO;
-        Shared<PipelineState> prefilterPSO;
-        Shared<PipelineState> resizePSO;
-        Shared<PipelineState> brdfPSO;
+        Shared<GraphicsPipelineState> equirectangularPSO;
+        Shared<GraphicsPipelineState> irradiancePSO;
+        Shared<GraphicsPipelineState> prefilterPSO;
+        Shared<GraphicsPipelineState> resizePSO;
+        Shared<GraphicsPipelineState> brdfPSO;
 
         Shared<Mesh> boxMesh;
 

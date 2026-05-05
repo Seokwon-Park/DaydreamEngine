@@ -1,7 +1,7 @@
 #include "DaydreamPCH.h"
 #include "OpenGLRenderContext.h"
 
-#include "OpenGLPipelineState.h"
+#include "OpenGLGraphicsPipelineState.h"
 #include "OpenGLTexture.h"
 #include "OpenGLTextureCube.h"
 #include "OpenGLBuffer.h"
@@ -58,10 +58,10 @@ namespace Daydream
 	//{
 	//	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	//}
-	void OpenGLRenderContext::BindPipelineState(Shared<PipelineState> _pipelineState)
+	void OpenGLRenderContext::BindPipelineState(Shared<GraphicsPipelineState> _pipelineState)
 	{
 		RenderContext::BindPipelineState(_pipelineState);
-		OpenGLPipelineState* pso = Cast<OpenGLPipelineState*>(activePipelineState.get());
+		OpenGLGraphicsPipelineState* pso = Cast<OpenGLGraphicsPipelineState*>(activePipelineState.get());
 		pso->BindPipelineState();
 	}
 	void OpenGLRenderContext::BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer)

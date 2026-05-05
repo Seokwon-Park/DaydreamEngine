@@ -1,5 +1,5 @@
 #include "DaydreamPCH.h"
-#include "D3D11PipelineState.h"
+#include "D3D11GraphicsPipelineState.h"
 
 #include "D3D11Utility.h"
 
@@ -7,8 +7,8 @@
 
 namespace Daydream
 {
-	D3D11PipelineState::D3D11PipelineState(D3D11RenderDevice* _device, PipelineStateDesc _desc)
-		:PipelineState(_desc)
+	D3D11GraphicsPipelineState::D3D11GraphicsPipelineState(D3D11RenderDevice* _device, GraphicsPipelineStateDesc _desc)
+		:GraphicsPipelineState(_desc)
 	{
 		device = _device;
 
@@ -78,11 +78,11 @@ namespace Daydream
 		_device->GetDevice()->CreateRasterizerState(&rastDesc, rasterizer.GetAddressOf());
 	}
 
-	void D3D11PipelineState::Bind() const
+	void D3D11GraphicsPipelineState::Bind() const
 	{
 
 	}
-	void D3D11PipelineState::BindPipelineState()
+	void D3D11GraphicsPipelineState::BindPipelineState()
 	{
 		device->GetContext()->VSSetShader(vertexShader, nullptr, 0);
 		device->GetContext()->PSSetShader(pixelShader, nullptr, 0);

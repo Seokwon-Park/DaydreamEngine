@@ -1,5 +1,5 @@
 #include "DaydreamPCH.h"
-#include "OpenGLPipelineState.h"
+#include "OpenGLGraphicsPipelineState.h"
 #include "Daydream/Graphics/Utility/GraphicsUtility.h"
 
 #include "OpenGLUtility.h"
@@ -9,8 +9,8 @@ namespace Daydream
 
 	
 
-	OpenGLPipelineState::OpenGLPipelineState(PipelineStateDesc _desc)
-		:PipelineState(_desc)
+	OpenGLGraphicsPipelineState::OpenGLGraphicsPipelineState(GraphicsPipelineStateDesc _desc)
+		:GraphicsPipelineState(_desc)
 	{
 		glCreateVertexArrays(1, &inputLayoutID);
 		//for (const BufferElement& element : layout)
@@ -69,15 +69,15 @@ namespace Daydream
 			DAYDREAM_CORE_ERROR("pipeline validation failed!\n {0}", infoLog);
 		}
 	}
-	OpenGLPipelineState::~OpenGLPipelineState()
+	OpenGLGraphicsPipelineState::~OpenGLGraphicsPipelineState()
 	{
 
 	}
-	void OpenGLPipelineState::Bind() const
+	void OpenGLGraphicsPipelineState::Bind() const
 	{
 
 	}
-	void OpenGLPipelineState::BindPipelineState()
+	void OpenGLGraphicsPipelineState::BindPipelineState()
 	{
 		const auto& rsDesc = desc.rasterizerState;
 		// Fill Mode (Solid vs Wireframe)

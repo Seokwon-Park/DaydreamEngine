@@ -2,7 +2,7 @@
 #include "Material.h"
 
 #include "Daydream/Graphics/Core/Renderer.h"
-#include "Daydream/Graphics/Resources/PipelineState.h"
+#include "Daydream/Graphics/Resources/PipelineState/GraphicsPipelineState.h"
 #include "Daydream/Graphics/Manager/ResourceManager.h"
 #include "Daydream/Asset/AssetManager.h"
 
@@ -60,7 +60,7 @@ namespace Daydream
 	//	}
 	//}
 
-	Shared<Material> Material::Create(Shared<PipelineState> _pipeline)
+	Shared<Material> Material::Create(Shared<GraphicsPipelineState> _pipeline)
 	{
 		return MakeShared<Material>(_pipeline->GetShaderGroup());
 	}

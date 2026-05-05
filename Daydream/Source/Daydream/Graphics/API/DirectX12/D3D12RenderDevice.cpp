@@ -4,7 +4,7 @@
 #include "D3D12RenderContext.h"
 #include "D3D12Shader.h"
 #include "D3D12Swapchain.h"
-#include "D3D12PipelineState.h"
+#include "D3D12GraphicsPipelineState.h"
 #include "D3D12ImGuiRenderer.h"
 #include "D3D12Texture.h"
 #include "D3D12TextureView.h"
@@ -350,9 +350,9 @@ namespace Daydream
 	//	return _renderPass->CreateFramebuffer(_desc);
 	//}
 
-	Shared<PipelineState> D3D12RenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)
+	Shared<GraphicsPipelineState> D3D12RenderDevice::CreatePipelineState(const GraphicsPipelineStateDesc& _desc)
 	{
-		return MakeShared<D3D12PipelineState>(this, _desc);
+		return MakeShared<D3D12GraphicsPipelineState>(this, _desc);
 	}
 
 	Shared<Shader> D3D12RenderDevice::CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode)

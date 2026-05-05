@@ -1,7 +1,7 @@
 #include "DaydreamPCH.h"
 #include "D3D12RenderContext.h"
 
-#include "D3D12PipelineState.h"
+#include "D3D12GraphicsPipelineState.h"
 #include "D3D12Texture.h"
 #include "D3D12TextureCube.h"
 #include "D3D12Buffer.h"
@@ -135,10 +135,10 @@ namespace Daydream
 	void D3D12RenderContext::EndRendering(const RenderingInfo& _renderingInfo)
 	{
 	}
-	void D3D12RenderContext::BindPipelineState(Shared<PipelineState> _pipelineState)
+	void D3D12RenderContext::BindPipelineState(Shared<GraphicsPipelineState> _pipelineState)
 	{
 		RenderContext::BindPipelineState(_pipelineState);
-		Shared<D3D12PipelineState> d3d12PipelineState = SharedCast<D3D12PipelineState>(_pipelineState);
+		Shared<D3D12GraphicsPipelineState> d3d12PipelineState = SharedCast<D3D12GraphicsPipelineState>(_pipelineState);
 
 		GetD3D12ActiveCommandList()->SetGraphicsRootSignature(d3d12PipelineState->GetID3D12RootSignature());
 		GetD3D12ActiveCommandList()->SetPipelineState(d3d12PipelineState->GetID3D12PipelineState());
@@ -207,7 +207,7 @@ namespace Daydream
 	void D3D12RenderContext::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
 	{
 		if (_buffer == nullptr) return;
-		D3D12PipelineState* d3d12PipelineState = Cast<D3D12PipelineState*>(activePipelineState.get());
+		D3D12GraphicsPipelineState* d3d12PipelineState = Cast<D3D12GraphicsPipelineState*>(activePipelineState.get());
 		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
 		if (resourceInfo == nullptr) return;
 		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
@@ -329,11 +329,11 @@ namespace Daydream
 		D3D12GPUTexture* d3d12Tex = Cast<D3D12GPUTexture*>(_texture->GetGPUTexturePtr());
 
 		UInt32 mipLevels = _texture->GetMipLevels();
-		auto resizePSO = ResourceManager::GetResource<PipelineState>("GenerateMipsPSO");
+		auto resizePSO = ResourceManager::GetResource<GraphicsPipelineState>("GenerateMipsPSO");
 		auto quadMesh = ResourceManager::GetResource<Mesh>("Quad");
 
 		BindPipelineState(resizePSO);
-		D3D12PipelineState* d3d12PipelineState = Cast<D3D12PipelineState*>(resizePSO.get());
+		D3D12GraphicsPipelineState* d3d12PipelineState = Cast<D3D12GraphicsPipelineState*>(resizePSO.get());
 		BindVertexBuffer(quadMesh->GetVertexBuffer());
 		BindIndexBuffer(quadMesh->GetIndexBuffer());
 		GetD3D12ActiveCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

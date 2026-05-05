@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Daydream/Graphics/Resources/PipelineState.h"
+#include "Daydream/Graphics/Resources/PipelineState/GraphicsPipelineState.h"
 #include "D3D11RenderDevice.h"
 
 namespace Daydream
 {
-	class D3D11PipelineState : public PipelineState
+	class D3D11GraphicsPipelineState : public GraphicsPipelineState
 	{
 	public:
-		D3D11PipelineState(D3D11RenderDevice* _device, PipelineStateDesc _desc);
+		D3D11GraphicsPipelineState(D3D11RenderDevice* _device, GraphicsPipelineStateDesc _desc);
 
 		virtual void Bind() const override;
 		void BindPipelineState();

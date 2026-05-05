@@ -4,7 +4,7 @@
 #include "Daydream/Graphics/Utility/ImageLoader.h"
 #include "Daydream/Graphics/Utility/ModelLoader.h"
 #include "Daydream/Graphics/Manager/ResourceManager.h"
-#include "Daydream/Graphics/Resources/PipelineState.h"
+#include "Daydream/Graphics/Resources/PipelineState/GraphicsPipelineState.h"
 #include "Daydream/Graphics/Resources/Texture/Texture2D.h"
 #include "yaml-cpp/yaml.h"
 
@@ -173,7 +173,7 @@ namespace Daydream
 			}
 			else
 			{
-				Shared<Material> newMaterial = Material::Create(ResourceManager::GetResource<PipelineState>("GBufferPSO"));
+				Shared<Material> newMaterial = Material::Create(ResourceManager::GetResource<GraphicsPipelineState>("GBufferPSO"));
 				AssetHandle albedo = AssetManager::GetAssetHandleByPath(modelData->materials[i].albedoMapPath);
 				AssetHandle normal = AssetManager::GetAssetHandleByPath(modelData->materials[i].normalMapPath);
 				AssetHandle roughness = AssetManager::GetAssetHandleByPath(modelData->materials[i].roughnessMapPath);
@@ -309,7 +309,7 @@ namespace Daydream
 		}
 		YAML::Node matNode = metaNode["Material"];
 		String PSO = matNode["PSO"].as<String>();
-		Shared<Material> newMaterial = Material::Create(ResourceManager::GetResource<PipelineState>(PSO));
+		Shared<Material> newMaterial = Material::Create(ResourceManager::GetResource<GraphicsPipelineState>(PSO));
 		YAML::Node textureNode = matNode["Textures"];
 		if (textureNode)
 		{

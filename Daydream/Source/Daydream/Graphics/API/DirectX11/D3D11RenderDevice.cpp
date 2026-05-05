@@ -5,7 +5,7 @@
 #include "D3D11Swapchain.h"
 #include "D3D11Shader.h"
 #include "D3D11VertexShader.h"
-#include "D3D11PipelineState.h"
+#include "D3D11GraphicsPipelineState.h"
 #include "D3D11ImGuiRenderer.h"
 #include "D3D11Texture.h"
 #include "D3D11TextureCube.h"
@@ -220,9 +220,9 @@ namespace Daydream
 	//	return _renderPass->CreateFramebuffer(_desc);
 	//}
 
-	Shared<PipelineState> D3D11RenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)
+	Shared<GraphicsPipelineState> D3D11RenderDevice::CreatePipelineState(const GraphicsPipelineStateDesc& _desc)
 	{
-		return MakeShared<D3D11PipelineState>(this, _desc);
+		return MakeShared<D3D11GraphicsPipelineState>(this, _desc);
 	}
 
 	Shared<Shader> D3D11RenderDevice::CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode)

@@ -1,12 +1,12 @@
 #include "DaydreamPCH.h"
 
 #include "Daydream/Graphics/Core/Renderer.h"
-#include "Daydream/Graphics/Resources/PipelineState.h"
+#include "Daydream/Graphics/Resources/PipelineState/GraphicsPipelineState.h"
 #include "Daydream/Graphics/Manager/ResourceManager.h"
 
 namespace Daydream
 {
-    void RenderContext::BindPipelineState(Shared<PipelineState> _pipelineState)
+    void RenderContext::BindPipelineState(Shared<GraphicsPipelineState> _pipelineState)
     {
         activePipelineState = _pipelineState;
     }

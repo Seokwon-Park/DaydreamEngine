@@ -22,7 +22,7 @@ namespace Daydream
 	class TextureCube;
 	class TextureView;
 	class ConstantBuffer;
-	class PipelineState;
+	class GraphicsPipelineState;
 
 	struct RenderingInfo;
 
@@ -39,7 +39,7 @@ namespace Daydream
 		virtual void BeginRendering(const RenderingInfo& _renderingInfo) {};
 		virtual void EndRendering(const RenderingInfo& _renderingInfo) {};
 
-		virtual void BindPipelineState(Shared<PipelineState> _pipelineState);
+		virtual void BindPipelineState(Shared<GraphicsPipelineState> _pipelineState);
 
 		virtual void BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer) {};
 		virtual void BindIndexBuffer(Shared<IndexBuffer> _indexBuffer) {};
@@ -77,7 +77,7 @@ namespace Daydream
 		
 		Shared<RenderCommandList> GetActiveCommandList() const { return activeCommandList; }
 	protected:
-		Shared<PipelineState> activePipelineState;
+		Shared<GraphicsPipelineState> activePipelineState;
 		Shared<RenderCommandList> activeCommandList;
 
 		Array<Shared<GPUResource>> captureStorage;

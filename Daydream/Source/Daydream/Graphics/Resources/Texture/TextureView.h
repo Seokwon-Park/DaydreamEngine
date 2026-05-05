@@ -7,7 +7,7 @@ namespace Daydream
 	struct TextureViewDesc
 	{
 		TextureViewType type = TextureViewType::ShaderResource;
-		RenderFormat format = RenderFormat::UNKNOWN; // UNKNOWN이면 원본 texture format 사용
+		RenderFormat format = RenderFormat::UNKNOWN; 
 
 		UInt32 baseMip = 0;
 		UInt32 mipCount = 1;

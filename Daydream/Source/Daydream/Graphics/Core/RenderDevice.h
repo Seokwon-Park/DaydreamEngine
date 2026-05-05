@@ -8,7 +8,7 @@ namespace Daydream
 	struct SwapchainDesc;
 	struct RenderPassDesc;
 	struct FramebufferDesc;
-	struct PipelineStateDesc;
+	struct GraphicsPipelineStateDesc;
 	struct BufferDesc;
 	struct TextureDesc;
 	struct TextureViewDesc;
@@ -28,7 +28,7 @@ namespace Daydream
 
 	class RenderPass;
 	class Framebuffer;
-	class PipelineState;
+	class GraphicsPipelineState;
 	class Shader;
 	class Swapchain;
 	class Texture;
@@ -67,7 +67,7 @@ namespace Daydream
 		//virtual Shared<ConstantBuffer> CreateConstantBuffer(UInt32 _size);
 		//virtual Shared<RenderPass> CreateRenderPass(const RenderPassDesc& _desc) = 0;
 		//virtual Shared<Framebuffer> CreateFramebuffer(Shared<RenderPass> _renderPass, const FramebufferDesc& _desc) = 0;
-		virtual Shared<PipelineState> CreatePipelineState(const PipelineStateDesc& _desc) = 0;
+		virtual Shared<GraphicsPipelineState> CreatePipelineState(const GraphicsPipelineStateDesc& _desc) = 0;
 		virtual Shared<Shader> CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode) = 0;
 		virtual Shared<Swapchain> CreateSwapchain(const DaydreamWindow& _window, const SwapchainDesc& _desc) = 0;
 		//virtual Shared<Texture2D> CreateEmptyTexture2D(const TextureDesc& _desc) = 0;

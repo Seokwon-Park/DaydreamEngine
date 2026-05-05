@@ -2,7 +2,7 @@
 #include "D3D11RenderContext.h"
 #include "D3D11RenderDevice.h"
 
-#include "D3D11PipelineState.h"
+#include "D3D11GraphicsPipelineState.h"
 #include "D3D11Texture.h"
 #include "D3D11TextureView.h"
 #include "D3D11TextureCube.h"
@@ -74,10 +74,10 @@ namespace Daydream
 		device->GetContext()->OMSetRenderTargets(0, nullptr, nullptr);
 	}
 
-	void D3D11RenderContext::BindPipelineState(Shared<PipelineState> _pipelineState)
+	void D3D11RenderContext::BindPipelineState(Shared<GraphicsPipelineState> _pipelineState)
 	{
 		RenderContext::BindPipelineState(_pipelineState);
-		D3D11PipelineState* pso = Cast<D3D11PipelineState*>(activePipelineState.get());
+		D3D11GraphicsPipelineState* pso = Cast<D3D11GraphicsPipelineState*>(activePipelineState.get());
 		pso->BindPipelineState();
 	}
 	void D3D11RenderContext::BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer)

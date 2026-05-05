@@ -1,13 +1,13 @@
 #include "DaydreamPCH.h"
-#include "D3D12PipelineState.h"
+#include "D3D12GraphicsPipelineState.h"
 
 #include "D3D12Utility.h"
 #include "D3D12Shader.h"
 
 namespace Daydream
 {
-	D3D12PipelineState::D3D12PipelineState(D3D12RenderDevice* _device, PipelineStateDesc _desc)
-		:PipelineState(_desc)
+	D3D12GraphicsPipelineState::D3D12GraphicsPipelineState(D3D12RenderDevice* _device, GraphicsPipelineStateDesc _desc)
+		:GraphicsPipelineState(_desc)
 	{
 		device = _device;
 
@@ -232,15 +232,15 @@ namespace Daydream
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create pipeline!");
 	}
 
-	D3D12PipelineState::~D3D12PipelineState()
+	D3D12GraphicsPipelineState::~D3D12GraphicsPipelineState()
 	{
 	}
-	void D3D12PipelineState::Bind() const
+	void D3D12GraphicsPipelineState::Bind() const
 	{
 		device->GetCommandList()->SetGraphicsRootSignature(rootSignature.Get());
 		device->GetCommandList()->SetPipelineState(pipeline.Get());
 	}
-	UInt32 D3D12PipelineState::GetDescriptorTableIndex(String _resourceName)
+	UInt32 D3D12GraphicsPipelineState::GetDescriptorTableIndex(String _resourceName)
 	{
 		auto itr = descriptorTable.find(_resourceName);
 		if (itr == descriptorTable.end())

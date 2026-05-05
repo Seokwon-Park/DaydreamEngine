@@ -1,5 +1,5 @@
 #include "DaydreamPCH.h"
-#include "PipelineState.h"
+#include "GraphicsPipelineState.h"
 
 #include "Daydream/Core/Application.h"
 
@@ -7,13 +7,13 @@
 
 namespace Daydream
 {
-	PipelineState::PipelineState(const PipelineStateDesc& _desc)
+	GraphicsPipelineState::GraphicsPipelineState(const GraphicsPipelineStateDesc& _desc)
 	{
 		desc = _desc;
 		shaderGroup = _desc.shaderGroup;
 	}
 
-	Shared<PipelineState> PipelineState::Create(const PipelineStateDesc& _desc)
+	Shared<GraphicsPipelineState> GraphicsPipelineState::Create(const GraphicsPipelineStateDesc& _desc)
 	{
 		return Renderer::GetRenderDevice()->CreatePipelineState(_desc);
 	}

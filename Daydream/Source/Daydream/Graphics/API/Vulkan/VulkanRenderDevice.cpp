@@ -4,7 +4,7 @@
 #include "VulkanRenderCommandList.h"
 #include "VulkanBuffer.h"
 #include "VulkanFramebuffer.h"
-#include "VulkanPipelineState.h"
+#include "VulkanGraphicsPipelineState.h"
 #include "VulkanShader.h"
 #include "VulkanSwapchain.h"
 #include "VulkanImGuiRenderer.h"
@@ -240,9 +240,9 @@ namespace Daydream
 	//	return _renderPass->CreateFramebuffer(_desc);
 	//}
 
-	Shared<PipelineState> VulkanRenderDevice::CreatePipelineState(const PipelineStateDesc& _desc)
+	Shared<GraphicsPipelineState> VulkanRenderDevice::CreatePipelineState(const GraphicsPipelineStateDesc& _desc)
 	{
-		return MakeShared<VulkanPipelineState>(this, _desc);
+		return MakeShared<VulkanGraphicsPipelineState>(this, _desc);
 	}
 
 	Shared<Shader> VulkanRenderDevice::CreateShader(const std::string& _src, const ShaderType& _type, ShaderLoadMode _mode)

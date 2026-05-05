@@ -1,0 +1,23 @@
+#pragma once
+
+#include "Daydream/Graphics/Resources/PipelineState/GraphicsPipelineState.h"
+#include "glad/glad.h"
+
+namespace Daydream
+{
+	class OpenGLGraphicsPipelineState : public GraphicsPipelineState
+	{
+	public:
+		OpenGLGraphicsPipelineState(GraphicsPipelineStateDesc _desc);
+		virtual ~OpenGLGraphicsPipelineState();
+
+		virtual void Bind() const;
+
+		void BindPipelineState();
+
+		//virtual Shared<Material> CreateMaterial() override;
+	private:
+		GLuint inputLayoutID;
+		GLuint pipeline;
+	};
+}
