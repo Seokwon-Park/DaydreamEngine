@@ -32,7 +32,7 @@ namespace Daydream
 			TextureViewDesc srvDesc{};
 			srvDesc.type = TextureViewType::ShaderResource;
 			srvDesc.baseMip = 0;
-			srvDesc.mipCount = GetMipLevels();
+			srvDesc.mipLevels = GetMipLevels();
 			srvDesc.baseLayer = 0;
 			srvDesc.layerCount = GetLayerCount();
 

@@ -13,7 +13,7 @@ namespace Daydream
 
 		virtual void* GetUIHandle() const override { return reinterpret_cast<void*>(static_cast<UInt64>(textureViewID)); }
 
-		UInt32 GetTextureID() const { return textureViewID; }
+		UInt32 GetTextureViewID() const { return textureViewID; }
 
 	private:
 		UInt32 textureViewID = 0;

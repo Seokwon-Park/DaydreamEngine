@@ -19,7 +19,7 @@ namespace Daydream
 			target = GL_TEXTURE_2D;
 		}
 
-		glTextureView(textureViewID, target, _texture->GetTextureID(), internalFormat, _desc.baseMip, _desc.mipCount, _desc.baseLayer, _desc.layerCount);
+		glTextureView(textureViewID, target, _texture->GetTextureID(), internalFormat, _desc.baseMip, _desc.mipLevels, _desc.baseLayer, _desc.layerCount);
 
 		GLenum err = glGetError();
 		if (err != GL_NO_ERROR)

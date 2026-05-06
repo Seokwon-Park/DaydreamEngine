@@ -279,23 +279,22 @@ namespace Daydream::GraphicsUtility::OpenGL
 		}
 	}
 
-	GLint ConvertToGLMinFilter(FilterMode _filterMode)
+	GLint ConvertToGLMinFilter(FilterMode _minFilter, FilterMode _mipFilter)
 	{
-		switch (_filterMode)
+		if (_minFilter == FilterMode::Nearest)
 		{
-		case FilterMode::Nearest:
+			if (_mipFilter == FilterMode::Nearest) return GL_NEAREST_MIPMAP_NEAREST;
+			if (_mipFilter == FilterMode::Linear)  return GL_NEAREST_MIPMAP_LINEAR;
+
+			// 밉맵 필터가 없거나 사용하지 않을 때
 			return GL_NEAREST;
-		case FilterMode::Linear:
-			return GL_LINEAR;
-		case FilterMode::NearestMipmapNearest:
-			return GL_NEAREST_MIPMAP_NEAREST;
-		case FilterMode::LinearMipmapNearest:
-			return GL_LINEAR_MIPMAP_NEAREST;
-		case FilterMode::NearestMipmapLinear:
-			return GL_NEAREST_MIPMAP_LINEAR;
-		case FilterMode::LinearMipmapLinear:
-			return GL_LINEAR_MIPMAP_LINEAR;
-		default:
+		}
+		else // _minFilter == FilterMode::Linear 일 때
+		{
+			if (_mipFilter == FilterMode::Nearest) return GL_LINEAR_MIPMAP_NEAREST;
+			if (_mipFilter == FilterMode::Linear)  return GL_LINEAR_MIPMAP_LINEAR;
+
+			// 밉맵 필터가 없거나 사용하지 않을 때
 			return GL_LINEAR;
 		}
 	}

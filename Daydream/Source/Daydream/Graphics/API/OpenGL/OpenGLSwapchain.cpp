@@ -34,7 +34,7 @@ namespace Daydream
 
 		backBufferRTV = MakeShared<OpenGLTextureView>(backBufferTexture, viewDesc);
 
-		glNamedFramebufferTexture(blitFBO, GL_COLOR_ATTACHMENT0, backBufferRTV->GetTextureID(), 0);
+		glNamedFramebufferTexture(blitFBO, GL_COLOR_ATTACHMENT0, backBufferRTV->GetTextureViewID(), 0);
 	}
 	OpenGLSwapchain::~OpenGLSwapchain()
 	{
@@ -61,6 +61,28 @@ namespace Daydream
 		if (currentContext != window)
 		{
 			glfwMakeContextCurrent(window);
+		}
+
+		if(isSwapchainResized)
+		{
+			TextureDesc textureDesc{};
+			textureDesc.width = desc.width;
+			textureDesc.height = desc.height;
+			textureDesc.mipLevels = 1;
+			textureDesc.sampleCount = 1;
+			textureDesc.format = desc.format;
+			textureDesc.textureUsage = TextureUsage::RenderTarget;
+			textureDesc.type = TextureType::Texture2D;
+
+			backBufferTexture = MakeShared<OpenGLGPUTexture>(textureDesc);
+
+			TextureViewDesc viewDesc;
+			viewDesc.format = desc.format;
+			viewDesc.type = TextureViewType::RenderTarget;
+
+			backBufferRTV = MakeShared<OpenGLTextureView>(backBufferTexture, viewDesc);
+
+			glNamedFramebufferTexture(blitFBO, GL_COLOR_ATTACHMENT0, backBufferRTV->GetTextureViewID(), 0);
 		}
 	}
 	void OpenGLSwapchain::EndFrame()

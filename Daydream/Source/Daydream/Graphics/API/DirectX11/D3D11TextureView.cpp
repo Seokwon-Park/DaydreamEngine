@@ -14,7 +14,7 @@ namespace Daydream
         DXGI_FORMAT dxgiFormat = GraphicsUtility::DirectX::ConvertToDXGIFormat(targetFormat); 
 
         bool isArray = (_texture->GetDesc().type == TextureType::TextureCube || _texture->GetDesc().layerCount > 1);
-        UINT mipLevels = _desc.mipCount;
+        UINT mipLevels = _desc.mipLevels;
 
         switch (_desc.type)
         {

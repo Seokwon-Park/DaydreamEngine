@@ -10,7 +10,7 @@ namespace Daydream
 		RenderFormat format = RenderFormat::UNKNOWN; 
 
 		UInt32 baseMip = 0;
-		UInt32 mipCount = 1;
+		UInt32 mipLevels = 1;
 
 		UInt32 baseLayer = 0;
 		UInt32 layerCount = 1;
@@ -29,8 +29,6 @@ namespace Daydream
 
 		inline UInt32 GetWidth() const { return Math::Max(1u, originTexture->GetWidth() >> desc.baseMip); }
 		inline UInt32 GetHeight() const { return Math::Max(1u, originTexture->GetHeight() >> desc.baseMip); }
-
-		
 
 		inline Shared<GPUTexture> GetOriginTexture() const { return originTexture; }
 		inline const TextureViewDesc& GetDesc() { return desc; }

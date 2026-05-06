@@ -39,7 +39,7 @@ namespace Daydream
 			glNamedFramebufferTexture(
 				framebufferID,
 				GL_COLOR_ATTACHMENT0 + i,
-				openGLTextureView->GetTextureID(),
+				openGLTextureView->GetTextureViewID(),
 				0
 			);
 
@@ -53,7 +53,7 @@ namespace Daydream
 
 			glNamedFramebufferTexture(framebufferID,
 				GL_DEPTH_STENCIL_ATTACHMENT,
-				openGLTextureView->GetTextureID(),
+				openGLTextureView->GetTextureViewID(),
 				0);
 		}
 
@@ -176,7 +176,7 @@ namespace Daydream
 
 		OpenGLTextureView* glView = Cast<OpenGLTextureView*>(_textureView.get());
 		OpenGLSampler* glSampler= Cast<OpenGLSampler*>(_sampler.get());
-		glBindTextureUnit(bindingInfo->binding, glView->GetTextureID());
+		glBindTextureUnit(bindingInfo->binding, glView->GetTextureViewID());
 		glBindSampler(bindingInfo->binding, glSampler->GetSamplerID());
 
 	}
@@ -283,7 +283,7 @@ namespace Daydream
 
 	void OpenGLRenderContext::GenerateMips(Shared<Texture> _texture)
 	{
-		Shared<OpenGLGPUTexture> src = SharedCast<OpenGLGPUTexture>(_texture->GetGPUTexture());
-		glGenerateTextureMipmap(src->GetTextureID());
+		Shared<OpenGLTextureView> src = SharedCast<OpenGLTextureView>(_texture->GetDefaultSRV());
+		glGenerateTextureMipmap(src->GetTextureViewID());
 	}
 }

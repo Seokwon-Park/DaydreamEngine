@@ -98,14 +98,14 @@ namespace Daydream
 		{
 			rtvDesc.type = TextureViewType::RenderTarget;
 			rtvDesc.baseMip = 0;
-			rtvDesc.mipCount = 1;
+			rtvDesc.mipLevels = 1;
 			rtvDesc.baseLayer = i;
 			rtvDesc.layerCount = 1;
 			skyboxFaceRTVs[i] = TextureView::Create(skyboxTextureCube, rtvDesc);
 
 			srvDesc.type = TextureViewType::ShaderResource;
 			srvDesc.baseMip = 0;
-			srvDesc.mipCount = 1;
+			srvDesc.mipLevels = 1;
 			srvDesc.baseLayer = i;
 			srvDesc.layerCount = 1;
 			skyboxFaceSRVs[i] = TextureView::Create(skyboxTextureCube, srvDesc);
@@ -126,7 +126,7 @@ namespace Daydream
 		{
 			rtvDesc.type = TextureViewType::RenderTarget;
 			rtvDesc.baseMip = 0;
-			rtvDesc.mipCount = 1;
+			rtvDesc.mipLevels = 1;
 			rtvDesc.baseLayer = i;
 			rtvDesc.layerCount = 1;
 
@@ -134,7 +134,7 @@ namespace Daydream
 
 			srvDesc.type = TextureViewType::ShaderResource;
 			srvDesc.baseMip = 0;
-			srvDesc.mipCount = 1;
+			srvDesc.mipLevels = 1;
 			srvDesc.baseLayer = i;
 			srvDesc.layerCount = 1;
 			irradianceSRVs[i] = TextureView::Create(irradianceTextureCube, srvDesc);
@@ -163,7 +163,7 @@ namespace Daydream
 
 				rtvDesc.type = TextureViewType::RenderTarget;
 				rtvDesc.baseMip = mip;
-				rtvDesc.mipCount = 1;
+				rtvDesc.mipLevels = 1;
 				rtvDesc.baseLayer = face;
 				rtvDesc.layerCount = 1;
 
@@ -171,7 +171,7 @@ namespace Daydream
 
 				srvDesc.type = TextureViewType::ShaderResource;
 				srvDesc.baseMip = mip;
-				srvDesc.mipCount = 1;
+				srvDesc.mipLevels = 1;
 				srvDesc.baseLayer = face;
 				srvDesc.layerCount = 1;
 				prefilterSRVs[index] = TextureView::Create(prefilterTextureCube, srvDesc);
@@ -195,14 +195,14 @@ namespace Daydream
 		BRDFTexture = Texture2D::Create(textureDesc);
 		rtvDesc.type = TextureViewType::RenderTarget;
 		rtvDesc.baseMip = 0;
-		rtvDesc.mipCount = 1;
+		rtvDesc.mipLevels = 1;
 		rtvDesc.baseLayer = 0;
 		rtvDesc.layerCount = 1;
 		BRDFRTV = TextureView::Create(BRDFTexture, rtvDesc);
 
 		srvDesc.type = TextureViewType::ShaderResource;
 		srvDesc.baseMip = 0;
-		srvDesc.mipCount = 1;
+		srvDesc.mipLevels = 1;
 		srvDesc.baseLayer = 0;
 		srvDesc.layerCount = 1;
 		BRDFSRV= TextureView::Create(BRDFTexture, srvDesc);
@@ -220,7 +220,7 @@ namespace Daydream
 
 		rtvDesc.type = TextureViewType::RenderTarget;
 		rtvDesc.baseMip = 0;
-		rtvDesc.mipCount = 1;
+		rtvDesc.mipLevels = 1;
 		rtvDesc.baseLayer = 0;
 		rtvDesc.layerCount = 1;
 		resizeRTV = TextureView::Create(resizeTexture, rtvDesc);

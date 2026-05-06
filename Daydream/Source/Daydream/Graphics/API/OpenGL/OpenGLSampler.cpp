@@ -10,7 +10,7 @@ namespace Daydream
 	{
 		glCreateSamplers(1, &samplerID);
 
-		glSamplerParameteri(samplerID, GL_TEXTURE_MIN_FILTER, GraphicsUtility::OpenGL::ConvertToGLMinFilter(_desc.minFilter));
+		glSamplerParameteri(samplerID, GL_TEXTURE_MIN_FILTER, GraphicsUtility::OpenGL::ConvertToGLMinFilter(_desc.minFilter,_desc.mipFilter));
 		glSamplerParameteri(samplerID, GL_TEXTURE_MAG_FILTER, GraphicsUtility::OpenGL::ConvertToGLMagFilter(_desc.magFilter));
 
 		glSamplerParameteri(samplerID, GL_TEXTURE_WRAP_S, GraphicsUtility::OpenGL::ConvertToGLWrapMode(_desc.wrapU));
