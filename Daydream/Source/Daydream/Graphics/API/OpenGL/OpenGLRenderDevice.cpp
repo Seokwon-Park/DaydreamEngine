@@ -32,6 +32,20 @@ namespace Daydream
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		DAYDREAM_CORE_ASSERT(status, "Failed to initialize Glad!");
 
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS); // ← 에러 발생 즉시 콜백 (중요)
+
+		glDebugMessageCallback([](GLenum source, GLenum type, GLuint id,
+			GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+			{
+				if (type == GL_DEBUG_TYPE_ERROR)
+				{
+					printf("GL ERROR: %s\n", message);
+					// 브레이크포인트 걸면 콜스택으로 정확한 위치 찾을 수 있음
+					__debugbreak(); // MSVC 기준, GCC면 __builtin_trap()
+				}
+			}, nullptr);
+
 		glClipControl(GL_UPPER_LEFT, GL_ZERO_TO_ONE);
 		//GLint count;
 		//glGetIntegerv(GL_NUM_EXTENSIONS, &count);

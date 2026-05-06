@@ -279,14 +279,14 @@ namespace Daydream::GraphicsUtility::OpenGL
 		}
 	}
 
-	GLint ConvertToGLFilter(FilterMode _filterMode)
+	GLint ConvertToGLMinFilter(FilterMode _filterMode)
 	{
 		switch (_filterMode)
 		{
 		case FilterMode::Nearest:
 			return GL_NEAREST;
 		case FilterMode::Linear:
-			return GL_LINEAR_MIPMAP_LINEAR;
+			return GL_LINEAR;
 		case FilterMode::NearestMipmapNearest:
 			return GL_NEAREST_MIPMAP_NEAREST;
 		case FilterMode::LinearMipmapNearest:
@@ -296,7 +296,24 @@ namespace Daydream::GraphicsUtility::OpenGL
 		case FilterMode::LinearMipmapLinear:
 			return GL_LINEAR_MIPMAP_LINEAR;
 		default:
-			return GL_LINEAR; // Default fallback
+			return GL_LINEAR;
+		}
+	}
+
+	GLint ConvertToGLMagFilter(FilterMode _filterMode)
+	{
+		switch (_filterMode)
+		{
+		case FilterMode::Nearest:
+		case FilterMode::NearestMipmapNearest:
+		case FilterMode::NearestMipmapLinear:
+			return GL_NEAREST;
+
+		case FilterMode::Linear:
+		case FilterMode::LinearMipmapNearest:
+		case FilterMode::LinearMipmapLinear:
+		default:
+			return GL_LINEAR;
 		}
 	}
 

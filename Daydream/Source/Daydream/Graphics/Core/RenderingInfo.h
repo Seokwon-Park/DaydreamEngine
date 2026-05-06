@@ -14,7 +14,7 @@ namespace Daydream
 
 	struct ClearValue
 	{
-		Color colorClearValue{};
+		Color colorClearValue = Color::Blue;
 		Float32 depthClearValue{};
 		UInt8 stencilClearValue{};
 	};

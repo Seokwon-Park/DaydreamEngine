@@ -20,6 +20,7 @@ namespace Daydream::GraphicsUtility::OpenGL
 	UInt32 ConvertRenderFormatToGLDataFormat(RenderFormat _format);
 	UInt32 ConvertRenderFormatToGLDataType(RenderFormat _format);
 
-	GLint ConvertToGLFilter(FilterMode _filterMode);
+	GLint ConvertToGLMinFilter(FilterMode _filterMode);
+	GLint ConvertToGLMagFilter(FilterMode _filterMode);
 	GLint ConvertToGLWrapMode(WrapMode _wrapMode);
 }

@@ -48,14 +48,7 @@ namespace Daydream
 	{
 		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		glBlitNamedFramebuffer(
-			blitFBO, 0, 
-			0, 0, desc.width, desc.height, 
-			0, 0, desc.width, desc.height, 
-			GL_COLOR_BUFFER_BIT,
-			GL_NEAREST 
-		);
-		
+
 		glfwSwapBuffers(window);
 	}
 	//void OpenGLSwapchain::ResizeSwapchain(UInt32 _width, UInt32 _height)
@@ -72,6 +65,14 @@ namespace Daydream
 	}
 	void OpenGLSwapchain::EndFrame()
 	{
-		glfwMakeContextCurrent(nullptr);
+		glBlitNamedFramebuffer(
+			blitFBO, 0,
+			0, 0, desc.width, desc.height,
+			0, 0, desc.width, desc.height,
+			GL_COLOR_BUFFER_BIT,
+			GL_NEAREST
+		);
+
+		//glfwMakeContextCurrent(nullptr);
 	}
 }

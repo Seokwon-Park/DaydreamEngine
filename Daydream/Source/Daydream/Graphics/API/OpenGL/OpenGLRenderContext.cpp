@@ -7,6 +7,7 @@
 #include "OpenGLTextureCube.h"
 #include "OpenGLBuffer.h"
 #include "OpenGLFramebuffer.h"
+#include "OpenGLUtility.h"
 
 #include "glad/glad.h"
 
@@ -31,11 +32,16 @@ namespace Daydream
 		{
 			const AttachmentDesc& attachmentDesc = _renderingInfo.colorAttachments[i];
 			Shared<OpenGLTextureView> openGLTextureView = SharedCast<OpenGLTextureView>(attachmentDesc.view);
+			Shared<OpenGLGPUTexture> texture = SharedCast<OpenGLGPUTexture>(attachmentDesc.view->GetOriginTexture());
 
-			glNamedFramebufferTexture(framebufferID,
+			const TextureDesc& textureDesc = texture->GetDesc();
+
+			glNamedFramebufferTexture(
+				framebufferID,
 				GL_COLOR_ATTACHMENT0 + i,
 				openGLTextureView->GetTextureID(),
-				0);
+				0
+			);
 
 			drawBuffers.push_back(GL_COLOR_ATTACHMENT0 + i);
 		}
@@ -57,7 +63,9 @@ namespace Daydream
 			(UInt32)drawBuffers.size(),
 			drawBuffers.data());
 
+
 		glBindFramebuffer(GL_FRAMEBUFFER, framebufferID);
+		DAYDREAM_CORE_ASSERT(glCheckNamedFramebufferStatus(framebufferID, GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
 
 		for (UInt64 i = 0; i < _renderingInfo.colorAttachments.size(); i++)
 		{
@@ -91,7 +99,7 @@ namespace Daydream
 		);
 		////glNamedFramebufferDrawBuffer(framebufferID, GL_COLOR_ATTACHMENT0);
 
-		//DAYDREAM_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
+
 	}
 	void OpenGLRenderContext::EndRendering(const RenderingInfo& _renderingInfo)
 	{
@@ -161,8 +169,16 @@ namespace Daydream
 		glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &currentVAO);
 		glVertexArrayElementBuffer(currentVAO, indexBuffer->GetBufferID());
 	}
-	void Daydream::OpenGLRenderContext::BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _sampler)
+	void OpenGLRenderContext::BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _sampler)
 	{
+		const ShaderReflectionData* bindingInfo = activePipelineState->GetBindingInfo(_name);
+		if (bindingInfo == nullptr) return;
+
+		OpenGLTextureView* glView = Cast<OpenGLTextureView*>(_textureView.get());
+		OpenGLSampler* glSampler= Cast<OpenGLSampler*>(_sampler.get());
+		glBindTextureUnit(bindingInfo->binding, glView->GetTextureID());
+		glBindSampler(bindingInfo->binding, glSampler->GetSamplerID());
+
 	}
 	/*void OpenGLRenderContext::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
 	{
@@ -204,6 +220,30 @@ namespace Daydream
 
 	void OpenGLRenderContext::CopyBufferToTexture(Shared<GPUBuffer> _src, Shared<GPUTexture> _dst, UInt32 _width, UInt32 _height)
 	{
+		Shared<OpenGLGPUBuffer> srcBuffer = SharedCast<OpenGLGPUBuffer>(_src);
+		Shared<OpenGLGPUTexture> dstTexture = SharedCast<OpenGLGPUTexture>(_dst);
+
+		GLuint bufferID = srcBuffer->GetBufferID();
+		GLuint textureID = dstTexture->GetTextureID();
+
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER, bufferID);
+
+		GLenum pixelFormat = GraphicsUtility::OpenGL::ConvertRenderFormatToGLDataFormat(dstTexture->GetFormat());
+		GLenum pixelType = GraphicsUtility::OpenGL::ConvertRenderFormatToGLDataType(dstTexture->GetFormat());
+
+		glTextureSubImage2D(
+			textureID,
+			0,           // 밉맵 레벨
+			0,           // X 오프셋
+			0,           // Y 오프셋
+			_width,      // 복사할 너비
+			_height,     // 복사할 높이
+			pixelFormat, // 픽셀 포맷
+			pixelType,   // 데이터 타입
+			nullptr      // PBO 오프셋
+		);
+
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 	}
 
 	void OpenGLRenderContext::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
