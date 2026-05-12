@@ -31,7 +31,7 @@ namespace Daydream
 	{
 		if (desc.memoryUsage == MemoryUsage::Dynamic || desc.memoryUsage == MemoryUsage::Upload)
 		{
-			buffer->Map(0, nullptr, &mappedData);
+			buffer->Unmap(0, nullptr);
 		}
 	}
 

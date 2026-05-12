@@ -3,6 +3,7 @@
 
 #include "D3D12GraphicsPipelineState.h"
 #include "D3D12Texture.h"
+#include "D3D12TextureView.h"
 #include "D3D12TextureCube.h"
 #include "D3D12Buffer.h"
 #include "D3D12Framebuffer.h"
@@ -82,35 +83,41 @@ namespace Daydream
 	}*/
 	void D3D12RenderContext::BeginRendering(const RenderingInfo& _renderingInfo)
 	{
-		//currentFramebuffer = Cast<D3D12Framebuffer*>(_framebuffer.get());
-		//Shared<D3D12RenderPass> renderPass = SharedCast<D3D12RenderPass>(_renderPass);
-		//if (!currentFramebuffer->IsSwapchainBuffer())
-		//{
-		//	for (Shared<D3D12Texture2D> texture : currentFramebuffer->GetColorAttachments())
-		//	{
-		//		D3D12_RESOURCE_BARRIER barrier = {};
-		//		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		//		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		//		barrier.Transition.pResource = texture->GetID3D12Resource();
-		//		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-		//		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-		//		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-		//		GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
-		//	}
+		Array<D3D12_CPU_DESCRIPTOR_HANDLE> rtHandles;
+		for (const AttachmentDesc& attachmentDesc : _renderingInfo.colorAttachments)
+		{
+			ClearValue rtvClearValue = attachmentDesc.clearValue;
+			Shared<D3D12TextureView> d3d12View = SharedCast<D3D12TextureView>(attachmentDesc.view);
+			if (attachmentDesc.loadOp == AttachmentLoadOp::Clear)
+			{
+				GetD3D12ActiveCommandList()->ClearRenderTargetView(d3d12View->GetCPUHandle(), &rtvClearValue.colorClearValue.color[0], 0, nullptr);
+			}
+			rtHandles.push_back(d3d12View->GetCPUHandle());
+		}
 
-		//	if (currentFramebuffer->HasDepthAttachment())
-		//	{
-		//		auto depthStencilView = currentFramebuffer->GetDepthAttachment();
-		//		D3D12_RESOURCE_BARRIER barrier = {};
-		//		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		//		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		//		barrier.Transition.pResource = depthStencilView->GetID3D12Resource();
-		//		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-		//		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_DEPTH_READ;
-		//		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_DEPTH_WRITE;
-		//		GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
-		//	}
-		//}
+
+
+		const D3D12_CPU_DESCRIPTOR_HANDLE* dsvPtr = nullptr;
+		if (_renderingInfo.depthAttachment.view != nullptr)
+		{
+			ClearValue dsvClearValue = _renderingInfo.depthAttachment.clearValue;
+			Shared<D3D12TextureView> d3d12View = SharedCast<D3D12TextureView>(_renderingInfo.depthAttachment.view);
+			D3D12_CPU_DESCRIPTOR_HANDLE dsv = d3d12View->GetCPUHandle();
+			dsvPtr = (dsv.ptr != 0) ? &dsv : nullptr;
+			if (_renderingInfo.depthAttachment.loadOp == AttachmentLoadOp::Clear)
+			{
+				GetD3D12ActiveCommandList()->ClearDepthStencilView(d3d12View->GetCPUHandle(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, dsvClearValue.depthClearValue, dsvClearValue.stencilClearValue, 0, nullptr);
+			}
+		}
+		GetD3D12ActiveCommandList()->OMSetRenderTargets((UInt32)rtHandles.size(), rtHandles.data(), 0, dsvPtr);
+
+		SetViewport(
+			_renderingInfo.renderArea.x,
+			_renderingInfo.renderArea.y,
+			_renderingInfo.renderArea.width,
+			_renderingInfo.renderArea.height
+		);
+
 
 
 		//const Array<D3D12_CPU_DESCRIPTOR_HANDLE> rtHandles;
@@ -190,7 +197,7 @@ namespace Daydream
 	//	const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
 	//	if (resourceInfo == nullptr) return;
 
-	void Daydream::D3D12RenderContext::BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _sampler)
+	void D3D12RenderContext::BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _sampler)
 	{
 	}
 
@@ -233,6 +240,67 @@ namespace Daydream
 		);
 	}
 
+	void D3D12RenderContext::CopyBufferToTexture(Shared<GPUBuffer> _src, Shared<GPUTexture> _dst)
+	{
+		// 1. 객체 캐스팅 및 리소스 가져오기
+		D3D12GPUBuffer* srcBuffer = Cast<D3D12GPUBuffer*>(_src.get());
+		D3D12GPUTexture* dstTexture = Cast<D3D12GPUTexture*>(_dst.get());
+
+		ID3D12Resource* srcResource = srcBuffer->GetID3D12Resource();
+		ID3D12Resource* dstResource = dstTexture->GetID3D12Resource();
+
+		D3D12_RESOURCE_DESC dstDesc = dstResource->GetDesc();
+		D3D12_PLACED_SUBRESOURCE_FOOTPRINT placedFootprint;
+		UINT numRows;
+		UINT64 rowSizeInBytes;
+		UINT64 totalBytes;
+
+		device->GetDevice()->GetCopyableFootprints(&dstDesc, 0, 1, 0, &placedFootprint, &numRows, &rowSizeInBytes, &totalBytes);
+
+		D3D12_TEXTURE_COPY_LOCATION dstLocation{};
+		dstLocation.pResource = dstResource;
+		dstLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+		dstLocation.SubresourceIndex = 0; // 원본 이미지(0번 밉맵)로 복사
+
+		D3D12_TEXTURE_COPY_LOCATION srcLocation{};
+		srcLocation.pResource = srcResource;
+		srcLocation.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+		placedFootprint.Offset = 0;
+		srcLocation.PlacedFootprint = placedFootprint;
+
+		GetD3D12ActiveCommandList()->CopyTextureRegion(&dstLocation, 0, 0, 0, &srcLocation, nullptr);
+	}
+
+	void D3D12RenderContext::CopyDataToTexture2D(Shared<Texture2D> _target, Shared<Array<Byte>> _data)
+	{
+		D3D12GPUTexture* dstTexture = Cast<D3D12GPUTexture*>(_target->GetGPUTexture().get());
+		TextureDesc desc = dstTexture->GetDesc();
+
+		UInt32 formatSize = GraphicsUtility::GetRenderFormatSize(desc.format);
+		UInt32 unalignedRowPitch = desc.width * formatSize;
+		UInt32 alignedRowPitch = (unalignedRowPitch + 255) & ~255;
+		UInt32 uploadSize = alignedRowPitch * desc.height;
+
+		Shared<UploadBuffer> stagingBuffer = UploadBuffer::Create(uploadSize);
+		CaptureResource(stagingBuffer->GetGPUBuffer());
+		CaptureResource(_target->GetGPUTexture());
+		ID3D12Resource* stagingResource = Cast<D3D12GPUBuffer*>(stagingBuffer->GetGPUBuffer().get())->GetID3D12Resource();
+		
+		void* mappedData = nullptr;
+		stagingResource->Map(0, nullptr, &mappedData);
+
+		Byte* dstBytes = static_cast<Byte*>(mappedData);
+		const Byte* srcBytes = _data->data();
+
+		for (UInt32 y = 0; y < desc.height; ++y)
+		{
+			memcpy(dstBytes + (y * alignedRowPitch), srcBytes + (y * unalignedRowPitch), unalignedRowPitch);
+		}
+		stagingResource->Unmap(0, nullptr);
+
+		CopyBufferToTexture(stagingBuffer->GetGPUBuffer(), _target->GetGPUTexture());
+	}
+
 	void D3D12RenderContext::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
 	{
 		D3D12GPUTexture* src = Cast<D3D12GPUTexture*>(_src->GetGPUTexturePtr());
@@ -272,7 +340,7 @@ namespace Daydream
 		barriers[1].Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 		GetD3D12ActiveCommandList()->ResourceBarrier(2, barriers);
 	}
-	void D3D12RenderContext::CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel)
+	void D3D12RenderContext::CopyTextureToCubemapFace(Shared<Texture2D> _srcTexture2D, Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, UInt32 _mipLevel)
 	{
 		D3D12GPUTexture* dst = Cast<D3D12GPUTexture*>(_dstCubemap->GetGPUTexturePtr());
 		D3D12GPUTexture* src = Cast<D3D12GPUTexture*>(_srcTexture2D->GetGPUTexturePtr());
@@ -395,8 +463,25 @@ namespace Daydream
 			}
 		}
 	}
-	void Daydream::D3D12RenderContext::TransitionTextureState(Shared<GPUTexture> _texture, ResourceState _beforeState, ResourceState _afterState, UInt32 _mipLevel, UInt32 _mipCount)
+	void D3D12RenderContext::TransitionTextureState(Shared<GPUTexture> _texture, ResourceState _beforeState, ResourceState _afterState, UInt32 _mipLevel, UInt32 _mipCount)
 	{
+		if (_beforeState == _afterState)
+		{
+			DAYDREAM_RENDERER_WARN("Before State == After State");
+			return;
+		}
+
+		D3D12GPUTexture* d3d12Texture = Cast<D3D12GPUTexture*>(_texture.get());
+
+		D3D12_RESOURCE_BARRIER barrier = {};
+		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		barrier.Transition.pResource = d3d12Texture->GetID3D12Resource();
+		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		barrier.Transition.StateBefore = GraphicsUtility::DirectX12::ConvertToD3D12ResourceStates(_beforeState);
+		barrier.Transition.StateAfter = GraphicsUtility::DirectX12::ConvertToD3D12ResourceStates(_afterState);
+
+		GetD3D12ActiveCommandList()->ResourceBarrier(1, &barrier);
 	}
 	void D3D12RenderContext::TransitionBufferState(Shared<GPUBuffer> _buffer, ResourceState _beforeState, ResourceState _afterState)
 	{

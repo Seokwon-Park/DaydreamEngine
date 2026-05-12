@@ -427,7 +427,7 @@ namespace Daydream
 			2, barriers
 		);
 	}
-	void VulkanRenderContext::CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel)
+	void Daydream::VulkanRenderContext::CopyTextureToCubemapFace(Shared<Texture2D> _srcTexture2D, Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, UInt32 _mipLevel)
 	{
 		VulkanGPUTexture* dst = Cast<VulkanGPUTexture*>(_dstCubemap->GetGPUTexturePtr());
 		VulkanGPUTexture* src = Cast<VulkanGPUTexture*>(_srcTexture2D->GetGPUTexturePtr());

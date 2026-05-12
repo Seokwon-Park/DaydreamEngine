@@ -1,6 +1,7 @@
 #pragma once
 
 #include "glad/glad.h"
+#include "Daydream/Graphics/Utility/GraphicsUtility.h"
 
 #include "Daydream/Enum/RendererEnums.h"
 #include "Daydream/Graphics/Resources/Buffer.h"

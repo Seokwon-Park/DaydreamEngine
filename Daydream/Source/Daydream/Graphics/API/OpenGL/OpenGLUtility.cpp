@@ -56,7 +56,7 @@ namespace Daydream::GraphicsUtility::OpenGL
 		case TextureType::TextureCubeArray:return  GL_TEXTURE_CUBE_MAP_ARRAY;
 		case TextureType::Texture3D:return  GL_TEXTURE_3D;
 		default:
-			break;
+			return GL_TEXTURE_1D;
 		}
 	}
 

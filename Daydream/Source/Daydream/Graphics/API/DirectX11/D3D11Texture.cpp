@@ -10,8 +10,6 @@ namespace Daydream
 	D3D11GPUTexture::D3D11GPUTexture(D3D11RenderDevice* _device, const TextureDesc& _desc)
 		:GPUTexture(_desc)
 	{
-		device = _device;
-
 		DXGI_FORMAT format = GraphicsUtility::DirectX::ConvertToDXGIFormat(_desc.format);
 		UInt32 bindFlags = GraphicsUtility::DirectX11::ConvertToD3D11BindFlags(_desc.textureUsage);
 
@@ -22,16 +20,16 @@ namespace Daydream
 		case TextureType::Texture1D:
 		case TextureType::Texture1DArray:
 		{
-			D3D11_TEXTURE1D_DESC desc{};
-			desc.Width = _desc.width;
-			desc.MipLevels = _desc.mipLevels;
-			desc.ArraySize = (_desc.type == TextureType::Texture1DArray) ? _desc.layerCount : 1;
-			desc.Format = format;
-			desc.Usage = D3D11_USAGE_DEFAULT;
-			desc.BindFlags = bindFlags;
+			D3D11_TEXTURE1D_DESC textureDesc{};
+			textureDesc.Width = _desc.width;
+			textureDesc.MipLevels = _desc.mipLevels;
+			textureDesc.ArraySize = (_desc.type == TextureType::Texture1DArray) ? _desc.layerCount : 1;
+			textureDesc.Format = format;
+			textureDesc.Usage = D3D11_USAGE_DEFAULT;
+			textureDesc.BindFlags = bindFlags;
 
 			ComPtr<ID3D11Texture1D> texture1D;
-			HRESULT hr = device->GetDevice()->CreateTexture1D(&desc, nullptr, texture1D.GetAddressOf());
+			HRESULT hr = _device->GetDevice()->CreateTexture1D(&textureDesc, nullptr, texture1D.GetAddressOf());
 			DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create Texture1D!");
 
 			texture = texture1D; // ComPtr 업캐스팅
@@ -43,46 +41,46 @@ namespace Daydream
 		case TextureType::TextureCube:
 		case TextureType::TextureCubeArray:
 		{
-			D3D11_TEXTURE2D_DESC desc{};
-			desc.Width = _desc.width;
-			desc.Height = _desc.height;
-			desc.Format = format;
-			desc.Usage = D3D11_USAGE_DEFAULT;
-			desc.BindFlags = bindFlags;
-			desc.MipLevels = (_desc.type == TextureType::Texture2DMultisample) ? 1 : _desc.mipLevels;
+			D3D11_TEXTURE2D_DESC textureDesc{};
+			textureDesc.Width = _desc.width;
+			textureDesc.Height = _desc.height;
+			textureDesc.Format = format;
+			textureDesc.Usage = D3D11_USAGE_DEFAULT;
+			textureDesc.BindFlags = bindFlags;
+			textureDesc.MipLevels = (_desc.type == TextureType::Texture2DMultisample) ? 1 : _desc.mipLevels;
 			if (_desc.type == TextureType::TextureCube)
-				desc.ArraySize = 6;
+				textureDesc.ArraySize = 6;
 			else if (_desc.type == TextureType::TextureCubeArray)
-				desc.ArraySize = 6 * _desc.layerCount;
+				textureDesc.ArraySize = 6 * _desc.layerCount;
 			else if (_desc.type == TextureType::Texture2DArray)
-				desc.ArraySize = _desc.layerCount;
+				textureDesc.ArraySize = _desc.layerCount;
 			else
-				desc.ArraySize = 1; // 일반 2D 또는 2DMultisample
+				textureDesc.ArraySize = 1; // 일반 2D 또는 2DMultisample
 
 			// MSAA 셋팅
 			if (_desc.type == TextureType::Texture2DMultisample)
 			{
-				desc.SampleDesc.Count = _desc.sampleCount;
-				desc.SampleDesc.Quality = 0; // 일반적인 기본값
+				textureDesc.SampleDesc.Count = _desc.sampleCount;
+				textureDesc.SampleDesc.Quality = 0; // 일반적인 기본값
 			}
 			else
 			{
-				desc.SampleDesc.Count = 1;
-				desc.SampleDesc.Quality = 0;
+				textureDesc.SampleDesc.Count = 1;
+				textureDesc.SampleDesc.Quality = 0;
 			}
 
 			if (_desc.type == TextureType::TextureCube || _desc.type == TextureType::TextureCubeArray)
-				desc.MiscFlags |= D3D11_RESOURCE_MISC_TEXTURECUBE;
+				textureDesc.MiscFlags |= D3D11_RESOURCE_MISC_TEXTURECUBE;
 
 			if (_desc.mipLevels != 1)
 			{
 				// GenerateMips를 쓰기 위해 필요한 플래그
-				desc.BindFlags |= D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-				desc.MiscFlags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
+				textureDesc.BindFlags |= D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+				textureDesc.MiscFlags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
 			}
 
 			ComPtr<ID3D11Texture2D> texture2D;
-			HRESULT hr = device->GetDevice()->CreateTexture2D(&desc, nullptr, texture2D.GetAddressOf());
+			HRESULT hr = _device->GetDevice()->CreateTexture2D(&textureDesc, nullptr, texture2D.GetAddressOf());
 			DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create Texture2D!");
 
 			texture = texture2D;
@@ -91,17 +89,17 @@ namespace Daydream
 		}
 		case TextureType::Texture3D:
 		{
-			D3D11_TEXTURE3D_DESC desc{};
-			desc.Width = _desc.width;
-			desc.Height = _desc.height;
-			desc.Depth = _desc.layerCount;
-			desc.MipLevels = _desc.mipLevels;
-			desc.Format = format;
-			desc.Usage = D3D11_USAGE_DEFAULT;
-			desc.BindFlags = bindFlags;
+			D3D11_TEXTURE3D_DESC textureDesc{};
+			textureDesc.Width = _desc.width;
+			textureDesc.Height = _desc.height;
+			textureDesc.Depth = _desc.layerCount;
+			textureDesc.MipLevels = _desc.mipLevels;
+			textureDesc.Format = format;
+			textureDesc.Usage = D3D11_USAGE_DEFAULT;
+			textureDesc.BindFlags = bindFlags;
 
 			ComPtr<ID3D11Texture3D> texture3D;
-			HRESULT hr = device->GetDevice()->CreateTexture3D(&desc, nullptr, texture3D.GetAddressOf());
+			HRESULT hr = _device->GetDevice()->CreateTexture3D(&textureDesc, nullptr, texture3D.GetAddressOf());
 			DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to create Texture3D!");
 
 			texture = texture3D;
@@ -110,15 +108,12 @@ namespace Daydream
 		default:
 			break;
 		}
-
-
-
 	}
 
-	D3D11GPUTexture::D3D11GPUTexture(D3D11RenderDevice* _device, const TextureDesc& _desc, ID3D11Texture2D* _d3d11Backbuffer)
+	D3D11GPUTexture::D3D11GPUTexture(D3D11RenderDevice* _device, const TextureDesc& _desc, ComPtr<ID3D11Texture2D> _d3d11BackBuffer)
 		:GPUTexture(_desc)
 	{
-		texture = _d3d11Backbuffer;
+		texture = _d3d11BackBuffer;
 	}
 
 
@@ -132,8 +127,8 @@ namespace Daydream
 	//	DXGI_FORMAT dsvFormat = textureFormat;
 
 	//	D3D11_TEXTURE2D_DESC textureDesc = {};
-	//	textureDesc.Width = desc.width;
-	//	textureDesc.Height = desc.height;
+	//	textureDesc.Width = textureDesc.width;
+	//	textureDesc.Height = textureDesc.height;
 	//	textureDesc.MipLevels = 1;
 	//	textureDesc.ArraySize = 1;
 	//	textureDesc.Format = textureFormat;

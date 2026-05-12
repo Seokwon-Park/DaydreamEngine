@@ -12,135 +12,116 @@ namespace Daydream
 
 	void PipelineStateRegistry::CreateBuiltinResources()
 	{
-		RasterizerStateDesc rastDesc;
-		rastDesc.frontCounterClockwise = false;
-		rastDesc.cullMode = CullMode::Front;
-		rastDesc.fillMode = FillMode::Solid;
+		RasterizerStateDesc defaultRastDesc = {};
 
-		//Forward Rendering 
-		GraphicsPipelineStateDesc psoDesc;
-		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Model");
-		psoDesc.renderTargetFormats =
-		{
-			RenderFormat::R8G8B8A8_UNORM
-		};
-		psoDesc.depthStencilFormat =
-		{
-			RenderFormat::R24G8_TYPELESS
-		};
-		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("StandardRenderPass");
-		registry["ForwardPSO"] = GraphicsPipelineState::Create(psoDesc);
+		RasterizerStateDesc cubemapRastDesc = {};
+		cubemapRastDesc.cullMode = CullMode::Front;
 
-		//TODO: Sprite Rendering 
-		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Sprite");
-		psoDesc.renderTargetFormats =
-		{
-			RenderFormat::R8G8B8A8_UNORM
-		};
-		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("StandardRenderPass");
-		registry["SpritePSO"] = GraphicsPipelineState::Create(psoDesc);
+		RasterizerStateDesc shadowRastDesc = {};
+		shadowRastDesc.cullMode = CullMode::Front;
+		shadowRastDesc.fillMode = FillMode::Solid;
+		shadowRastDesc.depthBias = 1000;
+		shadowRastDesc.slopeScaledDepthBias = 1.0f;
+		shadowRastDesc.depthClipEnable = true;
 
-		//Resize Texture
-		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Resize");
-		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
-		psoDesc.renderTargetFormats =
-		{
-			RenderFormat::R16G16B16A16_FLOAT
-		};
-		registry["ResizePSO"] = GraphicsPipelineState::Create(psoDesc);
+        GraphicsPipelineStateDesc psoDesc;
 
-		//BRDF
-		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("BRDF");
-		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
-		registry["BRDFPSO"] = GraphicsPipelineState::Create(psoDesc);
+        auto ResetPSO = [&]() {
+            psoDesc = GraphicsPipelineStateDesc();
+            psoDesc.rasterizerState = defaultRastDesc;
+            };
 
-		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Mip"); 
-		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("MipmapRenderPass");
-		registry["GenerateMipsPSO"] = GraphicsPipelineState::Create(psoDesc);
+        // ==========================================
+        // ÀÏ¹Ý ¸ðµ¨ / G-Buffer ·»´õ¸µ
+        // ==========================================
+        ResetPSO();
+        psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Model");
+        psoDesc.renderTargetFormats = { RenderFormat::R8G8B8A8_UNORM };
+        psoDesc.depthStencilFormat = RenderFormat::R24G8_TYPELESS;
+        registry["ForwardPSO"] = GraphicsPipelineState::Create(psoDesc);
 
-		// G-Buffer 
-		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("GBuffer");
-		psoDesc.renderTargetFormats =
-		{
-			RenderFormat::R16G16B16A16_FLOAT,
-			RenderFormat::R16G16B16A16_FLOAT,
-			RenderFormat::R8G8B8A8_UNORM,
-			RenderFormat::R8G8B8A8_UNORM,
-			RenderFormat::R32_UINT,
-		};
-		psoDesc.depthStencilFormat =
-		{
-			RenderFormat::R24G8_TYPELESS
-		};
-		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("GBufferRenderPass");
-		registry["GBufferPSO"] = GraphicsPipelineState::Create(psoDesc);
+        ResetPSO();
+        psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Sprite");
+        psoDesc.renderTargetFormats = { RenderFormat::R8G8B8A8_UNORM };
+        registry["SpritePSO"] = GraphicsPipelineState::Create(psoDesc);
 
-		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("DeferredLighting");
-		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("StandardRenderPass");
-		registry["DeferredPSO"] = GraphicsPipelineState::Create(psoDesc);
+        ResetPSO();
+        psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Resize");
+        psoDesc.renderTargetFormats = { RenderFormat::R16G16B16A16_FLOAT };
+        registry["ResizePSO"] = GraphicsPipelineState::Create(psoDesc);
 
-		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Mask");
-		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("MaskRenderPass");
-		registry["MaskPSO"] = GraphicsPipelineState::Create(psoDesc);
+        ResetPSO();
+        psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("BRDF");
+        psoDesc.renderTargetFormats = { RenderFormat::R16G16B16A16_FLOAT };
+        registry["BRDFPSO"] = GraphicsPipelineState::Create(psoDesc);
 
-		// Shadow
-		RasterizerStateDesc shadowRSDesc = {};
-		shadowRSDesc.cullMode = CullMode::Front; 
-		shadowRSDesc.fillMode = FillMode::Solid;
-		shadowRSDesc.depthBias = 1000;
-		shadowRSDesc.slopeScaledDepthBias = 1.0f;
-		shadowRSDesc.depthClipEnable = true;
+        ResetPSO();
+        psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Mip");
+        psoDesc.renderTargetFormats = { RenderFormat::R16G16B16A16_FLOAT };
+        psoDesc.depthStencilFormat = RenderFormat::UNKNOWN;
+        registry["GenerateMipsPSO"] = GraphicsPipelineState::Create(psoDesc);
 
-		psoDesc.rasterizerState = shadowRSDesc;
-		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Depth");
-		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("DepthRenderPass");
+        ResetPSO();
+        psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("GBuffer");
+        psoDesc.renderTargetFormats = {
+            RenderFormat::R16G16B16A16_FLOAT, // Position
+            RenderFormat::R16G16B16A16_FLOAT, // Normal
+            RenderFormat::R8G8B8A8_UNORM,     // Albedo
+            RenderFormat::R8G8B8A8_UNORM,     // Material
+            RenderFormat::R32_UINT            // EntityID
+        };
+        psoDesc.depthStencilFormat = RenderFormat::R24G8_TYPELESS;
+        registry["GBufferPSO"] = GraphicsPipelineState::Create(psoDesc);
 
+        ResetPSO();
+        psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("DeferredLighting");
+        psoDesc.renderTargetFormats = { RenderFormat::R8G8B8A8_UNORM };
+        psoDesc.depthStencilFormat = RenderFormat::R24G8_TYPELESS;
+        registry["DeferredPSO"] = GraphicsPipelineState::Create(psoDesc);
 
-		registry["DepthPSO"] = GraphicsPipelineState::Create(psoDesc);
+        ResetPSO();
+        psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Mask");
+        psoDesc.renderTargetFormats = { RenderFormat::R32_UINT };
+        psoDesc.depthStencilFormat = RenderFormat::UNKNOWN;
+        registry["MaskPSO"] = GraphicsPipelineState::Create(psoDesc);
 
+        // ==========================================
+        // È¯°æ ¸Ê Àü¿ë ·»´õ¸µ (CullMode::Front ¼öµ¿ Àû¿ë)
+        // ==========================================
+        ResetPSO();
+        psoDesc.rasterizerState = cubemapRastDesc; 
+        psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Cubemap");
+        psoDesc.renderTargetFormats = { RenderFormat::R8G8B8A8_UNORM };
+        psoDesc.depthStencilFormat = RenderFormat::R24G8_TYPELESS;
+        registry["CubemapPSO"] = GraphicsPipelineState::Create(psoDesc);
 
-		//Cubemap ·»´õ¸µ ÆÄÀÌÇÁ¶óÀÎ
-		psoDesc.rasterizerState = rastDesc;
-		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Cubemap");
-		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("StandardRenderPass");
-		
-		registry["CubemapPSO"] = GraphicsPipelineState::Create(psoDesc);
+        ResetPSO();
+        psoDesc.rasterizerState = cubemapRastDesc; 
+        psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Equirectangular");
+        psoDesc.renderTargetFormats = { RenderFormat::R16G16B16A16_FLOAT };
+        registry["EquirectangularPSO"] = GraphicsPipelineState::Create(psoDesc);
 
-		//equirectangular -> Cubemap Faces
-		psoDesc.rasterizerState = rastDesc;
-		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Equirectangular");
-		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
-		psoDesc.renderTargetFormats =
-		{
-			RenderFormat::R16G16B16A16_FLOAT
-		};
-		psoDesc.depthStencilFormat =
-		{
-			RenderFormat::R24G8_TYPELESS
-		};
-		registry["EquirectangularPSO"] = GraphicsPipelineState::Create(psoDesc);
+        ResetPSO();
+        psoDesc.rasterizerState = cubemapRastDesc; 
+        psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Irradiance");
+        psoDesc.renderTargetFormats = { RenderFormat::R16G16B16A16_FLOAT };
+        registry["IrradiancePSO"] = GraphicsPipelineState::Create(psoDesc);
 
-		// CubemapVS->Irradiance Faces
-		psoDesc.rasterizerState = rastDesc;
-		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Irradiance");
-		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
-		psoDesc.renderTargetFormats =
-		{
-			RenderFormat::R16G16B16A16_FLOAT
-		};
-		psoDesc.depthStencilFormat =
-		{
-			RenderFormat::R24G8_TYPELESS
-		};
+        ResetPSO();
+        psoDesc.rasterizerState = cubemapRastDesc; 
+        psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Prefilter");
+        psoDesc.renderTargetFormats = { RenderFormat::R16G16B16A16_FLOAT };
+        registry["PrefilterPSO"] = GraphicsPipelineState::Create(psoDesc);
 
-		registry["IrradiancePSO"] = GraphicsPipelineState::Create(psoDesc);
-
-		// CubemapVS-> Prefilter Faces
-		psoDesc.rasterizerState = rastDesc;
-		psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Prefilter");
-		//psoDesc.renderPass = ResourceManager::GetResource<RenderPass>("RGBA16FRenderPass");
-
-		registry["PrefilterPSO"] = GraphicsPipelineState::Create(psoDesc);
-
+        // ==========================================
+        // ±×¸²ÀÚ Àü¿ë ·»´õ¸µ
+        // ==========================================
+        ResetPSO();
+        psoDesc.rasterizerState = shadowRastDesc; // ¼¨µµ¿ì ±×¸± ¶§¸¸ µ¤¾î¾º¿ò
+        psoDesc.shaderGroup = ResourceManager::GetResource<ShaderGroup>("Depth");
+        psoDesc.renderTargetFormats = {};
+        psoDesc.depthStencilFormat = RenderFormat::R24G8_TYPELESS;
+        registry["DepthPSO"] = GraphicsPipelineState::Create(psoDesc);
 	}
 }
+

@@ -50,9 +50,13 @@ namespace Daydream
 		virtual void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer) {};
 		
 		virtual void CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize) {};
-		virtual void CopyBufferToTexture(Shared<GPUBuffer> _src, Shared<GPUTexture> _dst, UInt32 _width, UInt32 _height) {};
+		virtual void CopyBufferToTexture(Shared<GPUBuffer> _src, Shared<GPUTexture> _dst) {};
+
+		// Uploads raw pixel data to the texture. 
+		// Backends may override this to handle API-specific memory alignment requirements.
+		virtual void CopyDataToTexture2D(Shared<Texture2D> _target, Shared<Array<Byte>> _data);
 		virtual void CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst) {};
-		virtual void CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel = 0) {};
+		virtual void CopyTextureToCubemapFace(Shared<Texture2D> _srcTexture2D, Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, UInt32 _mipLevel = 0) {};
 		virtual void CopyTextureCubeToTexture2D(Shared<TextureCube> _srcCubemap, UInt32 _faceIndex, Shared<Texture2D> _dstTexture2D, UInt32 _mipLevel = 0) {};
 		//virtual void CopyTextureToBuffer(Shared<Texture2D> _srcTexture, Shared<Buffer> _dstBuffer, UInt32 _offsetX, UInt32 _offsetY, UInt32 _width, UInt32 _height) = 0;
 

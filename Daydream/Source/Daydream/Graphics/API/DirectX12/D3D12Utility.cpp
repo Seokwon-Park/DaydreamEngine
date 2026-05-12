@@ -35,10 +35,10 @@ namespace Daydream::GraphicsUtility::DirectX12
 		case ResourceState::ShaderResource:
 			return D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
 
-		case ResourceState::UnorderedAccess: 
+		case ResourceState::UnorderedAccess:
 			return D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
 
-		case ResourceState::Present: 
+		case ResourceState::Present:
 			return D3D12_RESOURCE_STATE_PRESENT;
 
 		default:
@@ -69,7 +69,7 @@ namespace Daydream::GraphicsUtility::DirectX12
 		D3D12_RESOURCE_DESC resourceDesc{};
 		resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 		resourceDesc.Alignment = 0;
-		resourceDesc.Width = _desc.size;
+		resourceDesc.Width = _desc.bufferUsage == BufferUsage::Constant ? ((_desc.size + 255) & ~255) : _desc.size;
 		resourceDesc.Height = 1;
 		resourceDesc.DepthOrArraySize = 1;
 		resourceDesc.MipLevels = 1;

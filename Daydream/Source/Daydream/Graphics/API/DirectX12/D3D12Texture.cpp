@@ -16,31 +16,38 @@ namespace Daydream
 		textureDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 		textureDesc.Width = desc.width;
 		textureDesc.Height = desc.height;
-		textureDesc.DepthOrArraySize = 1;
-		textureDesc.MipLevels = desc.mipLevels;
+		if (_desc.type == TextureType::TextureCube)
+			textureDesc.DepthOrArraySize = 6;
+		else if (_desc.type == TextureType::TextureCubeArray)
+			textureDesc.DepthOrArraySize = 6 * _desc.layerCount;
+		else if (_desc.type == TextureType::Texture2DArray)
+			textureDesc.DepthOrArraySize = _desc.layerCount;
+		else
+			textureDesc.DepthOrArraySize = 1; // 일반 2D 또는 2DMultisample
+		textureDesc.MipLevels = _desc.mipLevels;
 		textureDesc.Format = format;
 		textureDesc.SampleDesc.Count = 1;
 		textureDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN; 
 		textureDesc.Flags = GraphicsUtility::DirectX12::ConvertToD3D12BindFlags(desc.textureUsage);
 
-		D3D12_CLEAR_VALUE clearValue{};
-		bool isUseClearValue = textureDesc.Flags & D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET || textureDesc.Flags & D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
-		if (isUseClearValue)
-		{
-			clearValue.Format = textureDesc.Format;
-			if (textureDesc.Format == DXGI_FORMAT_D24_UNORM_S8_UINT)
-			{
-				clearValue.DepthStencil.Depth = 1.0f;
-				clearValue.DepthStencil.Stencil = 0;
-			}
-			else
-			{
-				clearValue.Color[0] = 0.0f;
-				clearValue.Color[1] = 0.0f;
-				clearValue.Color[2] = 1.0f;
-				clearValue.Color[3] = 1.0f;
-			}
-		}
+		//D3D12_CLEAR_VALUE clearValue{};
+		//bool isUseClearValue = textureDesc.Flags & D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET || textureDesc.Flags & D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+		//if (isUseClearValue)
+		//{
+		//	clearValue.Format = textureDesc.Format;
+		//	if (textureDesc.Format == DXGI_FORMAT_D24_UNORM_S8_UINT)
+		//	{
+		//		clearValue.DepthStencil.Depth = 1.0f;
+		//		clearValue.DepthStencil.Stencil = 0;
+		//	}
+		//	else
+		//	{
+		//		clearValue.Color[0] = 0.0f;
+		//		clearValue.Color[1] = 0.0f;
+		//		clearValue.Color[2] = 1.0f;
+		//		clearValue.Color[3] = 1.0f;
+		//	}
+		//}
 
 		D3D12_HEAP_PROPERTIES heapProperties = {};
 		heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
@@ -53,6 +60,12 @@ namespace Daydream
 			nullptr,
 			IID_PPV_ARGS(texture.GetAddressOf())
 		);
+	}
+
+	D3D12GPUTexture::D3D12GPUTexture(D3D12RenderDevice* _device, const TextureDesc& _desc, ComPtr<ID3D12Resource> _d3d12BackBuffer)
+		:GPUTexture(_desc)
+	{
+		texture = _d3d12BackBuffer;
 	}
 
 	//D3D12Texture2D::D3D12Texture2D(D3D12RenderDevice* _device, const TextureDesc& _desc)

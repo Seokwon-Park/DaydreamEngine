@@ -55,6 +55,7 @@ namespace Daydream
 		{
 			ClearValue dsvClearValue = _renderingInfo.depthAttachment.clearValue;
 			D3D11TextureView* d3d11TextureView = Cast<D3D11TextureView*>(_renderingInfo.depthAttachment.view.get());
+			dsv = d3d11TextureView->GetDSV();
 			if (_renderingInfo.depthAttachment.loadOp == AttachmentLoadOp::Clear)
 			{
 				device->GetContext()->ClearDepthStencilView(d3d11TextureView->GetDSV(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, dsvClearValue.depthClearValue, dsvClearValue.stencilClearValue);
@@ -254,11 +255,10 @@ namespace Daydream
 
 		device->GetContext()->CopyResource(dst->GetID3D11Resource(), src->GetID3D11Resource());
 	}
-	void D3D11RenderContext::CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel)
+	void Daydream::D3D11RenderContext::CopyTextureToCubemapFace(Shared<Texture2D> _srcTexture2D, Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, UInt32 _mipLevel)
 	{
 		D3D11GPUTexture* src = Cast<D3D11GPUTexture*>(_srcTexture2D->GetGPUTexturePtr());
 		D3D11GPUTexture* dst = Cast<D3D11GPUTexture*>(_dstCubemap->GetGPUTexturePtr());
-
 
 
 		UInt32 dstSubresourceIndex = D3D11CalcSubresource(
@@ -309,7 +309,7 @@ namespace Daydream
 		device->GetContext()->CopyResource(dst->GetID3D11Buffer(), src->GetID3D11Buffer());
 	}
 
-	void D3D11RenderContext::CopyBufferToTexture(Shared<GPUBuffer> _src, Shared<GPUTexture> _dst, UInt32 _width, UInt32 _height)
+	void D3D11RenderContext::CopyBufferToTexture(Shared<GPUBuffer> _src, Shared<GPUTexture> _dst)
 	{
 		D3D11_MAPPED_SUBRESOURCE mappedData;
 
@@ -320,13 +320,11 @@ namespace Daydream
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed to map source buffer for reading in DX11!");
 
 		UInt32 bytesPerPixel = GraphicsUtility::GetRenderFormatSize(_dst->GetDesc().format);
-		UInt32 rowPitch = _width * bytesPerPixel;
-		UInt32 depthPitch = rowPitch * _height;
+		UInt32 rowPitch = _dst->GetWidth() * bytesPerPixel;
+		UInt32 depthPitch = rowPitch * _dst->GetHeight();
 
-		// 3. 텍스처로 데이터 업데이트 (CPU -> GPU 텍스처 전송)
 		device->GetContext()->UpdateSubresource(dst->GetID3D11Resource(), 0, nullptr, mappedData.pData, rowPitch, depthPitch);
 
-		// 4. 매핑 해제
 		device->GetContext()->Unmap(src->GetID3D11Buffer(), 0);
 	}
 

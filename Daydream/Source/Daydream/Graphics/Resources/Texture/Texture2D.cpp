@@ -27,17 +27,17 @@ namespace Daydream
 
 		Shared<GPUTexture> gpuTexture = Renderer::GetRenderDevice()->CreateGPUTexture(desc);
 		Shared<Texture2D> texture2D = MakeShared<Texture2D>(gpuTexture);
-
+		
 		if (_initialData)
 		{
-			UInt32 imageSize = _desc.width * _desc.height * GraphicsUtility::GetRenderFormatSize(_desc.format);
-			Shared<UploadBuffer> uploadBuffer = UploadBuffer::Create(imageSize);
-			uploadBuffer->UpdateData(_initialData, imageSize);
+			UInt32 imageSize = desc.width * desc.height * GraphicsUtility::GetRenderFormatSize(desc.format);
+			Shared<Array<Byte>> dataArray = MakeShared<Array<Byte>>(imageSize);
 
+			memcpy(dataArray->data(), _initialData, imageSize);
 
 			Renderer::EnqueuePreFrameCommand([=]()
 				{
-					Renderer::CopyBufferToTexture(uploadBuffer->GetGPUBuffer(), texture2D->GetGPUTexture(), desc.width, desc.height);
+					Renderer::CopyDataToTexture2D(texture2D, dataArray);
 					Renderer::TransitionTextureState(gpuTexture, ResourceState::CopyDest, ResourceState::ShaderResource, 0, 1);
 				});
 		}

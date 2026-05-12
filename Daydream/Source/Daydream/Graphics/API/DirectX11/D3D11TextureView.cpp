@@ -14,7 +14,6 @@ namespace Daydream
         DXGI_FORMAT dxgiFormat = GraphicsUtility::DirectX::ConvertToDXGIFormat(targetFormat); 
 
         bool isArray = (_texture->GetDesc().type == TextureType::TextureCube || _texture->GetDesc().layerCount > 1);
-        UINT mipLevels = _desc.mipLevels;
 
         switch (_desc.type)
         {
@@ -27,13 +26,13 @@ namespace Daydream
             {
                 srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
                 srvDesc.TextureCube.MostDetailedMip = _desc.baseMip;
-                srvDesc.TextureCube.MipLevels = mipLevels;
+                srvDesc.TextureCube.MipLevels = _desc.mipLevels;
             }
             else if (isArray)
             {
                 srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
                 srvDesc.Texture2DArray.MostDetailedMip = _desc.baseMip;
-                srvDesc.Texture2DArray.MipLevels = mipLevels;
+                srvDesc.Texture2DArray.MipLevels = _desc.mipLevels;
                 srvDesc.Texture2DArray.FirstArraySlice = _desc.baseLayer;
                 srvDesc.Texture2DArray.ArraySize = _desc.layerCount;
             }
@@ -41,7 +40,7 @@ namespace Daydream
             {
                 srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
                 srvDesc.Texture2D.MostDetailedMip = _desc.baseMip;
-                srvDesc.Texture2D.MipLevels = mipLevels;
+                srvDesc.Texture2D.MipLevels = _desc.mipLevels;
             }
 
             ComPtr<ID3D11ShaderResourceView> srv = nullptr;

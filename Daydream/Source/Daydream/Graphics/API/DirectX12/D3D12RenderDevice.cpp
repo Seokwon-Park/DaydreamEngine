@@ -375,7 +375,7 @@ namespace Daydream
 
 	//		D3D12_PLACED_SUBRESOURCE_FOOTPRINT placedFootprint;
 	//		UINT64 totalBytes;
-	//		device->GetCopyableFootprints(&dstDesc, 0, 1, 0, &placedFootprint, nullptr, nullptr, &totalBytes);
+	//		device->GetCopyableFootp rints(&dstDesc, 0, 1, 0, &placedFootprint, nullptr, nullptr, &totalBytes);
 
 	//		auto uploadBuffer = CreateBuffer(totalBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
 

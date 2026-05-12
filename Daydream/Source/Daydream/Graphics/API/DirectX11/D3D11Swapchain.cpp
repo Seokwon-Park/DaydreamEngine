@@ -55,7 +55,7 @@ namespace Daydream
 		textureDesc.textureUsage = TextureUsage::RenderTarget;
 		textureDesc.type = TextureType::Texture2D;
 
-		backBufferTexture = MakeShared<D3D11GPUTexture>(device, textureDesc, backBuffer.Get());
+		backBufferTexture = MakeShared<D3D11GPUTexture>(device, textureDesc, backBuffer);
 
 		TextureViewDesc viewDesc;
 		viewDesc.format = desc.format;

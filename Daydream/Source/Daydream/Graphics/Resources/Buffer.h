@@ -7,7 +7,7 @@ namespace Daydream
 {
 	struct BufferDesc
 	{
-		UInt32 size = 0;
+		UInt64 size = 0;
 		BufferUsage bufferUsage = BufferUsage::None;
 		MemoryUsage memoryUsage = MemoryUsage::Static;
 	};
@@ -21,7 +21,7 @@ namespace Daydream
 
 		virtual void UpdateData(const void* _data, UInt32 _size) = 0;
 
-		inline UInt32 GetSize() const { return desc.size; }
+		inline UInt64 GetSize() const { return desc.size; }
 
 		const BufferDesc& GetDesc() const { return desc; }
 	protected:
@@ -38,7 +38,7 @@ namespace Daydream
 		inline void UpdateData(const void* _data, UInt32 _size) { buffer->UpdateData(_data, _size); }
 		inline const Shared<GPUBuffer>& GetGPUBuffer() const { return buffer; }
 		inline GPUBuffer* GetGPUBufferPtr() const { return buffer.get(); }
-		inline UInt32 GetSize() const { return buffer->GetSize(); }
+		inline UInt64 GetSize() const { return buffer->GetSize(); }
 	protected:
 		Shared<GPUBuffer> buffer;
 	};

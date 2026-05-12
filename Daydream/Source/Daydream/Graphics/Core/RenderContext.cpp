@@ -1,5 +1,6 @@
 #include "DaydreamPCH.h"
 
+#include "Daydream/Graphics/Utility/GraphicsUtility.h"
 #include "Daydream/Graphics/Core/Renderer.h"
 #include "Daydream/Graphics/Resources/PipelineState/GraphicsPipelineState.h"
 #include "Daydream/Graphics/Manager/ResourceManager.h"
@@ -18,6 +19,15 @@ namespace Daydream
     //    //    _texture->SetSampler(ResourceManager::GetResource<Sampler>("LinearRepeat"));
     //    //}
     //}
+
+    void RenderContext::CopyDataToTexture2D(Shared<Texture2D> _target, Shared<Array<Byte>> _data)
+    {
+        Shared<UploadBuffer> uploadBuffer = UploadBuffer::Create(_data->size());
+        uploadBuffer->UpdateData(_data->data(), _data->size());
+
+        CopyBufferToTexture(uploadBuffer->GetGPUBuffer(), _target->GetGPUTexture());
+    }
+
     void RenderContext::CaptureResource(Shared<GPUResource> _resource)
     {
         captureStorage.push_back(_resource);

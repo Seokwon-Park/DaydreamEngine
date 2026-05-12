@@ -301,15 +301,25 @@ namespace Daydream
 			});
 	}
 
-	void Renderer::CopyBufferToTexture(Shared<GPUBuffer> _src, Shared<GPUTexture> _dst, UInt32 _width, UInt32 _height)
+
+	void Renderer::CopyBufferToTexture(Shared<GPUBuffer> _src, Shared<GPUTexture> _dst)
 	{
-		EnqueueCommand([_src, _dst, _width, _height]()
+		EnqueueCommand([_src, _dst]()
 			{
 				renderContext->CaptureResource(_src);
 				renderContext->CaptureResource(_dst);
-				renderContext->CopyBufferToTexture(_src, _dst, _width, _height);
+				renderContext->CopyBufferToTexture(_src, _dst);
 			});
 	}
+
+	void Daydream::Renderer::CopyDataToTexture2D(Shared<Texture2D> _target, Shared<Array<Byte>> _data)
+	{
+		EnqueueCommand([_target, _data]()
+			{
+				renderContext->CopyDataToTexture2D(_target, _data);
+			});
+	}
+
 
 	void Renderer::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
 	{
@@ -319,16 +329,16 @@ namespace Daydream
 			});
 	}
 
-	void Renderer::CopyTexture2DToTextureCube(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel)
+	void Renderer::CopyTexture2DToTextureCube(Shared<Texture2D> _srcTexture2D, Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, UInt32 _mipLevel)
 	{
 		EnqueueCommand([_dstCubemap, _faceIndex, _srcTexture2D, _mipLevel]()
 			{
-				renderContext->CopyTextureToCubemapFace(_dstCubemap, _faceIndex, _srcTexture2D, _mipLevel);
+				renderContext->CopyTextureToCubemapFace(_srcTexture2D, _dstCubemap, _faceIndex, _mipLevel);
 			});
 
 	}
 
-	void Renderer::CopyTextureCubeToTexture2D(Shared<TextureCube> _srcCubemap, UInt32 _faceIndex, Shared<Texture2D> _dstTexture2D, UInt32 _mipLevel)
+	void Daydream::Renderer::CopyTextureCubeToTexture2D(Shared<TextureCube> _srcCubemap, UInt32 _faceIndex, Shared<Texture2D> _dstTexture2D, UInt32 _mipLevel)
 	{
 		EnqueueCommand([_srcCubemap, _faceIndex, _dstTexture2D, _mipLevel]()
 			{

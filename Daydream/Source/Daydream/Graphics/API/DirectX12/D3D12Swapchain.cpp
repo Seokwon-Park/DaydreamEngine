@@ -53,8 +53,33 @@ namespace Daydream
 		commandLists.resize(_desc.imageCount);
 		for (UInt32 i = 0; i < _desc.imageCount; i++)
 		{
-			// 매 루프마다 '진짜로' 새로운 커맨드 리스트와 Allocator를 각각 생성합니다!
 			commandLists[i] = MakeShared<D3D12RenderCommandList>(device);
+		}
+
+		// 여기서부터 스왑체인이 사용할 백버퍼로 렌더타겟 뷰 생성
+
+
+		TextureDesc textureDesc{};
+		textureDesc.width = desc.width;
+		textureDesc.height = desc.height;
+		textureDesc.mipLevels = 1;
+		textureDesc.sampleCount = 1;
+		textureDesc.format = desc.format;
+		textureDesc.textureUsage = TextureUsage::RenderTarget;
+		textureDesc.type = TextureType::Texture2D;
+
+		TextureViewDesc viewDesc;
+		viewDesc.format = desc.format;
+		viewDesc.type = TextureViewType::RenderTarget;
+
+		backBufferTextures.resize(_desc.imageCount);
+		backBufferRTVs.resize(_desc.imageCount);
+		for (UInt32 i = 0; i < desc.imageCount; i++)
+		{
+			ComPtr<ID3D12Resource> backBuffer;
+			swapchain->GetBuffer(i, IID_PPV_ARGS(backBuffer.GetAddressOf()));
+			backBufferTextures[i] = MakeShared<D3D12GPUTexture>(device, textureDesc, backBuffer);
+			backBufferRTVs[i] = MakeShared<D3D12TextureView>(device, backBufferTextures[i], viewDesc);
 		}
 
 		//RenderPassAttachmentDesc colorDesc;
@@ -69,8 +94,7 @@ namespace Daydream
 		//framebuffers.resize(desc.imageCount);
 		//for (UInt32 i = 0; i < desc.imageCount; i++)
 		//{
-		//	ComPtr<ID3D12Resource> backBuffer;
-		//	swapchain->GetBuffer(i, IID_PPV_ARGS(backBuffer.GetAddressOf()));
+
 		//	framebuffers[i] = MakeShared<D3D12Framebuffer>(device, mainRenderPass.get(), this, backBuffer.Get());
 		//	d3d12Backbuffers.push_back(backBuffer);
 		//}
@@ -136,7 +160,7 @@ namespace Daydream
 
 			isSwapchainResized = false;
 		}
-		
+
 		// frameIndex의 작업이 끝난상태인지 확인
 		if (fence->GetCompletedValue() < fenceValues[frameIndex])
 		{
@@ -155,7 +179,7 @@ namespace Daydream
 		D3D12_RESOURCE_BARRIER barr{};
 		barr.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 		barr.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barr.Transition.pResource = d3d12Backbuffers[frameIndex].Get();
+		barr.Transition.pResource = backBufferTextures[frameIndex]->GetID3D12Resource();
 		barr.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 		barr.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
@@ -168,7 +192,7 @@ namespace Daydream
 
 		barr.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 		barr.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barr.Transition.pResource = d3d12Backbuffers[frameIndex].Get();
+		barr.Transition.pResource = backBufferTextures[frameIndex]->GetID3D12Resource();
 		barr.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 		barr.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 		barr.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;

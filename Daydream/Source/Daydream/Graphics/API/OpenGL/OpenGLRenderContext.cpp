@@ -38,7 +38,7 @@ namespace Daydream
 
 			glNamedFramebufferTexture(
 				framebufferID,
-				GL_COLOR_ATTACHMENT0 + i,
+				(GLenum)(GL_COLOR_ATTACHMENT0 + i),
 				openGLTextureView->GetTextureViewID(),
 				0
 			);
@@ -218,7 +218,7 @@ namespace Daydream
 		glCopyNamedBufferSubData(src->GetBufferID(), dst->GetBufferID(), 0, 0, _copySize);
 	}
 
-	void OpenGLRenderContext::CopyBufferToTexture(Shared<GPUBuffer> _src, Shared<GPUTexture> _dst, UInt32 _width, UInt32 _height)
+	void Daydream::OpenGLRenderContext::CopyBufferToTexture(Shared<GPUBuffer> _src, Shared<GPUTexture> _dst)
 	{
 		Shared<OpenGLGPUBuffer> srcBuffer = SharedCast<OpenGLGPUBuffer>(_src);
 		Shared<OpenGLGPUTexture> dstTexture = SharedCast<OpenGLGPUTexture>(_dst);
@@ -236,8 +236,8 @@ namespace Daydream
 			0,           // 밉맵 레벨
 			0,           // X 오프셋
 			0,           // Y 오프셋
-			_width,      // 복사할 너비
-			_height,     // 복사할 높이
+			_dst->GetWidth(),      // 복사할 너비
+			_dst->GetHeight(),     // 복사할 높이
 			pixelFormat, // 픽셀 포맷
 			pixelType,   // 데이터 타입
 			nullptr      // PBO 오프셋
@@ -264,7 +264,7 @@ namespace Daydream
 			1                    // 복사할 깊이 (2D 텍스처는 1)
 		);
 	}
-	void OpenGLRenderContext::CopyTextureToCubemapFace(Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, Shared<Texture2D> _srcTexture2D, UInt32 _mipLevel)
+	void Daydream::OpenGLRenderContext::CopyTextureToCubemapFace(Shared<Texture2D> _srcTexture2D, Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, UInt32 _mipLevel)
 	{
 		OpenGLGPUTexture* src = Cast<OpenGLGPUTexture*>(_srcTexture2D->GetGPUTexturePtr());
 		OpenGLGPUTexture* dst = Cast<OpenGLGPUTexture*>(_dstCubemap->GetGPUTexturePtr());

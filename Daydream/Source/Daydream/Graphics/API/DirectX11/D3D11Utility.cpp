@@ -8,7 +8,7 @@ namespace Daydream::GraphicsUtility::DirectX11
 		D3D11_BUFFER_DESC bufferDesc;
 		ZeroMemory(&bufferDesc, sizeof(bufferDesc));
 
-		bufferDesc.ByteWidth = _desc.size;
+		bufferDesc.ByteWidth = (UInt32)_desc.size;
 
 		bufferDesc.Usage = ConvertToD3D11Usage(_desc.memoryUsage);
 		bufferDesc.CPUAccessFlags = ConvertToD3D11CPUAccessFlags(_desc.memoryUsage);

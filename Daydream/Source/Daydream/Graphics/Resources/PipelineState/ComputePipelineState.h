@@ -4,7 +4,7 @@ namespace Daydream
 {
     //struct ComputePipelineStateDesc
     //{
-    //    Shared<Shader> computeShader; // 진짜 이거 하나면 됩니다.
+    //    Shared<Shader> computeShader; 
     //};
 
     //class ComputePipelineState : public Resource

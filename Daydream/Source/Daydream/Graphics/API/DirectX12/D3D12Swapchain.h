@@ -2,6 +2,7 @@
 
 #include "Daydream/Graphics/Core/Swapchain.h"
 #include "D3D12RenderDevice.h"
+#include "D3D12TextureView.h"
 #include "D3D12Framebuffer.h"
 #include "D3D12RenderCommandList.h"
 
@@ -21,7 +22,7 @@ namespace Daydream
 		virtual void BeginFrame() override;
 		virtual void EndFrame() override;
 
-		virtual Shared<TextureView> GetCurrentRenderTargetView() const {return nullptr;};
+		virtual Shared<TextureView> GetCurrentRenderTargetView() const {return backBufferRTVs[frameIndex];};
 		virtual Shared<RenderCommandList> GetCurrentCommandList() const { return commandLists[frameIndex]; };
 
 		void WaitForGPU();
@@ -37,6 +38,9 @@ namespace Daydream
 		ID3D12GraphicsCommandList* currentCommandList;
 		//Array<ComPtr<ID3D12GraphicsCommandList>> commandLists;
 		//Array<ComPtr<ID3D12CommandAllocator>> commandAllocators;
+
+		Array<Shared<D3D12GPUTexture>> backBufferTextures;
+		Array<Shared<D3D12TextureView>> backBufferRTVs;
 
 		Int32 frameIndex = 0;
 		UInt32 bufferCount = 0;
