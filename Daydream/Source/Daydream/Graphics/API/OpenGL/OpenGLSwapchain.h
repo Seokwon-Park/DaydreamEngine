@@ -25,6 +25,8 @@ namespace Daydream
 		virtual Shared<RenderCommandList> GetCurrentCommandList() const { return nullptr; };
 
 	private:
+		void CreateBackBufferView();
+
 		GLFWwindow* window;
 
 		UInt32 blitFBO;

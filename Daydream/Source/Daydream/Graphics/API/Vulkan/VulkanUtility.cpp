@@ -8,19 +8,40 @@ namespace Daydream::GraphicsUtility::Vulkan
 	{
 		vk::PipelineStageFlags stage;
 		vk::AccessFlags access;
+
 		switch (_state)
 		{
 		case ResourceState::Undefined:
 			stage = vk::PipelineStageFlagBits::eTopOfPipe;
 			access = vk::AccessFlags(0);
 			break;
-		case ResourceState::CopyDest:
-			stage = vk::PipelineStageFlagBits::eTransfer;
-			access = vk::AccessFlagBits::eTransferWrite;
+		case ResourceState::ShaderResource:
+			stage = vk::PipelineStageFlagBits::eVertexShader | vk::PipelineStageFlagBits::eFragmentShader | vk::PipelineStageFlagBits::eComputeShader;
+			access = vk::AccessFlagBits::eShaderRead;
 			break;
 		case ResourceState::CopySource:
 			stage = vk::PipelineStageFlagBits::eTransfer;
 			access = vk::AccessFlagBits::eTransferRead;
+			break;
+		case ResourceState::CopyDest:
+			stage = vk::PipelineStageFlagBits::eTransfer;
+			access = vk::AccessFlagBits::eTransferWrite;
+			break;
+		case ResourceState::RenderTarget:
+			stage = vk::PipelineStageFlagBits::eColorAttachmentOutput;
+			access = vk::AccessFlagBits::eColorAttachmentWrite | vk::AccessFlagBits::eColorAttachmentRead;
+			break;
+		case ResourceState::DepthRead:
+			stage = vk::PipelineStageFlagBits::eEarlyFragmentTests | vk::PipelineStageFlagBits::eLateFragmentTests;
+			access = vk::AccessFlagBits::eDepthStencilAttachmentRead;
+			break;
+		case ResourceState::DepthWrite:
+			stage = vk::PipelineStageFlagBits::eEarlyFragmentTests | vk::PipelineStageFlagBits::eLateFragmentTests;
+			access = vk::AccessFlagBits::eDepthStencilAttachmentRead | vk::AccessFlagBits::eDepthStencilAttachmentWrite;
+			break;
+		case ResourceState::Present:
+			stage = vk::PipelineStageFlagBits::eBottomOfPipe;
+			access = vk::AccessFlags(0);
 			break;
 		case ResourceState::VertexBuffer:
 			stage = vk::PipelineStageFlagBits::eVertexInput;
@@ -30,18 +51,55 @@ namespace Daydream::GraphicsUtility::Vulkan
 			stage = vk::PipelineStageFlagBits::eVertexInput;
 			access = vk::AccessFlagBits::eIndexRead;
 			break;
-		case ResourceState::ConstantBuffer: // Uniform Buffer
-			stage = vk::PipelineStageFlagBits::eVertexShader | vk::PipelineStageFlagBits::eFragmentShader;
+		case ResourceState::ConstantBuffer:
+			stage = vk::PipelineStageFlagBits::eVertexShader | vk::PipelineStageFlagBits::eFragmentShader | vk::PipelineStageFlagBits::eComputeShader;
 			access = vk::AccessFlagBits::eUniformRead;
 			break;
+		case ResourceState::UnorderedAccess:
+			stage = vk::PipelineStageFlagBits::eComputeShader | vk::PipelineStageFlagBits::eFragmentShader;
+			access = vk::AccessFlagBits::eShaderRead | vk::AccessFlagBits::eShaderWrite;
+			break;
 		default:
-			DAYDREAM_CORE_ASSERT(false, "Unknown Resource State!");
+			stage = vk::PipelineStageFlagBits::eBottomOfPipe;
+			access = vk::AccessFlags(0);
 			break;
 		}
+
 		return { stage, access };
 	}
 
-	vk::BufferCreateInfo ConvertToVulkanCreateInfo(const BufferDesc& _desc)
+	vk::ImageLayout ConvertToVulkanImageLayout(ResourceState _state)
+	{
+		switch (_state)
+		{
+		case ResourceState::Undefined:
+			return vk::ImageLayout::eUndefined;
+		case ResourceState::ShaderResource:
+			return vk::ImageLayout::eShaderReadOnlyOptimal;
+		case ResourceState::CopySource:
+			return vk::ImageLayout::eTransferSrcOptimal;
+		case ResourceState::CopyDest:
+			return vk::ImageLayout::eTransferDstOptimal;
+		case ResourceState::RenderTarget:
+			return vk::ImageLayout::eColorAttachmentOptimal;
+		case ResourceState::DepthRead:
+			return vk::ImageLayout::eDepthStencilReadOnlyOptimal;
+		case ResourceState::DepthWrite:
+			return vk::ImageLayout::eDepthStencilAttachmentOptimal;
+		case ResourceState::UnorderedAccess:
+			return vk::ImageLayout::eGeneral;
+		case ResourceState::Present:
+			return vk::ImageLayout::ePresentSrcKHR;
+		case ResourceState::VertexBuffer:
+		case ResourceState::IndexBuffer:
+		case ResourceState::ConstantBuffer:
+			return vk::ImageLayout::eUndefined;
+		default:
+			return vk::ImageLayout::eUndefined;
+		}
+	}
+
+	vk::BufferCreateInfo ConvertToVkImageCreateInfo(const BufferDesc& _desc)
 	{
 		vk::BufferCreateInfo bufferInfo{};
 		bufferInfo.size = _desc.size;

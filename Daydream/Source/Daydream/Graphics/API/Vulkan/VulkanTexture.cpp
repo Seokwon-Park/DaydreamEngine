@@ -11,12 +11,18 @@ namespace Daydream
 	VulkanGPUTexture::VulkanGPUTexture(VulkanRenderDevice* _device, const TextureDesc& _desc)
 		:GPUTexture(_desc)
 	{
-		device = _device;
-
 		vk::ImageCreateInfo imageInfo = GraphicsUtility::Vulkan::ConvertToVulkanCreateInfo(_desc);
 		vma::AllocationCreateInfo allocInfo = GraphicsUtility::Vulkan::ConvertToVMAAllocationInfo(_desc);
 		
-		std::tie(textureImage, textureImageAllocation) = device->GetAllocator().createImageUnique(imageInfo, allocInfo);
+		std::tie(ownedImage, ownedImageAllocation) = _device->GetAllocator().createImageUnique(imageInfo, allocInfo);
+
+		image = ownedImage.get();
+	}
+
+	VulkanGPUTexture::VulkanGPUTexture(VulkanRenderDevice* _device, const TextureDesc& _desc, vk::Image _image)
+		:GPUTexture(_desc)
+	{
+		image = _image;
 	}
 
 	//VulkanTexture2D::VulkanTexture2D(VulkanRenderDevice* _device, const TextureDesc& _desc)

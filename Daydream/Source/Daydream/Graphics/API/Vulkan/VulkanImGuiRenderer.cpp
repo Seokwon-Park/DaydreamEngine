@@ -1,6 +1,7 @@
 #include "DaydreamPCH.h"
 #include "VulkanImGuiRenderer.h"
 #include "VulkanSwapchain.h"
+#include "VulkanUtility.h"
 
 #include "backends/imgui_impl_vulkan.h"
 
@@ -25,7 +26,7 @@ namespace Daydream
 		info.MinImageCount = 3;
 		info.ImageCount = 3;
 
-		static VkFormat colorFormat = (VkFormat)_window->GetSwapchain()->GetDesc().format; // 구조체가 포인터를 요구하므로 메모리 유지 필요
+		static VkFormat colorFormat = (VkFormat)GraphicsUtility::Vulkan::ConvertToVkFormat(_window->GetSwapchain()->GetDesc().format);
 		info.UseDynamicRendering = true;
 		info.PipelineInfoMain.PipelineRenderingCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR;
 		info.PipelineInfoMain.PipelineRenderingCreateInfo.pNext = nullptr;

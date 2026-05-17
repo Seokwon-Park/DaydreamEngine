@@ -106,8 +106,9 @@ namespace Daydream
 		{
 			Array<vk::DescriptorPoolSize> poolSizes =
 			{
-				{ vk::DescriptorType::eCombinedImageSampler , IMGUI_IMPL_VULKAN_MINIMUM_IMAGE_SAMPLER_POOL_SIZE },
+				{ vk::DescriptorType::eCombinedImageSampler , IMGUI_IMPL_VULKAN_MINIMUM_SAMPLER_POOL_SIZE },
 				{ vk::DescriptorType::eCombinedImageSampler , 1024 },
+				{ vk::DescriptorType::eSampler, IMGUI_IMPL_VULKAN_MINIMUM_SAMPLER_POOL_SIZE },
 				{ vk::DescriptorType::eUniformBuffer , 256 },
 			};
 
@@ -752,6 +753,7 @@ namespace Daydream
 
 	void VulkanRenderDevice::CreateInstance()
 	{
+		UInt32 res = putenv("VK_LOADER_LAYERS_DISABLE=VK_LAYER_OBS_HOOK");
 		vk::detail::defaultDispatchLoaderDynamic.init();
 		if (enableValidationLayers == true && CheckValidationLayerSupport() == false)
 		{
@@ -795,7 +797,7 @@ namespace Daydream
 			createInfo.enabledLayerCount = static_cast<UInt32>(validationLayers.size());
 			createInfo.ppEnabledLayerNames = validationLayers.data();
 			PopulateDebugMessengerCreateInfo(debugCreateInfo);
-			debugCreateInfo.pNext = features;
+			debugCreateInfo.pNext = nullptr;
 			createInfo.pNext = &debugCreateInfo;
 		}
 

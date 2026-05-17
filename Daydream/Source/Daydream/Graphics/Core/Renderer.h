@@ -96,11 +96,23 @@ namespace Daydream
 		static void CopyTexture2DToTextureCube(Shared<Texture2D> _srcTexture2D, Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, UInt32 _mipLevel = 0);
 		static void CopyTextureCubeToTexture2D(Shared<TextureCube> _srcCubemap, UInt32 _faceIndex, Shared<Texture2D> _dstTexture2D, UInt32 _mipLevel = 0);
 
+
 		static void TransitionTextureState(Shared<GPUTexture> _texture,
 			ResourceState _beforeState,
 			ResourceState _afterState,
-			UInt32 _mipLevel = 0,     
-			UInt32 _mipCount = 1);
+			UInt32 _baseMip = 0,
+			UInt32 _mipLevels = -1,
+			UInt32 _baseLayer = 0,
+			UInt32 _layerCount = -1);
+
+		static void TransitionTextureState(Shared<Texture> _texture,
+			ResourceState _beforeState,
+			ResourceState _afterState,
+			UInt32 _baseMip = 0,
+			UInt32 _mipLevels = -1,
+			UInt32 _baseLayer = 0,
+			UInt32 _layerCount = -1);
+
 
 		static void TransitionBufferState(
 			Shared<GPUBuffer> _buffer,

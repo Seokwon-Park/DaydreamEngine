@@ -43,26 +43,9 @@ namespace Daydream
 		HRESULT hr = device->GetFactory()->CreateSwapChain(device->GetDevice(), &swapchainDesc, swapchain.GetAddressOf());
 		DAYDREAM_CORE_ASSERT(SUCCEEDED(hr), "Failed To Create Swapchain!");
 
-		ComPtr<ID3D11Texture2D> backBuffer;
-		swapchain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
-
-		TextureDesc textureDesc{};
-		textureDesc.width = desc.width;
-		textureDesc.height = desc.height;
-		textureDesc.mipLevels = 1;
-		textureDesc.sampleCount = 1;
-		textureDesc.format = desc.format;
-		textureDesc.textureUsage = TextureUsage::RenderTarget;
-		textureDesc.type = TextureType::Texture2D;
-
-		backBufferTexture = MakeShared<D3D11GPUTexture>(device, textureDesc, backBuffer);
-
-		TextureViewDesc viewDesc;
-		viewDesc.format = desc.format;
-		viewDesc.type = TextureViewType::RenderTarget;
-
-		backBufferRTV = MakeShared<D3D11TextureView>(device, backBufferTexture, viewDesc);
+		CreateBackBufferView();
 	}
+
 	D3D11Swapchain::~D3D11Swapchain()
 	{
 		device = nullptr;
@@ -87,30 +70,13 @@ namespace Daydream
 	{
 		if (isSwapchainResized)
 		{
+			//이전 백버퍼를 붙잡고 있던 렌더타겟뷰, 텍스쳐배열을 놓아줘야 리사이즈 할 수 있음
 			backBufferRTV = nullptr;
 			backBufferTexture = nullptr;
 
 			swapchain->ResizeBuffers(0, desc.width, desc.height, GraphicsUtility::DirectX::ConvertToDXGIFormat(desc.format), 0);
-
-			ComPtr<ID3D11Texture2D> backBuffer;
-			swapchain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
-
-			TextureDesc textureDesc{};
-			textureDesc.width = desc.width;
-			textureDesc.height = desc.height;
-			textureDesc.mipLevels = 1;
-			textureDesc.sampleCount = 1;
-			textureDesc.format = desc.format;
-			textureDesc.textureUsage = TextureUsage::RenderTarget;
-			textureDesc.type = TextureType::Texture2D;
-
-			backBufferTexture = MakeShared<D3D11GPUTexture>(device, textureDesc, backBuffer.Get());
-
-			TextureViewDesc viewDesc;
-			viewDesc.format = desc.format;
-			viewDesc.type = TextureViewType::RenderTarget;
-
-			backBufferRTV = MakeShared<D3D11TextureView>(device, backBufferTexture, viewDesc);
+			
+			CreateBackBufferView();
 			isSwapchainResized = false;
 		}
 
@@ -133,6 +99,29 @@ namespace Daydream
 	void D3D11Swapchain::EndFrame()
 	{
 		//device->GetContext()->OMSetRenderTargets(0, nullptr, nullptr);
+	}
+
+	void D3D11Swapchain::CreateBackBufferView()
+	{
+		ComPtr<ID3D11Texture2D> backBuffer;
+		swapchain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
+
+		TextureDesc textureDesc{};
+		textureDesc.width = desc.width;
+		textureDesc.height = desc.height;
+		textureDesc.mipLevels = 1;
+		textureDesc.sampleCount = 1;
+		textureDesc.format = desc.format;
+		textureDesc.textureUsage = TextureUsage::RenderTarget;
+		textureDesc.type = TextureType::Texture2D;
+
+		backBufferTexture = MakeShared<D3D11GPUTexture>(device, textureDesc, backBuffer);
+
+		TextureViewDesc viewDesc;
+		viewDesc.format = desc.format;
+		viewDesc.type = TextureViewType::RenderTarget;
+
+		backBufferRTV = MakeShared<D3D11TextureView>(device, backBufferTexture, viewDesc);
 	}
 
 }

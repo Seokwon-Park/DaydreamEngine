@@ -100,6 +100,12 @@ namespace Daydream
 			descriptorSetLayouts.push_back(device->GetDevice().createDescriptorSetLayoutUnique(layoutCreateInfo));
 		}
 
+		rawDescriptorSetLayouts.clear();
+		for (const auto& uniqueLayout : descriptorSetLayouts)
+		{
+			rawDescriptorSetLayouts.push_back(uniqueLayout.get());
+		}
+
 		Array<vk::DynamicState> dynamicStates =
 		{
 			vk::DynamicState::eViewport,
@@ -159,15 +165,15 @@ namespace Daydream
 		//colorBlendAttachment.dstAlphaBlendFactor = vk::BlendFactor::eZero; // Optional
 		//colorBlendAttachment.alphaBlendOp = vk::BlendOp::eAdd; // Optional
 
-		UInt32 attachmentCount = (UInt32)_desc.renderTargetFormats.size();
+		UInt32 colorAttachmentCount = (UInt32)desc.renderTargetFormats.size();
 
 		std::vector<vk::PipelineColorBlendAttachmentState> blendAttachmentStates;
-		blendAttachmentStates.resize(attachmentCount, colorBlendAttachment);
+		blendAttachmentStates.resize(colorAttachmentCount, colorBlendAttachment);
 
 		vk::PipelineColorBlendStateCreateInfo colorBlending{};
 		colorBlending.logicOpEnable = VK_FALSE;
 		colorBlending.logicOp = vk::LogicOp::eCopy; // Optional
-		colorBlending.attachmentCount = attachmentCount;
+		colorBlending.attachmentCount = colorAttachmentCount;
 		colorBlending.pAttachments = blendAttachmentStates.data();
 		colorBlending.blendConstants[0] = 0.0f; // Optional
 		colorBlending.blendConstants[1] = 0.0f; // Optional
@@ -192,12 +198,6 @@ namespace Daydream
 
 		depthStencil.back = depthStencil.front;
 
-		rawDescriptorSetLayouts.clear();
-		for (const auto& uniqueLayout : descriptorSetLayouts)
-		{
-			rawDescriptorSetLayouts.push_back(uniqueLayout.get());
-		}
-
 		vk::PipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.setLayoutCount = static_cast<UInt32>(rawDescriptorSetLayouts.size()); // Optional
 		pipelineLayoutInfo.pSetLayouts = rawDescriptorSetLayouts.data(); // Optional
@@ -207,10 +207,17 @@ namespace Daydream
 		pipelineLayout = device->GetDevice().createPipelineLayoutUnique(pipelineLayoutInfo);
 
 		vk::PipelineRenderingCreateInfo renderingInfo{};
-		vk::Format colorFormat = vk::Format::eB8G8R8A8Unorm; // 사용 중인 스왑체인 포맷
-		renderingInfo.colorAttachmentCount = 1;
-		renderingInfo.pColorAttachmentFormats = &colorFormat;
-		renderingInfo.depthAttachmentFormat = vk::Format::eD32Sfloat; // 깊이 버퍼 사용 시
+		Array<vk::Format> colorFormats(colorAttachmentCount);
+		
+		for (UInt64 i = 0; i < colorFormats.size(); i++)
+		{
+			colorFormats[i] = GraphicsUtility::Vulkan::ConvertToVkFormat(desc.renderTargetFormats[i]);
+		}
+		renderingInfo.colorAttachmentCount = colorAttachmentCount;
+		renderingInfo.pColorAttachmentFormats = colorFormats.data();
+		renderingInfo.depthAttachmentFormat = desc.depthStencilFormat == RenderFormat::UNKNOWN ?
+			vk::Format::eUndefined : 
+			GraphicsUtility::Vulkan::ConvertToVkFormat(desc.depthStencilFormat); // 깊이 버퍼 사용 시
 
 		vk::GraphicsPipelineCreateInfo pipelineInfo{};
 		pipelineInfo.stageCount = (UInt32)shaderStages.size();
@@ -228,7 +235,7 @@ namespace Daydream
 		pipelineInfo.subpass = 0;
 		pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
 		pipelineInfo.basePipelineIndex = -1; // Optional
-		pipelineInfo.pNext = renderingInfo;
+		pipelineInfo.pNext = &renderingInfo;
 
 		vk::ResultValue<vk::UniquePipeline> resultValue = device->GetDevice().createGraphicsPipelineUnique({}, pipelineInfo);
 		pipeline = std::move(resultValue.value);

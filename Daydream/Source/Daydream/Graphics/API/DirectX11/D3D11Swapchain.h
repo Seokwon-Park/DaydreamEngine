@@ -25,6 +25,8 @@ namespace Daydream
 		inline IDXGISwapChain* GetDXGISwapchain() { return swapchain.Get(); }
 
 	private:
+		void CreateBackBufferView();
+
 		D3D11RenderDevice* device;
 		ComPtr<IDXGISwapChain> swapchain;
 

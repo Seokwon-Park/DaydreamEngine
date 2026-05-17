@@ -155,9 +155,16 @@ namespace Daydream
 		if (useDepth)
 		{
 			renderingInfo.pDepthAttachment = &depthAttachmentInfo;
-			renderingInfo.pStencilAttachment = &depthAttachmentInfo; 
+			renderingInfo.pStencilAttachment = &depthAttachmentInfo;
 		}
 		renderingInfo.pNext = nullptr;
+
+		SetViewport(
+			_renderingInfo.renderArea.x,
+			_renderingInfo.renderArea.y,
+			_renderingInfo.renderArea.width,
+			_renderingInfo.renderArea.height
+		);
 
 		GetActiveCommandBuffer().beginRendering(renderingInfo);
 	}
@@ -274,18 +281,36 @@ namespace Daydream
 	//	writeSet.descriptorType = vk::DescriptorType::eCombinedImageSampler;
 	//	writeSet.pImageInfo = &imageInfo;
 
-	void Daydream::VulkanRenderContext::BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _sampler)
+	void VulkanRenderContext::BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _sampler)
 	{
+		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
+		if (resourceInfo == nullptr) return;
+
+		Shared<VulkanTextureView> vulkanTextureView = SharedCast<VulkanTextureView>(_textureView);
+		Shared<VulkanSampler> vulkanSampler = SharedCast<VulkanSampler>(_sampler);
+		Shared<VulkanGraphicsPipelineState> vulkanPSO = SharedCast<VulkanGraphicsPipelineState>(activePipelineState);
+
+		vk::DescriptorImageInfo imageInfo{};
+		imageInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+		imageInfo.imageView = vulkanTextureView->GetVkImageView();
+		imageInfo.sampler = vulkanSampler->GetVkSampler();
+
+		vk::WriteDescriptorSet writeSet = {};
+		//writeSet.dstSet = sets[resourceInfo.set].get();
+		writeSet.dstBinding = resourceInfo->binding;  // 특정 binding만 업데이트
+		writeSet.descriptorCount = 1;
+		writeSet.descriptorType = vk::DescriptorType::eCombinedImageSampler;
+		writeSet.pImageInfo = &imageInfo;
+
+		GetActiveCommandBuffer().pushDescriptorSet(
+			vk::PipelineBindPoint::eGraphics,
+			vulkanPSO->GetPipelineLayout(),
+			resourceInfo->set,
+			1,
+			&writeSet
+		);
 	}
 
-	//	GetActiveCommandBuffer().pushDescriptorSet(
-	//		vk::PipelineBindPoint::eGraphics,
-	//		vulkanPSO->GetPipelineLayout(),
-	//		resourceInfo->set,
-	//		1,
-	//		&writeSet
-	//	);
-	//}
 	void VulkanRenderContext::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
 	{
 		if (_buffer == nullptr) return;
@@ -327,6 +352,32 @@ namespace Daydream
 		copyRegion.size = _copySize;
 
 		GetActiveCommandBuffer().copyBuffer(src->GetVkBuffer(), dst->GetVkBuffer(), 1, &copyRegion);
+	}
+
+	void VulkanRenderContext::CopyBufferToTexture(Shared<GPUBuffer> _src, Shared<GPUTexture> _dst)
+	{
+		Shared<VulkanGPUBuffer> src = SharedCast<VulkanGPUBuffer>(_src);
+		Shared<VulkanGPUTexture> dst = SharedCast<VulkanGPUTexture>(_dst);
+
+		
+		vk::BufferImageCopy region{};
+		region.bufferOffset = 0;
+		region.bufferRowLength = 0;
+		region.bufferImageHeight = 0;
+
+		region.imageSubresource.aspectMask = vk::ImageAspectFlagBits::eColor;
+		region.imageSubresource.mipLevel = 0;
+		region.imageSubresource.baseArrayLayer = 0;
+		region.imageSubresource.layerCount = 1;
+
+		region.imageOffset = vk::Offset3D();
+		region.imageExtent = vk::Extent3D(
+			dst->GetWidth(),
+			dst->GetHeight(),
+			1
+		);
+
+		GetActiveCommandBuffer().copyBufferToImage(src->GetVkBuffer(), dst->GetVkImage(), vk::ImageLayout::eTransferDstOptimal, 1, &region);
 	}
 
 	void VulkanRenderContext::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
@@ -560,6 +611,8 @@ namespace Daydream
 
 		image = SharedCast<VulkanGPUTexture>(_texture->GetGPUTexture())->GetVkImage();
 
+		//input texture state will be RenderTarget, but vulkan need to use blitCopy to generate mips easy.
+		//then Transition layout should be eTransferDstOptimal
 		vk::ImageMemoryBarrier barrier{};
 		barrier.image = image;
 		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
@@ -568,22 +621,21 @@ namespace Daydream
 		barrier.subresourceRange.baseArrayLayer = 0;
 		barrier.subresourceRange.layerCount = layerCount;
 		barrier.subresourceRange.baseMipLevel = 0;
-		barrier.subresourceRange.levelCount = 1;
-		barrier.oldLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+		barrier.subresourceRange.levelCount = mipLevels;
+		barrier.oldLayout = vk::ImageLayout::eColorAttachmentOptimal;
 		barrier.newLayout = vk::ImageLayout::eTransferDstOptimal;
-		barrier.srcAccessMask = vk::AccessFlagBits::eShaderRead;
+		barrier.srcAccessMask = vk::AccessFlagBits::eColorAttachmentWrite;
 		barrier.dstAccessMask = vk::AccessFlagBits::eTransferWrite;
 
 		// commandBuffer의 멤버 함수 pipelineBarrier 호출
 		GetActiveCommandBuffer().pipelineBarrier(
-			vk::PipelineStageFlagBits::eFragmentShader, vk::PipelineStageFlagBits::eTransfer,
-			{}, // vk::DependencyFlags
-			nullptr, // MemoryBarriers
-			nullptr, // BufferMemoryBarriers
-			barrier  // ImageMemoryBarrier
+			vk::PipelineStageFlagBits::eColorAttachmentOutput,
+			vk::PipelineStageFlagBits::eTransfer,
+			{},
+			0, nullptr,
+			0, nullptr,
+			1, &barrier
 		);
-
-
 
 		for (UInt32 i = 1; i < _texture->GetMipLevels(); i++)
 		{
@@ -596,11 +648,12 @@ namespace Daydream
 
 			// commandBuffer의 멤버 함수 pipelineBarrier 호출
 			GetActiveCommandBuffer().pipelineBarrier(
-				vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eTransfer,
+				vk::PipelineStageFlagBits::eTransfer,
+				vk::PipelineStageFlagBits::eTransfer,
 				{}, // vk::DependencyFlags
-				nullptr, // MemoryBarriers
-				nullptr, // BufferMemoryBarriers
-				barrier  // ImageMemoryBarrier
+				0, nullptr,
+				0, nullptr,
+				1, &barrier
 			);
 
 			vk::ImageBlit blit{};
@@ -625,49 +678,93 @@ namespace Daydream
 				vk::Filter::eLinear
 			);
 
-			// 이전 루프에서 SRC로 바꾼 레이아웃을 최종 목적인 SHADER_READ_ONLY로 변경
-			barrier.oldLayout = vk::ImageLayout::eTransferSrcOptimal;
-			barrier.newLayout = vk::ImageLayout::eTransferDstOptimal;
-			barrier.srcAccessMask = vk::AccessFlagBits::eTransferRead;
-			barrier.dstAccessMask = vk::AccessFlagBits::eTransferWrite;
-
-			GetActiveCommandBuffer().pipelineBarrier(
-				vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eTransfer,
-				{}, // vk::DependencyFlags
-				nullptr,
-				nullptr,
-				barrier
-			);
-
 			if (mipWidth > 1) mipWidth /= 2;
 			if (mipHeight > 1) mipHeight /= 2;
 		}
 
-		barrier.image = image;
-		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED; // 일부 매크로는 그대로 사용
-		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-		barrier.subresourceRange.baseArrayLayer = 0;
-		barrier.subresourceRange.layerCount = layerCount;
-		barrier.subresourceRange.baseMipLevel = 0;
-		barrier.subresourceRange.levelCount = mipLevels;
-		barrier.oldLayout = vk::ImageLayout::eTransferDstOptimal;
-		barrier.newLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
-		barrier.srcAccessMask = vk::AccessFlagBits::eTransferWrite;
-		barrier.dstAccessMask = vk::AccessFlagBits::eShaderRead;
+		Array<vk::ImageMemoryBarrier> barriers(2);
+		barriers[0].image = image;
+		barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barriers[0].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+		barriers[0].subresourceRange.baseArrayLayer = 0;
+		barriers[0].subresourceRange.layerCount = layerCount;
+		barriers[0].subresourceRange.baseMipLevel = 0;
+		barriers[0].subresourceRange.levelCount = mipLevels - 1;
+		barriers[0].oldLayout = vk::ImageLayout::eTransferSrcOptimal;
+		barriers[0].newLayout = vk::ImageLayout::eColorAttachmentOptimal;
+		barriers[0].srcAccessMask = vk::AccessFlagBits::eTransferRead;
+		barriers[0].dstAccessMask = vk::AccessFlagBits::eColorAttachmentWrite;
 
-		// commandBuffer의 멤버 함수 pipelineBarrier 호출
+
+		barriers[1].image = image;
+		barriers[1].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barriers[1].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barriers[1].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+		barriers[1].subresourceRange.baseArrayLayer = 0;
+		barriers[1].subresourceRange.layerCount = layerCount;
+		barriers[1].subresourceRange.baseMipLevel = mipLevels-1;
+		barriers[1].subresourceRange.levelCount = 1;
+		barriers[1].oldLayout = vk::ImageLayout::eTransferDstOptimal;
+		barriers[1].newLayout = vk::ImageLayout::eColorAttachmentOptimal;
+		barriers[1].srcAccessMask = vk::AccessFlagBits::eTransferWrite;
+		barriers[1].dstAccessMask = vk::AccessFlagBits::eColorAttachmentWrite;
+
+
 		GetActiveCommandBuffer().pipelineBarrier(
-			vk::PipelineStageFlagBits::eTransfer, vk::PipelineStageFlagBits::eFragmentShader,
-			{}, // vk::DependencyFlags
-			nullptr, // MemoryBarriers
-			nullptr, // BufferMemoryBarriers
-			barrier  // ImageMemoryBarrier
+			vk::PipelineStageFlagBits::eTransfer,
+			vk::PipelineStageFlagBits::eColorAttachmentOutput,
+			{},
+			0, nullptr,
+			0, nullptr,
+			2, barriers.data()
 		);
 	}
-	void Daydream::VulkanRenderContext::TransitionTextureState(Shared<GPUTexture> _texture, ResourceState _beforeState, ResourceState _afterState, UInt32 _mipLevel, UInt32 _mipCount)
+
+	void VulkanRenderContext::TransitionTextureState(Shared<GPUTexture> _texture, ResourceState _beforeState, ResourceState _afterState, UInt32 _baseMip, UInt32 _mipLevels, UInt32 _baseLayer, UInt32 _layerCount)
 	{
+		if (_beforeState == _afterState)
+		{
+			DAYDREAM_RENDERER_WARN("Before State == After State");
+			return;
+		}
+
+		VulkanGPUTexture* vkTexture = Cast<VulkanGPUTexture*>(_texture.get());
+
+		vk::PipelineStageFlags srcStage;
+		vk::AccessFlags srcAccess;
+		std::tie(srcStage, srcAccess) = GraphicsUtility::Vulkan::ConvertToVulkanStageAndAccess(_beforeState);
+
+		vk::PipelineStageFlags dstStage;
+		vk::AccessFlags dstAccess;
+		std::tie(dstStage, dstAccess) = GraphicsUtility::Vulkan::ConvertToVulkanStageAndAccess(_afterState);
+
+		vk::ImageMemoryBarrier barrier{};
+		barrier.image = vkTexture->GetVkImage();
+		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+		barrier.subresourceRange.baseArrayLayer = _baseLayer;
+		barrier.subresourceRange.layerCount = _layerCount;
+		barrier.subresourceRange.baseMipLevel = _baseMip;
+		barrier.subresourceRange.levelCount = _mipLevels;
+		barrier.oldLayout = GraphicsUtility::Vulkan::ConvertToVulkanImageLayout(_beforeState);
+		barrier.newLayout = GraphicsUtility::Vulkan::ConvertToVulkanImageLayout(_afterState);
+		barrier.srcAccessMask = srcAccess;
+		barrier.dstAccessMask = dstAccess;
+
+		GetActiveCommandBuffer().pipelineBarrier
+		(
+			srcStage,               // srcStageMask
+			dstStage,               // dstStageMask
+			{}, // dependencyFlags
+			0, nullptr,             // memoryBarriers (전역)
+			0, nullptr,            // bufferMemoryBarriers
+			1, &barrier              // imageMemoryBarriers
+		);
+		return;
 	}
+
 
 	void VulkanRenderContext::TransitionBufferState(Shared<GPUBuffer> _buffer, ResourceState _beforeState, ResourceState _afterState)
 	{

@@ -1,5 +1,6 @@
 #include "DaydreamPCH.h"
 #include "VulkanTextureView.h"
+#include "VulkanUtility.h"
 #include "Daydream/Graphics/Manager/SamplerRegistry.h"
 
 
@@ -10,51 +11,38 @@ namespace Daydream
 	{
 		device = _device;
 
-		vk::ImageViewCreateInfo viewInfo{};
-		imageView = device->GetDevice().createImageViewUnique(viewInfo);
+		bool isArray = (
+			(_texture->GetType() == TextureType::TextureCube ||
+				_texture->GetType() == TextureType::Texture2DArray)
+			&& _desc.layerCount > 1);
 
-		if (_desc.type == TextureViewType::ShaderResource)
+		vk::ImageViewType viewType = vk::ImageViewType::e2D;
+		if (_texture->GetType() == TextureType::TextureCube && _desc.layerCount == 6)
 		{
-			vk::DescriptorSetLayoutBinding samplerLayoutBinding{};
-			samplerLayoutBinding.binding = 0;
-			samplerLayoutBinding.descriptorCount = 1;
-			samplerLayoutBinding.descriptorType = vk::DescriptorType::eCombinedImageSampler;
-			samplerLayoutBinding.pImmutableSamplers = nullptr;
-			samplerLayoutBinding.stageFlags = vk::ShaderStageFlagBits::eFragment;
-
-			vk::DescriptorSetLayoutCreateInfo layoutInfo{};
-			layoutInfo.bindingCount = 1;
-			layoutInfo.pBindings = &samplerLayoutBinding;
-
-			vk::UniqueDescriptorSetLayout myEngineImGuiLayout;
-			myEngineImGuiLayout = device->GetDevice().createDescriptorSetLayoutUnique(layoutInfo);
-
-
-			vk::DescriptorSetAllocateInfo allocInfo{};
-			allocInfo.descriptorPool = device->GetDescriptorPool();
-			allocInfo.descriptorSetCount = 1;
-			allocInfo.pSetLayouts = &myEngineImGuiLayout.get();
-
-			UISet = device->GetDevice().allocateDescriptorSetsUnique(allocInfo);
-
-			Shared<VulkanSampler> sampler = SharedCast<VulkanSampler>(SamplerRegistry::LinearClampToEdge);
-
-			vk::DescriptorImageInfo imageInfo{};
-			imageInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
-			imageInfo.imageView = GetVkImageView();
-			imageInfo.sampler = sampler->GetVkSampler();
-
-			vk::WriteDescriptorSet descriptorWrite{};
-			descriptorWrite.dstSet = UISet[0].get();
-			descriptorWrite.dstBinding = 0;
-			descriptorWrite.dstArrayElement = 0;
-			descriptorWrite.descriptorType = vk::DescriptorType::eCombinedImageSampler;
-			descriptorWrite.descriptorCount = 1;
-			descriptorWrite.pImageInfo = &imageInfo;
-
-			device->GetDevice().updateDescriptorSets(1, &descriptorWrite, 0, nullptr);
+			viewType = vk::ImageViewType::eCube;
+		}
+		else if (isArray)
+		{
+			viewType = vk::ImageViewType::e2DArray;
 		}
 
+		vk::ImageAspectFlags aspectMask = vk::ImageAspectFlagBits::eColor;
+		if (_desc.type == TextureViewType::DepthStencil)
+		{
+			aspectMask = vk::ImageAspectFlagBits::eDepth | vk::ImageAspectFlagBits::eStencil;
+		}
+
+		vk::ImageViewCreateInfo viewInfo{};
+		viewInfo.image = _texture->GetVkImage();
+		viewInfo.viewType = viewType;
+		viewInfo.format = GraphicsUtility::Vulkan::ConvertToVkFormat(_texture->GetFormat());
+		viewInfo.subresourceRange.aspectMask = aspectMask;
+		viewInfo.subresourceRange.baseMipLevel = _desc.baseMip;
+		viewInfo.subresourceRange.levelCount = _desc.mipLevels;
+		viewInfo.subresourceRange.baseArrayLayer = _desc.baseLayer;
+		viewInfo.subresourceRange.layerCount = _desc.layerCount;
+
+		imageView = device->GetDevice().createImageViewUnique(viewInfo);
 	}
 }
 

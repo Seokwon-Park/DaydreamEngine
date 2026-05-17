@@ -10,7 +10,7 @@ namespace Daydream
 		device = _device;
 
 		// 1. 유틸리티를 통해 구조체 변환
-		vk::BufferCreateInfo bufferInfo = GraphicsUtility::Vulkan::ConvertToVulkanCreateInfo(_desc);
+		vk::BufferCreateInfo bufferInfo = GraphicsUtility::Vulkan::ConvertToVkImageCreateInfo(_desc);
 		vma::AllocationCreateInfo allocInfo = GraphicsUtility::Vulkan::ConvertToVMAAllocationInfo(_desc);
 
 		std::tie(buffer, bufferAllocation) = device->CreateBuffer(bufferInfo, allocInfo);

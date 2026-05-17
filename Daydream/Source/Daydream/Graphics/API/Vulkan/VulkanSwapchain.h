@@ -7,6 +7,7 @@
 #include "Daydream/Graphics/Core/RenderDevice.h"
 #include "Daydream/Core/Window.h"
 
+#include "VulkanTextureView.h"
 #include "VulkanFrameBuffer.h"
 #include "VulkanRenderDevice.h"
 #include "VulkanRenderCommandList.h"
@@ -33,10 +34,9 @@ namespace Daydream
 		//virtual void BeginRenderPass() override;
 		//virtual void EndRenderPass() override;
 
-		inline virtual Shared<TextureView> GetCurrentRenderTargetView() const { return nullptr; };
+		inline virtual Shared<TextureView> GetCurrentRenderTargetView() const { return backBufferRTVs[currentFrame]; };
 		inline virtual Shared<RenderCommandList> GetCurrentCommandList() const override { return commandLists[currentFrame]; }
 
-		void RecreateSwapchain();
 
 		inline vk::Format GetFormat() const { return format; }
 		inline vk::SwapchainKHR GetVkSwapchain() const { return swapchain.get(); }
@@ -45,15 +45,14 @@ namespace Daydream
 	private:
 		void CreateSwapchain();
 		void CreateCommandLists();
+		void ResizeSwapchain();
+		void CreateBackBufferView();
 
 		vk::SurfaceFormatKHR ChooseSwapSurfaceFormat(const Array<vk::SurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat);
 		vk::PresentModeKHR ChooseSwapPresentMode(const Array<vk::PresentModeKHR>& _availablePresentModes);
 		vk::Extent2D ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& _capabilities);
 
 		VulkanRenderDevice* device;
-		Array<Shared<VulkanRenderCommandList>> commandLists;
-		vk::CommandBuffer currentCommandBuffer;
-		vk::Fence currentFence;
 
 		vk::UniqueSurfaceKHR surface; // Vulkan window surface
 		vk::UniqueSwapchainKHR swapchain;
@@ -61,6 +60,15 @@ namespace Daydream
 		vk::PresentModeKHR presentMode;
 		vk::Format format; // swapchain image format
 		vk::Extent2D extent;
+
+		Array<Shared<VulkanRenderCommandList>> commandLists;
+		vk::CommandBuffer currentCommandBuffer;
+		vk::Fence currentFence;
+
+		Array<Shared<VulkanGPUTexture>> backBufferTextures;
+		Array<Shared<VulkanTextureView>> backBufferRTVs;
+		
+
 		Array<vk::UniqueSemaphore> imageAvailableSemaphores;
 		Array<vk::UniqueSemaphore> renderFinishedSemaphores;
 		Array<vk::UniqueFence> inFlightFences;

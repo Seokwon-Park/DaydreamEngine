@@ -7,6 +7,15 @@ namespace Daydream
 	{
 	}
 
+	SamplerRegistry::~SamplerRegistry()
+	{
+		LinearRepeat = nullptr;
+		LinearClampToEdge = nullptr;
+		NearestRepeat = nullptr;
+		NearestClampToEdge = nullptr;
+		registry.clear();
+	}
+
 	void SamplerRegistry::CreateBuiltinResources()
 	{
 		SamplerDesc samplerDesc;

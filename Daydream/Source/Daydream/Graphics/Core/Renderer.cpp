@@ -338,7 +338,7 @@ namespace Daydream
 
 	}
 
-	void Daydream::Renderer::CopyTextureCubeToTexture2D(Shared<TextureCube> _srcCubemap, UInt32 _faceIndex, Shared<Texture2D> _dstTexture2D, UInt32 _mipLevel)
+	void Renderer::CopyTextureCubeToTexture2D(Shared<TextureCube> _srcCubemap, UInt32 _faceIndex, Shared<Texture2D> _dstTexture2D, UInt32 _mipLevel)
 	{
 		EnqueueCommand([_srcCubemap, _faceIndex, _dstTexture2D, _mipLevel]()
 			{
@@ -346,18 +346,29 @@ namespace Daydream
 			});
 	}
 
-	void Daydream::Renderer::TransitionTextureState(Shared<GPUTexture> _texture, ResourceState _beforeState, ResourceState _afterState, UInt32 _mipLevel, UInt32 _mipCount)
+	void Renderer::TransitionTextureState(Shared<GPUTexture> _texture, ResourceState _beforeState, ResourceState _afterState, UInt32 _baseMip, UInt32 _mipLevels, UInt32 _baseLayer, UInt32 _layerCount)
 	{
-		EnqueueCommand([_texture, _beforeState, _afterState, _mipLevel, _mipCount]()
+		EnqueueCommand([_texture, _beforeState, _afterState, _baseMip, _mipLevels, _baseLayer, _layerCount]()
 			{
-				renderContext->TransitionTextureState(_texture, _beforeState, _afterState, _mipLevel, _mipCount);
+				renderContext->CaptureResource(_texture);
+				renderContext->TransitionTextureState(_texture, _beforeState, _afterState, _baseMip, _mipLevels, _baseLayer, _layerCount);
 			});
+	}
+
+	void Renderer::TransitionTextureState(Shared<Texture> _texture, ResourceState _beforeState, ResourceState _afterState,
+		UInt32 _baseMip,
+		UInt32 _mipLevels,
+		UInt32 _baseLayer,
+		UInt32 _layerCount)
+	{
+		TransitionTextureState(_texture->GetGPUTexture(), _beforeState, _afterState, _baseMip, _mipLevels, _baseLayer, _layerCount);
 	}
 
 	void Renderer::TransitionBufferState(Shared<GPUBuffer> _buffer, ResourceState _beforeState, ResourceState _afterState)
 	{
 		EnqueueCommand([_buffer, _beforeState, _afterState]()
 			{
+				renderContext->CaptureResource(_buffer);
 				renderContext->TransitionBufferState(_buffer, _beforeState, _afterState);
 			});
 	}

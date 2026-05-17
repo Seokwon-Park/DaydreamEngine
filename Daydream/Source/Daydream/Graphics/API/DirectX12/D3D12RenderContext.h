@@ -34,11 +34,11 @@ namespace Daydream
 
 		virtual void CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize) override;
 		virtual void CopyBufferToTexture(Shared<GPUBuffer> _src, Shared<GPUTexture> _dst) override;
+		// Only override in DX12
 		virtual void CopyDataToTexture2D(Shared<Texture2D> _target, Shared<Array<Byte>> _data) override;
 
 		virtual void CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst) override;
 		virtual void CopyTextureToCubemapFace(Shared<Texture2D> _srcTexture2D, Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, UInt32 _mipLevel = 0)override;
-
 
 		//TODO : need to fix
 		virtual void GenerateMips(Shared<Texture> _texture) override;
@@ -46,8 +46,10 @@ namespace Daydream
 		virtual void TransitionTextureState(Shared<GPUTexture> _texture,
 			ResourceState _beforeState,
 			ResourceState _afterState,
-			UInt32 _mipLevel = 0,
-			UInt32 _mipCount = 1) override;
+			UInt32 _baseMip,
+			UInt32 _mipLevels,
+			UInt32 _baseLayer,
+			UInt32 _layerCount) override;
 
 		virtual void TransitionBufferState(
 			Shared<GPUBuffer> _buffer,

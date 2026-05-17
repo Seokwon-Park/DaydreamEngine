@@ -24,7 +24,7 @@ namespace Daydream
     {
         Shared<UploadBuffer> uploadBuffer = UploadBuffer::Create(_data->size());
         uploadBuffer->UpdateData(_data->data(), _data->size());
-
+        CaptureResource(uploadBuffer->GetGPUBuffer());
         CopyBufferToTexture(uploadBuffer->GetGPUBuffer(), _target->GetGPUTexture());
     }
 

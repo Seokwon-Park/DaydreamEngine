@@ -30,7 +30,7 @@ namespace Daydream
 	{
 	public:
 		virtual ~RenderContext() = default;
-					
+
 		virtual void BeginCommandList() = 0;
 		virtual void EndCommandList() {};
 		virtual void SetViewport(UInt32 _x, UInt32 _y, UInt32 _width, UInt32 _height) = 0;
@@ -48,7 +48,7 @@ namespace Daydream
 		//virtual void SetTextureCube(const String& _name, Shared<TextureCube> _textureCube) {};
 		virtual void BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _sampler) {};
 		virtual void SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer) {};
-		
+
 		virtual void CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize) {};
 		virtual void CopyBufferToTexture(Shared<GPUBuffer> _src, Shared<GPUTexture> _dst) {};
 
@@ -64,9 +64,11 @@ namespace Daydream
 
 		virtual void TransitionTextureState(Shared<GPUTexture> _texture,
 			ResourceState _beforeState,
-			ResourceState _afterState,
-			UInt32 _mipLevel = 0,       
-			UInt32 _mipCount = 1) {};
+			ResourceState _afterState, 
+			UInt32 _baseMip = 0,
+			UInt32 _mipLevels = -1, 
+			UInt32 _baseLayer = 0, 
+			UInt32 _layerCount = -1) {};
 
 		virtual void TransitionBufferState(
 			Shared<GPUBuffer> _buffer,
@@ -78,7 +80,7 @@ namespace Daydream
 
 		void CaptureResource(Shared<GPUResource> _resource);
 		void ReleaseCapturedBuffer();
-		
+
 		Shared<RenderCommandList> GetActiveCommandList() const { return activeCommandList; }
 	protected:
 		Shared<GraphicsPipelineState> activePipelineState;

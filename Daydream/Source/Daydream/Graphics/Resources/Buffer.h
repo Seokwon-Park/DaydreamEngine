@@ -86,7 +86,7 @@ namespace Daydream
 	{
 	public:
 		UploadBuffer(Shared<GPUBuffer> _buffer);
-		~UploadBuffer() {}
+		~UploadBuffer();
 
 		static Shared<UploadBuffer> Create(UInt32 _size);
 	protected:

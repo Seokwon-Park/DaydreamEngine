@@ -9,6 +9,7 @@ namespace Daydream
 	{
 	public:
 		SamplerRegistry();
+		virtual ~SamplerRegistry();
 
 		virtual void CreateBuiltinResources() override;
 

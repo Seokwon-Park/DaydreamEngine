@@ -29,8 +29,9 @@ namespace Daydream
 		CreateSwapchain();
 		CreateCommandLists();
 
-		vk::SemaphoreCreateInfo semaphoreInfo{};
+		CreateBackBufferView();
 
+		vk::SemaphoreCreateInfo semaphoreInfo{};
 		vk::FenceCreateInfo fenceInfo{};
 		fenceInfo.flags = vk::FenceCreateFlagBits::eSignaled;
 
@@ -44,23 +45,7 @@ namespace Daydream
 			inFlightFences[i] = device->GetDevice().createFenceUnique(fenceInfo);
 		}
 
-		//RenderPassAttachmentDesc colorDesc;
-		//colorDesc.format = _desc.format;
-		//colorDesc.isSwapchain = true;
 
-		//RenderPassDesc rpDesc{};
-		//rpDesc.colorAttachments.push_back(colorDesc);
-
-		//renderPass = MakeShared<VulkanRenderPass>(device, rpDesc);
-		//mainRenderPass = renderPass;
-
-		//framebuffers.resize(imageCount);
-		//for (UInt32 i = 0; i < imageCount; i++)
-		//{
-		//	framebuffers[i] = MakeShared<VulkanFramebuffer>(device, this, renderPass.get(), swapchainImages[i]);
-		//}
-		//BeginFrame();
-		//framebuffers[imageIndex]->Begin();
 	}
 	void VulkanSwapchain::CreateSwapchain()
 	{
@@ -143,9 +128,9 @@ namespace Daydream
 		{
 			vk::Result result = device->GetGraphicsQueue().presentKHR(presentInfo);
 		}
-		catch (const vk::OutOfDateKHRError& e)
+		catch (const vk::OutOfDateKHRError&)
 		{
-			RecreateSwapchain();
+			ResizeSwapchain();
 		}
 
 		currentFrame = (currentFrame + 1) % imageCount;
@@ -155,26 +140,75 @@ namespace Daydream
 	{
 		if (isSwapchainResized)
 		{
-			RecreateSwapchain();
+			ResizeSwapchain();
 			isSwapchainResized = false;
 		}
 
 		//이미지를 GPU에 요청. 사용가능한 이미지의 인덱스를 imageIndex로 전달하고 imageAvailableSemaphore에 신호를 전달하라는 명령
 		vk::Result result = device->GetDevice().acquireNextImageKHR(swapchain.get(), UINT64_MAX, imageAvailableSemaphores[currentFrame].get(), VK_NULL_HANDLE, &imageIndex);
 
-		if (result == vk::Result::eErrorOutOfDateKHR)
-		{
-			RecreateSwapchain();
-			return; 
-		}
+		//if (result == vk::Result::eErrorOutOfDateKHR)
+		//{
+		//	ResizeSwapchain();
+		//	return; 
+		//}
 		DAYDREAM_CORE_ASSERT(result == vk::Result::eSuccess || result == vk::Result::eSuboptimalKHR, "Failed to acquire swapchain image!");
 
 		currentCommandBuffer = commandLists[currentFrame]->GetVkCommandBuffer();
 		commandLists[currentFrame]->Begin();
+
+		vk::ImageMemoryBarrier barrier{};
+		barrier.image = backBufferTextures[imageIndex]->GetVkImage();
+		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+		barrier.subresourceRange.baseArrayLayer = 0;
+		barrier.subresourceRange.layerCount = 1;
+		barrier.subresourceRange.baseMipLevel = 0;
+		barrier.subresourceRange.levelCount = 1;
+		barrier.oldLayout = vk::ImageLayout::eUndefined;
+		barrier.newLayout = vk::ImageLayout::eColorAttachmentOptimal;
+		barrier.srcAccessMask = vk::AccessFlagBits::eNone;
+		barrier.dstAccessMask = vk::AccessFlagBits::eColorAttachmentWrite;
+
+		// commandBuffer의 멤버 함수 pipelineBarrier 호출
+		currentCommandBuffer.pipelineBarrier(
+			vk::PipelineStageFlagBits::eBottomOfPipe,
+			vk::PipelineStageFlagBits::eColorAttachmentOutput,
+			{},
+			0, nullptr,
+			0, nullptr,
+			1, &barrier
+		);
+
 	}
 
 	void VulkanSwapchain::EndFrame()
 	{
+		vk::ImageMemoryBarrier barrier{};
+		barrier.image = backBufferTextures[imageIndex]->GetVkImage();
+		barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+		barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+		barrier.subresourceRange.baseArrayLayer = 0;
+		barrier.subresourceRange.layerCount = 1;
+		barrier.subresourceRange.baseMipLevel = 0;
+		barrier.subresourceRange.levelCount = 1;
+		barrier.oldLayout = vk::ImageLayout::eColorAttachmentOptimal;
+		barrier.newLayout = vk::ImageLayout::ePresentSrcKHR;
+		barrier.srcAccessMask = vk::AccessFlagBits::eColorAttachmentWrite;
+		barrier.dstAccessMask = vk::AccessFlagBits::eNone;
+
+		// commandBuffer의 멤버 함수 pipelineBarrier 호출
+		currentCommandBuffer.pipelineBarrier(
+			vk::PipelineStageFlagBits::eColorAttachmentOutput,
+			vk::PipelineStageFlagBits::eBottomOfPipe,
+			{},
+			0, nullptr,
+			0, nullptr,
+			1, &barrier
+		);
+
 		auto fence = commandLists[currentFrame]->GetVkFence();
 		currentCommandBuffer.end();
 
@@ -197,20 +231,19 @@ namespace Daydream
 		vk::Result result = device->GetGraphicsQueue().submit(1, &submitInfo, fence);
 	}
 
-	void VulkanSwapchain::RecreateSwapchain()
+	void VulkanSwapchain::ResizeSwapchain()
 	{
 		device->GetDevice().waitIdle();
 
-		//swapchainImages.clear();
-		//swapchain.reset();
-		//CreateSwapchain();
-		//swapchainImages = device->GetDevice().getSwapchainImagesKHR(swapchain.get());
+		backBufferTextures.clear();
+		backBufferRTVs.clear();
 
-		//for (UInt32 i = 0; i < imageCount; i++)
-		//{
-		//	framebuffers[i] = nullptr;
-		//	framebuffers[i] = MakeShared<VulkanFramebuffer>(device, this, renderPass.get(), swapchainImages[i]);
-		//}
+		swapchainImages.clear();
+		swapchain.reset();
+		CreateSwapchain();
+		swapchainImages = device->GetDevice().getSwapchainImagesKHR(swapchain.get());
+
+		CreateBackBufferView();
 	}
 
 	vk::SurfaceFormatKHR VulkanSwapchain::ChooseSwapSurfaceFormat(const Array<vk::SurfaceFormatKHR>& _availableFormats, RenderFormat _desiredFormat)
@@ -253,6 +286,31 @@ namespace Daydream
 			actualExtent.height = std::clamp(actualExtent.height, _capabilities.minImageExtent.height, _capabilities.maxImageExtent.height);
 
 			return actualExtent;
+		}
+	}
+
+
+	void VulkanSwapchain::CreateBackBufferView()
+	{
+		TextureDesc textureDesc{};
+		textureDesc.width = desc.width;
+		textureDesc.height = desc.height;
+		textureDesc.mipLevels = 1;
+		textureDesc.sampleCount = 1;
+		textureDesc.format = desc.format;
+		textureDesc.textureUsage = TextureUsage::RenderTarget;
+		textureDesc.type = TextureType::Texture2D;
+
+		TextureViewDesc viewDesc;
+		viewDesc.format = desc.format;
+		viewDesc.type = TextureViewType::RenderTarget;
+
+		backBufferTextures.resize(desc.imageCount);
+		backBufferRTVs.resize(desc.imageCount);
+		for (UInt32 i = 0; i < desc.imageCount; i++)
+		{
+			backBufferTextures[i] = MakeShared<VulkanGPUTexture>(device, textureDesc, swapchainImages[i]);
+			backBufferRTVs[i] = MakeShared<VulkanTextureView>(device, backBufferTextures[i], viewDesc);
 		}
 	}
 }

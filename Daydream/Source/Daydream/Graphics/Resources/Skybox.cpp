@@ -78,7 +78,7 @@ namespace Daydream
 		//boxIB = IndexBuffer::Create(meshData.indices.data(), (UInt32)meshData.indices.size());
 		boxMesh = ResourceManager::GetResource<Mesh>("Box");
 
-		//////////////////////////////////////Create Default Skybox TextureCubes;
+		////////////////////////////////////////////////////////////////////////////Create Default Skybox TextureCubes;
 		skyboxMipLevels = (UInt32)std::log2f((Float32)skyboxResolution);
 
 		Texture2DDesc textureDesc{};
@@ -111,7 +111,9 @@ namespace Daydream
 			skyboxFaceSRVs[i] = TextureView::Create(skyboxTextureCube, srvDesc);
 		}
 
-		//////////////////////////////////////Create Irradiance TextureCube
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		////////////////////////////////////////////////////////////////////////////Create Irradiance TextureCube
 
 		textureDesc.width = diffuseResolution;
 		textureDesc.height = diffuseResolution;
@@ -140,7 +142,9 @@ namespace Daydream
 			irradianceSRVs[i] = TextureView::Create(irradianceTextureCube, srvDesc);
 		}
 
-		//////////////////////////////////////Create Prefilter TextureCube
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		////////////////////////////////////////////////////////////////////////////Create Prefilter TextureCube
 
 		prefilterMipLevels = (UInt32)std::log2f((Float32)specularResolution);
 
@@ -151,6 +155,7 @@ namespace Daydream
 		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
 
 		prefilterTextureCube = TextureCube::Create(textureDesc);
+
 
 		prefilterRTVs.resize(6 * prefilterMipLevels);
 		prefilterSRVs.resize(6 * prefilterMipLevels);
@@ -184,15 +189,17 @@ namespace Daydream
 			roughnessConstantBuffers[mip] = ConstantBuffer::Create(sizeof(Vector4));
 		}
 
-		///////////////////////////////////////////////////////BRDF
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		/////////////////////////////////////////////////////////////////////////////////////////////BRDF
 
 		textureDesc.width = skyboxTextureCube->GetWidth();
 		textureDesc.height = skyboxTextureCube->GetHeight();
 		textureDesc.mipLevels = 1;
 		textureDesc.textureUsage = TextureUsage::ShaderResource | TextureUsage::RenderTarget;
 		textureDesc.format = RenderFormat::R16G16B16A16_FLOAT;
-
 		BRDFTexture = Texture2D::Create(textureDesc);
+
 		rtvDesc.type = TextureViewType::RenderTarget;
 		rtvDesc.baseMip = 0;
 		rtvDesc.mipLevels = 1;
@@ -230,14 +237,28 @@ namespace Daydream
 
 	void Skybox::GenerateDefault()
 	{
+		Renderer::TransitionTextureState(skyboxTextureCube, ResourceState::Undefined, ResourceState::RenderTarget);
+		Renderer::TransitionTextureState(irradianceTextureCube, ResourceState::Undefined, ResourceState::RenderTarget);
+		Renderer::TransitionTextureState(prefilterTextureCube, ResourceState::Undefined, ResourceState::RenderTarget);
+		Renderer::TransitionTextureState(BRDFTexture, ResourceState::Undefined, ResourceState::RenderTarget);
+
 		for (int i = 0; i < 6; i++)
 		{
 			Renderer::UpdateConstantBuffer(cubeFaceConstantBuffers[i], captureViewProjections[i]);
 		}
+
 		GenerateHDRCubemap(equirectangularTexture);
+
+		Renderer::TransitionTextureState(skyboxTextureCube, ResourceState::RenderTarget, ResourceState::ShaderResource);
+
 		GenerateBRDF();
 		GenerateIrradianceCubemap();
 		GeneratePrefilterCubemap();
+
+
+		Renderer::TransitionTextureState(irradianceTextureCube, ResourceState::RenderTarget, ResourceState::ShaderResource);
+		Renderer::TransitionTextureState(prefilterTextureCube, ResourceState::RenderTarget, ResourceState::ShaderResource);
+		Renderer::TransitionTextureState(BRDFTexture, ResourceState::RenderTarget, ResourceState::ShaderResource);
 	}
 
 	void Skybox::Update()
@@ -267,6 +288,7 @@ namespace Daydream
 
 			renderingInfo.colorAttachments.push_back(attachDesc);
 
+			
 			Renderer::BeginRendering(renderingInfo);
 			Renderer::BindPipelineState(equirectangularPSO);
 			Renderer::BindConstantBuffer("Camera", cubeFaceConstantBuffers[i]);

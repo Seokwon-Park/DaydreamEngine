@@ -14,7 +14,6 @@ Texture2D Texture : register(t0);
 [[vk::combinedImageSampler]][[vk::binding(0, 0)]]
 SamplerState TextureSampler : register(s0);
 
-// 정점 셰이더로부터 보간된 UV 좌표를 받습니다.
 PSOutput PSMain(PSInput input)
 {
     PSOutput output = (PSOutput) 0;

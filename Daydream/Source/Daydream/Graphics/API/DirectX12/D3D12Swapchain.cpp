@@ -57,30 +57,7 @@ namespace Daydream
 		}
 
 		// 여기서부터 스왑체인이 사용할 백버퍼로 렌더타겟 뷰 생성
-
-
-		TextureDesc textureDesc{};
-		textureDesc.width = desc.width;
-		textureDesc.height = desc.height;
-		textureDesc.mipLevels = 1;
-		textureDesc.sampleCount = 1;
-		textureDesc.format = desc.format;
-		textureDesc.textureUsage = TextureUsage::RenderTarget;
-		textureDesc.type = TextureType::Texture2D;
-
-		TextureViewDesc viewDesc;
-		viewDesc.format = desc.format;
-		viewDesc.type = TextureViewType::RenderTarget;
-
-		backBufferTextures.resize(_desc.imageCount);
-		backBufferRTVs.resize(_desc.imageCount);
-		for (UInt32 i = 0; i < desc.imageCount; i++)
-		{
-			ComPtr<ID3D12Resource> backBuffer;
-			swapchain->GetBuffer(i, IID_PPV_ARGS(backBuffer.GetAddressOf()));
-			backBufferTextures[i] = MakeShared<D3D12GPUTexture>(device, textureDesc, backBuffer);
-			backBufferRTVs[i] = MakeShared<D3D12TextureView>(device, backBufferTextures[i], viewDesc);
-		}
+		CreateBackBufferView();
 
 		//RenderPassAttachmentDesc colorDesc;
 		//colorDesc.format = _desc.format;
@@ -114,6 +91,7 @@ namespace Daydream
 
 		currentFenceValue = 0;
 	}
+	
 	D3D12Swapchain::~D3D12Swapchain()
 	{
 		WaitForGPU();
@@ -136,21 +114,14 @@ namespace Daydream
 		if (isSwapchainResized)
 		{
 			WaitForGPU();
-			//이제 currentFenceValue까지 작업이 다 끝난 상태
 
-			//d3d12Backbuffers.clear();
-			//framebuffers.clear();
+			//이전 백버퍼를 붙잡고 있던 렌더타겟뷰, 텍스쳐배열을 놓아줘야 리사이즈 할 수 있음
+			backBufferRTVs.clear();
+			backBufferTextures.clear();
 
-			//swapchain->ResizeBuffers(desc.imageCount, desc.width, desc.height, format, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH | DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING);
+			swapchain->ResizeBuffers(desc.imageCount, desc.width, desc.height, format, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH | DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING);
 
-			//framebuffers.resize(desc.imageCount);
-			//for (UInt32 i = 0; i < desc.imageCount; i++)
-			//{
-			//	ComPtr<ID3D12Resource> backBuffer;
-			//	swapchain->GetBuffer(i, IID_PPV_ARGS(backBuffer.GetAddressOf()));
-			//	framebuffers[i] = MakeShared<D3D12Framebuffer>(device, mainRenderPass.get(), this, backBuffer.Get());
-			//	d3d12Backbuffers.push_back(backBuffer);
-			//}
+			CreateBackBufferView();
 
 			frameIndex = swapchain->GetCurrentBackBufferIndex();
 			for (UInt32 i = 0; i < desc.imageCount; i++)
@@ -167,7 +138,6 @@ namespace Daydream
 			fence->SetEventOnCompletion(fenceValues[frameIndex], fenceEvent.Get());
 			WaitForSingleObjectEx(fenceEvent.Get(), INFINITE, FALSE);
 		}
-
 
 		currentCommandList = commandLists[frameIndex]->GetID3D12GraphicsCommandList();
 
@@ -246,5 +216,32 @@ namespace Daydream
 			WaitForSingleObjectEx(fenceEvent.Get(), INFINITE, FALSE);
 		}
 		fenceValues[frameIndex] = currentFenceValue + 1;
+	}
+
+	void D3D12Swapchain::CreateBackBufferView()
+	{
+		TextureDesc textureDesc{};
+		textureDesc.width = desc.width;
+		textureDesc.height = desc.height;
+		textureDesc.mipLevels = 1;
+		textureDesc.sampleCount = 1;
+		textureDesc.format = desc.format;
+		textureDesc.textureUsage = TextureUsage::RenderTarget;
+		textureDesc.type = TextureType::Texture2D;
+
+		TextureViewDesc viewDesc;
+		viewDesc.format = desc.format;
+		viewDesc.type = TextureViewType::RenderTarget;
+
+		backBufferTextures.resize(desc.imageCount);
+		backBufferRTVs.resize(desc.imageCount);
+		for (UInt32 i = 0; i < desc.imageCount; i++)
+		{
+			ComPtr<ID3D12Resource> backBuffer;
+			swapchain->GetBuffer(i, IID_PPV_ARGS(backBuffer.GetAddressOf()));
+			backBuffer->SetName(L"Swapchain Buffer");
+			backBufferTextures[i] = MakeShared<D3D12GPUTexture>(device, textureDesc, backBuffer);
+			backBufferRTVs[i] = MakeShared<D3D12TextureView>(device, backBufferTextures[i], viewDesc);
+		}
 	}
 }

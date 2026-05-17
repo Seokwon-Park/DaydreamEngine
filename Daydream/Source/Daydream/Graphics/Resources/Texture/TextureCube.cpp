@@ -65,6 +65,7 @@ namespace Daydream
 		desc.type = TextureType::TextureCube;
 		Shared<GPUTexture> gpuTexture = Renderer::GetRenderDevice()->CreateGPUTexture(desc);
 		Shared<TextureCube> textureCube = MakeShared<TextureCube>(gpuTexture);
+
 		return textureCube;
 	}
 

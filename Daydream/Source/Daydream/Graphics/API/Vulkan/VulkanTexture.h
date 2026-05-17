@@ -10,13 +10,15 @@ namespace Daydream
 	{
 	public:
 		VulkanGPUTexture(VulkanRenderDevice* _device, const TextureDesc& _desc);
+		VulkanGPUTexture(VulkanRenderDevice* _device, const TextureDesc& _desc, vk::Image _vulkanBackBuffer);
 		virtual ~VulkanGPUTexture() = default;
 
-		inline vk::Image GetVkImage() { return textureImage.get(); }
+		inline vk::Image GetVkImage() { return image; }
 	private:
-		VulkanRenderDevice* device;
-		vma::UniqueImage textureImage;
-		vma::UniqueAllocation textureImageAllocation;
+		vk::Image image;
+
+		vma::UniqueImage ownedImage;
+		vma::UniqueAllocation ownedImageAllocation;
 	};
 
 	//class VulkanTexture2D :public Texture2D
