@@ -109,7 +109,7 @@ namespace Daydream
 
 	UploadBuffer::~UploadBuffer()
 	{
-		DAYDREAM_RENDERER_INFO("UploadBuffer Destroyed");
+		//DAYDREAM_RENDERER_INFO("UploadBuffer Destroyed");
 	}
 
 	Shared<UploadBuffer> UploadBuffer::Create(UInt32 _size)

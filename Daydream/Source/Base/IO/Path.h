@@ -4,67 +4,112 @@
 
 namespace Daydream
 {
-	namespace FileSystem = std::filesystem;
-	using Path = FileSystem::path;
+	//namespace FileSystem = std::filesystem;
+	//using Path = FileSystem::path;
 
-	//class Path
-	//{
-	//public:
-	//	Path() = default;
-	//	Path(const std::filesystem::path& p) : path(p) {}
-	//	Path(std::filesystem::path&& p) : path(std::move(p)) {}
-	//	Path(std::string_view str) : path(str) {}
-	//	Path(const std::string& str) : path(str) {}
-	//	Path(const char* c_str) : path(c_str) {}
+	class Path
+	{
+	public:
+		Path() = default;
+		Path(const std::filesystem::path& _path) : path(_path) {}
+		Path(std::filesystem::path&& _path) : path(std::move(_path)) {}
+		Path(StringView _str) : path(_str) {}
+		Path(const String& _str) : path(_str) {}
+		Path(const char* _cstr) : path(_cstr) {}
 
-	//	Path(const Path& other) noexcept = default;
-	//	Path& operator=(const Path& other) noexcept = default;
+		Path(const Path& other) noexcept = default;
+		Path& operator=(const Path& other) noexcept = default;
 
-	//	Path(Path&& other) noexcept = default;
-	//	Path& operator=(Path&& other) noexcept = default;
+		Path(Path&& other) noexcept = default;
+		Path& operator=(Path&& other) noexcept = default;
 
-	//	Path operator+(const char* _path)
-	//	{
-	//		Path result = *this;
-	//		result.path.append(_path);
-	//		return result;
-	//	}
+		Path operator/(const Path& _other) const
+		{
+			Path result = *this;
+			result.path /= _other.path;
+			return result;
+		}
 
-	//	Path& operator/=(const char* _path)
-	//	{
-	//		path /= " shibal"
-	//	}
+		Path& operator/=(const Path& _other)
+		{
+			path /= _other.path;
+			return *this;
+		}
 
+		Path operator+(const Path& _other) const
+		{
+			Path result = *this;
+			result.path += _other.path;
+			return result;
+		}
 
-	//	inline String ToString() const { return path.string(); }
-	//	inline WideString ToWString() const { return path.wstring(); }
+		Path& operator+=(const Path& _other)
+		{
+			path += _other.path;
+			return *this;
+		}
 
-	//	inline String GetFileName() const
-	//	{
-	//		return GetLastComponentName();
-	//	}
+		Path operator/(const char* _path) const
+		{
+			Path result = *this;
+			result.path /= _path;
+			return result;
+		}
 
-	//	inline String GetDirectoryName() const
-	//	{
-	//		return GetLastComponentName();
-	//	}
+		Path& operator/=(const char* _path)
+		{
+			path /= _path;
+			return *this;
+		}
 
-	//	inline String GetLastComponentName() const { return path.filename().string(); }
-	//	
-	//	inline String GetFileNameWithoutExtension() const 
-	//	{
-	//		return path.stem().string(); 
-	//	}
+		Path operator+(const char* _path) const
+		{
+			Path result = *this;
+			result.path += _path;
+			return result;
+		}
 
-	//	inline void MoveToParent() { path = path.parent_path(); }
+		Path& operator+=(const char* _path)
+		{
+			path += _path;
+			return *this;
+		}
 
-	//	inline String GetExtension() const { return path.extension().string(); }
-	//	inline String GetAbsolutePath() const { return std::filesystem::absolute(path).string(); }
-	//	inline bool IsDirectory() const { return std::filesystem::is_directory(path); }
-	//	inline bool IsFile() const { return std::filesystem::is_regular_file(path); }
-	//	inline bool IsExistPath() const { return std::filesystem::exists(path); }
-	//private:
-	//	std::filesystem::path path;
-	//};
+		bool operator==(const Path& _other) const
+		{
+			return path == _other.path;
+		}
+
+		bool operator!=(const Path& _other) const
+		{
+			return !(*this == _other);
+		}
+
+		inline String ToString() const { return path.string(); }
+		inline WideString ToWString() const { return path.wstring(); }
+
+		// Get Path String always use '/'
+		inline String ToGenericString() const { return path.generic_string(); }
+
+		inline String GetFileName() const { return GetLastComponentName(); }
+		inline String GetDirectoryName() const { return GetLastComponentName(); }
+		inline String GetLastComponentName() const { return path.filename().string(); }
+		inline String GetFileNameWithoutExtension() const { return path.stem().string(); }
+
+		inline Path GetParentPath() const { return path.parent_path(); }
+		inline void MoveToParent() { path = path.parent_path(); }
+
+		inline Path GetExtension() const { return path.extension(); }
+		inline String GetExtensionString() const { return path.extension().string(); }
+		inline String GetAbsolutePathString() const { return std::filesystem::absolute(path).string(); }
+		inline bool IsDirectory() const { return std::filesystem::is_directory(path); }
+		inline bool IsFile() const { return std::filesystem::is_regular_file(path); }
+		inline bool IsExist() const { return std::filesystem::exists(path); }
+		inline bool IsEmpty() const { return path.empty(); }
+
+		operator const std::filesystem::path&() const { return path; }
+	private:
+		std::filesystem::path path;
+	};
 }
 

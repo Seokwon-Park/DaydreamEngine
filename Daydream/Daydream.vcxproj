@@ -109,8 +109,11 @@
     <ClInclude Include="Source\Base\Container\HashMap.h" />
     <ClInclude Include="Source\Base\Container\Queue.h" />
     <ClInclude Include="Source\Base\Container\SortedMap.h" />
-    <ClInclude Include="Source\Base\IO\Directory.h" />
     <ClInclude Include="Source\Base\IO\File.h" />
+    <ClInclude Include="Source\Base\IO\FileSystem.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Source\Base\IO\Path.h" />
     <ClInclude Include="Source\Base\Math\Color.h" />
     <ClInclude Include="Source\Base\Math\Transform.h" />
@@ -753,8 +756,11 @@
     <ClInclude Include="Vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Base\IO\Directory.cpp" />
     <ClCompile Include="Source\Base\IO\File.cpp" />
+    <ClCompile Include="Source\Base\IO\FileSystem.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Source\Base\IO\Path.cpp" />
     <ClCompile Include="Source\Base\Math\Color.cpp" />
     <ClCompile Include="Source\Base\Math\Transform.cpp" />

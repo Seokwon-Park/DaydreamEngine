@@ -110,7 +110,6 @@ namespace Daydream
 	}
 
 
-
 	const Shared<Shader> ShaderGroup::GetShader(ShaderType _type)
 	{
 		switch (_type)
@@ -154,7 +153,7 @@ namespace Daydream
 
 	Shared<ShaderGroup> ShaderGroup::CreateBuiltin(const Path& _vertexShaderName)
 	{
-		const String BuiltinShaderDir = "Asset/Shader/";
+		const Path BuiltinShaderDir = "Asset/Shader/";
 
 		Path vertexPath = BuiltinShaderDir / _vertexShaderName;
 
@@ -164,7 +163,7 @@ namespace Daydream
 
 	Shared<ShaderGroup> ShaderGroup::CreateBuiltin(const Path& _vertexShaderName, const Path& _pixelShaderName)
 	{
-		const String BuiltinShaderDir = "Asset/Shader/";
+		const Path BuiltinShaderDir = "Asset/Shader/";
 
 		Path vertexPath = BuiltinShaderDir / _vertexShaderName;
 		Path pixelPath = BuiltinShaderDir / _pixelShaderName;

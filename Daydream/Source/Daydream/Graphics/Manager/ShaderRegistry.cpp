@@ -13,21 +13,20 @@ namespace Daydream
 
 	void ShaderManager::LoadShadersFromDirectory(Path _directory, bool _isRecursive)
 	{
-		if (!FileSystem::exists(_directory) || !FileSystem::is_directory(_directory))
+		if (!_directory.IsExist() || !_directory.IsDirectory())
 		{
 			// 경로가 없거나 디렉토리가 아니면 리턴
 			return;
 		}
 
-		for (const FileSystem::directory_entry& entry : FileSystem::directory_iterator(_directory))
+		for (const Path& entryPath : FileSystem::GetDirectoryEntries(_directory))
 		{
-			if (entry.is_regular_file())
+			if (entryPath.IsFile())
 			{
 				// 지원하는 확장자인지 확인
-				Path entryPath = entry.path();
-				String pathString = entryPath.string();
-				String shaderName = entryPath.stem().string();
-				String extension = entryPath.extension().string();
+				String pathString = entryPath.ToString();
+				String shaderName = entryPath.GetFileNameWithoutExtension();
+				String extension = entryPath.GetExtensionString();
 				for (const auto& supportedExtension : supportedExtensions) 
 				{
 					if (extension == supportedExtension) 
@@ -61,10 +60,10 @@ namespace Daydream
 				}
 			}
 			// 재귀 옵션이 true이고, 현재 항목이 하위 디렉토리라면
-			else if (_isRecursive && entry.is_directory())
+			else if (_isRecursive && entryPath.IsDirectory())
 			{
 				// 자기 자신을 다시 호출하여 하위 폴더 탐색
-				LoadShadersFromDirectory(entry.path(), true);
+				LoadShadersFromDirectory(entryPath, true);
 			}
 		}
 	}

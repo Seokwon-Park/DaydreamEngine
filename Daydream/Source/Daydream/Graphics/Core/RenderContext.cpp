@@ -9,7 +9,7 @@ namespace Daydream
 {
     void RenderContext::BindPipelineState(Shared<GraphicsPipelineState> _pipelineState)
     {
-        activePipelineState = _pipelineState;
+        currentGraphicsPipelineState = _pipelineState;
     }
 
     //void RenderContext::SetTexture2D(const String& _name, Shared<Texture2D> _texture)

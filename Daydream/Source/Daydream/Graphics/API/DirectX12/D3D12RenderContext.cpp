@@ -198,8 +198,8 @@ namespace Daydream
 
 	void D3D12RenderContext::BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _sampler)
 	{
-		D3D12GraphicsPipelineState* d3d12PipelineState = Cast<D3D12GraphicsPipelineState*>(activePipelineState.get());
-		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
+		D3D12GraphicsPipelineState* d3d12PipelineState = Cast<D3D12GraphicsPipelineState*>(currentGraphicsPipelineState.get());
+		const ShaderReflectionData* resourceInfo = currentGraphicsPipelineState->GetBindingInfo(_name);
 		if (resourceInfo == nullptr) return;
 		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
 		D3D12TextureView* d3d12Tex = Cast<D3D12TextureView*>(_textureView.get());
@@ -207,7 +207,7 @@ namespace Daydream
 
 		GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex(_name), d3d12Tex->GetGPUHandle());
 		String samplerName = _name + "Sampler";
-		const ShaderReflectionData* samplerInfo = activePipelineState->GetBindingInfo(samplerName);
+		const ShaderReflectionData* samplerInfo = currentGraphicsPipelineState->GetBindingInfo(samplerName);
 		GetD3D12ActiveCommandList()->SetGraphicsRootDescriptorTable(d3d12PipelineState->GetDescriptorTableIndex(samplerName), d3d12Sampler->GetSamplerHandle());
 	}
 
@@ -224,8 +224,8 @@ namespace Daydream
 	void D3D12RenderContext::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
 	{
 		if (_buffer == nullptr) return;
-		D3D12GraphicsPipelineState* d3d12PipelineState = Cast<D3D12GraphicsPipelineState*>(activePipelineState.get());
-		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
+		D3D12GraphicsPipelineState* d3d12PipelineState = Cast<D3D12GraphicsPipelineState*>(currentGraphicsPipelineState.get());
+		const ShaderReflectionData* resourceInfo = currentGraphicsPipelineState->GetBindingInfo(_name);
 		if (resourceInfo == nullptr) return;
 		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX12, "Wrong API!");
 

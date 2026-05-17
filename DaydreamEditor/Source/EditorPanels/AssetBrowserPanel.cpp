@@ -30,7 +30,7 @@ namespace Daydream
 		ImGui::BeginChild("FolderTreeView", ImVec2(treeViewWidth, 0));
 		{
 			// 루트 노드
-			if (ImGui::TreeNodeEx(rootPath.string().c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanAvailWidth |
+			if (ImGui::TreeNodeEx(rootPath.ToString().c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanAvailWidth |
 				(rootPath == currentPath ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_DrawLinesToNodes))
 			{
 				if (ImGui::IsItemClicked())
@@ -58,22 +58,20 @@ namespace Daydream
 			// 테이블 기반 그리드 시작
 			if (ImGui::BeginTable("AssetGridTable", columnCount))
 			{
-				for (const auto& p : FileSystem::directory_iterator(currentPath))
+				for (const Path& path : FileSystem::GetDirectoryEntries(currentPath))
 				{
 					ImGui::TableNextColumn();
 
-					const Path& path = p.path();
-					std::string pathString = path.string();
-					std::string filenameString = path.filename().string();
+					std::string pathString = path.ToString();
+					std::string filenameString = path.GetFileName();
 
 					ImGui::PushID(pathString.c_str()); // 각 위젯에 고유 ID 부여
 
 					Shared<Texture2D> thumbnail;
 
 					// 폴더 또는 파일 아이콘 표시
-					if (p.is_directory())
+					if (path.IsDirectory())
 					{
-						// 폴더 아이콘 로드 (ResourceManager에 미리 로드해두세요)
 						thumbnail = AssetManager::GetAssetByPath<Texture2D>("Resource/DirectoryIcon.png");
 						ImGui::ImageButton(pathString.c_str(), (ImTextureID)thumbnail->GetImGuiHandle(), { thumbnailSize, thumbnailSize });
 					}
@@ -153,9 +151,9 @@ namespace Daydream
 					// 더블 클릭 이벤트 처리
 					if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 					{
-						if (p.is_directory())
+						if (path.IsDirectory())
 						{
-							currentPath /= path.filename(); // 하위 폴더로 이동
+							currentPath /= path.GetFileName(); // 하위 폴더로 이동
 						}
 					}
 
@@ -174,12 +172,11 @@ namespace Daydream
 
 	void AssetBrowserPanel::RenderFolderTree(const Path& path, Path& selectedPath)
 	{
-		for (const auto& entry : FileSystem::directory_iterator(path))
+		for (const Path& entryPath : FileSystem::GetDirectoryEntries(path))
 		{
-			if (entry.is_directory())
+			if (entryPath.IsDirectory())
 			{
-				const auto& entryPath = entry.path();
-				const std::string filenameString = entryPath.filename().string();
+				const String filenameString = entryPath.GetFileName();
 
 				ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_DrawLinesToNodes;
 				if (entryPath == selectedPath) {

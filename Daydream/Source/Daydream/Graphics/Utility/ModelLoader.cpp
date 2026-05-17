@@ -37,7 +37,7 @@ namespace Daydream
 		Assimp::Importer importer;
 
 		Path baseDirectory;
-		baseDirectory = _filepath.parent_path();
+		baseDirectory = _filepath.GetParentPath();
 
 		UInt32 flags = aiProcess_Triangulate |   // 모든 면을 삼각형으로 변환
 			aiProcess_ConvertToLeftHanded; // | // 왼손 좌표계 사용
@@ -49,9 +49,9 @@ namespace Daydream
 	//aiProcess_OptimizeMeshes |		// 메시 최적화
 	//aiProcess_ValidateDataStructure;  // 데이터 유효성 검사
 
-		DAYDREAM_INFO("Load File {}", _filepath.generic_string());
+		DAYDREAM_INFO("Load File {}", _filepath.ToGenericString());
 
-		const aiScene* scene = importer.ReadFile(_filepath.string(), flags);
+		const aiScene* scene = importer.ReadFile(_filepath.ToString(), flags);
 		bool result = !scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode;
 		DAYDREAM_CORE_ASSERT(nullptr != scene, "{0}", importer.GetErrorString());
 
@@ -302,7 +302,7 @@ namespace Daydream
 			aiString str;
 			if (_mat->GetTexture(_type, 0, &str) == AI_SUCCESS)
 			{
-				return  (_baseDirectory / str.C_Str()).generic_string();
+				return (_baseDirectory / str.C_Str()).ToGenericString();
 			}
 		}
 		return "";

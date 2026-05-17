@@ -33,17 +33,6 @@ namespace Daydream
 
 		RenderingInfo renderingInfo{};
 
-		//auto colorTex = Texture2D::Create(1920, 1080, RenderFormat::RGBA8);
-		//auto depthTex = Texture2D::Create(1920, 1080, RenderFormat::Depth24Stencil8);
-
-		//auto colorView = TextureView::Create(colorTex, { TextureViewType::RenderTarget, RenderFormat::RGBA8 });
-		//auto depthView = TextureView::Create(depthTex, { TextureViewType::DepthStencil, RenderFormat::Depth24Stencil8 });
-
-		//renderPass = ResourceManager::GetResource<RenderPass>("StandardRenderPass");
-		//depthRenderPass = ResourceManager::GetResource<RenderPass>("DepthRenderPass");
-		//gBufferRenderPass = ResourceManager::GetResource<RenderPass>("GBufferRenderPass");
-		//maskRenderPass = ResourceManager::GetResource<RenderPass>("MaskRenderPass");
-
 		pso = ResourceManager::GetResource<GraphicsPipelineState>("SpritePSO");
 		pso3d = ResourceManager::GetResource<GraphicsPipelineState>("ForwardPSO");
 		gBufferPSO = ResourceManager::GetResource<GraphicsPipelineState>("GBufferPSO");
@@ -141,13 +130,6 @@ namespace Daydream
 			editorCamera->ControlCameraView(_deltaTime);
 		}
 
-		//for (int i = 0; i < 4; i++)
-		//{
-		//	DAYDREAM_CORE_INFO("{}, {}, {}, {}", camera->GetProjectionMatrix().mat[i][0]
-		//		, camera->GetProjectionMatrix().mat[i][1]
-		//		, camera->GetProjectionMatrix().mat[i][2]
-		//		, camera->GetProjectionMatrix().mat[i][3]);
-		//}
 		info.entityID = 0;
 		auto entity = sceneHierarchyPanel->GetSelectedEntity();
 		if (entity != nullptr)

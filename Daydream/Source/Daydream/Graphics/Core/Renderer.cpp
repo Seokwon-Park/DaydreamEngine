@@ -17,15 +17,7 @@ namespace Daydream
 
 	void Renderer::Init(RendererAPIType _API)
 	{
-		renderDevice = RenderDevice::Create(_API);
-		DAYDREAM_CORE_ASSERT(renderDevice, "Failed to create graphics device!");
-		renderDevice->Init();
-
-		const RendererAPIInfo& info = renderDevice->GetAPIInfo();
-		DAYDREAM_RENDERER_INFO("{}", info.APIName);
-		DAYDREAM_RENDERER_INFO("  Vendor: {0}", info.vendor);
-		DAYDREAM_RENDERER_INFO("  GPU Info: {0}", info.physicalDeviceInfo);
-		DAYDREAM_RENDERER_INFO("  Version: {0}", info.version);
+		InitRenderDevice(_API);
 
 		renderContext = renderDevice->CreateContext();
 
@@ -54,6 +46,19 @@ namespace Daydream
 
 		ShaderCompileHelper::Init();
 		/*	RenderCommand::Init(renderDevice.get());*/
+	}
+
+	void Renderer::InitRenderDevice(Daydream::RendererAPIType _API)
+	{
+		renderDevice = RenderDevice::Create(_API);
+		DAYDREAM_CORE_ASSERT(renderDevice, "Failed to create graphics device!");
+		renderDevice->Init();
+
+		const RendererAPIInfo& info = renderDevice->GetAPIInfo();
+		DAYDREAM_RENDERER_INFO("{}", info.APIName);
+		DAYDREAM_RENDERER_INFO("  Vendor: {0}", info.vendor);
+		DAYDREAM_RENDERER_INFO("  GPU Info: {0}", info.physicalDeviceInfo);
+		DAYDREAM_RENDERER_INFO("  Version: {0}", info.version);
 	}
 
 	void Renderer::PostInit()
@@ -96,7 +101,7 @@ namespace Daydream
 		return true;
 	}
 
-	void Renderer::OnSwapchainResize(Swapchain* _swapchain, UInt32 _width, UInt32 _height)
+	void Renderer::OnSwapchainResize(const Shared<Swapchain>& _swapchain, UInt32 _width, UInt32 _height)
 	{
 		//renderContext->SetViewport(0, 0, _width, _height);
 		_swapchain->ResizeSwapchain(_width, _height);
@@ -120,7 +125,7 @@ namespace Daydream
 		}
 	}
 
-	void Renderer::BeginFrame(Swapchain* _swapchain)
+	void Renderer::BeginFrame(const Shared<Swapchain>& _swapchain)
 	{
 		EnqueueCommand([_swapchain]()
 			{
@@ -132,7 +137,7 @@ namespace Daydream
 			});
 	}
 
-	void Renderer::EndFrame(Swapchain* _swapchain)
+	void Renderer::EndFrame(const Shared<Swapchain>& _swapchain)
 	{
 		EnqueueCommand([_swapchain]()
 			{
@@ -157,7 +162,7 @@ namespace Daydream
 			});
 	}
 
-	void Renderer::BeginRendering(Swapchain* _swapchain, Color _clearColor)
+	void Renderer::BeginRendering(const Shared<Swapchain>& _swapchain, Color _clearColor)
 	{
 		EnqueueCommand([_swapchain, _clearColor]()
 			{
@@ -205,7 +210,7 @@ namespace Daydream
 	//		});
 	//}
 
-	void Renderer::BindPipelineState(Shared<GraphicsPipelineState> _pipelineState)
+	void Renderer::BindPipelineState(const Shared<GraphicsPipelineState>& _pipelineState)
 	{
 		EnqueueCommand([_pipelineState]()
 			{
@@ -215,21 +220,21 @@ namespace Daydream
 
 
 
-	//void Renderer::SetTexture2D(const String& _name, Shared<Texture2D> _texture)
+	//void Renderer::SetTexture2D(const String& _name, const Shared<Texture2D> _texture)
 	//{
 	//	EnqueueCommand([_name, _texture]()
 	//		{
 	//			renderContext->SetTexture2D(_name, _texture);
 	//		});
 	//}
-	//void Renderer::SetTextureCube(const String& _name, Shared<TextureCube> _textureCube)
+	//void Renderer::SetTextureCube(const String& _name, const Shared<TextureCube> _textureCube)
 	//{
 	//	EnqueueCommand([_name, _textureCube]()
 	//		{
 	//			renderContext->SetTextureCube(_name, _textureCube);
 	//		});
 	//}
-	void Renderer::BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _samplerState)
+	void Renderer::BindShaderResourceView(const String& _name, const Shared<TextureView>& _textureView, const Shared<Sampler> _samplerState)
 	{
 		EnqueueCommand([_name, _textureView, _samplerState]()
 			{
@@ -237,7 +242,7 @@ namespace Daydream
 			});
 	}
 
-	void Renderer::BindConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
+	void Renderer::BindConstantBuffer(const String& _name, const Shared<ConstantBuffer>& _buffer)
 	{
 		EnqueueCommand([_name, _buffer]()
 			{
@@ -245,7 +250,7 @@ namespace Daydream
 			});
 	}
 
-	void Renderer::BindMesh(Shared<Mesh> _mesh)
+	void Renderer::BindMesh(const Shared<Mesh>& _mesh)
 	{
 		EnqueueCommand([_mesh]()
 			{
@@ -254,7 +259,7 @@ namespace Daydream
 			});
 	}
 
-	void Renderer::BindMaterial(Shared<Material> _material)
+	void Renderer::BindMaterial(const Shared<Material>& _material)
 	{
 		EnqueueCommand([_material]()
 			{
@@ -278,20 +283,20 @@ namespace Daydream
 			});
 	}
 
-	void Renderer::RequestResizeFramebuffer(const Shared<Framebuffer>& _framebuffer, UInt32 _width, UInt32 _height)
-	{
-		EnqueuePreFrameCommand([_framebuffer, _width, _height]()
-			{
-				EnqueueCommand([_framebuffer, _width, _height]()
-					{
-						//_framebuffer->Recreate(_width, _height);
-						DAYDREAM_RENDERER_INFO("Framebuffer is Recreated Width : {}, Height {}", _width, _height);
-					}
-				);
-			});
-	}
+	//void Renderer::RequestResizeFramebuffer(const const Shared<Framebuffer>& _framebuffer, UInt32 _width, UInt32 _height)
+	//{
+	//	EnqueuePreFrameCommand([_framebuffer, _width, _height]()
+	//		{
+	//			EnqueueCommand([_framebuffer, _width, _height]()
+	//				{
+	//					//_framebuffer->Recreate(_width, _height);
+	//					DAYDREAM_RENDERER_INFO("Framebuffer is Recreated Width : {}, Height {}", _width, _height);
+	//				}
+	//			);
+	//		});
+	//}
 
-	void Renderer::CopyBuffer(Shared<GPUBuffer> _src, Shared<GPUBuffer> _dst, UInt32 _copySize)
+	void Renderer::CopyBuffer(const Shared<GPUBuffer>& _src, const Shared<GPUBuffer>& _dst, UInt32 _copySize)
 	{
 		EnqueueCommand([_src, _dst, _copySize]()
 			{
@@ -302,7 +307,7 @@ namespace Daydream
 	}
 
 
-	void Renderer::CopyBufferToTexture(Shared<GPUBuffer> _src, Shared<GPUTexture> _dst)
+	void Renderer::CopyBufferToTexture(const Shared<GPUBuffer>& _src, const Shared<GPUTexture>& _dst)
 	{
 		EnqueueCommand([_src, _dst]()
 			{
@@ -312,7 +317,7 @@ namespace Daydream
 			});
 	}
 
-	void Daydream::Renderer::CopyDataToTexture2D(Shared<Texture2D> _target, Shared<Array<Byte>> _data)
+	void Daydream::Renderer::CopyDataToTexture2D(const Shared<Texture2D>& _target, const Shared<Array<Byte>>& _data)
 	{
 		EnqueueCommand([_target, _data]()
 			{
@@ -321,7 +326,7 @@ namespace Daydream
 	}
 
 
-	void Renderer::CopyTexture2D(Shared<Texture2D> _src, Shared<Texture2D> _dst)
+	void Renderer::CopyTexture2D(const Shared<Texture2D>& _src, const Shared<Texture2D>& _dst)
 	{
 		EnqueueCommand([_src, _dst]()
 			{
@@ -329,7 +334,7 @@ namespace Daydream
 			});
 	}
 
-	void Renderer::CopyTexture2DToTextureCube(Shared<Texture2D> _srcTexture2D, Shared<TextureCube> _dstCubemap, UInt32 _faceIndex, UInt32 _mipLevel)
+	void Renderer::CopyTexture2DToTextureCube(const Shared<Texture2D>& _srcTexture2D, const Shared<TextureCube>& _dstCubemap, UInt32 _faceIndex, UInt32 _mipLevel)
 	{
 		EnqueueCommand([_dstCubemap, _faceIndex, _srcTexture2D, _mipLevel]()
 			{
@@ -338,7 +343,7 @@ namespace Daydream
 
 	}
 
-	void Renderer::CopyTextureCubeToTexture2D(Shared<TextureCube> _srcCubemap, UInt32 _faceIndex, Shared<Texture2D> _dstTexture2D, UInt32 _mipLevel)
+	void Renderer::CopyTextureCubeToTexture2D(const Shared<TextureCube>& _srcCubemap, const Shared<Texture2D>& _dstTexture2D, UInt32 _faceIndex, UInt32 _mipLevel)
 	{
 		EnqueueCommand([_srcCubemap, _faceIndex, _dstTexture2D, _mipLevel]()
 			{
@@ -346,7 +351,7 @@ namespace Daydream
 			});
 	}
 
-	void Renderer::TransitionTextureState(Shared<GPUTexture> _texture, ResourceState _beforeState, ResourceState _afterState, UInt32 _baseMip, UInt32 _mipLevels, UInt32 _baseLayer, UInt32 _layerCount)
+	void Renderer::TransitionTextureState(const Shared<GPUTexture>& _texture, ResourceState _beforeState, ResourceState _afterState, UInt32 _baseMip, UInt32 _mipLevels, UInt32 _baseLayer, UInt32 _layerCount)
 	{
 		EnqueueCommand([_texture, _beforeState, _afterState, _baseMip, _mipLevels, _baseLayer, _layerCount]()
 			{
@@ -355,7 +360,7 @@ namespace Daydream
 			});
 	}
 
-	void Renderer::TransitionTextureState(Shared<Texture> _texture, ResourceState _beforeState, ResourceState _afterState,
+	void Renderer::TransitionTextureState(const Shared<Texture>& _texture, ResourceState _beforeState, ResourceState _afterState,
 		UInt32 _baseMip,
 		UInt32 _mipLevels,
 		UInt32 _baseLayer,
@@ -364,7 +369,7 @@ namespace Daydream
 		TransitionTextureState(_texture->GetGPUTexture(), _beforeState, _afterState, _baseMip, _mipLevels, _baseLayer, _layerCount);
 	}
 
-	void Renderer::TransitionBufferState(Shared<GPUBuffer> _buffer, ResourceState _beforeState, ResourceState _afterState)
+	void Renderer::TransitionBufferState(const Shared<GPUBuffer>& _buffer, ResourceState _beforeState, ResourceState _afterState)
 	{
 		EnqueueCommand([_buffer, _beforeState, _afterState]()
 			{
@@ -373,7 +378,7 @@ namespace Daydream
 			});
 	}
 
-	void Renderer::GenerateMips(Shared<Texture> _texture)
+	void Renderer::GenerateMips(const Shared<Texture>& _texture)
 	{
 		EnqueueCommand([_texture]()
 			{

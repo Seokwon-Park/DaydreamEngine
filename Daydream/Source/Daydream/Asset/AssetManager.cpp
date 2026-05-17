@@ -208,7 +208,7 @@ namespace Daydream
 
 	AssetHandle AssetManager::GetAssetHandleByPath(const Path& _path)
 	{
-		auto itr = instance->assetPathMap.find(_path.generic_string());
+		auto itr = instance->assetPathMap.find(_path.ToGenericString());
 		if (itr == instance->assetPathMap.end())
 		{
 			return AssetHandle();
@@ -228,7 +228,7 @@ namespace Daydream
 
 	AssetMetadata AssetManager::LoadMetadata(const Path& _metaFilePath)
 	{
-		YAML::Node metaNode = YAML::LoadFile(_metaFilePath.string());
+		YAML::Node metaNode = YAML::LoadFile(_metaFilePath.ToString());
 		if (!metaNode["Handle"])
 		{
 			return AssetMetadata(); // 유효하지 않음
@@ -260,7 +260,7 @@ namespace Daydream
 				subAssetMetadata.type = StringToAssetType(meshNode["Type"].as<String>());
 				subAssetMetadata.name = meshNode["Name"].as<String>();
 
-				metadata.subAssets[subAssetMetadata.filePath.generic_string()] = subAssetMetadata;
+				metadata.subAssets[subAssetMetadata.filePath.ToGenericString()] = subAssetMetadata;
 				DAYDREAM_CORE_INFO("{}", subAsset.first.as<String>());
 			}
 			break;
@@ -371,17 +371,16 @@ namespace Daydream
 
 	void AssetManager::ProcessDirectory(const Path& _directoryPath, bool _isRecursive)
 	{
-		auto dirItr = FileSystem::directory_iterator(_directoryPath);
-		for (auto dirEntry : dirItr)
+		Array<Path> dirEntries = FileSystem::GetDirectoryEntries(_directoryPath);
+		for (auto dirPath : dirEntries)
 		{
-			Path path = dirEntry.path();
-			String ext = path.extension().string();
+			String ext = dirPath.GetExtensionString();
 			if (ext == ".ddmeta") continue;
-			if (dirEntry.is_directory())
+			if (dirPath.IsDirectory())
 			{
 				if (_isRecursive)
 				{
-					ProcessDirectory(path, _isRecursive);
+					ProcessDirectory(dirPath, _isRecursive);
 				}
 				else
 				{
@@ -392,8 +391,8 @@ namespace Daydream
 			{
 				AssetType type = GetAssetTypeFromExtension(ext);
 				if (type == AssetType::None) continue;
-				ProcessFile(path, type);
-			} 
+				ProcessFile(dirPath, type);
+			}
 		}
 	}
 
@@ -402,12 +401,12 @@ namespace Daydream
 		Path metaFilePath = _filePath;
 		metaFilePath += ".ddmeta";
 		AssetMetadata metadata = AssetMetadata();
-		if (!FileSystem::exists(metaFilePath))
+		if (!metaFilePath.IsExist())
 		{
 			metadata.handle = AssetHandle::Generate();
-			metadata.filePath = _filePath.string(); // TODO: 상대 경로로 변환해야 함
+			metadata.filePath = _filePath.ToString(); // TODO: 상대 경로로 변환해야 함
 			metadata.type = _assetType;
-			metadata.name = _filePath.stem().string();
+			metadata.name = _filePath.GetFileNameWithoutExtension();
 			//Create metafile
 			CreateMetaDataFileInternal(metadata);
 		}
@@ -429,7 +428,7 @@ namespace Daydream
 		if (assetRegistry.find(_metadata.handle) == assetRegistry.end())
 		{
 			assetRegistry[_metadata.handle] = _metadata;
-			assetPathMap[_metadata.filePath.generic_string()] = _metadata.handle;
+			assetPathMap[_metadata.filePath.ToGenericString()] = _metadata.handle;
 		}
 		if (!_metadata.subAssets.empty())
 		{
@@ -449,15 +448,16 @@ namespace Daydream
 		out << YAML::BeginMap;
 		// out << YAML::Key << "Handle" << YAML::Value << _metadata.Handle; (UUID를 문자열로)
 		out << YAML::Key << "Handle" << YAML::Value << _metadata.handle.ToString();
-		out << YAML::Key << "Path" << YAML::Value << _metadata.filePath.string();
+		out << YAML::Key << "Path" << YAML::Value << _metadata.filePath.ToString();
 		// AssetType을 문자열로 변환하는 함수가 필요함
 		out << YAML::Key << "Type" << YAML::Value << AssetTypeToString(_metadata.type);
 		out << YAML::Key << "Name" << YAML::Value << _metadata.name;
 		out << YAML::EndMap;
 
-		std::ofstream fout(metaFilePath);
+		FileSystem::MakeYamlFile(metaFilePath, out);
+		/*std::ofstream fout(metaFilePath.ToString());
 		fout << out.c_str();
-		fout.close();
+		fout.close();*/
 	}
 }
 

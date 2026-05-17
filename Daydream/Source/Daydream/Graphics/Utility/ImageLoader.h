@@ -34,12 +34,13 @@ namespace Daydream
 		{
 			ImageData imageData;
 			T* pixels = nullptr;
+			String pathString = _path.ToString();
 			if constexpr (std::is_same_v<T, stbi_uc>) { // T가 unsigned char라면
-				pixels = stbi_load(_path.string().c_str(), &imageData.width, &imageData.height, nullptr, 4); // 4채널로 강제
+				pixels = stbi_load(pathString.c_str(), &imageData.width, &imageData.height, nullptr, 4); // 4채널로 강제
 			}
 			else
 			{ // T가 float라면
-				pixels = stbi_loadf(_path.string().c_str(), &imageData.width, &imageData.height, nullptr, 4); // 4채널로 강제
+				pixels = stbi_loadf(pathString.c_str(), &imageData.width, &imageData.height, nullptr, 4); // 4채널로 강제
 			}
 
 			DAYDREAM_CORE_ASSERT(pixels, "Failed to load image!");

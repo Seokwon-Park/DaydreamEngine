@@ -5,6 +5,7 @@ namespace Daydream
 {
 	SceneRenderer::SceneRenderer()
 	{
+		renderGraph = MakeShared<RenderGraph>();
 	}
 
 	SceneRenderer::~SceneRenderer()

@@ -48,7 +48,7 @@ namespace Daydream
 
 		inline static AssetType GetAssetTypeFromPath(const Path& _path)
 		{
-			String ext = _path.extension().string();
+			String ext = _path.GetExtensionString();
 			return GetAssetTypeFromExtension(ext);
 		}
 
@@ -77,8 +77,8 @@ namespace Daydream
 		template<typename AssetType>
 		static Shared<AssetType> GetAssetByPath(const Path& _path)
 		{
-			if (_path.empty()) return nullptr;
-			String path = _path.generic_string();
+			if (_path.IsEmpty()) return nullptr;
+			String path = _path.ToGenericString();
 			auto itr = instance->assetPathMap.find(path);
 			if (itr == instance->assetPathMap.end())
 			{

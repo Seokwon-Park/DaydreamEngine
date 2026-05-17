@@ -213,7 +213,7 @@ namespace Daydream
 	void VulkanRenderContext::BindPipelineState(Shared<GraphicsPipelineState> _pipelineState)
 	{
 		RenderContext::BindPipelineState(_pipelineState);
-		activePipelineState = _pipelineState;
+		currentGraphicsPipelineState = _pipelineState;
 		Shared<VulkanGraphicsPipelineState> pipelineState = static_pointer_cast<VulkanGraphicsPipelineState>(_pipelineState);
 
 		GetActiveCommandBuffer().bindPipeline(vk::PipelineBindPoint::eGraphics, pipelineState->GetPipeline());
@@ -283,12 +283,12 @@ namespace Daydream
 
 	void VulkanRenderContext::BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _sampler)
 	{
-		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
+		const ShaderReflectionData* resourceInfo = currentGraphicsPipelineState->GetBindingInfo(_name);
 		if (resourceInfo == nullptr) return;
 
 		Shared<VulkanTextureView> vulkanTextureView = SharedCast<VulkanTextureView>(_textureView);
 		Shared<VulkanSampler> vulkanSampler = SharedCast<VulkanSampler>(_sampler);
-		Shared<VulkanGraphicsPipelineState> vulkanPSO = SharedCast<VulkanGraphicsPipelineState>(activePipelineState);
+		Shared<VulkanGraphicsPipelineState> vulkanPSO = SharedCast<VulkanGraphicsPipelineState>(currentGraphicsPipelineState);
 
 		vk::DescriptorImageInfo imageInfo{};
 		imageInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
@@ -314,11 +314,11 @@ namespace Daydream
 	void VulkanRenderContext::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
 	{
 		if (_buffer == nullptr) return;
-		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
+		const ShaderReflectionData* resourceInfo = currentGraphicsPipelineState->GetBindingInfo(_name);
 		if (resourceInfo == nullptr) return;
 
 		VulkanGPUBuffer* constantBuffer = Cast<VulkanGPUBuffer*>(_buffer->GetGPUBufferPtr());
-		Shared<VulkanGraphicsPipelineState> vulkanPSO = std::static_pointer_cast<VulkanGraphicsPipelineState>(activePipelineState);
+		Shared<VulkanGraphicsPipelineState> vulkanPSO = std::static_pointer_cast<VulkanGraphicsPipelineState>(currentGraphicsPipelineState);
 
 		vk::DescriptorBufferInfo bufferInfo{};
 		bufferInfo.buffer = constantBuffer->GetVkBuffer();

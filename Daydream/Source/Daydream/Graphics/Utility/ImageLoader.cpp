@@ -6,7 +6,7 @@ namespace Daydream
 {
 	ImageData ImageLoader::LoadImageFile(const Path& _path)
 	{
-		if (stbi_is_hdr(_path.string().c_str()))
+		if (stbi_is_hdr(_path.ToString().c_str()))
 		{
 			return LoadAndFillImageData<Float32>(_path);
 		}

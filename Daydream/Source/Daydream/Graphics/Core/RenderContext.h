@@ -83,7 +83,7 @@ namespace Daydream
 
 		Shared<RenderCommandList> GetActiveCommandList() const { return activeCommandList; }
 	protected:
-		Shared<GraphicsPipelineState> activePipelineState;
+		Shared<GraphicsPipelineState> currentGraphicsPipelineState;
 		Shared<RenderCommandList> activeCommandList;
 
 		Array<Shared<GPUResource>> captureStorage;

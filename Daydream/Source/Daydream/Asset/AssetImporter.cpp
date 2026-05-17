@@ -13,8 +13,8 @@ namespace Daydream
 	Shared<Texture2D> AssetImporter::LoadTexture2D(const AssetMetadata& _metaData)
 	{
 		Path texturePath = _metaData.filePath;
-		String pathString = texturePath.make_preferred().string();
-		String extension = texturePath.extension().string();
+		String pathString = texturePath.ToGenericString();
+		String extension = texturePath.GetExtensionString();
 
 		bool isSRGB = true;
 		if (pathString.find("_n.") != std::string::npos ||
@@ -52,8 +52,8 @@ namespace Daydream
 	{
 		Path modelPath = _metaData.filePath;
 
-		String pathString = modelPath.generic_string();
-		String extension = modelPath.extension().string();
+		String pathString = modelPath.ToGenericString();
+		String extension = modelPath.GetExtensionString();
 		String metaFilePathString = pathString + ".ddmeta";
 
 		Shared<ModelData> modelData = ModelLoader::LoadFromFile(modelPath);
@@ -135,14 +135,15 @@ namespace Daydream
 
 		if (isMetaDirty)
 		{
-			std::ofstream fout(metaFilePathString);
-			fout << metaNode;
-			fout.close();
+			FileSystem::MakeYamlFile(metaFilePathString, metaNode);
+			//std::ofstream fout(metaFilePathString);
+			//fout << metaNode;
+			//fout.close();
 		}
 
-		Path materialDir = modelPath.parent_path() / "Materials";
-		if (!FileSystem::exists(materialDir))
-			FileSystem::create_directory(materialDir);
+		Path materialDir = modelPath.GetParentPath() / "Materials";
+		if (!materialDir.IsExist())
+			FileSystem::MakeDirectory(materialDir);
 
 		for (UInt32 i = 0; i < modelData->materials.size(); i++)
 		{
@@ -155,10 +156,10 @@ namespace Daydream
 			}
 
 			Path materialPath = materialDir / (materialName + ".ddmat");
-			String materialPathString = materialPath.generic_string();
+			String materialPathString = materialPath.ToGenericString();
 
 			AssetHandle materialHandle;
-			if (FileSystem::exists(materialPath))
+			if (materialPath.IsExist())
 			{
 				Shared<Material> existingMaterial = AssetManager::GetAssetByPath<Material>(materialPathString);
 				if (existingMaterial)
@@ -247,9 +248,10 @@ namespace Daydream
 				out << YAML::EndMap;
 				out << YAML::EndMap;
 
-				std::ofstream fout(materialPath);
+				FileSystem::MakeYamlFile(materialPath, out);
+				/*std::ofstream fout(materialPath.ToString());
 				fout << out.c_str();
-				fout.close();
+				fout.close();*/
 			}
 			newModel->AddMaterial(materialHandle);
 			//Shared<Material> newMat = Material::Create(ResourceManager::GetResource<PipelineState>("ForwardPSO"));
@@ -262,9 +264,9 @@ namespace Daydream
 	{
 		// 지원하는 확장자인지 확인
 		Path entryPath = _metaData.filePath;
-		String pathString = entryPath.string();
-		String shaderName = entryPath.stem().string();
-		String extension = entryPath.extension().string();
+		String pathString = entryPath.ToString();
+		String shaderName = entryPath.GetFileNameWithoutExtension();
+		String extension = entryPath.GetExtensionString();
 		ShaderType shaderType;
 		if (pathString.find("VS.") != std::string::npos)
 		{
@@ -297,8 +299,8 @@ namespace Daydream
 	{
 		Path materialPath = _metaData.filePath;
 
-		String pathString = materialPath.generic_string();
-		String extension = materialPath.extension().string();
+		String pathString = materialPath.ToGenericString();
+		String extension = materialPath.GetExtensionString();
 		String metaFilePathString = pathString + ".ddmeta";
 
 		YAML::Node metaNode = YAML::LoadFile(pathString);

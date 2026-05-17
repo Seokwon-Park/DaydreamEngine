@@ -159,9 +159,6 @@
     <ClInclude Include="Source\Base\Container\SortedMap.h">
       <Filter>Source\Base\Container</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Base\IO\Directory.h">
-      <Filter>Source\Base\IO</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Base\IO\File.h">
       <Filter>Source\Base\IO</Filter>
     </ClInclude>
@@ -1964,11 +1961,9 @@
     <ClInclude Include="Source\Daydream\Graphics\Core\RenderingInfo.h" />
     <ClInclude Include="Source\Daydream\Graphics\Resources\PipelineState\ComputePipelineState.h" />
     <ClInclude Include="Source\Daydream\Graphics\Core\DeferredSceneRenderer.h" />
+    <ClInclude Include="Source\Base\IO\FileSystem.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Base\IO\Directory.cpp">
-      <Filter>Source\Base\IO</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Base\IO\File.cpp">
       <Filter>Source\Base\IO</Filter>
     </ClCompile>
@@ -2389,5 +2384,6 @@
     <ClCompile Include="Source\Daydream\Graphics\Core\RenderingInfo.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Resources\PipelineState\ComputePipelineState.cpp" />
     <ClCompile Include="Source\Daydream\Graphics\Core\DeferredSceneRenderer.cpp" />
+    <ClCompile Include="Source\Base\IO\FileSystem.cpp" />
   </ItemGroup>
 </Project>

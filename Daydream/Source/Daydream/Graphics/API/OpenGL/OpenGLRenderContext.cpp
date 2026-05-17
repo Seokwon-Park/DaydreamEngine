@@ -150,7 +150,7 @@ namespace Daydream
 	void OpenGLRenderContext::BindPipelineState(Shared<GraphicsPipelineState> _pipelineState)
 	{
 		RenderContext::BindPipelineState(_pipelineState);
-		OpenGLGraphicsPipelineState* pso = Cast<OpenGLGraphicsPipelineState*>(activePipelineState.get());
+		OpenGLGraphicsPipelineState* pso = Cast<OpenGLGraphicsPipelineState*>(currentGraphicsPipelineState.get());
 		pso->BindPipelineState();
 	}
 	void OpenGLRenderContext::BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer)
@@ -171,7 +171,7 @@ namespace Daydream
 	}
 	void OpenGLRenderContext::BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _sampler)
 	{
-		const ShaderReflectionData* bindingInfo = activePipelineState->GetBindingInfo(_name);
+		const ShaderReflectionData* bindingInfo = currentGraphicsPipelineState->GetBindingInfo(_name);
 		if (bindingInfo == nullptr) return;
 
 		OpenGLTextureView* glView = Cast<OpenGLTextureView*>(_textureView.get());
@@ -202,7 +202,7 @@ namespace Daydream
 	}*/
 	void OpenGLRenderContext::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
 	{
-		const ShaderReflectionData* bindingInfo = activePipelineState->GetBindingInfo(_name);
+		const ShaderReflectionData* bindingInfo = currentGraphicsPipelineState->GetBindingInfo(_name);
 		if (bindingInfo == nullptr) return;
 
 		OpenGLGPUBuffer* constantBuffer = Cast<OpenGLGPUBuffer*>(_buffer->GetGPUBufferPtr());

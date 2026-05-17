@@ -18,11 +18,10 @@ namespace Daydream
         void RenderScene(Shared<Scene> _scene, Shared<Camera> _camera) {};
 
     private:
-        RenderGraph m_RenderGraph;
+        Shared<RenderGraph> renderGraph;
 
-        // RenderGraph 리소스 핸들 캐싱
-        RenderGraphResourceHandle m_DepthResource;
-        RenderGraphResourceHandle m_GBufferResource;
-        RenderGraphResourceHandle m_FinalResource;
+        RenderGraphResourceHandle depthResource;
+        RenderGraphResourceHandle gBufferResource;
+        RenderGraphResourceHandle finalResource;
     };
 }

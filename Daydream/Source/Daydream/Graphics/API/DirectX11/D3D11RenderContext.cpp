@@ -78,7 +78,7 @@ namespace Daydream
 	void D3D11RenderContext::BindPipelineState(Shared<GraphicsPipelineState> _pipelineState)
 	{
 		RenderContext::BindPipelineState(_pipelineState);
-		D3D11GraphicsPipelineState* pso = Cast<D3D11GraphicsPipelineState*>(activePipelineState.get());
+		D3D11GraphicsPipelineState* pso = Cast<D3D11GraphicsPipelineState*>(currentGraphicsPipelineState.get());
 		pso->BindPipelineState();
 	}
 	void D3D11RenderContext::BindVertexBuffer(Shared<VertexBuffer> _vertexBuffer)
@@ -180,7 +180,7 @@ namespace Daydream
 
 	void D3D11RenderContext::BindShaderResourceView(const String& _name, Shared<TextureView> _textureView, Shared<Sampler> _sampler)
 	{
-		const ShaderReflectionData* bindingInfo = activePipelineState->GetBindingInfo(_name);
+		const ShaderReflectionData* bindingInfo = currentGraphicsPipelineState->GetBindingInfo(_name);
 		if (bindingInfo == nullptr) return;
 		//DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX11, "Wrong API!");
 		D3D11TextureView* view = Cast<D3D11TextureView*>(_textureView.get());
@@ -219,7 +219,7 @@ namespace Daydream
 
 	void D3D11RenderContext::SetConstantBuffer(const String& _name, Shared<ConstantBuffer> _buffer)
 	{
-		const ShaderReflectionData* resourceInfo = activePipelineState->GetBindingInfo(_name);
+		const ShaderReflectionData* resourceInfo = currentGraphicsPipelineState->GetBindingInfo(_name);
 		if (resourceInfo == nullptr) return;
 		DAYDREAM_CORE_ASSERT(device->GetAPI() == RendererAPIType::DirectX11, "Wrong API!");
 		D3D11GPUBuffer* constantBuffer = Cast<D3D11GPUBuffer*>(_buffer->GetGPUBufferPtr());

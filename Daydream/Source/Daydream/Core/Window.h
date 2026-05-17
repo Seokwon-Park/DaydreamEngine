@@ -57,13 +57,14 @@ namespace Daydream
 		virtual void MakeContextCurrent() const = 0;
 		virtual void ReleaseContext() const = 0;
 
-		void SetSwapchain(Shared<Swapchain> _swapchain) { swapChain = _swapchain; }
-		Swapchain* GetSwapchain() const { return swapChain.get(); }
+		void SetSwapchain(Shared<Swapchain> _swapchain) { swapchain = _swapchain; }
+		Shared<Swapchain> GetSwapchain() const { return swapchain; }
+		Swapchain* GetSwapchainPtr() const { return swapchain.get(); }
 
 		static Unique<DaydreamWindow> Create(const WindowDesc& _desc = WindowDesc());
 	protected:
 		WindowDesc desc;
-		Shared<Swapchain> swapChain = nullptr;
+		Shared<Swapchain> swapchain = nullptr;
 	private:
 	};
 
